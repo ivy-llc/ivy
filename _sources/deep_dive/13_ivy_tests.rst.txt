@@ -129,7 +129,7 @@ You can also specify:
 
 * Math.inf and math.nan, respectively, should be included in the data description.
 * Bounds(either inclusive or exclusive) on the floats being generated.
-* The width of the floats; eg; if you want to generate 16-bit or 32 bit floats vs 64 bit. Python floats are always
+* The width of the floats; eg; if you want to generate 16-bit or 32 bit floats vs 64 bit. Python floats are always\
 64-bit, width=32 ensures that the generated values can always be losslessly represented in both 32 bits. This is mostly
 useful for Numpy arrays).
 
@@ -139,7 +139,7 @@ useful for Numpy arrays).
 from the respective strategies that were specified as inputs.
 
 8. **one_of** - This allows us to specify a collection of strategies and any given datum will be drawn from “one of” them.
-Hypothesis has the “pipe” operator overloaded as a shorthand for one_of. This has been widely used all over in Ivy Tests.
+Hypothesis has the *pipe* operator overloaded as a shorthand for one_of. This has been widely used all over in Ivy Tests.
 For example, this `line`_ here, can also be written as -:
 
 .. code-block:: python
@@ -223,7 +223,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
    			alpha=alpha,)
 
 In the test above, all parameters being exhaustively drawn inside the given block from hypothesis either
-**directly**(*native_array, num_positional, instance_methods, alpha*) or **indirectly**(*dtype_and_x, as_variable, container*)
+**directly** (*native_array, num_positional, instance_methods, alpha*) or **indirectly** (*dtype_and_x, as_variable, container*)
 with the *helper* functions.
 
 **Note** - It is advisable to specify the parameters of given as keyword arguments, so that there’s a correspondence
@@ -258,7 +258,7 @@ cases’ encountered by the following parameters -:
 * When the input is a native array - **boolean**
 * Out argument support, if the function has one - **boolean**
 
-Note -: Each test function has its own requirements and the parameter criterion listed above does not cover everything.
+**Note** -: Each test function has its own requirements and the parameter criterion listed above does not cover everything.
 
 Sometimes the function requirements are straight-forward, for instance, generating integers, boolean values, float values.
 Whereas, in the case of specific parameters like -:
@@ -272,7 +272,7 @@ Whereas, in the case of specific parameters like -:
 * getting axes at test time
 
 We need a hand-crafted data generation policy(composite). For this purpose ad-hoc functions have been defined in the
-helpers file. It might be appropriate now, to bring them up and discuss their use. A detailed overview of their working
+:code:`helpers.py` file. It might be appropriate now, to bring them up and discuss their use. A detailed overview of their working
 is as follows-:
 
 1. **array_dtypes** - As the name suggests, this will generate arbitrary sequences of valid float data types. The sequence
@@ -504,6 +504,19 @@ helpful when we are testing a function with varied number of arguments.
 
 How to write Hypothesis Tests effectively
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It would be helpful to keep in mind the following points while writing test -:
+
+a. Don't use :code:`data.draw` in the function body.
+b. Don't use array generation (i.e. np.random_uniform) in the function body.
+c. Don't skip anything in the function body.
+d. The function should only call helpers.test_function, and then possibly perform a custom value test if
+   :code:`test_values=False` in the arguments.
+e. We should add as many possibilities as we can while generating data, covering all the function arguments
+f. If you find yourself using repeating some logic which is specific to a particular submodule, then create a private
+   helper function and add this to the submodule.
+g. If the logic is general enough, this can instead be added to the :code:`helpers.py` file, enabling it to be used for tests
+   in other submodules
 
 
 Bonus: Hypothesis' Extended Features

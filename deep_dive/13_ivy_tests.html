@@ -72,7 +72,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#self-consistent-and-explicit-testing">Self-Consistent and Explicit Testing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id8">test_array_function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">test_array_function</a></li>
 </ul>
 </li>
 </ul>
@@ -243,7 +243,7 @@ useful for Numpy arrays).</p>
 <p>7. <strong>tuples</strong> - The strategy accepts N Hypothesis strategies, and will generate length - N tuples whose elements are drawn
 from the respective strategies that were specified as inputs.</p>
 <p>8. <strong>one_of</strong> - This allows us to specify a collection of strategies and any given datum will be drawn from “one of” them.
-Hypothesis has the “pipe” operator overloaded as a shorthand for one_of. This has been widely used all over in Ivy Tests.
+Hypothesis has the <em>pipe</em> operator overloaded as a shorthand for one_of. This has been widely used all over in Ivy Tests.
 For example, this <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L476">line</a> here, can also be written as -:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">none</span><span class="p">(),</span> <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="o">-</span><span class="n">ndim</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
@@ -319,7 +319,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
 </pre></div>
 </div>
 <p>In the test above, all parameters being exhaustively drawn inside the given block from hypothesis either
-<a href="#id2"><span class="problematic" id="id3">**</span></a>directly**(<em>native_array, num_positional, instance_methods, alpha</em>) or <a href="#id4"><span class="problematic" id="id5">**</span></a>indirectly**(<em>dtype_and_x, as_variable, container</em>)
+<strong>directly</strong> (<em>native_array, num_positional, instance_methods, alpha</em>) or <strong>indirectly</strong> (<em>dtype_and_x, as_variable, container</em>)
 with the <em>helper</em> functions.</p>
 <p><strong>Note</strong> - It is advisable to specify the parameters of given as keyword arguments, so that there’s a correspondence
 between our strategies with the function-signature’s parameters.</p>
@@ -349,7 +349,7 @@ cases’ encountered by the following parameters -:</p>
 <li><p>When the input is a native array - <strong>boolean</strong></p></li>
 <li><p>Out argument support, if the function has one - <strong>boolean</strong></p></li>
 </ul>
-<p>Note -: Each test function has its own requirements and the parameter criterion listed above does not cover everything.</p>
+<p><strong>Note</strong> -: Each test function has its own requirements and the parameter criterion listed above does not cover everything.</p>
 <p>Sometimes the function requirements are straight-forward, for instance, generating integers, boolean values, float values.
 Whereas, in the case of specific parameters like -:</p>
 <ul class="simple">
@@ -362,7 +362,7 @@ Whereas, in the case of specific parameters like -:</p>
 <li><p>getting axes at test time</p></li>
 </ul>
 <p>We need a hand-crafted data generation policy(composite). For this purpose ad-hoc functions have been defined in the
-helpers file. It might be appropriate now, to bring them up and discuss their use. A detailed overview of their working
+<code class="code docutils literal notranslate"><span class="pre">helpers.py</span></code> file. It might be appropriate now, to bring them up and discuss their use. A detailed overview of their working
 is as follows-:</p>
 <p>1. <strong>array_dtypes</strong> - As the name suggests, this will generate arbitrary sequences of valid float data types. The sequence
 parameters like <em>min_size</em>, and <em>max_size</em>, are specified at test time based on the function. This is what the function
@@ -554,6 +554,19 @@ helpful when we are testing a function with varied number of arguments.</p>
 </section>
 <section id="how-to-write-hypothesis-tests-effectively">
 <h3>How to write Hypothesis Tests effectively<a class="headerlink" href="#how-to-write-hypothesis-tests-effectively" title="Permalink to this heading"></a></h3>
+<p>It would be helpful to keep in mind the following points while writing test -:</p>
+<ol class="loweralpha simple">
+<li><p>Don’t use <code class="code docutils literal notranslate"><span class="pre">data.draw</span></code> in the function body.</p></li>
+<li><p>Don’t use array generation (i.e. np.random_uniform) in the function body.</p></li>
+<li><p>Don’t skip anything in the function body.</p></li>
+<li><p>The function should only call helpers.test_function, and then possibly perform a custom value test if
+<code class="code docutils literal notranslate"><span class="pre">test_values=False</span></code> in the arguments.</p></li>
+<li><p>We should add as many possibilities as we can while generating data, covering all the function arguments</p></li>
+<li><p>If you find yourself using repeating some logic which is specific to a particular submodule, then create a private
+helper function and add this to the submodule.</p></li>
+<li><p>If the logic is general enough, this can instead be added to the <code class="code docutils literal notranslate"><span class="pre">helpers.py</span></code> file, enabling it to be used for tests
+in other submodules</p></li>
+</ol>
 </section>
 <section id="bonus-hypothesis-extended-features">
 <h3>Bonus: Hypothesis’ Extended Features<a class="headerlink" href="#bonus-hypothesis-extended-features" title="Permalink to this heading"></a></h3>
@@ -630,7 +643,7 @@ and a variety performance details are supported. Let’s look at the function <a
 <a class="reference internal image-reference" href="https://github.com/unifyai/ivy/blob/master/.idea/torch.png"><img alt="https://github.com/unifyai/ivy/blob/master/.idea/torch.png" src="https://github.com/unifyai/ivy/blob/master/.idea/torch.png" style="width: 600px;" /></a>
 <p>It can be seen that the function doesn’t fail for <strong>Jax</strong>, <strong>Numpy</strong> and <strong>Torch</strong>, which is clearly not the case with
 <strong>Tensorflow</strong>, wherein 7 examples failed the test. One important thing to note is the number of values for which
-<a href="#id6"><span class="problematic" id="id7">**</span></a>Shrinking**(discussed in brief above) happened. Statistics for both <em>generate phase</em>, and <em>shrink phase</em> if the test
+<a href="#id2"><span class="problematic" id="id3">**</span></a>Shrinking**(discussed in brief above) happened. Statistics for both <em>generate phase</em>, and <em>shrink phase</em> if the test
 fails are printed in the output. If the tests are re-run, <em>reuse phase</em> statistics are printed as well where notable
 examples from previous runs are displayed.</p>
 <p>Another argument which can be specified for a more detailed output is <strong>hypothesis-verbosity = verbose</strong>. Let’s look at
@@ -672,8 +685,8 @@ These should be added using <code class="code docutils literal notranslate"><spa
 However, we should still also include <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> in the test,
 so that we can still test for arbitrary variations in the input arguments.</p>
 </section>
-<section id="id8">
-<h2>test_array_function<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h2>
+<section id="id4">
+<h2>test_array_function<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h2>
 <p>The helper <a class="reference external" href="https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401">test_array_function</a> tests that the function:</p>
 <ol class="arabic simple">
 <li><p>can handle the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument correctly</p></li>
