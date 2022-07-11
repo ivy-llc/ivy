@@ -2,6 +2,12 @@ astype
 ======
 
 .. autofunction:: ivy.functional.ivy.data_type.astype
+
+.. autofunction:: ivy.array.array_methods.astype
+
+.. autofunction:: ivy.container.container_methods.static_astype
+
+.. autofunction:: ivy.container.container_methods.astype
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ astype
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: astype
+
+   astype/astype_functional.rst
+   astype/astype_array.rst
+   astype/astype_container.rst
+   astype/static_astype_container.rst
+
