@@ -608,36 +608,6 @@ def squeeze(
         a: ivy.array([0., 1., 2.]),
         b: ivy.array([3., 4., 5.])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[[0.],[ 1.]]])
-    >>> y = x.squeeze(2)
-    >>> print(y)
-    ivy.array([[0., 1.]])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
-                          b=ivy.array([[[11.], [12.]]]))
-    >>> y = x.squeeze(2)
-    >>> print(y)
-    {
-        a: ivy.array([[10., 11.]]),
-        b: ivy.array([[11., 12.]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
-                          b=ivy.array([[[11.], [12.]]]))
-    >>> y = x.squeeze(0)
-    >>> print(y)
-    {
-        a: ivy.array([[10.], [11.]]),
-        b: ivy.array([[11.], [12.]])
-    }
     """
     return current_backend(x).squeeze(x, axis, out=out)
 
