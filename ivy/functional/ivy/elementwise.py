@@ -3248,7 +3248,7 @@ def sign(
     >>> x = ivy.Container(a=ivy.array([0., -0.]),\
                           b=ivy.array([1.46, 5.9, -0.0]),\
                           c=ivy.array([-8.23, -4.9, -2.6, 7.4]))
-    >>> y = ivy.sign(x, out=y)
+    >>> y = ivy.sign(x)
     >>> print(y)
     {
         a: ivy.array([0., 0.]),
