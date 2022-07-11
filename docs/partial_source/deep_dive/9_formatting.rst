@@ -26,11 +26,11 @@ Module imports are being checked to detect:
 Flake8 is useful in detecting syntax errors, which are one of the most common mistakes.
 Some examples are:
 
-* :code: `break` or :code: `continue` statement outside a :code: `for` or :code: `while` loop
-* :code: `continue` statement in the :code: `finally` block of a loop
-* :code: `yield` or :code: `yield from` statement outside a function
-* :code: `return` statement used with arguments in a generator, or outside a function or method
-* :code: `except:` block not being the last exception handler
+* :code:`break` or :code:`continue` statement outside a :code:`for` or :code:`while` loop
+* :code:`continue` statement in the :code:`finally` block of a loop
+* :code:`yield` or :code:`yield from` statement outside a function
+* :code:`return` statement used with arguments in a generator, or outside a function or method
+* :code:`except:` block not being the last exception handler
 * syntax or length errors in docstrings, comments, or annotations
 
 **Literals**
@@ -38,21 +38,21 @@ Some examples are:
 Literals formatting are often used in a string statement, which some related common
 checks are:
 
-* invalid :code: `%` format
-* :code: `%` format with missing arguments or unsupported character
-* :code: `.format(...)` with invalid format, missing or unused arguments
+* invalid :code:`%` format
+* :code:`%` format with missing arguments or unsupported character
+* :code:`.format(...)` with invalid format, missing or unused arguments
 * f-string without placeholders
 
 **Others**
 
-There are many more types of checking which :code: `flake8` is able to carry out. They
+There are many more types of checking which `flake8` is able to carry out. They
 include but are not limited to:
 
-* repeated :code: `dict` key or variable assigned to different values
+* repeated :code:`dict` key or variable assigned to different values
 * star-unpacking assignment with too many expressions
-* assertion test is a :code: `tuple`, which is always :code: `true`
-* use of :code: `==` or :code: `!=` to compare :code: `str`, :code: `bytes` or :code: `int` literals
-* :code: `raise NotImplemented` should be :code: `raise NotImplementedError`
+* assertion test is a :code:`tuple`, which is always :code:`true`
+* use of :code:`==` or :code:`!=` to compare :code:`str`, :code:`bytes` or :code:`int` literals
+* :code:`raise NotImplemented` should be :code:`raise NotImplementedError`
 
 Pre-Commit Hook
 ---------------
@@ -116,7 +116,7 @@ To ensure a better understanding of the formatting rules, examples are shown bel
 for visualizing a better comparison.
 
 When a function has few arguments which will not exceed the length limit, arguments
-should be listed on the same line, together with the function :code: `def(...)`
+should be listed on the same line, together with the function :code:`def(...)`
 syntax.
 
 .. code-block:: python
