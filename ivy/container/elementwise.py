@@ -721,6 +721,22 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.expm1. This method simply wraps the
+        function, and so the docstring for ivy.expm1 also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5]),\
+                              b=ivy.array([5.4, -3.2]))
+        >>> y = x.expm1()
+        >>> print(y)
+        {
+            a: ivy.array([11.2, 0.649]),
+            b: ivy.array([220., -0.959])
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.expm1(x_) if ivy.is_array(x_) else x_,
