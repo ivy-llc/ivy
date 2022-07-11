@@ -32,21 +32,22 @@ def index_nest(
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :code:`Tuple` inputs:
 
-    >>> x = ivy.array([1., 2.])
+    >>> x = (1, 2)
     >>> y = [0]
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
-    1.
+    1
 
-    With :code:`Tuple` inputs:
+    With :code:`ivy.Array` inputs:
 
-    >>> x = (1, 2, (3, 4))
-    >>> y = (2, 1)
+    >>> x = ivy.array([[1., 2.], \
+                       [3., 4.]])
+    >>> y = [1]
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
-    4
+    ivy.array([3., 4.])
 
     With :code:`Dict` input:
 
