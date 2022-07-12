@@ -217,3 +217,6 @@ def clip(
         x = x.to(promoted_type)
     ret = torch.clamp(x, x_min, x_max, out=out)
     return ret
+
+
+clip.unsupported_dtypes = ("float16",)
