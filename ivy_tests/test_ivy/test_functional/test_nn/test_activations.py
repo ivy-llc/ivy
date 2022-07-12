@@ -113,7 +113,7 @@ def test_gelu(
         container,
         instance_method,
         "gelu",
-        x = np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=dtype),
         approximate=approximate,
     )
     
@@ -214,7 +214,7 @@ def test_softmax(
         container,
         instance_method,
         "softmax",
-        x = np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=dtype),
         axis = axis
     )
 
