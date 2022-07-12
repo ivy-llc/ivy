@@ -233,6 +233,15 @@ variations of possible function inputs.</p>
 <ol class="arabic simple" start="7">
 <li><p>passes in <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances for multiple arguments</p></li>
 </ol>
+<p>In all cases, the containers should have at least two leaves.
+For example, the following container is okay to use for example purposes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>Whereas the following container is not okay to use for example purposes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]))</span>
+</pre></div>
+</div>
 <p><strong>Container Static Method Examples</strong></p>
 <p>To recap, <em>container static method</em> examples show the method being called like so
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_&lt;func_name&gt;(...)</span></code>, and these should be added to the
