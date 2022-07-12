@@ -2572,6 +2572,11 @@ def unset_shape_array_mode() -> None:
     shape_array_mode = False
 
 
+def shape_array_mode() -> bool:
+    global shape_array_mode
+    return shape_array_mode
+
+
 @to_native_arrays_and_back
 @handle_nestable
 def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -> int:
