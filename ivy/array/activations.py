@@ -14,8 +14,8 @@ class ArrayWithActivations(abc.ABC):
             out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.abs. This method simply wraps the
-        function, and so the docstring for ivy.abs also applies to this method
+        ivy.Array instance method variant of ivy.relu. This method simply wraps the
+        function, and so the docstring for ivy.relu also applies to this method
         with minimal changes.
         Examples
         --------
@@ -35,8 +35,8 @@ class ArrayWithActivations(abc.ABC):
             out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.abs. This method simply wraps the
-        function, and so the docstring for ivy.abs also applies to this method
+        ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps the
+        function, and so the docstring for ivy.leaky_relu also applies to this method
         with minimal changes.
         Examples
         --------
@@ -56,8 +56,8 @@ class ArrayWithActivations(abc.ABC):
             out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.abs. This method simply wraps the
-        function, and so the docstring for ivy.abs also applies to this method
+        ivy.Array instance method variant of ivy.gelu. This method simply wraps the
+        function, and so the docstring for ivy.gelu also applies to this method
         with minimal changes.
         Examples
         --------
@@ -76,8 +76,8 @@ class ArrayWithActivations(abc.ABC):
             out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.abs. This method simply wraps the
-        function, and so the docstring for ivy.abs also applies to this method
+        ivy.Array instance method variant of ivy.tanh. This method simply wraps the
+        function, and so the docstring for ivy.tanh also applies to this method
         with minimal changes.
         Examples
         --------
@@ -96,8 +96,8 @@ class ArrayWithActivations(abc.ABC):
             out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.abs. This method simply wraps the
-        function, and so the docstring for ivy.abs also applies to this method
+        ivy.Array instance method variant of ivy.sigmoid. This method simply wraps the
+        function, and so the docstring for ivy.sigmoid also applies to this method
         with minimal changes.
         Examples
         --------
@@ -116,8 +116,8 @@ class ArrayWithActivations(abc.ABC):
                 out: Optional[ivy.Array] = None
                 ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.abs. This method simply wraps the
-        function, and so the docstring for ivy.abs also applies to this method
+        ivy.Array instance method variant of ivy.softmax. This method simply wraps the
+        function, and so the docstring for ivy.softmax also applies to this method
         with minimal changes.
         Examples
         --------
@@ -135,8 +135,8 @@ class ArrayWithActivations(abc.ABC):
                 out: Optional[ivy.Array] = None
                 ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.abs. This method simply wraps the
-        function, and so the docstring for ivy.abs also applies to this method
+        ivy.Array instance method variant of ivy.softplus. This method simply wraps the
+        function, and so the docstring for ivy.softplus also applies to this method
         with minimal changes.
         Examples
         --------
