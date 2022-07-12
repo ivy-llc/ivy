@@ -745,10 +745,16 @@ def test_function(
                              container_flags, instance_method,\
                               fw, fn_name, x1=x1, x2=x2)
     """
+
     # convert single values to length 1 lists
     input_dtypes, as_variable_flags, native_array_flags, container_flags = as_lists(
         input_dtypes, as_variable_flags, native_array_flags, container_flags
     )
+
+    # skip if the data type is not supported by the backend framework
+    for dtype in input_dtypes:
+        if dtype in ivy.invalid_dtypes:
+            return
 
     # make all lists equal in length
     num_arrays = max(
