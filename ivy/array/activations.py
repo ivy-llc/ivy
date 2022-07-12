@@ -28,9 +28,9 @@ class ArrayWithActivations(abc.ABC):
         return ivy.relu(self._data, out=out)
 
     def leaky_relu(
-            self: ivy.Array,
-            alpha: Optional[float] = 0.2,
-            out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        alpha: Optional[float] = 0.2,
+        out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps
@@ -47,9 +47,9 @@ class ArrayWithActivations(abc.ABC):
         return ivy.leaky_relu(self._data, alpha, out=out)
 
     def gelu(
-            self: ivy.Array,
-            approximate: Optional[bool] = True,
-            out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        approximate: Optional[bool] = True,
+        out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.gelu. This method simply wraps the
@@ -66,8 +66,8 @@ class ArrayWithActivations(abc.ABC):
         return ivy.gelu(self._data, approximate, out=out)
 
     def tanh(
-            self: ivy.Array,
-            out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tanh. This method simply wraps the
@@ -84,8 +84,8 @@ class ArrayWithActivations(abc.ABC):
         return ivy.tanh(self._data, out=out)
 
     def sigmoid(
-            self: ivy.Array,
-            out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sigmoid. This method simply wraps the
@@ -102,9 +102,9 @@ class ArrayWithActivations(abc.ABC):
         return ivy.sigmoid(self._data, out=out)
 
     def softmax(self: ivy.Array,
-                axis: Optional[int] = None,
-                out: Optional[ivy.Array] = None
-                ) -> ivy.Array:
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softmax. This method simply wraps the
         function, and so the docstring for ivy.softmax also applies to this method
@@ -120,8 +120,8 @@ class ArrayWithActivations(abc.ABC):
         return ivy.softmax(self._data, axis, out=out)
 
     def softplus(self: ivy.Array,
-                 out: Optional[ivy.Array] = None
-                 ) -> ivy.Array:
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
         function, and so the docstring for ivy.softplus also applies to this method
