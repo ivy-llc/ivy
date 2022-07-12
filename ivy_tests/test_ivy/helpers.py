@@ -1238,8 +1238,8 @@ def array_values(
     allow_nan=False,
     allow_subnormal=False,
     allow_inf=False,
-    exclude_min=False,
-    exclude_max=False,
+    exclude_min=True,
+    exclude_max=True,
     allow_negative=True,
 ):
     size = 1
