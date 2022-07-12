@@ -737,12 +737,10 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([220., -0.959])
         }
 
+        With :code:`out` option
         >>> y = ivy.Container()
         >>> x = ivy.Container(a=ivy.array([4, -2]))
-        >>> x.expm1(out=y)
-        {
-            a: ivy.array([53.6, -0.865])
-        }
+        >>> _ = x.expm1(out=y)
         >>> print(y)
         {
             a: ivy.array([53.6, -0.865])
