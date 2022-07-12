@@ -105,7 +105,7 @@ def is_native_array(
     Returns
     -------
     ret
-        Boolean, whether or not x is an array.
+        Boolean, whether or not x is a native array.
 
     Examples
     --------
@@ -120,7 +120,7 @@ def is_native_array(
     >>> x = ivy.native_array([-1, 2, 7, -3])
     >>> ivy.is_native_array(x, False)
     True
-    
+
     >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
     >>> ivy.is_native_array(x, True)
     True
