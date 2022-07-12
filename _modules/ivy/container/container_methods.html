@@ -3297,7 +3297,7 @@
 <span class="sd">    &gt;&gt;&gt; norm_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
 <span class="sd">    &gt;&gt;&gt; new_std = ivy.Container({&#39;a&#39;: 1.25, &#39;b&#39;: 1.5})</span>
 <span class="sd">    &gt;&gt;&gt; offset = ivy.Container({&#39;a&#39;: 0.2, &#39;b&#39;: 0.3})</span>
-<span class="sd">    &gt;&gt;&gt; norm = self.static_layer_norm(arr, norm_idxs, new_std, offset)</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.Container.static_layer_norm(arr, norm_idxs, new_std, offset)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0.772, 1.03, 1.2]),</span>
