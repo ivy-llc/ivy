@@ -5050,4 +5050,3 @@ class ContainerBase(dict, abc.ABC):
         if not kcs:
             return 0
         return max([len(kc.split("/")) for kc in kcs])
-    

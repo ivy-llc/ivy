@@ -3,7 +3,6 @@ import numpy as np
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
 # local
-from ivy import inf
 from collections import namedtuple
 
 

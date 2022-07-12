@@ -34,7 +34,7 @@ class ContainerWithGradients(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False
-        ):
+    ):
         return self.static_is_variable(
             self,
             exclusive,
@@ -42,7 +42,7 @@ class ContainerWithGradients(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences
-            )
+        )
     
     @staticmethod
     def static_variable_data(
@@ -67,20 +67,20 @@ class ContainerWithGradients(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        ):
+    ):
         return self.static_variable_data(
             self,
             key_chains,
             to_apply,
             prune_unapplied,
             map_sequences
-            )
+        )
         
     @staticmethod
     def static_execute_with_gradients(
         func: Callable,
         xs: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        retain_grads: bool=False,
+        retain_grads: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -152,7 +152,6 @@ class ContainerWithGradients(ContainerBase):
             prune_unapplied,
             map_sequences,
         )
-
 
     @staticmethod
     def static_optimizer_update(

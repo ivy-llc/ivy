@@ -1,14 +1,12 @@
 # global
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
-
 # local
 import ivy
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
-    infer_dtype,
     handle_nestable,
 )
 
@@ -718,7 +716,7 @@ def matmul(
 @handle_nestable
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
-    ord: Optional[Union[int, float, Literal["inf", "-inf", "fro", "nuc"]]] = "fro",
+    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
     *,
     out: Optional[ivy.Array] = None,
@@ -1364,11 +1362,11 @@ def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal["inf", "-inf"]] = 2,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the vector norm of a vector (or batch of vectors) ``x``.
+    r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
 
     Parameters
     ----------
@@ -1433,7 +1431,7 @@ def vector_norm(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return current_backend(x).vector_norm(x, axis, keepdims, ord)
+    return current_backend(x).vector_norm(x, axis, keepdims, ord, out=out)
 
 
 # Extra #

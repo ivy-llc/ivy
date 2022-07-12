@@ -11,7 +11,6 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy.functional.backends.numpy
-from ivy.functional.ivy.creation import native_array
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.container import Container
 import ivy.functional.backends.numpy as ivy_np
@@ -74,7 +73,7 @@ def test_is_variable(
     exclusive
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x,dtype=dtype)
+    x = np.asarray(x, dtype=dtype)
     helpers.test_function(
         dtype,
         as_variable,
@@ -88,6 +87,7 @@ def test_is_variable(
         x=x,
         exclusive=exclusive
     )
+
 
 # variable data
 @given(
@@ -116,7 +116,7 @@ def test_variable_data(
     # user from the tf framework during the real execution because tf.constant 
     # do not support auto-diff.
     if fw == "tensorflow":
-        x = tf.Variable(tf.convert_to_tensor(x,dtype=dtype))
+        x = tf.Variable(tf.convert_to_tensor(x, dtype=dtype))
     helpers.test_function(
         dtype,
         as_variable,
@@ -129,6 +129,7 @@ def test_variable_data(
         "variable_data",
         x=x
     )
+
 
 # stop_gradient
 @given(
@@ -165,6 +166,7 @@ def test_stop_gradient(
         x=x,
         preserve_type=preserve_type
     )
+
 
 # execute_with_gradients
 @given(
@@ -236,6 +238,7 @@ def test_execute_with_gradients(
         for (g, g_true) in zip(dydxs.values(), true_dydxs.values()):
             assert np.allclose(ivy.to_numpy(g), g_true)
 
+
 # adam_step
 @given(
     dtype_and_dcdw=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
@@ -244,12 +247,12 @@ def test_execute_with_gradients(
     num_positional_args=helpers.num_positional_args(fn_name="adam_step"),
     container=helpers.list_of_length(st.booleans(), 3),
     instance_method=st.booleans(),
-    mw=st.floats(allow_infinity=False,allow_nan=False),
-    vw=st.floats(allow_infinity=False,allow_nan=False),
-    step=st.integers(min_value=1,max_value=1000).filter(lambda x: x > 0),
-    beta1=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
-    beta2=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
-    epsilon=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+    mw=st.floats(allow_infinity=False, allow_nan=False),
+    vw=st.floats(allow_infinity=False, allow_nan=False),
+    step=st.integers(min_value=1, max_value=1000).filter(lambda x: x > 0),
+    beta1=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
+    beta2=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
+    epsilon=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0)
 )
 def test_adam_step(
     dtype_and_dcdw,
@@ -289,7 +292,8 @@ def test_adam_step(
         beta2=beta2,
         epsilon=epsilon,
     )
-    
+
+
 # adam_step ground truth tests
 @given(
     dcdw_mw_vw_step=st.sampled_from(
@@ -311,7 +315,7 @@ def test_adam_step_ground_truth(dcdw_mw_vw_step, dtype, tensor_fn, device, call)
     w_true_new = w_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     mw = dcdw
     vw = dcdw.map(lambda x, _: x**2)
-    w_new,mw_new,vw_new = ivy.adam_step(dcdw, mw, vw, step)
+    w_new, mw_new, vw_new = ivy.adam_step(dcdw, mw, vw, step)
     # type test
     assert isinstance(w_new, dict)
     assert isinstance(mw_new, dict)
@@ -328,7 +332,8 @@ def test_adam_step_ground_truth(dcdw_mw_vw_step, dtype, tensor_fn, device, call)
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
-    
+
+
 # optimizer_update
 @given(
     dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
@@ -338,7 +343,7 @@ def test_adam_step_ground_truth(dcdw_mw_vw_step, dtype, tensor_fn, device, call)
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
     effective_grad=st.floats(),
-    lr=st.floats(min_value=0.0,max_value=1.0, allow_nan=False),
+    lr=st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
     inplace=st.booleans(),
     stop_gradients=st.booleans()
 )
@@ -375,6 +380,7 @@ def test_optimizer_update(
         stop_gradients=stop_gradients,
     )
 
+
 # optimizer_update ground truth tests
 @pytest.mark.parametrize(
     "ws_n_grads_n_lr_n_wsnew",
@@ -395,7 +401,7 @@ def test_optimizer_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
     effect_grad = effect_grad_raw.map(lambda x, _: ivy.array(x))
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    ws_new= ivy.optimizer_update(ws, effect_grad, lr)
+    ws_new = ivy.optimizer_update(ws, effect_grad, lr)
     # type test
     assert isinstance(ws_new, dict)
     # cardinality test
@@ -408,7 +414,8 @@ def test_optimizer_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
-    
+
+
 # gradient_descent_update
 @given(
     dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
@@ -418,7 +425,7 @@ def test_optimizer_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
     dcdw=st.floats(),
-    lr=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
+    lr=st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
     inplace=st.booleans(),
     stop_gradients=st.booleans()
 )
@@ -436,8 +443,8 @@ def test_gradient_descent_update(
     stop_gradients
 ):
     dtype, w = dtype_and_w
-    w = np.asarray(w,dtype=dtype)
-    dcdw = np.asarray(dcdw,dtype=dtype)
+    w = np.asarray(w, dtype=dtype)
+    dcdw = np.asarray(dcdw, dtype=dtype)
     helpers.test_function(
         dtype,
         as_variable,
@@ -454,6 +461,7 @@ def test_gradient_descent_update(
         inplace=inplace,
         stop_gradients=stop_gradients,
     )
+
 
 # layerwise_gradient_descent_update
 @given(
@@ -502,9 +510,9 @@ def test_layerwise_gradient_descent_update(
     num_positional_args=helpers.num_positional_args(fn_name="lars_update"),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
-    dcdw=st.floats(allow_infinity=False,allow_nan=False),
-    lr=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
-    decay_lambda=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
+    dcdw=st.floats(allow_infinity=False, allow_nan=False),
+    lr=st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
+    decay_lambda=st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
     inplace=st.booleans(),
     stop_gradients=st.booleans()
 )
@@ -523,8 +531,8 @@ def test_lars_update(
     stop_gradients
 ):
     dtype, w = dtype_and_w
-    w = np.asarray(w,dtype=dtype)
-    dcdw = np.asarray(dcdw,dtype=dtype)
+    w = np.asarray(w, dtype=dtype)
+    dcdw = np.asarray(dcdw, dtype=dtype)
     # we convert np array to torch tensor because lars update needs to use
     # vector_norm. when the fw is set to torch, the arguments have to be tensor when
     # they are passed into torch backend linalg_vector_norm function
@@ -548,7 +556,8 @@ def test_lars_update(
         inplace=inplace,
         stop_gradients=stop_gradients,
     )
-    
+
+
 # lars_update ground truth test
 @pytest.mark.parametrize(
     "ws_n_grads_n_lr_n_wsnew",
@@ -583,8 +592,9 @@ def test_lars_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
-    
-#adam_update
+
+
+# adam_update
 @given(
     dtype_and_w=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
@@ -592,14 +602,14 @@ def test_lars_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev
     num_positional_args=helpers.num_positional_args(fn_name="adam_update"),
     container=helpers.list_of_length(st.booleans(), 4),
     instance_method=st.booleans(),
-    dcdw=st.floats(allow_infinity=False,allow_nan=False),
-    lr=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
-    mw_tm1=st.floats(allow_infinity=False,allow_nan=False),
-    vw_tm1=st.floats(allow_infinity=False,allow_nan=False),
-    step=st.floats(allow_infinity=False,allow_nan=False),
-    beta1=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
-    beta2=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
-    epsilon=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
+    dcdw=st.floats(allow_infinity=False, allow_nan=False),
+    lr=st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
+    mw_tm1=st.floats(allow_infinity=False, allow_nan=False),
+    vw_tm1=st.floats(allow_infinity=False, allow_nan=False),
+    step=st.floats(allow_infinity=False, allow_nan=False),
+    beta1=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
+    beta2=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
+    epsilon=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
     inplace=st.booleans(),
     stop_gradients=st.booleans()
 )
@@ -623,11 +633,11 @@ def test_adam_update(
     stop_gradients
 ):
     dtype, w = dtype_and_w
-    w = np.asarray(w,dtype=dtype)
-    dcdw = np.asarray(dcdw,dtype=dtype)
-    mw_tm1 = np.asarray(mw_tm1,dtype=dtype)
-    vw_tm1 = np.asarray(vw_tm1,dtype=dtype)
-    step = np.asarray(step,dtype=dtype)
+    w = np.asarray(w, dtype=dtype)
+    dcdw = np.asarray(dcdw, dtype=dtype)
+    mw_tm1 = np.asarray(mw_tm1, dtype=dtype)
+    vw_tm1 = np.asarray(vw_tm1, dtype=dtype)
+    step = np.asarray(step, dtype=dtype)
     helpers.test_function(
         dtype,
         as_variable,
@@ -650,6 +660,7 @@ def test_adam_update(
         inplace=inplace,
         stop_gradients=stop_gradients
     )
+
 
 # adam_update ground truth tests
 @given(
@@ -764,7 +775,7 @@ def test_lamb_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev
     ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     mw = dcdw
     vw = dcdw.map(lambda x, _: x**2)
-    ws_new,mw_new,vw_new = ivy.lamb_update(ws, dcdw, lr, mw, vw, ivy.array(1))
+    ws_new, mw_new, vw_new = ivy.lamb_update(ws, dcdw, lr, mw, vw, ivy.array(1))
     # type test
     assert isinstance(ws_new, dict)
     assert isinstance(mw_new, dict)
@@ -784,6 +795,7 @@ def test_lamb_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev
         # pytorch scripting does not support internal function definitions
         return
 
+
 @given(
     dtype=st.sampled_from(ivy_np.valid_float_dtypes[1:]),
     as_variable=st.booleans(),
@@ -791,17 +803,17 @@ def test_lamb_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev
     num_positional_args=helpers.num_positional_args(fn_name="lamb_update"),
     container=helpers.list_of_length(st.booleans(), 5),
     instance_method=st.booleans(),
-    w=st.floats(allow_infinity=False,allow_nan=False).filter(lambda x: x != 0),
-    dcdw=st.floats(allow_infinity=False,allow_nan=False),
-    lr=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
-    mw_tm1=st.floats(allow_infinity=False,allow_nan=False),
-    vw_tm1=st.floats(allow_infinity=False,allow_nan=False),
-    step=st.integers(min_value=1,max_value=1000).filter(lambda x: x > 0),
-    beta1=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
-    beta2=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
-    epsilon=st.floats(min_value=0.0,max_value=1.0,allow_nan=False).filter(lambda x: x != 0),
-    max_trust_ratio=st.floats(allow_infinity=False,allow_nan=False).filter(lambda x: x > 0),
-    decay_lambda=st.floats(min_value=0.0,max_value=1.0,allow_nan=False),
+    w=st.floats(allow_infinity=False, allow_nan=False).filter(lambda x: x != 0),
+    dcdw=st.floats(allow_infinity=False, allow_nan=False),
+    lr=st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
+    mw_tm1=st.floats(allow_infinity=False, allow_nan=False),
+    vw_tm1=st.floats(allow_infinity=False, allow_nan=False),
+    step=st.integers(min_value=1, max_value=1000).filter(lambda x: x > 0),
+    beta1=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
+    beta2=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
+    epsilon=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
+    max_trust_ratio=st.floats(allow_infinity=False, allow_nan=False).filter(lambda x: x > 0),
+    decay_lambda=st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
     inplace=st.booleans(),
     stop_gradients=st.booleans()
 )
@@ -827,12 +839,12 @@ def test_lamb_update(
     inplace,
     stop_gradients
 ):
-    w = np.asarray(w,dtype=dtype)
-    dcdw = np.asarray(dcdw,dtype=dtype)
-    lr = np.asarray(lr,dtype=dtype)
-    mw_tm1 = np.asarray(mw_tm1,dtype=dtype)
-    vw_tm1 = np.asarray(vw_tm1,dtype=dtype)
-    step = np.asarray(step,dtype=dtype)
+    w = np.asarray(w, dtype=dtype)
+    dcdw = np.asarray(dcdw, dtype=dtype)
+    lr = np.asarray(lr, dtype=dtype)
+    mw_tm1 = np.asarray(mw_tm1, dtype=dtype)
+    vw_tm1 = np.asarray(vw_tm1, dtype=dtype)
+    step = np.asarray(step, dtype=dtype)
     # we convert np array to torch tensor because lars update needs to use
     # vector_norm. when the fw is set to torch, the arguments have to be tensor when
     # they are passed into torch backend linalg_vector_norm function
