@@ -71,6 +71,56 @@ def prod(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    """Calculates the product of input array x elements.
+
+    x
+        input array. Should have a numeric data type.
+    axis
+        axis or axes along which products must be computed. By default, the product must
+        be computed over the entire array. If a tuple of integers, products must be
+        computed over multiple axes. Default: None.
+    keepdims
+        bool, if True, the reduced axes (dimensions) must be included in the result as
+        singleton dimensions, and, accordingly, the result must be compatible with the
+        input array (see Broadcasting). Otherwise, if False, the reduced axes
+        (dimensions) must not be included in the result. Default: False.
+    dtype
+        data type of the returned array. If None,
+        if the default data type corresponding to the data type “kind” (integer or
+        floating-point) of x has a smaller range of values than the data type of x
+        (e.g., x has data type int64 and the default data type is int32, or x has data
+        type uint64 and the default data type is int64), the returned array must have
+        the same data type as x. if x has a floating-point data type, the returned array
+        must have the default floating-point data type. if x has a signed integer data
+        type (e.g., int16), the returned array must have the default integer data type.
+        if x has an unsigned integer data type (e.g., uint16), the returned array must
+        have an unsigned integer data type having the same number of bits as the default
+        integer data type (e.g., if the default integer data type is int32, the returned
+        array must have a uint32 data type). If the data type (either specified or
+        resolved) differs from the data type of x, the input array should be cast to the
+        specified data type before computing the product. Default: None.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        array,  if the product was computed over the entire array, a zero-dimensional
+        array containing the product; otherwise, a non-zero-dimensional array containing
+        the products. The returned array must have a data type as described by the dtype
+        parameter above.
+
+    >>> x = torch.tensor([1, 2, 3])
+    >>> z = torch.prod(x)
+    >>> print(z)
+    ivy.array(6)
+
+    >>> x = torch.tensor([1, 0, 3])
+    >>> z = torch.prod(x)
+    >>> print(z)
+    ivy.array(0)
+
+    """
     if dtype is None:
         if x.dtype in [torch.int8, torch.int16]:
             dtype = torch.int32
@@ -190,7 +240,24 @@ def var(
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
-    return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False, out=out)
+    if isinstance(axis, int):
+        return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False, out=out)
+    dims = len(x.shape)
+    axis = tuple([i % dims for i in axis])
+    for i, a in enumerate(axis):
+        if i == len(axis) - 1:
+            x = torch.var(
+                x,
+                dim=a if keepdims else a - i,
+                keepdim=keepdims,
+                unbiased=False,
+                out=out,
+            )
+        else:
+            x = torch.var(
+                x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False
+            )
+    return x
 
 
 # Extra #
