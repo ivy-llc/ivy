@@ -163,6 +163,7 @@ def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:
 
 def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
