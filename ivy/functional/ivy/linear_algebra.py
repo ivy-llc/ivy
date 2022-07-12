@@ -1056,7 +1056,7 @@ def svdvals(
     >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],\
                               [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
     >>> print(x.shape)
-    (4, 3)
+    torch.Size([4, 3])
 
     >>> S = ivy.svdvals(x)
     >>> print(S)
