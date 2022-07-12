@@ -1,4 +1,4 @@
-name: test-submodule
+name: test-losses
 on:
   push:
   pull_request:
