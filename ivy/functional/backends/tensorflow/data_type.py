@@ -169,6 +169,24 @@ def result_type(
 # ------#
 
 
+def as_ivy_dtype(dtype_in: Union[tf.DType, str]) -> ivy.Dtype:
+    if isinstance(dtype_in, str):
+        return ivy.Dtype(dtype_in)
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
+
+
+def as_native_dtype(dtype_in: Union[tf.DType, str]) -> tf.DType:
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return native_dtype_dict[ivy.Dtype(dtype_in)]
+
+
+def dtype(x: Union[tf.Tensor, tf.Variable], as_native: bool = False) -> ivy.Dtype:
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
+
+
 def dtype_bits(dtype_in: Union[tf.DType, str]) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
@@ -180,21 +198,3 @@ def dtype_bits(dtype_in: Union[tf.DType, str]) -> int:
         .replace("bfloat", "")
         .replace("float", "")
     )
-
-
-def dtype(x: Union[tf.Tensor, tf.Variable], as_native: bool = False) -> ivy.Dtype:
-    if as_native:
-        return ivy.to_native(x).dtype
-    return as_ivy_dtype(x.dtype)
-
-
-def as_ivy_dtype(dtype_in: Union[tf.DType, str]) -> ivy.Dtype:
-    if isinstance(dtype_in, str):
-        return ivy.Dtype(dtype_in)
-    return ivy.Dtype(ivy_dtype_dict[dtype_in])
-
-
-def as_native_dtype(dtype_in: Union[tf.DType, str]) -> tf.DType:
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return native_dtype_dict[ivy.Dtype(dtype_in)]
