@@ -447,14 +447,17 @@ def zeros_like(
         >>> x = ivy.array([2, 3, 8, 2, 1])
         >>> y = x.zeros_like()
         >>> print(y)
-        ivy.array([0, 0, 0, 0, 0, 0])
+        ivy.array([0, 0, 0, 0, 0])
      
     With 'ivy.Container' input:
 
-        >>> x = ivy. Container(a=ivy.array(3., 8.), b=ivy.array([2., 2.]))
+        >>> x = ivy. Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
         >>> y = x.zeros_like()
         >>> print(y)
-        ivy.array([0., 0., 0., 0., 0., 0.])
+        {
+            a: ivy.array([0., 0.]),
+            b: ivy.array([0., 0.])
+        }
     """
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
