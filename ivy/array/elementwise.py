@@ -329,6 +329,31 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.round(self._data, out=out)
 
     def sign(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.sign. This method simply wraps the
+        function, and so the docstring for ivy.sign also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([5.7, -7.1, 0, -0, 6.8])
+        >>> y = x.sign()
+        >>> print(y)
+        ivy.array([ 1., -1.,  0.,  0.,  1.])
+
+        >>> x = ivy.array([-94.2, 256.0, 0.0001, -0.0001, 36.6])
+        >>> y = x.sign()
+        >>> print(y)
+        ivy.array([-1.,  1.,  1., -1.,  1.])
+
+        >>> x = ivy.array([[ -1., -67.,  0.,  15.5,  1.], [3, -45, 24.7, -678.5, 32.8]])
+        >>> y = x.sign()
+        >>> print(y)
+        ivy.array([[-1., -1.,  0.,  1.,  1.],
+        [ 1., -1.,  1., -1.,  1.]])
+        """
         return ivy.sign(self._data, out=out)
 
     def sin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
