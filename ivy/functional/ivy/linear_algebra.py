@@ -633,6 +633,8 @@ def svdvals(
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     offset: int = 0,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the sum along the specified diagonals of a matrix (or a stack of
     matrices) ``x``.
@@ -649,6 +651,9 @@ def trace(
         -   ``offset < 0``: off-diagonal below the main diagonal.
 
         Default: ``0``.
+    out
+        optional output, for writing the result to. It must have a shape that the inputs
+        broadcast to.
 
     Returns
     -------
@@ -664,17 +669,28 @@ def trace(
 
          The returned array must have the same data type as ``x``.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.trace.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
     Functional Examples
     --------
 
     With :code:`ivy.Array` inputs:
-
-    1. offset = 0: (default) trace of an array
     
     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
     >>> y = ivy.trace(x)
     >>> print(y)
     5.0
+
+    >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
+    >>> y = ivy.trace(x, offset=1)
+    >>> print(y)
+    2.0
 
     With :code:`ivy.NativeArray` inputs:
 
@@ -683,27 +699,35 @@ def trace(
     >>> print(y)
     ivy.array([ 6., 20.])
 
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[5., 0., 0.], [1., 2., 3.]]), b=ivy.array([[0., 0., 2.], [1., 2., 3.]]))
+    >>> print(ivy.trace(x))
+    {
+        a: 7.0,
+        b: 2.0
+    }
+
     Instance Method Examples
     ------------------------
 
     With :code:`ivy.Array` instance inputs:
 
-    2. offset = 1: changing the off-diagonal
-
     >>> x = ivy.array([[1., 0.], [0., 1.], [1., 1.]]) 
-    >>> x.trace(offset=1)
+    >>> print(x.trace(offset=1))
     0.0
 
-    With :code:`ivy.NativeArray` instance inputs:
+    With :code:`ivy.Container` instance inputs:
 
-    3. offset = -1: changing the off-diagonal
-
-    >>> x = ivy.native_array([[1., 2., 3.], [4., 5., 6.]])
-    >>> x.trace(offset=-1)
-    4.0
+    >>> x = ivy.Container(a=ivy.array([[5., 0., 0.], [1., 2., 3.]]), b=ivy.array([[1., 0., 2.], [1., 5., 3.]]))
+    >>> print(x.trace(offset=-1))
+    {
+        a: 1.0,
+        b: 1.0
+    }
 
     """
-    return _cur_backend(x).trace(x, offset)
+    return _cur_backend(x).trace(x, offset, out=out)
 
 
 @to_native_arrays_and_back
