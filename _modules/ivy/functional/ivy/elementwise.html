@@ -3338,6 +3338,51 @@
 <span class="sd">        an array containing the evaluated result for each element in ``x``. The returned</span>
 <span class="sd">        array must have the same data type as ``x``.</span>
 
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([8.3, -0, 6.8, 0.07])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.sign(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([1., 0., 1., 1.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.78, -4., -6.9, 0],\</span>
+<span class="sd">                       [-.4, 0.5, 8, -0.01]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.sign(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[ 1., -1., -1.,  0.],</span>
+<span class="sd">               [-1.,  1.,  1., -1.]])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([8.95, -124.6, -0.001, 0, 1.5, 7.1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.sign(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([ 1., -1., -1.,  0.,  1.,  1.])</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., -0.]),\</span>
+<span class="sd">                          b=ivy.array([1.46, 5.9, -0.0]),\</span>
+<span class="sd">                          c=ivy.array([-8.23, -4.9, -2.6, 7.4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.sign(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0., 0.]),</span>
+<span class="sd">        b: ivy.array([1., 1., 0.]),</span>
+<span class="sd">        c: ivy.array([-1., -1., -1., 1.])</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
