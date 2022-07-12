@@ -25,8 +25,8 @@ class ContainerWithNorms(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.roll. This method simply wraps the
-        function, and so the docstring for ivy.roll also applies to this method
+        ivy.Container static method variant of ivy.layer_norm. This method simply wraps the
+        function, and so the docstring for ivy.layer_norm also applies to this method
         with minimal changes.
 
         Examples
@@ -125,7 +125,7 @@ class ContainerWithNorms(ContainerBase):
         }
 
         """
-        return ivy.Container.static_layer_norm(
+        return self.static_layer_norm(
             self,
             normalized_idxs,
             epsilon,
