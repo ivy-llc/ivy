@@ -90,8 +90,8 @@ class ContainerWithNorms(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.roll. This method simply wraps the
-        function, and so the docstring for ivy.roll also applies to this method
+        ivy.Container instance method variant of ivy.layer_norm. This method simply wraps the
+        function, and so the docstring for ivy.layer_norm also applies to this method
         with minimal changes.
 
         Examples
