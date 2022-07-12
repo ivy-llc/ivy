@@ -11,6 +11,7 @@ from ivy import (
     default_dtype,
     as_native_dev,
     default_device,
+    shape_to_tuple,
 )
 from ivy.functional.backends.torch.device import dev
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
@@ -65,7 +66,9 @@ def arange(
             return torch.arange(start, stop, step=step, device=device, out=out)
     else:
         dtype = as_native_dtype(default_dtype(dtype))
-        return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
+        return torch.arange(
+            start, stop, step=step, dtype=dtype, device=device, out=out
+        )
 
 
 def asarray(
@@ -171,11 +174,8 @@ def full(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
-
-    if isinstance(shape, int):
-        shape = (shape,)
     return torch.full(
-        shape,
+        shape_to_tuple(shape),
         fill_value,
         dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
         device=device,
