@@ -482,11 +482,12 @@ def test_full_like(
 # meshgrid
 
 
-# allows for arrays of all 1d and same dtype
+# ToDo: create arrays which are not only 1-d
 array_shape = st.shared(
-    st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=1)
+    st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=1),
+    key="array_shape",
 )
-dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes))
+dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="dtype")
 
 
 @given(
@@ -510,7 +511,7 @@ def test_meshgrid(
     num_positional_args = len(arrays)
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=[dtype for _ in range(num_positional_args)],
         as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
