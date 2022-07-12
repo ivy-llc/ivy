@@ -36,7 +36,7 @@ class ContainerWithNorms(ContainerBase):
         >>> arr = ivy.Container({'a': ivy.array([7., 10., 12.]), \
                                  'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
         >>> norm_idxs = [0]
-        >>> norm = ivy.Container.static_layer_norm(arr, norm_idxs, 1.25, 0.3)
+        >>> norm = self.static_layer_norm(arr, norm_idxs, 1.25, 0.3)
         >>> print(norm)
         {
             a: ivy.array([0.658, 1.04, 1.3]),
@@ -51,7 +51,7 @@ class ContainerWithNorms(ContainerBase):
         >>> norm_idxs = ivy.Container({'a': [0], 'b': [1]})
         >>> new_std = ivy.Container({'a': 1.25, 'b': 1.5})
         >>> offset = ivy.Container({'a': 0.2, 'b': 0.3})
-        >>> norm = ivy.Container.static_layer_norm(arr, norm_idxs, new_std, offset)
+        >>> norm = self.static_layer_norm(arr, norm_idxs, new_std, offset)
         >>> print(norm)
         {
             a: ivy.array([0.772, 1.03, 1.2]),
