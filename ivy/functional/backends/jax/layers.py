@@ -64,11 +64,11 @@ def conv3d_transpose(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: str,
-    data_format: str = "NDHWC",
-    dilations: int = 1,
+    padding: Union[str, Sequence[Tuple[int, int]]],
+    dilations: Optional[Sequence[int]],
+    data_format: str = "NDHWC"
 ) -> JaxArray:
     return JaxArray.nn.conv3d_transpose(
-        x, filters, strides, padding, data_format, dilations
-    )
+        x, filters, strides, padding, None, dilations, (data_format, "WIO", data_format)
+
     
