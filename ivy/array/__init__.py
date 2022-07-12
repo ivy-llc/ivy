@@ -119,7 +119,7 @@ class Array(
 
     @property
     def shape(self):
-        return tuple(self._shape)
+        return ivy.Shape(self._shape)
 
     @property
     def ndim(self):
