@@ -139,7 +139,6 @@ def is_variable(
     x: Union[ivy.Array, ivy.NativeArray], 
     exclusive: bool = False
 ) -> bool:
-
     """Determines whether the input is a variable or not.
 
     Parameters
@@ -263,7 +262,6 @@ def adam_step(
     beta2: float = 0.999,
     epsilon: float = 1e-7
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
-
     """Compute adam step delta, given the derivatives of some cost c with respect to ws,
     using ADAM update. `[reference]
 
@@ -621,7 +619,6 @@ def lamb_update(
     inplace: Optional[bool] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
-
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying LAMB method.
 
