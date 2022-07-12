@@ -21,8 +21,8 @@ class ArrayWithNorms(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.layer_norm. This method simply wraps 
-        the function, and so the docstring for ivy.layer_norm also applies to this method
-        with minimal changes.
+        the function, and so the docstring for ivy.layer_norm also applies to this
+        method with minimal changes.
 
         Examples
         --------
