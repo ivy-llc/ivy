@@ -2572,7 +2572,7 @@ def unset_shape_array_mode() -> None:
     shape_array_mode = False
 
 
-def shape_array_mode() -> bool:
+def get_shape_array_mode() -> bool:
     global shape_array_mode
     return shape_array_mode
 
