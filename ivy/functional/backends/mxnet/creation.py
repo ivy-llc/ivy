@@ -14,7 +14,11 @@ from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 # -------------------#
 
 
-def _linspace(start, stop, num, cont):
+def _linspace(
+    start,
+    stop,
+    num,
+    cont):
     if num == 1:
         return start
     start = mx.nd.array(start).reshape((1,)).astype("float32")
@@ -29,7 +33,13 @@ def _linspace(start, stop, num, cont):
     return ret
 
 
-def arange(stop, start=0, step=1, dtype=None, device=None):
+def arange(
+    stop: Optional[Number] = None,
+    start: Number = 0,
+    step: Number = 1,
+    dtype: Optional[type] = None,
+    device: mx.context.Context = None
+) -> mx.nd.NDArray:
     cont = _mxnet_init_context(default_device(device))
     stop = stop if isinstance(stop, Number) else stop.asscalar()
     start = start if isinstance(start, Number) else start.asscalar()
@@ -38,11 +48,11 @@ def arange(stop, start=0, step=1, dtype=None, device=None):
 
 
 def asarray(
-    object_in,
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    object_in: Union[mx.nd.NDArray, List[Number], Tuple[Number]],
+    dtype: Optional[type] = None,
+    device: mx.context.Context = None,
     copy: Optional[bool] = None,
-):
+) -> mx.nd.NDArray:
     # mxnet don't have asarray implementation, haven't properly tested
     cont = _mxnet_init_context(default_device(device))
     if copy is None:
@@ -86,11 +96,18 @@ def eye(
 
 
 # noinspection PyUnresolvedReferences
-def from_dlpack(x):
+def from_dlpack(
+    x: mx.nd.NDArray,
+) -> mx.nd.NDArray:
     return mx.nd.from_dlpack(x)
 
 
-def full(shape, fill_value, dtype=None, device=None):
+def full(
+    shape: Union[int, Tuple[int, ...]],
+    fill_value: float,
+    dtype: Optional[type] = None,
+    device: Optional[mx.context.Context] = None
+) -> mx.nd.NDArray:
     shape = ivy.shape_to_tuple(shape)
     cont = _mxnet_init_context(default_device(device))
     if len(shape) == 0 or 0 in shape:
@@ -107,7 +124,13 @@ def full(shape, fill_value, dtype=None, device=None):
     )
 
 
-def linspace(start, stop, num, axis=None, device=None):
+def linspace(
+    start: Union[mx.nd.NDArray, float],
+    stop: Union[mx.nd.NDArray, float],
+    num: int,
+    axis: Optional[int] = None,
+    device: mx.context.Context=None
+) -> mx.nd.NDArray:
     cont = _mxnet_init_context(default_device(device))
     num = num.asnumpy()[0] if isinstance(num, mx.nd.NDArray) else num
     start_is_array = isinstance(start, mx.nd.NDArray)
@@ -134,7 +157,10 @@ def linspace(start, stop, num, axis=None, device=None):
     return res
 
 
-def meshgrid(*xs: mx.nd.NDArray, indexing: Optional[str] = "xy") -> List[mx.nd.NDArray]:
+def meshgrid(
+    *xs: mx.nd.NDArray,
+    indexing: Optional[str] = "xy"
+) -> List[mx.nd.NDArray]:
     # ToDo: implement this without reliance on NumPy backend
     xs_np = [x.as_np_ndarray() for x in xs]
     return [item.as_nd_ndarray() for item in mx.np.meshgrid(*xs_np, indexing=indexing)]
@@ -163,7 +189,10 @@ def ones_like(
     return mx_ones if dtype is None else mx_ones.astype(dtype)
 
 
-def tril(x: mx.nd.NDArray, k: int = 0) -> mx.nd.NDArray:
+def tril(
+    x: mx.nd.NDArray,
+    k: int = 0
+) -> mx.nd.NDArray:
     return mx.np.tril(x, k)
 
 
@@ -179,7 +208,11 @@ def zeros(
     return mx.nd.zeros(shape, ctx=cont).astype(dtype)
 
 
-def zeros_like(x, dtype=None, device=None):
+def zeros_like(
+    x: mx.nd.NDArray,
+    dtype: Optional[type] = None,
+    device: Optional[mx.context.Context] = None
+) -> mx.nd.NDArray:
     if x.shape == ():
         return mx.nd.array(0.0, ctx=_mxnet_init_context(default_device(device)))
     mx_zeros = mx.nd.zeros_like(x, ctx=_mxnet_init_context(default_device(device)))
@@ -193,6 +226,14 @@ def zeros_like(x, dtype=None, device=None):
 array = asarray
 
 
-def logspace(start, stop, num, base=10.0, axis=None, device=None):
+def logspace(
+    start: Union[mx.nd.NDArray, int],
+    stop: Union[mx.nd.NDArray, int],
+    num: int,
+    base: float = 10.0,
+    axis: int = None,
+    *,
+    device: mx.context.Context
+) -> mx.nd.NDArray:
     power_seq = linspace(start, stop, num, axis, default_device(device))
     return base**power_seq
