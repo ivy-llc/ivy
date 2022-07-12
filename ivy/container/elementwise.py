@@ -48,7 +48,7 @@ class ContainerWithElementwise(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     def abs(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -78,23 +78,18 @@ class ContainerWithElementwise(ContainerBase):
 
         """
         return self.static_abs(
-            self, 
-            key_chains, 
-            to_apply, 
-            prune_unapplied, 
-            map_sequences, 
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_acosh(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -117,23 +112,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_acosh(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_acos(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -156,12 +146,7 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_acos(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
@@ -257,13 +242,13 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_asin(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -286,12 +271,7 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_asin(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
@@ -364,13 +344,13 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_atan(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -380,7 +360,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     def atan(
@@ -393,24 +373,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_atan(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_atan2(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -435,24 +410,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_atan2(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_atanh(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -475,24 +444,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_atanh(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_bitwise_and(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -517,25 +481,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_bitwise_and(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_bitwise_left_shift(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -560,24 +518,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_bitwise_left_shift(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_bitwise_invert(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -600,24 +552,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_bitwise_invert(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_bitwise_or(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -642,25 +589,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_bitwise_or(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_bitwise_right_shift(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -685,25 +626,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_bitwise_right_shift(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_bitwise_xor(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -728,24 +663,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_bitwise_xor(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_ceil(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -796,13 +725,13 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_cos(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -825,23 +754,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_cos(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_cosh(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -864,12 +788,7 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_cosh(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
@@ -910,14 +829,14 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_equal(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -942,24 +861,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_equal(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_exp(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -982,23 +895,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_exp(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_expm1(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1021,23 +929,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_expm1(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_floor(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1088,14 +991,14 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_floor_divide(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1120,25 +1023,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_floor_divide(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_greater(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1163,25 +1060,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_greater(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_greater_equal(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1206,24 +1097,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_greater_equal(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_isfinite(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1246,23 +1131,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_isfinite(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_isinf(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1285,23 +1165,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_isinf(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_isnan(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1324,24 +1199,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_isnan(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_less(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1366,25 +1236,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_less(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_less_equal(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1409,24 +1273,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_atan2(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_log(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1449,23 +1307,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_log(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_log1p(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1488,23 +1341,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_log1p(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_log2(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1527,23 +1375,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_log2(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_log10(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1566,24 +1409,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_log10(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_logaddexp(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1608,25 +1446,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_logaddexp(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_logical_and(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1651,24 +1483,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_logical_and(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_logical_not(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1691,24 +1517,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_logical_not(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_logical_or(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1733,25 +1554,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_logical_or(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_logical_xor(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1776,13 +1591,7 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_logical_xor(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
@@ -1823,13 +1632,13 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_negative(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1852,24 +1661,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_negative(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_not_equal(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1894,24 +1698,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_not_equal(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_positive(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1934,24 +1732,19 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_positive(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_pow(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -1997,14 +1790,14 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_remainder(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -2029,24 +1822,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_remainder(
-            self,
-            x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_round(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -2069,25 +1856,37 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_round(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_sign(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sign. This method simply wraps the
+        function, and so the docstring for ivy.sign also applies to this method
+        with minimal changes.
 
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0, -1., 6.6]),\
+                            b=ivy.array([-14.2, 8.3, 0.1, -0]))
+        >>> y = ivy.Container.static_sign(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., -1., 1.]),
+            b: ivy.array([-1., 1., 1., 0.])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "sign",
             x,
@@ -2107,34 +1906,28 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sign. This method simply wraps the
+        function, and so the docstring for ivy.sign also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
+                              b=ivy.array([1.5, -0.3, 0]),\
+                              c=ivy.array([-4.7, -5.4, 7.5]))
+        >>> y = x.sign()
+        >>> print(y)
+        {
+            a: ivy.array([-1., 1., -1.]),
+            b: ivy.array([1., -1., 0.]),
+            c: ivy.array([-1., -1., 1.])
+        }
+        """
         return self.static_sign(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
-        )
-
-    @staticmethod
-    def static_sin(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-
-        return ContainerBase.multi_map_in_static_method(
-            "sin",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def sin(
@@ -2147,23 +1940,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_sin(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_sinh(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -2186,23 +1974,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_sinh(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_square(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -2225,23 +2008,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_square(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_sqrt(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -2264,12 +2042,7 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_sqrt(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
@@ -2375,13 +2148,13 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_tanh(
-            x: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.tanh. This method simply wraps the
@@ -2441,13 +2214,13 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_trunc(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -2470,23 +2243,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_trunc(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_erf(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
         return ContainerBase.multi_map_in_static_method(
@@ -2509,10 +2277,5 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_erf(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
