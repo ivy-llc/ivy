@@ -3350,12 +3350,12 @@
 <span class="sd">    &gt;&gt;&gt; norm_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
 <span class="sd">    &gt;&gt;&gt; new_std = ivy.Container({&#39;a&#39;: 1.25, &#39;b&#39;: 1.5})</span>
 <span class="sd">    &gt;&gt;&gt; offset = ivy.Container({&#39;a&#39;: 0.2, &#39;b&#39;: 0.3})</span>
-<span class="sd">    &gt;&gt;&gt; norm = arr.layer_norm(arr, norm_idxs, new_std, offset)</span>
+<span class="sd">    &gt;&gt;&gt; norm = arr.layer_norm(arr, norm_idxs, new_std=new_std, offset=offset)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0.772, 1.03, 1.2]),</span>
-<span class="sd">        b: ivy.array([[0.796, 1., 1.2], </span>
-<span class="sd">                      [0.796, 1., 1.2]])</span>
+<span class="sd">        a: ivy.array([-1.42, 0.403, 1.62]),</span>
+<span class="sd">        b: ivy.array([[-1.54, 0.3, 2.14], </span>
+<span class="sd">                      [-1.54, 0.3, 2.14]])</span>
 <span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
