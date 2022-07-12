@@ -3,9 +3,9 @@ optimizer_update
 
 .. autofunction:: ivy.functional.ivy.gradients.optimizer_update
 
-.. autofunction:: ivy.container.container_methods.static_optimizer_update
-
 .. autofunction:: ivy.container.container_methods.optimizer_update
+
+.. autofunction:: ivy.container.container_methods.static_optimizer_update
 |
 | **Supported Frameworks:**
 

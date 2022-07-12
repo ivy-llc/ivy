@@ -13,12 +13,12 @@ Framework classes
    :maxdepth: -1
    :caption: Framework Classes
 
-   stateful/converters.rst
-   stateful/activations.rst
+   stateful/initializers.rst
    stateful/layers.rst
-   stateful/optimizers.rst
    stateful/sequential.rst
    stateful/norms.rst
-   stateful/initializers.rst
+   stateful/optimizers.rst
+   stateful/activations.rst
+   stateful/converters.rst
    stateful/module.rst
 

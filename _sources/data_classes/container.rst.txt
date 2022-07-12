@@ -13,26 +13,26 @@ Container
    :maxdepth: -1
    :caption: Container
 
-   container/searching.rst
-   container/device.rst
-   container/activations.rst
-   container/layers.rst
-   container/container.rst
-   container/utility.rst
-   container/set.rst
-   container/elementwise.rst
-   container/wrapping.rst
    container/linear_algebra.rst
-   container/losses.rst
    container/base.rst
-   container/norms.rst
-   container/gradients.rst
-   container/data_type.rst
+   container/losses.rst
    container/statistical.rst
-   container/general.rst
-   container/sorting.rst
-   container/random.rst
-   container/creation.rst
+   container/utility.rst
+   container/layers.rst
    container/manipulation.rst
+   container/set.rst
+   container/sorting.rst
+   container/norms.rst
+   container/creation.rst
+   container/elementwise.rst
+   container/activations.rst
+   container/gradients.rst
+   container/device.rst
    container/image.rst
+   container/container.rst
+   container/data_type.rst
+   container/random.rst
+   container/wrapping.rst
+   container/searching.rst
+   container/general.rst
 
