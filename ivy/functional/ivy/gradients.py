@@ -500,7 +500,7 @@ def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray], 
     lr: Union[float, ivy.Array, ivy.NativeArray], 
-    decay_lambda: float=0.,
+    decay_lambda: float = 0.,
     inplace: Optional[bool] = None,
     stop_gradients: bool = True
 ) -> ivy.Array:

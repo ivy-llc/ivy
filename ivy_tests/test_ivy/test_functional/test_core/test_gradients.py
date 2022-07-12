@@ -173,25 +173,25 @@ def test_stop_gradient(
     func_n_xs_n_ty_n_te_n_tg=st.sampled_from(
         [
             (
-            lambda xs_in: (xs_in["w"] * xs_in["w"])[0],
-            Container({"w": [3.0]}),
-            np.array(9.0),
-            None,
-            {"w": np.array([6.0])},
+                lambda xs_in: (xs_in["w"] * xs_in["w"])[0],
+                Container({"w": [3.0]}),
+                np.array(9.0),
+                None,
+                {"w": np.array([6.0])},
             ),
             (
-            lambda xs_in: ((xs_in["w"] * xs_in["w"])[0], xs_in["w"] * 1.5),
-            Container({"w": [3.0]}),
-            np.array(9.0),
-            np.array([4.5]),
-            {"w": np.array([6.0])},
+                lambda xs_in: ((xs_in["w"] * xs_in["w"])[0], xs_in["w"] * 1.5),
+                Container({"w": [3.0]}),
+                np.array(9.0),
+                np.array([4.5]),
+                {"w": np.array([6.0])},
             ),
             (
-            lambda xs_in: (xs_in["w1"] * xs_in["w2"])[0],
-            Container({"w1": [3.0], "w2": [5.0]}),
-            np.array(15.0),
-            None,
-            {"w1": np.array([5.0]), "w2": np.array([3.0])},
+                lambda xs_in: (xs_in["w1"] * xs_in["w2"])[0],
+                Container({"w1": [3.0], "w2": [5.0]}),
+                np.array(15.0),
+                None,
+                {"w1": np.array([5.0]), "w2": np.array([3.0])},
             ),
         ]
     ),
@@ -250,9 +250,12 @@ def test_execute_with_gradients(
     mw=st.floats(allow_infinity=False, allow_nan=False),
     vw=st.floats(allow_infinity=False, allow_nan=False),
     step=st.integers(min_value=1, max_value=1000).filter(lambda x: x > 0),
-    beta1=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
-    beta2=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
-    epsilon=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0)
+    beta1=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(
+        lambda x: x != 0),
+    beta2=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(
+        lambda x: x != 0),
+    epsilon=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(
+        lambda x: x != 0)
 )
 def test_adam_step(
     dtype_and_dcdw,
@@ -270,10 +273,10 @@ def test_adam_step(
     epsilon,
 ):
     dtype, dcdw = dtype_and_dcdw
-    dcdw = np.asarray(dcdw,dtype=dtype)
-    mw = np.asarray(mw,dtype=dtype)
-    vw = np.asarray(vw,dtype=dtype)
-    step = np.asarray(step,dtype=dtype)
+    dcdw = np.asarray(dcdw, dtype=dtype)
+    mw = np.asarray(mw, dtype=dtype)
+    vw = np.asarray(vw, dtype=dtype)
+    step = np.asarray(step, dtype=dtype)
     helpers.test_function(
         dtype,
         as_variable,
@@ -297,13 +300,13 @@ def test_adam_step(
 # adam_step ground truth tests
 @given(
     dcdw_mw_vw_step=st.sampled_from(
-    [
-        (
-            Container({"w": [5.0]}),
-            np.array([2.0]),
-            Container({"w": [0.2353166]}),
-        )
-    ],
+        [
+            (
+                Container({"w": [5.0]}),
+                np.array([2.0]),
+                Container({"w": [0.2353166]}),
+            )
+        ],
     ),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
@@ -361,8 +364,8 @@ def test_optimizer_update(
     stop_gradients
 ):
     dtype, w = dtype_and_w
-    w = np.asarray(w,dtype=dtype)
-    effective_grad = np.asarray(effective_grad,dtype=dtype)
+    w = np.asarray(w, dtype=dtype)
+    effective_grad = np.asarray(effective_grad, dtype=dtype)
     helpers.test_function(
         dtype,
         as_variable,
@@ -395,7 +398,8 @@ def test_optimizer_update(
 )
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_optimizer_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+def test_optimizer_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, 
+                                       tensor_fn, device, call):
     # smoke test
     ws_raw, effect_grad_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -466,14 +470,14 @@ def test_gradient_descent_update(
 # layerwise_gradient_descent_update
 @given(
     ws_n_grads_n_lr_n_wsnew=st.sampled_from(
-    [
-        (
-            Container({"a": [3.0], "b": [3.0]}),
-            Container({"a": [6.0], "b": [6.0]}),
-            Container({"a": [0.1], "b": [0.2]}),
-            Container({"a": [2.4], "b": [1.8]}),
-        )
-    ],
+        [
+            (
+                Container({"a": [3.0], "b": [3.0]}),
+                Container({"a": [6.0], "b": [6.0]}),
+                Container({"a": [0.1], "b": [0.2]}),
+                Container({"a": [2.4], "b": [1.8]}),
+            )
+        ],
     ),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
@@ -572,7 +576,8 @@ def test_lars_update(
 )
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_lars_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+def test_lars_update_ground_truth(ws_n_grads_n_lr_n_wsnew, 
+                                  dtype, tensor_fn, device, call):
     # smoke test
     ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -607,9 +612,12 @@ def test_lars_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev
     mw_tm1=st.floats(allow_infinity=False, allow_nan=False),
     vw_tm1=st.floats(allow_infinity=False, allow_nan=False),
     step=st.floats(allow_infinity=False, allow_nan=False),
-    beta1=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
-    beta2=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
-    epsilon=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
+    beta1=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(
+        lambda x: x != 0),
+    beta2=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(
+        lambda x: x != 0),
+    epsilon=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(
+        lambda x: x != 0),
     inplace=st.booleans(),
     stop_gradients=st.booleans()
 )
@@ -665,19 +673,20 @@ def test_adam_update(
 # adam_update ground truth tests
 @given(
     ws_n_grads_n_lr_n_wsnew=st.sampled_from(
-    [
-        (
-            Container({"w": [3.0]}),
-            Container({"w": [6.0]}),
-            0.1,
-            Container({"w": [2.96837726]}),
-        )
-    ],
+        [
+            (
+                Container({"w": [3.0]}),
+                Container({"w": [6.0]}),
+                0.1,
+                Container({"w": [2.96837726]}),
+            )
+        ],
     ),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-def test_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+def test_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, 
+                                  tensor_fn, device, call):
     # smoke test
     ws_raw, dcdw_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -709,19 +718,20 @@ def test_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev
 # layerwise_adam_update ground truth test
 @given(
     ws_n_grads_n_lr_n_wsnew=st.sampled_from(
-    [
-        (
-            Container({"a": [3.0], "b": [3.0]}),
-            Container({"a": [6.0], "b": [6.0]}),
-            Container({"a": [0.1], "b": [0.2]}),
-            Container({"a": [2.9683773], "b": [2.9367545]}),
-        )
-    ],
+        [
+            (
+                Container({"a": [3.0], "b": [3.0]}),
+                Container({"a": [6.0], "b": [6.0]}),
+                Container({"a": [0.1], "b": [0.2]}),
+                Container({"a": [2.9683773], "b": [2.9367545]}),
+            )
+        ],
     ),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-def test_layerwise_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+def test_layerwise_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, 
+                                            tensor_fn, device, call):
     # smoke test
     ws_raw, dcdw_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -754,19 +764,20 @@ def test_layerwise_adam_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tens
 # lamb_update ground truth test
 @given(
     ws_n_grads_n_lr_n_wsnew=st.sampled_from(
-    [
-        (
-            Container({"a": [3.0], "b": [3.0]}),
-            Container({"a": [6.0], "b": [6.0]}),
-            Container({"a": [0.1], "b": [0.2]}),
-            Container({"a": [2.7], "b": [2.4]}),
-        )
-    ],
+        [
+            (
+                Container({"a": [3.0], "b": [3.0]}),
+                Container({"a": [6.0], "b": [6.0]}),
+                Container({"a": [0.1], "b": [0.2]}),
+                Container({"a": [2.7], "b": [2.4]}),
+            )
+        ],
     ),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn])
 )
-def test_lamb_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
+def test_lamb_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, 
+                                  tensor_fn, device, call):
     # smoke test
     ws_raw, dcdw_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
     ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
@@ -803,16 +814,21 @@ def test_lamb_update_ground_truth(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev
     num_positional_args=helpers.num_positional_args(fn_name="lamb_update"),
     container=helpers.list_of_length(st.booleans(), 5),
     instance_method=st.booleans(),
-    w=st.floats(allow_infinity=False, allow_nan=False).filter(lambda x: x != 0),
+    w=st.floats(allow_infinity=False, allow_nan=False).filter(
+        lambda x: x != 0),
     dcdw=st.floats(allow_infinity=False, allow_nan=False),
     lr=st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
     mw_tm1=st.floats(allow_infinity=False, allow_nan=False),
     vw_tm1=st.floats(allow_infinity=False, allow_nan=False),
     step=st.integers(min_value=1, max_value=1000).filter(lambda x: x > 0),
-    beta1=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
-    beta2=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
-    epsilon=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(lambda x: x != 0),
-    max_trust_ratio=st.floats(allow_infinity=False, allow_nan=False).filter(lambda x: x > 0),
+    beta1=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(
+        lambda x: x != 0),
+    beta2=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(
+        lambda x: x != 0),
+    epsilon=st.floats(min_value=0.0, max_value=1.0, allow_nan=False).filter(
+        lambda x: x != 0),
+    max_trust_ratio=st.floats(allow_infinity=False, allow_nan=False).filter(
+        lambda x: x > 0),
     decay_lambda=st.floats(min_value=0.0, max_value=1.0, allow_nan=False),
     inplace=st.booleans(),
     stop_gradients=st.booleans()

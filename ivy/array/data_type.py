@@ -59,4 +59,3 @@ class ArrayWithDataTypes(abc.ABC):
         *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
     ) -> ivy.Dtype:
         return ivy.result_type(self._data, *arrays_and_dtypes)
-    
