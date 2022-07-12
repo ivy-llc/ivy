@@ -1241,6 +1241,7 @@ def array_values(
     exclude_min=True,
     exclude_max=True,
     allow_negative=True,
+    safety_factor=0.95,
 ):
     size = 1
     if type(shape) != tuple:
@@ -1248,31 +1249,38 @@ def array_values(
     else:
         for dim in shape:
             size *= dim
+    values = None
     if "int" in dtype:
         if dtype == "int8":
-            min_value = ivy.default(min_value, -128)
-            max_value = ivy.default(max_value, 127)
+            min_value = ivy.default(min_value, round(-128 * safety_factor))
+            max_value = ivy.default(max_value, round(127 * safety_factor))
         elif dtype == "int16":
-            min_value = ivy.default(min_value, -32768)
-            max_value = ivy.default(max_value, 32767)
+            min_value = ivy.default(min_value, round(-32768 * safety_factor))
+            max_value = ivy.default(max_value, round(32767 * safety_factor))
         elif dtype == "int32":
-            min_value = ivy.default(min_value, -2147483648)
-            max_value = ivy.default(max_value, 2147483647)
+            min_value = ivy.default(min_value, round(-2147483648 * safety_factor))
+            max_value = ivy.default(max_value, round(2147483647 * safety_factor))
         elif dtype == "int64":
-            min_value = ivy.default(min_value, -9223372036854775808)
-            max_value = ivy.default(max_value, 9223372036854775807)
+            min_value = ivy.default(
+                min_value, round(-9223372036854775808 * safety_factor)
+            )
+            max_value = ivy.default(
+                max_value, round(9223372036854775807 * safety_factor)
+            )
         elif dtype == "uint8":
-            min_value = ivy.default(min_value, 0)
-            max_value = ivy.default(max_value, 255)
+            min_value = ivy.default(min_value, round(0 * safety_factor))
+            max_value = ivy.default(max_value, round(255 * safety_factor))
         elif dtype == "uint16":
-            min_value = ivy.default(min_value, 0)
-            max_value = ivy.default(max_value, 65535)
+            min_value = ivy.default(min_value, round(0 * safety_factor))
+            max_value = ivy.default(max_value, round(65535 * safety_factor))
         elif dtype == "uint32":
-            min_value = ivy.default(min_value, 0)
-            max_value = ivy.default(max_value, 4294967295)
+            min_value = ivy.default(min_value, round(0 * safety_factor))
+            max_value = ivy.default(max_value, round(4294967295 * safety_factor))
         elif dtype == "uint64":
-            min_value = ivy.default(min_value, 0)
-            max_value = ivy.default(max_value, 18446744073709551615)
+            min_value = ivy.default(min_value, round(0 * safety_factor))
+            max_value = ivy.default(
+                max_value, round(18446744073709551615 * safety_factor)
+            )
         values = draw(list_of_length(st.integers(min_value, max_value), size))
     elif dtype == "float16":
         values = draw(
@@ -1306,6 +1314,7 @@ def array_values(
                 size,
             )
         )
+        values = [v * safety_factor for v in values]
     elif dtype == "float64":
         values = draw(
             list_of_length(
@@ -1322,6 +1331,7 @@ def array_values(
                 size,
             )
         )
+        values = [v * safety_factor for v in values]
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
     array = np.array(values)
