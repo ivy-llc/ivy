@@ -185,13 +185,6 @@ class ArrayWithElementwise(abc.ABC):
         >>> y = x.expm1()
         >>> print(y)
         ivy.array([244.   ,  -0.918,   3.48 ,   0.   ])
-
-        With :code:`out` option
-        >>> y = ivy.array([])
-        >>> x = ivy.array([5, 0])
-        >>> _ = x.expm1(out=y)
-        >>> print(y)
-        ivy.array([147.,   0.])
         """
         return ivy.expm1(self._data, out=out)
 
