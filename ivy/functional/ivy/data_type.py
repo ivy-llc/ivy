@@ -291,7 +291,7 @@ class DefaultDtype:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, dtype):
+    def __init__(self, dtype: ivy.Dtype):
         self._dtype = dtype
 
     def __enter__(self):
@@ -307,7 +307,7 @@ class DefaultFloatDtype:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, float_dtype):
+    def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
 
     def __enter__(self):
@@ -323,7 +323,7 @@ class DefaultIntDtype:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, float_dtype):
+    def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
 
     def __enter__(self):
@@ -388,7 +388,7 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDt
 
 # len(get_binary_from_float(x)) >24 and int(get_binary_from_float(x)[24:])>0)
 # noinspection PyShadowingBuiltins
-def _check_float64(input):
+def _check_float64(input) -> bool:
     if math.isfinite(input):
         tmp = str(input).replace("-", "").split(".")
         exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
