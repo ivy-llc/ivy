@@ -22,6 +22,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         conts = [self]
@@ -45,7 +46,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def expand_dims(
@@ -55,6 +56,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -67,7 +69,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def permute_dims(
@@ -77,6 +79,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -89,7 +92,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def flip(
@@ -99,6 +102,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -109,7 +113,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def reshape(
@@ -119,6 +123,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -129,7 +134,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     @staticmethod
@@ -230,6 +235,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -240,7 +246,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def stack(
@@ -254,6 +260,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         conts = [self]
@@ -277,7 +284,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def repeat(
@@ -288,6 +295,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -300,7 +308,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def tile(
@@ -310,6 +318,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -320,7 +329,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def constant_pad(
@@ -331,6 +340,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -343,7 +353,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def zero_pad(
@@ -354,6 +364,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -366,7 +377,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def swapaxes(
@@ -377,6 +388,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -389,7 +401,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     @staticmethod

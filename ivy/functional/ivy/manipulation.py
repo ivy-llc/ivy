@@ -37,6 +37,9 @@ def concat(
         to axis (the first, by default).
     axis
         The axis along which the arrays will be joined. Default is -1.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -196,7 +199,7 @@ def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Reverses the order of elements in an array along the given axis. The shape of the
     array must be preserved.
@@ -308,7 +311,7 @@ def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     axes: Tuple[int, ...],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Permutes the axes (dimensions) of an array x.
 
@@ -341,7 +344,7 @@ def reshape(
     shape: Tuple[int, ...],
     copy: Optional[bool] = None,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.
 
@@ -349,10 +352,13 @@ def reshape(
     ----------
     x
         Tensor to be reshaped.
-    newshape
+    shape
         The new shape should be compatible with the original shape. One shape dimension
         can be -1. In this case, the value is inferred from the length of the array and
         remaining dimensions.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -483,7 +489,7 @@ def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int, ...]],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Removes singleton dimensions (axes) from ``x``.
 
@@ -526,7 +532,7 @@ def stack(
     ],
     axis: int = 0,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Joins a sequence of arrays along a new axis.
 
@@ -620,29 +626,29 @@ def clip(
     ivy.array([2., 2., 2., 3., 4., 5., 6., 7., 7., 7.])
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_min = ivy.array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> x_min = ivy.array([3., 3., 1., 0., 2., 3., 4., 0., 4., 4.])
     >>> x_max = ivy.array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
     >>> y = ivy.clip(x, x_min, x_max)
     >>> print(y)
-    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> x_min = ivy.native_array([3., 3., 1., 0., 2., 3., 4., 2., 4., 4.])
     >>> x_max = ivy.native_array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
     >>> y = ivy.clip(x, x_min, x_max)
     >>> print(y)
-    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])
+    >>> x_min = ivy.native_array([3., 3., 1., 0., 2., 3., 4., 2., 4., 4.])
     >>> x_max = ivy.native_array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])
     >>> y = ivy.clip(x, x_min, x_max)
     >>> print(y)
-    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])
+    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])
 
     With :code:`ivy.Container` input:
 
@@ -659,30 +665,31 @@ def clip(
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
-    >>> x_min = ivy.Container(a=1, b=-1)
+    >>> x_min = ivy.Container(a=0, b=-3)
     >>> x_max = ivy.Container(a=1, b=-1)
     >>> y = ivy.clip(x, x_min,x_max)
     >>> print(y)
     {
-        a: ivy.array([1., 1., 1.]),
+        a: ivy.array([0., 1., 1.]),
         b: ivy.array([-1., -1., -1.])
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x_min = ivy.array([3., 4., 1])
+    >>> x_min = ivy.array([3., 0., 1])
     >>> x_max = ivy.array([5., 4., 3.])
     >>> y = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
     >>> z = ivy.clip(y, x_min, x_max)
     >>> print(z)
     {
-        a: ivy.array([3., 4., 2.]),
+        a: ivy.array([3., 1., 2.]),
         b: ivy.array([3., 4., 3.])
     }
 
     """
+    assert ivy.all(ivy.less(x_min, x_max))
     res = current_backend(x).clip(x, x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
@@ -711,6 +718,9 @@ def constant_pad(
         axes of x.
     value
         The constant value to pad the array with.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1027,7 +1037,7 @@ def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     reps: Iterable[int],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Constructs an array by repeating x the number of times given by reps.
 
@@ -1037,6 +1047,9 @@ def tile(
         Input array.
     reps
         The number of repetitions of x along each axis.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -1065,6 +1078,9 @@ def zero_pad(
     pad_width
         Number of values padded to the edges of each axis. Specified as
         ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------

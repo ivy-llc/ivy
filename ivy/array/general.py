@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Any, Iterable
+from typing import Any, Iterable, Union, Optional
 
 # ToDo: implement all methods here as public instance methods
 
@@ -9,11 +9,7 @@ import ivy
 
 
 class ArrayWithGeneral(abc.ABC):
-    def all_equal(
-            self: ivy.Array,
-            x2: Iterable[Any],
-            equality_matrix: bool = False
-    ):
+    def all_equal(self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False):
         """
         ivy.Container instance method variant of ivy.all_equal.
         This method simply wraps the function, and so the docstring for
@@ -39,3 +35,24 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
+
+    def gather_nd(
+        self: ivy.Array,
+        indices: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
+        function, and so the docstring for ivy.gather_nd also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([1])
+        >>> z = x.gather_nd(y)
+        >>> print(z)
+        ivy.array(2)
+        """
+        return ivy.gather_nd(self, indices, out=out)

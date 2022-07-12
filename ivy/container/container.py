@@ -7,7 +7,7 @@ import ivy
 from .activations import ContainerWithActivations
 from .base import ContainerBase
 from .creation import ContainerWithCreation
-from .data_types import ContainerWithDataTypes
+from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
 from .elementwise import ContainerWithElementwise
 from .general import ContainerWithGeneral
