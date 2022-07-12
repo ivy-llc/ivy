@@ -73,7 +73,7 @@ def test_argsort(
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="argsort"),
+    num_positional_args=helpers.num_positional_args(fn_name="sort"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
