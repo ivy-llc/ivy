@@ -1,7 +1,7 @@
 # local
 import ivy
 from ivy.container.base import ContainerBase
-from typing import Optional, Union, List,Any, Tuple, Dict, Iterable
+from typing import Optional, Union, List, Dict
 
 
 # ToDo: implement all methods here as public instance methods
@@ -27,6 +27,7 @@ class ContainerWithActivations(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
     def relu(
             self: ivy.Container,
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -58,8 +59,8 @@ class ContainerWithActivations(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-
         )
+
     def leaky_relu(
             self: ivy.Container,
             alpha: Optional[ivy.Container] = None,
@@ -70,8 +71,9 @@ class ContainerWithActivations(ContainerBase):
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_leaky_relu(
-            self,alpha, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+            self, alpha, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
+
     @staticmethod
     def static_gelu(
             x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -91,11 +93,11 @@ class ContainerWithActivations(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-
         )
+
     def gelu(
             self: ivy.Container,
-            approximate:Optional[bool] = True,
+            approximate: Optional[bool] = True,
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
             to_apply: bool = True,
             prune_unapplied: bool = False,
@@ -103,8 +105,12 @@ class ContainerWithActivations(ContainerBase):
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_gelu(
-            self, approximate, key_chains, to_apply, prune_unapplied, map_sequences, out=out
-
+            self,
+            approximate,
+            key_chains, to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out
         )
 
     @staticmethod
@@ -169,7 +175,6 @@ class ContainerWithActivations(ContainerBase):
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
-
     @staticmethod
     def static_softmax(
             x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -204,7 +209,6 @@ class ContainerWithActivations(ContainerBase):
         return self.static_softmax(
             self, axis, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
-
 
     @staticmethod
     def static_softplus(
