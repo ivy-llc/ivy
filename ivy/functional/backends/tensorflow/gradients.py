@@ -4,6 +4,7 @@ signature.
 
 # global
 import tensorflow as tf
+from typing import Union
 
 # local
 import ivy
@@ -45,7 +46,12 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, grads, *rest)
 
 
-def stop_gradient(x, preserve_type=True):
+def stop_gradient(
+    x: Union[tf.Tensor, tf.Variable], 
+    preserve_type: bool = True,
+    *,
+    out: Union[tf.Tensor, tf.Variable]
+) -> Union[tf.Tensor, tf.Variable]:
     is_var = is_variable(x)
     x = tf.stop_gradient(x)
     if is_var and preserve_type:
