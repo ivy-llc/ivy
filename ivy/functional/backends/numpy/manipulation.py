@@ -1,5 +1,4 @@
 # global
-import ivy
 import numpy as np
 import math
 from typing import Union, Tuple, Optional, List
@@ -170,6 +169,5 @@ def swapaxes(
 def clip(
     x: np.ndarray, x_min: Union[Number, np.ndarray], x_max: Union[Number, np.ndarray]
 ) -> np.ndarray:
-    assert ivy.all(ivy.less_equal(x_min, x_max))
     ret = np.asarray(np.clip(x, x_min, x_max))
     return ret
