@@ -1,11 +1,50 @@
 name: Ivy Dashboard Remove Reviewed PR
 on:
   pull_request_target:
-    types: [converted_to_draft, review_request_removed, closed]
-  pull_request_review:
-    types: [submitted]
+    types: [converted_to_draft, review_request_removed, closed, labeled]
 
 jobs:
+  label_remove:
+    name: Remove Reviewed Label
+    if: ${{ github.event.action == "labeled" && contains(github.event.pull_request.labels, "Reviewed") }}
+    runs-on: ubuntu-latest
+    steps:
+      - name:
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+      - name: Get label_id
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORGANIZATION: unifyai
+          REPOSITORY: ivy
+          LABEL_NAME: "Reviewed"
+        run: |
+          gh api -H "Accept: application/vnd.github.v3+json" /repos/$ORGANIZATION/$REPOSITORY/labels/$LABEL_NAME > label_data.json
+          echo 'LABEL_ID='$(jq '.node_id' label_data.json) >> $GITHUB_ENV
+      - name: Remove label from pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_ID: ${{ github.event.pull_request.node_id }}
+        run: |
+          gh api graphql -f query='
+            mutation (
+              $label_ids: [ID!]!
+              $labelable_id: ID!
+            ) {
+              set_label: removeLabelsFromLabelable(input: {
+                labelIds: $label_ids
+                labelableId: $labelable_id
+              }) {
+                labelable {
+                  labels {
+                    totalCount
+                  }
+                }
+              }
+            }' -f label_ids=$LABEL_ID -f labelable_id=$PR_ID --silent
+
   pr_remove:
     name: Remove PR from Dashboard
     if: ${{ github.event.pull_request }}
@@ -19,7 +58,7 @@ jobs:
       - name: Generate Token
         id: generate_token
         uses: tibdex/github-app-token@v1
-        with: 
+        with:
           app_id: ${{ secrets.PR_APP_ID }}
           private_key: ${{ secrets.PR_APP_PEM }}
       - name: Get Project Data

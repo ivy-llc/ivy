@@ -1,0 +1,45 @@
+name: Label Reviewed PR
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  label_discussion:
+    name: Label PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checks
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+      - name: Get label_id
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORGANIZATION: unifyai
+          REPOSITORY: ivy
+          LABEL_NAME: "Reviewed"
+        run: |
+          gh api -H "Accept: application/vnd.github.v3+json" /repos/$ORGANIZATION/$REPOSITORY/labels/$LABEL_NAME > label_data.json
+          echo 'LABEL_ID='$(jq '.node_id' label_data.json) >> $GITHUB_ENV
+      - name: Add label to pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_ID: ${{ github.event.pull_request.node_id }}
+        run: |
+          gh api graphql -f query='
+            mutation (
+              $label_ids: [ID!]!
+              $labelable_id: ID!
+            ) {
+              set_label: addLabelsToLabelable(input: {
+                labelIds: $label_ids
+                labelableId: $labelable_id
+              }) {
+                labelable {
+                  labels {
+                    totalCount
+                  }
+                }
+              }
+            }' -f label_ids=$LABEL_ID -f labelable_id=$PR_ID --silent
