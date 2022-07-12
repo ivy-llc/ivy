@@ -358,9 +358,8 @@ def test_eye(
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args("from_dlpack"),
     native_array=st.booleans(),
-    container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_from_dlpack(
@@ -369,13 +368,11 @@ def test_from_dlpack(
     with_out,
     num_positional_args,
     native_array,
-    container,
     instance_method,
     fw,
 ):
     if fw == "tensorflow" or fw == "jax":  # not working at time of commit
         return
-
     dtype, x = dtype_and_x
     helpers.test_function(
         dtype,
@@ -387,7 +384,7 @@ def test_from_dlpack(
         instance_method,
         fw,
         "from_dlpack",
-        x=np.asarray(x),
+        x=np.asarray(x, dtype=dtype),
     )
 
 
