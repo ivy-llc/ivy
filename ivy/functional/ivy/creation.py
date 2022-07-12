@@ -245,7 +245,7 @@ def ones(
 @handle_nestable
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    fill_value: Union[int, float],
+    fill_value: float,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -412,7 +412,10 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 def tril(
-    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    k: int = 0,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -453,7 +456,10 @@ def tril(
 @handle_out_argument
 @handle_nestable
 def triu(
-    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    k: int = 0,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -640,10 +646,10 @@ def eye(
 @infer_device
 @handle_nestable
 def linspace(
-    start: Union[ivy.Array, ivy.NativeArray, int, float],
-    stop: Union[ivy.Array, ivy.NativeArray, int, float],
+    start: Union[ivy.Array, ivy.NativeArray, float],
+    stop: Union[ivy.Array, ivy.NativeArray, float],
     num: int,
-    axis: int = None,
+    axis: Optional[int] = None,
     endpoint: bool = True,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -695,7 +701,8 @@ def linspace(
 @to_native_arrays_and_back
 @handle_nestable
 def meshgrid(
-    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
+    *arrays: Union[ivy.Array, ivy.NativeArray],
+    indexing: Optional[str] = "xy"
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -704,6 +711,7 @@ def meshgrid(
     arrays
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
+
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -795,7 +803,7 @@ def meshgrid(
 @handle_nestable
 def full(
     shape: Union[int, Tuple[int, ...]],
-    fill_value: Union[int, float],
+    fill_value: float,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,

@@ -1,6 +1,7 @@
 # global
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List
+from numbers import Number
 import jaxlib.xla_extension
 from jax.dlpack import from_dlpack as jax_from_dlpack
 
@@ -18,13 +19,13 @@ from ivy.functional.ivy import default_dtype
 
 
 def arange(
-    start,
-    stop=None,
-    step=1,
+    start: Number,
+    stop: Optional[Number] = None,
+    step: Number = 1,
     *,
-    dtype: jnp.dtype = None,
+    dtype: Optional[jnp.dtype] = None,
     device: jaxlib.xla_extension.Device,
-):
+) -> JaxArray:
     if dtype:
         dtype = as_native_dtype(dtype)
     res = _to_device(jnp.arange(start, stop, step=step, dtype=dtype), device=device)
@@ -37,12 +38,12 @@ def arange(
 
 
 def asarray(
-    object_in,
+    object_in: Union[JaxArray, jnp.ndarray, List[Number], Tuple[Number]],
     *,
     copy: Optional[bool] = None,
-    dtype: jnp.dtype = None,
+    dtype: Optional[jnp.dtype] = None,
     device: jaxlib.xla_extension.Device,
-):
+) -> JaxArray:
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
     elif (
@@ -78,7 +79,9 @@ def empty(
 
 
 def empty_like(
-    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    x: JaxArray,
+    *, dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -102,13 +105,15 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def from_dlpack(x):
+def from_dlpack(
+    x: JaxArray
+) -> JaxArray:
     return jax_from_dlpack(x)
 
 
 def full(
     shape: Union[int, Tuple[int, ...]],
-    fill_value: Union[int, float],
+    fill_value: float,
     *,
     dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device,
@@ -121,7 +126,7 @@ def full(
 
 def full_like(
     x: JaxArray,
-    fill_value: Union[int, float],
+    fill_value: float,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
@@ -140,15 +145,15 @@ def full_like(
 
 
 def linspace(
-    start,
-    stop,
-    num,
-    axis=None,
-    endpoint=True,
+    start: Union[JaxArray, float],
+    stop: float,
+    num: int,
+    axis: Optional[int] = None,
+    endpoint: bool = True,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
-):
+) -> JaxArray:
     if axis is None:
         axis = -1
     ans = jnp.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
@@ -157,7 +162,10 @@ def linspace(
     return _to_device(ans, device=device)
 
 
-def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:
+def meshgrid(
+    *arrays: JaxArray,
+    indexing: str = "xy"
+) -> List[JaxArray]:
     return jnp.meshgrid(*arrays, indexing=indexing)
 
 
@@ -173,7 +181,10 @@ def ones(
 
 
 def ones_like(
-    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    x: JaxArray,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -182,11 +193,17 @@ def ones_like(
     return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
 
 
-def tril(x: JaxArray, k: int = 0) -> JaxArray:
+def tril(
+    x: JaxArray,
+    k: int = 0
+) -> JaxArray:
     return jnp.tril(x, k)
 
 
-def triu(x: JaxArray, k: int = 0) -> JaxArray:
+def triu(
+    x: JaxArray,
+    k: int = 0
+) -> JaxArray:
     return jnp.triu(x, k)
 
 
@@ -203,7 +220,10 @@ def zeros(
 
 
 def zeros_like(
-    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    x: JaxArray,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if not dtype:
         dtype = x.dtype
@@ -218,8 +238,14 @@ array = asarray
 
 
 def logspace(
-    start, stop, num, base=10.0, axis=None, *, device: jaxlib.xla_extension.Device
-):
+    start: Union[JaxArray, int],
+    stop: Union[JaxArray, int],
+    num: int,
+    base: float = 10.0,
+    axis: int = None,
+    *,
+    device: jaxlib.xla_extension.Device
+) -> JaxArray:
     if axis is None:
         axis = -1
     return _to_device(
