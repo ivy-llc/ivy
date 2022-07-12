@@ -140,7 +140,10 @@
 <span class="c1"># ------#</span>
 
 
-<div class="viewcode-block" id="index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/index_nest.html#ivy.functional.ivy.nest.index_nest">[docs]</a><span class="k">def</span> <span class="nf">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<div class="viewcode-block" id="index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/index_nest.html#ivy.functional.ivy.nest.index_nest">[docs]</a><span class="k">def</span> <span class="nf">index_nest</span><span class="p">(</span>
+        <span class="n">nest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Index a nested object, using a tuple of indices or keys in the case of dicts.</span>
 
 <span class="sd">    Parameters</span>
@@ -150,6 +153,47 @@
 <span class="sd">    index</span>
 <span class="sd">        A tuple of indices for indexing.</span>
 
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The result element through indexing the nested object.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`Tuple` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = (1, 2)</span>
+<span class="sd">    &gt;&gt;&gt; y = [0]</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.index_nest(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    1</span>
+
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.], \</span>
+<span class="sd">                       [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = [1]</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.index_nest(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([3., 4.])</span>
+
+<span class="sd">    With :code:`Dict` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = {&#39;a&#39;: 0, &#39;b&#39;: [1, [2, 3]], &#39;c&#39;: (4, 5)}</span>
+<span class="sd">    &gt;&gt;&gt; y = (&#39;b&#39;, 1)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.index_nest(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    [2, 3]</span>
+
+<span class="sd">    With :code:`List` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = [[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;], \</span>
+<span class="sd">             [&#39;d&#39;, &#39;e&#39;, &#39;f&#39;], \</span>
+<span class="sd">             [&#39;g&#39;, [&#39;h&#39;, &#39;i&#39;]]]</span>
+<span class="sd">    &gt;&gt;&gt; y = iter([2, 1, 0])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.index_nest(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    h</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">nest</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
