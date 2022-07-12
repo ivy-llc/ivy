@@ -20,7 +20,6 @@ class ArrayWithActivations(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
         >>> x = ivy.array([-1., 0., 1.])
         >>> y = ivy.relu(x)
         >>> print(y)
@@ -40,7 +39,6 @@ class ArrayWithActivations(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
         >>> x = ivy.array([0.39, -0.85])
         >>> y = ivy.leaky_relu(x)
         >>> print(y)
@@ -60,7 +58,6 @@ class ArrayWithActivations(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
         >>> x = ivy.array([0.3, -0.1])
         >>> y = ivy.gelu(x)
         >>> print(y)
@@ -79,7 +76,6 @@ class ArrayWithActivations(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
         >>> x = ivy.array([0.55 , -0.55])
         >>> y = ivy.tanh(x)
         >>> print(y)
@@ -98,7 +94,6 @@ class ArrayWithActivations(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
         >>> x = ivy.array([-1., 1., 2.])
         >>> y = ivy.sigmoid(x)
         >>> print(y)
@@ -117,7 +112,6 @@ class ArrayWithActivations(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
         >>> x = ivy.array([1.0, 0, 1.0])
         >>> y = x.softmax()
         >>> print(y)
@@ -135,7 +129,6 @@ class ArrayWithActivations(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
         >>> x = ivy.array([-0.3461, -0.6491])
         >>> y = ivy.softplus(x)
         >>> print(y)
