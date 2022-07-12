@@ -209,6 +209,40 @@ def execute_with_gradients(func: Callable,
         the function first output y, the gradients [dy/dx for x in xs], and any other
         extra function outputs
 
+    Examples
+    --------
+    class MyModel(ivy.Module):
+        def __init__(self):
+            self.linear = ivy.Linear(3, 1)
+            ivy.Module.__init__(self)
+
+        def _forward(self, x):
+            x = ivy.relu(self.linear(x))
+            return x 
+
+    ivy.set_backend('torch')  # change to any backend!
+    model = MyModel()
+    optimizer = ivy.Adam(1e-3)
+    x_in = ivy.array([
+                    [1., 0., 0.],
+                    [0.,1.,0.],
+                    [0.,0.,1.]
+                    ])
+    target = ivy.array([0.,1.,2]) 
+
+    def loss_fn(v):
+        out = model(x_in, v=v)
+        return ivy.mean((out - target)**2)
+
+    for step in range(100):
+        loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
+        model.v = optimizer.step(model.v, grads)
+        print('step {} loss {}'.format(step, ivy.to_numpy(loss).item()))
+
+    print('Finished training!')
+
+
+
     """
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
