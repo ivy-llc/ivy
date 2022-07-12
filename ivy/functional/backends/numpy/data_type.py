@@ -130,7 +130,6 @@ def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
 def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> np.dtype:
     if len(arrays_and_dtypes) <= 1:
         return np.result_type(arrays_and_dtypes)
-
     result = np.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
     for i in range(2, len(arrays_and_dtypes)):
         result = np.result_type(result, arrays_and_dtypes[i])
@@ -139,24 +138,6 @@ def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> np.dtype:
 
 # Extra #
 # ------#
-
-
-def dtype_bits(dtype_in: Union[np.dtype, str]) -> int:
-    dtype_str = as_ivy_dtype(dtype_in)
-    if "bool" in dtype_str:
-        return 1
-    return int(
-        dtype_str.replace("uint", "")
-        .replace("int", "")
-        .replace("bfloat", "")
-        .replace("float", "")
-    )
-
-
-def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:
-    if as_native:
-        return ivy.to_native(x).dtype
-    return as_ivy_dtype(x.dtype)
 
 
 def as_ivy_dtype(dtype_in: Union[np.dtype, str]) -> ivy.Dtype:
@@ -169,3 +150,21 @@ def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
     return native_dtype_dict[ivy.Dtype(dtype_in)]
+
+
+def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
+
+
+def dtype_bits(dtype_in: Union[np.dtype, str]) -> int:
+    dtype_str = as_ivy_dtype(dtype_in)
+    if "bool" in dtype_str:
+        return 1
+    return int(
+        dtype_str.replace("uint", "")
+        .replace("int", "")
+        .replace("bfloat", "")
+        .replace("float", "")
+    )
