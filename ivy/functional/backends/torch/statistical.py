@@ -190,24 +190,7 @@ def var(
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
-    if isinstance(axis, int):
-        return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False, out=out)
-    dims = len(x.shape)
-    axis = tuple([i % dims for i in axis])
-    for i, a in enumerate(axis):
-        if i == len(axis) - 1:
-            x = torch.var(
-                x,
-                dim=a if keepdims else a - i,
-                keepdim=keepdims,
-                unbiased=False,
-                out=out,
-            )
-        else:
-            x = torch.var(
-                x, dim=a if keepdims else a - i, keepdim=keepdims, unbiased=False
-            )
-    return x
+    return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False, out=out)
 
 
 # Extra #
