@@ -210,7 +210,7 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    assert ivy.all(ivy.less(x_min, x_max))
+    assert ivy.all(ivy.less_equal(x_min, x_max))
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
