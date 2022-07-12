@@ -496,18 +496,23 @@ dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes))
     arrays=st.lists(
         hnp.arrays(dtype=dtype_shared, shape=array_shape), min_size=1, max_size=3
     ),
+    indexing=st.sampled_from(["xy", "ij"]),
     dtype=dtype_shared,
 )
 def test_meshgrid(
     arrays,
+    indexing,
     dtype,
     fw,
 ):
 
+    if fw == "torch" and dtype == "uint16" or "uint32":
+        return
+
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype)
+        kw["x{}".format(i)] = x_
         i += 1
 
     num_positional_args = len(arrays)
@@ -522,11 +527,8 @@ def test_meshgrid(
         False,
         fw,
         "meshgrid",
-        None,
-        1e-06,
-        True,
-        "numpy",
         **kw,
+        indexing=indexing
     )
 
 
