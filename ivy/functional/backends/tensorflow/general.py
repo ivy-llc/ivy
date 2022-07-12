@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Iterable
 
 _round = round
 import numpy as np
@@ -25,7 +25,11 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def copy_array(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def copy_array(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.identity(x)
 
 
@@ -51,6 +55,8 @@ def to_list(x: Union[tf.Tensor, tf.Variable]) -> list:
 def floormod(
     x: Union[tf.Tensor, tf.Variable],
     y: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x, "dtype") and hasattr(y, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
@@ -133,18 +139,32 @@ def inplace_increment(x, val):
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumsum(x, axis)
 
 
 def cumprod(
-    x: Union[tf.Tensor, tf.Variable], axis: int = 0, exclusive: Optional[bool] = False
+    x: Union[tf.Tensor, tf.Variable], 
+    axis: int = 0, 
+    exclusive: Optional[bool] = False,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
+def scatter_flat(
+    indices: Union[tf.Tensor, tf.Variable], 
+    updates: Union[tf.Tensor, tf.Variable], 
+    size: Optional[int] = None, 
+    tensor: Optional[Union[tf.Tensor, tf.Variable]] = None, 
+    reduction: str = "sum",
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -205,7 +225,15 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
+def scatter_nd(
+    indices: Union[tf.Tensor, tf.Variable], 
+    updates: Union[tf.Tensor, tf.Variable], 
+    shape: Optional[Iterable[int]] = None, 
+    tensor: Optional[Union[tf.Tensor, tf.Variable]] = None, 
+    reduction:str = "sum",
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
 
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
@@ -297,16 +325,29 @@ def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
     axis: Optional[int] = -1,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
     return tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
-def gather_nd(params, indices):
+def gather_nd(
+    params: Union[tf.Tensor, tf.Variable], 
+    indices: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.gather_nd(params, indices)
 
 
-def one_hot(indices, depth, *, device):
+def one_hot(
+    indices: Union[tf.Tensor, tf.Variable], 
+    depth: int, 
+    *, 
+    device,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     if device is not None:
         with tf.device(as_native_dev(device)):
@@ -324,7 +365,11 @@ def multiprocessing(context=None):
     )
 
 
-def indices_where(x):
+def indices_where(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.where(x)
 
 
