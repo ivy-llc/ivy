@@ -2,11 +2,9 @@
 import ivy
 import logging
 import importlib
-import collections
 import numpy as np
 from ivy import verbosity
 from typing import Optional
-from types import FunctionType
 
 # local
 from ivy.func_wrapper import _wrap_function
@@ -33,7 +31,7 @@ _array_types = dict()
 _array_types["numpy"] = "ivy.functional.backends.numpy"
 _array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
 _array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
-_array_types["tensorflow.python.backend.ops"] = "ivy.functional.backends.tensorflow"
+_array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
 _array_types["mxnet.ndarray.ndarray"] = "ivy.functional.backends.mxnet"
 
@@ -101,19 +99,19 @@ def _determine_backend_from_args(args):
 
 
 def current_backend(*args, **kwargs):
-    """Returns the current backend backend. Priorities:
+    """Returns the current backend. Priorities:
     global_backend > argument's backend.
 
     Parameters
     ----------
     *args/**kwargs
-        the arguments from which to try to infer the backend backend, when there is
+        the arguments from which to try to infer the backend, when there is
         no globally set backend.
 
     Returns
     -------
     ret
-        Ivy's current backend backend.
+        Ivy's current backend.
 
     Examples
     --------
@@ -173,7 +171,6 @@ def set_backend(backend: str):
     """
     ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
-    global ivy_original_fn_dict
     if not backend_stack:
         ivy_original_dict = ivy.__dict__.copy()
     if isinstance(backend, str):
@@ -186,34 +183,15 @@ def set_backend(backend: str):
     if backend.current_backend_str() == "numpy":
         ivy.set_default_device("cpu")
     backend_stack.append(backend)
-    ivy_original_fn_dict.clear()
-    # loop through items in ivy dict and replace ivy's implementations `v` with the
-    # appropriate backend implementation (backend specified by `backend`)
+
     for k, v in ivy_original_dict.items():
         if k not in backend.__dict__:
             if k in backend.invalid_dtypes:
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v
-        specific_v = backend.__dict__[k]
-        if hasattr(v, "array_spec"):
-            specific_v.array_spec = v.array_spec
-        # if appropriate, apply wrapping to the new backend implementation
-        if callable(specific_v):
-            specific_v = _wrap_function(specific_v, v)
-        # wrap the `linalg` namespace eg so we can use ivy.linalg.inv or ivy.inv
-        if k == "linalg":
-            for linalg_k, linalg_v in specific_v.__dict__.items():
-                if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
-                    specific_v.__dict__[linalg_k] = _wrap_function(
-                        linalg_v, ivy.__dict__[linalg_k]
-                    )
-        ivy.__dict__[k] = specific_v
-        if isinstance(specific_v, collections.Hashable):
-            try:
-                ivy_original_fn_dict[specific_v] = v
-            except TypeError:
-                pass
+        ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
+
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
@@ -316,7 +294,7 @@ def unset_backend():
         # to ivy namespace
         for k, v in new_backend_dict.items():
             if backend_stack and k in ivy.__dict__:
-                v = _wrap_function(v, ivy.__dict__[k])
+                v = _wrap_function(k, v, ivy.__dict__[k])
             ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))

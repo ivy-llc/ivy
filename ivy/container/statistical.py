@@ -18,6 +18,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -28,7 +29,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def max(
@@ -39,6 +40,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -49,7 +51,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def mean(
@@ -60,6 +62,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -70,7 +73,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def var(
@@ -82,6 +85,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -94,7 +98,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def prod(
@@ -106,6 +110,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -118,7 +123,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def sum(
@@ -130,6 +135,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -142,7 +148,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def std(
@@ -154,6 +160,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -166,7 +173,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def einsum(
@@ -176,6 +183,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -186,5 +194,5 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )

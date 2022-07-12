@@ -205,7 +205,7 @@ def clip(
     x_max: float,
     out: Optional[mx.ndarray.ndarray.NDArray] = None,
 ) -> mx.ndarray.ndarray.NDArray:
-
+    assert ivy.all(ivy.less(x_min, x_max))
     ret = mx.nd.clip(mx.nd.array(x), x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

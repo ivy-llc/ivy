@@ -35,10 +35,6 @@ def test_argsort(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     # we do not want any nans
     x = data.draw(
         helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
@@ -51,7 +47,7 @@ def test_argsort(
     descending = data.draw(st.booleans())
     stable = data.draw(st.booleans())
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -94,10 +90,6 @@ def test_sort(
     instance_method,
     fw,
 ):
-    # smoke for torch
-    if fw == "torch" and input_dtype in ["uint16", "uint32", "uint64"]:
-        return
-
     # we do not want any nans
     x = data.draw(
         helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
@@ -110,7 +102,7 @@ def test_sort(
     descending = data.draw(st.booleans())
     stable = data.draw(st.booleans())
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
