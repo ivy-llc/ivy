@@ -7,18 +7,14 @@ jobs:
   label_discussion:
     name: Label PR
     runs-on: ubuntu-latest
+    permissions:
+        pull_requests: write
     steps:
       - name: Checks
         uses: actions/checkout@v2
         with:
           path: ivy
           persist-credentials: false
-      - name: Generate Token
-        id: generate_token
-        uses: tibdex/github-app-token@v1
-        with:
-          app_id: ${{ secrets.PR_APP_ID }}
-          private_key: ${{ secrets.PR_APP_PEM }}
       - name: Get label_id
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -30,7 +26,7 @@ jobs:
           echo 'LABEL_ID='$(jq '.node_id' label_data.json) >> $GITHUB_ENV
       - name: Add label to pr
         env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_ID: ${{ github.event.pull_request.node_id }}
         run: |
           gh api graphql -f query='
