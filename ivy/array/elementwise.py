@@ -189,6 +189,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> y = ivy.array([])
         >>> x = ivy.array([5, 0])
         >>> x.expm1(out=y)
+        ivy.array([147.,   0.])
         >>> print(y)
         ivy.array([147.,   0.])
         """

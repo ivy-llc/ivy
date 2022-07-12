@@ -740,6 +740,9 @@ class ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container()
         >>> x = ivy.Container(a=ivy.array([4, -2]))
         >>> x.expm1(out=y)
+        {
+            a: ivy.array([53.6, -0.865])
+        }
         >>> print(y)
         {
             a: ivy.array([53.6, -0.865])
