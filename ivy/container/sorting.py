@@ -1,8 +1,8 @@
-# local
 from ivy.container.base import ContainerBase
 import ivy
+from typing import Optional, List, Union, Dict
 
-#global
+# local
 from typing import Optional, Union
 
 # ToDo: implement all methods here as public instance methods
@@ -10,7 +10,7 @@ from typing import Optional, Union
 
 # noinspection PyMissingConstructor
 class ContainerWithSorting(ContainerBase):
-@staticmethod
+    @staticmethod
     def static_argsort(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         axis: int = -1,
@@ -59,8 +59,55 @@ class ContainerWithSorting(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-        
+    @staticmethod
+    def static_sort(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "sort",
+            x,
+            axis,
+            descending,
+            stable,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
 
+    def sort(
+        self: ivy.Container,
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        return self.static_sort(
+            self,
+            axis,
+            descending,
+            stable,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
     def sort(
             self: ivy.Container,
             axis: int = -1,
@@ -107,9 +154,9 @@ class ContainerWithSorting(ContainerBase):
                             [0., 0.4]])
         }
 
-        >>>x = ivy.Container(a=ivy.native_array([8, 0.5, 6]), b=ivy.array([[9, 0.7], [0.4, 0]]))
-        >>>y = ivy.sort(x)
-        >>>print(y)
+        >>> x = ivy.Container(a=ivy.native_array([8, 0.5, 6]), b=ivy.array([[9, 0.7], [0.4, 0]]))
+        >>> y = ivy.sort(x)
+        >>> print(y)
         {
             a: ivy.array([0.5, 6., 8.]),
             b: ivy.array([[0.7, 9.],

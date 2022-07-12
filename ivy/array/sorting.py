@@ -9,7 +9,7 @@ import ivy
 
 
 class ArrayWithSorting(abc.ABC):
-def argsort(
+    def argsort(
         self: ivy.Array,
         axis: int = -1,
         descending: bool = False,
@@ -17,7 +17,6 @@ def argsort(
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-    
         return ivy.argsort(self._data, axis, descending, stable, out=out)
         
     def sort(
@@ -40,27 +39,27 @@ def argsort(
         >>> print(y)
         ivy.array([6, 7, 8])
 
-         >>> x = ivy.array([8.5, 8.2, 7.6])
+        >>> x = ivy.array([8.5, 8.2, 7.6])
         >>> y = ivy.sort(x)
         >>> print(y)
         ivy.array([7.6, 8.2, 8.5])
 
         With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
 
-        >>>x = ivy.Container(a=ivy.native_array([8, 0.5, 6]),\
+        >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
                             b=ivy.array([[9, 0.7], [0.4, 0]]))
-        >>>y = ivy.sort(x)
-        >>>print(y)
+        >>> y = ivy.sort(x)
+        >>> print(y)
         {
             a: ivy.array([0.5, 6., 8.]),
             b: ivy.array([[0.7, 9.], \
                           [0., 0.4]])
         }
 
-        >>>x = ivy.Container(a=ivy.native_array([1, 0.3, 7]),\
+        >>> x = ivy.Container(a=ivy.array([1, 0.3, 7]),\
                                 b=ivy.array([[2, 0.2], [6, 5]]))
-        >>>y = ivy.sort(x)
-        >>>print(y)
+        >>> y = ivy.sort(x)
+        >>> print(y)
         {
             a: ivy.array([0.3, 1., 7.]),
             b: ivy.array([[0.2, 2.], \
@@ -68,6 +67,6 @@ def argsort(
         }
 
         """
-        return ivy.sort(self._data)
+        return ivy.sort(self._data, axis, descending, stable, out=out)
 
 
