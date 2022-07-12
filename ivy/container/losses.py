@@ -30,22 +30,24 @@ class ContainerWithLosses(ContainerBase):
         --------
         With :code:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([0, 0, 1, 0]))
-        >>> y = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]))
+        >>> x = ivy.Container(a=ivy.array([0, 0, 1]), b=ivy.array([1, 1, 0]))
+        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = ivy.Container.static_cross_entropy(x, y)
         >>> print(z)
         {
-            a: ivy.array(1.3862944)
+            a: ivy.array(1.20397282),
+            b: ivy.array(1.83258148)
         }
 
         With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-        >>> x = ivy.array([0, 0, 1, 0])
-        >>> y = ivy.Container(a=ivy.array([0.25, 0.25, 0.25, 0.25]))
+        >>> x = ivy.array([0, 0, 1])
+        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
         >>> z = ivy.Container.static_cross_entropy(x, y)
         >>> print(z)
         {
-           a: ivy.array(1.3862944)
+            a: ivy.array(1.20397282),
+            b: ivy.array(1.60943794)
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -134,11 +136,12 @@ class ContainerWithLosses(ContainerBase):
         With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
         >>> x = ivy.array([1 , 1, 0])
-        >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]))
+        >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]),b=ivy.array([0.2, 0.6, 0.7]))
         >>> z = ivy.Container.static_binary_cross_entropy(x, y)
         >>> print(z)
         {
-           a: ivy.array([0.357, 0.223, 0.223])
+            a: ivy.array([0.357, 0.223, 0.223]),
+            b: ivy.array([1.61, 0.511, 1.2])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -225,11 +228,12 @@ class ContainerWithLosses(ContainerBase):
         With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
         >>> x = ivy.array([1 , 1, 0])
-        >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]))
+        >>> y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]),b=ivy.array([0.2, 0.6, 0.7]))
         >>> z = ivy.Container.static_sparse_cross_entropy(x, y)
         >>> print(z)
         {
-           a: ivy.array([0.223, 0.223, 0.357])
+            a: ivy.array([0.223, 0.223, 0.357]),
+            b: ivy.array([0.511, 0.511, 1.61])
         }
         """
         return ContainerBase.multi_map_in_static_method(
