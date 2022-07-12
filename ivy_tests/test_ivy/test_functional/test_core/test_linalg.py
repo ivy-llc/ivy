@@ -222,13 +222,15 @@ def test_eigh(
     )
 
     # flattened array returns
-    ret_np_flat, ret_from_np_flat =\
-        helpers.get_flattened_array_returns(ret, ret_from_np)
+    ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
+        ret, ret_from_np
+    )
 
     # value test
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         helpers.assert_all_close(
-            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2)
+            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2
+        )
 
 
 # eigvalsh
@@ -827,8 +829,9 @@ def test_svd(
         test_values=False,
     )
     # flattened array returns
-    ret_np_flat, ret_from_np_flat =\
-        helpers.get_flattened_array_returns(ret, ret_from_np)
+    ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
+        ret, ret_from_np
+    )
 
     # value test
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
@@ -838,7 +841,8 @@ def test_svd(
             ret_np_col = np.where(ret_np_col[..., 0:1] < 0, ret_np_col * -1, ret_np_col)
             ret_from_np_col = ret_from_np[..., col_idx, :]
             ret_from_np_col = np.where(
-                ret_from_np_col[..., 0:1] < 0, ret_from_np_col * -1, ret_from_np_col)
+                ret_from_np_col[..., 0:1] < 0, ret_from_np_col * -1, ret_from_np_col
+            )
             helpers.assert_all_close(ret_np_col, ret_from_np_col, rtol=1e-1, atol=1e-1)
 
 

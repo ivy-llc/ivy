@@ -66,14 +66,7 @@ def arange(
             return torch.arange(start, stop, step=step, device=device, out=out)
     else:
         dtype = as_native_dtype(default_dtype(dtype))
-        if dtype in [torch.int8, torch.uint8, torch.int16]:
-            return torch.arange(
-                start, stop, step=step, dtype=torch.int64, device=device, out=out
-            ).to(dtype)
-        else:
-            return torch.arange(
-                start, stop, step=step, dtype=dtype, device=device, out=out
-            )
+        return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
 
 
 def asarray(
@@ -92,12 +85,7 @@ def asarray(
     ):
         dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return (
-                torch.as_tensor(object_in, dtype=dtype)
-                .clone()
-                .detach()
-                .to(device)
-            )
+            return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
         else:
             return torch.as_tensor(object_in, dtype=dtype).to(device)
 
@@ -107,12 +95,7 @@ def asarray(
         dtype = as_native_dtype((default_dtype(dtype, object_in)))
 
     if copy is True:
-        return (
-            torch.as_tensor(object_in, dtype=dtype)
-            .clone()
-            .detach()
-            .to(device)
-        )
+        return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
     else:
         return torch.as_tensor(object_in, dtype=dtype).to(device)
 

@@ -45,6 +45,7 @@ class ContainerWithRandom(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_random_uniform(
@@ -67,6 +68,7 @@ class ContainerWithRandom(ContainerBase):
         shape: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """

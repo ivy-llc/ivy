@@ -10,23 +10,75 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithElementwise(ContainerBase):
+    @staticmethod
+    def static_abs(
+        x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.abs. This method simply wraps the
+        function, and so the docstring for ivy.abs also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                            b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container.static_abs(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 2.6, 3.5]),
+            b: ivy.array([4.5, 5.3, 0, 2.3])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "abs",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def abs(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.abs(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        """
+        ivy.Container instance method variant of ivy.abs. This method simply wraps the
+        function, and so the docstring for ivy.abs also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([-1.6, 2.6, -3.5]),\
+                            b=ivy.array([4.5, -5.3, -2.3]))
+        >>> y = x.abs()
+        >>> print(y)
+        {
+            a: ivy.array([1.6, 2.6, 3.5]),
+            b: ivy.array([4.5, 5.3, 2.3])
+        }
+
+        """
+        return self.static_abs(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def acosh(
@@ -35,6 +87,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -45,7 +98,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def acos(
@@ -54,6 +107,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -64,7 +118,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     @staticmethod
@@ -164,6 +218,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -174,7 +229,45 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
+        )
+
+    @staticmethod
+    def static_asinh(
+        x: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.asinh. This method simply wraps the
+        function, and so the docstring for ivy.asinh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([1.5, 0., -3.5]),\
+                            b=ivy.array([3.4, -5.3, -0, -2.8]))
+        >>> y = ivy.Container.static_asinh(x)
+        >>> print(y)
+        {
+            a: ivy.array([1.19, 0., -1.97]),
+            b: ivy.array([1.94, -2.37, 0., -1.75])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "asinh",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def asinh(
@@ -183,17 +276,29 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.asinh(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        """
+        ivy.Container instance method variant of ivy.asinh. This method simply wraps the
+        function, and so the docstring for ivy.asinh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 3.7, -5.1]),\
+                            b=ivy.array([4.5, -2.4, -1.5]))
+        >>> y = x.asinh()
+        >>> print(y)
+        {
+            a: ivy.array([-0.881, 2.02, -2.33]),
+            b: ivy.array([2.21, -1.61, -1.19])
+        }
+        """
+        return self.static_asinh(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def atan(
@@ -202,6 +307,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -212,7 +318,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def atan2(
@@ -222,6 +328,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -241,7 +348,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def atanh(
@@ -250,6 +357,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -260,7 +368,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def bitwise_and(
@@ -270,6 +378,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -289,7 +398,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def bitwise_left_shift(
@@ -299,6 +408,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -320,7 +430,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def bitwise_invert(
@@ -329,6 +439,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -339,7 +450,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def bitwise_or(
@@ -349,6 +460,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -368,7 +480,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def bitwise_right_shift(
@@ -378,6 +490,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -399,7 +512,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def bitwise_xor(
@@ -409,6 +522,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -428,7 +542,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def ceil(
@@ -437,6 +551,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -463,7 +578,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def cos(
@@ -472,6 +587,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -482,7 +598,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def cosh(
@@ -491,6 +607,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -501,7 +618,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     @staticmethod
@@ -547,6 +664,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -566,7 +684,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def exp(
@@ -575,6 +693,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -585,7 +704,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def expm1(
@@ -594,6 +713,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -604,7 +724,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def floor(
@@ -613,8 +733,25 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.floor. This method simply wraps the
+        function, and so the docstring for ivy.floor also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
+                              b=ivy.array([5.4, -3.2, 5.2]))
+        >>> y = x.floor()
+        >>> print(y)
+        {
+            a: ivy.array([2., 0., -2.]),
+            b: ivy.array([5., -4., 5.])
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.floor(x_) if ivy.is_array(x_) else x_,
@@ -623,7 +760,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def floor_divide(
@@ -633,6 +770,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -652,7 +790,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def greater(
@@ -662,6 +800,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -681,7 +820,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def greater_equal(
@@ -691,6 +830,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -710,7 +850,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def isfinite(
@@ -719,6 +859,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -729,7 +870,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def isinf(
@@ -738,6 +879,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -748,7 +890,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def isnan(
@@ -757,6 +899,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -767,7 +910,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def less(
@@ -777,6 +920,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -796,7 +940,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def less_equal(
@@ -806,6 +950,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -825,7 +970,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def log(
@@ -834,6 +979,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -844,7 +990,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def log1p(
@@ -853,6 +999,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -863,7 +1010,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def log2(
@@ -872,6 +1019,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -882,7 +1030,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def log10(
@@ -891,6 +1039,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -901,7 +1050,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def logaddexp(
@@ -911,6 +1060,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -930,7 +1080,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def logical_and(
@@ -940,6 +1090,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -959,7 +1110,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def logical_not(
@@ -968,6 +1119,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -978,7 +1130,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def logical_or(
@@ -988,6 +1140,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1007,7 +1160,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def logical_xor(
@@ -1017,6 +1170,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1036,7 +1190,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     @staticmethod
@@ -1081,6 +1235,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -1091,7 +1246,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def not_equal(
@@ -1101,6 +1256,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1120,7 +1276,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def positive(
@@ -1129,6 +1285,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -1139,7 +1296,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def pow(
@@ -1149,6 +1306,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1168,7 +1326,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def remainder(
@@ -1178,6 +1336,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         kw = {}
@@ -1197,7 +1356,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def round(
@@ -1206,6 +1365,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -1216,7 +1376,45 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
+        )
+
+    @staticmethod
+    def static_sign(
+        x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sign. This method simply wraps the
+        function, and so the docstring for ivy.sign also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0, -1., 6.6]),\
+                            b=ivy.array([-14.2, 8.3, 0.1, -0]))
+        >>> y = ivy.Container.static_sign(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., -1., 1.]),
+            b: ivy.array([-1., 1., 1., 0.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "sign",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def sign(
@@ -1225,17 +1423,31 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.sign(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        """
+        ivy.Container instance method variant of ivy.sign. This method simply wraps the
+        function, and so the docstring for ivy.sign also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
+                              b=ivy.array([1.5, -0.3, 0]),\
+                              c=ivy.array([-4.7, -5.4, 7.5]))
+        >>> y = x.sign()
+        >>> print(y)
+        {
+            a: ivy.array([-1., 1., -1.]),
+            b: ivy.array([1., -1., 0.]),
+            c: ivy.array([-1., -1., 1.])
+        }
+        """
+        return self.static_sign(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def sin(
@@ -1244,6 +1456,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -1254,7 +1467,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def sinh(
@@ -1263,6 +1476,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -1273,7 +1487,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def square(
@@ -1282,6 +1496,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -1292,7 +1507,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def sqrt(
@@ -1301,6 +1516,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -1311,7 +1527,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     @staticmethod
@@ -1415,23 +1631,70 @@ class ContainerWithElementwise(ContainerBase):
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
+    @staticmethod
+    def static_tanh(
+        x: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.tanh. This method simply wraps the
+        function, and so the docstring for ivy.tanh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_tanh(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.76, 0.96]),
+            b: ivy.array([0.995, 0.999, 0.9999])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "tanh",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def tanh(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.tanh(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        """
+        ivy.Container instance method variant of ivy.tanh. This method simply wraps the
+        function, and so the docstring for ivy.tanh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = x.tanh()
+        >>> print(y)
+        {
+            a:ivy.array([0., 0.762, 0.964]),
+            b:ivy.array([0.995, 0.999, 1.])
+        }
+        """
+        return self.static_tanh(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def trunc(
@@ -1440,6 +1703,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -1450,7 +1714,7 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def erf(
@@ -1459,6 +1723,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -1469,5 +1734,5 @@ class ContainerWithElementwise(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )

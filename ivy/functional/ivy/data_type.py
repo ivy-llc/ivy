@@ -77,7 +77,7 @@ def can_cast(
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
-        dtype='int16')
+        dtype = ivy.int16)
     >>> print(x.dtype)
     <dtype:'int16'>
 
@@ -755,7 +755,7 @@ def is_int_dtype(
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
-        dtype='int16')
+        dtype = ivy.int16)
     >>> print(x.dtype)
     <dtype:'int16'>
 

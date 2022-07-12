@@ -255,7 +255,9 @@ def subtract(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray
     return jnp.subtract(x1, x2)
 
 
-def tan(x: JaxArray) -> JaxArray:
+def tan(
+    x: JaxArray,
+) -> JaxArray:
     return jnp.tan(x)
 
 
