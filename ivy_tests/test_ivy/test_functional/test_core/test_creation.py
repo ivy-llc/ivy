@@ -510,19 +510,19 @@ def test_meshgrid(
     num_positional_args = len(arrays)
 
     helpers.test_function(
-        dtype,
-        False,
-        False,
-        num_positional_args,
-        False,
-        False,
-        False,
-        fw,
-        "meshgrid",
-        None,
-        1e-06,
-        True,
-        "numpy",
+        input_dtypes=dtype,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        container_flags=False,
+        instance_method=False,
+        fw=fw,
+        fn_name="meshgrid",
+        test_rtol=None,
+        test_atol=1e-06,
+        test_values=True,
+        ground_truth_backend="numpy",
         **kw,
     )
 
