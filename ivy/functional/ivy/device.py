@@ -81,7 +81,32 @@ class DefaultDevice:
         set_default_device(self._dev)
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> Union[ivy.Device, str]:
+        """
+        Exit the runtime context related to the specified device.
+
+        Returns
+        -------
+        ret
+            Self, an instance of the same class.
+
+        Examples
+        --------
+        A "gpu" as device:
+        >>> with ivy.DefaultDevice("gpu") as device:
+        >>>     pass
+        >>> # after with block device.__exit__() is called
+        >>> print(device._dev)
+        "cpu"
+
+        A "tpu" as device:
+        >>> with ivy.DefaultDevice("tpu") as device:
+        >>>     pass
+        >>> # after with block device.__exit__() is called
+        >>> print(device._dev)
+        "cpu"
+
+        """
         unset_default_device()
         return self
 
@@ -753,8 +778,10 @@ def to_device(
 
 
 def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
-    """Get a device's global split factor, which can be used to scale the device's
+    """
+    Get a device's global split factor, which can be used to scale the device's
     batch splitting chunk sizes across the codebase.
+
     If the global split factor is set for a given device,
         returns the split factor value for the device from the split factors dictionary
     If the global split factor for a device is not configured,
