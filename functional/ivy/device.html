@@ -201,6 +201,33 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.functional.ivy.device.DefaultDevice.__exit__">
+<span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_tb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DefaultDevice.__exit__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.DefaultDevice.__exit__" title="Permalink to this definition"></a></dt>
+<dd><p>Exit the runtime context related to the specified device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Self, an instance of the same class.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>A “gpu” as device:
+&gt;&gt;&gt; with ivy.DefaultDevice(“gpu”) as device:
+&gt;&gt;&gt;     pass
+&gt;&gt;&gt; # after with block device.__exit__() is called
+&gt;&gt;&gt; print(device._dev)
+“cpu”</p>
+<p>A “tpu” as device:
+&gt;&gt;&gt; with ivy.DefaultDevice(“tpu”) as device:
+&gt;&gt;&gt;     pass
+&gt;&gt;&gt; # after with block device.__exit__() is called
+&gt;&gt;&gt; print(device._dev)
+“cpu”</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.DefaultDevice.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#DefaultDevice.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.DefaultDevice.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initialises the DefaultDevice class</p>
@@ -1274,12 +1301,10 @@ splitting chunk sizes for the device across the codebase.</p>
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.split_factor">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">split_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/device.html#split_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.split_factor" title="Permalink to this definition"></a></dt>
 <dd><p>Get a device’s global split factor, which can be used to scale the device’s
-batch splitting chunk sizes across the codebase.
-If the global split factor is set for a given device,</p>
-<blockquote>
-<div><p>returns the split factor value for the device from the split factors dictionary</p>
-</div></blockquote>
+batch splitting chunk sizes across the codebase.</p>
 <dl class="simple">
+<dt>If the global split factor is set for a given device,</dt><dd><p>returns the split factor value for the device from the split factors dictionary</p>
+</dd>
 <dt>If the global split factor for a device is not configured,</dt><dd><p>returns the default value which is 0.0</p>
 </dd>
 </dl>
