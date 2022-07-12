@@ -70,5 +70,4 @@ def conv3d_transpose(
 ) -> JaxArray:
     return JaxArray.nn.conv3d_transpose(
         x, filters, strides, padding, None, dilations, (data_format, "WIO", data_format)
-
-    
+    ) 
