@@ -794,6 +794,9 @@ def is_int_dtype(
 
     >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
         dtype = ivy.int16)
+    >>> print(x.dtype)
+    <dtype:'int16'>
+
     >>> print(ivy.is_int_dtype(x))
     True
 
