@@ -944,25 +944,10 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
     >>> print(ivy.valid_dtype(ivy.int8))
         True
 
-    >>> print(ivy.valid_dtype(ivy.int16))
-        True
-
-    >>> print(ivy.valid_dtype('int32'))
-        True
-
     >>> print(ivy.valid_dtype(ivy.int64))
         True
 
     >>> print(ivy.valid_dtype(ivy.uint8))
-        True
-
-    >>> print(ivy.valid_dtype(ivy.uint16))
-        True
-
-    >>> print(ivy.valid_dtype(ivy.uint32))
-        True
-
-    >>> print(ivy.valid_dtype('uint64'))
         True
 
     with :code:`ivy.NativeDtype` inputs:
@@ -993,12 +978,6 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
 
     >>> print(ivy.valid_dtype(ivy.native_uint8))
         True
-
-    >>> print(ivy.valid_dtype(ivy.native_uint16))
-        True
-
-    >>> print(ivy.valid_dtype('native_uint32'))
-        False
 
     >>> print(ivy.valid_dtype('native_uint64'))
         False
