@@ -209,9 +209,34 @@
         <span class="n">set_default_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+<div class="viewcode-block" id="DefaultDevice.__exit__"><a class="viewcode-back" href="../../../../functional/ivy/device.html#ivy.functional.ivy.device.DefaultDevice.__exit__">[docs]</a>    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Exit the runtime context related to the specified device.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Self, an instance of the same class.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        A &quot;gpu&quot; as device:</span>
+<span class="sd">        &gt;&gt;&gt; with ivy.DefaultDevice(&quot;gpu&quot;) as device:</span>
+<span class="sd">        &gt;&gt;&gt;     pass</span>
+<span class="sd">        &gt;&gt;&gt; # after with block device.__exit__() is called</span>
+<span class="sd">        &gt;&gt;&gt; print(device._dev)</span>
+<span class="sd">        &quot;cpu&quot;</span>
+
+<span class="sd">        A &quot;tpu&quot; as device:</span>
+<span class="sd">        &gt;&gt;&gt; with ivy.DefaultDevice(&quot;tpu&quot;) as device:</span>
+<span class="sd">        &gt;&gt;&gt;     pass</span>
+<span class="sd">        &gt;&gt;&gt; # after with block device.__exit__() is called</span>
+<span class="sd">        &gt;&gt;&gt; print(device._dev)</span>
+<span class="sd">        &quot;cpu&quot;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">unset_default_device</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
 
 
 <span class="c1"># Helpers #</span>
@@ -881,8 +906,10 @@
 
 
 <div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get a device&#39;s global split factor, which can be used to scale the device&#39;s</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a device&#39;s global split factor, which can be used to scale the device&#39;s</span>
 <span class="sd">    batch splitting chunk sizes across the codebase.</span>
+
 <span class="sd">    If the global split factor is set for a given device,</span>
 <span class="sd">        returns the split factor value for the device from the split factors dictionary</span>
 <span class="sd">    If the global split factor for a device is not configured,</span>
