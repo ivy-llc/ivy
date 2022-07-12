@@ -1247,7 +1247,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     ret
         Boolean as to whether the array contains nans.
 
-    Examples
+    Functional Examples
     --------
     With :code:`ivy.Array` inputs:
 
@@ -1266,6 +1266,11 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     >>> print(y)
     True
 
+    >>> x = ivy.array([float('inf'), 2, 3])
+    >>> y = ivy.has_nans(x, False)
+    >>> print(y)
+    False
+
     With :code:`ivy.native_array` inputs:
 
     >>> x = ivy.native_array([1, 2, 3])
@@ -1282,6 +1287,47 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     >>> y = ivy.has_nans(x)
     >>> print(y)
     True
+
+    >>> x = ivy.native_array([float('inf'), 2, 3])
+    >>> y = ivy.has_nans(x, False)
+    >>> print(y)
+    False
+
+
+    Instance Method Examples
+
+    With :code:`ivy.array` instance method:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = x.has_nans()
+    >>> print(y)
+    False
+
+    >>> x = ivy.array([float('inf'), 2, 3])
+    >>> y = x.has_nans()
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([float('inf'), 2, 3])
+    >>> y = x.has_nans(False)
+    >>> print(y)
+    False
+
+    With :code:`ivy.native_array` instance method:
+    >>> x = ivy.native_array([1, 2, 3])
+    >>> y = x.has_nans()
+    >>> print(y)
+    False
+
+    >>> x = ivy.native_array([float('inf'), 2, 3])
+    >>> y = x.has_nans()
+    >>> print(y)
+    True
+
+    >>> x = ivy.native_array([float('inf'), 2, 3])
+    >>> y = x.has_nans(False)
+    >>> print(y)
+    False
 
     """
     return value_is_nan(ivy.sum(x), include_infs)
