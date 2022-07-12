@@ -14,6 +14,7 @@ class ArrayWithGradients(abc.ABC):
         ivy.Array instance method variant of ivy.is_variable.
         This method simply wraps the function, and so the docstring
         for ivy.is_variable also applies to this method with minimal changes.
+
         Examples
         --------
         with :code:`ivy.Array` input:
