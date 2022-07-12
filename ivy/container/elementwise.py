@@ -736,6 +736,15 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([11.2, 0.649]),
             b: ivy.array([220., -0.959])
         }
+
+        With :code:`out` option
+        >>> y = ivy.Container(a=ivy.array([0., 0.]))
+        >>> x = ivy.Container(a=ivy.array([4., -2.]))
+        >>> _ = x.expm1(out=y)
+        >>> print(y)
+        {
+            a: ivy.array([53.6, -0.865])
+        }
         """
         return self.handle_inplace(
             self.map(
