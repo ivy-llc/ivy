@@ -419,7 +419,7 @@
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="DefaultDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+<div class="viewcode-block" id="DefaultDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -435,7 +435,7 @@
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="DefaultFloatDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultFloatDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">):</span>
+<div class="viewcode-block" id="DefaultFloatDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultFloatDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_float_dtype</span> <span class="o">=</span> <span class="n">float_dtype</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -451,7 +451,7 @@
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="DefaultIntDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultIntDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">):</span>
+<div class="viewcode-block" id="DefaultIntDtype.__init__"><a class="viewcode-back" href="../../../../functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultIntDtype.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">float_dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_float_dtype</span> <span class="o">=</span> <span class="n">float_dtype</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -516,7 +516,7 @@
 
 <span class="c1"># len(get_binary_from_float(x)) &gt;24 and int(get_binary_from_float(x)[24:])&gt;0)</span>
 <span class="c1"># noinspection PyShadowingBuiltins</span>
-<span class="k">def</span> <span class="nf">_check_float64</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_check_float64</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
         <span class="n">exponent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">input</span><span class="p">))))</span> <span class="k">if</span> <span class="nb">input</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
