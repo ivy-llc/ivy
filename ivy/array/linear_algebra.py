@@ -94,6 +94,33 @@ class ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.matrix_rank(self._data, rtol, out=out)
+        """
+        ivy.Array instance method variant of ivy.matrix_rank. This method returns 
+        the rank (i.e., number of non-zero singular values) of a matrix (or a stack of
+        matrices).
+        
+        Examples
+        --------
+        1. Full Matrix
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> ivy.matrix_rank(x)
+        ivy.array(2.)
+
+        2. Rank Deficient Matrix
+        >>> x = ivy.array([[1., 0.], [0., 0.]])
+        >>> ivy.matrix_rank(x)
+        ivy.array(1.)
+
+        3. 1 Dimension - rank 1 unless all 0
+        >>> x = ivy.array([[1., 1.])
+        >>> ivy.matrix_rank(x)
+        ivy.array(1.)
+
+        >>> x = ivy.array([[0., 0.])
+        >>> ivy.matrix_rank(x)
+        ivy.array(0)
+        
+        """
 
     def matrix_transpose(
         self: ivy.Array, *, out: Optional[ivy.Array] = None
