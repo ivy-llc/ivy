@@ -88,7 +88,7 @@ def get_referrers_recursive(
 
 
 def is_native_array(
-    x: Any, 
+    x: Union[ivy.Array, ivy.NativeArray],
     exclusive: bool = False
 ) -> bool:
     """
@@ -116,6 +116,18 @@ def is_native_array(
     >>> x = ivy.native_array([1.5, 2.3, 4.9, 2.6])
     >>> ivy.is_native_array(x)
     True
+
+    >>> x = ivy.native_array([-1, 2, 7, -3])
+    >>> ivy.is_native_array(x, False)
+    True
+    
+    >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
+    >>> ivy.is_native_array(x, True)
+    True
+
+    >>> x = ivy.array([5, 2, 6, 9])
+    >>> ivy.is_native_array(x, True)
+    False
 
     """
     try:
