@@ -52,7 +52,7 @@ native_dtype_dict = {
 
 
 class Finfo:
-    def __init__(self, np_finfo):
+    def __init__(self, np_finfo: np.finfo):
         self._np_finfo = np_finfo
 
     @property
@@ -141,7 +141,7 @@ def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> np.dtype:
 # ------#
 
 
-def dtype_bits(dtype_in):
+def dtype_bits(dtype_in: Union[np.dtype, str]) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
@@ -153,19 +153,19 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_native=False):
+def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype
     return as_ivy_dtype(x.dtype)
 
 
-def as_ivy_dtype(dtype_in):
+def as_ivy_dtype(dtype_in: Union[np.dtype, str]) -> ivy.Dtype:
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-def as_native_dtype(dtype_in):
+def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
     return native_dtype_dict[ivy.Dtype(dtype_in)]
