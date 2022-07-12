@@ -20,8 +20,8 @@ class ArrayWithNorms(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.cholesky. This method simply wraps the
-        function, and so the docstring for ivy.cholesky also applies to this method
+        ivy.Array instance method variant of ivy.layer_norm. This method simply wraps the
+        function, and so the docstring for ivy.layer_norm also applies to this method
         with minimal changes.
 
         Examples
@@ -33,8 +33,8 @@ class ArrayWithNorms(abc.ABC):
                        new_std=1.5, offset=0.5, scale=0.5)
         >>> print(norm)
         ivy.array([[ 0.576,  0.292,  1.33 ],
-               [ 0.581,  0.891,  1.33 ],
-               [ 1.01 , -0.579, -0.931]])
+                   [ 0.581,  0.891,  1.33 ],
+                   [ 1.01 , -0.579, -0.931]])
 
         """
         return ivy.layer_norm(
