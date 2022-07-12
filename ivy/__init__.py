@@ -65,13 +65,17 @@ class Dtype(str):
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
-        assert isinstance(shape_tup, (int, list, tuple))
+        assert isinstance(
+            shape_tup, (int, list, tuple, ivy.current_backend().NativeShape)
+        )
         if isinstance(shape_tup, int):
             shape_tup = tuple([shape_tup])
         elif isinstance(shape_tup, list):
             shape_tup = tuple(shape_tup)
         for v in shape_tup:
             assert isinstance(v, int)
+        if ivy.get_shape_array_mode():
+            return ivy.array(shape_tup)
         return tuple.__new__(cls, shape_tup)
 
 
