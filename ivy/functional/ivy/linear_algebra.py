@@ -1086,42 +1086,6 @@ def svdvals(
         b: ivy.array([15.8, 5.56, 4.17, 0.864])
     }
 
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[8.0, 3.0], [2.0, 3.0],\
-                       [2.0, 1.0], [3.0, 4.0],\
-                       [4.0, 1.0], [5.0, 6.0]])
-    >>> y = x.svdvals()
-    >>> print(y)
-    ivy.array([13.4, 3.88])
-
-    Using :code:`ivy.NativeArray` instance method:
-
-    >>> x = ivy.native_array([[8.0, 3.0, 8.0, 9.0], [2.0, 3.0, 1.0, 4.0],\
-                              [2.0, 1.0, 7.0, 2.0], [3.0, 4.0, 8.0, 3.0],\
-                              [4.0, 1.0, 1.0, 4.0], [5.0, 6.0, 2.0, 7.0],\
-                              [8.0, 9.0, 7.0, 4.0], [1.0, 9.0, 2.0, 3.0]])
-    >>> y = x.svdvals()
-    >>> print(y)
-    ivy.array([20.7, 7.97, 6.25, 0.913])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([[2.0, 3.0, 6.0], [5.0, 3.0, 4.0],\
-                                       [1.0, 7.0, 3.0], [3.0, 2.0, 5.0]]),
-                          b=ivy.array([[7.0, 1.0, 2.0, 3.0, 9.0],\
-                                       [2.0, 5.0, 3.0, 4.0, 10.0],\
-                                       [2.0, 11.0, 6.0, 1.0, 3.0],\
-                                       [8.0, 3.0, 4.0, 5.0, 9.0]]))
-    >>> y = x.svdvals()
-    >>> print(y)
-    {
-        a: ivy.array([13., 4.64, 2.55]),
-        b: ivy.array([23.2, 10.4, 4.31, 1.36])
-    }
 
     """
     return current_backend(x).svdvals(x, out=out)
