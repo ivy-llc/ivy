@@ -1041,8 +1041,6 @@ def svdvals(
     >>> print(S.shape)
     (6,)
 
-    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
-
     >>> _, SS, _ = ivy.svd(x)
     >>> print(SS.shape)
     (6,)
@@ -1062,7 +1060,6 @@ def svdvals(
     >>> print(S)
     ivy.array([10.3, 1.16, 0.615])
 
-    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
     >>> _, SS, _ = ivy.svd(x)
     >>> print(SS)
     ivy.array([10.3, 1.16, 0.615])
