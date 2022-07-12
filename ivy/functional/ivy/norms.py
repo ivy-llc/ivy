@@ -58,7 +58,7 @@ def layer_norm(
            [ 0.894,  2.68 ]])
 
     >>> arr = ivy.array([[1., 2., 3.], [4., 5., 6.]])
-    >>> normidxs = ivy.zeros((2, 3))
+    >>> norm = ivy.zeros((2, 3))
     >>> ivy.layer_norm(arr, [0], out=norm)
     >>> print(norm)
     ivy.array([[-1., -1., -1.],
