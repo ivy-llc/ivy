@@ -148,8 +148,8 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.cholesky. This method simply wraps the</span>
-<span class="sd">        function, and so the docstring for ivy.cholesky also applies to this method</span>
+<span class="sd">        ivy.Array instance method variant of ivy.layer_norm. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.layer_norm also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
 
 <span class="sd">        Examples</span>
@@ -161,8 +161,8 @@
 <span class="sd">                       new_std=1.5, offset=0.5, scale=0.5)</span>
 <span class="sd">        &gt;&gt;&gt; print(norm)</span>
 <span class="sd">        ivy.array([[ 0.576,  0.292,  1.33 ],</span>
-<span class="sd">               [ 0.581,  0.891,  1.33 ],</span>
-<span class="sd">               [ 1.01 , -0.579, -0.931]])</span>
+<span class="sd">                   [ 0.581,  0.891,  1.33 ],</span>
+<span class="sd">                   [ 1.01 , -0.579, -0.931]])</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span>
