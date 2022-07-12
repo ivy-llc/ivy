@@ -1,4 +1,4 @@
-name: test-submodule
+name: test-norms
 on:
   push:
   pull_request:
