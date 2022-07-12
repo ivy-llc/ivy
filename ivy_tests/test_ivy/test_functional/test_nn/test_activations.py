@@ -6,7 +6,6 @@ from hypothesis import given, strategies as st
 
 # local
 
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
@@ -117,6 +116,8 @@ def test_gelu(
         x = np.asarray(x, dtype=dtype),
         approximate=approximate,
     )
+    
+    
 # tanh
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
@@ -216,6 +217,7 @@ def test_softmax(
         x = np.asarray(x, dtype=dtype),
         axis = axis
     )
+
 
 # softplus
 @given(
