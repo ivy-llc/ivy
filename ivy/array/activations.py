@@ -101,7 +101,8 @@ class ArrayWithActivations(abc.ABC):
         """
         return ivy.sigmoid(self._data, out=out)
 
-    def softmax(self: ivy.Array,
+    def softmax(
+        self: ivy.Array,
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
@@ -119,7 +120,8 @@ class ArrayWithActivations(abc.ABC):
         """
         return ivy.softmax(self._data, axis, out=out)
 
-    def softplus(self: ivy.Array,
+    def softplus(
+        self: ivy.Array,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
