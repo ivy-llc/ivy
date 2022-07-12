@@ -5,9 +5,6 @@ import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence
 
-# local
-import ivy
-
 
 # Array API Standard #
 # -------------------#

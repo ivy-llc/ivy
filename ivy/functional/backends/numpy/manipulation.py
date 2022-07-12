@@ -5,8 +5,6 @@ import math
 from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
 
-import ivy
-
 
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
