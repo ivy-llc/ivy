@@ -409,7 +409,7 @@ def optimizer_update(
     >>> effective_grad = ivy.zeros(3)
     >>> lr = 3e-4
     >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
-                                    inplace=True, stop_gradients=True)
+                                    inplace=False, stop_gradients=True)
     >>> print(wsnew)
     ivy.array([1., 2., 3.])
     
@@ -426,7 +426,7 @@ def optimizer_update(
     >>> effective_grad = ivy.array([4., 5., 6.])
     >>> lr = ivy.array([3e-4])
     >>> wsnew = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
-                                    stop_gradients=False, inplace=False)
+                                    stop_gradients=False, inplace=True)
     >>> print(wsnew)
     ivy.array([0.999, 2., 3.])
     
