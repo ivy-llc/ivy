@@ -48,7 +48,7 @@ class ContainerWithElementwise(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-
+    
     def abs(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -78,7 +78,12 @@ class ContainerWithElementwise(ContainerBase):
 
         """
         return self.static_abs(
-            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+            self, 
+            key_chains, 
+            to_apply, 
+            prune_unapplied, 
+            map_sequences, 
+            out=out
         )
 
     def acosh(
@@ -1381,13 +1386,13 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_sign(
-        x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
+            x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.sign. This method simply wraps the
@@ -1447,7 +1452,12 @@ class ContainerWithElementwise(ContainerBase):
         }
         """
         return self.static_sign(
-            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out
         )
 
     def sin(
@@ -1633,13 +1643,13 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_tanh(
-        x: ivy.Container,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
+            x: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.tanh. This method simply wraps the

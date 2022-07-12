@@ -9,7 +9,10 @@ import ivy
 
 
 class ArrayWithActivations(abc.ABC):
-    def softplus(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def softplus(
+        self: ivy.Array,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
         function, and so the docstring for ivy.softplus also applies to this method

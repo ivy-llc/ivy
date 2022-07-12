@@ -213,27 +213,25 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
 )
-def test_conv1d(
-    batch_size,
-    w,
-    d_in,
-    d_out,
-    filter,
-    stride,
-    pad,
-    data_format,
-    dilations,
-    dtype,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-    device,
-):
+def test_conv1d(batch_size,
+                w,
+                d_in,
+                d_out,
+                filter,
+                stride,
+                pad,
+                data_format,
+                dilations,
+                dtype,
+                as_variable,
+                num_positional_args,
+                native_array,
+                container,
+                instance_method,
+                fw,
+                device):
     dtype = [dtype] * 2
-    if fw == "torch" and "float16" in dtype:
+    if fw == 'torch' and 'float16' in dtype:
         # not implemented for Half in torch
         return
 
@@ -245,7 +243,9 @@ def test_conv1d(
         x = np.random.uniform(size=[batch_size] + [w] + [d_in]).astype(dtype[0])
     else:
         x = np.random.uniform(size=[batch_size, d_in, w]).astype(dtype[0])
-    filters = np.random.uniform(size=[filter] + [d_in] + [d_out]).astype(dtype[1])
+    filters = np.random.uniform(size=[filter] + [d_in] + [d_out]).astype(
+        dtype[1]
+    )
     helpers.test_function(
         dtype,
         as_variable,
@@ -365,7 +365,7 @@ def test_conv2d(
         # tf conv2d does not work when CUDA is installed, but array is on CPU
         return
 
-    if fw == "torch" and "float16" in dtype:
+    if fw == 'torch' and 'float16' in dtype:
         # not implemented for Half
         return
 
@@ -381,7 +381,9 @@ def test_conv2d(
         x = np.random.uniform(size=[batch_size, x_h, x_w, d_in]).astype(dtype)
     else:
         x = np.random.uniform(size=[batch_size, d_in, x_h, x_w]).astype(dtype)
-    filters = np.random.uniform(size=[f_h, f_w, d_in, d_out]).astype(dtype)
+    filters = np.random.uniform(size=[f_h, f_w, d_in, d_out]).astype(
+        dtype
+    )
     helpers.test_function(
         dtype,
         as_variable,
@@ -815,7 +817,7 @@ def test_lstm(
     dtype = [dtype] * 7
 
     # smoke test
-    if fw == "torch" and device == "cpu" and "float16" in dtype:
+    if fw == 'torch' and device == 'cpu' and 'float16' in dtype:
         # "sigmoid_cpu" not implemented for 'Half'
         return
 
@@ -823,17 +825,21 @@ def test_lstm(
     init_h = np.ones(b + [hidden_channel]).astype(dtype[1])
     init_c = np.ones(b + [hidden_channel]).astype(dtype[2])
 
-    kernel = (
-        np.array(np.ones([input_channel, 4 * hidden_channel])).astype(dtype[3]) * 0.5
-    )
+    kernel = np.array(
+        np.ones([input_channel, 4 * hidden_channel])
+    ).astype(dtype[3]) * 0.5
 
     recurrent_kernel = (
-        np.array(np.ones([hidden_channel, 4 * hidden_channel])).astype(dtype[4]) * 0.5
+        np.array(
+            np.ones([hidden_channel, 4 * hidden_channel])
+        ).astype(dtype[4]) * 0.5
     )
 
     bias = np.random.uniform(size=[4 * hidden_channel]).astype(dtype[5])
 
-    recurrent_bias = np.random.uniform(size=[4 * hidden_channel]).astype(dtype[6])
+    recurrent_bias = np.random.uniform(
+        size=[4 * hidden_channel]
+    ).astype(dtype[6])
 
     helpers.test_function(
         dtype,
@@ -851,5 +857,5 @@ def test_lstm(
         kernel=kernel,
         recurrent_kernel=recurrent_kernel,
         bias=bias,
-        recurrent_bias=recurrent_bias,
+        recurrent_bias=recurrent_bias
     )

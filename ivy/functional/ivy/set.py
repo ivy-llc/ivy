@@ -327,7 +327,9 @@ def unique_values(
 
 @to_native_arrays_and_back
 @handle_nestable
-def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
+def unique_counts(
+    x: Union[ivy.Array, ivy.NativeArray]
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Returns the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.

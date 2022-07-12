@@ -13,8 +13,8 @@ import ivy
 
 
 def index_nest(
-    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
-    index: Union[List[int], Tuple[int], Iterable[int]],
+        nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+        index: Union[List[int], Tuple[int], Iterable[int]]
 ) -> Any:
     """Index a nested object, using a tuple of indices or keys in the case of dicts.
 

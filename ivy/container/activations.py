@@ -20,14 +20,14 @@ class ContainerWithActivations(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.softplus.
+        ivy.Container instance method variant of ivy.softplus. 
         This method simply wraps the function, and so the docstring
         for ivy.softplus also applies to this method with minimal changes.
         """
         return ContainerWithActivations.static_softplus(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
-
+    
     @staticmethod
     def static_softplus(
         x: ivy.Container,
@@ -36,7 +36,7 @@ class ContainerWithActivations(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
-        out: Optional[ivy.Container] = None,
+        out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.softplus.

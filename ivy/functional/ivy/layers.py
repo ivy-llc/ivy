@@ -21,13 +21,12 @@ from ivy.func_wrapper import (
 
 
 @handle_nestable
-def linear(
-    x: Union[ivy.Array, ivy.NativeArray],
-    weight: Union[ivy.Array, ivy.NativeArray],
-    bias: Union[ivy.Array, ivy.NativeArray] = None,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+def linear(x: Union[ivy.Array, ivy.NativeArray],
+           weight: Union[ivy.Array, ivy.NativeArray],
+           bias: Union[ivy.Array, ivy.NativeArray] = None,
+           *,
+           out: Optional[ivy.Array] = None
+           ) -> ivy.Array:
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
     batch of different network parameters are to be represented.
@@ -1004,7 +1003,7 @@ def lstm_update(
     kernel: Union[ivy.Array, ivy.NativeArray],
     recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Tuple[Any, Union[Union[ivy.Array, ivy.NativeArray], Any]]:
     """Perform long-short term memory update by unrolling time dimension of input array.
 

@@ -445,7 +445,7 @@ class Array(
         return ivy.less(self._data, other)
 
     @_native_wrapper
-    def __le__(self, other):
+    def __le__(self, other):   
         """
         Less than or equal to
 

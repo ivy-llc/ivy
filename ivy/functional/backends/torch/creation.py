@@ -66,7 +66,9 @@ def arange(
             return torch.arange(start, stop, step=step, device=device, out=out)
     else:
         dtype = as_native_dtype(default_dtype(dtype))
-        return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
+        return torch.arange(
+            start, stop, step=step, dtype=dtype, device=device, out=out
+        )
 
 
 def asarray(
