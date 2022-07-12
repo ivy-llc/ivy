@@ -8,7 +8,7 @@ jobs:
     name: Label PR
     runs-on: ubuntu-latest
     permissions:
-        pull_requests: write
+        pull-requests: write
     steps:
       - name: Checks
         uses: actions/checkout@v2
