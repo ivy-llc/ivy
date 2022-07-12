@@ -55,14 +55,14 @@ def layer_norm(
     >>> norm = ivy.layer_norm(arr, [0, 1], new_std=2.0)
     >>> print(norm)
     ivy.array([[-2.68 , -0.894],
-           [ 0.894,  2.68 ]])
+               [ 0.894,  2.68 ]])
 
     >>> arr = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> norm = ivy.zeros((2, 3))
     >>> ivy.layer_norm(arr, [0], out=norm)
     >>> print(norm)
     ivy.array([[-1., -1., -1.],
-           [ 1.,  1.,  1.]])
+               [ 1.,  1.,  1.]])
 
     >>> arr = ivy.array([[0.0976, -0.3452,  1.2740], \
         [0.1047,  0.5886,  1.2732], \
@@ -71,8 +71,8 @@ def layer_norm(
                  new_std=1.5, offset=0.5, scale=0.5)
     >>> print(norm)
     ivy.array([[ 0.576,  0.292,  1.33 ],
-           [ 0.581,  0.891,  1.33 ],
-           [ 1.01 , -0.579, -0.931]])
+               [ 0.581,  0.891,  1.33 ],
+               [ 1.01 , -0.579, -0.931]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -80,7 +80,7 @@ def layer_norm(
     >>> norm = ivy.layer_norm(arr, [0,1], new_std=1.25, offset=0.25, scale=0.3)
     >>> print(norm)
     ivy.array([[ 0.0707, -0.109 ],
-           [ 0.16  ,  0.877 ]])
+               [ 0.16  ,  0.877 ]])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
