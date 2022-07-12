@@ -1314,6 +1314,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     False
 
     With :code:`ivy.native_array` instance method:
+
     >>> x = ivy.native_array([1, 2, 3])
     >>> y = x.has_nans()
     >>> print(y)
