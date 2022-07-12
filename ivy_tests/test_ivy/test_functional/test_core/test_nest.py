@@ -7,7 +7,6 @@ import pytest
 # local
 from hypothesis import given
 import ivy
-import ivy.functional.backends.numpy
 from ivy_tests.test_ivy import helpers
 import ivy.functional.backends.numpy as ivy_np
 
@@ -242,7 +241,7 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
     nest1 = nest0 * 2
     if nest0.shape == ():
         return
-    helpers.test_array_function(
+    helpers.test_function(
         dtype,
         False,
         False,

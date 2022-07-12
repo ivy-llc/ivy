@@ -1,10 +1,10 @@
 """Collection of general Ivy compilation functions."""
 
 # global
-from typing import Callable, Any, Union, Tuple, Iterable
+from typing import Callable, Any, Union, Sequence, Iterable, Optional
 
 # local
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 
 
 # Extra #
@@ -14,9 +14,9 @@ from ivy.backend_handler import current_backend as _cur_backend
 def compile(
     func: Callable,
     dynamic: bool = True,
-    example_inputs: Union[Any, Tuple[Any]] = None,
-    static_argnums: Union[int, Iterable[int]] = None,
-    static_argnames: Union[int, Iterable[int]] = None,
+    example_inputs: Optional[Union[Any, Sequence[Any]]] = None,
+    static_argnums: Optional[Union[int, Iterable[int]]] = None,
+    static_argnames: Optional[Union[str, Iterable[str]]] = None,
 ) -> Callable:
     """Provide a function which should be compiled, for faster inference. The handle to
     the newly compiled function is returned.
@@ -40,8 +40,9 @@ def compile(
 
     Returns
     -------
+    ret
         The handle to the newly compiled function.
     """
-    return _cur_backend(example_inputs).compile(
+    return current_backend(example_inputs).compile(
         func, dynamic, example_inputs, static_argnums, static_argnames
     )

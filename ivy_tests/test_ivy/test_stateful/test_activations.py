@@ -54,7 +54,7 @@ def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.asarray(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels),
-        "float32",
+        dtype="float32",
     )
     gelu_layer = ivy.GELU()
 
@@ -120,7 +120,7 @@ def test_geglu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
         ivy.linspace(
             ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels * 2
         ),
-        "float32",
+        dtype="float32",
     )
     geglu_layer = ivy.GEGLU()
 
