@@ -3,9 +3,9 @@ gradient_descent_update
 
 .. autofunction:: ivy.functional.ivy.gradients.gradient_descent_update
 
-.. autofunction:: ivy.container.container_methods.static_gradient_descent_update
-
 .. autofunction:: ivy.container.container_methods.gradient_descent_update
+
+.. autofunction:: ivy.container.container_methods.static_gradient_descent_update
 |
 | **Supported Frameworks:**
 
