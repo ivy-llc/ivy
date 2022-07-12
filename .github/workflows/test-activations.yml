@@ -22,7 +22,7 @@ jobs:
             ivy/.hypothesis
           key: ${{ runner.os }}-hypothesis
 
-      - name: Run Activation Tests
+      - name: Run Activations Tests
         run: |
           cd ivy
           mkdir -p .hypothesis
