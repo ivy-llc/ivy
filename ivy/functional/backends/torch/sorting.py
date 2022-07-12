@@ -22,4 +22,4 @@ def sort(
     return sorted_tensor
 
 
-sort.unsupported_dtypes = ("float16", "uint16", "uint32", "uint64")
+sort.unsupported_dtypes = ("uint16", "uint32", "uint64")
