@@ -455,9 +455,6 @@ def zeros_like(
         >>> y = x.zeros_like()
         >>> print(y)
         ivy.array([0., 0., 0., 0., 0., 0.])
- 
-    
-
     """
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
