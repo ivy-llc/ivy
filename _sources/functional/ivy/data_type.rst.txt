@@ -13,35 +13,35 @@ Data type
    :maxdepth: -1
    :caption: Data type
 
-   data_type/astype.rst
-   data_type/broadcast_arrays.rst
-   data_type/broadcast_to.rst
    data_type/can_cast.rst
-   data_type/finfo.rst
    data_type/iinfo.rst
-   data_type/result_type.rst
+   data_type/finfo.rst
+   data_type/broadcast_to.rst
+   data_type/broadcast_arrays.rst
+   data_type/dtype.rst
+   data_type/astype.rst
    data_type/dtype_bits.rst
    data_type/as_ivy_dtype.rst
    data_type/as_native_dtype.rst
-   data_type/closest_valid_dtype.rst
+   data_type/default_int_dtype.rst
    data_type/default_float_dtype.rst
    data_type/default_dtype.rst
-   data_type/default_int_dtype.rst
-   data_type/dtype.rst
-   data_type/function_supported_dtypes.rst
-   data_type/function_unsupported_dtypes.rst
-   data_type/invalid_dtype.rst
+   data_type/set_default_dtype.rst
+   data_type/unset_default_dtype.rst
+   data_type/set_default_int_dtype.rst
+   data_type/unset_default_int_dtype.rst
+   data_type/set_default_float_dtype.rst
+   data_type/unset_default_float_dtype.rst
+   data_type/closest_valid_dtype.rst
    data_type/is_int_dtype.rst
    data_type/is_float_dtype.rst
-   data_type/promote_types.rst
-   data_type/set_default_dtype.rst
-   data_type/set_default_float_dtype.rst
-   data_type/set_default_int_dtype.rst
-   data_type/type_promote_arrays.rst
-   data_type/unset_default_dtype.rst
-   data_type/unset_default_float_dtype.rst
-   data_type/unset_default_int_dtype.rst
+   data_type/result_type.rst
    data_type/valid_dtype.rst
+   data_type/invalid_dtype.rst
+   data_type/function_supported_dtypes.rst
+   data_type/function_unsupported_dtypes.rst
+   data_type/promote_types.rst
+   data_type/type_promote_arrays.rst
    data_type/DefaultDtype:
     """"""
 
