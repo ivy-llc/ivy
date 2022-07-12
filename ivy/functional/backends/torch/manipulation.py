@@ -1,5 +1,4 @@
 # global
-import ivy
 import torch
 import math
 from numbers import Number
@@ -210,7 +209,6 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    assert ivy.all(ivy.less_equal(x_min, x_max))
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
