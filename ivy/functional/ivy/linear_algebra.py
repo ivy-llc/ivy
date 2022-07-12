@@ -1036,18 +1036,20 @@ def svdvals(
 
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.random_normal(shape = (8, 6))
+    >>> x = ivy.array([[5.0, 7.0], [4.0, 3.0]])
     >>> S = ivy.svdvals(x)
     >>> print(S.shape)
-    (6,)
+    (2,)
+
+    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
 
     >>> _, SS, _ = ivy.svd(x)
     >>> print(SS.shape)
-    (6,)
+    (2,)
 
     >>> error = (SS - S).abs()
     >>> print(error)
-    ivy.array([0.00e+00, 2.38e-07, 2.38e-07, 2.38e-07, 0.00e+00, 1.19e-07])
+    ivy.array([0., 0.])
 
     With :code:`ivy.NativeArray` input:
 
@@ -1063,6 +1065,8 @@ def svdvals(
     >>> _, SS, _ = ivy.svd(x)
     >>> print(SS)
     ivy.array([10.3, 1.16, 0.615])
+
+    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
 
     >>> error = (SS - S).abs()
     >>> print(error)
