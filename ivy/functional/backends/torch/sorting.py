@@ -20,3 +20,6 @@ def sort(
 ) -> torch.Tensor:
     sorted_tensor, _ = torch.sort(x, dim=axis, descending=descending, out=out)
     return sorted_tensor
+
+
+sort.unsupported_dtypes = ("float16", "uint16", "uint32", "uint64")
