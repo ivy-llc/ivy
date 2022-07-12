@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional
 
 # local
 import ivy
@@ -17,7 +17,7 @@ class ArrayWithActivations(abc.ABC):
         ivy.Array instance method variant of ivy.relu. This method simply wraps the
         function, and so the docstring for ivy.relu also applies to this method
         with minimal changes.
-        
+
         Examples
         --------
         Using :code:`ivy.Array` instance method:
@@ -36,10 +36,10 @@ class ArrayWithActivations(abc.ABC):
             out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps the
-        function, and so the docstring for ivy.leaky_relu also applies to this method
-        with minimal changes.
-        
+        ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps
+        the function, and so the docstring for ivy.leaky_relu also applies to this
+        method with minimal changes.
+
         Examples
         --------
         Using :code:`ivy.Array` instance method:
@@ -61,7 +61,7 @@ class ArrayWithActivations(abc.ABC):
         ivy.Array instance method variant of ivy.gelu. This method simply wraps the
         function, and so the docstring for ivy.gelu also applies to this method
         with minimal changes.
-        
+
         Examples
         --------
         Using :code:`ivy.Array` instance method:
@@ -82,7 +82,7 @@ class ArrayWithActivations(abc.ABC):
         ivy.Array instance method variant of ivy.tanh. This method simply wraps the
         function, and so the docstring for ivy.tanh also applies to this method
         with minimal changes.
-        
+
         Examples
         --------
         Using :code:`ivy.Array` instance method:
@@ -103,7 +103,7 @@ class ArrayWithActivations(abc.ABC):
         ivy.Array instance method variant of ivy.sigmoid. This method simply wraps the
         function, and so the docstring for ivy.sigmoid also applies to this method
         with minimal changes.
-        
+
         Examples
         --------
         Using :code:`ivy.Array` instance method:
@@ -124,7 +124,7 @@ class ArrayWithActivations(abc.ABC):
         ivy.Array instance method variant of ivy.softmax. This method simply wraps the
         function, and so the docstring for ivy.softmax also applies to this method
         with minimal changes.
-        
+
         Examples
         --------
         Using :code:`ivy.Array` instance method:
@@ -138,13 +138,13 @@ class ArrayWithActivations(abc.ABC):
         return ivy.softmax(self._data, axis, out=out)
 
     def softplus(self: ivy.Array,
-                out: Optional[ivy.Array] = None
-                ) -> ivy.Array:
+                 out: Optional[ivy.Array] = None
+                 ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
         function, and so the docstring for ivy.softplus also applies to this method
         with minimal changes.
-        
+
         Examples
         --------
         Using :code:`ivy.Array` instance method:
@@ -156,4 +156,3 @@ class ArrayWithActivations(abc.ABC):
         ivy.array([0.535, 0.42 ])
         """
         return ivy.softplus(self._data, out=out)
-
