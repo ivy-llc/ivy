@@ -1247,6 +1247,42 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     ret
         Boolean as to whether the array contains nans.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    False
+
+    >>> x = ivy.array([float('nan'), 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([float('inf'), 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
+    With :code:`ivy.native_array` inputs:
+
+    >>> x = ivy.native_array([1, 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    False
+
+    >>> x = ivy.native_array([float('nan'), 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.native_array([float('inf'), 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
     """
     return value_is_nan(ivy.sum(x), include_infs)
 
