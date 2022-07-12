@@ -149,7 +149,7 @@ the :code:`dtype` and :code:`device` arguments should both always be provided as
 with default value of :code:`None`.
 In contrast, these arguments should both be added as required arguments in the backend implementation
 at :code:`ivy/functional/backends/backend_name/category_name.py`.
-In a nutshell, by the time the backend implementation is enterred,
+In a nutshell, by the time the backend implementation is entered,
 the correct :code:`dtype` and :code:`device` to use have both already been correctly handled
 by code which is wrapped around the backend implementation.
 This is futher explained in the :ref:`Data Types` and :ref:`Devices` sections respectively.
