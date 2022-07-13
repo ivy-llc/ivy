@@ -1,9 +1,8 @@
 # global
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
@@ -20,7 +19,7 @@ from ivy.func_wrapper import (
 @handle_nestable
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[ivy.Array] = None,
@@ -68,7 +67,7 @@ def all(
 
     Functional Examples
     -------------------
-    
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
@@ -160,7 +159,7 @@ def all(
     y,but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend(x).all(x, axis, keepdims, out=out)
+    return ivy.current_backend(x).all(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -168,7 +167,7 @@ def all(
 @handle_nestable
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[ivy.Array] = None,
@@ -215,7 +214,7 @@ def any(
         results. The returned array must have a data type of ``bool``.
 
     """
-    return current_backend(x).any(x, axis, keepdims, out=out)
+    return ivy.current_backend(x).any(x, axis, keepdims, out=out)
 
 
 # Extra #
