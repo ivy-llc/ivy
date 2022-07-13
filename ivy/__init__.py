@@ -70,8 +70,7 @@ class Shape(tuple):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
             shape_tup = tuple(shape_tup)
-        for v in shape_tup:
-            assert isinstance(v, int)
+        assert all([isinstance(v, int) for v in shape_tup])
         if ivy.get_shape_array_mode():
             return ivy.array(shape_tup)
         return tuple.__new__(cls, shape_tup)
