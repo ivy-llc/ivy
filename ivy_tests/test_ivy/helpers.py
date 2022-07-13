@@ -726,8 +726,8 @@ def test_function(
     >>> fn_name = "abs"
     >>> x = np.array([-1])
     >>> test_function(input_dtypes, as_variable_flags, with_out,\
-                            num_positional_args, native_array_flags,
-    >>> container_flags, instance_method, fw, fn_name, x=x)
+                            num_positional_args, native_array_flags,\
+                            container_flags, instance_method, fw, fn_name, x=x)
 
     >>> input_dtypes = ['float64', 'float32']
     >>> as_variable_flags = [False, True]
