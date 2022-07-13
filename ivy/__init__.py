@@ -1,4 +1,5 @@
 # global
+import builtins
 import warnings
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
@@ -70,7 +71,7 @@ class Shape(tuple):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
             shape_tup = tuple(shape_tup)
-        assert ivy.all(ivy.array([isinstance(v, int) for v in shape_tup]))
+        assert builtins.all([isinstance(v, int) for v in shape_tup])
         if ivy.shape_array_mode():
             return ivy.array(shape_tup)
         return tuple.__new__(cls, shape_tup)
