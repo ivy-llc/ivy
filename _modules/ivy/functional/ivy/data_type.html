@@ -199,7 +199,8 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.astype(x, dtype = ivy.float64)</span>
+<span class="sd">    &gt;&gt;&gt; dtype = ivy.float64</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.astype(x, dtype = dtype)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([1., 2.])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -307,16 +308,15 @@
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[-1, -1, -1],\</span>
-<span class="sd">                              [1, 1, 1]],\</span>
-<span class="sd">                            dtype=&#39;int16&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \</span>
+<span class="sd">        dtype=&#39;int16&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.can_cast(x, &#39;uint8&#39;))</span>
 <span class="sd">    False</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
-<span class="sd">                          b=ivy.array([3, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
+<span class="sd">        b=ivy.array([3, 4, 5]))</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.can_cast(x, &#39;int64&#39;))</span>
 <span class="sd">    {</span>
 <span class="sd">        a: false,</span>
@@ -1037,9 +1037,8 @@
         <span class="n">default_int_dtype_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="valid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/valid_dtype.html#ivy.functional.ivy.data_type.valid_dtype">[docs]</a><span class="k">def</span> <span class="nf">valid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Determines whether the provided data type is supported by the</span>
-<span class="sd">    current framework.</span>
+<div class="viewcode-block" id="valid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/valid_dtype.html#ivy.functional.ivy.data_type.valid_dtype">[docs]</a><span class="k">def</span> <span class="nf">valid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Determines whether the provided data type is support by the current framework.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1051,65 +1050,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not the data-type string is supported.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    with :code:`ivy.Dtype` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(None))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(dtype_in = &#39;float16&#39;))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;float32&#39;))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.float64))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;bool&#39;))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.int8))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.int64))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.uint8))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    with :code:`ivy.NativeDtype` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;native_bool&#39;))</span>
-<span class="sd">        False</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_float16))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_float32))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;native_float64&#39;))</span>
-<span class="sd">        False</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_int8))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_int16))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;native_int32&#39;))</span>
-<span class="sd">        False</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_int64))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_uint8))</span>
-<span class="sd">        True</span>
-
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;native_uint64&#39;))</span>
-<span class="sd">        False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dtype_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
