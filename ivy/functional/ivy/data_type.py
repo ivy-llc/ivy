@@ -71,8 +71,7 @@ def astype(
     Examples
     --------
     >>> x = ivy.array([1, 2])
-    >>> dtype = ivy.float64
-    >>> y = ivy.astype(x, dtype = dtype)
+    >>> y = ivy.astype(x, dtype = ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
     """
@@ -180,15 +179,16 @@ def can_cast(
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
-        dtype='int16')
+    >>> x = ivy.native_array([[-1, -1, -1],\
+                              [1, 1, 1]],\
+                            dtype='int16')
     >>> print(ivy.can_cast(x, 'uint8'))
     False
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-        b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                          b=ivy.array([3, 4, 5]))
     >>> print(ivy.can_cast(x, 'int64'))
     {
         a: false,
@@ -910,7 +910,8 @@ def unset_default_int_dtype():
 
 
 def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
-    """Determines whether the provided data type is support by the current framework.
+    """Determines whether the provided data type is supported by the
+    current framework.
 
     Parameters
     ----------
