@@ -3,7 +3,6 @@
 # global
 import jax.lax as jlax
 import jax.numpy as jnp
-import jax
 
 # local
 from ivy.functional.backends.jax import JaxArray
@@ -33,7 +32,7 @@ def conv1d_transpose(
     output_shape=None,
     data_format: str = "NWC",
     dilations: int = 1,
-    transpose_kernel: (Optional[Sequence[int]])= True,
+    transpose_kernel: (Optional[Sequence[int]]) = True,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
@@ -80,7 +79,7 @@ def depthwise_conv2d(
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     cn = x.shape[-1]
-    filters = jnp.expand_dims(filters,-1)
+    filters = jnp.expand_dims(filters, -1)
     return jlax.conv_general_dilated(
         x,
         filters,
@@ -101,7 +100,7 @@ def conv2d_transpose(
     output_shape=None,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    transpose_kernel: (Optional[Sequence[int]])= True,
+    transpose_kernel: (Optional[Sequence[int]]) = True,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -145,7 +144,7 @@ def conv3d_transpose(
     output_shape=None,
     data_format: str = "NDHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    transpose_kernel: (Optional[Sequence[int]])= True,
+    transpose_kernel: (Optional[Sequence[int]]) = True,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
