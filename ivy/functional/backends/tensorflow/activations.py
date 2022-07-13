@@ -19,7 +19,8 @@ def relu(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
     return ret
 
 
-def leaky_relu(x: Tensor,
+def leaky_relu(
+    x: Tensor,
     alpha: Optional[float] = 0.2,
     out: Optional[Tensor] = None
 ) -> Tensor:
@@ -29,7 +30,8 @@ def leaky_relu(x: Tensor,
     return ret
 
 
-def gelu(x: Tensor,
+def gelu(
+    x: Tensor,
     approximate: Optional[bool] = True,
     out: Optional[Tensor] = None
 ) -> Tensor:
@@ -53,7 +55,8 @@ def tanh(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
     return ret
 
 
-def softmax(x: Tensor,
+def softmax(
+    x: Tensor,
     axis: Optional[int] = None,
     out: Optional[Tensor] = None
 ) -> Tensor:
