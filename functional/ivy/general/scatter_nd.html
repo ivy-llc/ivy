@@ -121,6 +121,9 @@
 <li class="toctree-l2"><a class="reference internal" href="indices_where.html">indices_where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="one_hot.html">one_hot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="shape.html">shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_shape_array_mode.html">set_shape_array_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unset_shape_array_mode.html">unset_shape_array_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape_array_mode.html">shape_array_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_num_dims.html">get_num_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arg_info.html">arg_info</a></li>
 </ul>
@@ -205,7 +208,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Indices for the new values to occupy.</p></li>
 <li><p><strong>updates</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Values for the new array to hold.</p></li>
-<li><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – The shape of the result. Default is None, in which case tensor argument must be (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+<li><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeShape</span></code>]]) – The shape of the result. Default is None, in which case tensor argument must be (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 provided.</p></li>
 <li><p><strong>tensor</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – The tensor in which to scatter the results, default is None, in which case the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 shape arg is used to
