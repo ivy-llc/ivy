@@ -258,9 +258,6 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<span class="n">broadcast_to</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="s2">&quot;uint8, uint16, uint32, uint64&quot;</span>
-
-
 <div class="viewcode-block" id="can_cast"><a class="viewcode-back" href="../../../../functional/ivy/data_type/can_cast/can_cast_functional.html#ivy.functional.ivy.data_type.can_cast">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">can_cast</span><span class="p">(</span>
