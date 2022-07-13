@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import List, Iterable, Optional, Union
+from typing import Iterable, Optional, Union, Sequence
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -67,7 +67,7 @@ def to_list(x: JaxArray) -> list:
     return _to_array(x).tolist()
 
 
-def shape(x: JaxArray, as_array: bool = False) -> Union[JaxArray, List[int]]:
+def shape(x: JaxArray, as_array: bool = False) -> Union[tuple, JaxArray]:
     if as_array:
         return jnp.asarray(jnp.shape(x))
     else:
@@ -192,7 +192,7 @@ def scatter_flat(
 def scatter_nd(
     indices: JaxArray, 
     updates: JaxArray, 
-    shape: Optional[Iterable[int]] = None, 
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
     tensor: Optional[JaxArray] = None, 
     reduction: str = "sum",
     *,
