@@ -1,14 +1,14 @@
 # for review
 # global
 import abc
-from typing import Optional, Tuple
+from typing import Optional, NamedTuple
 
 
 import ivy
 
 
 class ArrayWithSet(abc.ABC):
-    def unique_counts(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
+    def unique_counts(self: ivy.Array) -> NamedTuple:
         """
         ivy.Array instance method variant of ivy.unique_counts. This method simply
         wraps the function, and so the docstring for ivy.unique_counts also applies
@@ -28,8 +28,8 @@ class ArrayWithSet(abc.ABC):
 
     def unique_all(
         self: ivy.Array,
-    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
+    ) -> NamedTuple:
         return ivy.unique_all(self._data)
 
-    def unique_inverse(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
+    def unique_inverse(self: ivy.Array) -> NamedTuple:
         return ivy.unique_inverse(self._data)
