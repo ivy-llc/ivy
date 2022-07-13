@@ -2442,6 +2442,90 @@
     <span class="k">pass</span></div>
 
 
+<div class="viewcode-block" id="to_numpy"><a class="viewcode-back" href="../../../functional/ivy/general/to_numpy/to_numpy_container.html#ivy.container.container_methods.to_numpy">[docs]</a><span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container instance method variant of ivy.to_numpy.</span>
+<span class="sd">    This method simply wraps the function, and so the docstring for</span>
+<span class="sd">    ivy.to_numpy also applies to this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With one :code:`ivy.Container` instances:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\</span>
+<span class="sd">                b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.to_numpy()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: array([[-1, 0, 1],</span>
+<span class="sd">                  [-1, 0, 1],</span>
+<span class="sd">                  [1, 0, -1]], dtype=int32),</span>
+<span class="sd">        b: array([[-1, 0, 0],</span>
+<span class="sd">                  [1, 0, 1],</span>
+<span class="sd">                  [1, 1, 1]], dtype=int32)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\</span>
+<span class="sd">                        b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_to_numpy(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: array([[-1, 0, 1],</span>
+<span class="sd">                  [-1, 0, 1],</span>
+<span class="sd">                  [1, 0, -1]], dtype=int32),</span>
+<span class="sd">        b: array([[-1, 0, 0],</span>
+<span class="sd">                  [1, 0, 1],</span>
+<span class="sd">                  [1, 1, 1]], dtype=int32)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="static_to_numpy"><a class="viewcode-back" href="../../../functional/ivy/general/to_numpy/static_to_numpy_container.html#ivy.container.container_methods.static_to_numpy">[docs]</a><span class="k">def</span> <span class="nf">static_to_numpy</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container static method variant of ivy.to_numpy. This method simply wraps</span>
+<span class="sd">    the function, and so the docstring for ivy.to_numpy also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With one :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\</span>
+<span class="sd">                        b=ivy.array([1, -1, 0, 0]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_to_numpy(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: array([1, 0, 1, 1], dtype=int32),</span>
+<span class="sd">        b: array([1, -1, 0, 0], dtype=int32)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\</span>
+<span class="sd">                        b=ivy.native_array([1, 1, -1, 0]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_to_numpy(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: array([1., 0., 0., 1.], dtype=float32),</span>
+<span class="sd">        b: array([1, 1, -1, 0], dtype=int32)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
 <span class="c1">#ivy.container.gradients</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
 
@@ -3687,8 +3771,6 @@
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span>
-
-<span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
 
 <span class="c1"># noinspection PyMissingConstructor</span>
