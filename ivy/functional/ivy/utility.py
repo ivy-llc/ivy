@@ -3,7 +3,6 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
@@ -160,7 +159,7 @@ def all(
     y,but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend(x).all(x, axis, keepdims, out=out)
+    return ivy.current_backend(x).all(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -298,7 +297,7 @@ def any(
         b: ivy.array(True)
     }
     """
-    return current_backend(x).any(x, axis, keepdims, out=out)
+    return ivy.current_backend(x).any(x, axis, keepdims, out=out)
 
 
 # Extra #
