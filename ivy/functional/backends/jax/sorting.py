@@ -1,4 +1,3 @@
-# for review
 # global
 import jax.numpy as jnp
 
