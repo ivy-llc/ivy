@@ -825,7 +825,7 @@ def promote_types(
 
 def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str]):
     """
-    Sets the datatypes dtype as default data type
+    Sets the datatype dtype as default data type
 
     Parameters
     ----------
@@ -857,7 +857,6 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str]):
     >>> ivy.unset_default_dtype()
 
     With :code:`ivy.NativeDtype` input:
-
 
     >>> ivy.set_default_dtype(ivy.native_int32)
     >>> ivy.default_dtype_stack
