@@ -47,7 +47,7 @@ def layer_norm(
     -------
      ret
         The layer after applying layer normalization.
-    
+
     Functional Examples
     -------------------
 
@@ -62,6 +62,8 @@ def layer_norm(
     >>> arr = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> norm = ivy.zeros((2, 3))
     >>> ivy.layer_norm(arr, [0], out=norm)
+    ivy.array([[-1., -1., -1.],
+           [ 1.,  1.,  1.]])
     >>> print(norm)
     ivy.array([[-1., -1., -1.],
            [ 1.,  1.,  1.]])
@@ -72,16 +74,17 @@ def layer_norm(
     >>> norm = ivy.layer_norm(arr, [0, 1], epsilon=0.001, \
                  new_std=1.5, offset=0.5, scale=0.5)
     >>> print(norm)
-    ivy.array([[ 0.58 ,  0.283,  1.37 ],
-           [ 0.585,  0.909,  1.37 ],
-           [ 1.03 , -0.628, -0.997]])
+    ivy.array([[ 0.576 ,  0.292,  1.33 ],
+           [ 0.581,  0.891,  1.33 ],
+           [ 1.01 , -0.579, -0.931]])
 
     With :code:`ivy.NativeArray` input:
 
     >>> arr = ivy.native_array([[3., 1.],[4., 12.]])
     >>> norm = ivy.layer_norm(arr, [0,1], new_std=1.25, offset=0.25, scale=0.3)
     >>> print(norm)
-    ivy.array([[0.2,0.15],[0.225,0.425]])
+    ivy.array([[ 0.0707, -0.109 ],
+       [ 0.16  ,  0.877 ]])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
@@ -123,9 +126,9 @@ def layer_norm(
     >>> norm = arr.layer_norm([0, 1], epsilon=0.001, \
                  new_std=1.5, offset=0.5, scale=0.5)
     >>> print(norm)
-    ivy.array([[ 0.58 ,  0.283,  1.37 ],
-           [ 0.585,  0.909,  1.37 ],
-           [ 1.03 , -0.628, -0.997]])
+    ivy.array([[ 0.576,  0.292,  1.33 ],
+       [ 0.581,  0.891,  1.33 ],
+       [ 1.01 , -0.579, -0.931]])
 
     Using :code:`ivy.Container` instance method:
 
