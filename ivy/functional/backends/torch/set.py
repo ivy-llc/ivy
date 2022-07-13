@@ -1,3 +1,4 @@
+# for review
 # global
 import torch
 from typing import Tuple
@@ -57,7 +58,7 @@ def unique_counts(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
     return uc(v, c)
 
 
-unique_counts.unsupported_dtypes = ("uint16", "uint32", "uint64")
+unique_counts.unsupported_dtypes = ("uint16", "uint32", "uint64", "float16")
 
 
 def unique_inverse(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:

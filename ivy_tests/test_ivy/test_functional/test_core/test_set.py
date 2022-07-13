@@ -1,3 +1,4 @@
+# for review
 # global
 import numpy as np
 from hypothesis import strategies as st, given
@@ -46,7 +47,7 @@ def test_unique_values(
         instance_method,
         fw,
         "unique_values",
-        x=np.asarray(x),
+        x=np.asarray(x, dtype=dtype),
     )
 
 
@@ -86,7 +87,7 @@ def test_unique_all(
         instance_method,
         fw,
         "unique_all",
-        x=np.asarray(x),
+        x=np.asarray(x, dtype=dtype),
     )
 
 
@@ -126,7 +127,7 @@ def test_unique_counts(
         instance_method,
         fw,
         "unique_counts",
-        x=np.asarray(x),
+        x=np.asarray(x, dtype=dtype),
     )
 
 
@@ -166,5 +167,5 @@ def test_unique_inverse(
         instance_method,
         fw,
         "unique_inverse",
-        x=np.asarray(x),
+        x=np.asarray(x, dtype=dtype),
     )

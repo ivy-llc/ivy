@@ -1,3 +1,4 @@
+# for review
 # global
 from typing import Dict, List, Optional, Union
 
@@ -5,18 +6,16 @@ from typing import Dict, List, Optional, Union
 from ivy.container.base import ContainerBase
 import ivy
 
-# ToDo: implement all methods here as public instance methods
-
 
 # noinspection PyMissingConstructor
 class ContainerWithSet(ContainerBase):
     @staticmethod
     def static_unique_all(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "unique_all",
@@ -24,22 +23,22 @@ class ContainerWithSet(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences
+            map_sequences=map_sequences,
         )
 
     def unique_all(
-            self: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         return self.static_unique_all(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -48,7 +47,7 @@ class ContainerWithSet(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.unique_counts. This method simply 
@@ -74,15 +73,15 @@ class ContainerWithSet(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences
+            map_sequences=map_sequences,
         )
 
     def unique_counts(
-            self: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.unique_counts. This method
@@ -107,13 +106,13 @@ class ContainerWithSet(ContainerBase):
 
     @staticmethod
     def static_unique_values(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "unique_values",
@@ -122,17 +121,17 @@ class ContainerWithSet(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     def unique_values(
-            self: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         return self.static_unique_values(
             self,
@@ -140,16 +139,16 @@ class ContainerWithSet(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
     def static_unique_inverse(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "unique_inverse",
@@ -157,20 +156,20 @@ class ContainerWithSet(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences
+            map_sequences=map_sequences,
         )
 
     def unique_inverse(
-            self: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         return self.static_unique_inverse(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences
+            map_sequences=map_sequences,
         )
