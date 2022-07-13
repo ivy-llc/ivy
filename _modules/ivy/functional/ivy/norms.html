@@ -179,24 +179,24 @@
 <span class="sd">    --------</span>
 <span class="sd">    With :code:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; arr = ivy.array([[1.0, 2.0], [3.0, 4.0]])</span>
-<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, [0, 1], new_std=2.0)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0], [3.0, 4.0]])</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(x, [0, 1], new_std=2.0)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
 <span class="sd">    ivy.array([[-2.68 , -0.894],</span>
 <span class="sd">               [ 0.894,  2.68 ]])</span>
 
-<span class="sd">    &gt;&gt;&gt; arr = ivy.array([[1., 2., 3.], [4., 5., 6.]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2., 3.], [4., 5., 6.]])</span>
 <span class="sd">    &gt;&gt;&gt; norm = ivy.zeros((2, 3))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.layer_norm(arr, [0], out=norm)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.layer_norm(x, [0], out=norm)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
 <span class="sd">    ivy.array([[-1., -1., -1.],</span>
 <span class="sd">               [ 1.,  1.,  1.]])</span>
 
-<span class="sd">    &gt;&gt;&gt; arr = ivy.array([[0.0976, -0.3452,  1.2740], \</span>
-<span class="sd">        [0.1047,  0.5886,  1.2732], \</span>
-<span class="sd">        [0.7696, -1.7024, -2.2518]])</span>
-<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, [0, 1], epsilon=0.001, \</span>
-<span class="sd">                 new_std=1.5, offset=0.5, scale=0.5)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.0976, -0.3452,  1.2740], \</span>
+<span class="sd">                       [0.1047,  0.5886,  1.2732], \</span>
+<span class="sd">                       [0.7696, -1.7024, -2.2518]])</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(x, [0, 1], epsilon=0.001, \</span>
+<span class="sd">                              new_std=1.5, offset=0.5, scale=0.5)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
 <span class="sd">    ivy.array([[ 0.576,  0.292,  1.33 ],</span>
 <span class="sd">               [ 0.581,  0.891,  1.33 ],</span>
@@ -204,17 +204,17 @@
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; arr = ivy.native_array([[3., 1.],[4., 12.]])</span>
-<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, [0,1], new_std=1.25, offset=0.25, scale=0.3)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[3., 1.],[4., 12.]])</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(x, [0,1], new_std=1.25, offset=0.25, scale=0.3)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
 <span class="sd">    ivy.array([[ 0.0707, -0.109 ],</span>
 <span class="sd">               [ 0.16  ,  0.877 ]])</span>
 
 <span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; arr = ivy.array([[1., 2., 3.], [4., 5., 6.]])</span>
-<span class="sd">    &gt;&gt;&gt; norm_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
-<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, norm_idxs, new_std=1.25, offset=0.2)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2., 3.], [4., 5., 6.]])</span>
+<span class="sd">    &gt;&gt;&gt; normalized_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(x, normalized_idxs, new_std=1.25, offset=0.2)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([[-1.05, -1.05, -1.05],</span>
@@ -225,10 +225,10 @@
 
 <span class="sd">    With one :code:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; arr = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
-<span class="sd">                             &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
-<span class="sd">    &gt;&gt;&gt; norm_idxs = [0]</span>
-<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, norm_idxs, 1.25, 0.3)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
+<span class="sd">                           &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
+<span class="sd">    &gt;&gt;&gt; normalized_idxs = [0]</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(x, normalized_idxs, 1.25, 0.3)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0.658, 1.04, 1.3]),</span>
@@ -238,12 +238,12 @@
 
 <span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; arr = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
-<span class="sd">                             &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
-<span class="sd">    &gt;&gt;&gt; norm_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
+<span class="sd">                           &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
+<span class="sd">    &gt;&gt;&gt; normalized_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
 <span class="sd">    &gt;&gt;&gt; new_std = ivy.Container({&#39;a&#39;: 1.25, &#39;b&#39;: 1.5})</span>
 <span class="sd">    &gt;&gt;&gt; offset = ivy.Container({&#39;a&#39;: 0.2, &#39;b&#39;: 0.3})</span>
-<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(arr, norm_idxs, new_std, offset)</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.layer_norm(x, normalized_idxs, new_std, offset)</span>
 <span class="sd">    &gt;&gt;&gt; print(norm)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0.772, 1.03, 1.2]),</span>
