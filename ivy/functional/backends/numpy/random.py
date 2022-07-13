@@ -4,7 +4,7 @@
 import numpy as np
 from typing import Optional, Union, Sequence
 
-# localf
+# local
 import ivy
 
 # Extra #
