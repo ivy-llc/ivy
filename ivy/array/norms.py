@@ -26,11 +26,11 @@ class ArrayWithNorms(abc.ABC):
 
         Examples
         --------
-        >>> arr = ivy.array([[0.0976, -0.3452,  1.2740], \
+        >>> x = ivy.array([[0.0976, -0.3452,  1.2740], \
                              [0.1047,  0.5886,  1.2732], \
                              [0.7696, -1.7024, -2.2518]])
-        >>> norm = arr.layer_norm([0, 1], epsilon=0.001, \
-                       new_std=1.5, offset=0.5, scale=0.5)
+        >>> norm = x.layer_norm([0, 1], epsilon=0.001, \
+                                  new_std=1.5, offset=0.5, scale=0.5)
         >>> print(norm)
         ivy.array([[ 0.576,  0.292,  1.33 ],
                    [ 0.581,  0.891,  1.33 ],
