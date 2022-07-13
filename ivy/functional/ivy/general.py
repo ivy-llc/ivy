@@ -26,7 +26,7 @@ INF = float("inf")
 TIMEOUT = 15.0
 TMP_DIR = "/tmp"
 
-shape_array_mode = False
+shape_array_mode_stack = list()
 
 
 def get_referrers_recursive(
@@ -2562,53 +2562,62 @@ def shape(
     return current_backend(x).shape(x, as_array)
 
 
-def set_shape_array_mode() -> None:
-    """Set the mode of returning ivy.Shape or ivy.NativeShape as ivy.Array to True
+def set_shape_array_mode(mode: bool) -> None:
+    """Set the mode of returning shape as ivy.Array to the given mode instance
+
+    Parameter
+    ---------
+    mode
+        boolean whether to return shape as ivy.Array
 
     Examples
     --------
-    >>> ivy.get_shape_array_mode()
+    >>> ivy.set_shape_array_mode(False)
+    >>> ivy.shape_array_mode()
     False
 
-    >>> ivy.set_shape_array_mode()
-    >>> ivy.get_shape_array_mode()
+    >>> ivy.set_shape_array_mode(True)
+    >>> ivy.shape_array_mode()
     True
     """
-    global shape_array_mode
-    shape_array_mode = True
+    global shape_array_mode_stack
+    shape_array_mode_stack.append(mode)
 
 
 def unset_shape_array_mode() -> None:
-    """Reset the mode of returning ivy.Shape or ivy.NativeShape as ivy.Array to False
+    """Reset the mode of returning shape as ivy.Array to the previous state
 
     Examples
     --------
-    >>> ivy.set_shape_array_mode()
-    >>> ivy.get_shape_array_mode()
+    >>> ivy.set_shape_array_mode(True)
+    >>> ivy.shape_array_mode()
     True
 
     >>> ivy.unset_shape_array_mode()
-    >>> ivy.get_shape_array_mode()
+    >>> ivy.shape_array_mode()
     False
     """
-    global shape_array_mode
-    shape_array_mode = False
+    global shape_array_mode_stack
+    if shape_array_mode_stack:
+        shape_array_mode_stack.pop(-1)
 
 
-def get_shape_array_mode() -> bool:
+def shape_array_mode() -> bool:
     """Get the current state of shape_array_mode
 
     Examples
     --------
-    >>> ivy.get_shape_array_mode()
+    >>> ivy.shape_array_mode()
     False
 
-    >>> ivy.set_shape_array_mode()
-    >>> ivy.get_shape_array_mode()
+    >>> ivy.set_shape_array_mode(True)
+    >>> ivy.shape_array_mode()
     True
     """
-    global shape_array_mode
-    return shape_array_mode
+    global shape_array_mode_stack
+    if not shape_array_mode_stack:
+        return False
+    return shape_array_mode_stack[-1]
 
 
 @to_native_arrays_and_back
