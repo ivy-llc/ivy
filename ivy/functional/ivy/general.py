@@ -2563,16 +2563,50 @@ def shape(
 
 
 def set_shape_array_mode() -> None:
+    """Set the mode of returning ivy.Shape or ivy.NativeShape as ivy.Array to True
+
+    Examples
+    --------
+    >>> ivy.get_shape_array_mode()
+    False
+
+    >>> ivy.set_shape_array_mode()
+    >>> ivy.get_shape_array_mode()
+    True
+    """
     global shape_array_mode
     shape_array_mode = True
 
 
 def unset_shape_array_mode() -> None:
+    """Reset the mode of returning ivy.Shape or ivy.NativeShape as ivy.Array to False
+
+    Examples
+    --------
+    >>> ivy.set_shape_array_mode()
+    >>> ivy.get_shape_array_mode()
+    True
+
+    >>> ivy.unset_shape_array_mode()
+    >>> ivy.get_shape_array_mode()
+    False
+    """
     global shape_array_mode
     shape_array_mode = False
 
 
 def get_shape_array_mode() -> bool:
+    """Get the current state of shape_array_mode
+
+    Examples
+    --------
+    >>> ivy.get_shape_array_mode()
+    False
+
+    >>> ivy.set_shape_array_mode()
+    >>> ivy.get_shape_array_mode()
+    True
+    """
     global shape_array_mode
     return shape_array_mode
 
