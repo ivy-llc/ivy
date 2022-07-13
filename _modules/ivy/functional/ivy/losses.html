@@ -187,6 +187,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
+<span class="n">cross_entropy</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
+
+
 <div class="viewcode-block" id="binary_cross_entropy"><a class="viewcode-back" href="../../../../functional/ivy/losses/binary_cross_entropy/binary_cross_entropy_functional.html#ivy.functional.ivy.losses.binary_cross_entropy">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">binary_cross_entropy</span><span class="p">(</span>
@@ -283,6 +286,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pred</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">true</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
     <span class="p">)</span></div>
+
+
+<span class="n">binary_cross_entropy</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
 
 
 <div class="viewcode-block" id="sparse_cross_entropy"><a class="viewcode-back" href="../../../../functional/ivy/losses/sparse_cross_entropy/sparse_cross_entropy_functional.html#ivy.functional.ivy.losses.sparse_cross_entropy">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
@@ -391,6 +397,22 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">true</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">cross_entropy</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<span class="n">sparse_cross_entropy</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s2">&quot;int8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;int16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;uint16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;uint32&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;uint64&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bfloat16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float32&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;float64&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">}</span>
 </pre></div>
 
            </div>
