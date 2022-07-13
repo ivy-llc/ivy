@@ -222,7 +222,7 @@ def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, 
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     chunk_size=st.integers(1, 3),
-    axis=st.integers(0, 1),
+    axis=st.shared(st.integers(1, 3), key="num_dims").map(lambda x: x-1),
 )
 def test_split_func_call(
     array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
@@ -238,7 +238,7 @@ def test_split_func_call(
     x2 = ivy.asarray(x2)
     if as_variable:
         x1 = ivy.variable(x1)
-        x1 = ivy.variable(x2)
+        x2 = ivy.variable(x2)
 
     # function
     def func(t0, t1):
@@ -621,7 +621,6 @@ def test_total_mem_on_dev(device):
 
 
 def test_gpu_is_availble(fw):
-
     # If gpu is available but cannot be initialised it will fail the test
     if ivy.gpu_is_available():
         try:
@@ -651,7 +650,6 @@ def test_num_cpu_cores():
     assert type(ivy.num_cpu_cores()) == int
     assert ivy.num_cpu_cores() == p_cpu_cores
     assert ivy.num_cpu_cores() == m_cpu_cores
-
 
 # Still to Add #
 # ---------------#
