@@ -52,11 +52,13 @@ def test_docstrings(backend):
         "cumprod",
         "where",
         "conv3d_transpose",
-        "depthwise_conv2d",
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = ["cross_entropy"]
+    skip_arr_cont = [
+        "cross_entropy",
+        "depthwise_conv2d",
+    ]
 
     # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp
