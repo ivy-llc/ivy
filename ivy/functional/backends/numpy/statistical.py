@@ -15,7 +15,7 @@ def max(
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.asarray(np.amax(a=x, axis=axis, keepdims=keepdims, out=out))
 

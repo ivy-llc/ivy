@@ -16,7 +16,7 @@ def max(
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if axis == ():
         if ivy.exists(out):
