@@ -413,6 +413,11 @@ def zeros_like(
         >>> print(y2)
         ivy.array([[0., 0., 0.],
                    [0., 0., 0.]])
+         
+        >>> x3 = ivy.array([3., 2., 1.])
+        >>> y3 = ivy.ones(3)
+        >>> zeros_like(x3, out = y3)
+        ivy.array([0., 0., 0.])
 
     With 'ivy.NativeArray' input:
 
@@ -423,11 +428,13 @@ def zeros_like(
 
         >>> x2 = ivy.native_array([[3., 8., 2.],
                                     [2., 8., 3.]],
-                                    dtype = 'int32')
+                                    dtype = 'int32',
+                                    device = 'cpu')
         >>> y2 = ivy.zeros_like(x2)
         >>> print(y2)
         ivy.array([[0, 0, 0],
                    [0, 0, 0]])
+        # Array ``y2`` is now stored on the CPU.
                    
     With 'ivy.Container' input:
     
