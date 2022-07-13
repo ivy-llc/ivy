@@ -3,6 +3,7 @@ import hypothesis.extra.numpy as hnp
 from random import choice
 import numpy as np
 import ivy
+import ivy_tests.test_ivy.helpers as helpers
 
 
 def _fn1(x, y):
@@ -23,9 +24,11 @@ def _fn3(x, y):
        in_axes_as_cont=st.booleans())
 def test_vmap(func, shape1, shape2, in_axes_as_cont, fw):
     num_pos_args = func.__code__.co_argcount
-    array1 = np.random.normal(size=shape1)
-    array2 = np.random.normal(size=shape2)
+    array1 = np.random.randint(0, 10, shape1)
+    array2 = np.random.randint(0, 10, shape2)
     arrays = [ivy.array(array1), ivy.array(array2)]
+    # in_axes = data.draw(helpers.valid_axes(len(array1.shape)))
+
     if in_axes_as_cont:
         dim_list = list()
         for xi in arrays:
@@ -40,10 +43,11 @@ def test_vmap(func, shape1, shape2, in_axes_as_cont, fw):
     try:
         fw_res = vmapped_func(*arrays)
     except Exception as error:
-        print(error)
+        print("fw Error:", error)
         fw_res = None
 
     ivy.set_backend("jax")
+    arrays = [ivy.array(array1), ivy.array(array2)]
     if in_axes_as_cont:
         dim_list = list()
         for xi in arrays:
@@ -57,7 +61,8 @@ def test_vmap(func, shape1, shape2, in_axes_as_cont, fw):
 
     try:
         jax_res = jax_vmapped_func(*arrays)
-    except Exception:
+    except Exception as error:
+        print("jax Error:", error)
         jax_res = None
 
     ivy.unset_backend()
@@ -68,7 +73,13 @@ def test_vmap(func, shape1, shape2, in_axes_as_cont, fw):
     elif fw_res is None and jax_res is None:
         pass
     else:
-        # print("shape1:", shape1, "shape2:", shape2)
-        # print("fw_res:", fw_res)
-        # print("jax_res:", jax_res)
+        print("shape1:", shape1, "shape2:", shape2)
+        print("fw_res:", fw_res)
+        print("jax_res:", jax_res)
         assert False, "One of the results is None while other isn't"
+    #del jax_res, fw_res
+
+
+
+
+
