@@ -122,8 +122,14 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_broacast_to(
-            self, shape, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        return self.static_broadcast_to(
+            self,
+            shape,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def dtype(

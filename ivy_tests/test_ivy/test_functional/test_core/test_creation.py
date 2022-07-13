@@ -358,9 +358,8 @@ def test_eye(
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.num_positional_args("from_dlpack"),
     native_array=st.booleans(),
-    container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_from_dlpack(
@@ -369,13 +368,11 @@ def test_from_dlpack(
     with_out,
     num_positional_args,
     native_array,
-    container,
     instance_method,
     fw,
 ):
     if fw == "tensorflow" or fw == "jax":  # not working at time of commit
         return
-
     dtype, x = dtype_and_x
     helpers.test_function(
         dtype,
@@ -387,7 +384,7 @@ def test_from_dlpack(
         instance_method,
         fw,
         "from_dlpack",
-        x=np.asarray(x),
+        x=np.asarray(x, dtype=dtype),
     )
 
 
@@ -485,11 +482,12 @@ def test_full_like(
 # meshgrid
 
 
-# allows for arrays of all 1d and same dtype
+# ToDo: create arrays which are not only 1-d
 array_shape = st.shared(
-    st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=1)
+    st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=1),
+    key="array_shape",
 )
-dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes))
+dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="dtype")
 
 
 @given(
@@ -513,19 +511,19 @@ def test_meshgrid(
     num_positional_args = len(arrays)
 
     helpers.test_function(
-        dtype,
-        False,
-        False,
-        num_positional_args,
-        False,
-        False,
-        False,
-        fw,
-        "meshgrid",
-        None,
-        1e-06,
-        True,
-        "numpy",
+        input_dtypes=[dtype for _ in range(num_positional_args)],
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        container_flags=False,
+        instance_method=False,
+        fw=fw,
+        fn_name="meshgrid",
+        test_rtol=None,
+        test_atol=1e-06,
+        test_values=True,
+        ground_truth_backend="numpy",
         **kw,
     )
 
