@@ -665,6 +665,11 @@ def function_supported_dtypes(fn: Callable) -> Tuple:
     """
     supported_dtypes = tuple()
     if hasattr(fn, "supported_dtypes"):
+        if hasattr(fn, "unsupported_dtypes"):
+            raise Exception(
+                "supported_dtypes and unsupported_dtypes attributes cannot both \
+                 exist in a particular function"
+            )
         fn_supported_dtypes = fn.supported_dtypes
         if isinstance(fn_supported_dtypes, dict):
             backend_str = ivy.current_backend_str()
@@ -700,6 +705,11 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
     """
     unsupported_dtypes = ivy.invalid_dtypes
     if hasattr(fn, "unsupported_dtypes"):
+        if hasattr(fn, "supported_dtypes"):
+            raise Exception(
+                "supported_dtypes and unsupported_dtypes attributes cannot both \
+                 exist in a particular function"
+            )
         fn_unsupported_dtypes = fn.unsupported_dtypes
         if isinstance(fn_unsupported_dtypes, dict):
             backend_str = ivy.current_backend_str()
