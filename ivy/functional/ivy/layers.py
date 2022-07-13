@@ -1005,7 +1005,7 @@ def lstm_update(
     recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Tuple[Any, Union[Union[ivy.Array, ivy.NativeArray], Any]]:
+) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
     """Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters
