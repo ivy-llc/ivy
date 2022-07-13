@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 from torch import Tensor
-from typing import Union, Tuple, List, Optional
+from typing import Union, List, Optional, Sequence
 
 # local
 import ivy
@@ -100,7 +100,7 @@ def asarray(
 
 
 def empty(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -164,7 +164,7 @@ def from_dlpack(x):
 
 
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float],
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
@@ -332,7 +332,7 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
 
 # noinspection PyShadowingNames
 def ones(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -365,7 +365,7 @@ def triu(
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
     device: torch.device,
