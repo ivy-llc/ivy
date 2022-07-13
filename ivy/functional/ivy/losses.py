@@ -1,4 +1,3 @@
-# for review
 """Collection of Ivy loss functions."""
 
 # local
