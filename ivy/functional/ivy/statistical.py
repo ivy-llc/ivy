@@ -181,8 +181,8 @@ def mean(
 @handle_nestable
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -225,6 +225,58 @@ def min(
         containing the minimum values. The returned array must have the same data type
         as x.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.min.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = x.min()
+    >>> print(z)
+    ivy.array(1)
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = ivy.array([0,0,0])
+    >>> y = ivy.min(x, out=z)
+    >>> print(z)
+    ivy.array(0)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.min(x, 0, True)
+    >>> print(y)
+    ivy.array([[0, 1, 2]])
+
+    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.min(x)
+    >>> print(y)
+    ivy.array(0)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.min(x)
+    >>> print(y)
+    {
+        a: ivy.array(0.),
+        b: ivy.array(3.)
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([2, 3, 4]))
+    >>> z = x.mix()
+    >>> print(z)
+    {
+        a: ivy.array(1),
+        b: ivy.array(2)
+    }
     """
     return current_backend.min(x, axis, keepdims, out=out)
 
