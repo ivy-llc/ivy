@@ -36,8 +36,9 @@ def gelu(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if approximate:
-        ret = (0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x ** 3)
-        )))
+        ret = (
+            0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
+        )
     else:
         ret = torch.nn.functional.gelu(x)
     if ivy.exists(out):
