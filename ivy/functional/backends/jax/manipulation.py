@@ -1,7 +1,7 @@
 # global
 import math
 import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
 
 # local
@@ -61,7 +61,9 @@ def permute_dims(
 
 
 def reshape(
-    x: JaxArray, shape: Tuple[int, ...], copy: Optional[bool] = None
+    x: JaxArray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None,
 ) -> JaxArray:
     ret = jnp.reshape(x, shape)
     return ret

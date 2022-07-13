@@ -3,7 +3,7 @@ import numpy as np
 import jax
 import jaxlib
 import jax.numpy as jnp
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 
 # local
 import ivy
@@ -103,7 +103,7 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
     return jnp.broadcast_arrays(*arrays)
 
 
-def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
+def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> JaxArray:
     return jnp.broadcast_to(x, shape)
 
 
