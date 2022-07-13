@@ -1,7 +1,8 @@
 # global
+import ivy
 import numpy as np
 import math
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
 
 
@@ -60,7 +61,9 @@ def permute_dims(x: np.ndarray, axes: Tuple[int, ...]) -> np.ndarray:
 
 
 def reshape(
-    x: np.ndarray, shape: Tuple[int, ...], copy: Optional[bool] = None
+    x: np.ndarray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None,
 ) -> np.ndarray:
     ret = np.reshape(x, shape)
     return ret

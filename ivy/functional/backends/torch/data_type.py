@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 
 # local
 import ivy
@@ -56,7 +56,9 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     return torch.broadcast_tensors(*arrays)
 
 
-def broadcast_to(x: torch.Tensor, shape: Tuple[int, ...]) -> torch.Tensor:
+def broadcast_to(
+    x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
+) -> torch.Tensor:
     return torch.broadcast_to(x, shape)
 
 
