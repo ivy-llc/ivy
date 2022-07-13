@@ -65,7 +65,6 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-
         With :code:`ivy.Array` instance method:
 
         >>> x = ivy.array([1, 0, 1, 1])

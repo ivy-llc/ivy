@@ -586,6 +586,7 @@ def all_equal(
 @handle_nestable
 def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     """Converts an array into a numpy array.
+
     Parameters
     ----------
     x
@@ -708,7 +709,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
         a: array([-1, 0, 1], dtype=int32),
         b: array([1, 0, 1, 1], dtype=int32)
     }
-    
+
     """
     return current_backend(x).to_numpy(x)
 
