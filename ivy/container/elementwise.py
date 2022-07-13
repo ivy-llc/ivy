@@ -1384,6 +1384,44 @@ class ContainerWithElementwise(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_sign(
+            x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sign. This method simply wraps the
+        function, and so the docstring for ivy.sign also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0, -1., 6.6]),\
+                            b=ivy.array([-14.2, 8.3, 0.1, -0]))
+        >>> y = ivy.Container.static_sign(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., -1., 1.]),
+            b: ivy.array([-1., 1., 1., 0.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "sign",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def sign(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1393,14 +1431,70 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.sign(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        """
+        ivy.Container instance method variant of ivy.sign. This method simply wraps the
+        function, and so the docstring for ivy.sign also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
+                              b=ivy.array([1.5, -0.3, 0]),\
+                              c=ivy.array([-4.7, -5.4, 7.5]))
+        >>> y = x.sign()
+        >>> print(y)
+        {
+            a: ivy.array([-1., 1., -1.]),
+            b: ivy.array([1., -1., 0.]),
+            c: ivy.array([-1., -1., 1.])
+        }
+        """
+        return self.static_sign(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out
+        )
+
+    @staticmethod
+    def static_sin(
+        x: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sin. This method simply wraps the
+        function, and so the docstring for ivy.sin also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1., -2., -3.]),\
+                              b=ivy.array([4., 5., 6.]))
+        >>> y = ivy.Container.static_sin(x)
+        >>> print(y)
+        {
+            a: ivy.array([-0.841, -0.909, -0.141]),
+            b: ivy.array([-0.757, -0.959, -0.279])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "sin",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -1413,15 +1507,29 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.sin(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out=out,
+        """
+        ivy.Container instance method variant of ivy.sin. This method simply wraps the
+        function, and so the docstring for ivy.sin also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([-4., -5., -6.]))
+        >>> y = x.sin()
+        >>> print(y)
+        {
+            a: ivy.array([0.841, 0.909, 0.141]),
+            b: ivy.array([0.757, 0.959, 0.279])
+        }
+        """
+        return self.static_sin(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out
         )
 
     def sinh(

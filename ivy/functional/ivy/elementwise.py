@@ -3210,6 +3210,51 @@ def sign(
         an array containing the evaluated result for each element in ``x``. The returned
         array must have the same data type as ``x``.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([8.3, -0, 6.8, 0.07])
+    >>> y = ivy.sign(x)
+    >>> print(y)
+    ivy.array([1., 0., 1., 1.])
+
+    >>> x = ivy.array([[5.78, -4., -6.9, 0],\
+                       [-.4, 0.5, 8, -0.01]])
+    >>> y = ivy.sign(x)
+    >>> print(y)
+    ivy.array([[ 1., -1., -1.,  0.],
+               [-1.,  1.,  1., -1.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([8.95, -124.6, -0.001, 0, 1.5, 7.1])
+    >>> y = ivy.sign(x)
+    >>> print(y)
+    ivy.array([ 1., -1., -1.,  0.,  1.,  1.])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -0.]),\
+                          b=ivy.array([1.46, 5.9, -0.0]),\
+                          c=ivy.array([-8.23, -4.9, -2.6, 7.4]))
+    >>> y = ivy.sign(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.]),
+        b: ivy.array([1., 1., 0.]),
+        c: ivy.array([-1., -1., -1., 1.])
+    }
     """
     return current_backend(x).sign(x, out=out)
 
@@ -3250,6 +3295,54 @@ def sin(
         an array containing the sine of each element in ``x``. The returned array must
         have a floating-point data type determined by :ref:`type-promotion`.
 
+    This method conforms to the
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.elementwise_functions.sin.html>` _ in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.sin(x)
+    >>> print(y)
+    ivy.array([0., 0.841, 0.909])
+
+    >>> x = ivy.array([0., 1.2, -2.3, 3.6])
+    >>> y = ivy.zeros(4)
+    >>> ivy.sin(x, out=y)
+    >>> print(y)
+    ivy.array([0., 0.932, -0.746, -0.443])
+
+    >>> x = ivy.array([[1., 2., 3.], [-4., -5., -6.]])
+    >>> ivy.sin(x, out=x)
+    >>> print(x)
+    ivy.array([[0.841, 0.909, 0.141],
+               [0.757, 0.959, 0.279]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1.2, -2.3, 3.6])
+    >>> y = ivy.sin(x)
+    >>> print(y)
+    ivy.array([0., 0.932, -0.746, -0.443])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2., 3.]),\
+                          b=ivy.array([-4., -5., -6., -7.]))
+    >>> y = ivy.sin(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.841, 0.909, 0.141]),
+        b: ivy.array([0.757, 0.959, 0.279, -0.657])
+    }
     """
     return current_backend(x).sin(x, out=out)
 
