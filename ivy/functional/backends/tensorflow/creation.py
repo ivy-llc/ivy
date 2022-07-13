@@ -1,6 +1,6 @@
 # global
 import tensorflow as tf
-from typing import Union, Tuple, List, Optional
+from typing import Union, Sequence, List, Optional
 
 # local
 import ivy
@@ -101,7 +101,7 @@ def asarray(object_in, *, copy=None, dtype: tf.DType = None, device: str):
 
 
 def empty(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str,
@@ -155,7 +155,7 @@ def from_dlpack(x):
 
 
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float],
     *,
     dtype: tf.DType = None,
@@ -209,7 +209,7 @@ def meshgrid(
 
 
 def ones(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str,
@@ -241,7 +241,7 @@ def triu(x: Union[tf.Tensor, tf.Variable], k: int = 0) -> Union[tf.Tensor, tf.Va
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str,
