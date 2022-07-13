@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from operator import mul
 from functools import reduce
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Sequence
 from numbers import Number
 
 # local
@@ -211,7 +211,13 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
+def scatter_nd(
+    indices,
+    updates,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor=None,
+    reduction="sum",
+):
 
     # handle numeric updates
     updates = torch.tensor(
@@ -390,7 +396,7 @@ def one_hot(indices, depth: int, *, device: torch.device):
     )
 
 
-def shape(x: torch.Tensor, as_array: bool = False) -> Union[torch.Tensor, List[int]]:
+def shape(x: torch.Tensor, as_array: bool = False) -> Union[torch.Size, torch.Tensor]:
     if as_array:
         return torch.tensor(x.shape)
     else:
