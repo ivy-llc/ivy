@@ -264,13 +264,12 @@ class ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([8.,float('+inf')])
         >>> y = x.log2()
         >>> print(y)
-        ivy.array([3.,+inf])
+        ivy.array([3.,inf])
 
         >>> x = ivy.array([[-4., 1.],[-0., 4.]])
         >>> y = x.log2()
         >>> print(y)
-        ivy.array([[ nan, 0.],
-               [-inf,  2.]])
+        ivy.array([[ nan, 0.],[-inf,  2.]])
         """
         return ivy.log2(self._data, out=out)
 

@@ -2351,7 +2351,7 @@ def log2(
     >>> x = ivy.native_array([8.,float('+inf')])
     >>> y = ivy.log2(x)
     >>> print(y)
-    ivy.array([3.,+inf])
+    ivy.array([3.,inf])
 
     With :code:`ivy.Container` input:
 
@@ -2361,7 +2361,7 @@ def log2(
     >>> y = ivy.log2(x)
     >>> print(y)
     {
-        a: ivy.array([3.,+inf]),
+        a: ivy.array([3.,inf]),
         b: ivy.array([-inf, 1., nan]),
         c: ivy.array([nan, 0., -inf, 2.])
     }
