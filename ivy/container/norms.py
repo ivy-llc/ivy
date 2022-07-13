@@ -34,7 +34,7 @@ class ContainerWithNorms(ContainerBase):
         With one :code:`ivy.Container` input:
 
         >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
-                                 'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
+                               'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
         >>> normalized_idxs = [0]
         >>> norm = self.static_layer_norm(x, normalized_idxs, 1.25, 0.3)
         >>> print(norm)
