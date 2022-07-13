@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import List, Optional, Union, Sequence
+from typing import Optional, Union, Sequence
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -265,7 +265,7 @@ def one_hot(indices, depth, *, device):
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(x: np.ndarray, as_array: bool = False) -> Union[np.ndarray, List[int]]:
+def shape(x: np.ndarray, as_array: bool = False) -> Union[tuple, np.ndarray]:
     if as_array:
         return np.asarray(np.shape(x))
     else:

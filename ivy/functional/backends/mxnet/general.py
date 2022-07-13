@@ -1,5 +1,5 @@
 # global
-from typing import List, Optional, Union, Sequence
+from typing import Optional, Union, Sequence
 import ivy
 
 _round = round
@@ -246,7 +246,7 @@ def one_hot(indices, depth, device=None):
     return mx.nd.one_hot(indices, depth)
 
 
-def shape(x: mx.nd.NDArray, as_array: bool = False) -> Union[mx.nd.NDArray, List[int]]:
+def shape(x: mx.nd.NDArray, as_array: bool = False) -> Union[tuple, mx.nd.NDArray]:
     if as_array:
         return mx.nd.shape_array(x)
     else:
