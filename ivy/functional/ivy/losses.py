@@ -3,7 +3,7 @@
 # local
 import ivy
 from typing import Optional, Union
-from ivy.func_wrapper import inputs_to_ivy_arrays, handle_nestable
+from ivy.func_wrapper import handle_nestable
 
 # Extra #
 # ------#
