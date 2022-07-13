@@ -1489,6 +1489,32 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sinh. This method simply wraps the
+        function, and so the docstring for ivy.sinh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0.23, 1.12]), b=ivy.array([1, -2, 0.76]))
+        >>> y = x.sinh()
+        >>> print(y)
+        {
+            a: ivy.array([-1.18, 0.232, 1.37]),
+            b: ivy.array([1.18, -3.63, 0.835])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
+                    b=ivy.array([0.67, -0.98, -3]))
+        >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
+        >>> print(x.sinh(out=y))
+        {
+            a: ivy.array([-10., 0.347, 3.63]),
+            b: ivy.array([0.721, -1.14, -10.])
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.sinh(x_) if ivy.is_array(x_) else x_,
