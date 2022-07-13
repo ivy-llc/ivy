@@ -23,7 +23,7 @@ Arrays
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
-.. _`wrapped logic`: https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L382
+.. _`wrapped logic`: https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L95
 
 There are two types of array in Ivy, there is the :code:`ivy.NativeArray` and also the :code:`ivy.Array`.
 
