@@ -298,9 +298,24 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.repeat. This method simply wraps the
+        function, and so the docstring for ivy.repeat also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> x.repeat(2)
+        >>> print(x)
+        {
+            a: ivy.array([0., 0., 1., 1., 2., 2.]),
+            b: ivy.array([3., 3., 4., 4., 5., 5.])
+        }
+        """
         return ContainerBase.handle_inplace(
             self.map(
-                lambda x_, _: ivy.repeat(x_, repeats=repeats, axis=axis)
+                lambda x_: ivy.repeat(x_, repeats=repeats, axis=axis)
                 if ivy.is_array(x_)
                 else x_,
                 key_chains,
