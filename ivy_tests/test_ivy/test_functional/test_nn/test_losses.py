@@ -52,8 +52,6 @@ def test_cross_entropy(
     fw,
 ):
     pred_dtype, pred = dtype_and_pred
-    if fw == "torch" and pred_dtype == "float16":
-        return
     true_dtype, true = dtype_and_true
     helpers.test_function(
         [true_dtype, pred_dtype],
@@ -116,8 +114,6 @@ def test_binary_cross_entropy(
     fw,
 ):
     pred_dtype, pred = dtype_and_pred
-    if fw == "torch" and pred_dtype == "float16":
-        return
     true_dtype, true = dtype_and_true
     helpers.test_function(
         [true_dtype, pred_dtype],
@@ -181,10 +177,6 @@ def test_sparse_cross_entropy(
 ):
     true_dtype, true = dtype_and_true
     pred_dtype, pred = dtype_and_pred
-    if fw == "torch" and pred_dtype == "float16":
-        return
-    if fw == "tensorflow" and true_dtype not in ["uint8", "int32", "int64"]:
-        return
     helpers.test_function(
         [true_dtype, pred_dtype],
         as_variable,

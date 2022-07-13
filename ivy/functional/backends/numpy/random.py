@@ -2,10 +2,10 @@
 
 # global
 import numpy as np
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Union, Sequence
 
-# localf
-
+# local
+import ivy
 
 # Extra #
 # ------#
@@ -14,7 +14,7 @@ from typing import Optional, Union, Tuple, Sequence
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype=None,
     *,
     device: str,
@@ -25,7 +25,7 @@ def random_uniform(
 def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
 ) -> np.ndarray:
@@ -68,7 +68,7 @@ def multinomial(
 
 
 def randint(
-    low: int, high: int, shape: Union[int, Sequence[int]], *, device: str
+    low: int, high: int, shape: Union[ivy.NativeShape, Sequence[int]], *, device: str
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
 
