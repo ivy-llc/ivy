@@ -2291,6 +2291,7 @@ def log2(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+    
     """Calculates an implementation-dependent approximation to the base ``2`` logarithm,
     having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each
     element ``x_i`` of the input array ``x``.
@@ -2319,7 +2320,52 @@ def log2(
         an array containing the evaluated base ``2`` logarithm for each element in
         ``x``. The returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
+    
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 2.0,float('nan')])
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    ivy.array([-inf, 1., nan])
+
+    >>> x = ivy.array([[-4., 1.],\
+                       [-0., 4.]])
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    ivy.array([[ nan, 0.],
+               [-inf,  2.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([8.,float('+inf')])
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    ivy.array([3.,+inf])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([8.,float('+inf')]),\
+                          b=ivy.array([0., 2.0,float('nan')]),\
+                          c=ivy.array([-4.,1.,-0.,4.]))
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    {
+        a: ivy.array([3.,+inf]),
+        b: ivy.array([-inf, 1., nan]),
+        c: ivy.array([nan, 0., -inf, 2.])
+    }
     """
     return current_backend(x).log2(x, out=out)
 
