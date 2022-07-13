@@ -463,9 +463,24 @@ def create_args_kwargs(
     native_array_flags=None,
     container_flags=None,
 ):
-    # create args
+
+    # extract all arrays from the arguments and keyword arguments
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
+    kwargs_idxs = ivy.nested_indices_where(
+        kwargs_np, lambda x: isinstance(x, np.ndarray)
+    )
+    kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
+
+    # assert that the number of arrays aligns with the dtypes and as_variable_flags
+    assert len(arg_np_vals) + len(kwarg_np_vals) == len(input_dtypes), (
+        "Found {} arrays in the input arguments, but {} dtypes and as_variable_flags. "
+        "Make sure to pass in a sequence of bools for all associated boolean flag "
+        "inputs to test_function, with the sequence length being equal to the "
+        "number of arrays in the arguments."
+    )
+
+    # create args
     num_arg_vals = len(arg_np_vals)
     arg_array_vals = [
         ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtypes[:num_arg_vals])
@@ -488,10 +503,6 @@ def create_args_kwargs(
     ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
 
     # create kwargs
-    kwargs_idxs = ivy.nested_indices_where(
-        kwargs_np, lambda x: isinstance(x, np.ndarray)
-    )
-    kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
     kwarg_array_vals = [
         ivy.array(x, dtype=d)
         for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
