@@ -74,14 +74,6 @@ def layer_norm(
                [ 0.581,  0.891,  1.33 ],
                [ 1.01 , -0.579, -0.931]])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[3., 1.],[4., 12.]])
-    >>> norm = ivy.layer_norm(x, [0,1], new_std=1.25, offset=0.25, scale=0.3)
-    >>> print(norm)
-    ivy.array([[ 0.0707, -0.109 ],
-               [ 0.16  ,  0.877 ]])
-
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
