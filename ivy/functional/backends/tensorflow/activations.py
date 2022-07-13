@@ -71,4 +71,3 @@ def softplus(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
-
