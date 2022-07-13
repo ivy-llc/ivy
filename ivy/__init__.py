@@ -1,4 +1,5 @@
 # global
+import builtins
 import warnings
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
@@ -44,6 +45,10 @@ class NativeDtype:
     pass
 
 
+class NativeShape:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
@@ -57,6 +62,19 @@ class Dtype(str):
     def __new__(cls, dtype_str):
         assert "int" in dtype_str or "float" in dtype_str or "bool" in dtype_str
         return str.__new__(cls, dtype_str)
+
+
+class Shape(tuple):
+    def __new__(cls, shape_tup):
+        assert isinstance(shape_tup, (int, list, tuple, ivy.NativeShape))
+        if isinstance(shape_tup, int):
+            shape_tup = (shape_tup,)
+        elif isinstance(shape_tup, list):
+            shape_tup = tuple(shape_tup)
+        assert builtins.all([isinstance(v, int) for v in shape_tup])
+        if ivy.shape_array_mode():
+            return ivy.array(shape_tup)
+        return tuple.__new__(cls, shape_tup)
 
 
 class IntDtype(Dtype):
