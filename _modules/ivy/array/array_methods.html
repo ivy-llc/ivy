@@ -144,6 +144,49 @@
     <span class="k">pass</span></div>
 
 
+<span class="c1">#ivy.array.array</span>
+<span class="c1"># flake8: noqa</span>
+<span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">mul</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">.conversions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.activations</span> <span class="kn">import</span> <span class="n">ArrayWithActivations</span>
+<span class="kn">from</span> <span class="nn">.creation</span> <span class="kn">import</span> <span class="n">ArrayWithCreation</span>
+<span class="kn">from</span> <span class="nn">.data_type</span> <span class="kn">import</span> <span class="n">ArrayWithDataTypes</span>
+<span class="kn">from</span> <span class="nn">.device</span> <span class="kn">import</span> <span class="n">ArrayWithDevice</span>
+<span class="kn">from</span> <span class="nn">.elementwise</span> <span class="kn">import</span> <span class="n">ArrayWithElementwise</span>
+<span class="kn">from</span> <span class="nn">.general</span> <span class="kn">import</span> <span class="n">ArrayWithGeneral</span>
+<span class="kn">from</span> <span class="nn">.gradients</span> <span class="kn">import</span> <span class="n">ArrayWithGradients</span>
+<span class="kn">from</span> <span class="nn">.image</span> <span class="kn">import</span> <span class="n">ArrayWithImage</span>
+<span class="kn">from</span> <span class="nn">.layers</span> <span class="kn">import</span> <span class="n">ArrayWithLayers</span>
+<span class="kn">from</span> <span class="nn">.linear_algebra</span> <span class="kn">import</span> <span class="n">ArrayWithLinearAlgebra</span>
+<span class="kn">from</span> <span class="nn">.losses</span> <span class="kn">import</span> <span class="n">ArrayWithLosses</span>
+<span class="kn">from</span> <span class="nn">.manipulation</span> <span class="kn">import</span> <span class="n">ArrayWithManipulation</span>
+<span class="kn">from</span> <span class="nn">.norms</span> <span class="kn">import</span> <span class="n">ArrayWithNorms</span>
+<span class="kn">from</span> <span class="nn">.random</span> <span class="kn">import</span> <span class="n">ArrayWithRandom</span>
+<span class="kn">from</span> <span class="nn">.searching</span> <span class="kn">import</span> <span class="n">ArrayWithSearching</span>
+<span class="kn">from</span> <span class="nn">.set</span> <span class="kn">import</span> <span class="n">ArrayWithSet</span>
+<span class="kn">from</span> <span class="nn">.sorting</span> <span class="kn">import</span> <span class="n">ArrayWithSorting</span>
+<span class="kn">from</span> <span class="nn">.statistical</span> <span class="kn">import</span> <span class="n">ArrayWithStatistical</span>
+<span class="kn">from</span> <span class="nn">.utility</span> <span class="kn">import</span> <span class="n">ArrayWithUtility</span>
+<span class="kn">from</span> <span class="nn">.wrapping</span> <span class="kn">import</span> <span class="n">add_ivy_array_instance_methods</span>
+
+
+<span class="k">def</span> <span class="nf">_native_wrapper</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">decor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Array</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">decor</span>
+
+
 <span class="c1">#ivy.array.creation</span>
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>

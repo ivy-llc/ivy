@@ -322,6 +322,7 @@ Citation
    :caption: Array
 
    array/activations.rst
+   array/array.rst
    array/array_methods.rst
    array/conversions.rst
    array/creation.rst
