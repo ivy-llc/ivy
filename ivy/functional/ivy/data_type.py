@@ -909,7 +909,7 @@ def unset_default_int_dtype():
         default_int_dtype_stack.pop(-1)
 
 
-def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
+def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
     """Determines whether the provided data type is support by the current framework.
 
     Parameters
@@ -922,6 +922,65 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     ret
         Boolean, whether or not the data-type string is supported.
 
+    Examples
+    --------
+    with :code:`ivy.Dtype` inputs:
+
+    >>> print(ivy.valid_dtype(None))
+        True
+
+    >>> print(ivy.valid_dtype(dtype_in = 'float16'))
+        True
+
+    >>> print(ivy.valid_dtype('float32'))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.float64))
+        True
+
+    >>> print(ivy.valid_dtype('bool'))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.int8))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.int64))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.uint8))
+        True
+
+    with :code:`ivy.NativeDtype` inputs:
+
+    >>> print(ivy.valid_dtype('native_bool'))
+        False
+
+    >>> print(ivy.valid_dtype(ivy.native_float16))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.native_float32))
+        True
+
+    >>> print(ivy.valid_dtype('native_float64'))
+        False
+
+    >>> print(ivy.valid_dtype(ivy.native_int8))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.native_int16))
+        True
+
+    >>> print(ivy.valid_dtype('native_int32'))
+        False
+
+    >>> print(ivy.valid_dtype(ivy.native_int64))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.native_uint8))
+        True
+
+    >>> print(ivy.valid_dtype('native_uint64'))
+        False
     """
     if dtype_in is None:
         return True
