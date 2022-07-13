@@ -50,8 +50,8 @@ The Ivy API for the :code:`clip` method is as follows:
 
    # ivy/functional/ivy/elementwise.py:
    def clip(x: Union[ivy.Array, ivy.NativeArray],
-         x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-         x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+         x_min: Union[Number, ivy.Array, ivy.NativeArray],
+         x_max: Union[Number, ivy.Array, ivy.NativeArray],
          f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
         """
