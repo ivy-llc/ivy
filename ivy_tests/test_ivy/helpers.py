@@ -1116,6 +1116,7 @@ def dtype_and_values(
     max_dim_size=10,
     shape=None,
     shared_dtype=False,
+    ret_shape=False,
 ):
     if not isinstance(n_arrays, int):
         n_arrays = draw(n_arrays)
@@ -1169,6 +1170,8 @@ def dtype_and_values(
     if n_arrays == 1:
         dtype = dtype[0]
         values = values[0]
+    if ret_shape:
+        return dtype, values, shape
     return dtype, values
 
 
@@ -1189,8 +1192,9 @@ def dtype_values_axis(
     shared_dtype=False,
     min_axis=None,
     max_axis=None,
+    ret_shape=False,
 ):
-    dtype, values = draw(
+    results = draw(
         dtype_and_values(
             available_dtypes,
             min_value=min_value,
@@ -1204,8 +1208,13 @@ def dtype_values_axis(
             max_dim_size=max_dim_size,
             shape=shape,
             shared_dtype=shared_dtype,
+            ret_shape=ret_shape,
         )
     )
+    if ret_shape:
+        dtype, values, shape = results
+    else:
+        dtype, values = results
     if not isinstance(values, list):
         return dtype, values, None
     if shape is not None:
