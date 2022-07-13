@@ -175,7 +175,7 @@ def full(
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     return torch.full(
-        shape_to_tuple(shape),
+        shape_to_tuple([shape]),
         fill_value,
         dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
         device=device,
