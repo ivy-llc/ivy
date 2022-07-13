@@ -130,9 +130,6 @@ def broadcast_to(
     return current_backend(x).broadcast_to(x, shape, out=out)
 
 
-broadcast_to.unsupported_dtypes = "uint8, uint16, uint32, uint64"
-
-
 @inputs_to_native_arrays
 @handle_nestable
 def can_cast(
