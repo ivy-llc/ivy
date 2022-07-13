@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple
+from typing import Optional, Union, List, Dict
 
 # local
 import ivy
@@ -14,7 +14,7 @@ class ContainerWithRandom(ContainerBase):
     def static_random_uniform(
         low: Union[float, ivy.Container] = 0.0,
         high: Union[float, ivy.Container] = 1.0,
-        shape: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -65,7 +65,7 @@ class ContainerWithRandom(ContainerBase):
     def static_randint(
         low: Union[int, ivy.Container] = 0.0,
         high: Union[int, ivy.Container] = 1.0,
-        shape: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         *,
