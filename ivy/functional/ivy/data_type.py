@@ -71,8 +71,7 @@ def astype(
     Examples
     --------
     >>> x = ivy.array([1, 2])
-    >>> dtype = ivy.float64
-    >>> y = ivy.astype(x, dtype = dtype)
+    >>> y = ivy.astype(x, dtype = ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
     """
@@ -131,6 +130,9 @@ def broadcast_to(
     return current_backend(x).broadcast_to(x, shape, out=out)
 
 
+broadcast_to.unsupported_dtypes = "uint8, uint16, uint32, uint64"
+
+
 @inputs_to_native_arrays
 @handle_nestable
 def can_cast(
@@ -180,15 +182,16 @@ def can_cast(
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
-        dtype='int16')
+    >>> x = ivy.native_array([[-1, -1, -1],\
+                              [1, 1, 1]],\
+                            dtype='int16')
     >>> print(ivy.can_cast(x, 'uint8'))
     False
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-        b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                          b=ivy.array([3, 4, 5]))
     >>> print(ivy.can_cast(x, 'int64'))
     {
         a: false,
@@ -291,7 +294,7 @@ class DefaultDtype:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, dtype):
+    def __init__(self, dtype: ivy.Dtype):
         self._dtype = dtype
 
     def __enter__(self):
@@ -307,7 +310,7 @@ class DefaultFloatDtype:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, float_dtype):
+    def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
 
     def __enter__(self):
@@ -323,7 +326,7 @@ class DefaultIntDtype:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, float_dtype):
+    def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
 
     def __enter__(self):
@@ -388,7 +391,7 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDt
 
 # len(get_binary_from_float(x)) >24 and int(get_binary_from_float(x)[24:])>0)
 # noinspection PyShadowingBuiltins
-def _check_float64(input):
+def _check_float64(input) -> bool:
     if math.isfinite(input):
         tmp = str(input).replace("-", "").split(".")
         exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
@@ -909,8 +912,9 @@ def unset_default_int_dtype():
         default_int_dtype_stack.pop(-1)
 
 
-def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
-    """Determines whether the provided data type is support by the current framework.
+def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
+    """Determines whether the provided data type is supported by the
+    current framework.
 
     Parameters
     ----------
@@ -922,6 +926,65 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     ret
         Boolean, whether or not the data-type string is supported.
 
+    Examples
+    --------
+    with :code:`ivy.Dtype` inputs:
+
+    >>> print(ivy.valid_dtype(None))
+        True
+
+    >>> print(ivy.valid_dtype(dtype_in = 'float16'))
+        True
+
+    >>> print(ivy.valid_dtype('float32'))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.float64))
+        True
+
+    >>> print(ivy.valid_dtype('bool'))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.int8))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.int64))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.uint8))
+        True
+
+    with :code:`ivy.NativeDtype` inputs:
+
+    >>> print(ivy.valid_dtype('native_bool'))
+        False
+
+    >>> print(ivy.valid_dtype(ivy.native_float16))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.native_float32))
+        True
+
+    >>> print(ivy.valid_dtype('native_float64'))
+        False
+
+    >>> print(ivy.valid_dtype(ivy.native_int8))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.native_int16))
+        True
+
+    >>> print(ivy.valid_dtype('native_int32'))
+        False
+
+    >>> print(ivy.valid_dtype(ivy.native_int64))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.native_uint8))
+        True
+
+    >>> print(ivy.valid_dtype('native_uint64'))
+        False
     """
     if dtype_in is None:
         return True
