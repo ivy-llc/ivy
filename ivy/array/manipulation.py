@@ -40,7 +40,7 @@ class ArrayWithManipulation(abc.ABC):
 
     def reshape(
         self: ivy.Array,
-        shape: Tuple[int, ...],
+        shape: Union[ivy.Shape, ivy.NativeShape],
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -97,8 +97,8 @@ class ArrayWithManipulation(abc.ABC):
 
     def clip(
         self: ivy.Array,
-        x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-        x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+        x_min: Union[Number, ivy.Array, ivy.NativeArray],
+        x_max: Union[Number, ivy.Array, ivy.NativeArray],
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
