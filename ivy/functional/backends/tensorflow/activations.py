@@ -19,14 +19,20 @@ def relu(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
     return ret
 
 
-def leaky_relu(x: Tensor, alpha: Optional[float] = 0.2, out: Optional[Tensor] = None) -> Tensor:
+def leaky_relu(x: Tensor,
+    alpha: Optional[float] = 0.2,
+    out: Optional[Tensor] = None
+) -> Tensor:
     ret = tf.nn.leaky_relu(x, alpha)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def gelu(x: Tensor, approximate: Optional[bool] = True, out: Optional[Tensor] = None) -> Tensor:
+def gelu(x: Tensor,
+    approximate: Optional[bool] = True,
+    out: Optional[Tensor] = None
+) -> Tensor:
     ret = tf.nn.gelu(x, approximate)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
