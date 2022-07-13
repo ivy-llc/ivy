@@ -5,6 +5,7 @@ import gc
 import math
 import einops
 import inspect
+import builtins
 import numpy as np
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
@@ -1456,6 +1457,48 @@ def shape_to_tuple(shape: Union[ivy.Shape, ivy.NativeShape]):
     elif isinstance(shape, (tuple, list)):
         assert min([isinstance(d, int) for d in shape]) is True
     return tuple(shape)
+
+
+def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
+    """Returns the input shape in ivy.Shape form
+
+    Parameters
+    ----------
+    shape
+        The input to be converted
+
+    Returns
+    -------
+     ret
+        the input in ivy.Shape form
+
+    """
+    return ivy.Shape(shape)
+
+
+def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape:
+    """Returns the input shape in its native backend framework form
+
+    Parameters
+    ----------
+    shape
+        The input to be converted
+
+    Returns
+    -------
+     ret
+        the input in its native framework form
+
+    """
+    if isinstance(shape, ivy.NativeShape):
+        return shape
+    assert isinstance(shape, (int, list, tuple))
+    if isinstance(shape, int):
+        shape = (shape,)
+    elif isinstance(shape, list):
+        shape = tuple(shape)
+    assert builtins.all([isinstance(v, int) for v in shape])
+    return ivy.NativeShape(shape)
 
 
 @handle_nestable
