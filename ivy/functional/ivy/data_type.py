@@ -837,22 +837,22 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str]):
     With :code:`ivy.Dtype` input:
 
     >>> ivy.set_default_dtype("float64")
-    >>> print(ivy.default_dtype_stack)
+    >>> ivy.default_dtype_stack
         ['float64']
     >>> ivy.unset_default_dtype()
 
     >>> ivy.set_default_dtype(ivy.bool)
-    >>> print(ivy.default_dtype_stack)
+    >>> ivy.default_dtype_stack
         ['bool']
     >>> ivy.unset_default_dtype()
 
     >>> ivy.set_default_dtype(ivy.int32)
-    >>> print(ivy.default_dtype_stack)
+    >>> ivy.default_dtype_stack
         ['int32']
     >>> ivy.unset_default_dtype()
 
     >>> ivy.set_default_dtype('uint8')
-    >>> print(ivy.default_dtype_stack)
+    >>> ivy.default_dtype_stack
         ['uint8']
     >>> ivy.unset_default_dtype()
 
@@ -860,22 +860,22 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str]):
 
 
     >>> ivy.set_default_dtype(ivy.native_int32)
-    >>> print(ivy.default_dtype_stack)
+    >>> ivy.default_dtype_stack
         ['int32']
     >>> ivy.unset_default_dtype()
 
     >>> ivy.set_default_dtype('native_bool')
-    >>> print(ivy.default_dtype_stack)
+    >>> ivy.default_dtype_stack
         ['native_bool']
     >>> ivy.unset_default_dtype()
 
     >>> ivy.set_default_dtype(ivy.native_uint64)
-    >>> print(ivy.default_dtype_stack)
+    >>> ivy.default_dtype_stack
         ['uint64']
     >>> ivy.unset_default_dtype()
 
     >>> ivy.set_default_dtype('native_float64')
-    >>> print(ivy.default_dtype_stack)
+    >>> ivy.default_dtype_stack
         ['native_float64']
     >>> ivy.unset_default_dtype()
     """
