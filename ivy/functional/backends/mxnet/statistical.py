@@ -17,8 +17,9 @@ from ivy.functional.backends.mxnet import (
 
 def max(
     x: mx.nd.NDArray,
-    axis: Union[int, Tuple[int, ...]] = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    *,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if axis is None:
