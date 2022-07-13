@@ -59,6 +59,9 @@ def cross_entropy(
     return ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out)
 
 
+cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
+
+
 @inputs_to_ivy_arrays
 @handle_nestable
 def binary_cross_entropy(
@@ -155,6 +158,9 @@ def binary_cross_entropy(
     return ivy.negative(
         ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out), out=out
     )
+
+
+binary_cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @inputs_to_ivy_arrays
@@ -263,3 +269,19 @@ def sparse_cross_entropy(
     """
     true = ivy.one_hot(true, pred.shape[axis])
     return cross_entropy(true, pred, axis, epsilon, out=out)
+
+
+sparse_cross_entropy.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": (
+        "int8",
+        "int16",
+        "uint16",
+        "uint32",
+        "uint64",
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+}
