@@ -20,7 +20,7 @@ def relu(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
 def leaky_relu(x: np.ndarray,
                alpha: Optional[float] = 0.2,
                out: Optional[np.ndarray] = None
-) -> np.ndarray:
+               ) -> np.ndarray:
     ret = np.asarray(np.where(x > 0, x, x * alpha), x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -59,7 +59,7 @@ def tanh(
 def softmax(x: np.ndarray,
             axis: Optional[int] = None,
             out: Optional[np.ndarray] = None
-) -> np.ndarray:
+            ) -> np.ndarray:
     exp_x = np.exp(x, out=out)
     return exp_x / np.sum(exp_x, axis, keepdims=True, out=out)
 
