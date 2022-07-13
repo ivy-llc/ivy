@@ -379,6 +379,10 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             to_wrap, "inputs_to_native_arrays"
         ):
             to_wrap = inputs_to_native_arrays(to_wrap)
+        if hasattr(original, "inputs_to_ivy_arrays") and not hasattr(
+            to_wrap, "inputs_to_ivy_arrays"
+        ):
+            to_wrap = inputs_to_ivy_arrays(to_wrap)
         if hasattr(original, "handle_out_argument") and not hasattr(
             to_wrap, "handle_out_argument"
         ):
