@@ -126,8 +126,54 @@ def broadcast_to(
     ret
         an array having a specified shape. Must have the same data type as x.
 
+
+    Functional Examples
+    -------------------
+    With :code: 'ivy.Array' input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.broadcast_to(x, (3,3))
+    >>> print(y)
+    ivy.array([[1, 2, 3],
+               [1, 2, 3],
+               [1, 2, 3]])
+
+    With :code: 'ivy.NativeArray' input:
+
+    >>> x = ivy.native_array([0.1, 0.3])
+    >>> y = ivy.broadcast_to(x, (3,2))
+    >>> print(y)
+    ivy.array([[0.1, 0.3],
+               [0.1, 0.3],
+               [0.1, 0.3]])
+
+    With :code: 'ivy.Container' input:
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), 
+                          b=ivy.array([4, 5, 6]))
+    >>> y = ivy.broadcast_to((3,3))
+    >>> print(y)
+    {
+        a: ivy.array([[1, 2, 3], 
+                      [1, 2, 3], 
+                      [1, 2, 3]]),
+        b: ivy.array([[4, 5, 6], 
+                      [4, 5, 6], 
+                      [4, 5, 6]])
+    }
+
+
+    Instance Method Examples
+    ------------------------
+    With :code: `ivy.Array` instance method:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = x.broadcast_to((3,3))
+    >>> print(y)
+    ivy.array([[1, 2, 3],
+               [1, 2, 3],
+               [1, 2, 3]])
     """
-    return current_backend(x).broadcast_to(x, shape, out=out)
+    return current_backend(x).broadcast_to(x, shape)
 
 
 @inputs_to_native_arrays
