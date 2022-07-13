@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ivy.Container.sin &mdash; Ivy 1.0 documentation</title>
+  <title>ivy.Container.static_sin &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="ivy.Container.static_sin" href="static_sin_container.html" />
-    <link rel="prev" title="ivy.Array.sin" href="sin_array.html" /> 
+    <link rel="next" title="sinh" href="../sinh.html" />
+    <link rel="prev" title="ivy.Container.sin" href="sin_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -110,8 +110,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../sin.html">sin</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="sin_functional.html">ivy.sin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="sin_array.html">ivy.Array.sin</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.sin</a></li>
-<li class="toctree-l3"><a class="reference internal" href="static_sin_container.html">ivy.Container.static_sin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sin_container.html">ivy.Container.sin</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.static_sin</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../sinh.html">sinh</a></li>
@@ -182,9 +182,9 @@
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../../elementwise.html">Elementwise</a> &raquo;</li>
           <li><a href="../sin.html">sin</a> &raquo;</li>
-      <li>ivy.Container.sin</li>
+      <li>ivy.Container.static_sin</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/functional/ivy/elementwise/sin/sin_container.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/elementwise/sin/static_sin_container.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -192,20 +192,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ivy-container-sin">
-<h1>ivy.Container.sin<a class="headerlink" href="#ivy-container-sin" title="Permalink to this heading"></a></h1>
+  <section id="ivy-container-static-sin">
+<h1>ivy.Container.static_sin<a class="headerlink" href="#ivy-container-static-sin" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.sin">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">sin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/elementwise.html#ContainerWithElementwise.sin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.sin" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container instance method variant of <a href="../sin/sin_functional.html">ivy.sin</a>. This method simply for <a href="../sin/sin_functional.html">ivy.sin</a> and so the docstring for ivy.sin also applies to this method
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_sin">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_sin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/elementwise.html#ContainerWithElementwise.static_sin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_sin" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of <a href="../sin/sin_functional.html">ivy.sin</a>. This method simply for <a href="../sin/sin_functional.html">ivy.sin</a> and so the docstring for ivy.sin also applies to this method
 with minimal changes.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">sin</span><span class="p">()</span>
+<p>With one <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.</span><span class="p">]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: ivy.array([0.841, 0.909, 0.141]),</span>
-<span class="go">    b: ivy.array([0.757, 0.959, 0.279])</span>
+<span class="go">    a: ivy.array([-0.841, -0.909, -0.141]),</span>
+<span class="go">    b: ivy.array([-0.757, -0.959, -0.279])</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -227,8 +228,8 @@ with minimal changes.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sin_array.html" class="btn btn-neutral float-left" title="ivy.Array.sin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="static_sin_container.html" class="btn btn-neutral float-right" title="ivy.Container.static_sin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="sin_container.html" class="btn btn-neutral float-left" title="ivy.Container.sin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../sinh.html" class="btn btn-neutral float-right" title="sinh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
