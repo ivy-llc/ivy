@@ -17,7 +17,7 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        with :code:`ivy.Array` input:
+        With :code:`ivy.Array` input:
 
         >>> x = ivy.array([-2, 0.4, 7])
         >>> is_var = x.is_variable(True)

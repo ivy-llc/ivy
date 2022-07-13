@@ -23,7 +23,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        with :code:`ivy.container` input:
+        With :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
         >>> is_var = ivy.Container.static_is_variable(x)
@@ -33,7 +33,7 @@ class ContainerWithGradients(ContainerBase):
             b: false
         }
 
-        with multiple :code:`ivy.Container` inputs:
+        With multiple :code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
         >>> exclusive = ivy.Container(a=False, b=True)
@@ -69,7 +69,7 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        with :code:`ivy.Container` input:
+        With :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
         >>> is_var = x.is_variable(exclusive=True)
@@ -79,7 +79,7 @@ class ContainerWithGradients(ContainerBase):
             b: false
         }
 
-        with multiple :code:`ivy.Container` inputs:
+        With multiple :code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
         >>> exclusive = ivy.Container(a=True, b=True)
