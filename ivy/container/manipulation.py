@@ -407,8 +407,8 @@ class ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_clip(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
-        x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+        x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -461,8 +461,8 @@ class ContainerWithManipulation(ContainerBase):
 
     def clip(
         self: ivy.Container,
-        x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
-        x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+        x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
