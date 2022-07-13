@@ -4,7 +4,7 @@
 import os
 import time
 import numpy as np
-from typing import Union
+from typing import Union, Optional
 
 # local
 import ivy
@@ -60,7 +60,7 @@ def _to_device(x: np.ndarray, device=None) -> np.ndarray:
     return x
 
 
-def to_device(x: np.ndarray, device: str) -> np.ndarray:
+def to_device(x: np.ndarray, device: str, stream: Optional[int] = None) -> np.ndarray:
     if device is not None:
         device = as_native_dev(device)
         if "gpu" in device:
