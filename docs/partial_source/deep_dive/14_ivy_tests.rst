@@ -11,6 +11,21 @@ Ivy Tests
 .. _`continuous integration`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows
 .. _`search strategies`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
+.. _ `sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
+.. _ `lists`_: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
+.. _ `booleans`_: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.booleans
+.. _ `integers`_: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.integers
+.. _ `floats`_: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.floats
+.. _ `none`_: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.none
+.. _ `tuples`_: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.tuples
+.. _ `one_of`_: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.one_of
+.. _ `shared`_: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.shared
+.. _ `sets`_: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sets
+.. _ `map`_: https://hypothesis.readthedocs.io/en/latest/data.html#mapping
+.. _ `filter`_: https://hypothesis.readthedocs.io/en/latest/data.html#filtering
+.. _ `flatmap`_: https://hypothesis.readthedocs.io/en/latest/data.html#chaining-strategies-together
+.. _ `data`_: https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.data#hypothesis.strategies.data
+.. _ `composite`_: https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.composite#hypothesis.strategies.composite
 .. _`line`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L477
 .. _`here`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L392
 .. _`this`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_sorting.py#L18
@@ -104,10 +119,10 @@ intricacies behind the helper functions in the *test_ivy* directory.
 
 In the example above, **st.lists** and **st.sampled_from** are what we call strategies. To briefly describe -:
 
-1. **sampled_from** accepts a collection of objects. This strategy will return a value that is sampled from this
+1. `sampled_from`_ accepts a collection of objects. This strategy will return a value that is sampled from this
 collection.
 
-2. **lists** accepts another strategy which describes the elements of the list being generated. This is best used when
+2. `lists`_ accepts another strategy which describes the elements of the list being generated. This is best used when
 a sequence of varying lengths is required to be generated, with elements that are described by other strategies. The
 following parameters can be specified by the user-:
 
@@ -120,11 +135,11 @@ Important Strategies
 It might be helpful to look at a few more strategies, since they are widely used across the  helper functions to
 generate custom data -:
 
-3. **booleans** - generates boolean values True or False
+3. `booleans`_ - generates boolean values True or False
 
-4. **integers** - generates integers values within a given range
+4. `integers`_ - generates integers values within a given range
 
-5. **float** -  It is a powerful strategy that generates all variety of floats, including math.inf and math.nan.
+5. `floats`_ -  It is a powerful strategy that generates all variety of floats, including math.inf and math.nan.
 You can also specify:
 
 * Math.inf and math.nan, respectively, should be included in the data description.
@@ -133,12 +148,12 @@ You can also specify:
   64-bit, width=32 ensures that the generated values can always be losslessly represented in both 32 bits. This is
   mostly useful for Numpy arrays).
 
-6. **none** - returns a strategy which only generates None.
+6. `none`_ - returns a strategy which only generates None.
 
-7. **tuples** - The strategy accepts N Hypothesis strategies, and will generate length - N tuples whose elements are drawn
+7. `tuples`_ - The strategy accepts N Hypothesis strategies, and will generate length - N tuples whose elements are drawn
 from the respective strategies that were specified as inputs.
 
-8. **one_of** - This allows us to specify a collection of strategies and any given datum will be drawn from “one of” them.
+8. `one_of`_ - This allows us to specify a collection of strategies and any given datum will be drawn from “one of” them.
 Hypothesis has the *pipe* operator overloaded as a shorthand for one_of. This has been widely used all over in Ivy Tests.
 For example, this `line`_ here, can also be written as -:
 
@@ -146,24 +161,24 @@ For example, this `line`_ here, can also be written as -:
 
     st.one_of(st.none(), st.integers(-ndim, ndim -1))
 
-9. **shared** - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
+9. `shared`_ - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
 the same key will share the same value. For example, `here`_, the parameters, *input_dtype* and *as_variable* share
 the same key *num_arrays*, hence similar values will be drawn for both arguments.
 
-10. **sets** - This is used for generating a *unique collection* of elements. Like **st.lists** it accepts another strategy
+10. `sets`_ - This is used for generating a *unique collection* of elements. Like **st.lists** it accepts another strategy
 which describes the elements of the set being generated.
 
-11. **map** - The map method, permits us to perform a mapping on the data being produced by a strategy.
+11. `map`_ - The map method, permits us to perform a mapping on the data being produced by a strategy.
 
-12. **filter** - Data is filtered using this method. It takes a callable that accepts as input the data generated by the
+12. `filter`_ - Data is filtered using this method. It takes a callable that accepts as input the data generated by the
 strategy, and returns:
 
 * True if the data should pass through the filter
 * False if the data should be rejected by the filter
 
-13. **flatmap** - This enables us to define a strategy based on a value drawn from a previous strategy.
+13. `flatmap`_ - This enables us to define a strategy based on a value drawn from a previous strategy.
 
-14. **data** - This is one of the **most** important strategies used in the project. It will often be the case that it is
+14. `data`_ - This is one of the **most** important strategies used in the project. It will often be the case that it is
 required to draw strategies in a context-dependent manner within the test. Suppose, we want to generate an array of
 values in some ivy test, but we want make sure that those values are only of the valid float types supported by Ivy.
 The st.data() strategy can be used *interactively*, and values can be drawn at test-time, using **data.draw()** method.
@@ -172,7 +187,7 @@ The **given** operator usually contains the data parameter, which is an instance
 instance is what gets drawn from the st.data() strategy. For example, at `this`_ line the keyword arguments for the
 function *test_argsort*, have been generated only after the generation of the array.
 
-15. **composite** - The second **most** widely used strategy in *Ivy tests*. This provides a decorator, which permits us to
+15. `composite`_ - The second **most** widely used strategy in *Ivy tests*. This provides a decorator, which permits us to
 form our own strategies for describing data by composing Hypothesis’ built-in strategies. For `example`_.
 
 
