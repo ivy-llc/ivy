@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import tensorflow as tf
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 from tensorflow.python.framework.dtypes import DType
 
 # local
@@ -111,7 +111,7 @@ def broadcast_arrays(
 
 def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
-    shape: Tuple[int, ...],
+    shape: Union[ivy.NativeShape, Sequence[int]],
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.broadcast_to(x, shape)
 

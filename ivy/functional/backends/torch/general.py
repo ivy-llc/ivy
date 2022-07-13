@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from operator import mul
 from functools import reduce
-from typing import List, Optional, Union, Iterable
+from typing import List, Optional, Union, Sequence
 from numbers import Number
 
 # local
@@ -235,7 +235,7 @@ def _parse_ellipsis(so, ndims):
 def scatter_nd(
     indices: torch.Tensor, 
     updates: torch.Tensor, 
-    shape: Optional[Iterable[int]] = None, 
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
     tensor: Optional[torch.Tensor] = None, 
     reduction: str = "sum",
     *,
@@ -439,7 +439,7 @@ def one_hot(
     )
 
 
-def shape(x: torch.Tensor, as_array: bool = False) -> Union[torch.Tensor, List[int]]:
+def shape(x: torch.Tensor, as_array: bool = False) -> Union[torch.Size, torch.Tensor]:
     if as_array:
         return torch.tensor(x.shape)
     else:

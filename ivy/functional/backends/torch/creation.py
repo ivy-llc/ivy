@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 from torch import Tensor
-from typing import Union, Tuple, List, Optional
+from typing import Union, List, Optional, Sequence
 
 # local
 import ivy
@@ -11,7 +11,6 @@ from ivy import (
     default_dtype,
     as_native_dev,
     default_device,
-    shape_to_tuple,
 )
 from ivy.functional.backends.torch.device import dev
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
@@ -73,9 +72,7 @@ def arange(
             return torch.arange(start, stop, step=step, device=device, out=out)
     else:
         dtype = as_native_dtype(default_dtype(dtype))
-        return torch.arange(
-            start, stop, step=step, dtype=dtype, device=device, out=out
-        )
+        return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
 
 
 arange.support_native_out = True
@@ -114,7 +111,7 @@ def asarray(
 
 
 def empty(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -192,15 +189,17 @@ def from_dlpack(
 
 
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float],
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
     out: Optional[torch.Tensor] = None
 ) -> Tensor:
+    if isinstance(shape, int):
+        shape = (shape,)
     return torch.full(
-        shape_to_tuple(shape),
+        shape,
         fill_value,
         dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
         device=device,
@@ -376,7 +375,7 @@ def meshgrid(
 
 # noinspection PyShadowingNames
 def ones(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -428,7 +427,7 @@ triu.support_native_out = True
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
     device: torch.device,
