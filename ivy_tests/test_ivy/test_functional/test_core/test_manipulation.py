@@ -442,7 +442,8 @@ def test_stack(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
     ),
-    input_dtype=st.data(),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="repeat"),
@@ -712,35 +713,15 @@ def test_clip(
     container,
     instance_method,
     device,
-    call,
     fw,
 ):
-    # smoke test
-    if (
-        (
-            isinstance(x_min_n_max[1][0], Number)
-            or isinstance(x_min_n_max[1][1], Number)
-            or isinstance(x_min_n_max[1][2], Number)
-        )
-        and as_variable
-        and call is helpers.mx_call
-    ):
-        # mxnet does not support 0-dimensional variables
-        return
-    dtype = x_min_n_max[0]
-    x = x_min_n_max[1][0]
-    min_val1 = np.array(x_min_n_max[1][1], dtype=dtype[1])
-    max_val1 = np.array(x_min_n_max[1][2], dtype=dtype[2])
-    min_val = np.minimum(min_val1, max_val1)
-    max_val = np.maximum(min_val1, max_val1)
-    if fw == "torch" and (
-        any(d in ["uint16", "uint32", "uint64", "float16"] for d in dtype)
-        or np.isnan(max_val)
-        or np.isscalar(x)
-    ):
-        return
+    (x_dtype, min_dtype, max_dtype), (x_list, min_val_list, max_val_list) = x_min_n_max
+    min_val_raw = np.array(min_val_list, dtype=min_dtype)
+    max_val_raw = np.array(max_val_list, dtype=max_dtype)
+    min_val = np.asarray(np.minimum(min_val_raw, max_val_raw))
+    max_val = np.asarray(np.maximum(min_val_raw, max_val_raw))
     helpers.test_function(
-        dtype,
+        [x_dtype, min_dtype, max_dtype],
         as_variable,
         with_out,
         num_positional_args,
@@ -749,9 +730,9 @@ def test_clip(
         instance_method,
         fw,
         "clip",
-        x=np.asarray(x, dtype=dtype[0]),
-        x_min=ivy.array(min_val),
-        x_max=ivy.array(max_val),
+        x=np.asarray(x_list, dtype=x_dtype),
+        x_min=min_val,
+        x_max=max_val,
     )
 
 
