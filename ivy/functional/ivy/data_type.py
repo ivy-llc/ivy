@@ -643,31 +643,38 @@ def dtype(
 
 
 @handle_nestable
-def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
+def function_supported_dtypes(fn: Callable) -> Tuple:
     """Returns the supported data types of the current backend's function.
 
     Parameters
     ----------
     fn
-        The function to check for the unsupported dtype attribute
+        The function to check for the supported dtype attribute
 
     Returns
     -------
     ret
-        The unsupported data types of the function
+        The supported data types of the function
 
-    Examples
+    Examples (to update)
     --------
     >>> ivy.set_backend('torch')
     >>> print(ivy.function_supported_dtypes(ivy.acosh))
     ['int8', 'int16', 'int32', 'int64', 'uint8', \
      'bfloat16', 'float32', 'float64', 'bool']
     """
-    valid = list(ivy.valid_dtypes)
-    for d in list(function_unsupported_dtypes(fn)):
-        if d in valid:
-            valid.remove(d)
-    return ivy.as_native_dtype(valid)
+    supported_dtypes = tuple()
+    if hasattr(fn, "supported_dtypes"):
+        fn_supported_dtypes = fn.supported_dtypes
+        if isinstance(fn_supported_dtypes, dict):
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_supported_dtypes:
+                supported_dtypes += fn_supported_dtypes[backend_str]
+            if "all" in fn_supported_dtypes:
+                supported_dtypes += fn_supported_dtypes["all"]
+        else:
+            supported_dtypes += fn_supported_dtypes
+    return tuple(set(supported_dtypes))
 
 
 @handle_nestable
