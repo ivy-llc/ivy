@@ -11,21 +11,21 @@ Ivy Tests
 .. _`continuous integration`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows
 .. _`search strategies`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
-.. _ `sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
-.. _ `lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
-.. _ `booleans`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.booleans
-.. _ `integers`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.integers
-.. _ `floats`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.floats
-.. _ `none`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.none
-.. _ `tuples`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.tuples
-.. _ `one_of`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.one_of
-.. _ `shared`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.shared
-.. _ `sets`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sets
-.. _ `map`: https://hypothesis.readthedocs.io/en/latest/data.html#mapping
-.. _ `filter`: https://hypothesis.readthedocs.io/en/latest/data.html#filtering
-.. _ `flatmap`_: https://hypothesis.readthedocs.io/en/latest/data.html#chaining-strategies-together
-.. _ `data`_: https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.data#hypothesis.strategies.data
-.. _ `composite`_: https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.composite#hypothesis.strategies.composite
+.. _`sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
+.. _`lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
+.. _`booleans`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.booleans
+.. _`integers`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.integers
+.. _`floats`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.floats
+.. _`none`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.none
+.. _`tuples`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.tuples
+.. _`one_of`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.one_of
+.. _`shared`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.shared
+.. _`sets`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sets
+.. _`map`: https://hypothesis.readthedocs.io/en/latest/data.html#mapping
+.. _`filter`: https://hypothesis.readthedocs.io/en/latest/data.html#filtering
+.. _`flatmap`: https://hypothesis.readthedocs.io/en/latest/data.html#chaining-strategies-together
+.. _`data`: https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.data#hypothesis.strategies.data
+.. _`composite`: https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.composite#hypothesis.strategies.composite
 .. _`line`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L477
 .. _`here`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L392
 .. _`this`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_sorting.py#L18
