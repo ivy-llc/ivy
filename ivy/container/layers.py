@@ -33,9 +33,9 @@ class ContainerWithLayers(ContainerBase):
         >>> inp = ivy.Container(a=a, b=b)
         >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
         >>> y = ivy.Container.static_depthwise_conv2d( \
-                                                    inp, \ 
-                                                    filters, \ 
-                                                    strides=2, \ 
+                                                    inp, \
+                                                    filters, \
+                                                    strides=2, \
                                                     padding='SAME')
         >>> print(y.shape)
         [1, 64, 64, 3]
