@@ -171,8 +171,8 @@ def full(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
-    if isinstance(shape, int):
-        shape = (shape,)
+    # if isinstance(shape, int):
+    #     shape = (shape,)
     return torch.full(
         shape,
         fill_value,
