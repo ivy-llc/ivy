@@ -65,17 +65,17 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :code:`ivy.Array` instance methods:
 
         >>> x = ivy.array([1, 0, 1, 1])
         >>> y = x.to_numpy()
         >>> print(y)
         [1 0 1 1]
-        >>> x = ivy.array([[1, 0, 1, 1], [1., 1., 0., 0.]])
+
+        >>> x = ivy.array([1, 0, 0, 1])
         >>> y = x.to_numpy()
         >>> print(y)
-        [[1. 0. 1. 1.]
-        [1. 1. 0. 0.]]
+        [1 0 0 1]
 
         """
         return ivy.to_numpy(self)
