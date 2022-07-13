@@ -51,7 +51,7 @@ def asarray(
     object_in: Union[mx.nd.NDArray, List[Number], Tuple[Number]],
     dtype: Optional[type] = None,
     device: mx.context.Context = None,
-    copy: Optional[bool] = None,
+    copy: Optional[bool] = None
 ) -> mx.nd.NDArray:
     # mxnet don't have asarray implementation, haven't properly tested
     cont = _mxnet_init_context(default_device(device))
@@ -78,7 +78,7 @@ def asarray(
 def empty(
     shape: Union[int, Tuple[int]],
     dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None
 ) -> mx.nd.NDArray:
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.empty(shape, as_native_dtype(default_dtype(dtype)), cont)
@@ -89,7 +89,7 @@ def eye(
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
     dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None
 ) -> mx.nd.NDArray:
     cont = _mxnet_init_context(default_device(device))
     return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
@@ -97,7 +97,7 @@ def eye(
 
 # noinspection PyUnresolvedReferences
 def from_dlpack(
-    x: mx.nd.NDArray,
+    x: mx.nd.NDArray
 ) -> mx.nd.NDArray:
     return mx.nd.from_dlpack(x)
 
@@ -169,7 +169,7 @@ def meshgrid(
 def ones(
     shape: Union[int, Tuple[int]],
     dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None
 ) -> mx.nd.NDArray:
     cont = _mxnet_init_context(default_device(device))
     shape = [shape] if shape is not isinstance(shape, Iterable) else shape
@@ -181,7 +181,7 @@ def ones(
 def ones_like(
     x: mx.nd.NDArray,
     dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    device: Optional[Union[ivy.Device, mx.context.Context]] = None
 ) -> mx.nd.NDArray:
     if x.shape == ():
         return mx.nd.array(1.0, ctx=_mxnet_init_context(default_device(device)))
@@ -200,7 +200,7 @@ def zeros(
     shape: Union[int, Tuple[int], List[int]],
     *,
     dtype: type,
-    device: mx.context.Context,
+    device: mx.context.Context
 ) -> mx.nd.NDArray:
     cont = _mxnet_init_context(device)
     if len(shape) == 0 or 0 in shape:

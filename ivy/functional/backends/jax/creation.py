@@ -24,7 +24,7 @@ def arange(
     step: Number = 1,
     *,
     dtype: Optional[jnp.dtype] = None,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if dtype:
         dtype = as_native_dtype(dtype)
@@ -42,7 +42,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[jnp.dtype] = None,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
@@ -71,7 +71,7 @@ def empty(
     shape: Union[int, Tuple[int], List[int]],
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     return _to_device(
         jnp.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
@@ -97,7 +97,7 @@ def eye(
     k: Optional[int] = 0,
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
@@ -116,7 +116,7 @@ def full(
     fill_value: float,
     *,
     dtype: jnp.dtype = None,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     return _to_device(
         jnp.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
@@ -129,7 +129,7 @@ def full_like(
     fill_value: float,
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -152,7 +152,7 @@ def linspace(
     endpoint: bool = True,
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if axis is None:
         axis = -1
@@ -173,7 +173,7 @@ def ones(
     shape: Union[int, Tuple[int], List[int]],
     *,
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None
 ) -> JaxArray:
     return _to_device(
         jnp.ones(shape, as_native_dtype(default_dtype(dtype))), device=device
@@ -211,7 +211,7 @@ def zeros(
     shape: Union[int, Tuple[int], List[int]],
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     return _to_device(
         jnp.zeros(shape, dtype),

@@ -2,6 +2,7 @@
 import numpy as np
 import torch
 from torch import Tensor
+from numbers import Number
 from typing import Union, Tuple, List, Optional
 
 # local
@@ -38,14 +39,14 @@ def _differentiable_linspace(start, stop, num, device, dtype=None):
 
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
-    start,
-    stop=None,
-    step=1,
+    start: Number,
+    stop: Optional[Number] = None,
+    step: Number = 1,
     *,
-    dtype: torch.dtype = None,
+    dtype: Optional[torch.dtype] = None,
     device: torch.device,
-    out: Optional[torch.Tensor] = None,
-):
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if stop is None:
         stop = start
         start = 0
@@ -72,12 +73,12 @@ def arange(
 
 
 def asarray(
-    object_in,
+    object_in: Union[torch.Tensor, np.ndarray, List[Number], Tuple[Number]],
     *,
     copy: Optional[bool] = None,
-    dtype: torch.dtype = None,
-    device: torch.device,
-):
+    dtype: Optional[torch.dtype] = None,
+    device: torch.device
+) -> torch.Tensor:
     if isinstance(object_in, torch.Tensor) and dtype is None:
         dtype = object_in.dtype
     elif (
@@ -107,8 +108,8 @@ def empty(
     *,
     dtype: torch.dtype,
     device: torch.device,
-    out: Optional[torch.Tensor] = None,
-) -> Tensor:
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.empty(
         shape,
         dtype=as_native_dtype(default_dtype(dtype)),
@@ -118,7 +119,10 @@ def empty(
 
 
 def empty_like(
-    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
+    x: torch.Tensor,
+    *,
+    dtype: torch.dtype,
+    device: torch.device
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -133,7 +137,7 @@ def eye(
     *,
     dtype: torch.dtype,
     device: torch.device,
-    out: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     dtype = as_native_dtype(default_dtype(dtype))
     device = as_native_dev(default_device(device))
@@ -162,7 +166,9 @@ def eye(
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device, out=out)
 
 
-def from_dlpack(x):
+def from_dlpack(
+    x: torch.Tensor
+):
     return torch.utils.dlpack.from_dlpack(x)
 
 
@@ -172,7 +178,7 @@ def full(
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
-    out: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None
 ) -> Tensor:
     return torch.full(
         shape_to_tuple(shape),
@@ -188,7 +194,7 @@ def full_like(
     fill_value: Union[int, float],
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -197,15 +203,15 @@ def full_like(
 
 
 def linspace(
-    start,
-    stop,
-    num,
-    axis=None,
-    endpoint=True,
+    start: Union[torch.Tensor, float],
+    stop: Union[torch.Tensor, float],
+    num: int,
+    axis: Optional[int] = None,
+    endpoint: bool = True,
     *,
     dtype: torch.dtype,
-    device: torch.device,
-):
+    device: torch.device
+) -> torch.Tensor:
     if not endpoint:
         ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
             :-1
@@ -327,7 +333,10 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
     return res.to(as_native_dev(device))
 
 
-def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
+def meshgrid(
+    *arrays: torch.Tensor,
+    indexing="xy"
+) -> List[torch.Tensor]:
     return list(torch.meshgrid(*arrays, indexing=indexing))
 
 
@@ -337,7 +346,7 @@ def ones(
     *,
     dtype: torch.dtype,
     device: torch.device,
-    out: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     dtype_val: torch.dtype = as_native_dtype(dtype)
     device = default_device(device)
@@ -345,7 +354,10 @@ def ones(
 
 
 def ones_like(
-    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
+    x: torch.Tensor,
+    *,
+    dtype: torch.dtype,
+    device: torch.device
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -354,13 +366,17 @@ def ones_like(
 
 
 def tril(
-    x: torch.Tensor, k: int = 0, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    k: int = 0,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.tril(x, diagonal=k, out=out)
 
 
 def triu(
-    x: torch.Tensor, k: int = 0, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    k: int = 0,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.triu(x, diagonal=k, out=out)
 
@@ -370,13 +386,16 @@ def zeros(
     *,
     dtype: torch.dtype,
     device: torch.device,
-    out: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None
 ) -> Tensor:
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
 
 
 def zeros_like(
-    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
+    x: torch.Tensor,
+    *,
+    dtype: torch.dtype,
+    device: torch.device
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -392,7 +411,15 @@ def zeros_like(
 array = asarray
 
 
-def logspace(start, stop, num, base=10.0, axis=None, *, device: torch.device):
+def logspace(
+    start: Union[torch.Tensor, int],
+    stop: Union[torch.Tensor, int],
+    num: int,
+    base: float = 10.0,
+    axis: Optional[int] = None,
+    *,
+    device: torch.device
+) -> torch.Tensor:
     power_seq = linspace(
         start, stop, num, axis, dtype=None, device=default_device(device)
     )
