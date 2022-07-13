@@ -2840,6 +2840,35 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container static method variant of ivy.cross_entropy. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.cross_entropy also applies</span>
+<span class="sd">    to this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 0, 1]), b=ivy.array([1, 1, 0]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_cross_entropy(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(1.20397282),</span>
+<span class="sd">        b: ivy.array(1.83258148)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_cross_entropy(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(1.20397282),</span>
+<span class="sd">        b: ivy.array(1.60943794)</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -2855,6 +2884,22 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container instance method variant of ivy.cross_entropy. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.cross_entropy also applies to</span>
+<span class="sd">    this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))</span>
+<span class="sd">    &gt;&gt;&gt; z = x.cross_entropy(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a:ivy.array(0.5108256),</span>
+<span class="sd">        b:ivy.array(1.609438)</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -2869,6 +2914,35 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container static method variant of ivy.binary_cross_entropy. This method</span>
+<span class="sd">    simply wraps the function, and so the docstring for ivy.binary_cross_entropy</span>
+<span class="sd">    also applies to this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_binary_cross_entropy(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0.511, 0.223, 0.357]),</span>
+<span class="sd">        b: ivy.array([1.61, 0.223, 1.61])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1 , 1, 0])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]),b=ivy.array([0.2, 0.6, 0.7]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_binary_cross_entropy(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0.357, 0.223, 0.223]),</span>
+<span class="sd">        b: ivy.array([1.61, 0.511, 1.2])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -2883,6 +2957,22 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container instance method variant of ivy.binary_cross_entropy. This</span>
+<span class="sd">    method simply wraps the function, and so the docstring for</span>
+<span class="sd">    ivy.binary_cross_entropy also applies to this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))</span>
+<span class="sd">    &gt;&gt;&gt; z = x.binary_cross_entropy(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0.511, 0.223, 0.357]),</span>
+<span class="sd">        b: ivy.array([1.61, 0.223, 1.61])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -2898,6 +2988,35 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container static method variant of ivy.sparse_cross_entropy. This method</span>
+<span class="sd">    simply wraps the function, and so the docstring for ivy.sparse_cross_entropy</span>
+<span class="sd">    also applies to this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_sparse_cross_entropy(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([1.61, 0.511, 0.511]),</span>
+<span class="sd">        b: ivy.array([0.223, 0.223, 1.61])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1 , 1, 0])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]),b=ivy.array([0.2, 0.6, 0.7]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_sparse_cross_entropy(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0.223, 0.223, 0.357]),</span>
+<span class="sd">        b: ivy.array([0.511, 0.511, 1.61])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -2913,6 +3032,22 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container instance method variant of ivy.sparse_cross_entropy. This</span>
+<span class="sd">    method simply wraps the function, and so the docstring for</span>
+<span class="sd">    ivy.sparse_cross_entropy also applies to this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))</span>
+<span class="sd">    &gt;&gt;&gt; z = x.sparse_cross_entropy(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([1.61, 0.511, 0.511]),</span>
+<span class="sd">        b: ivy.array([0.223, 0.223, 1.61])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -3256,12 +3391,12 @@
 
 
 <span class="c1"># noinspection PyMissingConstructor</span>
-<div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../functional/ivy/norms/layer_norm/layer_norm_container.html#ivy.container.container_methods.layer_norm">[docs]</a><span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+<div class="viewcode-block" id="static_layer_norm"><a class="viewcode-back" href="../../../functional/ivy/norms/layer_norm/static_layer_norm_container.html#ivy.container.container_methods.static_layer_norm">[docs]</a><span class="k">def</span> <span class="nf">static_layer_norm</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
-    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">new_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -3270,6 +3405,96 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container static method variant of ivy.layer_norm. This method simply wraps</span>
+<span class="sd">    the function, and so the docstring for ivy.layer_norm also applies to this</span>
+<span class="sd">    method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With one :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
+<span class="sd">                           &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
+<span class="sd">    &gt;&gt;&gt; normalized_idxs = [0]</span>
+<span class="sd">    &gt;&gt;&gt; norm = x.static_layer_norm(x, normalized_idxs, 1.25, 0.3)</span>
+<span class="sd">    &gt;&gt;&gt; print(norm)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0.658, 1.04, 1.3]),</span>
+<span class="sd">        b: ivy.array([[0.759, 0.759, 0.759], </span>
+<span class="sd">                      [1.24, 1.24, 1.24]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
+<span class="sd">                           &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
+<span class="sd">    &gt;&gt;&gt; normalized_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
+<span class="sd">    &gt;&gt;&gt; new_std = ivy.Container({&#39;a&#39;: 1.25, &#39;b&#39;: 1.5})</span>
+<span class="sd">    &gt;&gt;&gt; offset = ivy.Container({&#39;a&#39;: 0.2, &#39;b&#39;: 0.3})</span>
+<span class="sd">    &gt;&gt;&gt; norm = x.static_layer_norm(x, normalized_idxs, \</span>
+<span class="sd">                                   new_std=new_std, offset=offset)</span>
+<span class="sd">    &gt;&gt;&gt; print(norm)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([-1.42, 0.403, 1.62]),</span>
+<span class="sd">        b: ivy.array([[-1.54, 0.3, 2.14], </span>
+<span class="sd">                      [-1.54, 0.3, 2.14]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../functional/ivy/norms/layer_norm/layer_norm_container.html#ivy.container.container_methods.layer_norm">[docs]</a><span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+    <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">new_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container instance method variant of ivy.layer_norm. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.layer_norm also applies</span>
+<span class="sd">    to this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With one :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
+<span class="sd">                           &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
+<span class="sd">    &gt;&gt;&gt; normalized_idxs = [0]</span>
+<span class="sd">    &gt;&gt;&gt; norm = x.layer_norm(normalized_idxs, 1.25, 0.3)</span>
+<span class="sd">    &gt;&gt;&gt; print(norm)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0.658, 1.04, 1.3]),</span>
+<span class="sd">        b: ivy.array([[0.759, 0.759, 0.759], </span>
+<span class="sd">                      [1.24, 1.24, 1.24]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
+<span class="sd">                           &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
+<span class="sd">    &gt;&gt;&gt; normalized_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
+<span class="sd">    &gt;&gt;&gt; new_std = ivy.Container({&#39;a&#39;: 1.25, &#39;b&#39;: 1.5})</span>
+<span class="sd">    &gt;&gt;&gt; offset = ivy.Container({&#39;a&#39;: 0.2, &#39;b&#39;: 0.3})</span>
+<span class="sd">    &gt;&gt;&gt; norm = x.layer_norm(normalized_idxs, new_std=new_std, offset=offset)</span>
+<span class="sd">    &gt;&gt;&gt; print(norm)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([-1.42, 0.403, 1.62]),</span>
+<span class="sd">        b: ivy.array([[-1.54, 0.3, 2.14], </span>
+<span class="sd">                      [-1.54, 0.3, 2.14]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -3662,8 +3887,6 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 
-<span class="c1"># ToDo: implement all methods here as public instance methods</span>
-
 
 <span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="static_all"><a class="viewcode-back" href="../../../functional/ivy/utility/all/static_all_container.html#ivy.container.container_methods.static_all">[docs]</a><span class="k">def</span> <span class="nf">static_all</span><span class="p">(</span>
@@ -3677,6 +3900,21 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container static method variant of ivy.all. This method simply wraps the</span>
+<span class="sd">    function, and so the docstring for ivy.all also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([0, 1, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_all(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(False),</span>
+<span class="sd">        b: ivy.array(False)</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -3691,6 +3929,21 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container instance method variant of ivy.all. This method simply wraps the</span>
+<span class="sd">    function, and so the docstring for ivy.all also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([0, 1, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.all()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(False),</span>
+<span class="sd">        b: ivy.array(False)</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -3705,6 +3958,21 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container static method variant of ivy.any. This method simply wraps the</span>
+<span class="sd">    function, and so the docstring for ivy.any also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([0, 1, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_any(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(True),</span>
+<span class="sd">        b: ivy.array(True)</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -3719,6 +3987,21 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container instance method variant of ivy.any. This method simply wraps the</span>
+<span class="sd">    function, and so the docstring for ivy.any also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([0, 1, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.any()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(True),</span>
+<span class="sd">        b: ivy.array(True)</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
