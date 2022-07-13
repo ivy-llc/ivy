@@ -5,7 +5,7 @@ import jax.lax as jlax
 
 # local
 from ivy.functional.backends.jax import JaxArray
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 
 def conv1d(
@@ -15,6 +15,8 @@ def conv1d(
     padding: str,
     data_format: str = "NWC",
     dilations: int = 1,
+    *,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
@@ -34,6 +36,8 @@ def conv2d(
     padding: str,
     data_format: str = "NHWC",
     dilations: int = 1,
+    *,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
