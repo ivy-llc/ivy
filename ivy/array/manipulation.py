@@ -51,8 +51,8 @@ class ArrayWithManipulation(abc.ABC):
 
     def roll(
         self: ivy.Array,
-        shift: Union[int, Tuple[int, ...]],
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        shift: Union[int, Sequence[int]],
+        axis: Optional[Union[int, Sequence[int]]] = None,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

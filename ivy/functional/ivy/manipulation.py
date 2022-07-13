@@ -377,8 +377,8 @@ def reshape(
 @handle_nestable
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
