@@ -1,6 +1,6 @@
 # global
 import mxnet as mx
-from typing import Tuple, Union, List, Optional, Iterable
+from typing import Union, List, Optional, Iterable, Sequence
 from numbers import Number
 
 # local
@@ -66,7 +66,7 @@ def asarray(
 
 
 def empty(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     dtype: Optional[Union[ivy.Dtype, type]] = None,
     device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.nd.NDArray:
@@ -90,7 +90,9 @@ def from_dlpack(x):
     return mx.nd.from_dlpack(x)
 
 
-def full(shape, fill_value, dtype=None, device=None):
+def full(
+    shape: Union[ivy.NativeShape, Sequence[int]], fill_value, dtype=None, device=None
+):
     shape = ivy.shape_to_tuple(shape)
     cont = _mxnet_init_context(default_device(device))
     if len(shape) == 0 or 0 in shape:
@@ -141,7 +143,7 @@ def meshgrid(*xs: mx.nd.NDArray, indexing: Optional[str] = "xy") -> List[mx.nd.N
 
 
 def ones(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     dtype: Optional[Union[ivy.Dtype, type]] = None,
     device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.nd.NDArray:
@@ -168,7 +170,7 @@ def tril(x: mx.nd.NDArray, k: int = 0) -> mx.nd.NDArray:
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: type,
     device: mx.context.Context,

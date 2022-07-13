@@ -3,8 +3,6 @@ from ivy.container.base import ContainerBase
 import ivy
 from typing import Optional, List, Union, Dict
 
-# ToDo: implement all methods here as public instance methods
-
 
 # noinspection PyMissingConstructor
 class ContainerWithSorting(ContainerBase):
