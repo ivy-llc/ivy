@@ -46,21 +46,24 @@ def sigmoid(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
     return ret
 
 
-def tanh(x: Tensor,out: Optional[Tensor] = None) -> Tensor:
+def tanh(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
     ret = tf.nn.tanh(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def softmax(x: Tensor, axis: Optional[int] = None,out: Optional[Tensor] = None) -> Tensor:
+def softmax(x: Tensor,
+    axis: Optional[int] = None,
+    out: Optional[Tensor] = None
+) -> Tensor:
     ret = tf.exp(x) / tf.reduce_sum(tf.exp(x), axis, keepdims=True)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-def softplus(x: Tensor,out: Optional[Tensor] = None) -> Tensor:
+def softplus(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
     ret = tf.nn.softplus(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
