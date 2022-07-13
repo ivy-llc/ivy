@@ -16,7 +16,6 @@ class ArrayWithSet(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
 
         >>> x = ivy.array([0., 1., 2. , 1. , 0.])
         >>> y = x.unique_counts()
