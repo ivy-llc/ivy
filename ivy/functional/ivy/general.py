@@ -26,6 +26,8 @@ INF = float("inf")
 TIMEOUT = 15.0
 TMP_DIR = "/tmp"
 
+shape_array_mode_stack = list()
+
 
 def get_referrers_recursive(
     item, depth=0, max_depth=None, seen_set=None, local_set=None
@@ -490,7 +492,7 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
 @handle_nestable
 def all_equal(
     *xs: Iterable[Any], equality_matrix: bool = False
-) -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
+) -> Union[bool, ivy.Array, ivy.NativeArray]:
     """Determines whether the inputs are all equal.
 
     Parameters
@@ -1060,7 +1062,7 @@ def clip_matrix_norm(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-        
+
     Returns
     -------
     ret
@@ -1131,7 +1133,7 @@ def unstack(
 @handle_nestable
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
-    max_freq: Union[float, Union[ivy.Array, ivy.NativeArray]],
+    max_freq: Union[float, ivy.Array, ivy.NativeArray],
     num_bands: int = 4,
     linear: bool = False,
     concat: bool = True,
@@ -1384,7 +1386,7 @@ def default(
     return x if exists(x) else default_val() if default_callable else default_val
 
 
-def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
+def shape_to_tuple(shape: Union[ivy.Shape, ivy.NativeShape]):
     """Returns a tuple representation of the input shape.
 
     Parameters
@@ -2071,7 +2073,7 @@ def cumprod(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    
+
     Returns
     -------
     ret
@@ -2186,7 +2188,7 @@ def scatter_flat(
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
-    shape: Optional[Iterable[int]] = None,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
     *,
@@ -2529,7 +2531,7 @@ def one_hot(
 @handle_nestable
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
-) -> Iterable[int]:
+) -> Union[ivy.Shape, ivy.NativeShape]:
     """Returns the shape of the array ``x``.
 
     Parameters
@@ -2558,6 +2560,64 @@ def shape(
 
     """
     return current_backend(x).shape(x, as_array)
+
+
+def set_shape_array_mode(mode: bool) -> None:
+    """Set the mode of returning shape as ivy.Array to the given mode instance
+
+    Parameter
+    ---------
+    mode
+        boolean whether to return shape as ivy.Array
+
+    Examples
+    --------
+    >>> ivy.set_shape_array_mode(False)
+    >>> ivy.shape_array_mode()
+    False
+
+    >>> ivy.set_shape_array_mode(True)
+    >>> ivy.shape_array_mode()
+    True
+    """
+    global shape_array_mode_stack
+    shape_array_mode_stack.append(mode)
+
+
+def unset_shape_array_mode() -> None:
+    """Reset the mode of returning shape as ivy.Array to the previous state
+
+    Examples
+    --------
+    >>> ivy.set_shape_array_mode(True)
+    >>> ivy.shape_array_mode()
+    True
+
+    >>> ivy.unset_shape_array_mode()
+    >>> ivy.shape_array_mode()
+    False
+    """
+    global shape_array_mode_stack
+    if shape_array_mode_stack:
+        shape_array_mode_stack.pop(-1)
+
+
+def shape_array_mode() -> bool:
+    """Get the current state of shape_array_mode
+
+    Examples
+    --------
+    >>> ivy.shape_array_mode()
+    False
+
+    >>> ivy.set_shape_array_mode(True)
+    >>> ivy.shape_array_mode()
+    True
+    """
+    global shape_array_mode_stack
+    if not shape_array_mode_stack:
+        return False
+    return shape_array_mode_stack[-1]
 
 
 @to_native_arrays_and_back
