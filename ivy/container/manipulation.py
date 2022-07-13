@@ -315,7 +315,7 @@ class ContainerWithManipulation(ContainerBase):
         """
         return ContainerBase.handle_inplace(
             self.map(
-                lambda x_: ivy.repeat(x_, repeats=repeats, axis=axis)
+                lambda x_, _: ivy.repeat(x_, repeats=repeats, axis=axis)
                 if ivy.is_array(x_)
                 else x_,
                 key_chains,
