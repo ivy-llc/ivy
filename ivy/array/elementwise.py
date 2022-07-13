@@ -247,6 +247,31 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.log1p(self._data, out=out)
 
     def log2(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.log2. This method simply wraps the
+        function, and so the docstring for ivy.log2 also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 2.0,float('nan')])
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array([-inf, 1., nan])
+
+        >>> x = ivy.array([8.,float('+inf')])
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array([3.,+inf])
+
+        >>> x = ivy.array([[-4., 1.],[-0., 4.]])
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array([[ nan, 0.],
+               [-inf,  2.]])
+        """
         return ivy.log2(self._data, out=out)
 
     def log10(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:

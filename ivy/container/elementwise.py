@@ -1018,6 +1018,44 @@ class ContainerWithElementwise(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_log2(
+            x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.log2. This method simply wraps the
+        function, and so the docstring for ivy.log2 also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([8.,float('+inf')]),\
+                            b=ivy.array([0., 2.0,float('nan')]))
+        >>> y = ivy.Container.static_log2(x)
+        >>> print(y)
+        {
+            a: ivy.array([3.,+inf]),
+            b: ivy.array([-inf, 1., nan])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "log2",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def log2(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1027,15 +1065,33 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.log2(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out=out,
+        """
+        ivy.Container instance method variant of ivy.log2. This method simply wraps the
+        function, and so the docstring for ivy.log2 also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([8.,float('+inf')]),\
+                              b=ivy.array([0., 2.0,float('nan')]),\
+                              c=ivy.array([-4.,1.,-0.,4.]))
+        >>> y = ivy.log2(x)
+        >>> print(y)
+        {
+            a: ivy.array([3.,+inf]),
+            b: ivy.array([-inf, 1., nan]),
+            c: ivy.array([nan, 0., -inf, 2.])
+        }
+        """
+        return self.static_sign(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out
         )
 
     def log10(
