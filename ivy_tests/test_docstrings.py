@@ -52,6 +52,7 @@ def test_docstrings(backend):
         "cumprod",
         "where",
         "conv3d_transpose",
+        "depthwise_conv2d",
     ]
 
     # comment out the line below in future to check for the functions in temp skip list
