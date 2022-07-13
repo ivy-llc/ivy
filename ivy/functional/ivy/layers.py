@@ -21,12 +21,13 @@ from ivy.func_wrapper import (
 
 
 @handle_nestable
-def linear(x: Union[ivy.Array, ivy.NativeArray],
-           weight: Union[ivy.Array, ivy.NativeArray],
-           bias: Union[ivy.Array, ivy.NativeArray] = None,
-           *,
-           out: Optional[ivy.Array] = None
-           ) -> ivy.Array:
+def linear(
+    x: Union[ivy.Array, ivy.NativeArray],
+    weight: Union[ivy.Array, ivy.NativeArray],
+    bias: Union[ivy.Array, ivy.NativeArray] = None,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
     batch of different network parameters are to be represented.
@@ -515,8 +516,8 @@ def conv1d_transpose(
     filters,
     strides,
     padding,
-    output_shape=None,
-    data_format="NWC",
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    data_format: str = "NWC",
     dilations=1,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -657,8 +658,8 @@ def conv2d_transpose(
     filters,
     strides,
     padding,
-    output_shape=None,
-    data_format="NHWC",
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    data_format: str = "NHWC",
     dilations=1,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -870,7 +871,7 @@ def conv3d_transpose(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: Union[str, List[int]],
-    output_shape: Union[ivy.Array, ivy.NativeArray] = None,
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     *,
@@ -1003,8 +1004,8 @@ def lstm_update(
     kernel: Union[ivy.Array, ivy.NativeArray],
     recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None
-) -> Tuple[Any, Union[Union[ivy.Array, ivy.NativeArray], Any]]:
+    recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
     """Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters
