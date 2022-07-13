@@ -66,7 +66,7 @@ def softmax(
     return ret
 
 
-def softplus(x: JaxArray, out: Optional[JaxArray]= None) -> JaxArray:
+def softplus(x: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.log1p(jnp.exp(-jnp.abs(x))) + jnp.maximum(x, 0)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
