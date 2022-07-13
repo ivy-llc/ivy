@@ -11,18 +11,18 @@ Ivy Tests
 .. _`continuous integration`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows
 .. _`search strategies`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
-.. _`line`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L476
-.. _`here`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_creation.py#L192
-.. _`this`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_sorting.py#L18
-.. _`example`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers.py#L1054
-.. _`test_concat`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L38
+.. _`line`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L477
+.. _`here`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L392
+.. _`this`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_sorting.py#L18
+.. _`example`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1085
+.. _`test_concat`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L38
 .. _`test_device`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_device.py
 .. _`test_manipulation`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py
 .. _`test_layers`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_nn/test_layers.py
-.. _`keyword`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers.py#L1100
-.. _`arguments`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers.py#L1337
+.. _`keyword`:https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1108
+.. _`arguments`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1354
 .. _`documentation`: https://hypothesis.readthedocs.io/en/latest/quickstart.html
-.. _`test_gelu`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_stateful/test_activations.py#L52
+.. _`test_gelu`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_nn/test_activations.py#L104
 .. _`test_array_function`: https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401
 .. _`artifact`: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
 .. _`ivy tests discussion`: https://github.com/unifyai/ivy/discussions/1304
@@ -147,7 +147,7 @@ For example, this `line`_ here, can also be written as -:
     st.one_of(st.none(), st.integers(-ndim, ndim -1))
 
 9. **shared** - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
-the same key will share the same value. For example, `here`_, the parameters, *dtype_and_x* and *num_positional_args* share
+the same key will share the same value. For example, `here`_, the parameters, *input_dtype* and *as_variable* share
 the same key *num_arrays*, hence similar values will be drawn for both arguments.
 
 10. **sets** - This is used for generating a *unique collection* of elements. Like **st.lists** it accepts another strategy
@@ -587,19 +587,19 @@ and a variety performance details are supported. Let’s look at the function `t
 This test runs for every backend, and the output is shown below-:
 
 * **Jax**
-.. image:: https://github.com/unifyai/ivy/blob/master/.idea/Jax.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png
    :width: 600
 
 * **Numpy**
-.. image:: https://github.com/unifyai/ivy/blob/master/.idea/numpy.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png
    :width: 600
 
 * **Tensorflow**
-.. image:: https://github.com/unifyai/ivy/blob/master/.idea/tensorflow.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png
    :width: 600
 
 * **Torch**
-.. image:: https://github.com/unifyai/ivy/blob/master/.idea/torch.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png
    :width: 600
 
 
@@ -612,7 +612,7 @@ examples from previous runs are displayed.
 Another argument which can be specified for a more detailed output is **hypothesis-verbosity = verbose**. Let’s look at
 the newer output, for the same example -:
 
-.. image:: https://github.com/unifyai/ivy/blob/master/.idea/test_run.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png
    :width: 600
 
 Like the output above, Hypothesis will print all the examples for which the test failed, when **verbosity** is set.
@@ -620,11 +620,11 @@ Like the output above, Hypothesis will print all the examples for which the test
 
 3. Some performance related settings which might be helpful to know are-:
 
-* **max_examples** - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it up or down
-		     will have an impact on the speed as well as the rigorousness of the tests.
+a. **max_examples** - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it up or down
+                      will have an impact on the speed as well as the rigorousness of the tests.
 
-* **deadline** - If an input takes longer than expected, it should be treated as an error. It is useful to detect weird
-		 performance issues.
+b. **deadline** - If an input takes longer than expected, it should be treated as an error. It is useful to detect weird
+                  performance issues.
 
 Self-Consistent and Explicit Testing
 ------------------------------------
