@@ -3,7 +3,10 @@
 # global
 import math
 import torch
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union, Sequence
+
+# local
+import ivy
 
 
 # noinspection PyUnresolvedReferences
@@ -52,7 +55,7 @@ def conv1d_transpose(
     filters,
     strides: int,
     padding: str,
-    output_shape: Optional[List[int]] = None,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: int = 1,
 ):
@@ -137,7 +140,7 @@ def conv2d_transpose(
     filters: torch.Tensor,
     strides: int,
     padding: str,
-    output_shape: Optional[List[int]] = None,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NHWC",
     dilations: int = 1,
 ):
@@ -223,7 +226,7 @@ def conv3d_transpose(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
-    output_shape: Optional[List[int]] = None,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
 ) -> torch.Tensor:

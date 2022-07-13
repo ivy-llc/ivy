@@ -62,8 +62,8 @@ Calling the different backend files explicitly would work okay, but it would mea
 
    # ivy/functional/ivy/elementwise.py:
    def clip(x: Union[ivy.Array, ivy.NativeArray],
-         x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-         x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+         x_min: Union[Number, ivy.Array, ivy.NativeArray],
+         x_max: Union[Number, ivy.Array, ivy.NativeArray],
          f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
         """
