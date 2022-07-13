@@ -3,6 +3,7 @@ import sys
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
+from tensorflow.python.framework.tensor_shape import TensorShape
 
 # local
 import ivy
@@ -14,6 +15,7 @@ NativeArray = Tensor
 NativeVariable = Tensor
 NativeDevice = str
 NativeDtype = DType
+NativeShape = TensorShape
 
 # native data types
 native_int8 = tf.int8

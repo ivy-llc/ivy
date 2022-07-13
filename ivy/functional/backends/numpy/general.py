@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Iterable, List, Optional, Union
+from typing import Optional, Union, Sequence
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -185,7 +185,7 @@ def scatter_flat(
 def scatter_nd(
     indices: np.ndarray, 
     updates: np.ndarray, 
-    shape: Optional[Iterable[int]] = None, 
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
     tensor: Optional[np.ndarray] = None, 
     reduction: str = "sum",
     *,
@@ -302,7 +302,7 @@ def one_hot(
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(x: np.ndarray, as_array: bool = False) -> Union[np.ndarray, List[int]]:
+def shape(x: np.ndarray, as_array: bool = False) -> Union[tuple, np.ndarray]:
     if as_array:
         return np.asarray(np.shape(x))
     else:
