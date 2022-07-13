@@ -62,9 +62,12 @@ class ArrayWithGeneral(abc.ABC):
         ivy.Container instance method variant of ivy.to_numpy.
         This method simply wraps the function, and so the docstring for
         ivy.to_numpy also applies to this method with minimal changes.
+
         Examples
         --------
+
         With :code:`ivy.Array` instance method:
+
         >>> x = ivy.array([1, 0, 1, 1])
         >>> y = x.to_numpy()
         >>> print(y)
@@ -74,5 +77,6 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(y)
         [[1. 0. 1. 1.]
         [1. 1. 0. 0.]]
+
         """
         return ivy.to_numpy(self)
