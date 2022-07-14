@@ -678,12 +678,11 @@ def function_supported_dtypes(fn: Callable) -> Tuple:
     ret
         The supported data types of the function
 
-    Examples (to update)
+    Examples
     --------
-    >>> ivy.set_backend('torch')
-    >>> print(ivy.function_supported_dtypes(ivy.acosh))
-    ['int8', 'int16', 'int32', 'int64', 'uint8', \
-     'bfloat16', 'float32', 'float64', 'bool']
+    >>> ivy.set_backend('tensorflow')
+    >>> print(ivy.function_supported_dtypes(ivy.sparse_cross_entropy))
+    ('int32', 'int64', 'uint8')
     """
     if not _is_valid_dtypes_attributes(fn):
         raise Exception(
