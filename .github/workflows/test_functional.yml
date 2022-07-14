@@ -31,6 +31,7 @@ jobs:
         id: tests
         run: |
           cd ivy
+          chmod + x ./test_ivy_submodule.sh
           ./test_ivy_submodule.sh ${{ matrix.backend }}
         continue-on-error: true
 
