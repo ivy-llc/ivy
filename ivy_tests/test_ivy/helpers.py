@@ -1049,7 +1049,9 @@ def test_frontend_function(
     try:
         # check for unsupported dtypes in frontend framework
         function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
-        test_unsupported = check_unsupported_dtype(function, input_dtypes, all_as_kwargs_np)
+        test_unsupported = check_unsupported_dtype(
+            function, input_dtypes, all_as_kwargs_np
+        )
 
         # create frontend framework args
         args_frontend = ivy.nested_map(
