@@ -3,7 +3,7 @@
 # global
 import jax
 import jax.lax as jlax
-import jaxlib as jaxlib
+import jaxlib
 from jaxlib.xla_extension import Buffer
 
 

@@ -12,7 +12,10 @@ import ivy
 # ------#
 
 
-def index_nest(nest, index):
+def index_nest(
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+    index: Union[List[int], Tuple[int], Iterable[int]],
+) -> Any:
     """Index a nested object, using a tuple of indices or keys in the case of dicts.
 
     Parameters
@@ -22,6 +25,47 @@ def index_nest(nest, index):
     index
         A tuple of indices for indexing.
 
+    Returns
+    -------
+    ret
+        The result element through indexing the nested object.
+
+    Examples
+    --------
+    With :code:`Tuple` inputs:
+
+    >>> x = (1, 2)
+    >>> y = [0]
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    1
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[1., 2.], \
+                       [3., 4.]])
+    >>> y = [1]
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    ivy.array([3., 4.])
+
+    With :code:`Dict` input:
+
+    >>> x = {'a': 0, 'b': [1, [2, 3]], 'c': (4, 5)}
+    >>> y = ('b', 1)
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    [2, 3]
+
+    With :code:`List` inputs:
+
+    >>> x = [['a', 'b', 'c'], \
+             ['d', 'e', 'f'], \
+             ['g', ['h', 'i']]]
+    >>> y = iter([2, 1, 0])
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    h
     """
     ret = nest
     for i in index:
@@ -187,6 +231,7 @@ def nested_indices_where(
     to_ignore: Union[type, Tuple[type]] = None,
     _index: List = None,
     _base: bool = True,
+    stop_after_n_found: Optional[int] = None,
 ) -> Union[Iterable, bool]:
     """Checks the leaf nodes of nested x via function fn, and returns all nest indices
     where the method evaluates as True.
@@ -218,18 +263,64 @@ def nested_indices_where(
     to_ignore = ivy.default(to_ignore, ())
     _index = list() if _index is None else _index
     if isinstance(nest, (tuple, list)) and not isinstance(nest, to_ignore):
-        _indices = [
-            nested_indices_where(item, fn, check_nests, to_ignore, _index + [i], False)
-            for i, item in enumerate(nest)
-        ]
+        n = 0
+        _indices = []
+        for i, item in enumerate(nest):
+            ind = (
+                nested_indices_where(
+                    item,
+                    fn,
+                    check_nests,
+                    to_ignore,
+                    _index + [i],
+                    False,
+                    stop_after_n_found - n,
+                )
+                if stop_after_n_found is not None
+                else nested_indices_where(
+                    item, fn, check_nests, to_ignore, _index + [i], False
+                )
+            )
+            if stop_after_n_found is not None and ind:
+                if n < stop_after_n_found:
+                    n += len(ind)
+                    _indices += [ind]
+                else:
+                    break
+            else:
+                _indices += [ind]
+            if stop_after_n_found is not None and len(_indices) >= stop_after_n_found:
+                break
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
     elif isinstance(nest, dict) and not isinstance(nest, to_ignore):
-        _indices = [
-            nested_indices_where(v, fn, check_nests, to_ignore, _index + [k], False)
-            for k, v in nest.items()
-        ]
+        n = 0
+        _indices = []
+        for k, v in nest.items():
+            ind = (
+                nested_indices_where(
+                    v,
+                    fn,
+                    check_nests,
+                    to_ignore,
+                    _index + [k],
+                    False,
+                    stop_after_n_found - n,
+                )
+                if stop_after_n_found is not None
+                else nested_indices_where(
+                    v, fn, check_nests, to_ignore, _index + [k], False
+                )
+            )
+            if stop_after_n_found is not None and ind:
+                if n < stop_after_n_found:
+                    n += len(ind)
+                    _indices += [ind]
+                else:
+                    break
+            else:
+                _indices += [ind]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
@@ -331,7 +422,7 @@ def map(
 
 
 def nested_map(
-    x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
+    x: Union[ivy.Array, ivy.NativeArray, Iterable],
     fn: Callable,
     include_derived: Optional[Union[Dict[type, bool], bool]] = None,
     to_mutable: bool = False,
@@ -340,7 +431,7 @@ def nested_map(
     _tuple_check_fn: Optional[callable] = None,
     _list_check_fn: Optional[callable] = None,
     _dict_check_fn: Optional[callable] = None,
-) -> Union[Union[ivy.Array, ivy.NativeArray], Iterable, Dict]:
+) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
     are traversed to their lowest leaves before applying the method and returning x. If
     x is not nested, the method is applied to x directly.
@@ -507,7 +598,7 @@ def nested_any(
 
 
 def copy_nest(
-    nest: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
+    nest: Union[ivy.Array, ivy.NativeArray, Iterable],
     include_derived: bool = False,
     to_mutable: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
@@ -601,7 +692,11 @@ def nested_multi_map(
         if (
             (isinstance(value0, ivy.Array) or isinstance(value0, ivy.NativeArray))
             and ivy.get_num_dims(value0) > 0
-        ) or (isinstance(value0, list) or isinstance(value0, tuple)):
+        ) or (
+            isinstance(value0, list)
+            or isinstance(value0, tuple)
+            or isinstance(value0, dict)
+        ):
             ret = ivy.nested_multi_map(
                 func,
                 values,

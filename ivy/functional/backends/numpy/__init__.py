@@ -12,6 +12,7 @@ NativeArray = np.ndarray
 NativeVariable = np.ndarray
 NativeDevice = str
 NativeDtype = np.dtype
+NativeShape = tuple
 
 # data types (preventing cyclic imports)
 int8 = ivy.IntDtype("int8")
@@ -111,8 +112,6 @@ from . import general
 from .general import *
 from . import gradients
 from .gradients import *
-from . import image
-from .image import *
 from . import layers
 from .layers import *
 from . import linear_algebra as linalg

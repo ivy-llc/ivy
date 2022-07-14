@@ -12,6 +12,7 @@ NativeArray = torch.Tensor
 NativeVariable = torch.Tensor
 NativeDevice = torch.device
 NativeDtype = torch.dtype
+NativeShape = torch.Size
 
 # native data types
 native_int8 = torch.int8
@@ -93,8 +94,6 @@ from . import general
 from .general import *
 from . import gradients
 from .gradients import *
-from . import image
-from .image import *
 from . import layers
 from .layers import *
 from . import linear_algebra as linalg

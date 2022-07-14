@@ -2,7 +2,7 @@
 import sys
 from jax.config import config
 import jaxlib
-import jax as jax
+import jax
 import jax.numpy as jnp
 from typing import Union
 
@@ -42,6 +42,7 @@ NativeVariable = jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
 NativeDevice = jaxlib.xla_extension.Device
 NativeDtype = jnp.dtype
+NativeShape = tuple
 
 # native data types
 native_int8 = jnp.dtype("int8")
@@ -140,8 +141,6 @@ from . import general
 from .general import *
 from . import gradients
 from .gradients import *
-from . import image
-from .image import *
 from . import layers
 from .layers import *
 from . import linear_algebra as linalg

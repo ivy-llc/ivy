@@ -1,8 +1,7 @@
 # global
 import numpy as np
 import mxnet as mx
-from typing import Union
-import numpy as _np
+from typing import Union, Sequence, Optional
 
 # local
 import ivy
@@ -10,57 +9,52 @@ from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
 
 
 ivy_dtype_dict = {
-    _np.dtype("int8"): "int8",
-    _np.dtype("int16"): "int16",
-    _np.dtype("int32"): "int32",
-    _np.dtype("int64"): "int64",
-    _np.dtype("uint8"): "uint8",
-    _np.dtype("uint16"): "uint16",
-    _np.dtype("uint32"): "uint32",
-    _np.dtype("uint64"): "uint64",
+    np.dtype("int8"): "int8",
+    np.dtype("int16"): "int16",
+    np.dtype("int32"): "int32",
+    np.dtype("int64"): "int64",
+    np.dtype("uint8"): "uint8",
+    np.dtype("uint16"): "uint16",
+    np.dtype("uint32"): "uint32",
+    np.dtype("uint64"): "uint64",
     "bfloat16": "bfloat16",
-    _np.dtype("float16"): "float16",
-    _np.dtype("float32"): "float32",
-    _np.dtype("float64"): "float64",
-    _np.dtype("bool"): "bool",
-    _np.int8: "int8",
-    _np.int16: "int16",
-    _np.int32: "int32",
-    _np.int64: "int64",
-    _np.uint8: "uint8",
-    _np.uint16: "uint16",
-    _np.uint32: "uint32",
-    _np.uint64: "uint64",
-    _np.float16: "float16",
-    _np.float32: "float32",
-    _np.float64: "float64",
-    _np.bool_: "bool",
+    np.dtype("float16"): "float16",
+    np.dtype("float32"): "float32",
+    np.dtype("float64"): "float64",
+    np.dtype("bool"): "bool",
+    np.int8: "int8",
+    np.int16: "int16",
+    np.int32: "int32",
+    np.int64: "int64",
+    np.uint8: "uint8",
+    np.uint16: "uint16",
+    np.uint32: "uint32",
+    np.uint64: "uint64",
+    np.float16: "float16",
+    np.float32: "float32",
+    np.float64: "float64",
+    np.bool_: "bool",
 }
 
 native_dtype_dict = {
-    "int8": _np.int8,
-    "int16": _np.int16,
-    "int32": _np.int32,
-    "int64": _np.int64,
-    "uint8": _np.uint8,
-    "uint16": _np.uint16,
-    "uint32": _np.uint32,
-    "uint64": _np.uint64,
+    "int8": np.int8,
+    "int16": np.int16,
+    "int32": np.int32,
+    "int64": np.int64,
+    "uint8": np.uint8,
+    "uint16": np.uint16,
+    "uint32": np.uint32,
+    "uint64": np.uint64,
     "bfloat16": "bfloat16",
-    "float16": _np.float16,
-    "float32": _np.float32,
-    "float64": _np.float64,
-    "bool": _np.bool_,
+    "float16": np.float16,
+    "float32": np.float32,
+    "float64": np.float64,
+    "bool": np.bool_,
 }
 
 
-# noinspection PyShadowingBuiltins
-def iinfo(type: Union[type, str, mx.nd.NDArray]) -> np.iinfo:
-    return np.iinfo(ivy.as_native_dtype(type))
-
-
 class Finfo:
-    def __init__(self, mx_finfo):
+    def __init__(self, mx_finfo: np.finfo):
         self._mx_finfo = mx_finfo
 
     @property
@@ -84,12 +78,19 @@ class Finfo:
         return float(self._mx_finfo.tiny)
 
 
-# noinspection PyShadowingBuiltins
+def iinfo(type: Union[type, str, mx.nd.NDArray]) -> np.iinfo:
+    return np.iinfo(ivy.as_native_dtype(type))
+
+
 def finfo(type: Union[type, str, mx.nd.NDArray]) -> Finfo:
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
-def broadcast_to(x, new_shape):
+def broadcast_to(
+    x: mx.nd.NDArray, 
+    new_shape: Union[ivy.NativeShape, Sequence[int]], 
+    out: Optional[mx.nd.NDArray] = None
+) -> mx.nd.NDArray:
     x_shape = list(x.shape)
     num_x_dims = len(x_shape)
     num_shape_dims = len(new_shape)
@@ -97,16 +98,16 @@ def broadcast_to(x, new_shape):
     if diff == 0:
         return mx.nd.broadcast_to(x, new_shape)
     x = mx.nd.reshape(x, [1] * diff + x_shape)
-    return mx.nd.broadcast_to(x, new_shape)
+    return mx.nd.broadcast_to(x, new_shape, out=out)
 
 
 @_handle_flat_arrays_in_out
-def astype(x, dtype):
+def astype(x: mx.nd.NDArray, dtype: type) -> mx.nd.NDArray:
     dtype = ivy.as_native_dtype(dtype)
     return x.astype(dtype)
 
 
-def dtype_bits(dtype_in):
+def dtype_bits(dtype_in: Union[type, str]) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
@@ -120,20 +121,20 @@ def dtype_bits(dtype_in):
     )
 
 
-def dtype(x, as_native=False):
+def dtype(x: mx.nd.NDArray, as_native: bool = False) -> ivy.Dtype:
     dt = x.dtype
     if as_native:
         return x.dtype
     return as_ivy_dtype(dt)
 
 
-def as_ivy_dtype(dtype_in):
+def as_ivy_dtype(dtype_in: Union[type, str]) -> ivy.Dtype:
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-def as_native_dtype(dtype_in):
+def as_native_dtype(dtype_in: Union[type, str]) -> type:
     if not isinstance(dtype_in, str):
         return dtype_in
     return native_dtype_dict[ivy.Dtype(dtype_in)]

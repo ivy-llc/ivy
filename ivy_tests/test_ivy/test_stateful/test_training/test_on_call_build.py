@@ -35,7 +35,7 @@ class FC(ivy.Module):
             ivy.Linear(self._layer_dim, self._output_size, device=self._dev)
         )
 
-    def _forward(self, x):
+    def _forward(self, x, dtype=None):
         for layer in self._layers:
             x = ivy.leaky_relu(layer(x))
         return x
@@ -90,7 +90,7 @@ class WeConFC(ivy.Module):
         self._fc.build()
         return self._layer_specific_fc.built and self._fc.built
 
-    def _forward(self, implicit_weights):
+    def _forward(self, implicit_weights, dtype=None):
         batch_shape = [i for i in implicit_weights.shape if i]
         total_batch_size = np.prod(batch_shape)
         reshaped_weights = implicit_weights.reshape(shape=(total_batch_size, -1))
@@ -248,7 +248,7 @@ class HyperHypoNet(ivy.Module):
         self._hypo_shapes = hypo_v.shapes
         return self._hypernet.built and self._hyponet.built
 
-    def _forward(self, hyponet_input):
+    def _forward(self, hyponet_input, dtype=None):
         return self._hyponet(hyponet_input, v=self._hypernet(self._hypo_shapes))
 
 

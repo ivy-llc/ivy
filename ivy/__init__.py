@@ -1,3 +1,9 @@
+# global
+import builtins
+import warnings
+
+warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
+
 # class placeholders
 
 
@@ -39,6 +45,10 @@ class NativeDtype:
     pass
 
 
+class NativeShape:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
@@ -52,6 +62,19 @@ class Dtype(str):
     def __new__(cls, dtype_str):
         assert "int" in dtype_str or "float" in dtype_str or "bool" in dtype_str
         return str.__new__(cls, dtype_str)
+
+
+class Shape(tuple):
+    def __new__(cls, shape_tup):
+        assert isinstance(shape_tup, (int, list, tuple, ivy.NativeShape))
+        if isinstance(shape_tup, int):
+            shape_tup = (shape_tup,)
+        elif isinstance(shape_tup, list):
+            shape_tup = tuple(shape_tup)
+        assert builtins.all([isinstance(v, int) for v in shape_tup])
+        if ivy.shape_array_mode():
+            return ivy.array(shape_tup)
+        return tuple.__new__(cls, shape_tup)
 
 
 class IntDtype(Dtype):
@@ -73,6 +96,8 @@ class Node(str):
 
 array_significant_figures_stack = list()
 array_decimal_values_stack = list()
+warning_level_stack = list()
+warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
 # global constants
@@ -123,7 +148,6 @@ from ivy.functional.ivy import (
     elementwise,
     general,
     gradients,
-    image,
     layers,
     linear_algebra,
     losses,
@@ -147,7 +171,6 @@ add_ivy_array_instance_methods(
         elementwise,
         general,
         gradients,
-        image,
         layers,
         linear_algebra,
         losses,
@@ -172,7 +195,6 @@ add_ivy_container_instance_methods(
         elementwise,
         general,
         gradients,
-        image,
         layers,
         linear_algebra,
         losses,
@@ -198,7 +220,6 @@ add_ivy_container_instance_methods(
         elementwise,
         general,
         gradients,
-        image,
         layers,
         linear_algebra,
         losses,
@@ -400,7 +421,7 @@ def _sf(x, sig_fig=3):
     if "uint" in type(x).__name__:
         f = np.uint(f)
     elif "int" in type(x).__name__:
-        f = np.int(f)
+        f = int(f)
     x = f
     return x
 
@@ -505,3 +526,45 @@ def unset_array_decimal_values():
     global array_decimal_values_stack
     if array_decimal_values_stack:
         array_decimal_values_stack.pop(-1)
+
+
+def warning_level():
+    """Summary.
+
+    Returns
+    -------
+    ret
+        current warning level, default is "ivy_only"
+    """
+    global warning_level_stack
+    if not warning_level_stack:
+        ret = "ivy_only"
+    else:
+        ret = warning_level_stack[-1]
+    return ret
+
+
+def set_warning_level(warn_level):
+    """Summary.
+
+    Parameters
+    ----------
+    warn_level
+        string for the warning level to be set, one of "none", "ivy_only", "all"
+
+    """
+    global warning_level_stack
+    warning_level_stack.append(warn_level)
+
+
+def unset_warning_level():
+    """"""
+    global warning_level_stack
+    if warning_level_stack:
+        warning_level_stack.pop(-1)
+
+
+def warn(warning_message, stacklevel=0):
+    warn_level = warning_level()
+    warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
+    warnings.warn(warning_message, stacklevel=stacklevel)

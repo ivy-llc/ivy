@@ -13,6 +13,7 @@ NativeArray = mx.nd.NDArray
 NativeVariable = mx.nd.NDArray
 NativeDevice = mx.context.Context
 NativeDtype = type
+NativeShape = tuple
 
 # native data types
 native_int8 = np.int8
@@ -172,8 +173,6 @@ from . import general
 from .general import *
 from . import gradients
 from .gradients import *
-from . import image
-from .image import *
 from . import layers
 from .layers import *
 from . import linear_algebra as linalg

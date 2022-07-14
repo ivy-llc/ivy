@@ -32,13 +32,11 @@ def test_unique_values(
     fw,
     device,
 ):
-    if fw == "torch" and ("int" in input_dtype or "16" in input_dtype):
-        return
-
     shape = tuple(array_shape)
+
     x = np.random.uniform(size=shape).astype(input_dtype)
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -74,13 +72,11 @@ def test_unique_all(
     fw,
     device,
 ):
-    if fw == "torch" and ("int" in input_dtype or "16" in input_dtype):
-        return
-
     shape = tuple(array_shape)
+
     x = np.random.uniform(size=shape).astype(input_dtype)
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -118,12 +114,9 @@ def test_unique_counts(
     fw,
     device,
 ):
-    if fw == "torch" and ("int" in input_dtype or "16" in input_dtype):
-        return
-
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,
@@ -161,13 +154,12 @@ def test_unique_inverse(
     fw,
     device,
 ):
-
     if fw == "torch" and ("int" in input_dtype or "16" in input_dtype):
         return
 
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         False,

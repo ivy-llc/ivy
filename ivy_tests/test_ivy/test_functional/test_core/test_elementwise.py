@@ -32,7 +32,7 @@ def test_abs(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -67,7 +67,7 @@ def test_acosh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -102,7 +102,7 @@ def test_acos(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -137,7 +137,7 @@ def test_add(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -173,7 +173,7 @@ def test_asin(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -208,7 +208,7 @@ def test_asinh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -243,7 +243,7 @@ def test_atan(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -278,7 +278,7 @@ def test_atan2(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -314,7 +314,7 @@ def test_atanh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -349,7 +349,7 @@ def test_bitwise_and(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -389,7 +389,7 @@ def test_bitwise_left_shift(
     x1 = np.asarray(x, dtype=input_dtype)
     n_bits = ivy.dtype_bits(input_dtype)
     x2 = np.random.randint(n_bits, size=x1.shape, dtype=input_dtype)
-    helpers.test_array_function(
+    helpers.test_function(
         [input_dtype, input_dtype],
         as_variable,
         with_out,
@@ -425,7 +425,7 @@ def test_bitwise_invert(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -460,7 +460,7 @@ def test_bitwise_or(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -500,7 +500,7 @@ def test_bitwise_right_shift(
     x1 = np.asarray(x, dtype=input_dtype)
     n_bits = ivy.dtype_bits(input_dtype)
     x2 = np.random.randint(n_bits, size=x1.shape, dtype=input_dtype)
-    helpers.test_array_function(
+    helpers.test_function(
         [input_dtype, input_dtype],
         as_variable,
         with_out,
@@ -536,7 +536,7 @@ def test_bitwise_xor(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -572,7 +572,7 @@ def test_ceil(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -607,7 +607,7 @@ def test_cos(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -642,7 +642,7 @@ def test_cosh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -685,7 +685,7 @@ def test_divide(
         return  # don't divide by 0
     elif np.any(x1 > 9223372036854775807):
         return  # np.divide converts to signed int so values can't be too large
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -721,7 +721,7 @@ def test_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -757,7 +757,7 @@ def test_exp(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -792,7 +792,7 @@ def test_expm1(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -827,7 +827,7 @@ def test_floor(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -865,13 +865,22 @@ def test_floor_divide(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    x1 = np.asarray(x[0], dtype=input_dtype[0]),
-    x2 = np.asarray(x[1], dtype=input_dtype[1]),
-    assume(not np.any(x2 == 0))
+    x1 = (np.asarray(x[0], dtype=input_dtype[0]),)
+    x2 = (np.asarray(x[1], dtype=input_dtype[1]),)
+    assume(np.all(x2[0] != 0))
+    # we assume values aren't too close to the boundaries as tf and torch have issues:
+    # https://github.com/pytorch/pytorch/issues/77742#issuecomment-1146026178
+    # https://github.com/tensorflow/tensorflow/issues/56130
     if fw in ["tensorflow", "torch"]:
-        # ToDo: get these unit tests passing
-        return
-    helpers.test_array_function(
+        if ivy.is_float_dtype(input_dtype[0]):
+            low1 = 2 * ivy.finfo(input_dtype[0]).smallest_normal
+            high1 = 0.5 * ivy.finfo(input_dtype[0]).max
+            assume(np.all(x1[0] > low1) and np.all(x1[0] < high1))
+        if ivy.is_float_dtype(input_dtype[1]):
+            low2 = 2 * ivy.finfo(input_dtype[0]).smallest_normal
+            high2 = 0.5 * ivy.finfo(input_dtype[1]).max
+            assume(np.all(x2[0] > low2) and np.all(x2[0] < high2))
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -881,8 +890,8 @@ def test_floor_divide(
         instance_method,
         fw,
         "floor_divide",
-        x1=x1,
-        x2=x2,
+        x1=x1[0],
+        x2=x2[0],
     )
 
 
@@ -907,7 +916,7 @@ def test_greater(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -943,7 +952,7 @@ def test_greater_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -979,7 +988,7 @@ def test_isfinite(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1014,7 +1023,7 @@ def test_isinf(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1049,7 +1058,7 @@ def test_isnan(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1084,7 +1093,7 @@ def test_less(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1120,7 +1129,7 @@ def test_less_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1156,7 +1165,7 @@ def test_log(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1191,7 +1200,7 @@ def test_log1p(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1226,7 +1235,7 @@ def test_log2(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1261,7 +1270,7 @@ def test_log10(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1296,7 +1305,7 @@ def test_logaddexp(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1306,7 +1315,7 @@ def test_logaddexp(
         instance_method,
         fw,
         "logaddexp",
-        rtol=1e-2,
+        test_rtol=1e-2,
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -1333,7 +1342,7 @@ def test_logical_and(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1369,7 +1378,7 @@ def test_logical_not(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1404,7 +1413,7 @@ def test_logical_or(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1440,7 +1449,7 @@ def test_logical_xor(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1476,7 +1485,7 @@ def test_multiply(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1512,9 +1521,7 @@ def test_negative(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if "uint" in input_dtype:
-        return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1549,7 +1556,7 @@ def test_not_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1585,7 +1592,7 @@ def test_positive(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1622,7 +1629,7 @@ def test_pow(
     input_dtype, x = dtype_and_x
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    if fw == "jax":
+    if fw in ["jax", "tensorflow"]:
         return
     if (
         np.any(x2 < 0)
@@ -1630,7 +1637,7 @@ def test_pow(
         and ivy.is_int_dtype(input_dtype[0])
     ):
         return  # ints to negative int powers not allowed
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1671,7 +1678,7 @@ def test_remainder(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
     assume(not np.any(x2 == 0))
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         [as_variable, False],
         with_out,
@@ -1707,7 +1714,7 @@ def test_round(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1742,7 +1749,7 @@ def test_sign(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1777,7 +1784,7 @@ def test_sin(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1812,7 +1819,7 @@ def test_sinh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1847,7 +1854,7 @@ def test_square(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1882,7 +1889,7 @@ def test_sqrt(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1917,7 +1924,7 @@ def test_subtract(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1953,7 +1960,7 @@ def test_tan(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -1988,7 +1995,7 @@ def test_tanh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -2023,7 +2030,7 @@ def test_trunc(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -2062,7 +2069,7 @@ def test_erf(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -2109,7 +2116,7 @@ def test_minimum(
     ):
         # mxnet does not support 0-dimensional variables
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,
@@ -2157,7 +2164,7 @@ def test_maximum(
     ):
         # mxnet does not support 0-dimensional variables
         return
-    helpers.test_array_function(
+    helpers.test_function(
         input_dtype,
         as_variable,
         with_out,

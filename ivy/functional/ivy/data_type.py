@@ -1,17 +1,17 @@
 # global
 import math
-import importlib
 import numpy as np
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
+from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     inputs_to_native_arrays,
+    handle_nestable,
 )
 
 # Array API Standard #
@@ -21,159 +21,15 @@ Finfo = None
 Iinfo = None
 
 
-# Dtype Info #
-
-
-@inputs_to_native_arrays
-def can_cast(
-    from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray], to: ivy.Dtype
-) -> bool:
-    """
-    Determines if one data type can be cast to another data type according to
-    :ref:`type-promotion` rules.
-
-    Parameters
-    ----------
-    from_
-        input data type or array from which to cast.
-    to
-        desired data type.
-
-    Returns
-    -------
-    ret
-        ``True`` if the cast can occur according to :ref:`type-promotion` rules;
-        otherwise, ``False``.
-
-    """
-    return _cur_backend(from_).can_cast(from_, to)
-
-
-@inputs_to_native_arrays
-def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
-    """Machine limits for integer data types.
-
-    Parameters
-    ----------
-    type
-        the kind of integer data-type about which to get information.
-
-    Returns
-    -------
-    ret
-        a class with that encapsules the following attributes:
-        - **bits**: *int*
-          number of bits occupied by the type.
-        - **max**: *int*
-          largest representable number.
-        - **min**: *int*
-          smallest representable number.
-
-    """
-    return _cur_backend(None).iinfo(type)
-
-
-@inputs_to_native_arrays
-def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
-    """Machine limits for floating-point data types.
-
-    Parameters
-    ----------
-    type
-        the kind of floating-point data-type about which to get information.
-
-    Returns
-    -------
-    ret
-        an object having the followng attributes:
-        - **bits**: *int*
-          number of bits occupied by the floating-point data type.
-        - **eps**: *float*
-          difference between 1.0 and the next smallest representable floating-point
-          number larger than 1.0 according to the IEEE-754 standard.
-        - **max**: *float*
-          largest representable number.
-        - **min**: *float*
-          smallest representable number.
-        - **smallest_normal**: *float*
-          smallest positive floating-point number with full precision.
-
-    """
-    return _cur_backend(None).finfo(type)
-
-
 @to_native_arrays_and_back
 @handle_out_argument
-def broadcast_to(
-    x: Union[ivy.Array, ivy.NativeArray], shape: Tuple[int, ...]
-) -> ivy.Array:
-    """Broadcasts an array to a specified shape.
-
-    Parameters
-    ----------
-    x
-        array to broadcast.
-    shape
-        array shape. Must be compatible with x (see Broadcasting). If
-        the array is incompatible with the specified shape, the function should raise an
-        exception.
-
-    Returns
-    -------
-    ret
-        an array having a specified shape. Must have the same data type as x.
-
-    """
-    return _cur_backend(x).broadcast_to(x, shape)
-
-
-@to_native_arrays_and_back
-def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
-    """Broadcasts one or more arrays against one another.
-
-    Parameters
-    ----------
-    arrays
-        an arbitrary number of to-be broadcasted arrays.
-
-    Returns
-    -------
-    ret
-        Each array must have the same shape. Each array must have the same dtype as its
-        corresponding input array.
-
-    """
-    return _cur_backend(arrays[0]).broadcast_arrays(*arrays)
-
-
-def dtype(
-    x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
-) -> Union[ivy.Dtype, ivy.NativeDtype]:
-    """Get the data type for input array x.
-
-    Parameters
-    ----------
-    x
-        Tensor for which to get the data type.
-    as_native
-        Whether or not to return the dtype in string format. Default is False.
-
-    Returns
-    -------
-    ret
-        Data type of the array
-
-    """
-    return _cur_backend(x).dtype(x, as_native)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
+@handle_nestable
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
     *,
     copy: bool = True,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Copies an array to a specified data type irrespective of :ref:`type-promotion`
     rules.
@@ -202,6 +58,9 @@ def astype(
         be returned. If ``False`` and the specified ``dtype`` matches the data type of
         the input array, the input array must be returned; otherwise, a newly allocated
         must be returned. Default: ``True``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -212,12 +71,212 @@ def astype(
     Examples
     --------
     >>> x = ivy.array([1, 2])
-    >>> dtype = ivy.float64
-    >>> y = ivy.astype(x, dtype = dtype)
+    >>> y = ivy.astype(x, dtype = ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
     """
-    return _cur_backend(x).astype(x, dtype, copy=copy)
+    return current_backend(x).astype(x, dtype, copy=copy, out=out)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
+    """Broadcasts one or more arrays against one another.
+
+    Parameters
+    ----------
+    arrays
+        an arbitrary number of to-be broadcasted arrays.
+
+    Returns
+    -------
+    ret
+        Each array must have the same shape. Each array must have the same dtype as its
+        corresponding input array.
+
+    """
+    return current_backend(arrays[0]).broadcast_arrays(*arrays)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def broadcast_to(
+    x: Union[ivy.Array, ivy.NativeArray],
+    shape: Tuple[int, ...],
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Broadcasts an array to a specified shape.
+
+    Parameters
+    ----------
+    x
+        array to broadcast.
+    shape
+        array shape. Must be compatible with x (see Broadcasting). If
+        the array is incompatible with the specified shape, the function should raise an
+        exception.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array having a specified shape. Must have the same data type as x.
+
+    """
+    return current_backend(x).broadcast_to(x, shape, out=out)
+
+
+@inputs_to_native_arrays
+@handle_nestable
+def can_cast(
+    from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray], to: ivy.Dtype
+) -> bool:
+    """
+    Determines if one data type can be cast to another data type according to
+    :ref:`type-promotion` rules.
+
+    Parameters
+    ----------
+    from_
+        input data type or array from which to cast.
+    to
+        desired data type.
+
+    Returns
+    -------
+    ret
+        ``True`` if the cast can occur according to :ref:`type-promotion` rules;
+        otherwise, ``False``.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+     With :code:`ivy.Dtype` input:
+
+    >>> print(ivy.can_cast(ivy.uint8, ivy.int32))
+    True
+
+    >>> print(ivy.can_cast(ivy.float64, 'int64'))
+    False
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> print(ivy.can_cast(x, ivy.float64))
+    True
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[-1, -1, -1],\
+                              [1, 1, 1]],\
+                            dtype='int16')
+    >>> print(ivy.can_cast(x, 'uint8'))
+    False
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                          b=ivy.array([3, 4, 5]))
+    >>> print(ivy.can_cast(x, 'int64'))
+    {
+        a: false,
+        b: true
+    }
+    """
+    return current_backend(from_).can_cast(from_, to)
+
+
+@inputs_to_native_arrays
+@handle_nestable
+def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
+    """Machine limits for floating-point data types.
+
+    Parameters
+    ----------
+    type
+        the kind of floating-point data-type about which to get information.
+
+    Returns
+    -------
+    ret
+        an object having the followng attributes:
+        - **bits**: *int*
+          number of bits occupied by the floating-point data type.
+        - **eps**: *float*
+          difference between 1.0 and the next smallest representable floating-point
+          number larger than 1.0 according to the IEEE-754 standard.
+        - **max**: *float*
+          largest representable number.
+        - **min**: *float*
+          smallest representable number.
+        - **smallest_normal**: *float*
+          smallest positive floating-point number with full precision.
+
+    """
+    return current_backend(None).finfo(type)
+
+
+@inputs_to_native_arrays
+@handle_nestable
+def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
+    """Machine limits for integer data types.
+
+    Parameters
+    ----------
+    type
+        the kind of integer data-type about which to get information.
+
+    Returns
+    -------
+    ret
+        a class with that encapsules the following attributes:
+        - **bits**: *int*
+          number of bits occupied by the type.
+        - **max**: *int*
+          largest representable number.
+        - **min**: *int*
+          smallest representable number.
+
+    """
+    return current_backend(None).iinfo(type)
+
+
+@inputs_to_native_arrays
+@handle_nestable
+def result_type(
+    *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
+) -> ivy.Dtype:
+    """Returns the dtype that results from applying the type promotion rules (see
+    :ref:`type-promotion`) to the arguments.
+
+    .. note::
+       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
+       will be implementation-specific.
+
+    Parameters
+    ----------
+    arrays_and_dtypes
+        an arbitrary number of input arrays and/or dtypes.
+
+    Returns
+    -------
+    ret
+        the dtype resulting from an operation involving the input arrays and dtypes.
+
+    """
+    return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 
 
 # Extra #
@@ -232,7 +291,7 @@ class DefaultDtype:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, dtype):
+    def __init__(self, dtype: ivy.Dtype):
         self._dtype = dtype
 
     def __enter__(self):
@@ -248,7 +307,7 @@ class DefaultFloatDtype:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, float_dtype):
+    def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
 
     def __enter__(self):
@@ -264,7 +323,7 @@ class DefaultIntDtype:
     """"""
 
     # noinspection PyShadowingNames
-    def __init__(self, float_dtype):
+    def __init__(self, float_dtype: ivy.Dtype):
         self._float_dtype = float_dtype
 
     def __enter__(self):
@@ -290,7 +349,7 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
         The number of bits used to represent the data type.
 
     """
-    return _cur_backend(dtype_in).dtype_bits(dtype_in)
+    return current_backend(dtype_in).dtype_bits(dtype_in)
 
 
 def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str]) -> ivy.Dtype:
@@ -307,7 +366,7 @@ def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str]) -> ivy.Dtype:
         data type string 'float32'
 
     """
-    return _cur_backend(None).as_ivy_dtype(dtype_in)
+    return current_backend(None).as_ivy_dtype(dtype_in)
 
 
 def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDtype:
@@ -324,92 +383,12 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype]) -> ivy.NativeDt
         data type e.g. ivy.float32.
 
     """
-    return _cur_backend(None).as_native_dtype(dtype_in)
-
-
-# noinspection PyShadowingNames,PyShadowingBuiltins
-def default_int_dtype(
-    input=None,
-    int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = None,
-) -> Union[ivy.IntDtype, ivy.NativeDtype]:
-    """Summary.
-
-    Parameters
-    ----------
-    input
-         (Default value = None)
-    int_dtype
-
-    as_native
-         (Default value = None)
-
-    Returns
-    -------
-        Return the input int dtype if provided, otherwise return the global default int
-        dtype.
-
-    """
-    if ivy.exists(int_dtype):
-        if as_native is True:
-            return ivy.as_native_dtype(int_dtype)
-        elif as_native is False:
-            return ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
-        return int_dtype
-    as_native = ivy.default(as_native, False)
-    if ivy.exists(input):
-        if ivy.is_native_array(input):
-            ret = ivy.dtype(input)
-        elif isinstance(input, np.ndarray):
-            ret = input.dtype
-        elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_indices_where(
-                input, lambda x: x > 9223372036854775807 and x != ivy.inf
-            ):
-                ret = ivy.uint64
-            elif ivy.nested_indices_where(
-                input, lambda x: x > 2147483647 and x != ivy.inf
-            ):
-                ret = ivy.int64
-            else:
-                def_dtype = default_dtype()
-                if ivy.is_int_dtype(def_dtype):
-                    ret = def_dtype
-                else:
-                    ret = ivy.int32
-        elif isinstance(input, Number):
-            if (
-                input > 9223372036854775807
-                and input != ivy.inf
-                and ivy.backend != "torch"
-            ):
-                ret = ivy.uint64
-            elif input > 2147483647 and input != ivy.inf:
-                ret = ivy.int64
-            else:
-                def_dtype = default_dtype()
-                if ivy.is_int_dtype(def_dtype):
-                    ret = def_dtype
-                else:
-                    ret = ivy.int32
-    else:
-        global default_int_dtype_stack
-        if not default_int_dtype_stack:
-            def_dtype = default_dtype()
-            if ivy.is_int_dtype(def_dtype):
-                ret = def_dtype
-            else:
-                ret = "int32"
-        else:
-            ret = default_int_dtype_stack[-1]
-    if as_native:
-        return ivy.as_native_dtype(ret)
-    return ivy.IntDtype(ivy.as_ivy_dtype(ret))
+    return current_backend(None).as_native_dtype(dtype_in)
 
 
 # len(get_binary_from_float(x)) >24 and int(get_binary_from_float(x)[24:])>0)
 # noinspection PyShadowingBuiltins
-def _check_float64(input):
+def _check_float64(input) -> bool:
     if math.isfinite(input):
         tmp = str(input).replace("-", "").split(".")
         exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
@@ -423,7 +402,26 @@ def _check_float64(input):
     return False
 
 
+# noinspection PyShadowingBuiltins
+def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, str]:
+    """Determines the closest valid datatype to the datatype passed as input.
+
+    Parameters
+    ----------
+    type
+        The data type for which to check the closest valid type for.
+
+    Returns
+    -------
+    ret
+        The closest valid data type as a native ivy.Dtype
+
+    """
+    return current_backend(type).closest_valid_dtype(type)
+
+
 # noinspection PyShadowingNames,PyShadowingBuiltins
+@handle_nestable
 def default_float_dtype(
     input=None,
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
@@ -543,102 +541,345 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-def set_default_dtype(dtype: Union[ivy.Dtype, str]):
+# noinspection PyShadowingNames,PyShadowingBuiltins
+def default_int_dtype(
+    input=None,
+    int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
+    as_native: Optional[bool] = None,
+) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """Summary.
 
     Parameters
     ----------
-    dtype
-
-    """
-    dtype = ivy.as_ivy_dtype(dtype)
-    global default_dtype_stack
-    default_dtype_stack.append(dtype)
-
-
-def unset_default_dtype():
-    """"""
-    global default_dtype_stack
-    if default_dtype_stack:
-        default_dtype_stack.pop(-1)
-
-
-# noinspection PyShadowingNames
-def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
-    """Summary.
-
-    Parameters
-    ----------
+    input
+         (Default value = None)
     int_dtype
 
+    as_native
+         (Default value = None)
+
+    Returns
+    -------
+        Return the input int dtype if provided, otherwise return the global default int
+        dtype.
+
     """
-    int_dtype = ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
-    global default_int_dtype_stack
-    default_int_dtype_stack.append(int_dtype)
+    if ivy.exists(int_dtype):
+        if as_native is True:
+            return ivy.as_native_dtype(int_dtype)
+        elif as_native is False:
+            return ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
+        return int_dtype
+    as_native = ivy.default(as_native, False)
+    if ivy.exists(input):
+        if ivy.is_native_array(input):
+            ret = ivy.dtype(input)
+        elif isinstance(input, np.ndarray):
+            ret = input.dtype
+        elif isinstance(input, (list, tuple, dict)):
+            if ivy.nested_indices_where(
+                input, lambda x: x > 9223372036854775807 and x != ivy.inf
+            ):
+                ret = ivy.uint64
+            elif ivy.nested_indices_where(
+                input, lambda x: x > 2147483647 and x != ivy.inf
+            ):
+                ret = ivy.int64
+            else:
+                def_dtype = default_dtype()
+                if ivy.is_int_dtype(def_dtype):
+                    ret = def_dtype
+                else:
+                    ret = ivy.int32
+        elif isinstance(input, Number):
+            if (
+                input > 9223372036854775807
+                and input != ivy.inf
+                and ivy.backend != "torch"
+            ):
+                ret = ivy.uint64
+            elif input > 2147483647 and input != ivy.inf:
+                ret = ivy.int64
+            else:
+                def_dtype = default_dtype()
+                if ivy.is_int_dtype(def_dtype):
+                    ret = def_dtype
+                else:
+                    ret = ivy.int32
+    else:
+        global default_int_dtype_stack
+        if not default_int_dtype_stack:
+            def_dtype = default_dtype()
+            if ivy.is_int_dtype(def_dtype):
+                ret = def_dtype
+            else:
+                ret = "int32"
+        else:
+            ret = default_int_dtype_stack[-1]
+    if as_native:
+        return ivy.as_native_dtype(ret)
+    return ivy.IntDtype(ivy.as_ivy_dtype(ret))
 
 
-def unset_default_int_dtype():
-    """"""
-    global default_int_dtype_stack
-    if default_int_dtype_stack:
-        default_int_dtype_stack.pop(-1)
-
-
-# noinspection PyShadowingNames
-def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
-    """Summary.
+def dtype(
+    x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
+) -> Union[ivy.Dtype, ivy.NativeDtype]:
+    """Get the data type for input array x.
 
     Parameters
     ----------
-    float_dtype
-
-    """
-    float_dtype = ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
-    global default_float_dtype_stack
-    default_float_dtype_stack.append(float_dtype)
-
-
-def unset_default_float_dtype():
-    """"""
-    global default_float_dtype_stack
-    if default_float_dtype_stack:
-        default_float_dtype_stack.pop(-1)
-
-
-# noinspection PyShadowingBuiltins
-def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, str]:
-    """Determines the closest valid datatype to the datatype passed as input.
-
-    Parameters
-    ----------
-    type
-        The data type for which to check the closest valid type for.
+    x
+        Tensor for which to get the data type.
+    as_native
+        Whether or not to return the dtype in string format. Default is False.
 
     Returns
     -------
     ret
-        The closest valid data type as a native ivy.Dtype
+        Data type of the array
+
+    Functional Method Examples
+    --------------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([1, 0, 1, -1, 0])
+    >>> y = ivy.dtype(x1)
+    >>> print(y)
+    int32
+
+    >>> x1 = ivy.array([1.0, 2.0, 3.5, 4.5, 5, 6])
+    >>> y = ivy.dtype(x1)
+    >>> print(y)
+    float32
+
+    With :code:`ivy.Native_Array` inputs:
+
+    >>> x1 = ivy.native_array([1, 0, 1, -1, 0])
+    >>> y = ivy.dtype(x1)
+    >>> print(y)
+    int32
+
+    >>> x1 = ivy.native_array([1.0, 2.0, 3.5, 4.5, 5, 6])
+    >>> y = ivy.dtype(x1)
+    >>> print(y)
+    float32
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([1, 0, -1, 0, 1]), \
+                    b=ivy.array([1, 0, -1, 0, 1]))
+    >>> y = ivy.dtype(x.a)
+    >>> print(y)
+    int32
+
+    >>> x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]), \
+                            b=ivy.native_array([1, 0, 0, 0, 1]))
+    >>> y = ivy.dtype(x.a)
+    >>> print(y)
+    float32
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = x.dtype
+    >>> print(y)
+    int32
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                      b=ivy.array([2, 3, 4]))
+    >>> y = x.dtype()
+    >>> print(y)
+    {
+        a: int32,
+        b: int32
+    }
 
     """
-    return _cur_backend(type).closest_valid_dtype(type)
+    return current_backend(x).dtype(x, as_native)
 
 
-@inputs_to_native_arrays
-def is_int_dtype(
-    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
-) -> bool:
-    """Determine whether the input data type is an int data-type.
+@handle_nestable
+def function_supported_dtypes(fn: Callable) -> ivy.Dtype:
+    """Returns the supported data types of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported dtype attribute
+
+    Returns
+    -------
+    ret
+        The unsupported data types of the function
+
+    Examples
+    --------
+    >>> ivy.set_backend('torch')
+    >>> print(ivy.function_supported_dtypes(ivy.acosh))
+    ['int8', 'int16', 'int32', 'int64', 'uint8', \
+     'bfloat16', 'float32', 'float64', 'bool']
+    """
+    valid = list(ivy.valid_dtypes)
+    for d in list(function_unsupported_dtypes(fn)):
+        if d in valid:
+            valid.remove(d)
+    return ivy.as_native_dtype(valid)
+
+
+@handle_nestable
+def function_unsupported_dtypes(fn: Callable) -> Tuple:
+    """Returns the unsupported data types of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported dtype attribute
+
+    Returns
+    -------
+    ret
+        The unsupported data types of the function
+
+    Examples
+    --------
+    >>> ivy.set_backend('torch')
+    >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
+    ('float16','uint16','uint32','uint64')
+
+    """
+    unsupported_dtypes = ivy.invalid_dtypes
+    if hasattr(fn, "unsupported_dtypes"):
+        fn_unsupported_dtypes = fn.unsupported_dtypes
+        if isinstance(fn_unsupported_dtypes, dict):
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_unsupported_dtypes:
+                unsupported_dtypes += fn_unsupported_dtypes[backend_str]
+            if "all" in fn_unsupported_dtypes:
+                unsupported_dtypes += fn_unsupported_dtypes["all"]
+        else:
+            unsupported_dtypes += fn_unsupported_dtypes
+    return tuple(set(unsupported_dtypes))
+
+
+def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
+    """Determines whether the provided data type is not support by the current
+    framework.
 
     Parameters
     ----------
     dtype_in
-        Datatype to test
+        The data type for which to check for backend non-support
 
     Returns
     -------
     ret
-        Whether or not the data type is an integer data type
+        Boolean, whether the data-type string is un-supported.
 
+    """
+    if dtype_in is None:
+        return False
+    return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtypes
+
+
+@handle_nestable
+@inputs_to_native_arrays
+def is_int_dtype(
+    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
+) -> bool:
+    """
+    Determine whether the input data type is an int data type.
+
+    Parameters
+    ----------
+    dtype_in
+        input data type to test.
+
+    Returns
+    -------
+    ret
+        "True" if the input data type is an integer, otherwise "False".
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+     With :code:`ivy.Dtype` input:
+
+    >>> x = ivy.is_int_dtype(ivy.int8)
+    >>> print(x)
+    True
+
+    >>> x = ivy.is_int_dtype(ivy.int32)
+    >>> print(x)
+    True
+
+    >>> x = ivy.is_int_dtype(ivy.uint64)
+    >>> print(x)
+    True
+
+    >>> x = ivy.is_int_dtype(ivy.float64)
+    >>> print(x)
+    True
+
+    >>> x = ivy.is_int_dtype(ivy.bool)
+    >>> print(x)
+    False
+
+    With :code:`str` input:
+
+    >>> x = "1"
+    >>> print(ivy.is_int_dtype(x))
+    True
+
+    >>> x = "int"
+    >>> print(ivy.is_int_dtype(x))
+    False
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> print(x.dtype)
+    float32
+
+    >>> print(ivy.is_int_dtype(x))
+    False
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
+        dtype = ivy.int16)
+    >>> print(x.dtype)
+    <dtype:'int16'>
+
+    >>> print(ivy.is_int_dtype(x))
+    True
+
+    With :code:`Number` input:
+
+    >>> x = 1
+    >>> print(ivy.is_int_dtype(x))
+    True
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+        b=ivy.array([3, 4, 5]))
+    >>> print(x.a.dtype, x.b.dtype)
+    float32 int32
+
+    >>> print(ivy.is_int_dtype(x))
+    {
+        a: False,
+        b: True
+    }
     """
     if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
@@ -664,20 +905,21 @@ def is_int_dtype(
 
 
 @inputs_to_native_arrays
+@handle_nestable
 def is_float_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
 ) -> bool:
-    """Determine whether the input data type is an float data-type.
+    """Determine whether the input data type is a float dtype.
 
     Parameters
     ----------
     dtype_in
-        Datatype to test
+        The array or data type to check
 
     Returns
     -------
     ret
-        Whether or not the data type is a floating point data type
+        Whether or not the array or data type is of a floating point dtype
 
     """
     if ivy.is_native_array(dtype_in):
@@ -697,33 +939,117 @@ def is_float_dtype(
     return "float" in as_ivy_dtype(dtype_in)
 
 
-@inputs_to_native_arrays
-def result_type(
-    *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
+def promote_types(
+    type1: Union[ivy.Dtype, ivy.NativeDtype],
+    type2: Union[ivy.Dtype, ivy.NativeDtype],
 ) -> ivy.Dtype:
-    """Returns the dtype that results from applying the type promotion rules (see
-    :ref:`type-promotion`) to the arguments.
-
-    .. note::
-       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
-       will be implementation-specific.
+    """
+    Promotes the datatypes type1 and type2, returning the data type they promote to
 
     Parameters
     ----------
-    arrays_and_dtypes
-        an arbitrary number of input arrays and/or dtypes.
+    type1
+        the first of the two types to promote
+    type2
+        the second of the two types to promote
 
     Returns
     -------
     ret
-        the dtype resulting from an operation involving the input arrays and dtypes.
+        The type that both input types promote to
+    """
+    return ivy.promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
+
+
+def set_default_dtype(dtype: Union[ivy.Dtype, str]):
+    """Summary.
+
+    Parameters
+    ----------
+    dtype
 
     """
-    return _cur_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
+    dtype = ivy.as_ivy_dtype(dtype)
+    global default_dtype_stack
+    default_dtype_stack.append(dtype)
 
 
-def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
-    """Determines whether the provided data type is support by the current framework.
+def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
+    """Summary.
+
+    Parameters
+    ----------
+    float_dtype
+
+    """
+    float_dtype = ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
+    global default_float_dtype_stack
+    default_float_dtype_stack.append(float_dtype)
+
+
+def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
+    """Summary.
+
+    Parameters
+    ----------
+    int_dtype
+
+    """
+    int_dtype = ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
+    global default_int_dtype_stack
+    default_int_dtype_stack.append(int_dtype)
+
+
+def type_promote_arrays(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+) -> Tuple:
+    """
+    Type promote the input arrays, returning new arrays with the shared correct
+    data type
+
+    Parameters
+    ----------
+    x1
+        the first of the two arrays to type promote
+    x2
+        the second of the two arrays to type promote
+
+    Returns
+    -------
+    ret1, ret2
+        The input arrays after type promotion
+    """
+    new_type = ivy.promote_types(ivy.dtype(x1), ivy.dtype(x2))
+    return ivy.astype(x1, new_type), ivy.astype(x2, new_type)
+
+
+def unset_default_dtype():
+    """"""
+    global default_dtype_stack
+    if default_dtype_stack:
+        default_dtype_stack.pop(-1)
+
+
+# noinspection PyShadowingNames
+def unset_default_float_dtype():
+    """"""
+    global default_float_dtype_stack
+    if default_float_dtype_stack:
+        default_float_dtype_stack.pop(-1)
+
+
+# noinspection PyShadowingNames
+def unset_default_int_dtype():
+    """"""
+    global default_int_dtype_stack
+    if default_int_dtype_stack:
+        default_int_dtype_stack.pop(-1)
+
+
+def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
+    """Determines whether the provided data type is supported by the
+    current framework.
 
     Parameters
     ----------
@@ -735,116 +1061,66 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     ret
         Boolean, whether or not the data-type string is supported.
 
+    Examples
+    --------
+    with :code:`ivy.Dtype` inputs:
+
+    >>> print(ivy.valid_dtype(None))
+        True
+
+    >>> print(ivy.valid_dtype(dtype_in = 'float16'))
+        True
+
+    >>> print(ivy.valid_dtype('float32'))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.float64))
+        True
+
+    >>> print(ivy.valid_dtype('bool'))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.int8))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.int64))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.uint8))
+        True
+
+    with :code:`ivy.NativeDtype` inputs:
+
+    >>> print(ivy.valid_dtype('native_bool'))
+        False
+
+    >>> print(ivy.valid_dtype(ivy.native_float16))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.native_float32))
+        True
+
+    >>> print(ivy.valid_dtype('native_float64'))
+        False
+
+    >>> print(ivy.valid_dtype(ivy.native_int8))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.native_int16))
+        True
+
+    >>> print(ivy.valid_dtype('native_int32'))
+        False
+
+    >>> print(ivy.valid_dtype(ivy.native_int64))
+        True
+
+    >>> print(ivy.valid_dtype(ivy.native_uint8))
+        True
+
+    >>> print(ivy.valid_dtype('native_uint64'))
+        False
     """
     if dtype_in is None:
         return True
     return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
-
-
-def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
-    """Determines whether the provided data type is not support by the current
-    framework.
-
-    Parameters
-    ----------
-    dtype_in
-        The data type for which to check for backend non-support
-
-    Returns
-    -------
-    ret
-        Boolean, whether the data-type string is un-supported.
-
-    """
-    if dtype_in is None:
-        return False
-    return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtypes
-
-
-def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str) -> ivy.Dtype:
-    """Converts a data type from one backend framework representation to another.
-
-    Parameters
-    ----------
-    dtype_in
-        The data-type to convert, in the specified backend representation
-    backend
-        The backend framework the dtype_in is represented in.
-
-    Returns
-    -------
-    ret
-        The data-type in the current ivy backend format
-
-    """
-    valid_backends = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
-    if backend not in valid_backends:
-        raise Exception(
-            "Invalid backend passed, must be one of {}".format(valid_backends)
-        )
-    ivy_backend = importlib.import_module("ivy.functional.backends.{}".format(backend))
-    return ivy.as_native_dtype(ivy_backend.as_ivy_dtype(dtype_in))
-
-
-def function_supported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
-    """Returns the supported data types of the current backend's function.
-
-    Parameters
-    ----------
-    fn
-        The function to check for the unsupported dtype attribute
-
-    Returns
-    -------
-    ret
-        The unsupported data types of the function
-
-    Examples
-    --------
-    >>> ivy.set_backend('torch')
-    >>> acosh = getattr(ivy, 'acosh')
-    >>> print(function_supported_dtypes(acosh, 'torch'))
-    ('int8', 'int16', 'int32', 'int64', 'uint8', 'bfloat16', 'float16', 'float32', 'float64', 'bool')
-    """
-    valid = list(ivy.valid_dtypes)
-    for d in list(function_unsupported_dtypes(fn, backend)):
-        if d in valid:
-            valid.remove(d)
-    return ivy.as_native_dtype(tuple(valid))
-
-
-def function_unsupported_dtypes(fn: Callable, backend: str) -> ivy.NativeDtype:
-    """Returns the unsupported data types of the current backend's function.
-
-    Parameters
-    ----------
-    fn
-        The function to check for the unsupported dtype attribute
-
-    Returns
-    -------
-    ret
-        The unsupported data types of the function
-
-    Examples
-    --------
-    >>> ivy.set_backend('torch')
-    >>> acosh = getattr(ivy, 'acosh')
-    >>> print(function_unsupported_dtypes(acosh, 'torch'))
-    ('float16', 'uint16', 'uint32', 'uint64')
-    """
-    if hasattr(fn, 'unsupported_dtypes'):
-        return fn.unsupported_dtypes + ivy.invalid_dtypes
-    else:
-        return ivy.invalid_dtypes
-    return ivy.as_native_dtype(fn.unsupported_dtypes)
-
-
-if __name__ == "__main__":
-    ivy.set_backend('tensorflow')
-    pow = getattr(ivy, 'pow')
-    print(function_supported_dtypes(pow, 'tensorflow'))
-
-    pow = getattr(ivy, 'pow')
-    print(function_unsupported_dtypes(pow, 'tensorflow'))
-

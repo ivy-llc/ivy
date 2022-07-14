@@ -21,7 +21,8 @@ Therefore, every function which exists in the standard is thoroughly tested for
 adherence to the standard on a continuous basis.
 
 You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
-functions which are part of the standard.
+functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
+'Details' -> 'Run [backend] Tests'.
 
 **Round Up**
 
