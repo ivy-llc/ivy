@@ -1930,6 +1930,44 @@ class ContainerWithElementwise(ContainerBase):
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
+    @staticmethod
+    def static_sin(
+        x: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sin. This method simply wraps the
+        function, and so the docstring for ivy.sin also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1., -2., -3.]),\
+                              b=ivy.array([4., 5., 6.]))
+        >>> y = ivy.Container.static_sin(x)
+        >>> print(y)
+        {
+            a: ivy.array([-0.841, -0.909, -0.141]),
+            b: ivy.array([-0.757, -0.959, -0.279])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "sin",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def sin(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1939,13 +1977,29 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sin. This method simply wraps the
+        function, and so the docstring for ivy.sin also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([-4., -5., -6.]))
+        >>> y = x.sin()
+        >>> print(y)
+        {
+            a: ivy.array([0.841, 0.909, 0.141]),
+            b: ivy.array([0.757, 0.959, 0.279])
+        }
+        """
         return self.static_sin(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
     def static_sinh(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1953,7 +2007,33 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sinh. This method simply wraps the
+        function, and so the docstring for ivy.sinh also applies to this method
+        with minimal changes.
 
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0.23, 1.12]), b=ivy.array([1, -2, 0.76]))
+        >>> y = ivy.Container.static_sinh(x)
+        >>> print(y)
+        {
+            a: ivy.array([-1.18, 0.232, 1.37]),
+            b: ivy.array([1.18, -3.63, 0.835])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
+                    b=ivy.array([0.67, -0.98, -3]))
+        >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
+        >>> ivy.Container.static_sinh(x, out=y)
+        >>> print(y)
+        {
+            a: ivy.array([-10., 0.347, 3.63]),
+            b: ivy.array([0.721, -1.14, -10.])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "sinh",
             x,
@@ -1973,29 +2053,35 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sinh. This method simply wraps the
+        function, and so the docstring for ivy.sinh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0.23, 1.12]), b=ivy.array([1, -2, 0.76]))
+        >>> y = x.sinh()
+        >>> print(y)
+        {
+            a: ivy.array([-1.18, 0.232, 1.37]),
+            b: ivy.array([1.18, -3.63, 0.835])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
+                    b=ivy.array([0.67, -0.98, -3]))
+        >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
+        >>> x.sinh(out=y)
+        >>> print(y)
+        {
+            a: ivy.array([-10., 0.347, 3.63]),
+            b: ivy.array([0.721, -1.14, -10.])
+        }
+        """
         return self.static_sinh(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
-        )
-
-    @staticmethod
-    def static_square(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-
-        return ContainerBase.multi_map_in_static_method(
-            "square",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
         )
 
     def square(

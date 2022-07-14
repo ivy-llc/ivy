@@ -1,7 +1,7 @@
 # global
 import math
 import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
 
 # local
@@ -61,7 +61,9 @@ def permute_dims(
 
 
 def reshape(
-    x: JaxArray, shape: Tuple[int, ...], copy: Optional[bool] = None
+    x: JaxArray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None,
 ) -> JaxArray:
     ret = jnp.reshape(x, shape)
     return ret
@@ -137,7 +139,6 @@ def tile(x: JaxArray, reps, out: Optional[JaxArray] = None) -> JaxArray:
 def clip(
     x: JaxArray, x_min: Union[Number, JaxArray], x_max: Union[Number, JaxArray]
 ) -> JaxArray:
-    assert ivy.all(ivy.less(x_min, x_max))
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
