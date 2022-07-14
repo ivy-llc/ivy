@@ -154,15 +154,15 @@ Therefore, these docstrings should all simply contain the following text:
 
 .. code-block:: python
 
-        ivy.<Array|Container> <instance|static|special|reverse special> method variant of ivy.<func_name>. This method simply wraps the
-        function, and so the docstring for ivy.<func_name> also applies to this method
-        with minimal changes.
+    ivy.<Array|Container> <instance|static|special|reverse special> method variant of ivy.<func_name>. This method simply wraps the
+    function, and so the docstring for ivy.<func_name> also applies to this method
+    with minimal changes.
 
-        Parameters
-        ----------
+    Parameters
+    ----------
 
-        Returns
-        -------
+    Returns
+    -------
 
 The exception to this is :code:`ivy.Container` :code:`special` method docstrings,
 which should instead use the following text, as these do not *directly* wrap a function
@@ -171,15 +171,15 @@ which can be called on any types that support the corresponding special methods:
 
 .. code-block:: python
 
-        ivy.Container <special|reverse special> method for the <operator_name> operator,
-        calling :code:`operator.<operator_name>` for each of the corresponding leaves of
-        the two containers.
+    ivy.Container <special|reverse special> method for the <operator_name> operator,
+    calling :code:`operator.<operator_name>` for each of the corresponding leaves of
+    the two containers.
 
-        Parameters
-        ----------
+    Parameters
+    ----------
 
-        Returns
-        -------
+    Returns
+    -------
 
 Let's take :code:`ivy.add` as an example.
 The docstring for
