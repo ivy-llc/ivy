@@ -473,12 +473,14 @@ def create_args_kwargs(
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
 
     # assert that the number of arrays aligns with the dtypes and as_variable_flags
-    assert len(arg_np_vals) + len(kwarg_np_vals) == len(input_dtypes), (
-        "Found {} arrays in the input arguments, but {} dtypes and as_variable_flags. "
-        "Make sure to pass in a sequence of bools for all associated boolean flag "
-        "inputs to test_function, with the sequence length being equal to the "
-        "number of arrays in the arguments."
-    )
+    num_arrays = len(arg_np_vals) + len(kwarg_np_vals)
+    if num_arrays > 0:
+        assert num_arrays == len(input_dtypes), (
+            "Found {} arrays in the input arguments, but {} dtypes and "
+            "as_variable_flags. Make sure to pass in a sequence of bools for all "
+            "associated boolean flag inputs to test_function, with the sequence length "
+            "being equal to the number of arrays in the arguments."
+        )
 
     # create args
     num_arg_vals = len(arg_np_vals)
