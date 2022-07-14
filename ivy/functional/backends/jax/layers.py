@@ -1,12 +1,11 @@
 """Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-
 import jax.lax as jlax
 
 # local
 from ivy.functional.backends.jax import JaxArray
-from typing import Union, Tuple, Sequence, List
+from typing import Union, Tuple, Sequence
 
 
 def conv1d(
@@ -72,8 +71,6 @@ def conv3d_transpose(
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
     dimension_numbers = (data_format, "HWDIO", data_format)
-    if data_format == "NDHWC":
-        x = jlax.conv_transpose(0, 4, 1, 2, 3)
     res = jlax.conv_transpose(
         x, filters, strides, padding, dilations, dimension_numbers
     )
