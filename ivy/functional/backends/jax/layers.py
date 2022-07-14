@@ -1,7 +1,6 @@
 """Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-import math
 
 import jax.lax as jlax
 
@@ -70,20 +69,12 @@ def conv3d_transpose(
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     data_format: str = "NDHWC"
 ) -> JaxArray:
-    filter_shape = list(filters.shape[0:1])
-    filters = filters.permute(3, 4, 0, 1, 2)
+    strides = [strides] * 3 if isinstance(strides, int) else strides
+    dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
+    dimension_numbers = (data_format, "HWDIO", data_format)
     if data_format == "NDHWC":
         x = jlax.conv_transpose(0, 4, 1, 2, 3)
-    if padding == "VALID":
-        padding_list: List[int] = [0, 0, 0]
-    elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
-    else:
-        raise Exception(
-            "Invalid padding arg {}\n"
-            'Must be one of: "VALID" or "SAME"'.format(padding)
-        )
     res = jlax.conv_transpose(
-        x, filters, strides, padding_list, None, dilation= dilations
+        x, filters, strides, padding, dilations, dimension_numbers
     )
     return res
