@@ -1042,9 +1042,3 @@ def logspace(
     return current_backend(start).logspace(
         start, stop, num, base, axis, device=device, out=out
     )
-
-
-if __name__ == "__main__":
-    import doctest
-    ivy.set_backend("torch")
-    doctest.testmod()
