@@ -3466,7 +3466,7 @@ def sqrt(
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([0, 4., 8.])
     >>> y = ivy.sqrt(x)
     >>> print(y)
@@ -3489,7 +3489,7 @@ def sqrt(
     ivy.array([nan, 31.6, 5.83])
 
     With :code:`ivy.Container` input:
-    
+
     >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]]))
     >>> y = ivy.sqrt(x)
     >>> print(y)
@@ -3503,7 +3503,7 @@ def sqrt(
     ------------------------
 
     Using :code:`ivy.Array` instance method:
-    
+
     >>> x = ivy.array([[1., 2.],  [3., 4.]])
     >>> y = x.sqrt()
     >>> print(y)
@@ -3511,7 +3511,7 @@ def sqrt(
                [1.73, 2.  ]])
 
     Using :code:`ivy.Container` instance method:
-    
+
     >>> x = ivy.Container(a=ivy.array([0., 100., 27.]), b=ivy.native_array([93., 54., 25.]))
     >>> y = x.sqrt()
     >>> print(y)
@@ -3519,7 +3519,7 @@ def sqrt(
         a: ivy.array([0., 10., 5.2]),
         b: ivy.array([9.64, 7.35, 5.])
     }
-    
+
     """
     return current_backend(x).sqrt(x, out=out)
 
