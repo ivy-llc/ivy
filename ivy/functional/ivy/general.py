@@ -2158,8 +2158,8 @@ def scatter_flat(
     size: Optional[int] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Scatter flat updates into a new flat array according to flat indices.
 
     Parameters
