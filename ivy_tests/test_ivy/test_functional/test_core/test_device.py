@@ -631,16 +631,6 @@ def test_gpu_is_availble(fw):
         ):
             assert False
 
-    # if gpu is returned not available but can be somehow initialised it must fail
-    elif ivy.gpu_is_available() is False:
-        try:
-            nvidia_smi.nvmlInit()
-            assert False
-        except (
-            nvidia_smi.NVMLError_LibraryNotFound,
-            nvidia_smi.NVMLError_DriverNotLoaded,
-        ):
-            pass
 
 
 def test_num_cpu_cores():
