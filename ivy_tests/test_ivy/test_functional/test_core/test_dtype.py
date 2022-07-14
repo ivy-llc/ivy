@@ -339,10 +339,49 @@ def test_is_int_dtype(
     )
 
 
+# result type
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        ivy.valid_dtypes,
+        st.shared(st.integers(2, 5), key="num_arrays"),
+        shared_dtype=False,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=st.shared(st.integers(2, 5), key="num_arrays"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_result_type(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = helpers.as_lists(*dtype_and_x)
+    kw = {}
+    for i, (dtype_, x_) in enumerate(zip(dtype, x)):
+        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype_)
+    helpers.test_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "result_type",
+        **kw,
+    )
+
+
 # Still to Add #
 # -------------#
 
 # broadcast_arrays
-# result_type
 # promote_types
 # type_promote_arrays
