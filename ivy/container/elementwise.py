@@ -478,8 +478,8 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With one :code:`ivy.Container` input:
 
-        >>> x1 = ivy.array([1, 2, 3])
-        >>> x2 = ivy.Container(a=ivy.array([4, 5, 6]))
+        >>> x2 = ivy.array([1, 2, 3])
+        >>> x1 = ivy.Container(a=ivy.array([4, 5, 6]))
         >>> z = ivy.Container.static_bitwise_or(x1, x2)
         >>> print(z)
         {
