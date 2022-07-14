@@ -66,6 +66,33 @@ class ArrayWithManipulation(abc.ABC):
         function, and so the docstring for ivy.roll also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array.
+        shift
+            number of places by which the elements are shifted. If ``shift`` is a tuple,
+            then ``axis`` must be a tuple of the same size, and each of the given axes
+            must be shifted by the corresponding element in ``shift``. If ``shift`` is
+            an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for
+            all specified axes. If a shift is positive, then array elements must be
+            shifted positively (toward larger indices) along the dimension of ``axis``.
+            If a shift is negative, then array elements must be shifted negatively
+            (toward smaller indices) along the dimension of ``axis``.
+        axis
+            axis (or axes) along which elements to shift. If ``axis`` is ``None``, the
+            array must be flattened, shifted, and then restored to its original shape.
+            Default ``None``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output array having the same data type as ``self`` and whose elements,
+            relative to ``self``, are shifted.
+
         Examples
         --------
         >>> x = ivy.array([0., 1., 2.])

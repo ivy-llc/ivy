@@ -327,9 +327,7 @@ def unique_values(
 
 @to_native_arrays_and_back
 @handle_nestable
-def unique_counts(
-    x: Union[ivy.Array, ivy.NativeArray]
-) -> Tuple[ivy.Array, ivy.Array]:
+def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
     """
     Returns the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.
@@ -414,8 +412,8 @@ def unique_counts(
     >>> y = ivy.unique_counts(x)
     >>> print(y)
     {
-        a: (list[2],<classivy.array.Array>shape=[4]),
-        b: (list[2],<classivy.array.Array>shape=[4])
+        a: (list[2],<classivy.array.array.Array>shape=[4]),
+        b: (list[2],<classivy.array.array.Array>shape=[4])
     }
     """
     return current_backend(x).unique_counts(x)
