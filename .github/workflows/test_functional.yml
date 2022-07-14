@@ -30,6 +30,7 @@ jobs:
       - name: Run Functional Tests
         id: tests
         run: |
+          cd ivy
           ./test_ivy_submodule.sh ${{ matrix.backend }}
         continue-on-error: true
 
