@@ -677,9 +677,9 @@ def function_supported_dtypes(fn: Callable) -> Tuple:
 
     Examples
     --------
-    >>> ivy.set_backend('tensorflow')
-    >>> print(ivy.function_supported_dtypes(ivy.sparse_cross_entropy))
-    ('int32', 'int64', 'uint8')
+    >>> ivy.set_backend('torch')
+    >>> print(ivy.function_supported_dtypes(ivy.acosh))
+    ()
     """
     if not _is_valid_dtypes_attributes(fn):
         raise Exception(
