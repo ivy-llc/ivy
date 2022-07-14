@@ -145,7 +145,7 @@ def cumprod(
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, reduction="sum", out=None):
+def scatter_flat(indices, updates, size=None, reduction="sum", *, out=None):
     if indices.dtype != tf.int32 or indices.dtype != tf.int64:
         if indices.dtype in [tf.int8, tf.int16, tf.uint8, tf.uint16]:
             indices = tf.cast(indices, tf.int32)

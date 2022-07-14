@@ -126,7 +126,7 @@ def cumprod(
     return np.cumprod(x, axis, out=out)
 
 
-def scatter_flat(indices, updates, size=None, reduction="sum", out=None):
+def scatter_flat(indices, updates, size=None, reduction="sum", *, out=None):
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
