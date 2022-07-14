@@ -2085,7 +2085,7 @@ def test_erf(
 
 # minimum
 @given(
-    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
@@ -2094,7 +2094,7 @@ def test_erf(
     instance_method=st.booleans(),
 )
 def test_minimum(
-    xy,
+    dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -2105,19 +2105,18 @@ def test_minimum(
     call,
     fw,
 ):
-    # smoke test
-    input_dtype = xy[0]
-    x = xy[1][0]
-    y = xy[1][1]
+    input_dtype_1, x1 = dtype_and_x[0][0], dtype_and_x[1][0]
+    input_dtype_2, x2 = dtype_and_x[0][1], dtype_and_x[1][1]
+
     if (
-        (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
+        (isinstance(x1, Number) or isinstance(x2, Number))
         and as_variable is True
         and fw == "mxnet"
     ):
         # mxnet does not support 0-dimensional variables
         return
     helpers.test_function(
-        input_dtype,
+        [input_dtype_1, input_dtype_2],
         as_variable,
         with_out,
         num_positional_args,
@@ -2126,14 +2125,14 @@ def test_minimum(
         instance_method,
         fw,
         "minimum",
-        x1=np.asarray(x, dtype=input_dtype[0]),
-        x2=ivy.array(y, dtype=input_dtype[1]),
+        x1=np.asarray(x1, dtype=input_dtype_1),
+        x2=np.array(x2, dtype=input_dtype_2),
     )
 
 
 # maximum
 @given(
-    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),
@@ -2142,7 +2141,7 @@ def test_minimum(
     instance_method=st.booleans(),
 )
 def test_maximum(
-    xy,
+    dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -2153,19 +2152,17 @@ def test_maximum(
     call,
     fw,
 ):
-    # smoke test
-    input_dtype = xy[0]
-    x = xy[1][0]
-    y = xy[1][1]
+    input_dtype_1, x1 = dtype_and_x[0][0], dtype_and_x[1][0]
+    input_dtype_2, x2 = dtype_and_x[0][1], dtype_and_x[1][1]
     if (
-        (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
+        (isinstance(x1, Number) or isinstance(x2, Number))
         and as_variable is True
         and fw == "mxnet"
     ):
         # mxnet does not support 0-dimensional variables
         return
     helpers.test_function(
-        input_dtype,
+        [input_dtype_1, input_dtype_2],
         as_variable,
         with_out,
         num_positional_args,
@@ -2174,6 +2171,6 @@ def test_maximum(
         instance_method,
         fw,
         "maximum",
-        x1=np.asarray(x, dtype=input_dtype[0]),
-        x2=ivy.array(y, dtype=input_dtype[1]),
+        x1=np.asarray(x1, dtype=input_dtype_1),
+        x2=np.array(x2, dtype=input_dtype_2),
     )
