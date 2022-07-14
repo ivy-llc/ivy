@@ -2,7 +2,7 @@
 import ivy
 import numpy as np
 import math
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
 
 
@@ -61,7 +61,9 @@ def permute_dims(x: np.ndarray, axes: Tuple[int, ...]) -> np.ndarray:
 
 
 def reshape(
-    x: np.ndarray, shape: Tuple[int, ...], copy: Optional[bool] = None
+    x: np.ndarray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None,
 ) -> np.ndarray:
     ret = np.reshape(x, shape)
     return ret
@@ -170,6 +172,5 @@ def swapaxes(
 def clip(
     x: np.ndarray, x_min: Union[Number, np.ndarray], x_max: Union[Number, np.ndarray]
 ) -> np.ndarray:
-    assert ivy.all(ivy.less(x_min, x_max))
     ret = np.asarray(np.clip(x, x_min, x_max))
     return ret
