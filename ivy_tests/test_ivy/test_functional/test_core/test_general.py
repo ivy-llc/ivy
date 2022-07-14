@@ -1,7 +1,6 @@
 """Collection of tests for unified general functions."""
 
 # global
-from multiprocessing import reduction
 import time
 import einops
 import jax.numpy as jnp
