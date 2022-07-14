@@ -764,8 +764,7 @@ def repeat(
 
 
     Examples
-    -------------------
-
+    --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([3, 4, 5])
