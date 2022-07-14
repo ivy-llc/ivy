@@ -115,102 +115,57 @@ def test_broadcast_arrays(
 
 
 # broadcast_to
-@given(
-    in_shape=helpers.nph.array_shapes(min_dims=1, max_dims=4),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
-    data=st.data(),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="broadcast_to"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-)
-def test_broadcast_to(
-    in_shape,
-    dtype,
-    data,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-):
-    # smoke for torch uints
-    if fw == "torch" and "u" in str(dtype):
-        return
-    x = data.draw(helpers.nph.arrays(shape=in_shape, dtype=dtype))
-    to_shape = data.draw(
+@st.composite
+def array_and_broadcastable_shape(draw, in_dtype):
+    dtype = in_dtype
+    in_shape = draw(helpers.nph.array_shapes(min_dims=1, max_dims=4))
+    x = draw(helpers.nph.arrays(shape=in_shape, dtype=dtype))
+    to_shape = draw(
         helpers.mutually_broadcastable_shapes(1, base_shape=in_shape)
         .map(lambda S: S[0])
         .filter(lambda s: helpers.broadcast_shapes(in_shape, s) == s),
         label="shape",
     )
+    return (x, to_shape)
+
+
+dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
+
+
+@given(
+    array_and_shape=array_and_broadcastable_shape(dtype_shared),
+    in_dtype=dtype_shared,
+    as_variable_flags=st.booleans(),
+    with_out=st.booleans(),
+    native_array_flags=st.booleans(),
+    container_flags=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_broadcast_to(
+    array_and_shape,
+    in_dtype,
+    as_variable_flags,
+    with_out,
+    native_array_flags,
+    container_flags,
+    instance_method,
+    fw,
+):
+    array, to_shape = array_and_shape
+    num_positional_args = len(array)
     helpers.test_function(
-        dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "broadcast_to",
-        x=x,
+        input_dtypes=in_dtype,
+        as_variable_flags=as_variable_flags,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array_flags,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="broadcast_to",
+        x=array,
         shape=to_shape,
     )
-
-
-# # broadcast_to - attempt to have only one data.draw in function
-# # fails for torch and tensorflow with KeyError
-# @given(
-#     arrays=helpers.nph.arrays(
-#         shape=helpers.nph.array_shapes(min_dims=1, max_dims=4),
-#         dtype=st.sampled_from(ivy_np.valid_dtypes),
-#     ),
-#     #in_shape=helpers.nph.array_shapes(min_dims=1, max_dims=4),
-#     #dtype=st.sampled_from(ivy_np.valid_dtypes),
-#     data=st.data(),
-#     as_variable=st.booleans(),
-#     num_positional_args=helpers.num_positional_args(fn_name="broadcast_to"),
-#     native_array=st.booleans(),
-#     container=st.booleans(),
-#     instance_method=st.booleans(),
-# )
-# def test_broadcast_to(
-#     # in_shape,
-#     # dtype,
-#     arrays,
-#     data,
-#     as_variable,
-#     num_positional_args,
-#     native_array,
-#     container,
-#     instance_method,
-#     fw,
-# ):
-#     # smoke for torch uints
-#     if fw == "torch" and "u" in str(arrays.dtype):
-#         return
-#     to_shape = data.draw(
-#         helpers.mutually_broadcastable_shapes(1, base_shape=arrays.shape)
-#         .map(lambda S: S[0])
-#         .filter(lambda s: helpers.broadcast_shapes(arrays.shape, s) == s),
-#         label="shape",
-#     )
-#     helpers.test_function(
-#         arrays.dtype,
-#         as_variable,
-#         False,
-#         num_positional_args,
-#         native_array,
-#         container,
-#         instance_method,
-#         fw,
-#         "broadcast_to",
-#         x=arrays,
-#         shape=to_shape,
-#     )
 
 
 # can_cast

@@ -1655,9 +1655,9 @@ def mutually_broadcastable_shapes(
     num_shapes: int,
     *,
     base_shape: Tuple[int, ...] = (),
-    min_dims: int = 0,
+    min_dims: int = 1,
     max_dims: Optional[int] = None,
-    min_side: int = 0,
+    min_side: int = 1,
     max_side: Optional[int] = None,
 ):
     if max_dims is None:
