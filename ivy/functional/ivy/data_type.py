@@ -882,9 +882,6 @@ def is_int_dtype(
     }
     """
 
-    def check_type(x):
-        return isinstance(x, (int, np.integer)) and not type(x) == bool
-
     if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
@@ -901,7 +898,7 @@ def is_int_dtype(
             True
             if ivy.nested_indices_where(
                 dtype_in,
-                check_type(dtype_in),
+                lambda x: isinstance(x, (int, np.integer)) and not type(x) == bool,
             )
             else False
         )
