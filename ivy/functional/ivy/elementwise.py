@@ -1555,6 +1555,12 @@ def expm1(
     ivy.array([[0.  ],
         [1.72]])
     
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1, 5, 9]])
+    >>> ivy.expm1(x)
+    ivy.array([[1.72e+00, 1.47e+02, 8.10e+03]])
+    
     With :code:`ivy.Array` Method:
     
     >>> x = ivy.array([20])
