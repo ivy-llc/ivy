@@ -1279,8 +1279,9 @@ def exists(x: Any) -> bool:
     ret
         True if x is not None, else False.
 
-    Examples
-    --------
+    Functional Method Examples
+    --------------------------
+
     With :code:`Any` input:
 
     >>> x = None
@@ -1294,21 +1295,6 @@ def exists(x: Any) -> bool:
     True
 
     >>> x = []
-    >>> y = ivy.exists(x)
-    >>> print(y)
-    True
-
-    >>> x = 1
-    >>> y = ivy.exists(x)
-    >>> print(y)
-    True
-
-    >>> x = "abc"
-    >>> y = ivy.exists(x)
-    >>> print(y)
-    True
-
-    >>> x = [1, 0, -1, 1]
     >>> y = ivy.exists(x)
     >>> print(y)
     True
@@ -1342,6 +1328,68 @@ def exists(x: Any) -> bool:
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.native_array([1, 0, 1.2]))
     >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1, -1]), b=ivy.array([1, 0, 0, 0]))
+    >>> y = ivy.exists(x)
+    >>> print(y)
+    True
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`Any` input:
+
+    >>> x = None
+    >>> y = x.exists()
+    >>> print(y)
+    False
+
+    >>> x = ""
+    >>> y = x.exists()
+    >>> print(y)
+    True
+
+    >>> x = []
+    >>> y = x.exists()
+    >>> print(y)
+    True
+
+    >>> x = ivy.native_array([1, 2, 3, 1.2])
+    >>> y = x.exists()
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([1, 2, 3, 1.2])
+    >>> y = x.exists()
+    >>> print(y)
+    True
+
+    With a mix of :code:`ivy.Container` and :code:`Any` input:
+
+    >>> x = ivy.Container(a=None, b=None)
+    >>> y = x.exists()
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=None, b="")
+    >>> y = x.exists()
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=123, b="")
+    >>> y = x.exists()
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.native_array([1, 0, 1.2]))
+    >>> y = x.exists()
+    >>> print(y)
+    True
+
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1, -1]), b=ivy.array([1, 0, 0, 0]))
+    >>> y = x.exists()
     >>> print(y)
     True
 
