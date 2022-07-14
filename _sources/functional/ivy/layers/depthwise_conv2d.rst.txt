@@ -2,6 +2,12 @@ depthwise_conv2d
 ================
 
 .. autofunction:: ivy.functional.ivy.layers.depthwise_conv2d
+
+.. autofunction:: ivy.array.array_methods.depthwise_conv2d
+
+.. autofunction:: ivy.container.container_methods.static_depthwise_conv2d
+
+.. autofunction:: ivy.container.container_methods.depthwise_conv2d
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ depthwise_conv2d
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: depthwise_conv2d
+
+   depthwise_conv2d/depthwise_conv2d_functional.rst
+   depthwise_conv2d/depthwise_conv2d_array.rst
+   depthwise_conv2d/depthwise_conv2d_container.rst
+   depthwise_conv2d/static_depthwise_conv2d_container.rst
+

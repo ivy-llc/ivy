@@ -3,6 +3,8 @@ is_variable
 
 .. autofunction:: ivy.functional.ivy.gradients.is_variable
 
+.. autofunction:: ivy.array.array_methods.is_variable
+
 .. autofunction:: ivy.container.container_methods.static_is_variable
 
 .. autofunction:: ivy.container.container_methods.is_variable
@@ -33,6 +35,7 @@ is_variable
    :caption: is_variable
 
    is_variable/is_variable_functional.rst
+   is_variable/is_variable_array.rst
    is_variable/is_variable_container.rst
    is_variable/static_is_variable_container.rst
 
