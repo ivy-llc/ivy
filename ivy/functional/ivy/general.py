@@ -599,105 +599,118 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     ret
         a numpy array copying all the element of the array ``x``.
 
-    Examples
-    --------
-    With :code:`ivy.Array` input:
+    Functional Method Examples
+    --------------------------
+
+    With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    [-101]
-
-    >>> print(type(y))
-    <class'numpy.ndarray'>
+    [-1  0  1]
 
     >>> x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    [[-1 0 1] \
-    [-1 0 1] \
-    [1 0 -1]]
+    [[-1  0  1]
+    [-1  0  1]
+    [ 1  0 -1]]
 
-    >>> print(type(y))
-    <class 'numpy.ndarray'>
-
-    >>> x = ivy.array([[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]])
-    >>> y = ivy.to_numpy(x)
-    >>> print(y)
-    [[[-1 0 1] \
-    [1 0 -1]] \
-    [[1 -1 0] \
-    [1 0 -1]]]
-
-    >>> print(type(y))
-    <class 'numpy.ndarray'>
-
-    With :code:`ivy.NativeArray` input:
+    With :code:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([-1, 0, 1])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
     [-1 0 1]
 
-    >>> print(type(y))
-    <class 'numpy.ndarray'>
-
     >>> x = ivy.native_array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    [[-1 0 1] \
-    [-1 0 1] \
-    [1 0 -1]]
+    [[-1  0  1]
+    [-1  0  1]
+    [ 1  0 -1]]
 
-    >>> print(type(y))
-    <class 'numpy.ndarray'>
+    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` inputs:
 
-    >>> x = ivy.native_array([[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]])
+    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    [[[-1 0 1] \
-    [1 0 -1]] \
-    [[1 -1 0] \
-    [1 0 -1]]]
+    {
+        a: array([-1, 0, 1], dtype=int32)
+    }
 
-    >>> print(type(y))
-    <class 'numpy.ndarray'>
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.Container(x=ivy.native_array([-1, 0, 1]))
+    >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
+                        b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    {x:array([-1,0,1],dtype=int32)}
+    {
+        a: array([[-1, 0, 1],
+                  [-1, 0, 1],
+                  [1, 0, -1]], dtype=int32),
+        b: array([[-1, 0, 0],
+                  [1, 0, 1],
+                  [1, 1, 1]], dtype=int32)
+    }
 
-    >>> x = ivy.Container(x=ivy.native_array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]]))
-    >>> y = ivy.to_numpy(x)
-    >>> print(y)
-    {x:array([[-1,0,1],[-1,0,1],[1,0,-1]],dtype=int32)}
-
-    >>> x = \
-    ivy.Container(x=ivy.native_array([[[-1, 0, 1],[1, 0, -1]],[[1, -1, 0],[1, 0, -1]]]))
-    >>> y = ivy.to_numpy(x)
-    >>> print(y)
-    {x:array([[[-1,0,1],[1,0,-1]],[[1,-1,0],[1,0,-1]]],dtype=int32)}
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` inputs:
 
     >>> x = ivy.Container(x=ivy.array([-1, 0, 1]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
     {x:array([-1,0,1],dtype=int32)}
 
-    >>> x = ivy.Container(x=ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]]))
+    >>> x = ivy.Container(a=ivy.array([[-1.0, 0., 1.], [-1, 0, 1], [1, 0, -1]]),\
+                      b=ivy.array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    {x:array([[-1,0,1],[-1,0,1],[1,0,-1]],dtype=int32)}
+    {
+        a: array([[-1., 0., 1.],
+                  [-1., 0., 1.],
+                  [1., 0., -1.]], dtype=float32),
+        b: array([[-1, 0, 0],
+                  [1, 0, 1],
+                  [1, 1, 1]], dtype=int32)
+    }
 
-    >>> x =\
-     ivy.Container(x=ivy.array([[[-1, 0, 1], [1, 0, -1]],[[1, -1, 0], [1, 0, -1]]]))
-    >>> y = ivy.to_numpy(x)
+    Instance Method Example
+    -----------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = x.to_numpy()
     >>> print(y)
-    {x:array([[[-1,0,1],[1,0,-1]],[[1,-1,0],[1,0,-1]]],dtype=int32)}
+    [-1  0  1]
+
+    >>> x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
+    >>> y = x.to_numpy()
+    >>> print(y)
+    [[-1  0  1]
+    [-1  0  1]
+    [ 1  0 -1]]
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[-1.0, 0., 1.], [-1, 0, 1], [1, 0, -1]]),\
+                      b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
+    >>> y = x.to_numpy()
+    >>> print(y)
+    {
+        a: array([[-1., 0., 1.],
+                  [-1., 0., 1.],
+                  [1., 0., -1.]], dtype=float32),
+        b: array([[-1, 0, 0],
+                  [1, 0, 1],
+                  [1, 1, 1]], dtype=int32)
+    }
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1, 0, 1, 1]))
+    >>> y = x.to_numpy()
+    >>> print(y)
+    {
+        a: array([-1, 0, 1], dtype=int32),
+        b: array([1, 0, 1, 1], dtype=int32)
+    }
 
     """
     return current_backend(x).to_numpy(x)
