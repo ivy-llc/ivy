@@ -274,12 +274,6 @@ for the wrapped function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.&lt;</span><span class="n">Array</span><span class="o">|</span><span class="n">Container</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">instance</span><span class="o">|</span><span class="n">static</span><span class="o">|</span><span class="n">special</span><span class="o">|</span><span class="n">reverse</span> <span class="n">special</span><span class="o">&gt;</span> <span class="n">method</span> <span class="n">variant</span> <span class="n">of</span> <span class="n">ivy</span><span class="o">.&lt;</span><span class="n">func_name</span><span class="o">&gt;.</span> <span class="n">This</span> <span class="n">method</span> <span class="n">simply</span> <span class="n">wraps</span> <span class="n">the</span>
 <span class="n">function</span><span class="p">,</span> <span class="ow">and</span> <span class="n">so</span> <span class="n">the</span> <span class="n">docstring</span> <span class="k">for</span> <span class="n">ivy</span><span class="o">.&lt;</span><span class="n">func_name</span><span class="o">&gt;</span> <span class="n">also</span> <span class="n">applies</span> <span class="n">to</span> <span class="n">this</span> <span class="n">method</span>
 <span class="k">with</span> <span class="n">minimal</span> <span class="n">changes</span><span class="o">.</span>
-
-<span class="n">Parameters</span>
-<span class="o">----------</span>
-
-<span class="n">Returns</span>
-<span class="o">-------</span>
 </pre></div>
 </div>
 <p>The exception to this is <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> <code class="code docutils literal notranslate"><span class="pre">special</span></code> method docstrings,
@@ -289,12 +283,6 @@ which can be called on any types that support the corresponding special methods:
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>ivy.Container &lt;special|reverse special&gt; method for the &lt;operator_name&gt; operator,
 calling :code:`operator.&lt;operator_name&gt;` for each of the corresponding leaves of
 the two containers.
-
-Parameters
-----------
-
-Returns
--------
 </pre></div>
 </div>
 <p>Let’s take <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> as an example.
