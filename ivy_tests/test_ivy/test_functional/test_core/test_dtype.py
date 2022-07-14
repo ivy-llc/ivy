@@ -411,6 +411,7 @@ def test_is_int_dtype(
     num_positional_args=st.shared(st.integers(2, 5), key="num_arrays"),
     native_array=st.booleans(),
     container=st.booleans(),
+    instance_method=st.booleans(),
 )
 def test_result_type(
     dtype_and_x,
@@ -418,6 +419,7 @@ def test_result_type(
     num_positional_args,
     native_array,
     container,
+    instance_method,
     fw,
 ):
     dtype, x = helpers.as_lists(*dtype_and_x)
@@ -431,7 +433,7 @@ def test_result_type(
         num_positional_args,
         native_array,
         container,
-        False,
+        instance_method,
         fw,
         "result_type",
         **kw,
@@ -441,5 +443,7 @@ def test_result_type(
 # Still to Add #
 # -------------#
 
+
+# broadcast_arrays
 # promote_types
 # type_promote_arrays
