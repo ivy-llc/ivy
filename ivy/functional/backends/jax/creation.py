@@ -1,6 +1,6 @@
 # global
 import jax.numpy as jnp
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, List, Sequence
 import jaxlib.xla_extension
 from jax.dlpack import from_dlpack as jax_from_dlpack
 
@@ -67,7 +67,7 @@ def asarray(
 
 
 def empty(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
@@ -107,7 +107,7 @@ def from_dlpack(x):
 
 
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float],
     *,
     dtype: jnp.dtype = None,
@@ -162,7 +162,8 @@ def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:
 
 
 def ones(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
 ) -> JaxArray:
@@ -190,7 +191,7 @@ def triu(x: JaxArray, k: int = 0) -> JaxArray:
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,

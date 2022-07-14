@@ -463,9 +463,24 @@ def create_args_kwargs(
     native_array_flags=None,
     container_flags=None,
 ):
-    # create args
+
+    # extract all arrays from the arguments and keyword arguments
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
+    kwargs_idxs = ivy.nested_indices_where(
+        kwargs_np, lambda x: isinstance(x, np.ndarray)
+    )
+    kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
+
+    # assert that the number of arrays aligns with the dtypes and as_variable_flags
+    assert len(arg_np_vals) + len(kwarg_np_vals) == len(input_dtypes), (
+        "Found {} arrays in the input arguments, but {} dtypes and as_variable_flags. "
+        "Make sure to pass in a sequence of bools for all associated boolean flag "
+        "inputs to test_function, with the sequence length being equal to the "
+        "number of arrays in the arguments."
+    )
+
+    # create args
     num_arg_vals = len(arg_np_vals)
     arg_array_vals = [
         ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtypes[:num_arg_vals])
@@ -488,10 +503,6 @@ def create_args_kwargs(
     ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
 
     # create kwargs
-    kwargs_idxs = ivy.nested_indices_where(
-        kwargs_np, lambda x: isinstance(x, np.ndarray)
-    )
-    kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
     kwarg_array_vals = [
         ivy.array(x, dtype=d)
         for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
@@ -519,7 +530,7 @@ def test_unsupported_function(fn, args, kwargs):
     try:
         fn(*args, **kwargs)
         assert False
-    except:
+    except:  # noqa
         return
 
 
@@ -724,8 +735,8 @@ def test_function(
     >>> fn_name = "abs"
     >>> x = np.array([-1])
     >>> test_function(input_dtypes, as_variable_flags, with_out,\
-                            num_positional_args, native_array_flags,
-    >>> container_flags, instance_method, fw, fn_name, x=x)
+                            num_positional_args, native_array_flags,\
+                            container_flags, instance_method, fw, fn_name, x=x)
 
     >>> input_dtypes = ['float64', 'float32']
     >>> as_variable_flags = [False, True]
@@ -1140,7 +1151,7 @@ def dtype_and_values(
     n_arrays=1,
     min_value=None,
     max_value=None,
-    allow_inf=True,
+    allow_inf=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=0,
@@ -1149,6 +1160,7 @@ def dtype_and_values(
     max_dim_size=10,
     shape=None,
     shared_dtype=False,
+    ret_shape=False,
 ):
     if not isinstance(n_arrays, int):
         n_arrays = draw(n_arrays)
@@ -1202,6 +1214,8 @@ def dtype_and_values(
     if n_arrays == 1:
         dtype = dtype[0]
         values = values[0]
+    if ret_shape:
+        return dtype, values, shape
     return dtype, values
 
 
@@ -1222,8 +1236,9 @@ def dtype_values_axis(
     shared_dtype=False,
     min_axis=None,
     max_axis=None,
+    ret_shape=False,
 ):
-    dtype, values = draw(
+    results = draw(
         dtype_and_values(
             available_dtypes,
             min_value=min_value,
@@ -1237,8 +1252,13 @@ def dtype_values_axis(
             max_dim_size=max_dim_size,
             shape=shape,
             shared_dtype=shared_dtype,
+            ret_shape=ret_shape,
         )
     )
+    if ret_shape:
+        dtype, values, shape = results
+    else:
+        dtype, values = results
     if not isinstance(values, list):
         return dtype, values, None
     if shape is not None:
@@ -1276,9 +1296,10 @@ def array_values(
     allow_nan=False,
     allow_subnormal=False,
     allow_inf=False,
-    exclude_min=False,
-    exclude_max=False,
+    exclude_min=True,
+    exclude_max=True,
     allow_negative=True,
+    safety_factor=0.95,
 ):
     size = 1
     if type(shape) != tuple:
@@ -1286,31 +1307,38 @@ def array_values(
     else:
         for dim in shape:
             size *= dim
+    values = None
     if "int" in dtype:
         if dtype == "int8":
-            min_value = min_value if min_value is not None else -128
-            max_value = max_value if max_value is not None else 127
+            min_value = ivy.default(min_value, round(-128 * safety_factor))
+            max_value = ivy.default(max_value, round(127 * safety_factor))
         elif dtype == "int16":
-            min_value = min_value if min_value is not None else -32768
-            max_value = max_value if max_value is not None else 32767
+            min_value = ivy.default(min_value, round(-32768 * safety_factor))
+            max_value = ivy.default(max_value, round(32767 * safety_factor))
         elif dtype == "int32":
-            min_value = min_value if min_value is not None else -2147483648
-            max_value = max_value if max_value is not None else 2147483647
+            min_value = ivy.default(min_value, round(-2147483648 * safety_factor))
+            max_value = ivy.default(max_value, round(2147483647 * safety_factor))
         elif dtype == "int64":
-            min_value = min_value if min_value is not None else -9223372036854775808
-            max_value = max_value if max_value is not None else 9223372036854775807
+            min_value = ivy.default(
+                min_value, round(-9223372036854775808 * safety_factor)
+            )
+            max_value = ivy.default(
+                max_value, round(9223372036854775807 * safety_factor)
+            )
         elif dtype == "uint8":
-            min_value = min_value if min_value is not None else 0
-            max_value = max_value if max_value is not None else 255
+            min_value = ivy.default(min_value, round(0 * safety_factor))
+            max_value = ivy.default(max_value, round(255 * safety_factor))
         elif dtype == "uint16":
-            min_value = min_value if min_value is not None else 0
-            max_value = max_value if max_value is not None else 65535
+            min_value = ivy.default(min_value, round(0 * safety_factor))
+            max_value = ivy.default(max_value, round(65535 * safety_factor))
         elif dtype == "uint32":
-            min_value = min_value if min_value is not None else 0
-            max_value = max_value if max_value is not None else 4294967295
+            min_value = ivy.default(min_value, round(0 * safety_factor))
+            max_value = ivy.default(max_value, round(4294967295 * safety_factor))
         elif dtype == "uint64":
-            min_value = min_value if min_value is not None else 0
-            max_value = max_value if max_value is not None else 18446744073709551615
+            min_value = ivy.default(min_value, round(0 * safety_factor))
+            max_value = ivy.default(
+                max_value, round(18446744073709551615 * safety_factor)
+            )
         values = draw(list_of_length(st.integers(min_value, max_value), size))
     elif dtype == "float16":
         values = draw(
@@ -1344,6 +1372,7 @@ def array_values(
                 size,
             )
         )
+        values = [v * safety_factor for v in values]
     elif dtype == "float64":
         values = draw(
             list_of_length(
@@ -1360,6 +1389,7 @@ def array_values(
                 size,
             )
         )
+        values = [v * safety_factor for v in values]
     elif dtype == "bool":
         values = draw(list_of_length(st.booleans(), size))
     array = np.array(values)
