@@ -144,10 +144,10 @@ def scatter_flat(
     indices,
     updates,
     size: Optional[int] = None,
-    tensor: Optional[torch.Tensor] = None,
     reduction: str = "sum",
+    out: Optional[torch.Tensor] = None,
 ):
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
@@ -165,7 +165,7 @@ def scatter_flat(
             )
         )
     if target_given:
-        output = tensor
+        output = out
     else:
         output = torch.ones([size], dtype=dtype) * initial_val
     global torch_scatter

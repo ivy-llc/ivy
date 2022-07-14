@@ -2156,7 +2156,6 @@ def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
     size: Optional[int] = None,
-    tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -2171,10 +2170,6 @@ def scatter_flat(
         Values for the new array to hold.
     size
         The size of the result.
-    tensor
-        The tensor in which to scatter the results, default is None, in which case the
-        size is used to
-        scatter into a zeros array.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     device
@@ -2191,7 +2186,7 @@ def scatter_flat(
 
     """
     return current_backend(indices).scatter_flat(
-        indices, updates, size, tensor, reduction, out=out
+        indices, updates, size, reduction, out=out
     )
 
 

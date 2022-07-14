@@ -781,59 +781,47 @@ def test_cumprod(x_n_axis, exclusive, dtype, with_out, tensor_fn, device, call):
 
 
 # scatter_flat
-@pytest.mark.parametrize(
-    "inds_n_upd_n_size_n_tnsr_n_wdup",
-    [
-        ([0, 4, 1, 2], [1, 2, 3, 4], 8, None, False),
-        ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], 8, None, True),
-        ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], None, [11, 10, 9, 8, 7, 6], True),
-    ],
+@given(
+    x=st.integers(min_value=1, max_value=10).flatmap(lambda n: st.tuples(helpers.dtype_and_values(ivy_np.valid_numeric_dtypes,min_num_dims=1, max_num_dims=1, min_dim_size=n, max_dim_size=n), helpers.dtype_and_values(ivy_np.valid_int_dtypes, min_value=0, max_value=max(n-1,0), min_num_dims=1, max_num_dims=1, min_dim_size=n, max_dim_size=n).filter(lambda l: len(set(l[1])) == len(l[1])), st.integers(min_value=n, max_value=n))),
+    reduction=st.sampled_from(['sum', 'min', 'max', 'replace']),
+    with_out=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=st.integers(0, 3),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("red", ["sum", "min", "max", "replace"])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_scatter_flat(inds_n_upd_n_size_n_tnsr_n_wdup, red, dtype, tensor_fn, call):
-    # smoke test
-    if red in ("sum", "min", "max") and call is helpers.mx_call:
-        # mxnet does not support sum, min or max reduction for scattering
-        pytest.skip()
-    inds, upd, size, tensor, with_duplicates = inds_n_upd_n_size_n_tnsr_n_wdup
-    if ivy.exists(tensor) and call is helpers.mx_call:
-        # mxnet does not support scattering into pre-existing tensors
-        pytest.skip()
-    inds = ivy.array(inds, dtype="int32")
-    upd = tensor_fn(upd, dtype=dtype)
-    if tensor:
-        # pytorch variables do not support in-place updates
-        tensor = (
-            ivy.array(tensor, dtype=dtype)
-            if ivy.current_backend_str() == "torch"
-            else tensor_fn(tensor, dtype=dtype)
-        )
-    ret = ivy.scatter_flat(inds, upd, size, tensor, red)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if size:
-        assert ret.shape == (size,)
-    else:
-        assert ret.shape == tensor.shape
-    # value test
-    if red == "replace" and with_duplicates:
-        # replace with duplicates give non-deterministic outputs
-        return
-    assert np.allclose(
-        call(ivy.scatter_flat, inds, upd, size, tensor, red),
-        np.asarray(
-            ivy.functional.backends.numpy.scatter_flat(
-                ivy.to_numpy(inds),
-                ivy.to_numpy(upd),
-                size,
-                ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor,
-                red,
-            )
-        ),
-    )
+def test_scatter_flat(
+    x,
+    reduction,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw
+):
+    (val_dtype,vals), (ind_dtype,ind), size= x
+    if fw == "torch" and (val_dtype in ["uint16", "uint32", "uint64"] or ind_dtype in ["uint16", "uint32", "uint64"]):
+        return        
+    helpers.test_function(
+        [ind_dtype, val_dtype],
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "scatter_flat",
+        indices=np.asarray(ind, dtype=ind_dtype),
+        updates=np.asarray(vals, dtype=val_dtype),
+        size=size,
+        reduction=reduction,
+)
 
 
 # scatter_nd

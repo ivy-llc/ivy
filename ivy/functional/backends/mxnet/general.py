@@ -151,9 +151,9 @@ def cumprod(
 
 # noinspection PyShadowingNames
 def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
+    indices, updates, size=None, reduction="sum", out=None, device=None
 ):
-    if ivy.exists(tensor):
+    if ivy.exists(out):
         raise Exception(
             "MXNet scatter_flat does not support scattering into "
             "an pre-existing tensor."

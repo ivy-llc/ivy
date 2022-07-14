@@ -134,8 +134,8 @@ def cumprod(
     return jnp.cumprod(x, axis)
 
 
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
-    target = tensor
+def scatter_flat(indices, updates, size=None, out=None, reduction="sum"):
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
