@@ -233,6 +233,18 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.greater_equal(self._data, x2, out=out)
 
     def isfinite(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.isfinite. This method simply wraps the
+        function, and so the docstring for ivy.isfinite also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, ivy.nan, -ivy.inf, float('inf')])
+        >>> y = x.isfinite()
+        >>> print(y)
+        ivy.array([ True, False, False, False])
+        """
         return ivy.isfinite(self._data, out=out)
 
     def isinf(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:

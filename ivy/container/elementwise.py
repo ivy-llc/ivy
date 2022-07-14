@@ -916,6 +916,22 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.isfinite. This method simply wraps the
+        function, and so the docstring for ivy.isfinite also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
+                          b=ivy.array([float('-0'), ivy.nan]))
+        >>> y = x.isfinite()
+        >>> print(y)
+        {
+            a: ivy.array([True, True]),
+            b: ivy.array([True, False])
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.isfinite(x_) if ivy.is_array(x_) else x_,
