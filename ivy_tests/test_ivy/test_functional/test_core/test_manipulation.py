@@ -5,7 +5,7 @@ import pytest
 import numpy as np
 import math
 from numbers import Number
-from hypothesis import HealthCheck, given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 
 # local
@@ -392,6 +392,11 @@ def test_squeeze(
     if not isinstance(axis, int):
         if len(axis) == 0:
             return
+    # Torch does not support unsigned integers of more than 8 bits (>uint8)
+    if input_dtype in [
+        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
+    ] and fw == "torch":
+        return
 
 
     # Torch does not support unsigned integers of more than 8 bits (>uint8)
