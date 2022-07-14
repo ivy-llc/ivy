@@ -1,0 +1,57 @@
+name: test-functional
+on:
+  push:
+  pull_request:
+    types: [labeled, opened, reopened, edited]
+  workflow_dispatch:
+jobs:
+  run-ivy-functional-tests:
+    if: ${{ github.event.label.name!='Function Reformatting' }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        backend: [jax, numpy, tensorflow, torch]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: test_functional.yml
+          name: hypothesis_zip
+          path: |
+            ivy/.hypothesis/
+
+      - name: Unzip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          unzip examples.zip
+          rm examples.zip
+
+      - name: Run Functional Tests
+        id: tests
+        run: |
+          ./test_ivy_submodule.sh ${{ matrix.backend }}
+        continue-on-error: true
+
+      - name: Zip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          zip -r examples.zip examples
+
+      - name: Upload hypothesis
+        uses: actions/upload-artifact@v3
+        with:
+          name: hypothesis_zip
+          path: |
+            ivy/.hypothesis/examples.zip
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
