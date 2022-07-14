@@ -73,7 +73,7 @@ def floormod(
 container_types = lambda: []
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(x: mx.nd.NDArray, axis, keepdims=False):
     if x.shape == ():
         return [x]
     num_outputs = x.shape[axis]
@@ -151,9 +151,9 @@ def cumprod(
 
 # noinspection PyShadowingNames
 def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
+    indices, updates, size=None, out=None, reduction="sum", device=None
 ):
-    if ivy.exists(tensor):
+    if ivy.exists(out):
         raise Exception(
             "MXNet scatter_flat does not support scattering into "
             "an pre-existing tensor."

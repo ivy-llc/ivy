@@ -20,6 +20,8 @@ def _cast_for_binary_op(x1, x2):
             x2 = x2.astype(promoted_type)
         else:
             x2 = np.asarray(x2, dtype=x1.dtype)
+    elif isinstance(x2, np.ndarray):
+        x1 = np.asarray(x1, dtype=x2.dtype)
     return x1, x2
 
 

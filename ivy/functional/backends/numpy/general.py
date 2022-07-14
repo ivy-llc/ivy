@@ -77,7 +77,7 @@ def floormod(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(x: np.ndarray, axis, keepdims=False):
     if x.shape == ():
         return [x]
     x_split = np.split(x, x.shape[axis], axis)
@@ -126,8 +126,8 @@ def cumprod(
     return np.cumprod(x, axis, out=out)
 
 
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
-    target = tensor
+def scatter_flat(indices, updates, size=None, reduction="sum", out=None):
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
@@ -146,13 +146,13 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
             target = np.ones([size], dtype=updates.dtype) * 1e12
         np.minimum.at(target, indices, updates)
         if not target_given:
-            target = np.where(target == 1e12, 0.0, target)
+            target = np.asarray(np.where(target == 1e12, 0.0, target), dtype=updates.dtype)
     elif reduction == "max":
         if not target_given:
             target = np.ones([size], dtype=updates.dtype) * -1e12
         np.maximum.at(target, indices, updates)
         if not target_given:
-            target = np.where(target == -1e12, 0.0, target)
+            target = np.asarray(np.where(target == -1e12, 0.0, target), dtype=updates.dtype)
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -244,7 +244,7 @@ def multiprocessing(context=None):
     )
 
 
-def indices_where(x, out: Optional[np.ndarray] = None):
+def indices_where(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
     where_x = np.where(x)
     if len(where_x) == 1:
         return np.expand_dims(where_x[0], -1)

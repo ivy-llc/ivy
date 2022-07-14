@@ -16,6 +16,7 @@ from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     infer_device,
     inputs_to_native_arrays,
+    outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -998,8 +999,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     """
     return current_backend(x).to_list(x)
 
-
 @handle_nestable
+@outputs_to_ivy_arrays
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -1032,9 +1033,9 @@ def clip_vector_norm(
     if ratio < 1:
         ret = ratio * x
     else:
-        ret = x
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        ret = ivy.copy_array(x)
+    if out is not None:
+        ret = ivy.inplace_update(out, ret)
     return ret
 
 
@@ -2122,7 +2123,6 @@ def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
     size: Optional[int] = None,
-    tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Scatter flat updates into a new flat array according to flat indices.
@@ -2135,10 +2135,6 @@ def scatter_flat(
         Values for the new array to hold.
     size
         The size of the result.
-    tensor
-        The tensor in which to scatter the results, default is None, in which case the
-        size is used to
-        scatter into a zeros array.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     device
@@ -2152,7 +2148,7 @@ def scatter_flat(
 
     """
     return current_backend(indices).scatter_flat(
-        indices, updates, size, tensor, reduction
+        indices, updates, size, reduction, out=out
     )
 
 

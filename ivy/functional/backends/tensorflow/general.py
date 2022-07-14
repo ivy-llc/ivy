@@ -60,7 +60,7 @@ def floormod(
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(x: Union[tf.Tensor, tf.Variable], axis, keepdims=False):
     if x.shape == ():
         return [x]
     ret = tf.unstack(x, axis=axis)
@@ -144,8 +144,13 @@ def cumprod(
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
-    target = tensor
+def scatter_flat(indices, updates, size=None, reduction="sum", out=None):
+    if indices.dtype != tf.int32 or indices.dtype != tf.int64:
+        if indices.dtype in [tf.int8, tf.int16, tf.uint8, tf.uint16]:
+            indices = tf.cast(indices, tf.int32)
+        else:
+            indices = tf.cast(indices, tf.int64)
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
@@ -153,7 +158,7 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
     if reduction == "sum":
         if target_given:
             return tf.tensor_scatter_nd_add(
-                tensor, tf.expand_dims(indices, -1), updates
+                out, tf.expand_dims(indices, -1), updates
             )
         return tf.scatter_nd(tf.expand_dims(indices, -1), updates, [size])
     elif reduction == "min":
@@ -161,17 +166,17 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
             target = tf.fill([size], tf.cast(1e12, dtype))
         res = tf.tensor_scatter_nd_min(target, tf.expand_dims(indices, -1), updates)
         if not target_given:
-            res = tf.where(res == 1e12, 0.0, res)
+            res = tf.where(res == tf.cast(1e12, dtype), 0, res)
     elif reduction == "max":
         if not target_given:
             target = tf.fill([size], tf.cast(-1e12, dtype))
         res = tf.tensor_scatter_nd_max(target, tf.expand_dims(indices, -1), updates)
         if not target_given:
-            res = tf.where(res == -1e12, 0.0, res)
+            res = tf.where(res == tf.cast(-1e12, dtype), 0, res)
     elif reduction == "replace":
         if target_given:
             res = tf.tensor_scatter_nd_update(
-                tensor, tf.expand_dims(indices, -1), updates
+                out, tf.expand_dims(indices, -1), updates
             )
         else:
             res = tf.tensor_scatter_nd_update(
@@ -307,6 +312,12 @@ def gather_nd(params, indices):
 
 
 def one_hot(indices, depth, *, device):
+    if indices.dtype == tf.int8:
+        indices = tf.cast(indices, tf.uint8)
+    elif indices.dtype == tf.int16 or tf.uint16:
+        indices = tf.cast(indices, tf.int32)
+    else:
+        indices = tf.cast(indices, tf.int64)
     device = default_device(device)
     if device is not None:
         with tf.device(as_native_dev(device)):
@@ -324,9 +335,12 @@ def multiprocessing(context=None):
     )
 
 
-def indices_where(x):
-    return tf.where(x)
-
+def indices_where(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+    where_x = tf.experimental.numpy.where(x)
+    if len(where_x) == 1:
+        return tf.expand_dims(where_x[0], -1)
+    res = tf.experimental.numpy.concatenate([tf.expand_dims(item, -1) for item in where_x], -1)
+    return res
 
 def shape(
     x: Union[tf.Tensor, tf.Variable],

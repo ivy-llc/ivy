@@ -64,7 +64,7 @@ def floormod(x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
     return ret
 
 
-def unstack(x, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))
@@ -87,7 +87,9 @@ def inplace_update(
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
-        x = ivy.Array(x_native)
+        x = ivy.to_ivy(x_native)
+    if ensure_in_backend:
+        x._data = val_native
     return x
 
 
@@ -144,10 +146,10 @@ def scatter_flat(
     indices,
     updates,
     size: Optional[int] = None,
-    tensor: Optional[torch.Tensor] = None,
     reduction: str = "sum",
+    out: Optional[torch.Tensor] = None,
 ):
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
@@ -165,7 +167,7 @@ def scatter_flat(
             )
         )
     if target_given:
-        output = tensor
+        output = out
     else:
         output = torch.ones([size], dtype=dtype) * initial_val
     global torch_scatter
@@ -375,7 +377,7 @@ def multiprocessing(context=None):
     return torch.multiprocessing.get_context(context)
 
 
-def indices_where(x, out: Optional[torch.Tensor] = None):
+def indices_where(x: torch.Tensor, out: Optional[torch.Tensor] = None):
     where_x = torch.where(x)
     res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1, out=out)
     return res

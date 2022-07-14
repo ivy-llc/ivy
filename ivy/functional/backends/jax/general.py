@@ -49,7 +49,7 @@ def copy_array(x: JaxArray) -> JaxArray:
 
 
 def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
-    return jnp.array_equal(x0, x1)
+    return jnp.array_equal(x0, x1).item()
 
 
 def to_numpy(x: JaxArray) -> np.ndarray:
@@ -87,7 +87,7 @@ def floormod(x: JaxArray, y: JaxArray) -> JaxArray:
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(x: JaxArray, axis, keepdims=False):
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]
@@ -134,8 +134,8 @@ def cumprod(
     return jnp.cumprod(x, axis)
 
 
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
-    target = tensor
+def scatter_flat(indices, updates, size=None, out=None, reduction="sum"):
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
@@ -279,7 +279,7 @@ def one_hot(indices, depth, *, device):
     )
 
 
-def indices_where(x):
+def indices_where(x: JaxArray) -> JaxArray:
     where_x = jnp.where(x)
     ret = jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
     return ret
