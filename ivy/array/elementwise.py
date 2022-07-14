@@ -372,6 +372,24 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.sin(self._data, out=out)
 
     def sinh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.sinh. This method simply wraps the
+        function, and so the docstring for ivy.sinh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([1., 2., 3.])
+        >>> print(x.sinh())
+            ivy.array([1.18, 3.63, 10.])
+
+        >>> x = ivy.array([0.23, 3., -1.2])
+        >>> y = ivy.zeros(3)
+        >>> print(x.sinh(out=y))
+            ivy.array([0.232, 10., -1.51])
+        """
         return ivy.sinh(self._data, out=out)
 
     def square(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
