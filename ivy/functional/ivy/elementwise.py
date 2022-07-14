@@ -1287,7 +1287,7 @@ def cos(
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.array([ 1., 0.54 , -0.416])
+    >>> x = ivy.array([1., 0., 2.])
     >>> y = ivy.cos(x)
     >>> print(y)
     ivy.array([ 1.   ,  0.54 , -0.416])
