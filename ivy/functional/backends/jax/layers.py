@@ -32,7 +32,6 @@ def conv1d_transpose(
     output_shape=None,
     data_format: str = "NWC",
     dilations: int = 1,
-    transpose_kernel: (Optional[Sequence[int]]) = True,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
@@ -43,7 +42,7 @@ def conv1d_transpose(
         padding,
         dilations,
         (data_format, "WIO", data_format),
-        transpose_kernel,
+        True,
     )
 
 
@@ -97,10 +96,8 @@ def conv2d_transpose(
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
     padding: str,
-    output_shape=None,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    transpose_kernel: (Optional[Sequence[int]]) = True,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -111,7 +108,7 @@ def conv2d_transpose(
         padding,
         dilations,
         (data_format, "HWIO", data_format),
-        transpose_kernel,
+        True,
     )
 
 
@@ -144,7 +141,6 @@ def conv3d_transpose(
     output_shape=None,
     data_format: str = "NDHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    transpose_kernel: (Optional[Sequence[int]]) = True,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
@@ -155,5 +151,5 @@ def conv3d_transpose(
         padding,
         dilations,
         (data_format, "DHWIO", data_format),
-        transpose_kernel,
+        True,
     )
