@@ -372,21 +372,21 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
     instance_method=st.booleans(),
 )
 def test_clip_vector_norm(
-    x, 
-    max_norm, 
-    p, 
-    as_variable, 
-    with_out, 
-    num_positional_args, 
-    native_array, 
-    container, 
-    instance_method, 
-    device, 
-    call, 
-    fw
+    x,
+    max_norm,
+    p,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw,
 ):
-    dtype,x = x[0],x[1]
-    if fw == "torch" and dtype == 'float16':
+    dtype, x = x[0], x[1]
+    if fw == "torch" and dtype == "float16":
         # torch does not support float16
         return
     helpers.test_function(
@@ -450,7 +450,9 @@ def test_floormod(
 
 # unstack
 @given(
-    x_n_dtype_axis=helpers.dtype_values_axis(ivy_np.valid_dtypes, min_num_dims=5, min_axis=1,max_axis=4),
+    x_n_dtype_axis=helpers.dtype_values_axis(
+        ivy_np.valid_dtypes, min_num_dims=5, min_axis=1, max_axis=4
+    ),
     keepdims=st.booleans(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 3),
@@ -458,7 +460,7 @@ def test_floormod(
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-def test_unstack(    
+def test_unstack(
     x_n_dtype_axis,
     keepdims,
     as_variable,
@@ -473,7 +475,7 @@ def test_unstack(
     # smoke test
     dtype, x, axis = x_n_dtype_axis
     if axis >= len(ivy.array(x).shape):
-        axis = len(ivy.array(x).shape) -1 
+        axis = len(ivy.array(x).shape) - 1
     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
         return
     helpers.test_function(
@@ -488,8 +490,8 @@ def test_unstack(
         "unstack",
         x=np.asarray(x, dtype=dtype),
         axis=axis,
-        keepdims=keepdims
-    )    
+        keepdims=keepdims,
+    )
 
 
 # fourier_encode
@@ -504,16 +506,16 @@ def test_unstack(
 #     instance_method=st.booleans(),
 # )
 # def test_fourier_encode(
-#     x, 
-#     max_freq, 
-#     num_bands, 
-#     as_variable, 
-#     num_positional_args, 
-#     native_array, 
-#     container, 
-#     instance_method, 
-#     device, 
-#     call, 
+#     x,
+#     max_freq,
+#     num_bands,
+#     as_variable,
+#     num_positional_args,
+#     native_array,
+#     container,
+#     instance_method,
+#     device,
+#     call,
 #     fw
 # ):
 #     # smoke test
@@ -534,7 +536,7 @@ def test_unstack(
 #         x=np.asarray(x, dtype=dtype_x),
 #         max_freq=np.asarray(max_freq,dtype=dtype_max_freq),
 #         num_bands=num_bands
-#     )    
+#     )
 
 
 # indices_where
@@ -557,7 +559,7 @@ def test_indices_where(
     instance_method,
     device,
     call,
-    fw
+    fw,
 ):
     dtype, x = x
     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
@@ -573,14 +575,13 @@ def test_indices_where(
         fw,
         "indices_where",
         x=np.asarray(x, dtype=dtype),
-        
-)
+    )
 
 
 # one_hot
 @given(
-    depth=st.integers(min_value=10000,max_value=20000),
-    x=helpers.dtype_and_values(ivy_np.valid_int_dtypes, min_value=1,max_value=10000),    
+    depth=st.integers(min_value=10000, max_value=20000),
+    x=helpers.dtype_and_values(ivy_np.valid_int_dtypes, min_value=1, max_value=10000),
     with_out=st.booleans(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 3),
@@ -599,7 +600,7 @@ def test_one_hot(
     instance_method,
     device,
     call,
-    fw
+    fw,
 ):
     dtype, x = x
     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
@@ -615,13 +616,15 @@ def test_one_hot(
         fw,
         "one_hot",
         indices=np.asarray(x, dtype=dtype),
-        depth=depth
-)
+        depth=depth,
+    )
 
 
 # cumsum
 @given(
-    x=helpers.dtype_values_axis(ivy_np.valid_numeric_dtypes, min_num_dims=5, min_axis=-1,max_axis=4),
+    x=helpers.dtype_values_axis(
+        ivy_np.valid_numeric_dtypes, min_num_dims=5, min_axis=-1, max_axis=4
+    ),
     with_out=st.booleans(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 3),
@@ -639,10 +642,10 @@ def test_cumsum(
     instance_method,
     device,
     call,
-    fw
+    fw,
 ):
     dtype, x, axis = x
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64", 'float16']:
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64", "float16"]:
         return
     helpers.test_function(
         dtype,
@@ -655,12 +658,15 @@ def test_cumsum(
         fw,
         "cumsum",
         x=np.asarray(x, dtype=dtype),
-        axis=axis
-)
+        axis=axis,
+    )
+
 
 # cumprod
 @given(
-    x=helpers.dtype_values_axis(ivy_np.valid_numeric_dtypes, min_num_dims=5, min_axis=-1,max_axis=4),
+    x=helpers.dtype_values_axis(
+        ivy_np.valid_numeric_dtypes, min_num_dims=5, min_axis=-1, max_axis=4
+    ),
     with_out=st.booleans(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 3),
@@ -678,10 +684,10 @@ def test_cumprod(
     instance_method,
     device,
     call,
-    fw
+    fw,
 ):
     dtype, x, axis = x
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64", 'float16']:
+    if fw == "torch" and dtype in ["uint16", "uint32", "uint64", "float16"]:
         return
     helpers.test_function(
         dtype,
@@ -694,13 +700,34 @@ def test_cumprod(
         fw,
         "cumprod",
         x=np.asarray(x, dtype=dtype),
-        axis=axis
-)
+        axis=axis,
+    )
+
 
 # scatter_flat
 @given(
-    x=st.integers(min_value=1, max_value=10).flatmap(lambda n: st.tuples(helpers.dtype_and_values(ivy_np.valid_float_dtypes,min_num_dims=1, max_num_dims=1, min_dim_size=n, max_dim_size=n), helpers.dtype_and_values(ivy_np.valid_int_dtypes, min_value=0, max_value=max(n-1,0), min_num_dims=1, max_num_dims=1, min_dim_size=n, max_dim_size=n).filter(lambda l: len(set(l[1])) == len(l[1])), st.integers(min_value=n, max_value=n))),
-    reduction=st.sampled_from(['sum', 'min', 'max', 'replace']),
+    x=st.integers(min_value=1, max_value=10).flatmap(
+        lambda n: st.tuples(
+            helpers.dtype_and_values(
+                ivy_np.valid_float_dtypes,
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=n,
+                max_dim_size=n,
+            ),
+            helpers.dtype_and_values(
+                ivy_np.valid_int_dtypes,
+                min_value=0,
+                max_value=max(n - 1, 0),
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=n,
+                max_dim_size=n,
+            ).filter(lambda l: len(set(l[1])) == len(l[1])),
+            st.integers(min_value=n, max_value=n),
+        )
+    ),
+    reduction=st.sampled_from(["sum", "min", "max", "replace"]),
     with_out=st.booleans(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 3),
@@ -719,11 +746,14 @@ def test_scatter_flat(
     instance_method,
     device,
     call,
-    fw
+    fw,
 ):
-    (val_dtype,vals), (ind_dtype,ind), size= x
-    if fw == "torch" and (val_dtype in ["uint16", "uint32", "uint64"] or ind_dtype in ["uint16", "uint32", "uint64"]):
-        return        
+    (val_dtype, vals), (ind_dtype, ind), size = x
+    if fw == "torch" and (
+        val_dtype in ["uint16", "uint32", "uint64"]
+        or ind_dtype in ["uint16", "uint32", "uint64"]
+    ):
+        return
     helpers.test_function(
         [ind_dtype, val_dtype],
         as_variable,
@@ -738,7 +768,7 @@ def test_scatter_flat(
         updates=np.asarray(vals, dtype=val_dtype),
         size=size,
         reduction=reduction,
-)
+    )
 
 
 # scatter_nd
