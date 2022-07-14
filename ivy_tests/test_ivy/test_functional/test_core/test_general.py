@@ -699,7 +699,7 @@ def test_cumprod(
 
 # scatter_flat
 @given(
-    x=st.tuples(st.integers(min_value=1, max_value=1),st.integers(min_value=1, max_value=10)).flatmap(lambda n: st.tuples(helpers.dtype_and_values(ivy_np.valid_numeric_dtypes,min_num_dims=n[0], max_num_dims=n[0], min_dim_size=n[1], max_dim_size=n[1]), helpers.dtype_and_values(ivy_np.valid_int_dtypes, min_value=0, max_value=max(n[1]-1,0), min_num_dims=n[0], max_num_dims=n[0], min_dim_size=n[1], max_dim_size=n[1]).filter(lambda l: len(set(l[1])) == len(l[1])), st.integers(min_value=n[1]**n[0], max_value=n[1]**n[0]))),
+    x=st.integers(min_value=1, max_value=10).flatmap(lambda n: st.tuples(helpers.dtype_and_values(ivy_np.valid_float_dtypes,min_num_dims=1, max_num_dims=1, min_dim_size=n, max_dim_size=n), helpers.dtype_and_values(ivy_np.valid_int_dtypes, min_value=0, max_value=max(n-1,0), min_num_dims=1, max_num_dims=1, min_dim_size=n, max_dim_size=n).filter(lambda l: len(set(l[1])) == len(l[1])), st.integers(min_value=n, max_value=n))),
     reduction=st.sampled_from(['sum', 'min', 'max', 'replace']),
     with_out=st.booleans(),
     as_variable=st.booleans(),
