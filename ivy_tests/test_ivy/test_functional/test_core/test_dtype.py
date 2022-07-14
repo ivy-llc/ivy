@@ -443,7 +443,6 @@ def test_result_type(
 # Still to Add #
 # -------------#
 
-
 # broadcast_arrays
 # promote_types
 # type_promote_arrays
