@@ -222,7 +222,7 @@ def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, 
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     chunk_size=st.integers(1, 3),
-    axis=st.shared(st.integers(1, 3), key="num_dims").map(lambda x: x-1),
+    axis=st.shared(st.integers(1, 3), key="num_dims").map(lambda x: x - 1),
 )
 def test_split_func_call(
     array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
@@ -630,7 +630,6 @@ def test_gpu_is_availble(fw):
             nvidia_smi.NVMLError_DriverNotLoaded,
         ):
             assert False
-
 
 
 def test_num_cpu_cores():
