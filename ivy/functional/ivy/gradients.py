@@ -37,17 +37,43 @@ class GradientTracking:
 # Gradient Mode #
 
 # noinspection PyShadowingNames
-def with_grads(with_grads=None):
-    """Summary.
+def with_grads(with_grads: bool = None) -> bool:
+    """
+    Enter a nested code space where gradients are computed. This method
+    adds the with_grads component to the global list with_grads_stack
 
     Parameters
     ----------
     with_grads
-         (Default value = None)
+        Boolean value denoting whether the current code block has gradient
+        computation enabled or not.
+        'True' or 'False' or 'None' (Default value = None)
 
     Returns
     -------
     ret
+        If with_grads is boolean, it returns the boolean value representing
+        if gradient computation is enabled or not.
+        If with_grads is None, it returns the last element in the with_grads_stack
+        representing the parent of the current nested code block. If with_grads_stack
+        is empty, it returns True by default.
+        If with_grads is neither None nor boolean, it will raise an AssertionError
+
+    Examples
+    --------
+    >>> ivy.set_with_grads(True)
+    >>> print(ivy.with_grads(with_grads=None))
+    True
+    
+    >>> ivy.set_with_grads(False)
+    >>> print(ivy.with_grads(with_grads=None))
+    False
+    
+    >>> print(ivy.with_grads(with_grads=True))
+    True
+    
+    >>> print(ivy.with_grads(with_grads=False))
+    False
 
     """
     if ivy.exists(with_grads):
@@ -104,7 +130,7 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
 
 @inputs_to_native_arrays
 @handle_nestable
-def is_variable(x, exclusive=False):
+def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
     """Determines whether the input is a variable or not.
 
     Parameters
@@ -122,6 +148,64 @@ def is_variable(x, exclusive=False):
     ret
         Boolean, true if x is a trainable variable, false otherwise.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array(2.3)
+    >>> is_var = ivy.is_variable(x)
+    >>> print(is_var)
+        False
+
+    >>> x = ivy.zeros((3, 2))
+    >>> is_var = ivy.is_variable(x)
+    >>> print(is_var)
+        False
+
+    >>> x = ivy.array([[2], [3], [5]])
+    >>> is_var = ivy.is_variable(x, True)
+    >>> print(is_var)
+        False
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7])
+    >>> is_var = ivy.is_variable(x)
+    >>> print(is_var)
+        False
+
+    >>> x = ivy.native_array([2, 3, 4])
+    >>> is_var = ivy.is_variable(x)
+    >>> print(is_var)
+        False
+
+    >>> x = ivy.native_array([-1, 0., 0.8, 9])
+    >>> is_var =  ivy.is_variable(x, True)
+    >>> print(is_var)
+        False
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
+    >>> exclusive = True
+    >>> is_var = ivy.is_variable(x, exclusive=exclusive)
+    >>> print(is_var)
+    {
+        a: false,
+        b: false
+    }
+
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+    >>> exclusive = ivy.Container(a=False, b=True)
+    >>> is_var = ivy.is_variable(x, exclusive=exclusive)
+    >>> print(is_var)
+    {
+        a: false,
+        b: false
+    }
     """
     return current_backend(x).is_variable(x, exclusive)
 
