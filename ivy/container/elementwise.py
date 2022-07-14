@@ -48,7 +48,7 @@ class ContainerWithElementwise(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     def abs(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -78,12 +78,7 @@ class ContainerWithElementwise(ContainerBase):
 
         """
         return self.static_abs(
-            self, 
-            key_chains, 
-            to_apply, 
-            prune_unapplied, 
-            map_sequences, 
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def acosh(
@@ -142,6 +137,33 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.add also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x1
+            first input array or container. Should have a numeric data type.
+        x2
+            second input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
         Examples
         --------
         With one :code:`ivy.Container` input:
@@ -198,6 +220,33 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.add. This method simply wraps the
         function, and so the docstring for ivy.add also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        x2
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
 
         Examples
         --------
@@ -1386,13 +1435,13 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_sign(
-            x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.sign. This method simply wraps the
@@ -1452,12 +1501,45 @@ class ContainerWithElementwise(ContainerBase):
         }
         """
         return self.static_sign(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )
+
+    @staticmethod
+    def static_sin(
+        x: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sin. This method simply wraps the
+        function, and so the docstring for ivy.sin also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1., -2., -3.]),\
+                              b=ivy.array([4., 5., 6.]))
+        >>> y = ivy.Container.static_sin(x)
+        >>> print(y)
+        {
+            a: ivy.array([-0.841, -0.909, -0.141]),
+            b: ivy.array([-0.757, -0.959, -0.279])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "sin",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def sin(
@@ -1469,14 +1551,70 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.sin(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        """
+        ivy.Container instance method variant of ivy.sin. This method simply wraps the
+        function, and so the docstring for ivy.sin also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([-4., -5., -6.]))
+        >>> y = x.sin()
+        >>> print(y)
+        {
+            a: ivy.array([0.841, 0.909, 0.141]),
+            b: ivy.array([0.757, 0.959, 0.279])
+        }
+        """
+        return self.static_sin(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )
+
+    @staticmethod
+    def static_sinh(
+        x,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sinh. This method simply wraps the
+        function, and so the docstring for ivy.sinh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0.23, 1.12]), b=ivy.array([1, -2, 0.76]))
+        >>> y = ivy.Container.static_sinh(x)
+        >>> print(y)
+        {
+            a: ivy.array([-1.18, 0.232, 1.37]),
+            b: ivy.array([1.18, -3.63, 0.835])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
+                    b=ivy.array([0.67, -0.98, -3]))
+        >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
+        >>> ivy.Container.static_sinh(x, out=y)
+        >>> print(y)
+        {
+            a: ivy.array([-10., 0.347, 3.63]),
+            b: ivy.array([0.721, -1.14, -10.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "sinh",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -1489,15 +1627,35 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.sinh(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out=out,
+        """
+        ivy.Container instance method variant of ivy.sinh. This method simply wraps the
+        function, and so the docstring for ivy.sinh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0.23, 1.12]), b=ivy.array([1, -2, 0.76]))
+        >>> y = x.sinh()
+        >>> print(y)
+        {
+            a: ivy.array([-1.18, 0.232, 1.37]),
+            b: ivy.array([1.18, -3.63, 0.835])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
+                    b=ivy.array([0.67, -0.98, -3]))
+        >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
+        >>> x.sinh(out=y)
+        >>> print(y)
+        {
+            a: ivy.array([-10., 0.347, 3.63]),
+            b: ivy.array([0.721, -1.14, -10.])
+        }
+        """
+        return self.static_sinh(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def square(
@@ -1591,6 +1749,31 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.tan also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x
+            input array whose elements are expressed in radians. Should have a
+            floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the tangent of each element in ``x``. The return must
+            have a floating-point data type determined by :ref:`type-promotion`.
+
         Examples
         --------
         With :code:`ivy.Container` input:
@@ -1627,6 +1810,31 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.tan also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array whose elements are expressed in radians. Should have a
+            floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the tangent of each element in ``self``. The return must
+            have a floating-point data type determined by :ref:`type-promotion`.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
@@ -1643,13 +1851,13 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_tanh(
-            x: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.tanh. This method simply wraps the
