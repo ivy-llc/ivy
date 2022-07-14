@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 mkdir -p .hypothesis
 # shellcheck disable=SC2046
