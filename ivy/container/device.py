@@ -10,7 +10,7 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithDevice(ContainerBase):
     @staticmethod
-    def static_dev(container: ivy.Container) -> ivy.Container:
+    def dev_static(container: ivy.Container) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.device.dev. This method simply
         wraps the function, and so the docstring for ivy.device.dev also applies to this
@@ -32,4 +32,4 @@ class ContainerWithDevice(ContainerBase):
         --------
 
         """
-        return self.static_dev(self)
+        return self.dev_static(self)
