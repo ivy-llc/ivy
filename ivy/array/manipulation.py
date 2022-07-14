@@ -90,8 +90,8 @@ class ArrayWithManipulation(abc.ABC):
         Returns
         -------
         ret
-            an output array having the same data type as ``x`` and whose elements,
-            relative to ``x``, are shifted.
+            an output array having the same data type as ``self`` and whose elements,
+            relative to ``self``, are shifted.
 
         Examples
         --------
