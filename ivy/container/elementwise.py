@@ -478,9 +478,9 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With one :code:`ivy.Container` input:
 
-        >>> x = ivy.array([1, 2, 3])
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]))
-        >>> z = ivy.Container.static_bitwise_or(x, y)
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.Container(a=ivy.array([4, 5, 6]))
+        >>> z = ivy.Container.static_bitwise_or(x1, x2)
         >>> print(z)
         {
             a: ivy.array([5, 7, 7]),
@@ -488,11 +488,11 @@ class ContainerWithElementwise(ContainerBase):
 
         With multiple :code:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
                             b=ivy.array([2, 3, 4]))
-        >>> y= ivy.Container(a=ivy.array([4, 5, 6]),\
+        >>> x2 = ivy.Container(a=ivy.array([4, 5, 6]),\
                             b=ivy.array([5, 6, 7]))
-        >>> z = ivy.Container.static_bitwise_or(x, y)
+        >>> z = ivy.Container.static_bitwise_or(x1, x2)
         >>> print(z)
         {
             a: ivy.array([5, 7, 7]),
@@ -529,15 +529,14 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :code:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]))
-        >>> z = x.bitwise_or(y)
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
+        >>> x2 = ivy.Container(a=ivy.array([4, 5, 6]))
+        >>> z = x1.bitwise_or(x2)
         >>> print(z)
         {
         a: ivy.array([5, 7, 7]),
         }
         """
-
         return self.static_bitwise_or(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
