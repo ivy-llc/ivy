@@ -638,6 +638,100 @@ def dtype(
     ret
         Data type of the array
 
+    Functional Method Examples
+    --------------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([1, 0, 1, -1, 0])
+    >>> y = ivy.dtype(x1, as_native=False)
+    >>> print(y)
+    int32
+
+    >>> x1 = ivy.array([1.0, 2.0, 3.5, 4.5, 5, 6])
+    >>> y = ivy.dtype(x1, as_native=True)
+    >>> print(y)
+    float32
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([1, 2, 3, 4])
+    >>> y = ivy.dtype(x1, as_native=False)
+    >>> print(y)
+    int32
+
+    >>> x1 = ivy.array([1.0, 2.0, 3.5, 4.5, 5, 6])
+    >>> y = ivy.dtype(x1, as_native=True)
+    >>> print(y)
+    float32
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 0, -1, 0, 1]), \
+                    b=ivy.native_array([1, 0, -1, 0, 1]))
+    >>> y = ivy.dtype(x1, as_native=True)
+    >>> print(y)
+    <bound method ContainerBase.dtype of {
+        a: array([1, 0, -1, 0, 1], dtype=int32),
+        b: array([1, 0, -1, 0, 0], dtype=int32)
+    }>
+
+    >>> x1 = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]), \
+                            b=ivy.array([1, 0, 0, 0, 1]))
+    >>> y = ivy.dtype(x1, as_native=True)
+    >>> print(y)
+    <bound method ContainerBase.dtype of {
+        a: array([1., 2., -1., 4., 1.], dtype=float32),
+        b: array([1, 0, 0, 0, 1], dtype=int32)
+    }>
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([1, 0, 1, -1, 0])
+    >>> y = x1.dtype()
+    >>> print(y)
+    int32
+
+    >>> x1 = ivy.array([1.0, 2.0, 3.5, 4.5, 5, 6])
+    >>> y = x1.dtype()
+    >>> print(y)
+    float32
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([1, 2, 3, 4])
+    >>> y = x1.dtype()
+    >>> print(y)
+    int32
+
+    >>> x1 = ivy.array([1.0, 2.0, 3.5, 4.5, 5, 6])
+    >>> y = x1.dtype()
+    >>> print(y)
+    float32
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 0, -1, 0, 1]), \
+                    b=ivy.native_array([1, 0, -1, 0, 1]))
+    >>> y = x1.dtype()
+    >>> print(y)
+    <bound method ContainerBase.dtype of {
+        a: array([1, 0, -1, 0, 1], dtype=int32),
+        b: array([1, 0, -1, 0, 0], dtype=int32)
+    }>
+
+    >>> x1 = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]), \
+                            b=ivy.array([1, 0, 0, 0, 1]))
+    >>> y = x1.dtype()
+    >>> print(y)
+    <bound method ContainerBase.dtype of {
+        a: array([1., 2., -1., 4., 1.], dtype=float32),
+        b: array([1, 0, 0, 0, 1], dtype=int32)
+    }>
+
     """
     return current_backend(x).dtype(x, as_native)
 
