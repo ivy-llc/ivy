@@ -1617,7 +1617,7 @@ def get_axis(draw, shape, allow_none=False):
 
 
 @st.composite
-def shapes_and_axes(draw,
+def arrays_and_axes(draw,
                     allow_none=False,
                     min_num_dims=0,
                     max_num_dims=5,
@@ -1628,11 +1628,14 @@ def shapes_and_axes(draw,
     for _ in range(num):
         shape = draw(get_shape(False, min_num_dims, max_num_dims, min_dim_size, max_dim_size))
         shapes.append(shape)
+    arrays = list()
+    for shape in shapes:
+        arrays.append(draw(array_values(dtype="int32", shape=shape, min_value=-200, max_value=200)))
     all_axes_ranges = list()
     for _ in shapes:
         all_axes_ranges.append(st.integers(0, len(shape)-1))
     axes = draw(st.tuples(*all_axes_ranges))
-    return shapes, axes
+    return arrays, axes
 
 
 @st.composite
