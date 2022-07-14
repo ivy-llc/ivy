@@ -160,9 +160,11 @@ Therefore, these docstrings should all simply contain the following text:
 
     Parameters
     ----------
+    <parameters with their description>
 
     Returns
     -------
+    <return value with its description>
 
 The exception to this is :code:`ivy.Container` :code:`special` method docstrings,
 which should instead use the following text, as these do not *directly* wrap a function
@@ -177,9 +179,11 @@ which can be called on any types that support the corresponding special methods:
 
     Parameters
     ----------
+    <parameters with their description>
 
     Returns
     -------
+    <return value with its description>
 
 Let's take :code:`ivy.add` as an example.
 The docstring for
