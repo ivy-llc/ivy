@@ -9,7 +9,7 @@ echo $core_tests
 
 for i in $core_tests
 do
-  pytest $i &
+  docker run --rm -v IVY_BACKEND="$1"  -v $(pwd):/ivy -v $(pwd)/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest $i &
 done
 
 wait
