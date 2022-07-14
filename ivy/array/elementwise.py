@@ -166,6 +166,26 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.ceil(self._data, out=out)
 
     def cos(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cos. This method simply wraps the
+        function, and so the docstring for ivy.cos also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([1., 0., 2.,])
+        >>> y = x.cos()
+        >>> print(y)
+        ivy.array([0.54, 1., -0.416])
+
+        >>> x = ivy.array([-3., 0., 3.])
+        >>> y = ivy.zeros(3)
+        >>> ivy.cos(x, out=y)
+        >>> print(y)
+        ivy.array([-0.99,  1.  , -0.99])
+        """
         return ivy.cos(self._data, out=out)
 
     def cosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:

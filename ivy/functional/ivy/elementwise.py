@@ -1272,11 +1272,35 @@ def cos(
 
     Examples
     --------
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.cos(x)
     >>> print(y)
     ivy.array([1., 0.54, -0.416])
 
+    >>> x = ivy.array([4., 0., -6.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.cos(x, out=y)
+    >>> print(y)
+    ivy.array([-0.654, 1., 0.96])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([1., 0., 2.])
+    >>> y = ivy.cos(x)
+    >>> print(y)
+    ivy.array([0.54 , 1., -0.416])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+    >>> y = ivy.cos(x)
+    >>> print(y)
+    {
+        a: ivy.array([1., 0.54, 0.54]),
+        b: ivy.array([0.54, 1., 0.96])
+    }
     """
     return current_backend(x).cos(x, out=out)
 

@@ -16,6 +16,34 @@ class ContainerWithGradients(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.is_variable.
+        This method simply wraps the function, and so the docstring for
+        ivy.is_variable also applies to this method with minimal changes
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> is_var = ivy.Container.static_is_variable(x)
+        >>> print(is_var)
+        {
+            a: false,
+            b: false
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> exclusive = ivy.Container(a=False, b=True)
+        >>> is_var = ivy.Container.static_is_variable(x, exclusive=exclusive)
+        >>> print(is_var)
+        {
+            a: false,
+            b: false
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "is_variable",
             x,
@@ -34,6 +62,34 @@ class ContainerWithGradients(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.is_variable.
+        This method simply wraps the function, and so the docstring for
+        ivy.is_variable also applies to this method with minimal changes
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> is_var = x.is_variable(exclusive=True)
+        >>> print(is_var)
+        {
+            a: false,
+            b: false
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> exclusive = ivy.Container(a=True, b=True)
+        >>> is_var = x.is_variable(exclusive=exclusive)
+        >>> print(is_var)
+        {
+            a: false,
+            b: false
+        }
+        """
         return self.static_is_variable(
             self, exclusive, key_chains, to_apply, prune_unapplied, map_sequences
         )
