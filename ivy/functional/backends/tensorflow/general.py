@@ -3,13 +3,14 @@ signature.
 """
 
 # global
-from typing import List, Optional, Union
+from typing import Optional, Union, Sequence
 
 _round = round
 import numpy as np
-import tensorflow as tf
 import multiprocessing as _multiprocessing
 from numbers import Number
+import tensorflow as tf
+from tensorflow.python.framework.tensor_shape import TensorShape
 
 # local
 import ivy
@@ -205,7 +206,13 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
+def scatter_nd(
+    indices,
+    updates,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor=None,
+    reduction="sum",
+):
 
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
@@ -331,11 +338,11 @@ def indices_where(x):
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
-) -> Union[tf.Tensor, tf.Variable, List[int]]:
+) -> Union[tf.Tensor, tf.Variable, TensorShape]:
     if as_array:
         return tf.shape(x)
     else:
-        return tuple(x.shape)
+        return x.shape
 
 
 def get_num_dims(x, as_tensor=False):

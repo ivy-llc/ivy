@@ -5,8 +5,6 @@ from typing import Optional, Union
 
 import ivy
 
-# ToDo: implement all methods here as public instance methods
-
 
 class ArrayWithSorting(abc.ABC):
     def argsort(
