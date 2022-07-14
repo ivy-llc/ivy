@@ -90,7 +90,7 @@ def _fn3(x, y):
                                                num=2),
        in_axes_as_cont=st.booleans())
 def test_vmap2(func, arrays_and_axes, in_axes_as_cont, fw):
-    num_pos_args = func.__code__.co_argcount
+
     generated_arrays, in_axes = arrays_and_axes
     arrays = [ivy.native_array(array) for array in generated_arrays]
 
@@ -126,17 +126,22 @@ def test_vmap2(func, arrays_and_axes, in_axes_as_cont, fw):
 
     if fw_res is not None and jax_res is not None:
         assert ivy.array_equal(fw_res, jax_res), f"Results are not equal. fw: {fw_res}, Jax: {jax_res}"
-        print(" A HIT")
+        # print(" A HIT")
+        # if isinstance(in_axes, (list, tuple)):
+        #     if None in in_axes:
+        #         print("with a none")
+        #     elif in_axes is None:
+        #         print("with a none")
+        # print(in_axes)
 
     elif fw_res is None and jax_res is None:
         pass
     else:
-        # print("shape1:", shapes[0], "shape2:", shapes[0])
+        # print("in_axes:", in_axes)
         # print("fw_res:", fw_res)
         # print("jax_res:", jax_res)
         assert False, "One of the results is None while other isn't"
-
-
+    # TODO: Tune the examples generated
 
 
 
