@@ -821,27 +821,24 @@ def is_int_dtype(
     >>> print(x)
     True
 
-    >>> x = ivy.is_int_dtype(ivy.uint64)
-    >>> print(x)
-    True
-
     >>> x = ivy.is_int_dtype(ivy.float64)
     >>> print(x)
-    True
+    False
 
     >>> x = ivy.is_int_dtype(ivy.bool)
     >>> print(x)
     False
 
-    With :code:`str` input:
-
-    >>> x = "1"
+    With :code:`Number` input:
+    >>> x = 4
     >>> print(ivy.is_int_dtype(x))
     True
 
+    With :code:`str` input:
+
     >>> x = "int"
     >>> print(ivy.is_int_dtype(x))
-    False
+    True
 
     With :code:`ivy.Array` input:
 
@@ -856,15 +853,6 @@ def is_int_dtype(
 
     >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
         dtype = ivy.int16)
-    >>> print(x.dtype)
-    <dtype:'int16'>
-
-    >>> print(ivy.is_int_dtype(x))
-    True
-
-    With :code:`Number` input:
-
-    >>> x = 1
     >>> print(ivy.is_int_dtype(x))
     True
 
@@ -872,13 +860,10 @@ def is_int_dtype(
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
         b=ivy.array([3, 4, 5]))
-    >>> print(x.a.dtype, x.b.dtype)
-    float32 int32
-
     >>> print(ivy.is_int_dtype(x))
     {
-        a: False,
-        b: True
+        a: false,
+        b: true
     }
     """
     if ivy.is_native_array(dtype_in):
