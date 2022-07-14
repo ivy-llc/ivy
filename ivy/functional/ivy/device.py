@@ -356,7 +356,7 @@ def dev(
 # Conversions
 
 
-def as_ivy_dev(device: Union[ivy.Device, str]) -> ivy.Device:
+def as_ivy_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.Device:
     """Convert native data type to string representation.
 
     Parameters
