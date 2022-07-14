@@ -223,10 +223,10 @@ class ContainerWithElementwise(ContainerBase):
 
         Parameters
         ----------
-        x1
+        self
             first input container. Should have a numeric data type.
         x2
-            second input array or container. Must be compatible with ``x1``
+            second input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1812,7 +1812,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Parameters
         ----------
-        x
+        self
             input array whose elements are expressed in radians. Should have a
             floating-point data type.
         key_chains
@@ -1832,7 +1832,7 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an array containing the tangent of each element in ``x``. The return must
+            an array containing the tangent of each element in ``self``. The return must
             have a floating-point data type determined by :ref:`type-promotion`.
 
         Examples

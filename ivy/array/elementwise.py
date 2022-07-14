@@ -49,7 +49,7 @@ class ArrayWithElementwise(abc.ABC):
         self
             first input array. Should have a numeric data type.
         x2
-            second input array. Must be compatible with ``x1``
+            second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -441,7 +441,7 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the tangent of each element in ``x``. The return must
+            an array containing the tangent of each element in ``self``. The return must
             have a floating-point data type determined by :ref:`type-promotion`.
 
         Examples
