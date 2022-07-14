@@ -26,6 +26,9 @@ def argmin(
 
 def nonzero(
     x: Union[tf.Tensor, tf.Variable],
+    *,
+    dtype: tf.DType,
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.nonzero(x)
 
