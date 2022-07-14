@@ -44,6 +44,23 @@ class ArrayWithElementwise(abc.ABC):
         function, and so the docstring for ivy.add also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type.
+        x2
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
         Examples
         --------
         >>> x = ivy.array([1, 2, 3])
@@ -357,9 +374,39 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.sign(self._data, out=out)
 
     def sin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.sin. This method simply wraps the
+        function, and so the docstring for ivy.sin also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([0., 1., 2., 3.])
+        >>> y = x.sin()
+        >>> print(y)
+        ivy.array([0., 0.841, 0.909, 0.141])
+        """
         return ivy.sin(self._data, out=out)
 
     def sinh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.sinh. This method simply wraps the
+        function, and so the docstring for ivy.sinh also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([1., 2., 3.])
+        >>> print(x.sinh())
+            ivy.array([1.18, 3.63, 10.])
+
+        >>> x = ivy.array([0.23, 3., -1.2])
+        >>> y = ivy.zeros(3)
+        >>> print(x.sinh(out=y))
+            ivy.array([0.232, 10., -1.51])
+        """
         return ivy.sinh(self._data, out=out)
 
     def square(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
@@ -381,6 +428,21 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.tan. This method simply wraps the
         function, and so the docstring for ivy.tan also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array whose elements are expressed in radians. Should have a
+            floating-point data type.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the tangent of each element in ``self``. The return must
+            have a floating-point data type determined by :ref:`type-promotion`.
 
         Examples
         --------
