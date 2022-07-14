@@ -635,6 +635,43 @@ class ContainerWithElementwise(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_cos(
+            x: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.cos. This method simply wraps the
+        function, and so the docstring for ivy.cos also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+        >>> y = ivy.Container.static_cos(x)
+        >>> print(y)
+        {
+            a: ivy.array([1., 0.54, 0.54]),
+            b: ivy.array([0.54, 1., 0.96])
+        }
+        """
+        return ivy.ContainerBase.multi_map_in_static_method(
+            "cos",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def cos(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -644,15 +681,25 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.cos(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out=out,
+        """
+        ivy.Container instance method variant of ivy.cos. This method simply wraps the
+        function, and so the docstring for ivy.cos also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+        >>> y = x.cos()
+        >>> print(y)
+        {
+            a: ivy.array([1., 0.54, 0.54]),
+            b: ivy.array([0.54, 1., 0.96])
+        }
+        """
+        return self.static_cos(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def cosh(
