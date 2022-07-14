@@ -336,24 +336,24 @@ def permute_dims(
     --------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([[1,2,3],[4,5,6]])
-    >>> y = ivy.permute_dims(x, axes=(1,0))
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.permute_dims(x, axes=(1, 0))
     >>> print(y)
     ivy.array([[1, 4],
-       [2, 5],
-       [3, 6]])
+               [2, 5],
+               [3, 6]])
 
-    >>> x = ivy.zeros((2,3))
-    >>> y = ivy.permute_dims(x, axes=(1,0))
+    >>> x = ivy.zeros((2, 3))
+    >>> y = ivy.permute_dims(x, axes=(1, 0))
     >>> print(y)
     ivy.array([[0., 0.],
-       [0., 0.],
-       [0., 0.]])
+               [0., 0.],
+               [0., 0.]])
     
     With one :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([[0.,1.,2.]]), b=ivy.array([[3.,4.,5.]]))
-    >>> y = ivy.permute_dims(x, axes=(1,0))
+    >>> x = ivy.Container(a=ivy.array([[0., 1. ,2.]]), b=ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.permute_dims(x, axes=(1, 0))
     >>> print(y)
     {
     a: ivy.array([[0.], 
@@ -364,8 +364,8 @@ def permute_dims(
                   [5.]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[0.,1.,2.]]), b = ivy.array([[3.,4.,5.]]))
-    >>> y = ivy.permute_dims(x, axes=(1,0), out=x)
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b = ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.permute_dims(x, axes=(1, 0), out=x)
     >>> print(y)
     {
     a: ivy.array([[0.], 
@@ -376,8 +376,8 @@ def permute_dims(
                   [5.]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[0.,1.,2.]]), b=ivy.array([[3.,4.,5.]]))
-    >>> y = ivy.permute_dims(x, axes=(1,0), out=ivy.zeros((2,3)))
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.permute_dims(x, axes=(1, 0), out=ivy.zeros((2, 3)))
     >>> print(y)
     ivy.array([[3.],
                [4.],
