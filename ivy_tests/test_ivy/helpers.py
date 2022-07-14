@@ -1617,6 +1617,25 @@ def get_axis(draw, shape, allow_none=False):
 
 
 @st.composite
+def shapes_and_axes(draw,
+                    allow_none=False,
+                    min_num_dims=0,
+                    max_num_dims=5,
+                    min_dim_size=1,
+                    max_dim_size=10,
+                    num=2):
+    shapes = list()
+    for _ in range(num):
+        shape = draw(get_shape(False, min_num_dims, max_num_dims, min_dim_size, max_dim_size))
+        shapes.append(shape)
+    all_axes_ranges = list()
+    for _ in shapes:
+        all_axes_ranges.append(st.integers(0, len(shape)-1))
+    axes = draw(st.tuples(*all_axes_ranges))
+    return shapes, axes
+
+
+@st.composite
 def num_positional_args(draw, fn_name: str = None):
     num_positional_only = 0
     num_keyword_only = 0

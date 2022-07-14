@@ -81,16 +81,20 @@ def _fn3(x, y):
 #     #del jax_res, fw_res
 
 
-@given(func=st.shared(st.sampled_from([_fn1, _fn2, _fn3]), key="func"),
-       shape1=st.shared(hnp.array_shapes(min_dims=3, max_dims=5, min_side=2, max_side=5), key="shape1"),
-       shape2=hnp.array_shapes(min_dims=3, max_dims=5, min_side=2, max_side=5),
-       in_axes=st.shared(helpers.get_num_axis(hnp.array_shapes(), num=2), key="shape1"),
+@given(func=st.sampled_from([_fn1, _fn2, _fn3]),
+       shapes_and_axes=helpers.shapes_and_axes(allow_none=False,
+                                               min_num_dims=2,
+                                               max_num_dims=5,
+                                               min_dim_size=2,
+                                               max_dim_size=10,
+                                               num=2),
        data=st.data(),
        in_axes_as_cont=st.booleans())
-def test_vmap2(func, shape1, shape2, in_axes, data, in_axes_as_cont, fw):
+def test_vmap2(func, shapes_and_axes, data, in_axes_as_cont, fw):
     num_pos_args = func.__code__.co_argcount
-    array1 = data.draw(hnp.arrays(dtype=np.int32, shape=shape1))
-    array2 = data.draw(hnp.arrays(dtype=np.int32, shape=shape2))
+    shapes, in_axes = shapes_and_axes
+    array1 = data.draw(hnp.arrays(dtype=np.int32, shape=shapes[0], elements=st.integers(0, 20)))
+    array2 = data.draw(hnp.arrays(dtype=np.int32, shape=shapes[1], elements=st.integers(0, 20)))
     arrays = [ivy.native_array(array1), ivy.native_array(array2)]
 
     if in_axes_as_cont:
@@ -129,11 +133,11 @@ def test_vmap2(func, shape1, shape2, in_axes, data, in_axes_as_cont, fw):
     elif fw_res is None and jax_res is None:
         pass
     else:
-        print("shape1:", shape1, "shape2:", shape2)
+        print("shape1:", shapes[0], "shape2:", shapes[0])
         print("fw_res:", fw_res)
         print("jax_res:", jax_res)
         assert False, "One of the results is None while other isn't"
-    #del jax_res, fw_res
+
 
 
 

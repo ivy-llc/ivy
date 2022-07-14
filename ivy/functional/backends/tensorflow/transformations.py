@@ -48,7 +48,11 @@ import ivy
 
 def vmap(func, in_axes=0, out_axes=0):
     @ivy.to_native_arrays_and_back
-    def _vmap(*args):
+    def _vmap(*args, **kwargs):
+        native_args, native_kwargs = ivy.args_to_native(
+            *args, **kwargs, include_derived={tuple: True}
+        )
+
 
         # convert args tuple to list to allow mutability using moveaxis ahead.
         args = list(args)
@@ -90,7 +94,7 @@ def vmap(func, in_axes=0, out_axes=0):
         # vectorisation - applying map_fn if only one arg provided as reduce requires
         # two elements to begin with.
         arr_results = []
-        for arrays in zip(*args):
+        for arrays in zip(*native_args):
             single_op = func(*arrays)
             arr_results.append(single_op)
         res = ivy.stack(arr_results)
