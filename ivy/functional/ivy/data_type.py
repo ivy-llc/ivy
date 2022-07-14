@@ -792,19 +792,99 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
 def is_int_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
 ) -> bool:
-    """Determine whether the input data type is an int dtype.
+    """
+    Determine whether the input data type is an int data type.
 
     Parameters
     ----------
     dtype_in
-        The array or data type to check
+        input data type to test.
 
     Returns
     -------
     ret
-        Whether or not the array or data type is of an integer dtype
+        "True" if the input data type is an integer, otherwise "False".
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+     With :code:`ivy.Dtype` input:
+
+    >>> x = ivy.is_int_dtype(ivy.int8)
+    >>> print(x)
+    True
+
+    >>> x = ivy.is_int_dtype(ivy.int32)
+    >>> print(x)
+    True
+
+    >>> x = ivy.is_int_dtype(ivy.uint64)
+    >>> print(x)
+    True
+
+    >>> x = ivy.is_int_dtype(ivy.float64)
+    >>> print(x)
+    True
+
+    >>> x = ivy.is_int_dtype(ivy.bool)
+    >>> print(x)
+    False
+
+    With :code:`str` input:
+
+    >>> x = "1"
+    >>> print(ivy.is_int_dtype(x))
+    True
+
+    >>> x = "int"
+    >>> print(ivy.is_int_dtype(x))
+    False
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> print(x.dtype)
+    float32
+
+    >>> print(ivy.is_int_dtype(x))
+    False
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
+        dtype = ivy.int16)
+    >>> print(x.dtype)
+    <dtype:'int16'>
+
+    >>> print(ivy.is_int_dtype(x))
+    True
+
+    With :code:`Number` input:
+
+    >>> x = 1
+    >>> print(ivy.is_int_dtype(x))
+    True
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+        b=ivy.array([3, 4, 5]))
+    >>> print(x.a.dtype, x.b.dtype)
+    float32 int32
+
+    >>> print(ivy.is_int_dtype(x))
+    {
+        a: False,
+        b: True
+    }
     """
+
+    def check_type(x):
+        return isinstance(x, (int, np.integer)) and not type(x) == bool
+
     if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
@@ -821,7 +901,7 @@ def is_int_dtype(
             True
             if ivy.nested_indices_where(
                 dtype_in,
-                lambda x: isinstance(x, (int, np.integer)) and not type(x) == bool,
+                check_type(dtype_in),
             )
             else False
         )
