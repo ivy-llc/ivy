@@ -20,37 +20,18 @@ jobs:
           persist-credentials: false
           submodules: "recursive"
 
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
+      - name: Cache hypothesis
+        uses: actions/cache@v3
         with:
-          workflow: test_functional.yml
-          name: hypothesis_zip
           path: |
-            ivy/.hypothesis/
-
-      - name: Unzip Hypothesis Examples
-        run: |
-          cd ivy/.hypothesis
-          unzip examples.zip
-          rm examples.zip
+            ivy/.hypothesis
+          key: ${{ runner.os }}-hypothesis
 
       - name: Run Functional Tests
         id: tests
         run: |
           ./test_ivy_submodule.sh ${{ matrix.backend }}
         continue-on-error: true
-
-      - name: Zip Hypothesis Examples
-        run: |
-          cd ivy/.hypothesis
-          zip -r examples.zip examples
-
-      - name: Upload hypothesis
-        uses: actions/upload-artifact@v3
-        with:
-          name: hypothesis_zip
-          path: |
-            ivy/.hypothesis/examples.zip
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
