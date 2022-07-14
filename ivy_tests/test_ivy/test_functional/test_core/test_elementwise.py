@@ -2105,18 +2105,17 @@ def test_minimum(
     call,
     fw,
 ):
-    input_dtype_1, x1 = dtype_and_x[0][0], dtype_and_x[1][0]
-    input_dtype_2, x2 = dtype_and_x[0][1], dtype_and_x[1][1]
+    input_dtype, x = dtype_and_x
 
     if (
-        (isinstance(x1, Number) or isinstance(x2, Number))
+        (isinstance(x[0], Number) or isinstance(x[1], Number))
         and as_variable is True
         and fw == "mxnet"
     ):
         # mxnet does not support 0-dimensional variables
         return
     helpers.test_function(
-        [input_dtype_1, input_dtype_2],
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -2125,8 +2124,8 @@ def test_minimum(
         instance_method,
         fw,
         "minimum",
-        x1=np.asarray(x1, dtype=input_dtype_1),
-        x2=np.array(x2, dtype=input_dtype_2),
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -2152,17 +2151,16 @@ def test_maximum(
     call,
     fw,
 ):
-    input_dtype_1, x1 = dtype_and_x[0][0], dtype_and_x[1][0]
-    input_dtype_2, x2 = dtype_and_x[0][1], dtype_and_x[1][1]
+    input_dtype, x = dtype_and_x
     if (
-        (isinstance(x1, Number) or isinstance(x2, Number))
+        (isinstance(x[0], Number) or isinstance(x[1], Number))
         and as_variable is True
         and fw == "mxnet"
     ):
         # mxnet does not support 0-dimensional variables
         return
     helpers.test_function(
-        [input_dtype_1, input_dtype_2],
+        input_dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -2171,6 +2169,6 @@ def test_maximum(
         instance_method,
         fw,
         "maximum",
-        x1=np.asarray(x1, dtype=input_dtype_1),
-        x2=np.array(x2, dtype=input_dtype_2),
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
