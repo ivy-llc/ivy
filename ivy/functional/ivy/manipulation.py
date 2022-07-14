@@ -341,7 +341,7 @@ def permute_dims(
 @handle_nestable
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
-    shape: Tuple[int, ...],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     copy: Optional[bool] = None,
     *,
     out: Optional[ivy.Array] = None,
@@ -579,8 +579,8 @@ def stack(
 @handle_nestable
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
-    x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-    x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+    x_min: Union[Number, ivy.Array, ivy.NativeArray],
+    x_max: Union[Number, ivy.Array, ivy.NativeArray],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
