@@ -130,7 +130,7 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
 
 @inputs_to_native_arrays
 @handle_nestable
-def is_variable(x, exclusive=False):
+def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
     """Determines whether the input is a variable or not.
 
     Parameters
@@ -148,6 +148,64 @@ def is_variable(x, exclusive=False):
     ret
         Boolean, true if x is a trainable variable, false otherwise.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array(2.3)
+    >>> is_var = ivy.is_variable(x)
+    >>> print(is_var)
+        False
+
+    >>> x = ivy.zeros((3, 2))
+    >>> is_var = ivy.is_variable(x)
+    >>> print(is_var)
+        False
+
+    >>> x = ivy.array([[2], [3], [5]])
+    >>> is_var = ivy.is_variable(x, True)
+    >>> print(is_var)
+        False
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7])
+    >>> is_var = ivy.is_variable(x)
+    >>> print(is_var)
+        False
+
+    >>> x = ivy.native_array([2, 3, 4])
+    >>> is_var = ivy.is_variable(x)
+    >>> print(is_var)
+        False
+
+    >>> x = ivy.native_array([-1, 0., 0.8, 9])
+    >>> is_var =  ivy.is_variable(x, True)
+    >>> print(is_var)
+        False
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
+    >>> exclusive = True
+    >>> is_var = ivy.is_variable(x, exclusive=exclusive)
+    >>> print(is_var)
+    {
+        a: false,
+        b: false
+    }
+
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+    >>> exclusive = ivy.Container(a=False, b=True)
+    >>> is_var = ivy.is_variable(x, exclusive=exclusive)
+    >>> print(is_var)
+    {
+        a: false,
+        b: false
+    }
     """
     return current_backend(x).is_variable(x, exclusive)
 
