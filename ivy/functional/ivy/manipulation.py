@@ -796,12 +796,6 @@ def constant_pad(
                 [4, 5, 5, 5, 5],
                 [4, 5, 5, 5, 5],
                 [4, 5, 5, 5, 5]]])
-        
-    With :code:`ivy.NativeArray` input:
-    >>> x = ivy.NativeArray([1, 2, 3, 4])
-    >>> y = ivy.constant_pad(x, [2, 3], (5, 6))
-    >>> print(y)
-    ivy.array([5, 5, 1, 2, 3, 4, 6, 6, 6])
 
     With :code:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \

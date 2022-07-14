@@ -345,7 +345,7 @@ class ContainerWithManipulation(ContainerBase):
         >>> y = x.constant_pad((2, 3), (5, 6))
         >>> print(y)
         {
-            a: ivy.array([5, 5, 1, 2, 3, 6, 6, 6,]),
+            a: ivy.array([5, 5, 1, 2, 3, 6, 6, 6]),
             b: ivy.array([5, 5, 4, 5, 6, 6, 6, 6])
         }
         """
