@@ -35,7 +35,7 @@ def mean(
 def min(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
 ) -> JaxArray:
     return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
