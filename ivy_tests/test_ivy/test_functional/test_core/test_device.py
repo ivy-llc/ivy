@@ -48,6 +48,13 @@ def test_dev(array_shape, dtype, as_variable, fw, device):
     assert isinstance(ret, str)
     # value test
     assert ret == device
+    # array instance test
+    assert x.dev() == device
+    # container instance test
+    container_x = ivy.Container({'a': x})
+    assert container_x.dev() == device
+    # container static test
+    assert ivy.Container.static_dev(container_x) == device
 
 
 # as_ivy_dev
