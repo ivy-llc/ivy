@@ -72,16 +72,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -188,6 +193,33 @@
 <span class="sd">        ivy.Array instance method variant of ivy.roll. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.roll also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array.</span>
+<span class="sd">        shift</span>
+<span class="sd">            number of places by which the elements are shifted. If ``shift`` is a tuple,</span>
+<span class="sd">            then ``axis`` must be a tuple of the same size, and each of the given axes</span>
+<span class="sd">            must be shifted by the corresponding element in ``shift``. If ``shift`` is</span>
+<span class="sd">            an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for</span>
+<span class="sd">            all specified axes. If a shift is positive, then array elements must be</span>
+<span class="sd">            shifted positively (toward larger indices) along the dimension of ``axis``.</span>
+<span class="sd">            If a shift is negative, then array elements must be shifted negatively</span>
+<span class="sd">            (toward smaller indices) along the dimension of ``axis``.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis (or axes) along which elements to shift. If ``axis`` is ``None``, the</span>
+<span class="sd">            array must be flattened, shifted, and then restored to its original shape.</span>
+<span class="sd">            Default ``None``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an output array having the same data type as ``x`` and whose elements,</span>
+<span class="sd">            relative to ``x``, are shifted.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
