@@ -591,8 +591,6 @@ def test_method(
         v if ivy.is_float_dtype(d) else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
-    # tolerance dict for dtypes
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
     # change all data types so that they are supported by this framework
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
@@ -783,14 +781,27 @@ def test_function(
 
     fn = getattr(ivy, fn_name)
     test_unsupported = check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np)
-    args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
-        args_np,
-        kwargs_np,
-        input_dtypes,
-        as_variable_flags,
-        native_array_flags,
-        container_flags,
-    )
+    if test_unsupported:
+        try:
+            args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+                args_np,
+                kwargs_np,
+                input_dtypes,
+                as_variable_flags,
+                native_array_flags,
+                container_flags,
+            )
+        except Exception:
+            return
+    else:
+        args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+            args_np,
+            kwargs_np,
+            input_dtypes,
+            as_variable_flags,
+            native_array_flags,
+            container_flags,
+        )
 
     # run either as an instance method or from the API directly
     instance = None
@@ -848,21 +859,40 @@ def test_function(
         return
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
-    fn = getattr(ivy, fn_name)
-    test_unsupported = check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np)
-    # create args
-    args, kwargs, _, _, _ = create_args_kwargs(
-        args_np,
-        kwargs_np,
-        input_dtypes,
-        as_variable_flags,
-        native_array_flags,
-        container_flags,
-    )
-    if test_unsupported:
-        test_unsupported_function(ivy.__dict__[fn_name], args, kwargs)
-        return
-    ret_from_gt = ivy.to_native(ivy.__dict__[fn_name](*args, **kwargs), nested=True)
+    try:
+        fn = getattr(ivy, fn_name)
+        test_unsupported = check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np)
+        # create args
+        if test_unsupported:
+            try:
+                args, kwargs, _, _, _ = create_args_kwargs(
+                    args_np,
+                    kwargs_np,
+                    input_dtypes,
+                    as_variable_flags,
+                    native_array_flags,
+                    container_flags,
+                )
+            except Exception:
+                ivy.unset_backend()
+                return
+        else:
+            args, kwargs, _, _, _ = create_args_kwargs(
+                args_np,
+                kwargs_np,
+                input_dtypes,
+                as_variable_flags,
+                native_array_flags,
+                container_flags,
+            )
+        if test_unsupported:
+            test_unsupported_function(ivy.__dict__[fn_name], args, kwargs)
+            ivy.unset_backend()
+            return
+        ret_from_gt = ivy.to_native(ivy.__dict__[fn_name](*args, **kwargs), nested=True)
+    except Exception:
+        ivy.unset_backend()
+        assert False
     ivy.unset_backend()
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -937,8 +967,6 @@ def test_frontend_function(
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
-    # tolerance dict for dtypes
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
     # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
     *frontend_submods, fn_name = fn_name.split(".")
@@ -954,12 +982,19 @@ def test_frontend_function(
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
 
     # create args
-    args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
-        args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags
-    )
-
-    # create ivy array args
-    args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
+    if test_unsupported:
+        try:
+            args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+                args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags
+            )
+            args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
+        except Exception:
+            return
+    else:
+        args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+            args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags
+        )
+        args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
 
     # frontend function
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name]
@@ -1000,39 +1035,41 @@ def test_frontend_function(
 
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
+    try:
+        # check for unsupported dtypes in frontend framework
+        function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
+        test_unsupported = check_unsupported_dtype(function, input_dtypes, all_as_kwargs_np)
 
-    # check for unsupported dtypes in frontend framework
-    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
-    test_unsupported = check_unsupported_dtype(function, input_dtypes, all_as_kwargs_np)
-
-    # create frontend framework args
-    args_frontend = ivy.nested_map(
-        args_np,
-        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
-    )
-    kwargs_frontend = ivy.nested_map(
-        kwargs_np,
-        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
-    )
-
-    # compute the return via the frontend framework
-    frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
-    if test_unsupported:
-        test_unsupported_function(
-            frontend_fw.__dict__[fn_name], args_frontend, kwargs_frontend
+        # create frontend framework args
+        args_frontend = ivy.nested_map(
+            args_np,
+            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
         )
-        return
-    frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
+        kwargs_frontend = ivy.nested_map(
+            kwargs_np,
+            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        )
 
-    # tuplify the frontend return
-    if not isinstance(frontend_ret, tuple):
-        frontend_ret = (frontend_ret,)
+        # compute the return via the frontend framework
+        frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
+        if test_unsupported:
+            test_unsupported_function(
+                frontend_fw.__dict__[fn_name], args_frontend, kwargs_frontend
+            )
+            return
+        frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
-    # flatten the frontend return and convert to NumPy arrays
-    frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
-    frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+        # tuplify the frontend return
+        if not isinstance(frontend_ret, tuple):
+            frontend_ret = (frontend_ret,)
 
+        # flatten the frontend return and convert to NumPy arrays
+        frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
+        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+    except Exception:
+        ivy.unset_backend()
+        assert False
     # unset frontend framework from backend
     ivy.unset_backend()
 
