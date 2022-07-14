@@ -122,9 +122,9 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        >>> x1 = ivy.array([1, 2, 3])
+        >>> x = ivy.array([1, 2, 3])
         >>> x2 = ivy.array([4, 5, 6])
-        >>> z = x1.bitwise_or(x2)
+        >>> z = x.bitwise_or(x2)
         >>> print(z)
         ivy.array([5, 7, 7])
         """
