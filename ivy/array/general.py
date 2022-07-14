@@ -9,11 +9,7 @@ import ivy
 
 
 class ArrayWithGeneral(abc.ABC):
-    def all_equal(
-            self: ivy.Array,
-            x2: Iterable[Any],
-            equality_matrix: bool = False
-    ):
+    def all_equal(self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False):
         """
         ivy.Container instance method variant of ivy.all_equal.
         This method simply wraps the function, and so the docstring for
@@ -60,3 +56,26 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array(2)
         """
         return ivy.gather_nd(self, indices, out=out)
+
+    def to_numpy(self: ivy.Array):
+        """
+        ivy.Container instance method variant of ivy.to_numpy.
+        This method simply wraps the function, and so the docstring for
+        ivy.to_numpy also applies to this method with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance methods:
+
+        >>> x = ivy.array([1, 0, 1, 1])
+        >>> y = x.to_numpy()
+        >>> print(y)
+        [1 0 1 1]
+
+        >>> x = ivy.array([1, 0, 0, 1])
+        >>> y = x.to_numpy()
+        >>> print(y)
+        [1 0 0 1]
+
+        """
+        return ivy.to_numpy(self)

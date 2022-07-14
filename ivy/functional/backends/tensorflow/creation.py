@@ -1,6 +1,6 @@
 # global
 import tensorflow as tf
-from typing import Union, Tuple, List, Optional
+from typing import Union, Sequence, List, Optional
 
 # local
 import ivy
@@ -101,7 +101,7 @@ def asarray(object_in, *, copy=None, dtype: tf.DType = None, device: str):
 
 
 def empty(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str,
@@ -155,7 +155,7 @@ def from_dlpack(x):
 
 
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float],
     *,
     dtype: tf.DType = None,
@@ -188,6 +188,7 @@ def linspace(
 ):
     if axis is None:
         axis = -1
+    dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
     with tf.device(ivy.as_native_dev(device)):
         start = tf.constant(start, dtype=dtype)
@@ -196,8 +197,6 @@ def linspace(
             ans = tf.linspace(start, stop, num + 1, axis=axis)[:-1]
         else:
             ans = tf.linspace(start, stop, num, axis=axis)
-        if dtype is None:
-            dtype = tf.float32
         ans = tf.cast(ans, dtype)
         return ans
 
@@ -210,7 +209,7 @@ def meshgrid(
 
 
 def ones(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str,
@@ -242,7 +241,7 @@ def triu(x: Union[tf.Tensor, tf.Variable], k: int = 0) -> Union[tf.Tensor, tf.Va
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str,

@@ -20,9 +20,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 def relu(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the rectified linear unit function element-wise.
 
@@ -81,7 +79,7 @@ def relu(
     ivy.array([0., 1., 0.])
 
     """
-    return current_backend(x).relu(x, out)
+    return current_backend(x).relu(x, out=out)
 
 
 @to_native_arrays_and_back
@@ -90,6 +88,7 @@ def relu(
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     alpha: Optional[float] = 0.2,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the leaky rectified linear unit function element-wise.
@@ -100,6 +99,9 @@ def leaky_relu(
         Input array.
     alpha
         Negative slope for ReLU.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -155,7 +157,12 @@ def leaky_relu(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def gelu(x, approximate=True):
+def gelu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    approximate=True,
+    *,
+    out: Optional[ivy.Array] = None,
+):
     """Applies the Gaussian error linear unit (GELU) activation function.
 
     Parameters
@@ -164,6 +171,9 @@ def gelu(x, approximate=True):
         Input array.
     approximate
         Whether to approximate, default is True.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -171,14 +181,14 @@ def gelu(x, approximate=True):
         The input array with leaky relu applied element-wise.
 
     """
-    return current_backend(x).gelu(x, approximate)
+    return current_backend(x).gelu(x, approximate, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def tanh(
-    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the Hyperbolic tangent activation function element-wise.
 
@@ -186,6 +196,9 @@ def tanh(
     ----------
     x
         input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -228,7 +241,7 @@ def tanh(
 @handle_out_argument
 @handle_nestable
 def sigmoid(
-    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the sigmoid function element-wise.
 
@@ -236,6 +249,9 @@ def sigmoid(
     ----------
     x
         input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -279,6 +295,7 @@ def sigmoid(
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = -1,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the softmax function element-wise.
@@ -290,6 +307,9 @@ def softmax(
     axis
         The dimension softmax would be performed on. The default is -1 which indicates
         the last dimension.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -332,14 +352,14 @@ def softmax(
     ivy.array([0.422, 0.155, 0.422])
 
     """
-    return current_backend(x).softmax(x, axis)
+    return current_backend(x).softmax(x, axis, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def softplus(
-    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the softplus function element-wise.
 
@@ -347,6 +367,9 @@ def softplus(
     ----------
     x
         input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------

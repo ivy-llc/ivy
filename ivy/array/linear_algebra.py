@@ -23,6 +23,26 @@ class ArrayWithLinearAlgebra(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cholesky. This method simply wraps the
+        function, and so the docstring for ivy.cholesky also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \
+                       [1.0, 0.5, 0.0, 0.0, 0.0], \
+                       [2.0, 0.0, 3.0, 0.0, 0.0], \
+                       [0.5, 0.0, 0.0, 0.625, 0.0], \
+                       [2.0, 0.0, 0.0, 0.0, 16.0]])
+        >>> y = x.cholesky('false')
+        >>> print(y)
+        ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+                   [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+                   [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+                   [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+                   [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+        """
         return ivy.cholesky(self._data, upper, out=out)
 
     def cross(
@@ -113,10 +133,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def svd(
         self: ivy.Array,
         full_matrices: bool = True,
-        *,
-        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-        return ivy.svd(self._data, full_matrices, out=out)
+        return ivy.svd(self._data, full_matrices)
 
     def svdvals(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.svdvals(self._data, out=out)

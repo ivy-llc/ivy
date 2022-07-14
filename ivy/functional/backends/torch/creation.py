@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 from torch import Tensor
-from typing import Union, Tuple, List, Optional
+from typing import Union, List, Optional, Sequence
 
 # local
 import ivy
@@ -11,7 +11,6 @@ from ivy import (
     default_dtype,
     as_native_dev,
     default_device,
-    shape_to_tuple,
 )
 from ivy.functional.backends.torch.device import dev
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
@@ -66,14 +65,7 @@ def arange(
             return torch.arange(start, stop, step=step, device=device, out=out)
     else:
         dtype = as_native_dtype(default_dtype(dtype))
-        if dtype in [torch.int8, torch.uint8, torch.int16]:
-            return torch.arange(
-                start, stop, step=step, dtype=torch.int64, device=device, out=out
-            ).to(dtype)
-        else:
-            return torch.arange(
-                start, stop, step=step, dtype=dtype, device=device, out=out
-            )
+        return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
 
 
 def asarray(
@@ -92,12 +84,7 @@ def asarray(
     ):
         dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return (
-                torch.as_tensor(object_in, dtype=dtype)
-                .clone()
-                .detach()
-                .to(device)
-            )
+            return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
         else:
             return torch.as_tensor(object_in, dtype=dtype).to(device)
 
@@ -107,18 +94,13 @@ def asarray(
         dtype = as_native_dtype((default_dtype(dtype, object_in)))
 
     if copy is True:
-        return (
-            torch.as_tensor(object_in, dtype=dtype)
-            .clone()
-            .detach()
-            .to(device)
-        )
+        return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
     else:
         return torch.as_tensor(object_in, dtype=dtype).to(device)
 
 
 def empty(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -182,15 +164,17 @@ def from_dlpack(x):
 
 
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float],
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
+    if isinstance(shape, int):
+        shape = (shape,)
     return torch.full(
-        shape_to_tuple(shape),
+        shape,
         fill_value,
         dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
         device=device,
@@ -348,7 +332,7 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
 
 # noinspection PyShadowingNames
 def ones(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -381,7 +365,7 @@ def triu(
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
     device: torch.device,

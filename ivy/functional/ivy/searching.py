@@ -23,7 +23,7 @@ def argmax(
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
     maximum value occurs multiple times, only the indices corresponding to the first
@@ -268,8 +268,8 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> y = ivy.nonzero(x)
     >>> print(y)
     {
-    a: (list[1], <class ivy.array.Array> shape=[3]),
-    b: (list[2], <class ivy.array.Array> shape=[2])
+        a: (list[1], <class ivy.array.array.Array> shape=[3]),
+        b: (list[2], <class ivy.array.array.Array> shape=[2])
     }
 
     >>> print(y.a)
@@ -301,8 +301,8 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> y = x.nonzero()
     >>> print(y)
     {
-    a: (list[1], <class ivy.array.Array> shape=[3]),
-    b: (list[1], <class ivy.array.Array> shape=[0])
+        a: (list[1], <class ivy.array.array.Array> shape=[3]),
+        b: (list[1], <class ivy.array.array.Array> shape=[0])
     }
 
     >>> print(y.a)
@@ -321,6 +321,7 @@ def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns elements chosen from x or y depending on condition.
@@ -333,6 +334,9 @@ def where(
         values from which to choose when condition is True.
     x2
         values from which to choose when condition is False.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
