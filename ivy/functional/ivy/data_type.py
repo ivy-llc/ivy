@@ -881,7 +881,6 @@ def is_int_dtype(
         b: True
     }
     """
-
     if ivy.is_native_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
