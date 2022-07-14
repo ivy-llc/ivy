@@ -470,28 +470,27 @@ class ContainerWithElementwise(ContainerBase):
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.bitwise_or. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_or also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.bitwise_or. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_or also applies
+        to this method with minimal changes.
 
         Examples
         --------
         With one :code:`ivy.Container` input:
 
-        >>> x = ivy.array([1, 2, 3])
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]))
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.Container(a=ivy.array([4, 5, 6]))
         >>> z = ivy.Container.static_bitwise_or(x, y)
         >>> print(z)
         {
             a: ivy.array([5, 7, 7]),
-
         }
 
         With multiple :code:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
                             b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+        >>> x2= ivy.Container(a=ivy.array([4, 5, 6]),\
                             b=ivy.array([5, 6, 7]))
         >>> z = ivy.Container.static_bitwise_or(x, y)
         >>> print(z)
@@ -522,23 +521,22 @@ class ContainerWithElementwise(ContainerBase):
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-               ivy.Container instance method variant of ivy.bitwise_or. This method simply wraps the
-               function, and so the docstring for ivy.bitwise_or also applies to this method
-               with minimal changes.
+        ivy.Container instance method variant of ivy.bitwise_or. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_or also applies to
+        this method with minimal changes.
 
-               Examples
-               --------
-               Using :code:`ivy.Container` instance method:
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
 
-               >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-               >>> y = ivy.Container(a=ivy.array([4, 5, 6]))
-               >>> z = ivy.Container.static_bitwise_or(x, y)
-               >>> print(z)
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]))
+        >>> z = x.bitwise_or(y)
+        >>> print(z)
         {
-            a: ivy.array([5, 7, 7]),
-
+        a: ivy.array([5, 7, 7]),
         }
-               """
+        """
 
         return self.static_bitwise_or(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
