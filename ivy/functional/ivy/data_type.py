@@ -653,6 +653,18 @@ def dtype(
     >>> print(y)
     float32
 
+    With :code:`ivy.Native_Array` inputs:
+
+    >>> x1 = ivy.native_array([1, 0, 1, -1, 0])
+    >>> y = ivy.dtype(x1)
+    >>> print(y)
+    int32
+
+    >>> x1 = ivy.native_array([1.0, 2.0, 3.5, 4.5, 5, 6])
+    >>> y = ivy.dtype(x1)
+    >>> print(y)
+    float32
+
     With :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([1, 0, -1, 0, 1]), \
