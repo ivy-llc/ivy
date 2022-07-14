@@ -3384,6 +3384,36 @@ def sinh(
         an array containing the hyperbolic sine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.sinh(x)
+    >>> print(y)
+        ivy.array([1.18, 3.63, 10.])
+
+    >>> x = ivy.array([0.23, 3., -1.2])
+    >>> ivy.sinh(x, out=x)
+    >>> print(x)
+        ivy.array([0.232, 10., -1.51])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([2, 4, 7])
+    >>> y = ivy.sinh(x)
+    >>> print(y)
+        ivy.array([3.63, 27.3, 548.])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.23, -0.25, 1]), b=ivy.array([3, -4, 1.26]))
+    >>> y = ivy.sinh(x)
+    >>> print(y)
+    {
+        a: ivy.array([0.232, -0.253, 1.18]),
+        b: ivy.array([10., -27.3, 1.62])
+    }
     """
     return current_backend(x).sinh(x, out=out)
 
