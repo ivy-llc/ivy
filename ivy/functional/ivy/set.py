@@ -410,8 +410,8 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     >>> y = ivy.unique_counts(x)
     >>> print(y)
     {
-        a: (list[2],<classivy.array.Array>shape=[4]),
-        b: (list[2],<classivy.array.Array>shape=[4])
+        a: (list[2],<classivy.array.array.Array>shape=[4]),
+        b: (list[2],<classivy.array.array.Array>shape=[4])
     }
     """
     return ivy.current_backend(x).unique_counts(x)

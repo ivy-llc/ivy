@@ -94,8 +94,8 @@ class ContainerWithSet(ContainerBase):
         >>> y = x.unique_counts()
         >>> print(y)
         {
-            a: (list[2],<classivy.array.Array>shape=[4]),
-            b: (list[2],<classivy.array.Array>shape=[4])
+            a: (list[2],<classivy.array.array.Array>shape=[4]),
+            b: (list[2],<classivy.array.array.Array>shape=[4])
         }
         """
         return self.static_unique_counts(
