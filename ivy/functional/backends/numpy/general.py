@@ -146,13 +146,17 @@ def scatter_flat(indices, updates, size=None, reduction="sum", out=None):
             target = np.ones([size], dtype=updates.dtype) * 1e12
         np.minimum.at(target, indices, updates)
         if not target_given:
-            target = np.asarray(np.where(target == 1e12, 0.0, target), dtype=updates.dtype)
+            target = np.asarray(
+                np.where(target == 1e12, 0.0, target), dtype=updates.dtype
+            )
     elif reduction == "max":
         if not target_given:
             target = np.ones([size], dtype=updates.dtype) * -1e12
         np.maximum.at(target, indices, updates)
         if not target_given:
-            target = np.asarray(np.where(target == -1e12, 0.0, target), dtype=updates.dtype)
+            target = np.asarray(
+                np.where(target == -1e12, 0.0, target), dtype=updates.dtype
+            )
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(

@@ -782,8 +782,28 @@ def test_cumprod(x_n_axis, exclusive, dtype, with_out, tensor_fn, device, call):
 
 # scatter_flat
 @given(
-    x=st.integers(min_value=1, max_value=10).flatmap(lambda n: st.tuples(helpers.dtype_and_values(ivy_np.valid_numeric_dtypes,min_num_dims=1, max_num_dims=1, min_dim_size=n, max_dim_size=n), helpers.dtype_and_values(ivy_np.valid_int_dtypes, min_value=0, max_value=max(n-1,0), min_num_dims=1, max_num_dims=1, min_dim_size=n, max_dim_size=n).filter(lambda l: len(set(l[1])) == len(l[1])), st.integers(min_value=n, max_value=n))),
-    reduction=st.sampled_from(['sum', 'min', 'max', 'replace']),
+    x=st.integers(min_value=1, max_value=10).flatmap(
+        lambda n: st.tuples(
+            helpers.dtype_and_values(
+                ivy_np.valid_numeric_dtypes,
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=n,
+                max_dim_size=n,
+            ),
+            helpers.dtype_and_values(
+                ivy_np.valid_int_dtypes,
+                min_value=0,
+                max_value=max(n - 1, 0),
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=n,
+                max_dim_size=n,
+            ).filter(lambda l: len(set(l[1])) == len(l[1])),
+            st.integers(min_value=n, max_value=n),
+        )
+    ),
+    reduction=st.sampled_from(["sum", "min", "max", "replace"]),
     with_out=st.booleans(),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 3),
@@ -802,11 +822,14 @@ def test_scatter_flat(
     instance_method,
     device,
     call,
-    fw
+    fw,
 ):
-    (val_dtype,vals), (ind_dtype,ind), size= x
-    if fw == "torch" and (val_dtype in ["uint16", "uint32", "uint64"] or ind_dtype in ["uint16", "uint32", "uint64"]):
-        return        
+    (val_dtype, vals), (ind_dtype, ind), size = x
+    if fw == "torch" and (
+        val_dtype in ["uint16", "uint32", "uint64"]
+        or ind_dtype in ["uint16", "uint32", "uint64"]
+    ):
+        return
     helpers.test_function(
         [ind_dtype, val_dtype],
         as_variable,
@@ -821,7 +844,7 @@ def test_scatter_flat(
         updates=np.asarray(vals, dtype=val_dtype),
         size=size,
         reduction=reduction,
-)
+    )
 
 
 # scatter_nd
