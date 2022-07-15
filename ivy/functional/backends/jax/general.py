@@ -49,7 +49,7 @@ def copy_array(x: JaxArray) -> JaxArray:
 
 
 def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
-    return jnp.array_equal(x0, x1)
+    return bool(jnp.array_equal(x0, x1))
 
 
 def to_numpy(x: JaxArray) -> np.ndarray:
