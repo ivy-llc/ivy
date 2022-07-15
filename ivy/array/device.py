@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union
+from typing import Union, Optional, Any
 
 import ivy
 
@@ -18,4 +18,22 @@ class ArrayWithDevice(abc.ABC):
         --------
 
         """
-        return ivy.device.dev(self)
+        return ivy.dev(self)
+
+    def to_device(
+        self: ivy.Array,
+        device: Union[ivy.Device, ivy.NativeDevice],
+        *,
+        stream: Optional[Union[int, Any]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.device.to_device. This method simply
+        wraps the function, and so the docstring for ivy.device.to_device also applies
+        to this method with minimal changes.
+
+        Examples
+        --------
+
+        """
+        return ivy.to_device(self, device, stream=stream, out=out)

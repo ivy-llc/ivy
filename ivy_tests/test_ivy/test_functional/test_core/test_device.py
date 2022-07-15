@@ -177,15 +177,10 @@ def test_default_device(device, call):
 def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, stream):
     if fw == "torch" and "int" in dtype:
         return
-
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
     x = ivy.asarray(x)
     if as_variable:
         x = ivy.variable(x)
-
-    if (isinstance(x, Number) or x.size == 0) and as_variable and fw == "mxnet":
-        # mxnet does not support 0-dimensional variables
-        return
 
     # create a dummy array for out that is broadcastable to x
     out = ivy.zeros(ivy.shape(x), dtype=dtype) if with_out else None
