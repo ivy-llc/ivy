@@ -642,6 +642,20 @@
 <span class="sd">    function, and so the docstring for ivy.abs also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array. Should have a numeric data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the absolute value of each element in ``self``. The</span>
+<span class="sd">        returned array must have the same data type as ``self``.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
@@ -710,6 +724,22 @@
 <span class="sd">    ivy.Array instance method variant of ivy.asinh. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.asinh also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array whose elements each represent the area of a hyperbolic sector.</span>
+<span class="sd">        Should have a floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the inverse hyperbolic sine of each element in ``self``.</span>
+<span class="sd">        The returned array must have a floating-point data type determined by</span>
+<span class="sd">        :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -797,6 +827,20 @@
 <span class="sd">    function, and so the docstring for ivy.ceil also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array. Should have a numeric data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the rounded result for each element in ``self``. The</span>
+<span class="sd">        returned array must have the same data type as ``self``.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([5.5, -2.5, 1.5, -0])</span>
@@ -812,6 +856,22 @@
 <span class="sd">    ivy.Array instance method variant of ivy.cos. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.cos also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array whose elements are each expressed in radians. Should have a</span>
+<span class="sd">        floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the cosine of each element in ``self``. The returned</span>
+<span class="sd">        array must have a floating-point data type determined by</span>
+<span class="sd">        :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -866,6 +926,20 @@
 <span class="sd">    ivy.Array instance method variant of ivy.floor. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.floor also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array. Should have a numeric data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the rounded result for each element in ``self``. The</span>
+<span class="sd">        returned array must have the same data type as ``self``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1044,6 +1118,20 @@
 <span class="sd">    function, and so the docstring for ivy.sign also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array. Should have a numeric data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the evaluated result for each element in ``self``. The</span>
+<span class="sd">        returned array must have the same data type as ``self``.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
@@ -1073,6 +1161,22 @@
 <span class="sd">    function, and so the docstring for ivy.sin also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array whose elements are each expressed in radians. Should have a</span>
+<span class="sd">        floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the sine of each element in ``self``. The returned</span>
+<span class="sd">        array must have a floating-point data type determined by</span>
+<span class="sd">        :ref:`type-promotion`.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2., 3.])</span>
@@ -1088,6 +1192,22 @@
 <span class="sd">    ivy.Array instance method variant of ivy.sinh. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.sinh also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array whose elements each represent a hyperbolic angle. Should have a</span>
+<span class="sd">        floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the hyperbolic sine of each element in ``self``. The</span>
+<span class="sd">        returned array must have a floating-point data type determined by</span>
+<span class="sd">        :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1158,6 +1278,22 @@
 <span class="sd">    ivy.Array instance method variant of ivy.tanh. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.tanh also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array whose elements each represent a hyperbolic angle. Should have a</span>
+<span class="sd">        real-valued floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the hyperbolic tangent of each element in ``self``. The</span>
+<span class="sd">        returned array must have a real-valued floating-point data type determined</span>
+<span class="sd">        by :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
