@@ -1626,7 +1626,11 @@ def arrays_and_axes(draw,
                     num=2):
     shapes = list()
     for _ in range(num):
-        shape = draw(get_shape(False, min_num_dims, max_num_dims, min_dim_size, max_dim_size))
+        shape = draw(get_shape(False,
+                               min_num_dims,
+                               max_num_dims,
+                               min_dim_size,
+                               max_dim_size))
         shapes.append(shape)
     arrays = list()
     for shape in shapes:
