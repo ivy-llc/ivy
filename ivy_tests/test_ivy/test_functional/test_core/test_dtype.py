@@ -349,7 +349,46 @@ def test_is_int_dtype(
     )
 
 
-# result type
+# promote_types
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=ivy.valid_dtypes,
+        n_arrays=2,
+        shared_dtype=False,
+    ),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=helpers.num_positional_args(fn_name="promote_types"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+)
+def test_promote_types(
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
+    types, arrays = dtype_and_values
+    type1, type2 = types
+    input_dtype = [type1, type2]
+    helpers.test_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        False,
+        fw,
+        "promote_types",
+        type1=type1,
+        type2=type2,
+        test_values=False,
+    )
+
+
+# result_type
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy.valid_dtypes,
@@ -389,9 +428,45 @@ def test_result_type(
     )
 
 
+# type_promote_arrays
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes,
+        n_arrays=2,
+        shared_dtype=False,
+    ),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=helpers.num_positional_args(fn_name="type_promote_arrays"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+)
+def test_type_promote_arrays(
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    types, arrays = dtype_and_values
+    type1, type2 = types
+    x1, x2 = arrays
+    input_dtype = [type1, type2]
+    helpers.test_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        False,
+        False,
+        fw,
+        "type_promote_arrays",
+        x1=np.array(x1),
+        x2=np.array(x2),
+        test_values=True,
+    )
+
+
 # Still to Add #
 # -------------#
 
 # broadcast_arrays
-# promote_types
-# type_promote_arrays
