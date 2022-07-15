@@ -53,6 +53,35 @@ class ContainerWithSet(ContainerBase):
         wraps the function, and so the docstring for ivy.unique_counts also applies 
         to this method with minimal changes.
 
+        Parameters
+        ----------
+        x
+            input container. If ``x`` has more than one dimension, the function must
+            flatten ``x`` and return the unique elements of the flattened array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a namedtuple ``(values, counts)`` whose
+
+            - first element must have the field name ``values`` and must be an
+            array containing the unique elements of ``x``.
+            The array must have the same data type as ``x``.
+            - second element must have the field name ``counts`` and must be an array
+            containing the number of times each unique element occurs in ``x``.
+            The returned array must have same shape as ``values`` and must
+            have the default array index data type.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
@@ -84,6 +113,35 @@ class ContainerWithSet(ContainerBase):
         ivy.Container instance method variant of ivy.unique_counts. This method
         simply wraps the function, and so the docstring for ivy.unique_counts
         also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. If ``x`` has more than one dimension, the function must
+            flatten ``x`` and return the unique elements of the flattened array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a namedtuple ``(values, counts)`` whose
+
+            - first element must have the field name ``values`` and must be an
+            array containing the unique elements of ``x``.
+            The array must have the same data type as ``x``.
+            - second element must have the field name ``counts`` and must be an array
+            containing the number of times each unique element occurs in ``x``.
+            The returned array must have same shape as ``values`` and must
+            have the default array index data type.
 
         Examples
         --------
