@@ -9,7 +9,6 @@ import torch
 import torch.nn
 
 # local
-import ivy
 
 
 def relu(x: torch.Tensor) -> torch.Tensor:
@@ -17,20 +16,19 @@ def relu(x: torch.Tensor) -> torch.Tensor:
 
 
 def leaky_relu(
-        x: torch.Tensor,
-        alpha: Optional[float] = 0.2,
+    x: torch.Tensor,
+    alpha: Optional[float] = 0.2,
 ) -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
 def gelu(
-        x: torch.Tensor,
-        approximate: bool = True,
+    x: torch.Tensor,
+    approximate: bool = True,
 ) -> torch.Tensor:
     if approximate:
         return (
-                0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x ** 3)))
-        )
+         0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x ** 3))))
     return torch.nn.functional.gelu(x)
 
 
@@ -43,7 +41,7 @@ def sigmoid(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor
 
 
 def softmax(
-        x: torch.Tensor, axis: Optional[int] = None
+    x: torch.Tensor, axis: Optional[int] = None
 ) -> torch.Tensor:
     exp_x = torch.exp(x)
     return exp_x / torch.sum(exp_x, axis, keepdims=True)
