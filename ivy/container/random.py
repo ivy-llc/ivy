@@ -76,6 +76,29 @@ class ContainerWithRandom(ContainerBase):
         function, and so the docstring for ivy.randint also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        low
+            Lowest integer that can be drawn from the distribution.
+        high
+            One above the highest integer that can be drawn from the distribution.
+        shape
+            a Sequence defining the shape of the output array.
+        device
+            device on which to create the array. 'cuda:0',
+            'cuda:1', 'cpu' etc. (Default value = None).
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Returns an array with the given shape filled with integers from
+            the uniform distribution in the “half-open” interval [low, high)
+
         Examples
         --------
         With one :code:`ivy.Container` input:
