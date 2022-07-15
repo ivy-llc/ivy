@@ -1,6 +1,7 @@
 from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import numpy as np
 
 
 def _fn1(x, y):
@@ -57,7 +58,8 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont, fw):
     ivy.unset_backend()
 
     if fw_res is not None and jax_res is not None:
-        assert ivy.array_equal(fw_res, jax_res), f"Results from {ivy.current_backend_str()} and jax are not equal"  # noqa
+        assert np.allclose(fw_res, jax_res), f"Results from {ivy.current_backend_str()} and jax are not equal"  # noqa
+
     elif fw_res is None and jax_res is None:
         pass
     else:
