@@ -1,22 +1,23 @@
 """Collection of tests for unified device functions."""
 
+import math
+import multiprocessing
+
 # global
 import os
-import math
-
-import psutil
-import nvidia_smi
-import pytest
 import time
-import numpy as np
 from numbers import Number
+
+import numpy as np
+import nvidia_smi
+import psutil
+import pytest
 from hypothesis import strategies as st, given
-import multiprocessing
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+import ivy_tests.test_ivy.helpers as helpers
 
 
 # Tests #
@@ -51,7 +52,7 @@ def test_dev(array_shape, dtype, as_variable, fw, device):
     # array instance test
     assert x.dev() == device
     # container instance test
-    container_x = ivy.Container({'a': x})
+    container_x = ivy.Container({"a": x})
     assert container_x.dev() == device
     # container static test
     assert ivy.Container.dev_static(container_x) == device
@@ -216,7 +217,7 @@ def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, 
     # array instance test
     assert x.to_device(device).dev() == device
     # container instance test
-    container_x = ivy.Container({'x': x})
+    container_x = ivy.Container({"x": x})
     assert container_x.to_device(device).dev() == device
     # container static test
     assert ivy.Container.to_device(container_x, device).dev() == device
@@ -630,7 +631,7 @@ def test_total_mem_on_dev(device):
         assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
 
 
-def test_gpu_is_availble(fw):
+def test_gpu_is_available(fw):
     # If gpu is available but cannot be initialised it will fail the test
     if ivy.gpu_is_available():
         try:
@@ -649,6 +650,7 @@ def test_num_cpu_cores():
     assert type(ivy.num_cpu_cores()) == int
     assert ivy.num_cpu_cores() == p_cpu_cores
     assert ivy.num_cpu_cores() == m_cpu_cores
+
 
 # Still to Add #
 # ---------------#
