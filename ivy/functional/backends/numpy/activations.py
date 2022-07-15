@@ -5,7 +5,6 @@ from typing import Optional
 # global
 import numpy as np
 
-import ivy
 
 try:
     from scipy.special import erf
