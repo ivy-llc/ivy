@@ -124,6 +124,10 @@ class ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.softplus. This method simply wraps the
+        function, and so the docstring for ivy.softplus also applies to this method
+        with minimal changes.
 
         Examples
         --------
@@ -131,6 +135,6 @@ class ArrayWithActivations(abc.ABC):
         >>> y = x.softplus()
         >>> print(y)
         ivy.array([0.535, 0.42 ])
-
         """
         return ivy.softplus(self._data, out=out)
+
