@@ -47,9 +47,9 @@ def prune_nest_at_index(nest, index):
 
 
 def set_nest_at_index(
-    nest: Union[ivy.Array, ivy.NativeArray, Dict, List]
-    , index: Tuple
-    , value: object):
+    nest: Union[ivy.Array, ivy.NativeArray, Dict, List], 
+    index: Tuple, 
+    value: object):
     """Set the value of a nested item at a specified index.
 
     Parameters
