@@ -1569,7 +1569,7 @@
 <span class="sd">    self</span>
 <span class="sd">        Input image *[batch_size,h,w,d]*.</span>
 <span class="sd">    filters</span>
-<span class="sd">        Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from x)</span>
+<span class="sd">        Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from self)</span>
 <span class="sd">    strides</span>
 <span class="sd">        The stride of the sliding window for each dimension of input.</span>
 <span class="sd">    padding</span>
@@ -1629,6 +1629,29 @@
 <span class="sd">    ivy.Array instance method variant of ivy.cholesky. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.cholesky also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array having shape (..., M, M) and whose innermost two dimensions form</span>
+<span class="sd">        square symmetric positive-definite matrices. Should have a floating-point</span>
+<span class="sd">        data type.</span>
+<span class="sd">    upper</span>
+<span class="sd">        If True, the result must be the upper-triangular Cholesky factor U. If</span>
+<span class="sd">        False, the result must be the lower-triangular Cholesky factor L.</span>
+<span class="sd">        Default: False.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the Cholesky factors for each square matrix. If upper is</span>
+<span class="sd">        False, the returned array must contain lower-triangular matrices; otherwise,</span>
+<span class="sd">        the returned array must contain upper-triangular matrices. The returned</span>
+<span class="sd">        array must have a floating-point data type determined by Type Promotion</span>
+<span class="sd">        Rules and must have the same shape as self.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
