@@ -91,11 +91,10 @@ def test_docstrings(backend):
             failures.append(k)
 
     if not success:
-        ivy.warn(
-            "the following methods had failing docstrings:\n\n{}".format(
-                "\n".join(failures)
-            )
+        assert (
+            success
+        ), "\nThe following methods had failing docstrings:\n\n{}\n".format(
+            "\n".join(failures)
         )
-        assert success
 
     ivy.unset_backend()
