@@ -13,10 +13,8 @@ import ivy
 
 
 def relu(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
-    ret = tf.nn.relu(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return tf.nn.relu(x)
+   
 
 
 def leaky_relu(
