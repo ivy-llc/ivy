@@ -5,22 +5,23 @@ from typing import Any, Union, List, Dict, Iterable, Optional
 from ivy.container.base import ContainerBase
 import ivy
 
+
 # ToDo: implement all methods here as public instance methods
 
 
 # noinspection PyMissingConstructor
 class ContainerWithGeneral(ContainerBase):
     def clip_vector_norm(
-        self,
-        max_norm,
-        p,
-        global_norm=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        *,
-        out: Optional[ivy.Container] = None,
+            self,
+            max_norm,
+            p,
+            global_norm=False,
+            key_chains=None,
+            to_apply=True,
+            prune_unapplied=False,
+            map_sequences=False,
+            *,
+            out: Optional[ivy.Container] = None,
     ):
         max_norm_is_container = isinstance(max_norm, ivy.Container)
         p_is_container = isinstance(p, ivy.Container)
@@ -57,13 +58,13 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_all_equal(
-        x1: Iterable[Any],
-        x2: Iterable[Any],
-        equality_matrix: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+            x1: Iterable[Any],
+            x2: Iterable[Any],
+            equality_matrix: bool = False,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.all_equal. This method simply wraps
@@ -109,13 +110,13 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def all_equal(
-        self: ivy.Container,
-        x2: Iterable[Any],
-        equality_matrix: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+            self: ivy.Container,
+            x2: Iterable[Any],
+            equality_matrix: bool = False,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.all_equal.
@@ -181,14 +182,14 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_gather_nd(
-        params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
+            params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.gather_nd.
@@ -235,14 +236,14 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def gather_nd(
-        self: ivy.Container,
-        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
+            self: ivy.Container,
+            indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.gather_nd.
@@ -356,6 +357,82 @@ class ContainerWithGeneral(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "to_numpy",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def exists(
+            self,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.exists.
+        This method simply wraps the function, and so the docstring for
+        ivy.exists also applies to this method with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
+                    b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
+        >>> y = x.exists()
+        >>> print(y)
+        True
+
+        >>> x = ivy.Container(a=None,\
+                            b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
+        >>> y = x.exists()
+        >>> print(y)
+        True
+
+        """
+        return self.static_exists(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences
+        )
+
+    @staticmethod
+    def static_exists(
+            x: Any,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.exists. This method simply wraps
+        the function, and so the docstring for ivy.exists also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
+                            b=ivy.array([1, -1, 0, 0]))
+        >>> y = ivy.Container.static_exists(x)
+        >>> print(y)
+        True
+
+        >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> y = ivy.Container.static_exists(x)
+        >>> print(y)
+        True
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "exists",
             x,
             key_chains=key_chains,
             to_apply=to_apply,
