@@ -529,6 +529,8 @@ def diagonal(
     return current_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2, out=out)
 
 
+diagonal.unsupported_dtypes = ("float16", "int8",)
+
 @to_native_arrays_and_back
 @handle_nestable
 def eigh(

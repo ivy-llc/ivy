@@ -5,6 +5,7 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
@@ -1030,20 +1031,24 @@ def test_cross(
 
 # diagonal
 @given(
-    input_dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_numeric_dtypes), 1),
+    dtype_x=helpers.dtype_and_values(
+        ivy_np.valid_numeric_dtypes,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=50,
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
-    a=st.integers(1, 50),
-    b=st.integers(1, 50),
     offset=st.integers(-10, 50),
     axes=st.lists(st.integers(-2, 50), min_size=2, max_size=2, unique=True),
 )
 def test_diagonal(
-    input_dtype,
+    dtype_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -1051,15 +1056,12 @@ def test_diagonal(
     container,
     instance_method,
     fw,
-    a,
-    b,
     offset,
     axes,
 ):
-    if "float16" or "int8" in input_dtype:
-        return
+    dtype, x = dtype_x
     helpers.test_function(
-        input_dtype,
+        dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -1071,5 +1073,5 @@ def test_diagonal(
         offset=offset,
         axis1=axes[0],
         axis2=axes[1],
-        x=np.random.uniform(size=(a, b)).astype(input_dtype[0]),
+        x=np.asarray(x, dtype=dtype),
     )
