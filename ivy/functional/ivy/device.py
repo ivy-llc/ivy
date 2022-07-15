@@ -20,7 +20,7 @@ try:
     nvidia_smi.nvmlInit()
 except (nvidia_smi.NVMLError_LibraryNotFound, nvidia_smi.NVMLError_DriverNotLoaded):
     pass
-from typing import Union, Type, Callable, Iterable, Dict, Any, Sequence
+from typing import Union, Type, Callable, Iterable, Dict, Any
 
 # local
 import ivy
@@ -324,7 +324,6 @@ def print_all_ivy_arrays_on_dev(
 # Retrieval
 
 
-@handle_nestable
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -357,7 +356,7 @@ def dev(
 # Conversions
 
 
-def as_ivy_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.Device:
+def as_ivy_dev(device: Union[ivy.Device, str]) -> ivy.Device:
     """Convert native data type to string representation.
 
     Parameters
@@ -624,7 +623,7 @@ def tpu_is_available() -> bool:
 def default_device(
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
-    as_native: bool = False,
+    as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """Returns the input device or the default device.
     If the as native flag is set, the device will be converted to a native device.
@@ -748,8 +747,8 @@ def to_device(
     device: Union[ivy.Device, ivy.NativeDevice],
     *,
     stream: Optional[Union[int, Any]] = None,
-    out: Optional[ivy.Array] = None
-) -> ivy.Array:
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
     Parameters
@@ -965,7 +964,7 @@ def split_func_call(
 
 
 class MultiDev:
-    def __init__(self, data: Sequence, axis: int = 0):
+    def __init__(self, data: Iterable, axis: int = 0):
         if isinstance(data, MultiDev):
             # noinspection PyUnresolvedReferences,PyProtectedMember
             data = data._dict
@@ -1039,12 +1038,12 @@ class MultiDevItem(MultiDev):
 
 
 class MultiDevIter(MultiDev):
-    def __init__(self, data: Sequence, devices: Sequence[ivy.Device]):
+    def __init__(self, data: Iterable, devices):
         self._devs = devices
         super().__init__(data)
 
     # noinspection PyShadowingNames
-    def at_dev(self, device: ivy.Device):
+    def at_dev(self, device: Union[ivy.Device, ivy.NativeDevice]):
         """Summary.
 
         Parameters
@@ -1077,14 +1076,12 @@ class MultiDevIter(MultiDev):
 
 
 class MultiDevNest(MultiDevIter):
-    def __init__(
-        self, data: Sequence, devices: Sequence[ivy.Device], max_depth: int = 1
-    ):
+    def __init__(self, data: Iterable, devices, max_depth: int = 1):
         self._max_depth = max_depth
         super().__init__(data, devices)
 
     # noinspection PyShadowingNames
-    def at_dev(self, device: ivy.Device):
+    def at_dev(self, device: Union[ivy.Device, ivy.NativeDevice]):
         """Summary.
 
         Parameters
