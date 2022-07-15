@@ -1473,6 +1473,8 @@ def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
         the input in ivy.Shape form
 
     """
+    if isinstance(shape, ivy.Shape):
+        return shape
     return ivy.Shape(shape)
 
 
