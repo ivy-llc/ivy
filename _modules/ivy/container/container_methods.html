@@ -4940,6 +4940,34 @@
 <span class="sd">    function, and so the docstring for ivy.clip also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array or container containing elements to clip.</span>
+<span class="sd">    x_min</span>
+<span class="sd">        Minimum value.</span>
+<span class="sd">    x_max</span>
+<span class="sd">        Maximum value.</span>
+<span class="sd">    key_chains</span>
+<span class="sd">        The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">    to_apply</span>
+<span class="sd">        If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">        will be skipped. Default is True.</span>
+<span class="sd">    prune_unapplied</span>
+<span class="sd">        Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">        Default is False.</span>
+<span class="sd">    map_sequences</span>
+<span class="sd">        Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">        that the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        A container with the elements of x, but where values &lt; x_min are replaced</span>
+<span class="sd">        with x_min, and those &gt; x_max with x_max.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With one :code:`ivy.Container` input:</span>
@@ -4984,6 +5012,34 @@
 <span class="sd">    ivy.Container instance method variant of ivy.clip. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.clip also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        Input container containing elements to clip.</span>
+<span class="sd">    x_min</span>
+<span class="sd">        Minimum value.</span>
+<span class="sd">    x_max</span>
+<span class="sd">        Maximum value.</span>
+<span class="sd">    key_chains</span>
+<span class="sd">        The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">    to_apply</span>
+<span class="sd">        If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">        will be skipped. Default is True.</span>
+<span class="sd">    prune_unapplied</span>
+<span class="sd">        Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">        Default is False.</span>
+<span class="sd">    map_sequences</span>
+<span class="sd">        Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">        that the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        A container with the elements of x, but where values &lt; x_min are replaced</span>
+<span class="sd">        with x_min, and those &gt; x_max with x_max.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
