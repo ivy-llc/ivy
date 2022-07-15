@@ -279,7 +279,7 @@ def test_iinfo(
     array=helpers.nph.arrays(
         dtype=dtype_shared,
         shape=helpers.lists(
-            st.integers(1, 5),
+            arg=st.integers(1, 5),
             min_size="num_dims",
             max_size="num_dims",
             size_bounds=[1, 5],
@@ -303,15 +303,15 @@ def test_is_float_dtype(
     fw,
 ):
     helpers.test_function(
-        dtype_in,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "is_float_dtype",
+        input_dtypes=dtype_in,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="is_float_dtype",
         dtype_in=array,
     )
 
@@ -321,7 +321,7 @@ def test_is_float_dtype(
     array=helpers.nph.arrays(
         dtype=dtype_shared,
         shape=helpers.lists(
-            st.integers(1, 5),
+            arg=st.integers(1, 5),
             min_size="num_dims",
             max_size="num_dims",
             size_bounds=[1, 5],

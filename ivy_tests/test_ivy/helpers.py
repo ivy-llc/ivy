@@ -1189,10 +1189,10 @@ def dtype_and_values(
     if dtype is None:
         if n_arrays == 1:
             dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-            dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+            dtype = draw(list_of_length(x=st.sampled_from(tuple(dtypes)), length=1))
         elif shared_dtype:
             dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-            dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+            dtype = draw(list_of_length(xg=st.sampled_from(tuple(dtypes)), length=1))
             dtype = [dtype[0] for _ in range(n_arrays)]
         else:
             unwanted_types = set(ivy.invalid_dtypes).union(

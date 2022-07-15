@@ -437,7 +437,9 @@ def test_full(
 def _dtype(draw):
     return draw(
         st.shared(
-            helpers.list_of_length(st.sampled_from(ivy_np.valid_numeric_dtypes), 1),
+            helpers.list_of_length(
+                x=st.sampled_from(ivy_np.valid_numeric_dtypes), length=1
+            ),
             key="dtype",
         )
     )
@@ -457,7 +459,7 @@ def _fill_value(draw):
 def _dtype_and_values(draw):
     return draw(
         helpers.dtype_and_values(
-            ivy_np.valid_numeric_dtypes,
+            available_dtypes=ivy_np.valid_numeric_dtypes,
             n_arrays=1,
             min_num_dims=1,
             max_num_dims=5,
