@@ -137,4 +137,3 @@ class ArrayWithActivations(abc.ABC):
         ivy.array([0.535, 0.42 ])
         """
         return ivy.softplus(self._data, out=out)
-
