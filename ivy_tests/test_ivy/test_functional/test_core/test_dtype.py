@@ -439,7 +439,6 @@ def test_type_promote_arrays(
     types, arrays = dtype_and_values
     type1, type2 = types
     x1, x2 = arrays
-    print("x1: {} ({}), x2: {} ({})".format(x1, type1, x2, type2))
     input_dtype = [type1, type2]
     helpers.test_function(
         input_dtype,
