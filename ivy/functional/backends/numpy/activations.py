@@ -23,7 +23,7 @@ def leaky_relu(
     return np.asarray(np.where(x > 0, x, x * alpha), x.dtype)
 
 
-def gelu(x, approximate: Optional[bool] = True) -> np.ndarray:
+def gelu(x, approximate: Optional[bool] = True):
     if erf is None:
         raise Exception(
             "scipy must be installed in order to call ivy.gelu with a numpy backend."
