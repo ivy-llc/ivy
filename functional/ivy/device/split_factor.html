@@ -183,10 +183,12 @@
 <dt class="sig sig-object py" id="ivy.functional.ivy.device.split_factor">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">split_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#split_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.split_factor" title="Permalink to this definition"></a></dt>
 <dd><p>Get a device’s global split factor, which can be used to scale the device’s
-batch splitting chunk sizes across the codebase.</p>
+batch splitting chunk sizes across the codebase.
+If the global split factor is set for a given device,</p>
+<blockquote>
+<div><p>returns the split factor value for the device from the split factors dictionary</p>
+</div></blockquote>
 <dl class="simple">
-<dt>If the global split factor is set for a given device,</dt><dd><p>returns the split factor value for the device from the split factors dictionary</p>
-</dd>
 <dt>If the global split factor for a device is not configured,</dt><dd><p>returns the default value which is 0.0</p>
 </dd>
 </dl>

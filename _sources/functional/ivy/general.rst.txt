@@ -74,9 +74,6 @@ General
    general/indices_where.rst
    general/one_hot.rst
    general/shape.rst
-   general/set_shape_array_mode.rst
-   general/unset_shape_array_mode.rst
-   general/shape_array_mode.rst
    general/get_num_dims.rst
    general/arg_info.rst
 
