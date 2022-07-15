@@ -23,13 +23,13 @@ def leaky_relu(
     return np.asarray(np.where(x > 0, x, x * alpha), x.dtype)
 
 
-def gelu(x, approximate: Optional[bool] = True):
+def gelu(x, approximate: Optional[bool] = True) -> np.ndarray:
     if erf is None:
         raise Exception(
             "scipy must be installed in order to call ivy.gelu with a numpy backend."
         )
     if approximate:
-        return 0.5 * x * (1 + np.tanh(np.sqrt(2 / np.pi) * (x + 0.044715 * x ** 3)))
+        return 0.5 * x * (1 + torch.tanh(x * 0.7978845608 * (1 + 0.044715 * x * x)))
     return 0.5 * x * (1 + erf(x / np.sqrt(2)))
 
 
