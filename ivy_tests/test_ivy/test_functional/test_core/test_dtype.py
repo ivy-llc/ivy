@@ -31,14 +31,18 @@ def test_dtype_instances(device, call):
     assert ivy.exists(ivy.bool)
 
 
+# for data generation in multiple tests
+dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
+
+
 # astype
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes, 1),
     dtype=st.sampled_from(ivy_np.valid_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_astype(
@@ -111,10 +115,10 @@ def test_broadcast_to(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes, 1),
     dtype=st.sampled_from(ivy_np.valid_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="can_cast"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_can_cast(
@@ -263,11 +267,16 @@ def test_iinfo(
 
 # is_float_dtype
 @given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    array=helpers.nph.arrays(
+        dtype=dtype_shared,
+        shape=helpers.lists(
+            st.integers(1, 5),
+            min_size="num_dims",
+            max_size="num_dims",
+            size_bounds=[1, 5],
+        ),
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
-    data=st.data(),
+    dtype_in=dtype_shared,
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="is_float_dtype"),
     native_array=st.booleans(),
@@ -275,9 +284,8 @@ def test_iinfo(
     instance_method=st.booleans(),
 )
 def test_is_float_dtype(
-    array_shape,
-    input_dtype,
-    data,
+    array,
+    dtype_in,
     as_variable,
     num_positional_args,
     native_array,
@@ -285,9 +293,8 @@ def test_is_float_dtype(
     instance_method,
     fw,
 ):
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_function(
-        input_dtype,
+        dtype_in,
         as_variable,
         False,
         num_positional_args,
@@ -296,17 +303,22 @@ def test_is_float_dtype(
         instance_method,
         fw,
         "is_float_dtype",
-        dtype_in=x,
+        dtype_in=array,
     )
 
 
 # is_int_dtype
 @given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    array=helpers.nph.arrays(
+        dtype=dtype_shared,
+        shape=helpers.lists(
+            st.integers(1, 5),
+            min_size="num_dims",
+            max_size="num_dims",
+            size_bounds=[1, 5],
+        ),
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
-    data=st.data(),
+    dtype_in=dtype_shared,
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="is_int_dtype"),
     native_array=st.booleans(),
@@ -314,9 +326,8 @@ def test_is_float_dtype(
     instance_method=st.booleans(),
 )
 def test_is_int_dtype(
-    array_shape,
-    input_dtype,
-    data,
+    array,
+    dtype_in,
     as_variable,
     num_positional_args,
     native_array,
@@ -324,9 +335,8 @@ def test_is_int_dtype(
     instance_method,
     fw,
 ):
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_function(
-        input_dtype,
+        dtype_in,
         as_variable,
         False,
         num_positional_args,
@@ -335,11 +345,50 @@ def test_is_int_dtype(
         instance_method,
         fw,
         "is_int_dtype",
-        dtype_in=x,
+        dtype_in=array,
     )
 
 
-# result type
+# promote_types
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=ivy.valid_dtypes,
+        n_arrays=2,
+        shared_dtype=False,
+    ),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=helpers.num_positional_args(fn_name="promote_types"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+)
+def test_promote_types(
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
+    types, arrays = dtype_and_values
+    type1, type2 = types
+    input_dtype = [type1, type2]
+    helpers.test_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        False,
+        fw,
+        "promote_types",
+        type1=type1,
+        type2=type2,
+        test_values=False,
+    )
+
+
+# result_type
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy.valid_dtypes,
@@ -379,9 +428,45 @@ def test_result_type(
     )
 
 
+# type_promote_arrays
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes,
+        n_arrays=2,
+        shared_dtype=False,
+    ),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=helpers.num_positional_args(fn_name="type_promote_arrays"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+)
+def test_type_promote_arrays(
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    types, arrays = dtype_and_values
+    type1, type2 = types
+    x1, x2 = arrays
+    input_dtype = [type1, type2]
+    helpers.test_function(
+        input_dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        False,
+        False,
+        fw,
+        "type_promote_arrays",
+        x1=np.array(x1),
+        x2=np.array(x2),
+        test_values=True,
+    )
+
+
 # Still to Add #
 # -------------#
 
 # broadcast_arrays
-# promote_types
-# type_promote_arrays
