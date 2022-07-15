@@ -9,13 +9,11 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
 # local
-import ivy
 
 
 def relu(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
    
-
 
 def leaky_relu(
     x: Tensor,
