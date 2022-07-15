@@ -213,6 +213,14 @@ def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, 
     else:
         assert dev_from_new_x == device
 
+    # array instance test
+    assert x.to_device(device).dev() == device
+    # container instance test
+    container_x = ivy.Container({'x': x})
+    assert container_x.to_device(device).dev() == device
+    # container static test
+    assert ivy.Container.to_device(container_x, device).dev() == device
+
 
 # Function Splitting #
 
