@@ -139,6 +139,7 @@ class ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
+    @staticmethod
     def static_var(
         x: ivy.Container,
         axis: Union[int, Tuple[int]] = None,
