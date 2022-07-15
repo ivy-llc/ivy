@@ -54,17 +54,19 @@ def test_relu(
 # leaky_relu
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=helpers.num_positional_args("leaky_relu"),
+    container=st.booleans(),
     instance_method=st.booleans(),
-    alpha=st.floats(),
+    alpha=st.floats(width=16),
 )
 def test_leaky_relu(
     dtype_and_x,
     alpha,
     as_variable,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -72,14 +74,12 @@ def test_leaky_relu(
     fw,
 ):
     dtype, x = dtype_and_x
-    if not ivy.all(ivy.isfinite(ivy.array(x))) or not ivy.isfinite(ivy.array([alpha])):
-        return
     if fw == "torch" and dtype == "float16":
         return
     helpers.test_function(
         dtype,
         as_variable,
-        False,
+        with_out,
         native_array,
         fw,
         num_positional_args,
