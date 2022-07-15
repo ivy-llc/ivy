@@ -161,36 +161,34 @@ def test_astype(
 
 
 # broadcast arrays
+@st.composite
+def broadcastable_arrays(draw, dtype):
+    shapes = draw(st.integers(2, 5).flatmap(mutually_broadcastable_shapes))
+    arrays = []
+    for c, shape in enumerate(shapes, 1):
+        x = draw(helpers.nph.arrays(dtype=dtype, shape=shape), label=f"x{c}")
+        arrays.append(x)
+    return helpers.as_lists(*arrays)
+
+
 @given(
-    shapes=st.shared(
-        st.integers(2, 5).flatmap(mutually_broadcastable_shapes),
-        key="num_arrays",
-    ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
-    data=st.data(),
+    arrays=broadcastable_arrays(dtype_shared),
+    dtype=dtype_shared,
     as_variable=st.booleans(),
     native_array=st.booleans(),
     container=st.booleans(),
 )
 def test_broadcast_arrays(
-    shapes,
+    arrays,
     dtype,
-    data,
     as_variable,
     native_array,
     container,
     fw,
 ):
-    arrays = []
-    for c, shape in enumerate(shapes, 1):
-        x = data.draw(helpers.nph.arrays(dtype=dtype, shape=shape), label=f"x{c}")
-        arrays.append(x)
-
-    arrays = helpers.as_lists(*arrays)
     kw = {}
     for i, array in enumerate(zip(arrays)):
         kw["x{}".format(i)] = ivy.asarray(array)
-    print("kw:", kw)
     num_positional_args = len(kw)
     helpers.test_function(
         dtype,
