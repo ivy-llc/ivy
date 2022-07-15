@@ -96,6 +96,7 @@ def conv2d_transpose(
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    output_shape=None,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
 ) -> JaxArray:
@@ -138,6 +139,7 @@ def conv3d_transpose(
     filters: JaxArray,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
+    output_shape=None,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     data_format: str = "NDHWC"
 ) -> JaxArray:
