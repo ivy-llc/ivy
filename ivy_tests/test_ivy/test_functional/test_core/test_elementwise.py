@@ -2089,8 +2089,8 @@ def test_erf(
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
 )
 def test_minimum(
@@ -2101,8 +2101,6 @@ def test_minimum(
     native_array,
     container,
     instance_method,
-    device,
-    call,
     fw,
 ):
     input_dtype, x = dtype_and_x
@@ -2135,8 +2133,8 @@ def test_minimum(
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
 )
 def test_maximum(
@@ -2147,8 +2145,6 @@ def test_maximum(
     native_array,
     container,
     instance_method,
-    device,
-    call,
     fw,
 ):
     input_dtype, x = dtype_and_x

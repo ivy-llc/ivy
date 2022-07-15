@@ -268,17 +268,5 @@ def sparse_cross_entropy(
     return cross_entropy(true, pred, axis, epsilon, out=out)
 
 
-sparse_cross_entropy.unsupported_dtypes = {
-    "torch": ("float16",),
-    "tensorflow": (
-        "int8",
-        "int16",
-        "uint16",
-        "uint32",
-        "uint64",
-        "bfloat16",
-        "float16",
-        "float32",
-        "float64",
-    ),
-}
+sparse_cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
+sparse_cross_entropy.supported_dtypes = {"tensorflow": ("uint8", "int32", "int64")}
