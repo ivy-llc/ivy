@@ -68,7 +68,7 @@ def asarray(
 
 
 def empty(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device
@@ -112,8 +112,8 @@ def from_dlpack(
 
 
 def full(
-    shape: Union[int, Tuple[int, ...]],
-    fill_value: float,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    fill_value: Union[int, float],
     *,
     dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device
@@ -170,7 +170,7 @@ def meshgrid(
 
 
 def ones(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None
@@ -208,7 +208,7 @@ def triu(
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device

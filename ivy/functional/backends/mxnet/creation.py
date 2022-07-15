@@ -1,6 +1,6 @@
 # global
 import mxnet as mx
-from typing import Tuple, Union, List, Optional, Iterable
+from typing import Union, List, Optional, Iterable, Sequence
 from numbers import Number
 
 # local
@@ -76,7 +76,7 @@ def asarray(
 
 
 def empty(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     dtype: Optional[Union[ivy.Dtype, type]] = None,
     device: Optional[Union[ivy.Device, mx.context.Context]] = None
 ) -> mx.nd.NDArray:
@@ -103,7 +103,7 @@ def from_dlpack(
 
 
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: float,
     dtype: Optional[type] = None,
     device: Optional[mx.context.Context] = None
@@ -167,7 +167,7 @@ def meshgrid(
 
 
 def ones(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     dtype: Optional[Union[ivy.Dtype, type]] = None,
     device: Optional[Union[ivy.Device, mx.context.Context]] = None
 ) -> mx.nd.NDArray:
@@ -197,7 +197,7 @@ def tril(
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: type,
     device: mx.context.Context

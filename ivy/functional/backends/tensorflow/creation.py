@@ -115,7 +115,7 @@ def asarray(
 
 
 def empty(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str
@@ -171,7 +171,7 @@ def from_dlpack(
 
 
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float],
     *,
     dtype: tf.DType = None,
@@ -232,7 +232,7 @@ def meshgrid(
 
 
 def ones(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str
@@ -270,7 +270,7 @@ def triu(
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str

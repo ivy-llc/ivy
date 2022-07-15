@@ -140,7 +140,7 @@ def asarray(
 @infer_device
 @handle_nestable
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -181,8 +181,8 @@ def zeros(
     >>> x = ivy.zeros(shape)
     >>> print(x)
     ivy.array([[0., 0., 0., 0., 0.],
-               [0., 0., 0., 0., 0.],
-               [0., 0., 0., 0., 0.]])
+           [0., 0., 0., 0., 0.],
+           [0., 0., 0., 0., 0.]])
 
     """
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
@@ -194,7 +194,7 @@ def zeros(
 @infer_device
 @handle_nestable
 def ones(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -234,8 +234,8 @@ def ones(
     >>> shape = (2,2)
     >>> y = ivy.ones(shape)
     >>> print(y)
-    ivy.array([[1.,  1.],
-               [1.,  1.]])
+    ivy.array([[1., 1.],
+           [1., 1.]])
 
     """
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
@@ -350,7 +350,8 @@ def ones_like(
     >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
     >>> y = ivy.ones_like(x)
     >>> print(y)
-    ivy.array([[1, 1, 1],[1, 1, 1]])
+    ivy.array([[1, 1, 1],
+           [1, 1, 1]])
 
     """
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
@@ -399,14 +400,72 @@ def zeros_like(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
-    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
-    >>> y = ivy.zeros_like(x)
-    >>> print(y)
-    ivy.array([[0, 0, 0],
+    Functional Examples
+    -------------------
+
+    With 'ivy.Array' input:
+
+        >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+        >>> y1 = ivy.zeros_like(x1)
+        >>> print(y1)
+        ivy.array([0, 0, 0, 0, 0, 0])
+
+        >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
+        >>> y2 = ivy.zeros_like(x2)
+        >>> print(y2)
+        ivy.array([[0., 0., 0.],
+               [0., 0., 0.]])
+
+        >>> x3 = ivy.array([3., 2., 1.])
+        >>> y3 = ivy.ones(3)
+        >>> ivy.zeros_like(x3, out=y3)
+        ivy.array([0., 0., 0.])
+
+    With 'ivy.NativeArray' input:
+
+        >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
+        >>> y1 = ivy.zeros_like(x1)
+        >>> print(y1)
+        ivy.array([[0, 0, 0],
                [0, 0, 0]])
 
+
+        >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
+        >>> y2 = ivy.zeros_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
+        >>> print(y2)
+        ivy.array([0, 0, 0, 0, 0, 0])
+
+        # Array ``y2`` is now stored on the CPU.
+
+    With 'ivy.Container' input:
+
+        >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
+        >>> y = ivy.zeros_like(x)
+        >>> print(y)
+        {
+            a: ivy.array([0, 0, 0]),
+            b: ivy.array([0, 0, 0])
+        }
+
+    Instance Method Examples
+    -------------------
+
+    With 'ivy.Array' input:
+
+        >>> x = ivy.array([2, 3, 8, 2, 1])
+        >>> y = x.zeros_like()
+        >>> print(y)
+        ivy.array([0, 0, 0, 0, 0])
+
+    With 'ivy.Container' input:
+
+        >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
+        >>> y = x.zeros_like()
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.]),
+            b: ivy.array([0., 0.])
+        }
     """
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
@@ -499,7 +558,7 @@ def triu(
 @infer_device
 @handle_nestable
 def empty(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -757,24 +816,24 @@ def meshgrid(
         >>> xv, yv = ivy.meshgrid(x, y)
         >>> print(xv)
         ivy.array([[1, 2],
-                   [1, 2]])
+               [1, 2]])
 
         >>> print(yv)
         ivy.array([[3, 3],
-                   [4, 4]])
+               [4, 4]])
 
         >>> x = ivy.array([1, 2, 5])
         >>> y = ivy.array([4, 1])
         >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
         >>> print(xv)
         ivy.array([[1, 1],
-                   [2, 2],
-                   [5, 5]])
+               [2, 2],
+               [5, 5]])
 
         >>> print(yv)
         ivy.array([[4, 1],
-                   [4, 1],
-                   [4, 1]])
+               [4, 1],
+               [4, 1]])
 
         With :code:`ivy.NativeArray` input:
 
@@ -783,11 +842,11 @@ def meshgrid(
         >>> xv, yv = ivy.meshgrid(x, y)
         >>> print(xv)
         ivy.array([[1, 2],
-                   [1, 2]])
+               [1, 2]])
 
         >>> print(yv)
         ivy.array([[3, 3],
-                   [4, 4]])
+               [4, 4]])
 
     """
     return current_backend().meshgrid(*arrays, indexing=indexing)
@@ -798,7 +857,7 @@ def meshgrid(
 @infer_device
 @handle_nestable
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: float,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -846,7 +905,8 @@ def full(
     >>> fill_value = 10
     >>> y = ivy.full(shape, fill_value)
     >>> print(y)
-    ivy.array([[10,10],[10,10]])
+    ivy.array([[10, 10],
+           [10, 10]])
 
     """
     return current_backend().full(
