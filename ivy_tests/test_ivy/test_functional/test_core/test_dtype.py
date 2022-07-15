@@ -349,7 +349,7 @@ def test_is_int_dtype(
     )
 
 
-# promote types
+# promote_types
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=ivy.valid_dtypes,
@@ -382,7 +382,7 @@ def test_promote_types(
     )
 
 
-# result type
+# result_type
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy.valid_dtypes,
@@ -422,8 +422,42 @@ def test_result_type(
     )
 
 
+# type_promote_arrays
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes,
+        n_arrays=2,
+        shared_dtype=False,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="type_promote_arrays"),
+)
+def test_type_promote_arrays(
+    dtype_and_values,
+    num_positional_args,
+    fw,
+):
+    types, arrays = dtype_and_values
+    type1, type2 = types
+    x1, x2 = arrays
+    print("x1: {} ({}), x2: {} ({})".format(x1, type1, x2, type2))
+    input_dtype = [type1, type2]
+    helpers.test_function(
+        input_dtype,
+        False,
+        False,
+        num_positional_args,
+        False,
+        False,
+        False,
+        fw,
+        "type_promote_arrays",
+        x1=np.array(x1),
+        x2=np.array(x2),
+        test_values=True,
+    )
+
+
 # Still to Add #
 # -------------#
 
 # broadcast_arrays
-# type_promote_arrays
