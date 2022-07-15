@@ -510,13 +510,13 @@ def test_meshgrid(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype)
         i += 1
 
     num_positional_args = len(arrays)
 
     helpers.test_function(
-        dtype,
+        [dtype for _ in range(num_positional_args)],
         False,
         False,
         num_positional_args,
