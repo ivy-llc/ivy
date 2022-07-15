@@ -356,11 +356,17 @@ def test_is_int_dtype(
         n_arrays=2,
         shared_dtype=False,
     ),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="promote_types"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
 )
 def test_promote_types(
     dtype_and_values,
+    as_variable,
     num_positional_args,
+    native_array,
+    container,
     fw,
 ):
     types, arrays = dtype_and_values
@@ -368,11 +374,11 @@ def test_promote_types(
     input_dtype = [type1, type2]
     helpers.test_function(
         input_dtype,
-        False,
+        as_variable,
         False,
         num_positional_args,
-        False,
-        False,
+        native_array,
+        container,
         False,
         fw,
         "promote_types",
@@ -429,11 +435,15 @@ def test_result_type(
         n_arrays=2,
         shared_dtype=False,
     ),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="type_promote_arrays"),
+    native_array=helpers.list_of_length(st.booleans(), 2),
 )
 def test_type_promote_arrays(
     dtype_and_values,
+    as_variable,
     num_positional_args,
+    native_array,
     fw,
 ):
     types, arrays = dtype_and_values
@@ -442,10 +452,10 @@ def test_type_promote_arrays(
     input_dtype = [type1, type2]
     helpers.test_function(
         input_dtype,
-        False,
+        as_variable,
         False,
         num_positional_args,
-        False,
+        native_array,
         False,
         False,
         fw,
