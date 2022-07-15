@@ -35,10 +35,10 @@ def test_dtype_instances(device, call):
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes, 1),
     dtype=st.sampled_from(ivy_np.valid_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_astype(
@@ -111,10 +111,10 @@ def test_broadcast_to(
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_dtypes, 1),
     dtype=st.sampled_from(ivy_np.valid_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="can_cast"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    native_array=st.booleans(),
+    container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_can_cast(
