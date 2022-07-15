@@ -29,6 +29,38 @@ class ContainerWithNorms(ContainerBase):
         the function, and so the docstring for ivy.layer_norm also applies to this
         method with minimal changes.
 
+        x
+            Input container
+        normalized_idxs
+            Indices to apply the normalization to.
+        epsilon
+            small constant to add to the denominator, use global ivy._MIN_BASE by
+            default.
+        scale
+            Learnable gamma variables for post-multiplication, default is None.
+        offset
+            Learnable beta variables for post-addition, default is None.
+        new_std
+            The standard deviation of the new normalized values. Default is 1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        
+        Returns
+        -------
+        ret
+            The layer after applying layer normalization.
+
         Examples
         --------
         With one :code:`ivy.Container` input:
@@ -94,6 +126,40 @@ class ContainerWithNorms(ContainerBase):
         ivy.Container instance method variant of ivy.layer_norm. This method simply
         wraps the function, and so the docstring for ivy.layer_norm also applies
         to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container
+        normalized_idxs
+            Indices to apply the normalization to.
+        epsilon
+            small constant to add to the denominator, use global ivy._MIN_BASE by
+            default.
+        scale
+            Learnable gamma variables for post-multiplication, default is None.
+        offset
+            Learnable beta variables for post-addition, default is None.
+        new_std
+            The standard deviation of the new normalized values. Default is 1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The layer after applying layer normalization.
 
         Examples
         --------
