@@ -52,62 +52,86 @@ def argmax(
         containing the indices of the maximum values. The returned array must have be
         the default array index data type.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+
+
     Functional Examples
-    --------
+        --------
 
-    With :code:`ivy.Array` input:
+        With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([-0., 1., -1.])
-    >>> y = ivy.argmax(x)
-    >>> print(y)
-    ivy.array([1])
+        >>> x = ivy.array([-0., 1., -1.])
+        >>> y = ivy.argmax(x)
+        >>> print(y)
+        ivy.array([1])
 
-    >>> x = ivy.array([-0., 1., -1.])
-    >>> ivy.argmax(x,out=x)
-    >>> print(x)
-    ivy.array([1])
+        >>> x = ivy.array([-0., 1., -1.])
+        >>> ivy.argmax(x,out=x)
+        >>> print(x)
+        ivy.array([1])
 
-    >>> x=ivy.array([[1., -0., -1.], \
-                     [-2., 3., 2.]])
-    >>> y = ivy.argmax(x, axis= 1)
-    >>> print(y)
-    ivy.array([0, 1])
+        >>> x=ivy.array([[1., -0., -1.], \
+                         [-2., 3., 2.]])
+        >>> y = ivy.argmax(x, axis= 1)
+        >>> print(y)
+        ivy.array([0, 1])
 
-    >>> x=ivy.array([[4., 0., -1.], \
-                     [2., -3., 6]])
-    >>> y = ivy.argmax(x, axis= 1, keepdims= True)
-    >>> print(y)
-    ivy.array([[0], \
-              [2]])
+        >>> x = ivy.array([-0., 1., -1.])
+        >>> y = ivy.argmax(x, axis)
+        >>> print(y)
+        ivy.array([1])
 
-    >>> x=ivy.array([[4., 0., -1.], \
-                     [2., -3., 6], \
-                     [2., -3., 6]])
-    >>> z= ivy.zeros((1,3), dtype=ivy.int64)
-    >>> y = ivy.argmax(x, axis= 1, keepdims= True, out= z)
-    >>> print(z)
-    ivy.array([[0], \
-               [2], \
-               [2]])
+        >>> x = ivy.array([-0., 1., -1.])
+        >>> y = ivy.argmax(x, axis, keepdims)
+        >>> print(y)
+        ivy.array([1])
 
-    With :code:`ivy.NativeArray` input:
+        >>> x = ivy.array([-0., 1., -1.])
+        >>> y = ivy.argmax(x, axis, keepdims= False)
+        >>> print(y)
+        ivy.array([1])
 
-    >>> x = ivy.native_array([-0., 1., -1.])
-    >>> y = ivy.argmax(x)
-    >>> print(y)
-    ivy.array([1])
+        >>> x=ivy.array([[4., 0., -1.], \
+                         [2., -3., 6]])
+        >>> y = ivy.argmax(x, axis= 1, keepdims= True)
+        >>> print(y)
+        ivy.array([[0], \
+                  [2]])
 
-    Instance Method Examples
-    ------------------------
+        >>> x=ivy.array([[4., 0., -1.], \
+                         [2., -3., 6], \
+                         [2., -3., 6]])
+        >>> z= ivy.zeros((1,3), dtype=ivy.int64)
+        >>> y = ivy.argmax(x, axis= 1, keepdims= True, out= z)
+        >>> print(z)
+        ivy.array([[0], \
+                   [2], \
+                   [2]])
 
-    Using :code:`ivy.Array` instance method:
+        With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.argmax()
-    >>> print(y)
-    ivy.array(2)
+        >>> x = ivy.native_array([-0., 1., -1.])
+        >>> y = ivy.argmax(x)
+        >>> print(y)
+        ivy.array([1])
 
-    """
+        Instance Method Examples
+        ------------------------
+
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.argmax()
+        >>> print(y)
+        ivy.array(2)
+
+        """
     return current_backend(x).argmax(x, axis, keepdims, out=out)
 
 
@@ -268,8 +292,8 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> y = ivy.nonzero(x)
     >>> print(y)
     {
-        a: (list[1], <class ivy.array.array.Array> shape=[3]),
-        b: (list[2], <class ivy.array.array.Array> shape=[2])
+    a: (list[1], <class ivy.array.Array> shape=[3]),
+    b: (list[2], <class ivy.array.Array> shape=[2])
     }
 
     >>> print(y.a)
@@ -301,8 +325,8 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> y = x.nonzero()
     >>> print(y)
     {
-        a: (list[1], <class ivy.array.array.Array> shape=[3]),
-        b: (list[1], <class ivy.array.array.Array> shape=[0])
+    a: (list[1], <class ivy.array.Array> shape=[3]),
+    b: (list[1], <class ivy.array.Array> shape=[0])
     }
 
     >>> print(y.a)
