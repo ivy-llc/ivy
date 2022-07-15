@@ -78,6 +78,7 @@ def test_leaky_relu(
         container,
         instance_method,
         "leaky_relu",
+        test_rtol=1e-4,
         x=np.asarray(x, dtype=dtype),
         alpha=alpha,
     )
