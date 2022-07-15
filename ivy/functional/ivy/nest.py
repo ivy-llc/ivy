@@ -69,8 +69,7 @@ def set_nest_at_index(
     >>> z = [5., 6.]
     >>> ivy.set_nest_at_index(x, y, z)
     >>> print(x)
-    ivy.array([[1., 2.], \
-    [5., 6.])
+    ivy.array([[1.,2.],[3.,4.]])
 
     With :code:`Dict` input:
     >>> x = {'a': 0, 'b': [1, [2, 3]], 'c': (4, 5)}
@@ -78,7 +77,7 @@ def set_nest_at_index(
     >>> z = 2
     >>> ivy.set_nest_at_index(x, y, z)
     >>> print(x)
-    {'a': 0, 'b': [1, 2], 'c': (4, 5)}
+    {'a':0,'b':[1,2],'c':(4,5)}
 
     With :code:`List` inputs:
     >>> x = [['a', 'b', 'c'], \
@@ -88,9 +87,7 @@ def set_nest_at_index(
     >>> z = 'H'
     >>> ivy.set_nest_at_index(x, y, z)
     >>> print(x)
-    [['a', 'b', 'c'], \
-    ['d', 'e', 'f'], \
-    ['g', ['H', 'i']]]
+    [['a','b','c'],['d','e','f'],['g',['H','i']]]
     """
     if len(index) == 1:
         nest[index[0]] = value
