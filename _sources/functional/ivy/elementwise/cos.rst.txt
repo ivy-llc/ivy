@@ -6,6 +6,8 @@ cos
 .. autofunction:: ivy.array.array_methods.cos
 
 .. autofunction:: ivy.container.container_methods.cos
+
+.. autofunction:: ivy.container.container_methods.static_cos
 |
 | **Supported Frameworks:**
 
@@ -35,4 +37,5 @@ cos
    cos/cos_functional.rst
    cos/cos_array.rst
    cos/cos_container.rst
+   cos/static_cos_container.rst
 

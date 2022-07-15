@@ -222,9 +222,9 @@ test functions.</p>
 <p><strong>Note</strong> - : The output will be randomised in each run. This is quite a simplistic example and doesn’t cover the
 intricacies behind the helper functions in the <em>test_ivy</em> directory.</p>
 <p>In the example above, <strong>st.lists</strong> and <strong>st.sampled_from</strong> are what we call strategies. To briefly describe -:</p>
-<p>1. <strong>sampled_from</strong> accepts a collection of objects. This strategy will return a value that is sampled from this
+<p>1. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from">sampled_from</a> accepts a collection of objects. This strategy will return a value that is sampled from this
 collection.</p>
-<p>2. <strong>lists</strong> accepts another strategy which describes the elements of the list being generated. This is best used when
+<p>2. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists">lists</a> accepts another strategy which describes the elements of the list being generated. This is best used when
 a sequence of varying lengths is required to be generated, with elements that are described by other strategies. The
 following parameters can be specified by the user-:</p>
 <ul class="simple">
@@ -237,10 +237,10 @@ following parameters can be specified by the user-:</p>
 <p>It might be helpful to look at a few more strategies, since they are widely used across the  helper functions to
 generate custom data -:</p>
 <ol class="arabic simple" start="3">
-<li><p><strong>booleans</strong> - generates boolean values True or False</p></li>
-<li><p><strong>integers</strong> - generates integers values within a given range</p></li>
+<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.booleans">booleans</a> - generates boolean values True or False</p></li>
+<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.integers">integers</a> - generates integers values within a given range</p></li>
 </ol>
-<p>5. <strong>float</strong> -  It is a powerful strategy that generates all variety of floats, including math.inf and math.nan.
+<p>5. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.floats">floats</a> -  It is a powerful strategy that generates all variety of floats, including math.inf and math.nan.
 You can also specify:</p>
 <ul class="simple">
 <li><p>Math.inf and math.nan, respectively, should be included in the data description.</p></li>
@@ -250,42 +250,42 @@ You can also specify:</p>
 mostly useful for Numpy arrays).</p></li>
 </ul>
 <ol class="arabic simple" start="6">
-<li><p><strong>none</strong> - returns a strategy which only generates None.</p></li>
+<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.none">none</a> - returns a strategy which only generates None.</p></li>
 </ol>
-<p>7. <strong>tuples</strong> - The strategy accepts N Hypothesis strategies, and will generate length - N tuples whose elements are drawn
+<p>7. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.tuples">tuples</a> - The strategy accepts N Hypothesis strategies, and will generate length - N tuples whose elements are drawn
 from the respective strategies that were specified as inputs.</p>
-<p>8. <strong>one_of</strong> - This allows us to specify a collection of strategies and any given datum will be drawn from “one of” them.
+<p>8. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.one_of">one_of</a> - This allows us to specify a collection of strategies and any given datum will be drawn from “one of” them.
 Hypothesis has the <em>pipe</em> operator overloaded as a shorthand for one_of. This has been widely used all over in Ivy Tests.
-For example, this <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L476">line</a> here, can also be written as -:</p>
+For example, this <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L477">line</a> here, can also be written as -:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">none</span><span class="p">(),</span> <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="o">-</span><span class="n">ndim</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>9. <strong>shared</strong> - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
-the same key will share the same value. For example, <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_creation.py#L192">here</a>, the parameters, <em>dtype_and_x</em> and <em>num_positional_args</em> share
+<p>9. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.shared">shared</a> - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
+the same key will share the same value. For example, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L392">here</a>, the parameters, <em>input_dtype</em> and <em>as_variable</em> share
 the same key <em>num_arrays</em>, hence similar values will be drawn for both arguments.</p>
-<p>10. <strong>sets</strong> - This is used for generating a <em>unique collection</em> of elements. Like <strong>st.lists</strong> it accepts another strategy
+<p>10. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sets">sets</a> - This is used for generating a <em>unique collection</em> of elements. Like <strong>st.lists</strong> it accepts another strategy
 which describes the elements of the set being generated.</p>
 <ol class="arabic simple" start="11">
-<li><p><strong>map</strong> - The map method, permits us to perform a mapping on the data being produced by a strategy.</p></li>
+<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#mapping">map</a> - The map method, permits us to perform a mapping on the data being produced by a strategy.</p></li>
 </ol>
-<p>12. <strong>filter</strong> - Data is filtered using this method. It takes a callable that accepts as input the data generated by the
+<p>12. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#filtering">filter</a> - Data is filtered using this method. It takes a callable that accepts as input the data generated by the
 strategy, and returns:</p>
 <ul class="simple">
 <li><p>True if the data should pass through the filter</p></li>
 <li><p>False if the data should be rejected by the filter</p></li>
 </ul>
 <ol class="arabic simple" start="13">
-<li><p><strong>flatmap</strong> - This enables us to define a strategy based on a value drawn from a previous strategy.</p></li>
+<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#chaining-strategies-together">flatmap</a> - This enables us to define a strategy based on a value drawn from a previous strategy.</p></li>
 </ol>
-<p>14. <strong>data</strong> - This is one of the <strong>most</strong> important strategies used in the project. It will often be the case that it is
+<p>14. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.data#hypothesis.strategies.data">data</a> - This is one of the <strong>most</strong> important strategies used in the project. It will often be the case that it is
 required to draw strategies in a context-dependent manner within the test. Suppose, we want to generate an array of
 values in some ivy test, but we want make sure that those values are only of the valid float types supported by Ivy.
 The st.data() strategy can be used <em>interactively</em>, and values can be drawn at test-time, using <strong>data.draw()</strong> method.</p>
 <p>The <strong>given</strong> operator usually contains the data parameter, which is an instance of the <strong>st.DataObject</strong> class; this
-instance is what gets drawn from the st.data() strategy. For example, at <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_sorting.py#L18">this</a> line the keyword arguments for the
+instance is what gets drawn from the st.data() strategy. For example, at <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_sorting.py#L18">this</a> line the keyword arguments for the
 function <em>test_argsort</em>, have been generated only after the generation of the array.</p>
-<p>15. <strong>composite</strong> - The second <strong>most</strong> widely used strategy in <em>Ivy tests</em>. This provides a decorator, which permits us to
-form our own strategies for describing data by composing Hypothesis’ built-in strategies. For <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers.py#L1054">example</a>.</p>
+<p>15. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.composite#hypothesis.strategies.composite">composite</a> - The second <strong>most</strong> widely used strategy in <em>Ivy tests</em>. This provides a decorator, which permits us to
+form our own strategies for describing data by composing Hypothesis’ built-in strategies. For <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1085">example</a>.</p>
 </section>
 <section id="integration-of-strategies-into-ivy-tests">
 <h3>Integration of Strategies into Ivy Tests<a class="headerlink" href="#integration-of-strategies-into-ivy-tests" title="Permalink to this heading"></a></h3>
@@ -397,7 +397,7 @@ returns -:</p>
 </pre></div>
 </div>
 <p>This function should be used when a boolean value is to be associated for each value of the other parameter, when
-generated by a sequence. For example, in <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L38">test_concat</a>, we are generating a list of inputs of the dimension (2,3), and
+generated by a sequence. For example, in <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L38">test_concat</a>, we are generating a list of inputs of the dimension (2,3), and
 for each input we have three boolean values associated with it that define additional parameters(container, as_variable
 , native_array). Meaning if the input is to be treated as a container, at the same time, is it a variable or a native array.</p>
 <p>3. <strong>lists</strong> - As the name suggests, we use it to generate lists composed of anything, as specified by the user. For example
@@ -436,7 +436,7 @@ second element is a list/nested list containing floating point numbers of that p
 <span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">283405296074752.0</span><span class="p">,</span> <span class="mf">564049465049088.0</span><span class="p">,</span> <span class="mf">1.0417876997507982e+16</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>This function contains a list of <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers.py#L1100">keyword</a> arguments. To name a few, min_value, max_value, allow_inf, min_num_dims etc.
+<p>This function contains a list of <a href="#id5"><span class="problematic" id="id6">`keyword`_</span></a> arguments. To name a few, min_value, max_value, allow_inf, min_num_dims etc.
 It can be used wherever an array of values with a specified data type is expected. That would again be a list a functions
 which expects at least one <code class="code docutils literal notranslate"><span class="pre">ivy.array</span></code>.</p>
 <p>7. <strong>reshape_shapes</strong> - This function returns a valid shape after a reshape operation is applied given as input of any
@@ -481,7 +481,7 @@ Such parameters usually test the function for edge cases. This function should b
 depend on the kind of value an array contains.</p>
 <p>10. <strong>get_shape</strong> - This is used to generate any arbitrary shape. If <em>allow_none</em> is set to <code class="code docutils literal notranslate"><span class="pre">True</span></code>, then an implicit
 <em>st.one_of</em> strategy is used, wherein the function will either generate <code class="code docutils literal notranslate"><span class="pre">None</span></code> as shape or it will generate a shape
-based on the keyword <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers.py#L1337">arguments</a> of the function. For example -:</p>
+based on the keyword <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1354">arguments</a> of the function. For example -:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">print_hypothesis_examples</span><span class="p">(</span>
                           <span class="n">get_shape</span><span class="p">(</span>
                           <span class="n">allow_none</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">min_num_dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
@@ -634,25 +634,25 @@ CI, so that each commit uses the same folder, and so it is ignored by git, there
 <li><p><strong>–-hypothesis-show-statistics</strong></p></li>
 </ol>
 <p>This feature helps is debugging the tests, with methods like <strong>note()</strong>, custom <strong>event()s</strong> where addition to the summary,
-and a variety performance details are supported. Let’s look at the function <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_stateful/test_activations.py#L52">test_gelu</a> -:</p>
+and a variety performance details are supported. Let’s look at the function <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_nn/test_activations.py#L104">test_gelu</a> -:</p>
 <p><strong>run</strong> <code class="code docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">—hypothesis-show-statistics</span> <span class="pre">&lt;test_file&gt;.py</span></code></p>
 <p>This test runs for every backend, and the output is shown below-:</p>
 <ul class="simple">
 <li><p><strong>Jax</strong></p></li>
 </ul>
-<a class="reference internal image-reference" href="https://github.com/unifyai/ivy/blob/master/.idea/Jax.png"><img alt="https://github.com/unifyai/ivy/blob/master/.idea/Jax.png" src="https://github.com/unifyai/ivy/blob/master/.idea/Jax.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png" style="width: 600px;" /></a>
 <ul class="simple">
 <li><p><strong>Numpy</strong></p></li>
 </ul>
-<a class="reference internal image-reference" href="https://github.com/unifyai/ivy/blob/master/.idea/numpy.png"><img alt="https://github.com/unifyai/ivy/blob/master/.idea/numpy.png" src="https://github.com/unifyai/ivy/blob/master/.idea/numpy.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png" style="width: 600px;" /></a>
 <ul class="simple">
 <li><p><strong>Tensorflow</strong></p></li>
 </ul>
-<a class="reference internal image-reference" href="https://github.com/unifyai/ivy/blob/master/.idea/tensorflow.png"><img alt="https://github.com/unifyai/ivy/blob/master/.idea/tensorflow.png" src="https://github.com/unifyai/ivy/blob/master/.idea/tensorflow.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png" style="width: 600px;" /></a>
 <ul class="simple">
 <li><p><strong>Torch</strong></p></li>
 </ul>
-<a class="reference internal image-reference" href="https://github.com/unifyai/ivy/blob/master/.idea/torch.png"><img alt="https://github.com/unifyai/ivy/blob/master/.idea/torch.png" src="https://github.com/unifyai/ivy/blob/master/.idea/torch.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png" style="width: 600px;" /></a>
 <p>It can be seen that the function doesn’t fail for <strong>Jax</strong>, <strong>Numpy</strong> and <strong>Torch</strong>, which is clearly not the case with
 <strong>Tensorflow</strong>, wherein 7 examples failed the test. One important thing to note is the number of values for which
 <a href="#id2"><span class="problematic" id="id3">**</span></a>Shrinking**(discussed in brief above) happened. Statistics for both <em>generate phase</em>, and <em>shrink phase</em> if the test
@@ -660,12 +660,12 @@ fails are printed in the output. If the tests are re-run, <em>reuse phase</em> s
 examples from previous runs are displayed.</p>
 <p>Another argument which can be specified for a more detailed output is <strong>hypothesis-verbosity = verbose</strong>. Let’s look at
 the newer output, for the same example -:</p>
-<a class="reference internal image-reference" href="https://github.com/unifyai/ivy/blob/master/.idea/test_run.png"><img alt="https://github.com/unifyai/ivy/blob/master/.idea/test_run.png" src="https://github.com/unifyai/ivy/blob/master/.idea/test_run.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png" style="width: 600px;" /></a>
 <p>Like the output above, Hypothesis will print all the examples for which the test failed, when <strong>verbosity</strong> is set.</p>
 <ol class="arabic simple" start="3">
 <li><p>Some performance related settings which might be helpful to know are-:</p></li>
 </ol>
-<ul class="simple">
+<ol class="loweralpha simple">
 <li><dl class="simple">
 <dt><strong>max_examples</strong> - The number of valid examples Hypothesis will run. It usually defaults to 100. Turning it up or down</dt><dd><p>will have an impact on the speed as well as the rigorousness of the tests.</p>
 </dd>
@@ -676,7 +676,7 @@ the newer output, for the same example -:</p>
 </dd>
 </dl>
 </li>
-</ul>
+</ol>
 </section>
 </section>
 <section id="self-consistent-and-explicit-testing">
@@ -724,7 +724,10 @@ and so we should not make us of <code class="code docutils literal notranslate">
 <p>If you’re ever unsure of how best to proceed,
 please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1304">ivy tests discussion</a>,
 or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738436383445073">ivy tests channel</a>!</p>
-</section>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/E6WgGp2_e5E" class="video">
+</iframe></section>
 </section>
 
 
