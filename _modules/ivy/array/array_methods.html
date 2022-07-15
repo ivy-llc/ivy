@@ -1840,9 +1840,32 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.cross_entropy. This method</span>
-<span class="sd">    simply wraps the function, and so the docstring for ivy.cross_entropy</span>
-<span class="sd">    also applies to this method with minimal changes.</span>
+    <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.cross_entropy. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.cross_entropy also applies to</span>
+<span class="sd">    this method with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array containing true labels.</span>
+<span class="sd">    pred</span>
+<span class="sd">        input array containing the predicted labels.</span>
+<span class="sd">    axis</span>
+<span class="sd">        the axis along which to compute the cross-entropy. If axis is ``-1``,</span>
+<span class="sd">        the cross-entropy will be computed along the last dimension.</span>
+<span class="sd">        Default: ``-1``.</span>
+<span class="sd">    epsilon</span>
+<span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
+<span class="sd">        the loss. If epsilon is ``0``, no smoothing will be applied.</span>
+<span class="sd">        Default: ``1e-7``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
+<span class="sd">        that the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The cross-entropy loss between the given distributions.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1865,6 +1888,25 @@
     <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.binary_cross_entropy. This method</span>
 <span class="sd">    simply wraps the function, and so the docstring for ivy.binary_cross_entropy</span>
 <span class="sd">    also applies to this method with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array containing true labels.</span>
+<span class="sd">    pred</span>
+<span class="sd">        input array containing Predicted labels.</span>
+<span class="sd">    epsilon</span>
+<span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
+<span class="sd">        the loss. If epsilon is ``0``, no smoothing will be applied.</span>
+<span class="sd">        Default: ``1e-7``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
+<span class="sd">        that the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The binary cross entropy between the given distributions.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1889,6 +1931,28 @@
 <span class="sd">    ivy.Array instance method variant of ivy.sparse_cross_entropy. This method</span>
 <span class="sd">    simply wraps the function, and so the docstring for ivy.sparse_cross_entropy</span>
 <span class="sd">    also applies to this method with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        input array containing the true labels as logits.</span>
+<span class="sd">    pred</span>
+<span class="sd">        input array containing the predicted labels as logits.</span>
+<span class="sd">    axis</span>
+<span class="sd">        the axis along which to compute the cross-entropy. If axis is ``-1``, the</span>
+<span class="sd">        cross-entropy will be computed along the last dimension. Default: ``-1``.</span>
+<span class="sd">        epsilon</span>
+<span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
+<span class="sd">        the loss. If epsilon is ``0``, no smoothing will be applied.</span>
+<span class="sd">        Default: ``1e-7``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
+<span class="sd">        that the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The sparse cross-entropy loss between the given distributions.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
