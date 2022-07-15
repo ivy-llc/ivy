@@ -224,7 +224,7 @@ Background
 Design
 ------
 
-| Ivy can fulfill two distinct purposes:
+| Ivy can fulfill two distinct purposes that are:
 |
 | 1. Serve as a transpiler between frameworks 🚧
 | 2. Serve as a new ML framework with multi-framework support ✅
