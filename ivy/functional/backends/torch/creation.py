@@ -160,6 +160,7 @@ def eye(
 
 
 def from_dlpack(x):
+    x = x.detach() if x.requires_grad else x
     return torch.utils.dlpack.from_dlpack(x)
 
 
