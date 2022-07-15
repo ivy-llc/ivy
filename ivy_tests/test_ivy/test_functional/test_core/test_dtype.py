@@ -349,6 +349,48 @@ def test_is_int_dtype(
     )
 
 
+# promote types
+@st.composite
+def two_promotional_types(draw):
+    float_or_int = draw(st.sampled_from(["float", "int"]))
+    valid_dtypes = {"float": ivy_np.valid_float_dtypes, "int": ivy_np.valid_int_dtypes}[
+        float_or_int
+    ]
+    return (draw(st.sampled_from(valid_dtypes)), draw(st.sampled_from(valid_dtypes)))
+
+
+@given(
+    type=two_promotional_types(),
+    # type=st.sampled_from(helpers.as_lists(ivy.promotion_table)),
+    num_positional_args=helpers.num_positional_args(fn_name="promote_types"),
+)
+def test_promote_types(
+    type,
+    num_positional_args,
+    fw,
+):
+    print("type: ", type)
+    type1, type2 = type
+    input_dtype = [type1, type2]
+    try:
+        helpers.test_function(
+            input_dtype,
+            False,
+            False,
+            num_positional_args,
+            False,
+            False,
+            False,
+            fw,
+            "promote_types",
+            type1=type1,
+            type2=type2,
+            test_values=False,
+        )
+    except KeyError:  # if pair does not appear in promotion table
+        return
+
+
 # result type
 @given(
     dtype_and_x=helpers.dtype_and_values(
