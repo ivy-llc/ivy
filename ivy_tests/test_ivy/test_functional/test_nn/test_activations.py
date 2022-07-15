@@ -48,13 +48,14 @@ def test_relu(
 # leaky_relu
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    alpha=st.floats(),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
     native_array=st.booleans(),
+    num_positional_args=helpers.num_positional_args("leaky_relu"),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+    alpha=st.floats(width=16),
+
 )
 def test_leaky_relu(
     dtype_and_x,
