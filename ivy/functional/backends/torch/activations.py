@@ -46,5 +46,5 @@ def softmax(
     return exp_x / torch.sum(exp_x, axis, keepdims=True)
 
 
-def softplus(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.nn.functional.softplus(x, out=out)
+def softplus(x: torch.Tensor) -> torch.Tensor:
+    return torch.nn.functional.softplus(x)
