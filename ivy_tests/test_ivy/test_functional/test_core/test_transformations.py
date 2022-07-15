@@ -4,7 +4,7 @@ from random import choice
 import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-
+import torch
 
 def _fn1(x, y):
     return ivy.matmul(x, y)
@@ -59,10 +59,12 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont, fw):
         print("jax Error:", error)
         jax_res = None
 
-    ivy.unset_backend()
+    ivy.clear_backend_stack()
 
     if fw_res is not None and jax_res is not None:
-        assert ivy.array_equal(fw_res, jax_res), f"Results are not equal. fw: {fw_res}, Jax: {jax_res}"
+        assert ivy.array_equal(ivy.array(ivy.to_numpy(fw_res)),
+                               ivy.array(ivy.to_numpy(jax_res))),\
+            f"Results are not equal. fw: {fw_res}, Jax: {jax_res}"
         print(" A HIT")
         # if isinstance(in_axes, (list, tuple)):
         #     if None in in_axes:
