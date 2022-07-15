@@ -993,7 +993,11 @@ def promote_types(
     ret
         The type that both input types promote to
     """
-    return ivy.promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
+    try:
+        ret = ivy.promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
+    except KeyError:
+        raise Exception("these dtypes are not type promotable")
+    return ret
 
 
 def set_default_dtype(dtype: Union[ivy.Dtype, str]):
