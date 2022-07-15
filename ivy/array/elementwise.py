@@ -18,8 +18,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
-
         >>> x = ivy.array([2.6, -6.6, 1.6, -0])
         >>> y = x.abs()
         >>> print(y)
@@ -65,8 +63,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
-
         >>> x = ivy.array([-1., 0., 3.])
         >>> y = x.asinh()
         >>> print(y)
@@ -336,8 +332,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
-
         >>> x = ivy.array([5.7, -7.1, 0, -0, 6.8])
         >>> y = x.sign()
         >>> print(y)
@@ -379,8 +373,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
-
         >>> x = ivy.array([1., 2., 3.])
         >>> print(x.sinh())
             ivy.array([1.18, 3.63, 10.])
