@@ -430,7 +430,14 @@ def optimizer_update(
     Functional Examples
     -------------------
     With :code:`ivy.Array` inputs:
-    
+
+    >>> w = ivy.array([1., 2., 3.])
+    >>> effective_grad = ivy.zeros(3)
+    >>> lr = 3e-4
+    >>> ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)
+    >>> print(ws_new)
+    ivy.array([1., 2., 3.])
+
     >>> w = ivy.array([1., 2., 3.])
     >>> effective_grad = ivy.zeros(3)
     >>> lr = 3e-4
@@ -457,6 +464,18 @@ def optimizer_update(
     ivy.array([0.999, 2., 3.])
     
     with :code: `ivy.Container` inputs:
+
+    >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                        b=ivy.array([3., 4., 5.]))
+    >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                                    b=ivy.array([0., 0., 0.]))
+    >>> lr = 3e-4
+    >>> ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)
+    >>> print(ws_new)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
     
     >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
                         b=ivy.array([3., 4., 5.]))
