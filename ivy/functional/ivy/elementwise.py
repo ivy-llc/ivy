@@ -1547,8 +1547,6 @@ def expm1(
     >>> ivy.expm1(x)
     ivy.array([[  0., 147.,  -0.,  nan]])
     
-    With :code:`out` option:
-    
     >>> x = ivy.array([ivy.inf, 1, float('-inf')])
     >>> y = ivy.zeros(3)
     >>> ivy.expm1(x, out=y)
@@ -1578,7 +1576,7 @@ def expm1(
         b: ivy.array([2.20e+04, 1.72e+00])
     }
     
-    With :code:`ivy.Container` method:
+    With :code:`ivy.Container` instance method:
     
     >>> x = ivy.Container(a=ivy.array([10, 13]))
     >>> x.expm1(x)
