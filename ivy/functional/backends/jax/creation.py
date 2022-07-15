@@ -106,15 +106,23 @@ def from_dlpack(x):
     return jax_from_dlpack(x)
 
 
+def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
+    assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
+        ivy.is_float_dtype(dtype) and isinstance(fill_value, float)
+    ), "the fill_value and data type"
+
+
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float],
     *,
-    dtype: jnp.dtype = None,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
+    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     return _to_device(
-        jnp.full(shape, fill_value, as_native_dtype(default_dtype(dtype, fill_value))),
+        jnp.full(shape, fill_value, dtype),
         device=device,
     )
 
@@ -123,18 +131,18 @@ def full_like(
     x: JaxArray,
     fill_value: Union[int, float],
     *,
-    dtype: jnp.dtype,
+    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
+    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     if dtype and str:
         dtype = jnp.dtype(dtype)
     else:
         dtype = x.dtype
 
     return _to_device(
-        jnp.full_like(
-            x, fill_value, dtype=as_native_dtype(default_dtype(dtype, fill_value))
-        ),
+        jnp.full_like(x, fill_value, dtype=dtype),
         device=device,
     )
 

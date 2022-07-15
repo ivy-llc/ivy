@@ -31,16 +31,20 @@ def test_dtype_instances(device, call):
     assert ivy.exists(ivy.bool)
 
 
+# for data generation in multiple tests
+dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
+
+
 # astype
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, n_arrays=1
     ),
     dtype=st.sampled_from(ivy_np.valid_dtypes),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
+    native_array=st.booleans(),
+    container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_astype(
@@ -118,10 +122,10 @@ def test_broadcast_to(
         available_dtypes=ivy_np.valid_dtypes, n_arrays=1
     ),
     dtype=st.sampled_from(ivy_np.valid_dtypes),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="can_cast"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
+    native_array=st.booleans(),
+    container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_can_cast(
@@ -272,14 +276,16 @@ def test_iinfo(
 
 # is_float_dtype
 @given(
-    array_shape=helpers.lists(
-        arg=st.integers(1, 5),
-        min_size="num_dims",
-        max_size="num_dims",
-        size_bounds=[1, 5],
+    array=helpers.nph.arrays(
+        dtype=dtype_shared,
+        shape=helpers.lists(
+            st.integers(1, 5),
+            min_size="num_dims",
+            max_size="num_dims",
+            size_bounds=[1, 5],
+        ),
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
-    data=st.data(),
+    dtype_in=dtype_shared,
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="is_float_dtype"),
     native_array=st.booleans(),
@@ -287,9 +293,8 @@ def test_iinfo(
     instance_method=st.booleans(),
 )
 def test_is_float_dtype(
-    array_shape,
-    input_dtype,
-    data,
+    array,
+    dtype_in,
     as_variable,
     num_positional_args,
     native_array,
@@ -297,31 +302,32 @@ def test_is_float_dtype(
     instance_method,
     fw,
 ):
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="is_float_dtype",
-        dtype_in=x,
+        dtype_in,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "is_float_dtype",
+        dtype_in=array,
     )
 
 
 # is_int_dtype
 @given(
-    array_shape=helpers.lists(
-        arg=st.integers(1, 5),
-        min_size="num_dims",
-        max_size="num_dims",
-        size_bounds=[1, 5],
+    array=helpers.nph.arrays(
+        dtype=dtype_shared,
+        shape=helpers.lists(
+            st.integers(1, 5),
+            min_size="num_dims",
+            max_size="num_dims",
+            size_bounds=[1, 5],
+        ),
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
-    data=st.data(),
+    dtype_in=dtype_shared,
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="is_int_dtype"),
     native_array=st.booleans(),
@@ -329,9 +335,8 @@ def test_is_float_dtype(
     instance_method=st.booleans(),
 )
 def test_is_int_dtype(
-    array_shape,
-    input_dtype,
-    data,
+    array,
+    dtype_in,
     as_variable,
     num_positional_args,
     native_array,
@@ -339,9 +344,8 @@ def test_is_int_dtype(
     instance_method,
     fw,
 ):
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype_in,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -350,7 +354,7 @@ def test_is_int_dtype(
         instance_method=instance_method,
         fw=fw,
         fn_name="is_int_dtype",
-        dtype_in=x,
+        dtype_in=array,
     )
 
 
