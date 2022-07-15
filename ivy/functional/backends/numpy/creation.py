@@ -82,7 +82,8 @@ def eye(
 
 # noinspection PyShadowingNames
 def from_dlpack(x):
-    return np.from_dlpack(x)
+    # noinspection PyProtectedMember
+    return np._from_dlpack(x)
 
 
 def full(
