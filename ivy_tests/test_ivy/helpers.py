@@ -444,14 +444,27 @@ def check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np):
     # check for unsupported dtypes
     test_unsupported = False
     unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
-    for d in input_dtypes:
-        if d in unsupported_dtypes_fn:
+    supported_dtypes_fn = ivy.function_supported_dtypes(fn)
+    if unsupported_dtypes_fn:
+        for d in input_dtypes:
+            if d in unsupported_dtypes_fn:
+                test_unsupported = True
+                break
+        if (
+            "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["dtype"] in unsupported_dtypes_fn
+        ):
             test_unsupported = True
-            break
-    if "dtype" in all_as_kwargs_np and all_as_kwargs_np[
-        "dtype"
-    ] in ivy.function_unsupported_dtypes(fn):
-        test_unsupported = True
+    if supported_dtypes_fn and not test_unsupported:
+        for d in input_dtypes:
+            if d not in supported_dtypes_fn:
+                test_unsupported = True
+                break
+        if (
+            "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["dtype"] not in supported_dtypes_fn
+        ):
+            test_unsupported = True
     return test_unsupported
 
 
@@ -473,12 +486,14 @@ def create_args_kwargs(
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
 
     # assert that the number of arrays aligns with the dtypes and as_variable_flags
-    assert len(arg_np_vals) + len(kwarg_np_vals) == len(input_dtypes), (
-        "Found {} arrays in the input arguments, but {} dtypes and as_variable_flags. "
-        "Make sure to pass in a sequence of bools for all associated boolean flag "
-        "inputs to test_function, with the sequence length being equal to the "
-        "number of arrays in the arguments."
-    )
+    num_arrays = len(arg_np_vals) + len(kwarg_np_vals)
+    if num_arrays > 0:
+        assert num_arrays == len(input_dtypes), (
+            "Found {} arrays in the input arguments, but {} dtypes and "
+            "as_variable_flags. Make sure to pass in a sequence of bools for all "
+            "associated boolean flag inputs to test_function, with the sequence length "
+            "being equal to the number of arrays in the arguments."
+        )
 
     # create args
     num_arg_vals = len(arg_np_vals)
