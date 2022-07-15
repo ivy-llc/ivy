@@ -4,7 +4,7 @@ from random import choice
 import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import torch
+
 
 def _fn1(x, y):
     return ivy.matmul(x, y)
@@ -16,7 +16,6 @@ def _fn2(x, y):
 
 def _fn3(x, y):
     ivy.add(x, y)
-
 
 @given(func=st.sampled_from([_fn1, _fn2, _fn3]),
        arrays_and_axes=helpers.arrays_and_axes(allow_none=False,
@@ -59,26 +58,13 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont, fw):
         print("jax Error:", error)
         jax_res = None
 
-    ivy.clear_backend_stack()
+    ivy.unset_backend()
 
     if fw_res is not None and jax_res is not None:
-        assert ivy.array_equal(ivy.array(ivy.to_numpy(fw_res)),
-                               ivy.array(ivy.to_numpy(jax_res))),\
-            f"Results are not equal. fw: {fw_res}, Jax: {jax_res}"
-        print(" A HIT")
-        # if isinstance(in_axes, (list, tuple)):
-        #     if None in in_axes:
-        #         print("with a none")
-        #     elif in_axes is None:
-        #         print("with a none")
-        # print(in_axes)
+        assert ivy.array_equal(fw_res, jax_res), f"Results from {ivy.current_backend_str()} and jax are not equal"
 
     elif fw_res is None and jax_res is None:
         pass
     else:
-        # print("in_axes:", in_axes)
-        # print("fw_res:", fw_res)
-        # print("jax_res:", jax_res)
         assert False, "One of the results is None while other isn't"
     # TODO: Tune the examples generated
-
