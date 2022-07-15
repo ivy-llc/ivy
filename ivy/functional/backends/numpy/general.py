@@ -120,8 +120,8 @@ def cumprod(
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = np.cumprod(x, -1, out=out)
+        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        res = np.cumprod(x, -1)
         return np.swapaxes(res, axis, -1)
     return np.cumprod(x, axis, out=out)
 
