@@ -13,6 +13,9 @@ import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
 import ivy.functional.backends.mxnet
+from functools import reduce  # for making strategy
+from operator import mul  # for making strategy
+from typing import Tuple
 
 
 # dtype objects
@@ -31,8 +34,94 @@ def test_dtype_instances(device, call):
     assert ivy.exists(ivy.bool)
 
 
-# for data generation in multiple tests
+# Functions to use in strategy #
+# -------------------------- #
+
+# taken from array-api repo
+def _broadcast_shapes(shape1, shape2):
+    """Broadcasts `shape1` and `shape2`"""
+    N1 = len(shape1)
+    N2 = len(shape2)
+    N = max(N1, N2)
+    shape = [None for _ in range(N)]
+    i = N - 1
+    while i >= 0:
+        n1 = N1 - N + i
+        if N1 - N + i >= 0:
+            d1 = shape1[n1]
+        else:
+            d1 = 1
+        n2 = N2 - N + i
+        if N2 - N + i >= 0:
+            d2 = shape2[n2]
+        else:
+            d2 = 1
+
+        if d1 == 1:
+            shape[i] = d2
+        elif d2 == 1:
+            shape[i] = d1
+        elif d1 == d2:
+            shape[i] = d1
+        else:
+            raise Exception("Broadcast error")
+
+        i = i - 1
+
+    return tuple(shape)
+
+
+# taken from array-api repo
+def broadcast_shapes(*shapes):
+    if len(shapes) == 0:
+        raise ValueError("shapes=[] must be non-empty")
+    elif len(shapes) == 1:
+        return shapes[0]
+    result = _broadcast_shapes(shapes[0], shapes[1])
+    for i in range(2, len(shapes)):
+        result = _broadcast_shapes(result, shapes[i])
+    return result
+
+
+# np.prod and others have overflow and math.prod is Python 3.8+ only
+def prod(seq):
+    return reduce(mul, seq, 1)
+
+
+# taken from array-api repo
+def mutually_broadcastable_shapes(
+    num_shapes: int,
+    *,
+    base_shape: Tuple[int, ...] = (),
+    min_dims: int = 1,
+    max_dims: int = 4,
+    min_side: int = 1,
+    max_side: int = 4,
+):
+    if max_dims is None:
+        max_dims = min(max(len(base_shape), min_dims) + 5, 32)
+    if max_side is None:
+        max_side = max(base_shape[-max_dims:] + (min_side,)) + 5
+    return (
+        helpers.nph.mutually_broadcastable_shapes(
+            num_shapes=num_shapes,
+            base_shape=base_shape,
+            min_dims=min_dims,
+            max_dims=max_dims,
+            min_side=min_side,
+            max_side=max_side,
+        )
+        .map(lambda BS: BS.input_shapes)
+        .filter(lambda shapes: all(prod(i for i in s if i > 0) < 1000 for s in shapes))
+    )
+
+
+# For data generation in multiple tests
 dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
+
+
+# Ivy Unit Tests #
+# -------------- #
 
 
 # astype
@@ -72,10 +161,9 @@ def test_astype(
 
 
 # broadcast arrays
-# an attempt - failing for torch due to TypeError: len() of unsized object
 @given(
     shapes=st.shared(
-        st.integers(2, 5).flatmap(helpers.mutually_broadcastable_shapes),
+        st.integers(2, 5).flatmap(mutually_broadcastable_shapes),
         key="num_arrays",
     ),
     dtype=st.sampled_from(ivy_np.valid_dtypes),
@@ -125,15 +213,12 @@ def array_and_broadcastable_shape(draw, in_dtype):
     in_shape = draw(helpers.nph.array_shapes(min_dims=1, max_dims=4))
     x = draw(helpers.nph.arrays(shape=in_shape, dtype=dtype))
     to_shape = draw(
-        helpers.mutually_broadcastable_shapes(1, base_shape=in_shape)
+        mutually_broadcastable_shapes(1, base_shape=in_shape)
         .map(lambda S: S[0])
-        .filter(lambda s: helpers.broadcast_shapes(in_shape, s) == s),
+        .filter(lambda s: broadcast_shapes(in_shape, s) == s),
         label="shape",
     )
     return (x, to_shape)
-
-
-dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
 
 
 @given(
@@ -453,6 +538,5 @@ def test_result_type(
 # Still to Add #
 # -------------#
 
-# broadcast_arrays
 # promote_types
 # type_promote_arrays
