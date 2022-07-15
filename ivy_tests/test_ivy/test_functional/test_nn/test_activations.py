@@ -3,7 +3,6 @@
 # global
 import numpy as np
 from hypothesis import given, strategies as st
-import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
