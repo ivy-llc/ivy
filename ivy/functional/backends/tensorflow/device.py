@@ -25,6 +25,8 @@ def dev(
     as_native: bool = False,
 ) -> Union[ivy.Device, str]:
     dv = x.device
+    if dv == "":
+        dv = ivy.default_device()
     if as_native:
         return dv
     return as_ivy_dev(dv)
