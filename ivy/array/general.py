@@ -93,7 +93,7 @@ class ArrayWithGeneral(abc.ABC):
 
     def to_numpy(self: ivy.Array):
         """
-        ivy.Container instance method variant of ivy.to_numpy. This method simply wraps
+        ivy.Array instance method variant of ivy.to_numpy. This method simply wraps
         the function, and so the docstring for ivy.to_numpy also applies to this method
         with minimal changes.
 
