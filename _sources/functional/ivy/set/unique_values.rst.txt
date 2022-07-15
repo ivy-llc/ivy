@@ -2,6 +2,12 @@ unique_values
 =============
 
 .. autofunction:: ivy.functional.ivy.set.unique_values
+
+.. autofunction:: ivy.array.array_methods.unique_values
+
+.. autofunction:: ivy.container.container_methods.static_unique_values
+
+.. autofunction:: ivy.container.container_methods.unique_values
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ unique_values
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: unique_values
+
+   unique_values/unique_values_functional.rst
+   unique_values/static_unique_values_container.rst
+   unique_values/unique_values_array.rst
+   unique_values/unique_values_container.rst
+

@@ -149,6 +149,26 @@
 <span class="sd">        ivy.Array instance method variant of ivy.asarray. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.asarray also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input data, in any form that can be converted to an array. This includes</span>
+<span class="sd">            lists, lists of tuples, tuples, tuples of tuples, tuples of lists and</span>
+<span class="sd">            ndarrays.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            datatype, optional. Datatype is inferred from the input data.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to place the created array. Default: None.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            An array interpretation of ``self``.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
 
@@ -164,6 +184,29 @@
 <span class="sd">        ivy.Array instance method variant of ivy.full_like. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.full_like also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array from which to derive the output array shape.</span>
+<span class="sd">        fill_value</span>
+<span class="sd">            Scalar fill value</span>
+<span class="sd">        dtype</span>
+<span class="sd">            output array data type. If ``dtype`` is `None`, the output array data type</span>
+<span class="sd">            must be inferred from ``self``. Default: ``None``.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to place the created array. If ``device`` is ``None``, the</span>
+<span class="sd">            output array device must be inferred from ``self``. Default: ``None``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array having the same shape as ``self`` and where every element is equal</span>
+<span class="sd">            to ``fill_value``.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -180,6 +223,26 @@
 <span class="sd">        ivy.Array instance method variant of ivy.ones_like. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.ones_like also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array from which to derive the output array shape.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            output array data type. If ``dtype`` is ``None``, the output array data type</span>
+<span class="sd">            must be inferred from ``self``. Default  ``None``.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to place the created array. If device is ``None``, the</span>
+<span class="sd">            output array device must be inferred from ``self``. Default: ``None``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array having the same shape as ``self`` and filled with ones.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -194,6 +257,26 @@
 <span class="sd">        ivy.Array instance method variant of ivy.zeros_like. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.zeros_like also applies to this</span>
 <span class="sd">        method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array from which to derive the output array shape.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            output array data type. If ``dtype`` is ``None``, the output array data type</span>
+<span class="sd">            must be inferred from ``self``. Default: ``None``.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to place the created array. If ``device`` is ``None``, the</span>
+<span class="sd">            output array device must be inferred from ``self``. Default: ``None``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array having the same shape as ``self`` and filled with ``zeros``.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -202,6 +285,28 @@
 <span class="sd">        ivy.Array instance method variant of ivy.tril. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.tril also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array having shape (..., M, N) and whose innermost two dimensions form</span>
+<span class="sd">            MxN matrices.</span>
+<span class="sd">        k</span>
+<span class="sd">            diagonal above which to zero elements. If k = 0, the diagonal is the main</span>
+<span class="sd">            diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the</span>
+<span class="sd">            diagonal is above the main diagonal. Default: 0.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the lower triangular part(s). The returned array must</span>
+<span class="sd">            have the same shape and data type as ``self``. All elements above the</span>
+<span class="sd">            specified diagonal k must be zeroed. The returned array should be allocated</span>
+<span class="sd">            on the same device as ``self``.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -210,6 +315,28 @@
 <span class="sd">        ivy.Array instance method variant of ivy.triu. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.triu also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array having shape (..., M, N) and whose innermost two dimensions form</span>
+<span class="sd">            MxN matrices.    *,</span>
+<span class="sd">        k</span>
+<span class="sd">            diagonal below which to zero elements. If k = 0, the diagonal is the main</span>
+<span class="sd">            diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the</span>
+<span class="sd">            diagonal is above the main diagonal. Default: 0.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the upper triangular part(s). The returned array must</span>
+<span class="sd">            have the same shape and data type as ``self``. All elements below the</span>
+<span class="sd">            specified diagonal k must be zeroed. The returned array should be allocated</span>
+<span class="sd">            on the same device as ``self``.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -224,6 +351,27 @@
 <span class="sd">        ivy.Array instance method variant of ivy.empty_like. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.empty_like also applies to this</span>
 <span class="sd">        method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array from which to derive the output array shape.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            output array data type. If dtype is None, the output array data type must be</span>
+<span class="sd">            inferred from ``self``. Default  None.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to place the created array. If device is None, the output</span>
+<span class="sd">            array device must be inferred from ``self``. Default: None.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array having the same shape as ``self`` and containing uninitialized</span>
+<span class="sd">            data.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -237,6 +385,27 @@
 <span class="sd">        ivy.Array instance method variant of ivy.meshgrid. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.meshgrid also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            one-dimensional input array.</span>
+<span class="sd">        arrays</span>
+<span class="sd">            an arbitrary number of one-dimensional arrays representing grid coordinates.</span>
+<span class="sd">            Each array should have the same numeric data type.</span>
+<span class="sd">        indexing</span>
+<span class="sd">            Cartesian ``&#39;xy&#39;`` or matrix ``&#39;ij&#39;`` indexing of output. If provided zero</span>
+<span class="sd">            or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,</span>
+<span class="sd">            respectively), the ``indexing`` keyword has no effect and should be ignored.</span>
+<span class="sd">            Default: ``&#39;xy&#39;``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            list of N arrays, where ``N`` is the number of provided one-dimensional</span>
+<span class="sd">            input arrays. Each returned array must have rank ``N``. For ``N``</span>
+<span class="sd">            one-dimensional arrays having lengths ``Ni = len(xi)``.</span>
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">list_arrays</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span></div>
 
@@ -248,6 +417,20 @@
 <span class="sd">        ivy.Array instance method variant of ivy.from_dlpack. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.from_dlpack also applies to this</span>
 <span class="sd">        method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the data in ``self``.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">from_dlpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -264,6 +447,21 @@
 <span class="sd">        ivy.Array instance method variant of ivy.native_array. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.native_array also applies to this</span>
 <span class="sd">        method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            datatype, optional. Datatype is inferred from the input data.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to place the created array. Default: None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            A native array interpretation of ``self``.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div></div>
 </pre></div>

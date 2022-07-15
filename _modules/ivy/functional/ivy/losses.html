@@ -396,20 +396,8 @@
     <span class="k">return</span> <span class="n">cross_entropy</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<span class="n">sparse_cross_entropy</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
-    <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">(</span>
-        <span class="s2">&quot;int8&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;int16&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;uint16&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;uint32&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;uint64&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bfloat16&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;float16&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;float32&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;float64&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-<span class="p">}</span>
+<span class="n">sparse_cross_entropy</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
+<span class="n">sparse_cross_entropy</span><span class="o">.</span><span class="n">supported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;uint8&quot;</span><span class="p">,</span> <span class="s2">&quot;int32&quot;</span><span class="p">,</span> <span class="s2">&quot;int64&quot;</span><span class="p">)}</span>
 </pre></div>
 
            </div>
