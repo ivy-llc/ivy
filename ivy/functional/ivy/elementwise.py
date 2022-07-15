@@ -1543,23 +1543,24 @@ def expm1(
     --------
     With :code:`ivy.Array` inputs:
     
-    >>> x = ivy.array([1, 5, 9])
+    >>> x = ivy.array([[0, 5, float('-0'), ivy.nan]])
     >>> ivy.expm1(x)
-    ivy.array([1.72e+00, 1.47e+02, 8.10e+03])
+    ivy.array([[  0., 147.,  -0.,  nan]])
     
     With :code:`out` option:
     
-    >>> x = ivy.array([[0], [1]])
-    >>> y = ivy.array([])
+    >>> x = ivy.array([ivy.inf, 1, float('-inf')])
+    >>> y = ivy.zeros(3)
     >>> ivy.expm1(x, out=y)
-    ivy.array([[0.  ],
-        [1.72]])
+    ivy.array([  inf,  1.72, -1.  ])
     
     With :code:`ivy.NativeArray` inputs:
     
-    >>> x = ivy.native_array([[1, 5, 9]])
+    >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
     >>> ivy.expm1(x)
-    ivy.array([[1.72e+00, 1.47e+02, 8.10e+03]])
+    ivy.array([[  1.72],
+       [147.  ],
+       [ -1.  ]])
     
     With :code:`ivy.Array` Method:
     
