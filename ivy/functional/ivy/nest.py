@@ -184,13 +184,13 @@ def set_nest_at_indices(
         A tuple of tuples of indices for the indices at which to update.
     values
         The new values for updating.
-    
+
     Examples
     --------
     With :code:`List` inputs:
 
-    >>> nest = [[1, 2, 3, 4, 5, 6],['a', 'b', 'c', 'd', 'e', 'f']]
-    >>> indices = [[0,4],[1,3]]
+    >>> nest = [[1, 2, 3, 4, 5, 6], ['a', 'b', 'c', 'd', 'e', 'f']]
+    >>> indices = [[0, 4], [1, 3]]
     >>> values = [111, 'x']
     >>> ivy.set_nest_at_indices(nest, indices, values)
     >>> print(nest)
@@ -200,7 +200,7 @@ def set_nest_at_indices(
     With :code:`Tuple` inputs:
 
     >>> nest = (['abc', 'xyz', 'pqr'],[1, 4, 'a', 'b'])
-    >>> indices = ((0,1),(1,2))
+    >>> indices = ((0, 1),(1, 2))
     >>> values = ('ivy', 'x')
     >>> ivy.set_nest_at_indices(nest, indices, values)
     >>> print(nest)
@@ -208,26 +208,21 @@ def set_nest_at_indices(
 
     With :code:`ivy.Array` inputs:
 
-    >>> nest = ivy.array([[1., 2., 3.], \
-                            [4., 5., 6.]])
-    >>> indices = ((0,1),(1,2))
+    >>> nest = ivy.array([[1., 2., 3.],[4., 5., 6.]])
+    >>> indices = ((0, 1),(1, 2))
     >>> values = (11., 22.)
     >>> ivy.set_nest_at_indices(nest, indices, values)
     >>> print(nest)
-    ivy.array([[1., 11.,  3.], \
-                        [4., 5., 22.]])
+    ivy.array([[1., 11., 3.], [4., 5., 22.]])
 
     With :code:`Dict` input:
 
-    >>> x = {'a':[1., 2., 3.],'b':[4., 5., 6.],'c':[0.]}
-    >>> y = (('a',1),('b',2),('c',0))
-    >>> values = (11., 22. , 33.)
+    >>> x = {'a': [1., 2., 3.], 'b': [4., 5., 6.], 'c': [0.]}
+    >>> y = (('a', 1), ('b', 2), ('c', 0))
+    >>> values = (11., 22., 33.)
     >>> ivy.set_nest_at_indices(nest, indices, values)
     >>> print(nest)
-    {'a': [1.0, 11.0, 3.0], 'b': [4.0, 5.0, 22.0], \
-                                            'c': [33.0]}
-
-
+    {'a': [1.0, 11.0, 3.0], 'b': [4.0, 5.0, 22.0], 'c': [33.0]}
     """
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
