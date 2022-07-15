@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from torch import Tensor
 from numbers import Number
-from typing import Union, Tuple, List, Optional
+from typing import Union, Tuple, List, Optional, Sequence
 
 # local
 import ivy
@@ -116,10 +116,7 @@ def empty(
 
 
 def empty_like(
-    x: torch.Tensor,
-    *,
-    dtype: torch.dtype,
-    device: torch.device
+    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -163,9 +160,7 @@ def eye(
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device, out=out)
 
 
-def from_dlpack(
-    x: torch.Tensor
-):
+def from_dlpack(x: torch.Tensor):
     return torch.utils.dlpack.from_dlpack(x)
 
 
@@ -332,10 +327,7 @@ def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
     return res.to(as_native_dev(device))
 
 
-def meshgrid(
-    *arrays: torch.Tensor,
-    indexing="xy"
-) -> List[torch.Tensor]:
+def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
     return list(torch.meshgrid(*arrays, indexing=indexing))
 
 
@@ -353,10 +345,7 @@ def ones(
 
 
 def ones_like(
-    x: torch.Tensor,
-    *,
-    dtype: torch.dtype,
-    device: torch.device
+    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -365,17 +354,13 @@ def ones_like(
 
 
 def tril(
-    x: torch.Tensor,
-    k: int = 0,
-    out: Optional[torch.Tensor] = None
+    x: torch.Tensor, k: int = 0, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.tril(x, diagonal=k, out=out)
 
 
 def triu(
-    x: torch.Tensor,
-    k: int = 0,
-    out: Optional[torch.Tensor] = None
+    x: torch.Tensor, k: int = 0, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.triu(x, diagonal=k, out=out)
 
@@ -391,10 +376,7 @@ def zeros(
 
 
 def zeros_like(
-    x: torch.Tensor,
-    *,
-    dtype: torch.dtype,
-    device: torch.device
+    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)

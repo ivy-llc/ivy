@@ -2,7 +2,7 @@
 import numpy
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 
 # local
 import ivy
@@ -18,7 +18,7 @@ from ivy.functional.backends.numpy.device import _to_device
 def arange(
     start: Number,
     stop: Optional[Number] = None,
-    step: Number =1,
+    step: Number = 1,
     *,
     dtype: Optional[np.dtype] = None,
     device: str
@@ -65,22 +65,14 @@ def asarray(
 
 
 def empty(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: np.dtype,
-    device: str
+    shape: Union[ivy.NativeShape, Sequence[int]], *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     return _to_device(
         np.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
     )
 
 
-def empty_like(
-    x: np.ndarray,
-    *,
-    dtype: np.dtype,
-    device: str
-) -> np.ndarray:
+def empty_like(x: np.ndarray, *, dtype: np.dtype, device: str) -> np.ndarray:
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
         dtype = np.dtype(dtype)
@@ -103,9 +95,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def from_dlpack(
-    x: np.ndarray
-) -> np.ndarray:
+def from_dlpack(x: np.ndarray) -> np.ndarray:
     return np.from_dlpack(x)
 
 
@@ -123,11 +113,7 @@ def full(
 
 
 def full_like(
-    x: np.ndarray,
-    fill_value: float,
-    *,
-    dtype: np.dtype,
-    device: str
+    x: np.ndarray, fill_value: float, *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
@@ -161,29 +147,18 @@ def linspace(
     return _to_device(ans, device=device)
 
 
-def meshgrid(
-    *arrays: np.ndarray,
-    indexing: str = "xy"
-) -> List[np.ndarray]:
+def meshgrid(*arrays: np.ndarray, indexing: str = "xy") -> List[np.ndarray]:
     return np.meshgrid(*arrays, indexing=indexing)
 
 
 def ones(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: np.dtype,
-    device: str
+    shape: Union[ivy.NativeShape, Sequence[int]], *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     dtype = as_native_dtype(default_dtype(dtype))
     return _to_device(np.ones(shape, dtype), device=device)
 
 
-def ones_like(
-    x: np.ndarray,
-    *,
-    dtype: np.dtype,
-    device: str
-) -> np.ndarray:
+def ones_like(x: np.ndarray, *, dtype: np.dtype, device: str) -> np.ndarray:
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
         dtype = np.dtype(dtype)
@@ -193,35 +168,21 @@ def ones_like(
     return _to_device(np.ones_like(x, dtype=dtype), device=device)
 
 
-def tril(
-    x: np.ndarray,
-    k: int = 0
-) -> np.ndarray:
+def tril(x: np.ndarray, k: int = 0) -> np.ndarray:
     return np.tril(x, k)
 
 
-def triu(
-    x: np.ndarray,
-    k: int = 0
-) -> np.ndarray:
+def triu(x: np.ndarray, k: int = 0) -> np.ndarray:
     return np.triu(x, k)
 
 
 def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: np.dtype,
-    device: str
+    shape: Union[ivy.NativeShape, Sequence[int]], *, dtype: np.dtype, device: str
 ) -> np.ndarray:
     return _to_device(np.zeros(shape, dtype), device=device)
 
 
-def zeros_like(
-    x: np.ndarray,
-    *,
-    dtype: np.dtype,
-    device: str
-) -> np.ndarray:
+def zeros_like(x: np.ndarray, *, dtype: np.dtype, device: str) -> np.ndarray:
     if dtype:
         dtype = "bool_" if dtype == "bool" else dtype
     else:

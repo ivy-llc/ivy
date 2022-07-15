@@ -1,6 +1,6 @@
 # global
 import jax.numpy as jnp
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Tuple, List, Sequence
 from numbers import Number
 import jaxlib.xla_extension
 from jax.dlpack import from_dlpack as jax_from_dlpack
@@ -79,9 +79,7 @@ def empty(
 
 
 def empty_like(
-    x: JaxArray,
-    *, dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device
+    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -105,9 +103,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def from_dlpack(
-    x: JaxArray
-) -> JaxArray:
+def from_dlpack(x: JaxArray) -> JaxArray:
     return jax_from_dlpack(x)
 
 
@@ -162,10 +158,7 @@ def linspace(
     return _to_device(ans, device=device)
 
 
-def meshgrid(
-    *arrays: JaxArray,
-    indexing: str = "xy"
-) -> List[JaxArray]:
+def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:
     return jnp.meshgrid(*arrays, indexing=indexing)
 
 
@@ -181,10 +174,7 @@ def ones(
 
 
 def ones_like(
-    x: JaxArray,
-    *,
-    dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device
+    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -193,17 +183,11 @@ def ones_like(
     return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
 
 
-def tril(
-    x: JaxArray,
-    k: int = 0
-) -> JaxArray:
+def tril(x: JaxArray, k: int = 0) -> JaxArray:
     return jnp.tril(x, k)
 
 
-def triu(
-    x: JaxArray,
-    k: int = 0
-) -> JaxArray:
+def triu(x: JaxArray, k: int = 0) -> JaxArray:
     return jnp.triu(x, k)
 
 
@@ -220,10 +204,7 @@ def zeros(
 
 
 def zeros_like(
-    x: JaxArray,
-    *,
-    dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device
+    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
 ) -> JaxArray:
     if not dtype:
         dtype = x.dtype
