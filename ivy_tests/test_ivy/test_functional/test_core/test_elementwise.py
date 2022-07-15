@@ -2087,7 +2087,7 @@ def test_erf(
 # minimum
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
-    as_variable=st.booleans(),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -2131,7 +2131,7 @@ def test_minimum(
 # maximum
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
-    as_variable=st.booleans(),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),
     native_array=helpers.list_of_length(st.booleans(), 2),
