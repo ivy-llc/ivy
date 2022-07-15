@@ -18,7 +18,7 @@ import ivy_tests.test_ivy.helpers as helpers
     as_variable=st.booleans(),
 )
 def test_random_uniform(data, shape, dtype, as_variable, device, call):
-    low, high = data.draw(helpers.get_bounds(dtype))
+    low, high = data.draw(helpers.get_bounds(dtype=dtype))
     # smoke test
     if as_variable and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
@@ -58,7 +58,7 @@ def test_random_uniform(data, shape, dtype, as_variable, device, call):
     as_variable=st.booleans(),
 )
 def test_random_normal(data, shape, dtype, as_variable, device, call):
-    mean, std = data.draw(helpers.get_mean_std(dtype))
+    mean, std = data.draw(helpers.get_mean_std(dtype=dtype))
     ivy.seed(0)
     # smoke test
     if as_variable and call is helpers.mx_call:
@@ -96,7 +96,7 @@ def test_random_normal(data, shape, dtype, as_variable, device, call):
     tensor_fn=st.sampled_from([ivy.array]),
 )
 def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call):
-    probs, population_size = data.draw(helpers.get_probs(dtype))
+    probs, population_size = data.draw(helpers.get_probs(dtype=dtype))
     if (
         call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
         and not replace
@@ -123,7 +123,7 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
 )
 def test_randint(data, shape, dtype, as_variable, device, call):
     # smoke test
-    low, high = data.draw(helpers.get_bounds(dtype))
+    low, high = data.draw(helpers.get_bounds(dtype=dtype))
     if (
         call in [helpers.mx_call, helpers.torch_call]
         and as_variable
@@ -170,7 +170,7 @@ def test_seed(seed_val):
 def test_shuffle(data, dtype, as_variable, device, call):
     # smoke test
     shape = data.draw(helpers.get_shape(min_num_dims=1))
-    x = data.draw(helpers.array_values(dtype, shape))
+    x = data.draw(helpers.array_values(dtype=dtype, shape=shape))
     x = ivy.array(x, dtype=dtype, device=device)
     if as_variable:
         x = ivy.variable(x)

@@ -400,7 +400,7 @@ def kwargs_to_args_n_kwargs(num_positional_args, kwargs):
     return args, kwargs
 
 
-def list_of_length(x, length):
+def list_of_length(*, x, length):
     return st.lists(x, min_size=length, max_size=length)
 
 
@@ -550,6 +550,7 @@ def test_unsupported_function(fn, args, kwargs):
 
 
 def test_method(
+    *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     all_as_kwargs_np,
@@ -676,6 +677,7 @@ def test_method(
 
 
 def test_function(
+    *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
@@ -689,7 +691,7 @@ def test_function(
     test_atol: float = 1e-06,
     test_values: bool = True,
     ground_truth_backend: str = "numpy",
-    **all_as_kwargs_np
+    **all_as_kwargs_np,
 ):
     """Tests a function that consumes (or returns) arrays for the current backend
     by comparing the result with numpy.
@@ -930,6 +932,7 @@ def test_function(
 
 
 def test_frontend_function(
+    *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
@@ -941,7 +944,7 @@ def test_frontend_function(
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
-    **all_as_kwargs_np
+    **all_as_kwargs_np,
 ):
     """Tests a frontend function for the current backend by comparing the result with
     the function in the associated framework.
@@ -1117,7 +1120,7 @@ def test_frontend_function(
 
 
 @st.composite
-def array_dtypes(draw, na=st.shared(st.integers(), key="num_arrays")):
+def array_dtypes(draw, *, na=st.shared(st.integers(), key="num_arrays")):
     size = na if isinstance(na, int) else draw(na)
     return draw(
         st.lists(
@@ -1127,13 +1130,13 @@ def array_dtypes(draw, na=st.shared(st.integers(), key="num_arrays")):
 
 
 @st.composite
-def array_bools(draw, na=st.shared(st.integers(), key="num_arrays")):
+def array_bools(draw, *, na=st.shared(st.integers(), key="num_arrays")):
     size = na if isinstance(na, int) else draw(na)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
 @st.composite
-def lists(draw, arg, min_size=None, max_size=None, size_bounds=None):
+def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
     ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
     if isinstance(min_size, str):
         min_size = draw(st.shared(ints, key=min_size))
@@ -1143,7 +1146,7 @@ def lists(draw, arg, min_size=None, max_size=None, size_bounds=None):
 
 
 @st.composite
-def valid_axes(draw, ndim=None, size_bounds=None):
+def valid_axes(draw, *, ndim=None, size_bounds=None):
     ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
     dims = draw(st.shared(ints, key=ndim))
     any_axis_strategy = (
@@ -1153,7 +1156,7 @@ def valid_axes(draw, ndim=None, size_bounds=None):
 
 
 @st.composite
-def integers(draw, min_value=None, max_value=None):
+def integers(draw, *, min_value=None, max_value=None):
     if isinstance(min_value, str):
         min_value = draw(st.shared(st.integers(), key=min_value))
     if isinstance(max_value, str):
@@ -1164,6 +1167,7 @@ def integers(draw, min_value=None, max_value=None):
 @st.composite
 def dtype_and_values(
     draw,
+    *,
     available_dtypes,
     n_arrays=1,
     min_value=None,
@@ -1183,10 +1187,10 @@ def dtype_and_values(
         n_arrays = draw(n_arrays)
     if n_arrays == 1:
         dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-        dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+        dtype = draw(list_of_length(x=st.sampled_from(tuple(dtypes)), length=1))
     elif shared_dtype:
         dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-        dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+        dtype = draw(list_of_length(x=st.sampled_from(tuple(dtypes)), length=1))
         dtype = [dtype[0] for _ in range(n_arrays)]
     else:
         unwanted_types = set(ivy.invalid_dtypes).union(
@@ -1239,6 +1243,7 @@ def dtype_and_values(
 @st.composite
 def dtype_values_axis(
     draw,
+    *,
     available_dtypes,
     min_value=None,
     max_value=None,
@@ -1257,7 +1262,7 @@ def dtype_values_axis(
 ):
     results = draw(
         dtype_and_values(
-            available_dtypes,
+            available_dtypes=available_dtypes,
             min_value=min_value,
             max_value=max_value,
             allow_inf=allow_inf,
@@ -1279,7 +1284,7 @@ def dtype_values_axis(
     if not isinstance(values, list):
         return dtype, values, None
     if shape is not None:
-        return dtype, values, draw(get_axis(shape))
+        return dtype, values, draw(get_axis(shape=shape))
     axis = draw(integers(min_value=min_axis, max_value=max_axis))
     return dtype, values, axis
 
@@ -1287,7 +1292,7 @@ def dtype_values_axis(
 # taken from
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
-def reshape_shapes(draw, shape):
+def reshape_shapes(draw, *, shape):
     size = 1 if len(shape) == 0 else math.prod(shape)
     rshape = draw(st.lists(st.integers(0)).filter(lambda s: math.prod(s) == size))
     # assume(all(side <= MAX_SIDE for side in rshape))
@@ -1299,13 +1304,14 @@ def reshape_shapes(draw, shape):
 
 # taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
 @st.composite
-def subsets(draw, elements):
+def subsets(draw, *, elements):
     return tuple(e for e in elements if draw(st.booleans()))
 
 
 @st.composite
 def array_values(
     draw,
+    *,
     dtype,
     shape,
     min_value=None,
@@ -1356,11 +1362,11 @@ def array_values(
             max_value = ivy.default(
                 max_value, round(18446744073709551615 * safety_factor)
             )
-        values = draw(list_of_length(st.integers(min_value, max_value), size))
+        values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
     elif dtype == "float16":
         values = draw(
             list_of_length(
-                st.floats(
+                x=st.floats(
                     min_value=min_value,
                     max_value=max_value,
                     allow_nan=allow_nan,
@@ -1370,13 +1376,13 @@ def array_values(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 ),
-                size,
+                length=size,
             )
         )
     elif dtype in ["float32", "bfloat16"]:
         values = draw(
             list_of_length(
-                st.floats(
+                x=st.floats(
                     min_value=min_value,
                     max_value=max_value,
                     allow_nan=allow_nan,
@@ -1386,14 +1392,14 @@ def array_values(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 ),
-                size,
+                length=size,
             )
         )
         values = [v * safety_factor for v in values]
     elif dtype == "float64":
         values = draw(
             list_of_length(
-                st.floats(
+                x=st.floats(
                     min_value=min_value,
                     max_value=max_value,
                     allow_nan=allow_nan,
@@ -1403,12 +1409,12 @@ def array_values(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 ),
-                size,
+                length=size,
             )
         )
         values = [v * safety_factor for v in values]
     elif dtype == "bool":
-        values = draw(list_of_length(st.booleans(), size))
+        values = draw(list_of_length(x=st.booleans(), length=size))
     array = np.array(values)
     if dtype != "bool" and not allow_negative:
         array = np.abs(array)
@@ -1420,6 +1426,7 @@ def array_values(
 @st.composite
 def get_shape(
     draw,
+    *,
     allow_none=False,
     min_num_dims=0,
     max_num_dims=5,
@@ -1449,6 +1456,7 @@ def get_shape(
 
 
 def none_or_list_of_floats(
+    *,
     dtype,
     size,
     min_value=None,
@@ -1460,7 +1468,7 @@ def none_or_list_of_floats(
     if no_none:
         if dtype == "float16":
             values = list_of_length(
-                st.floats(
+                x=st.floats(
                     min_value=min_value,
                     max_value=max_value,
                     width=16,
@@ -1470,11 +1478,11 @@ def none_or_list_of_floats(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 ),
-                size,
+                length=size,
             )
         elif dtype == "float32":
             values = list_of_length(
-                st.floats(
+                x=st.floats(
                     min_value=min_value,
                     max_value=max_value,
                     width=32,
@@ -1484,11 +1492,11 @@ def none_or_list_of_floats(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 ),
-                size,
+                length=size,
             )
         elif dtype == "float64":
             values = list_of_length(
-                st.floats(
+                x=st.floats(
                     min_value=min_value,
                     max_value=max_value,
                     width=64,
@@ -1498,12 +1506,12 @@ def none_or_list_of_floats(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 ),
-                size,
+                length=size,
             )
     else:
         if dtype == "float16":
             values = list_of_length(
-                st.none()
+                x=st.none()
                 | st.floats(
                     min_value=min_value,
                     max_value=max_value,
@@ -1514,11 +1522,11 @@ def none_or_list_of_floats(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 ),
-                size,
+                length=size,
             )
         elif dtype == "float32":
             values = list_of_length(
-                st.none()
+                x=st.none()
                 | st.floats(
                     min_value=min_value,
                     max_value=max_value,
@@ -1529,11 +1537,11 @@ def none_or_list_of_floats(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 ),
-                size,
+                length=size,
             )
         elif dtype == "float64":
             values = list_of_length(
-                st.none()
+                x=st.none()
                 | st.floats(
                     min_value=min_value,
                     max_value=max_value,
@@ -1544,48 +1552,48 @@ def none_or_list_of_floats(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 ),
-                size,
+                length=size,
             )
     return values
 
 
 @st.composite
-def get_mean_std(draw, dtype):
-    values = draw(none_or_list_of_floats(dtype, 2))
+def get_mean_std(draw, *, dtype):
+    values = draw(none_or_list_of_floats(dtype=dtype, size=2))
     values[1] = abs(values[1]) if values[1] else None
     return values[0], values[1]
 
 
 @st.composite
-def get_bounds(draw, dtype):
+def get_bounds(draw, *, dtype):
     if "int" in dtype:
-        values = draw(array_values(dtype, 2))
+        values = draw(array_values(dtype=dtype, shape=2))
         values[0], values[1] = abs(values[0]), abs(values[1])
         low, high = min(values), max(values)
         if low == high:
-            return draw(get_bounds(dtype))
+            return draw(get_bounds(dtype=dtype))
     else:
-        values = draw(none_or_list_of_floats(dtype, 2))
+        values = draw(none_or_list_of_floats(dtype=dtype, size=2))
         if values[0] is not None and values[1] is not None:
             low, high = min(values), max(values)
         else:
             low, high = values[0], values[1]
         if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
-            return draw(get_bounds(dtype))
+            return draw(get_bounds(dtype=dtype))
     return low, high
 
 
 @st.composite
-def get_probs(draw, dtype):
+def get_probs(draw, *, dtype):
     shape = draw(
         get_shape(min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10)
     )
-    probs = draw(array_values(dtype, shape, min_value=0, exclude_min=True))
+    probs = draw(array_values(dtype=dtype, shape=shape, min_value=0, exclude_min=True))
     return probs, shape[1]
 
 
 @st.composite
-def get_axis(draw, shape, allow_none=False):
+def get_axis(draw, *, shape, allow_none=False):
     axes = len(shape)
     if allow_none:
         axis = draw(
@@ -1621,7 +1629,7 @@ def get_axis(draw, shape, allow_none=False):
 
 
 @st.composite
-def num_positional_args(draw, fn_name: str = None):
+def num_positional_args(draw, *, fn_name: str = None):
     num_positional_only = 0
     num_keyword_only = 0
     total = 0
