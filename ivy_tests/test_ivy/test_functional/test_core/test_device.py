@@ -181,7 +181,7 @@ def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, 
         return
 
     # create a dummy array for out that is broadcastable to x
-    out = ivy.zeros(ivy.shape(x)) if with_out else None
+    out = ivy.zeros(ivy.shape(x), device=device, dtype=dtype) if with_out else None
 
     device = ivy.dev(x)
     x_on_dev = ivy.to_device(x, device=device, stream=stream, out=out)

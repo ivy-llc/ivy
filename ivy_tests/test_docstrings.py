@@ -16,7 +16,7 @@ def test_docstrings(backend):
     failures = list()
     success = True
 
-    """ 
+    """
         Functions skipped as their output dependent on outside factors:
             random_normal, random_uniform, shuffle, num_gpus, current_backend,
             get_backend
@@ -54,6 +54,12 @@ def test_docstrings(backend):
         "conv3d_transpose",
     ]
 
+    # skip list for array and container docstrings
+    skip_arr_cont = [
+        "cross_entropy",
+        "depthwise_conv2d",
+    ]
+
     # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp
 
@@ -61,7 +67,9 @@ def test_docstrings(backend):
         if k == "Array":
             for method_name in dir(v):
                 method = getattr(ivy.Array, method_name)
-                if helpers.docstring_examples_run(method, from_array=True):
+                if method_name in skip_arr_cont or helpers.docstring_examples_run(
+                    method, from_array=True
+                ):
                     continue
                 success = False
                 failures.append("Array." + method_name)
@@ -69,7 +77,9 @@ def test_docstrings(backend):
         elif k == "Container":
             for method_name in dir(v):
                 method = getattr(ivy.Container, method_name)
-                if helpers.docstring_examples_run(method, from_container=True):
+                if method_name in skip_arr_cont or helpers.docstring_examples_run(
+                    method, from_container=True
+                ):
                     continue
                 success = False
                 failures.append("Container." + method_name)
@@ -81,11 +91,10 @@ def test_docstrings(backend):
             failures.append(k)
 
     if not success:
-        ivy.warn(
-            "the following methods had failing docstrings:\n\n{}".format(
-                "\n".join(failures)
-            )
+        assert (
+            success
+        ), "\nThe following methods had failing docstrings:\n\n{}\n".format(
+            "\n".join(failures)
         )
-        assert success
 
     ivy.unset_backend()
