@@ -29,7 +29,7 @@ class ArrayWithLayers(abc.ABC):
         self
             Input image *[batch_size,h,w,d]*.
         filters
-            Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from x)
+            Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from self)
         strides
             The stride of the sliding window for each dimension of input.
         padding
