@@ -18,5 +18,7 @@ def sort(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    sorted_tensor, _ = torch.sort(x, dim=axis, descending=descending, out=out)
+    sorted_tensor, _ = torch.sort(
+        x, dim=axis, descending=descending, stable=stable, out=out
+    )
     return sorted_tensor

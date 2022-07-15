@@ -219,6 +219,10 @@ class ContainerWithActivations(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "softplus",
             x,
