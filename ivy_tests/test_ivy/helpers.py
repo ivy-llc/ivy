@@ -1630,13 +1630,17 @@ def arrays_and_axes(draw,
         shapes.append(shape)
     arrays = list()
     for shape in shapes:
-        arrays.append(draw(array_values(dtype="int32", shape=shape, min_value=-200, max_value=200)))
+        arrays.append(draw(array_values(dtype="int32",
+                                        shape=shape,
+                                        min_value=-200,
+                                        max_value=200)))
     all_axes_ranges = list()
-    for _ in shapes:
+    for shape in shapes:
         if None in all_axes_ranges:
-            all_axes_ranges.append(st.integers(0, len(shape)-1))
+            all_axes_ranges.append(st.integers(0, len(shape) - 1))
         else:
-            all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
+            all_axes_ranges.append(st.one_of(st.none(),
+                                             st.integers(0, len(shape) - 1)))
     axes = draw(st.tuples(*all_axes_ranges))
     return arrays, axes
 

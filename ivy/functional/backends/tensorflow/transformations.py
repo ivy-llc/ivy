@@ -1,9 +1,7 @@
 # global
-import functools
 import tensorflow as tf
-import numpy as np
 from typing import Callable, Union, Sequence, Optional
-#local
+# local
 import ivy
 
 
@@ -37,11 +35,11 @@ def vmap(func: Callable,
                     axis_size.add(arg.shape[axis])
 
         if len(axis_size) > 1:
-            raise ValueError('''Inconsistent sizes. All axes should have the same size''')
+            raise ValueError('''Inconsistent sizes. All axes should have the same size''')  # noqa: E501
 
         # Making sure not all in_axes are None
         if isinstance(in_axes, (list, tuple)):
-            assert not all(ax is None for ax in in_axes), "All in_axes should be non-None"
+            assert not all(ax is None for ax in in_axes), "All in_axes should be non-None"  # noqa: E501
         else:
             assert not (in_axes is None), "in_axes should be non-None if integer"
 
@@ -53,8 +51,8 @@ def vmap(func: Callable,
                     none_axis_index.append(index)
 
             for none_mapped_axis in none_axis_index:
-                args[none_mapped_axis] = tf.broadcast_to(args[none_mapped_axis],
-                                                         (tuple(axis_size) + args[none_mapped_axis].shape))
+                args[none_mapped_axis] = tf.broadcast_to(args[none_mapped_axis], # noqa
+                                                         (tuple(axis_size) + args[none_mapped_axis].shape)) # noqa
 
         # set up the axis to be mapped
         if isinstance(in_axes, (tuple, list)):

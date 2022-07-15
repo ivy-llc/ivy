@@ -1,7 +1,4 @@
 from hypothesis import given, strategies as st
-import hypothesis.extra.numpy as hnp
-from random import choice
-import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
@@ -16,6 +13,7 @@ def _fn2(x, y):
 
 def _fn3(x, y):
     ivy.add(x, y)
+
 
 @given(func=st.sampled_from([_fn1, _fn2, _fn3]),
        arrays_and_axes=helpers.arrays_and_axes(allow_none=False,
@@ -39,7 +37,7 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont, fw):
 
     try:
         fw_res = vmapped_func(*arrays)
-    except Exception as error:
+    except Exception:
         fw_res = None
 
     ivy.set_backend("jax")
@@ -53,14 +51,13 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont, fw):
 
     try:
         jax_res = jax_vmapped_func(*arrays)
-    except Exception as error:
+    except Exception:
         jax_res = None
 
     ivy.unset_backend()
 
     if fw_res is not None and jax_res is not None:
-        assert ivy.array_equal(fw_res, jax_res), f"Results from {ivy.current_backend_str()} and jax are not equal"
-        print("HIT")
+        assert ivy.array_equal(fw_res, jax_res), f"Results from {ivy.current_backend_str()} and jax are not equal"  # noqa
     elif fw_res is None and jax_res is None:
         pass
     else:

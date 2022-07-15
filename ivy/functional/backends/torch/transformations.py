@@ -1,5 +1,6 @@
 # global
 import functorch
+from typing import Callable, Union, Sequence, Optional
 
 # local
 import ivy

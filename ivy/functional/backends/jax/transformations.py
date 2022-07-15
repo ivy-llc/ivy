@@ -2,7 +2,7 @@
 import jax
 from typing import Callable, Union, Sequence, Optional
 # local
-import  ivy
+import ivy
 
 
 def vmap(func: Callable,

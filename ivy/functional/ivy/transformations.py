@@ -12,25 +12,34 @@ def vmap(func: Callable,
     func
         Function to be mapped over additional axes.
     in_axes
-       An integer, None, or (nested) standard Python container (tuple/list) thereof specifying which
-       input array axes to map over.If each positional argument to fun is an array, then in_axes can be
-       an integer, a None, or a tuple of integers and Nones with length equal to the number of positional
-       arguments to fun. An integer or None indicates which array axis to map over for all arguments
-       (with None indicating not to map any axis), and a tuple indicates which axis to map for each
-       corresponding positional argument. Axis integers must be in the range [-ndim, ndim) for each array,
-       where ndim is the number of dimensions (axes) of the corresponding input array.
+       An integer, None, or (nested) standard Python container
+       (tuple/list) thereof specifying which input array
+       axes to map over.If each positional argument to fun
+       is an array, then in_axes can be an integer, a None,
+       or a tuple of integers and Nones with length equal
+       to the number of positional arguments to fun. An
+       integer or None indicates which array axis to map
+       over for all arguments (with None indicating not to map any axis),
+       and a tuple indicates which axis to map for each
+       corresponding positional argument. Axis integers must
+       be in the range [-ndim, ndim) for each array,
+       where ndim is the number of dimensions (axes) of the
+       corresponding input array.
     out_axes
         An integer indicating where the mapped axis should appear in the output.
 
     Returns
     -------
     ret
-        Batched/vectorized version of func with arguments that correspond to those of func, but
-        with extra array axes at positions indicated by in_axes, and a return value that corresponds
-        to that of fun, but with extra array axes at positions indicated by out_axes.
+        Batched/vectorized version of func with arguments
+        that correspond to those of func, but with extra
+        array axes at positions indicated by in_axes,
+        and a return value that corresponds
+        to that of fun, but with extra array axes
+        at positions indicated by out_axes.
 
     This docstring is a summarised version of the
-    `docstring <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for
+    `docstring <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for  # noqa
     vmap from JAX documentation.
 
 
