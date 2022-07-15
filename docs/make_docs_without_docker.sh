@@ -27,5 +27,5 @@ find build/_images -type f -name "*[0-9].png" -delete
 python correct_built_html_files.py
 
 # delete the code
-./remove_files.sh
+bash ./remove_files.sh
 rm -rf remove_files.sh
