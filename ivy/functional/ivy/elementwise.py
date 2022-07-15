@@ -956,8 +956,8 @@ def bitwise_or(
 
     >>> x = ivy.array([[[1], [2], [3], [4]]])
     >>> y = ivy.array([4, 5, 6, 7])
-    >>> ivy.bitwise_or(x, y, out=x)
-    >>> print(x)
+    >>> z = ivy.bitwise_or(x, y)
+    >>> print(z)
     ivy.array([[[5, 5, 7, 7],
                 [6, 7, 6, 7],
                 [7, 7, 7, 7],
