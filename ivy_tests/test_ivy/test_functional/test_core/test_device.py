@@ -1,10 +1,12 @@
 """Collection of tests for unified device functions."""
-
+import io
 import math
 import multiprocessing
 
 # global
 import os
+import re
+import sys
 import time
 from numbers import Number
 
@@ -621,6 +623,38 @@ def test_get_all_arrays_on_dev(num, device):
     arr_ids_on_dev = [id(a) for a in ivy.get_all_ivy_arrays_on_dev(device).values()]
     for a in arrays:
         assert id(a) in arr_ids_on_dev
+
+
+@given(num=st.integers(0, 2), attr_only=st.booleans())
+def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
+    for _ in range(num):
+        ivy.array(np.random.uniform(size=2))
+
+    # Flush to avoid artifact
+    sys.stdout.flush()
+    # temporarily redirect output to a buffer
+    captured_output = io.StringIO()
+    sys.stdout = captured_output
+
+    ivy.print_all_ivy_arrays_on_dev(device, attr_only=attr_only)
+    # Flush again to make sure all data is printed
+    sys.stdout.flush()
+    written = captured_output.getvalue().splitlines()
+    # restore stdout
+    sys.stdout = sys.__stdout__
+
+    # Should have written same number of lines as the number of array in device
+    assert len(written) == len(ivy.get_all_ivy_arrays_on_dev(device))
+
+    if attr_only:
+        # Check that the attribute are printed are in the format of ((dim,...), type)
+        regex = r"^\(\((\d+,(\d,\d*)*)\), \'\w*\'\)$"
+    else:
+        # Check that the arrays are printed are in the format of ivy.array(...)
+        regex = r"^ivy\.array\(\[.*\]\)$"
+
+    # Apply the regex search
+    assert all([re.match(regex, line) for line in written])
 
 
 def test_total_mem_on_dev(device):
