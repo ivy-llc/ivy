@@ -1,11 +1,14 @@
 # global
 import numpy as np
-from functools import reduce
+from typing import Callable, Union, Sequence, Tuple, Optional
+
 #local
 import ivy
 
 
-def vmap(func, in_axes=0, out_axes=0):
+def vmap(func: Callable,
+         in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+         out_axes: Optional[int] = 0) -> Callable:
     @ivy.to_native_arrays_and_back
     def _vmap(*args):
 
@@ -33,11 +36,11 @@ def vmap(func, in_axes=0, out_axes=0):
                     axis_size.add(arg.shape[axis])
 
         if len(axis_size) > 1:
-            raise ValueError('''Inconsistent sizes. All axes should have the same size''')
+            raise ValueError('''Inconsistent sizes. All mapped axes should have the same size''')
 
         # Making sure not all in_axes are None
         if isinstance(in_axes, (list, tuple)):
-            assert not all(ax is None for ax in in_axes), "All in_axes should be non-None"
+            assert not all(ax is None for ax in in_axes), "At least one of the axes should be specified (not None)"
         else:
             assert not (in_axes is None), "in_axes should be non-None if integer"
 

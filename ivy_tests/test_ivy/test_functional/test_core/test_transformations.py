@@ -40,7 +40,6 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont, fw):
     try:
         fw_res = vmapped_func(*arrays)
     except Exception as error:
-        print("fw Error:", error)
         fw_res = None
 
     ivy.set_backend("jax")
@@ -55,16 +54,16 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont, fw):
     try:
         jax_res = jax_vmapped_func(*arrays)
     except Exception as error:
-        print("jax Error:", error)
         jax_res = None
 
     ivy.unset_backend()
 
     if fw_res is not None and jax_res is not None:
         assert ivy.array_equal(fw_res, jax_res), f"Results from {ivy.current_backend_str()} and jax are not equal"
-
+        print("HIT")
     elif fw_res is None and jax_res is None:
         pass
     else:
         assert False, "One of the results is None while other isn't"
+
     # TODO: Tune the examples generated
