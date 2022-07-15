@@ -1178,27 +1178,29 @@ def dtype_and_values(
     shape=None,
     shared_dtype=False,
     ret_shape=False,
+    dtype=None,
 ):
     if not isinstance(n_arrays, int):
         n_arrays = draw(n_arrays)
-    if n_arrays == 1:
-        dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-        dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
-    elif shared_dtype:
-        dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-        dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
-        dtype = [dtype[0] for _ in range(n_arrays)]
-    else:
-        unwanted_types = set(ivy.invalid_dtypes).union(
-            set(ivy.all_dtypes).difference(set(available_dtypes))
-        )
-        pairs = ivy.promotion_table.keys()
-        dtypes = [
-            pair for pair in pairs if not any([d in pair for d in unwanted_types])
-        ]
-        dtype = list(draw(st.sampled_from(dtypes)))
-        if n_arrays > 2:
-            dtype += [dtype[i % 2] for i in range(n_arrays - 2)]
+    if dtype is None:
+        if n_arrays == 1:
+            dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
+            dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+        elif shared_dtype:
+            dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
+            dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+            dtype = [dtype[0] for _ in range(n_arrays)]
+        else:
+            unwanted_types = set(ivy.invalid_dtypes).union(
+                set(ivy.all_dtypes).difference(set(available_dtypes))
+            )
+            pairs = ivy.promotion_table.keys()
+            dtypes = [
+                pair for pair in pairs if not any([d in pair for d in unwanted_types])
+            ]
+            dtype = list(draw(st.sampled_from(dtypes)))
+            if n_arrays > 2:
+                dtype += [dtype[i % 2] for i in range(n_arrays - 2)]
     if shape:
         shape = draw(shape)
     else:
