@@ -105,10 +105,13 @@ def asarray(
     x
         input data, in any form that can be converted to an array. This includes lists,
         lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
+    copy
+        boolean, indicating whether or not to copy the input. Default: ``None``.
     dtype
-        datatype, optional. Datatype is inferred from the input data.
+       output array data type. If ``dtype`` is ``None``, the output array data type must
+       be the default floating-point data type. Default  ``None``.
     device
-        device on which to place the created array. Default: None.
+       device on which to place the created array. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -412,10 +415,7 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 def tril(
-    x: Union[ivy.Array, ivy.NativeArray],
-    k: int = 0,
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -456,10 +456,7 @@ def tril(
 @handle_out_argument
 @handle_nestable
 def triu(
-    x: Union[ivy.Array, ivy.NativeArray],
-    k: int = 0,
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -701,8 +698,7 @@ def linspace(
 @to_native_arrays_and_back
 @handle_nestable
 def meshgrid(
-    *arrays: Union[ivy.Array, ivy.NativeArray],
-    indexing: Optional[str] = "xy"
+    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -862,9 +858,7 @@ def full(
 @handle_out_argument
 @handle_nestable
 def from_dlpack(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
