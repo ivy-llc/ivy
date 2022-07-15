@@ -2211,6 +2211,30 @@
 <span class="sd">    the function, and so the docstring for ivy.layer_norm also applies to this</span>
 <span class="sd">    method with minimal changes.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        Input array</span>
+<span class="sd">    normalized_idxs</span>
+<span class="sd">        Indices to apply the normalization to.</span>
+<span class="sd">    epsilon</span>
+<span class="sd">        small constant to add to the denominator, use global ivy._MIN_BASE by</span>
+<span class="sd">        default.</span>
+<span class="sd">    scale</span>
+<span class="sd">        Learnable gamma variables for post-multiplication, default is None.</span>
+<span class="sd">    offset</span>
+<span class="sd">        Learnable beta variables for post-addition, default is None.</span>
+<span class="sd">    new_std</span>
+<span class="sd">        The standard deviation of the new normalized values. Default is 1.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The layer after applying layer normalization.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.0976, -0.3452,  1.2740], \</span>
