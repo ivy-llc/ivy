@@ -107,20 +107,6 @@ For *nestable* functions which accept more than one argument, there should also 
 
 7. passes in :code:`ivy.Container` instances for multiple arguments
 
-In all cases, the containers should have at least two leaves.
-For example, the following container is okay to use for example purposes:
-
-.. code-block:: python
-
-    x = ivy.Container(a=ivy.array([0.]), b=ivy.array([1.]))
-
-Whereas the following container is not okay to use for example purposes:
-
-.. code-block:: python
-
-    x = ivy.Container(a=ivy.array([0.]))
-
-
 **Container Static Method Examples**
 
 To recap, *container static method* examples show the method being called like so
@@ -221,6 +207,11 @@ should:
 18. call the operator with a :code:`Number` on the left and an :code:`ivy.Container`
     instance on the right
 
+
+**Note**
+
+The docstring tests must run for all backends without any error. If the tests fail for a certain :code:`dtype`, then we should
+not include this :code:`dtype` in any of the docstring examples.
 
 **All Possible Variants**
 
