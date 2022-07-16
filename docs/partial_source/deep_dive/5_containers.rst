@@ -202,10 +202,10 @@ Please check out the explanation in the :ref:`Function Types` section first.
 The *nestable* behaviour is added to any function which is decorated with the
 `handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_
 wrapper. This wrapper causes the function to be applied at each leaf of any containers
-passed in the input. More on information on this can be found in the `Function Wrapping <https://github.com/unifyai/ivy/commit/384963a6d41801e713ec3d203b42bf78d1d7aa0d>`_
+passed in the input. More information on this can be found in the `Function Wrapping <https://github.com/unifyai/ivy/commit/384963a6d41801e713ec3d203b42bf78d1d7aa0d>`_
 section of the Deep Dive.
 
-Additionally, any nestable function which returns multiple arrays, will return multiple containers for the container method
+Additionally, any nestable function which returns multiple arrays, will return multiple containers for the it's container
 counterpart. This property makes the function symmetric with regards to the input-output behavior. Any argument in the input,
 can be replaced with a container, without changing the number of inputs.
 
