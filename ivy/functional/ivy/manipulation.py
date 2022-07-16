@@ -599,7 +599,6 @@ def clip(
         Minimum value.
     x_max
         Maximum value.
-
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
