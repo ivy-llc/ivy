@@ -209,7 +209,7 @@ Additionally, any nestable function which returns multiple arrays, will return m
 counterpart. This property makes the function symmetric with regards to the input-output behavior. Any argument in the input,
 can be replaced with a container, without changing the number of inputs.
 
-The current implementation, checks if the leafs of the container have a list of arrays. If they do, this container is then
+The current implementation checks if the leaves of the container have a list of arrays. If they do, this container is then
 unstacked to multiple containers(as many as the number of arrays), which are then returned inside a list.
 
 **Implicitly Nestable Functions**
