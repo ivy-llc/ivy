@@ -148,7 +148,9 @@ def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     >>> y = ivy.dev(x)
     >>> z = ivy.get_all_ivy_arrays_on_dev(y)
     >>> print(z)
-    {139740789224448:ivy.array([1,0,2])},
+    {
+        140462020989616: ivy.array([1, 0, 2], dtype=int32),
+    },
     """
     device = ivy.as_ivy_dev(device)
     all_arrays = list()
@@ -187,7 +189,6 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
     2
 
     >>> x1 = ivy.array([-1, 0, 5.2])
@@ -210,20 +211,19 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
-    3
+    0
 
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    2
+    0
 
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
     >>> x3 = ivy.native_array([2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
-    1
+    0
 
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
@@ -447,24 +447,30 @@ def used_mem_on_dev(
         The used memory on the device in GB.
     Examples
     --------
-    A "cpu" as device string:
+    A "cpu" as device, if process_precific
     >>> x = ivy.as_native_dev("cpu") as device
     >>> ivy.used_mem_on_dev(x)
+    >>> print(ivy.used_mem_on_dev(x))
+    802816
+
+    A "cpu" as device:
+    >>> x = ivy.as_native_dev("cpu") as device
+    >>> ivy.used_mem_on_dev(x)
+    >>> print(ivy.used_mem_on_dev(x))
+    vm = 8
     
-    A "gpu" as device string:
+    A "gpu" as device, if process specific:
     >>> y = ivy.as_native_dev("gpu:idx") as device
     >>> ivy.used_mem_on_dev(y)
-    
-    >>> ivy.set_backend("torch")
-    >>> z = ivy.as_native_dev("cpu")
-    >>> ivy.used_mem_on_dev(z)
-    
-    >>> import torch
-    >>> ivy.set_backend("torch")
-    >>> device = torch.device("cpu")
-    >>> ivy.default_device(as_native=True)
-    >>> ivy.used_mem_on_dev(device)
+    >>> print(ivy.used_mem_on_dev(y))
+    process-specific GPU queries are currently not supported
 
+     A "gpu" as device 
+    >>> y = ivy.as_native_dev("gpu:idx") as device
+    >>> ivy.used_mem_on_dev(y)
+    >>> print("Used memory:", ivy.used_mem_on_dev(y))
+    Used memory: 6
+    
     """
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
@@ -708,24 +714,6 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
     device
         The device to set as the default device
 
-    Examples
-    --------
-    >>> ivy.set_default_device("cpu")
-    >>> ivy.default_device()
-    'cpu'
-
-    >>> ivy.set_backend("torch")
-    >>> ivy.set_default_device("gpu:0")
-    >>> ivy.default_device(as_native=True)
-    device(type='cuda', index=0)
-
-    >>> import torch
-    >>> ivy.set_backend("torch")
-    >>> device = torch.device("cuda")
-    >>> ivy.set_default_device(device)
-    >>> ivy.default_device(as_native=True)
-    device(type='cuda')
-
     """
     global default_device_stack
     default_device_stack.append(device)
@@ -821,10 +809,9 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
     >>> x = ivy.split_factor()
     >>> print(x)
     0.0
-
     >>> y = ivy.split_factor("gpu:0")
     >>> print(y)
-    0.0
+    1.5
 
     """
     global split_factors
