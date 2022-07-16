@@ -3,7 +3,7 @@ import ivy
 import torch
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Tuple, List, Sequence
 
 
 # Array API Standard #
@@ -56,7 +56,9 @@ def permute_dims(x: torch.Tensor, axes: Tuple[int, ...]) -> torch.Tensor:
 
 
 def reshape(
-    x: torch.Tensor, shape: Tuple[int, ...], copy: Optional[bool] = None
+    x: torch.Tensor,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None,
 ) -> torch.Tensor:
     ret = torch.reshape(x, shape)
     return ret
@@ -210,7 +212,6 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    assert ivy.all(ivy.less(x_min, x_max))
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
@@ -219,3 +220,6 @@ def clip(
         x = x.to(promoted_type)
     ret = torch.clamp(x, x_min, x_max, out=out)
     return ret
+
+
+clip.unsupported_dtypes = ("float16",)
