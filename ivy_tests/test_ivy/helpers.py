@@ -1117,13 +1117,17 @@ def test_frontend_function(
 
 
 @st.composite
-def array_dtypes(draw, na=st.shared(st.integers(), key="num_arrays")):
+def array_dtypes(
+    draw,
+    na=st.shared(st.integers(), key="num_arrays"),
+    dtype_set=ivy_np.valid_float_dtypes,
+    shared_dtype=False,
+):
     size = na if isinstance(na, int) else draw(na)
-    return draw(
-        st.lists(
-            st.sampled_from(ivy_np.valid_float_dtypes), min_size=size, max_size=size
-        )
-    )
+    if shared_dtype:
+        dtype = draw(st.sampled_from(dtype_set))
+        return [dtype for _ in range(size)]
+    return draw(st.lists(st.sampled_from(dtype_set), min_size=size, max_size=size))
 
 
 @st.composite
