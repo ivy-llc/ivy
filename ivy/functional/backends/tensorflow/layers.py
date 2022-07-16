@@ -2,8 +2,11 @@
 
 # global
 import tensorflow as tf
-from typing import Optional, Tuple, Union, List
+from typing import Optional, Tuple, Union, List, Sequence
 from tensorflow.python.types.core import Tensor
+
+# local
+import ivy
 
 
 def conv1d(
@@ -15,15 +18,21 @@ def conv1d(
     dilations: int = 1,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCW":
-        x = tf.transpose(x, (0, 1, 2))
+        x = tf.transpose(x, (0, 2, 1))
     res = tf.nn.conv1d(x, filters, strides, padding, "NWC", dilations)
     if data_format == "NCW":
-        res = tf.transpose(res, (0, 1, 2))
+        res = tf.transpose(res, (0, 2, 1))
     return res
 
 
 def conv1d_transpose(
-    x, filters, strides, padding, output_shape=None, data_format="NWC", dilations=1
+    x,
+    filters,
+    strides,
+    padding,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format="NWC",
+    dilations=1,
 ):
     return tf.nn.conv1d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
@@ -47,7 +56,13 @@ def conv2d(
 
 
 def conv2d_transpose(
-    x, filters, strides, padding, output_shape=None, data_format="NHWC", dilations=1
+    x,
+    filters,
+    strides,
+    padding,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format="NHWC",
+    dilations=1,
 ):
     return tf.nn.conv2d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
@@ -80,7 +95,7 @@ def conv3d_transpose(
     filters: Tensor,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
-    output_shape: Optional[Tensor] = None,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
     dilations: int = 1,
 ) -> Tensor:

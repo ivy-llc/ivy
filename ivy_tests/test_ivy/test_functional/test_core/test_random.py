@@ -163,14 +163,12 @@ def test_seed(seed_val):
 
 # shuffle
 @given(
-    data=st.data(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
     as_variable=st.booleans(),
 )
-def test_shuffle(data, dtype, as_variable, device, call):
+def test_shuffle(dtype_and_x, as_variable, device, call):
     # smoke test
-    shape = data.draw(helpers.get_shape(min_num_dims=1))
-    x = data.draw(helpers.array_values(dtype, shape))
+    dtype, x = dtype_and_x
     x = ivy.array(x, dtype=dtype, device=device)
     if as_variable:
         x = ivy.variable(x)

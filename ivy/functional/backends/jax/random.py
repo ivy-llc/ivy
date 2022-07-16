@@ -4,9 +4,10 @@
 import jax
 import jax.numpy as jnp
 import jaxlib.xla_extension
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Union, Sequence
 
 # local
+import ivy
 from ivy.functional.backends.jax.device import to_device
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.jax import JaxArray
@@ -20,7 +21,7 @@ RNG = jax.random.PRNGKey(0)
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
     dtype=None,
@@ -38,7 +39,7 @@ def random_uniform(
 def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
@@ -95,7 +96,7 @@ def multinomial(
 def randint(
     low: int,
     high: int,
-    shape: Union[int, Sequence[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
