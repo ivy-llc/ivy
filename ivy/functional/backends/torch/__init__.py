@@ -12,6 +12,7 @@ NativeArray = torch.Tensor
 NativeVariable = torch.Tensor
 NativeDevice = torch.device
 NativeDtype = torch.dtype
+NativeShape = torch.Size
 
 # native data types
 native_int8 = torch.int8
