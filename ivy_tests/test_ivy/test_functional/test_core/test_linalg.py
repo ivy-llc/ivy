@@ -32,7 +32,7 @@ def test_vector_to_skew_symmetric_matrix(
     fw,
     a,
 ):
-    if "float16" or "int8" in input_dtype:
+    if "float16" in input_dtype or "int8" in input_dtype:
         return
     helpers.test_function(
         input_dtype,
@@ -1045,7 +1045,8 @@ def test_cross(
     container=st.booleans(),
     instance_method=st.booleans(),
     offset=st.integers(-10, 50),
-    axes=st.lists(st.integers(-2, 50), min_size=2, max_size=2, unique=True),
+    axes=st.lists(st.integers(-2, 1), min_size=2, max_size=2, unique=True)
+           .filter(lambda axes: axes[0] % 2 != axes[1] % 2),
 )
 def test_diagonal(
     dtype_x,
@@ -1070,8 +1071,9 @@ def test_diagonal(
         instance_method,
         fw,
         "diagonal",
+        x=np.asarray(x, dtype=dtype),
         offset=offset,
         axis1=axes[0],
         axis2=axes[1],
-        x=np.asarray(x, dtype=dtype),
+
     )
