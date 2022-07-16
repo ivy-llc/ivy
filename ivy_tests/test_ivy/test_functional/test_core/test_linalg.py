@@ -987,19 +987,22 @@ def test_cholesky(
 
 # cross
 @given(
-    input_dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_numeric_dtypes), 2),
+    dtype_x1_x2_axis=helpers.dtype_value1_value2_axis(
+        ivy_np.valid_numeric_dtypes,
+        min_num_dims=1,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=50,
+    ),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=helpers.list_of_length(st.booleans(), 2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
-    a=st.integers(1, 50),
-    b=st.integers(1, 50),
-    axis=st.integers(-1, 50),
 )
 def test_cross(
-    input_dtype,
+    dtype_x1_x2_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -1007,14 +1010,10 @@ def test_cross(
     container,
     instance_method,
     fw,
-    a,
-    b,
-    axis,
 ):
-    if "float16" or "int8" in input_dtype:
-        return
+    dtype, x1, x2, axis = dtype_x1_x2_axis
     helpers.test_function(
-        input_dtype,
+        dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -1023,9 +1022,9 @@ def test_cross(
         instance_method,
         fw,
         "cross",
+        x1=np.asarray(x1, dtype=dtype),
+        x2=np.asarray(x2, dtype=dtype),
         axis=axis,
-        x1=np.random.uniform(size=(a, b)).astype(input_dtype[0]),
-        x2=np.random.uniform(size=(a, b)).astype(input_dtype[1]),
     )
 
 
