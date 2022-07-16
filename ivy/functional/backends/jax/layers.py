@@ -5,7 +5,7 @@ import jax.lax as jlax
 
 # local
 from ivy.functional.backends.jax import JaxArray
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, Sequence, Optional
 
 
 def conv1d(
@@ -64,5 +64,18 @@ def conv3d(*_):
     raise Exception("Convolutions not yet implemented for jax library")
 
 
-def conv3d_transpose(*_):
-    raise Exception("Convolutions not yet implemented for jax library")
+def conv3d_transpose(
+    x: JaxArray,
+    filters: JaxArray,
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    data_format: str = "NDHWC"
+) -> JaxArray:
+    strides = [strides] * 3 if isinstance(strides, int) else strides
+    dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
+    dimension_numbers = (data_format, "HWDIO", data_format)
+    res = jlax.conv_transpose(
+        x, filters, strides, padding, dilations, dimension_numbers
+    )
+    return res
