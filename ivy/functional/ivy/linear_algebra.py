@@ -1087,6 +1087,8 @@ def svd(
 
     Parameters
     ----------
+    ..
+        NOTE: mxnet does not support full matrices.
     x
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form
         matrices on which to perform singular value decomposition. 
