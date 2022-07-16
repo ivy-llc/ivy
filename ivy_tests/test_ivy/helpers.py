@@ -1168,7 +1168,7 @@ def integers(draw, min_value=None, max_value=None):
 @st.composite
 def dtype_and_values(
     draw,
-    available_dtypes,
+    available_dtypes=ivy_np.valid_dtypes,
     n_arrays=1,
     min_value=None,
     max_value=None,
