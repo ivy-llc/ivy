@@ -49,7 +49,7 @@ def prod(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: np.dtype = None,
     keepdims: bool = False,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None and np.issubdtype(x.dtype, np.integer):
         if np.issubdtype(x.dtype, np.signedinteger) and x.dtype in [
@@ -88,7 +88,7 @@ def sum(
     axis: Union[int, Tuple[int]] = None,
     dtype: np.dtype = None,
     keepdims: bool = False,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None and np.issubdtype(x.dtype, np.integer):
         if np.issubdtype(x.dtype, np.signedinteger) and x.dtype in [
