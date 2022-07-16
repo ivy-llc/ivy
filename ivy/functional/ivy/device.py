@@ -1067,7 +1067,11 @@ class MultiDevNest(MultiDevIter):
     def __init__(self, data: Iterable, devices, max_depth=1):
         self._max_depth = max_depth
         super().__init__(data, devices)
-
+    def get_device(self, x):
+        if isinstance(x, MultiDevItem):
+            return x[device]
+        else:
+            return x
     # noinspection PyShadowingNames
     def at_dev(self, device):
         """Summary.
@@ -1079,7 +1083,7 @@ class MultiDevNest(MultiDevIter):
         """
         return ivy.nested_map(
             self._data,
-            lambda x: x[device] if isinstance(x, MultiDevItem) else x,
+            self.get_device(x),
             max_depth=self._max_depth,
         )
 
