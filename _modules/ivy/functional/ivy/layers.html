@@ -568,7 +568,7 @@
         <span class="n">mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_repeat</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="s2">&quot;... q k -&gt; ... h q k&quot;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">num_heads</span><span class="p">)</span>
 
     <span class="c1"># BS x H x Q x F</span>
-    <span class="n">sdpa</span> <span class="o">=</span> <span class="n">scaled_dot_product_attention</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+    <span class="n">sdpa</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">scaled_dot_product_attention</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
 
     <span class="c1"># BS x Q x (HxF)</span>
     <span class="n">sdpa</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="n">sdpa</span><span class="p">,</span> <span class="s2">&quot;... h q f -&gt; ... q (h f)&quot;</span><span class="p">)</span>
