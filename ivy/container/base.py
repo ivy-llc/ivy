@@ -206,6 +206,11 @@ class ContainerBase(dict, abc.ABC):
         if ivy.exists(out):
             out.inplace_update(ret)
             ret = out
+
+        for values in ret.values():
+            if isinstance(values, list):
+                return ret.unstack(0)
+
         return ret
 
     @staticmethod
