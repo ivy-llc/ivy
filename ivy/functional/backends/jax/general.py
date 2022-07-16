@@ -49,7 +49,7 @@ def copy_array(x: JaxArray) -> JaxArray:
 
 
 def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
-    return jnp.array_equal(x0, x1)
+    return bool(jnp.array_equal(x0, x1))
 
 
 def to_numpy(x: JaxArray) -> np.ndarray:
@@ -207,7 +207,7 @@ def scatter_nd(
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     if reduction == "sum":
         if not target_given:
