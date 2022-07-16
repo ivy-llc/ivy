@@ -444,14 +444,27 @@ def check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np):
     # check for unsupported dtypes
     test_unsupported = False
     unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
-    for d in input_dtypes:
-        if d in unsupported_dtypes_fn:
+    supported_dtypes_fn = ivy.function_supported_dtypes(fn)
+    if unsupported_dtypes_fn:
+        for d in input_dtypes:
+            if d in unsupported_dtypes_fn:
+                test_unsupported = True
+                break
+        if (
+            "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["dtype"] in unsupported_dtypes_fn
+        ):
             test_unsupported = True
-            break
-    if "dtype" in all_as_kwargs_np and all_as_kwargs_np[
-        "dtype"
-    ] in ivy.function_unsupported_dtypes(fn):
-        test_unsupported = True
+    if supported_dtypes_fn and not test_unsupported:
+        for d in input_dtypes:
+            if d not in supported_dtypes_fn:
+                test_unsupported = True
+                break
+        if (
+            "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["dtype"] not in supported_dtypes_fn
+        ):
+            test_unsupported = True
     return test_unsupported
 
 
@@ -473,12 +486,14 @@ def create_args_kwargs(
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
 
     # assert that the number of arrays aligns with the dtypes and as_variable_flags
-    assert len(arg_np_vals) + len(kwarg_np_vals) == len(input_dtypes), (
-        "Found {} arrays in the input arguments, but {} dtypes and as_variable_flags. "
-        "Make sure to pass in a sequence of bools for all associated boolean flag "
-        "inputs to test_function, with the sequence length being equal to the "
-        "number of arrays in the arguments."
-    )
+    num_arrays = len(arg_np_vals) + len(kwarg_np_vals)
+    if num_arrays > 0:
+        assert num_arrays == len(input_dtypes), (
+            "Found {} arrays in the input arguments, but {} dtypes and "
+            "as_variable_flags. Make sure to pass in a sequence of bools for all "
+            "associated boolean flag inputs to test_function, with the sequence length "
+            "being equal to the number of arrays in the arguments."
+        )
 
     # create args
     num_arg_vals = len(arg_np_vals)
@@ -602,8 +617,6 @@ def test_method(
         v if ivy.is_float_dtype(d) else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
-    # tolerance dict for dtypes
-    # tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 
     # change all data types so that they are supported by this framework
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
@@ -761,11 +774,6 @@ def test_function(
         input_dtypes, as_variable_flags, native_array_flags, container_flags
     )
 
-    # skip if the data type is not supported by the backend framework
-    for dtype in input_dtypes:
-        if dtype in ivy.invalid_dtypes:
-            return
-
     # make all lists equal in length
     num_arrays = max(
         len(input_dtypes),
@@ -799,14 +807,27 @@ def test_function(
 
     fn = getattr(ivy, fn_name)
     test_unsupported = check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np)
-    args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
-        args_np,
-        kwargs_np,
-        input_dtypes,
-        as_variable_flags,
-        native_array_flags,
-        container_flags,
-    )
+    if test_unsupported:
+        try:
+            args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+                args_np,
+                kwargs_np,
+                input_dtypes,
+                as_variable_flags,
+                native_array_flags,
+                container_flags,
+            )
+        except Exception:
+            return
+    else:
+        args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+            args_np,
+            kwargs_np,
+            input_dtypes,
+            as_variable_flags,
+            native_array_flags,
+            container_flags,
+        )
 
     # run either as an instance method or from the API directly
     instance = None
@@ -864,21 +885,40 @@ def test_function(
         return
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
-    fn = getattr(ivy, fn_name)
-    test_unsupported = check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np)
-    # create args
-    args, kwargs, _, _, _ = create_args_kwargs(
-        args_np,
-        kwargs_np,
-        input_dtypes,
-        as_variable_flags,
-        native_array_flags,
-        container_flags,
-    )
-    if test_unsupported:
-        test_unsupported_function(ivy.__dict__[fn_name], args, kwargs)
-        return
-    ret_from_gt = ivy.to_native(ivy.__dict__[fn_name](*args, **kwargs), nested=True)
+    try:
+        fn = getattr(ivy, fn_name)
+        test_unsupported = check_unsupported_dtype(fn, input_dtypes, all_as_kwargs_np)
+        # create args
+        if test_unsupported:
+            try:
+                args, kwargs, _, _, _ = create_args_kwargs(
+                    args_np,
+                    kwargs_np,
+                    input_dtypes,
+                    as_variable_flags,
+                    native_array_flags,
+                    container_flags,
+                )
+            except Exception:
+                ivy.unset_backend()
+                return
+        else:
+            args, kwargs, _, _, _ = create_args_kwargs(
+                args_np,
+                kwargs_np,
+                input_dtypes,
+                as_variable_flags,
+                native_array_flags,
+                container_flags,
+            )
+        if test_unsupported:
+            test_unsupported_function(ivy.__dict__[fn_name], args, kwargs)
+            ivy.unset_backend()
+            return
+        ret_from_gt = ivy.to_native(ivy.__dict__[fn_name](*args, **kwargs), nested=True)
+    except Exception as e:
+        ivy.unset_backend()
+        raise e
     ivy.unset_backend()
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -953,7 +993,6 @@ def test_frontend_function(
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
-    # tolerance dict for dtypes
 
     # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
     *frontend_submods, fn_name = fn_name.split(".")
@@ -969,12 +1008,19 @@ def test_frontend_function(
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
 
     # create args
-    args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
-        args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags
-    )
-
-    # create ivy array args
-    args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
+    if test_unsupported:
+        try:
+            args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+                args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags
+            )
+            args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
+        except Exception:
+            return
+    else:
+        args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+            args_np, kwargs_np, input_dtypes, as_variable_flags, native_array_flags
+        )
+        args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
 
     # frontend function
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name]
@@ -1015,39 +1061,43 @@ def test_frontend_function(
 
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
-
-    # check for unsupported dtypes in frontend framework
-    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
-    test_unsupported = check_unsupported_dtype(function, input_dtypes, all_as_kwargs_np)
-
-    # create frontend framework args
-    args_frontend = ivy.nested_map(
-        args_np,
-        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
-    )
-    kwargs_frontend = ivy.nested_map(
-        kwargs_np,
-        lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
-    )
-
-    # compute the return via the frontend framework
-    frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
-    if test_unsupported:
-        test_unsupported_function(
-            frontend_fw.__dict__[fn_name], args_frontend, kwargs_frontend
+    try:
+        # check for unsupported dtypes in frontend framework
+        function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
+        test_unsupported = check_unsupported_dtype(
+            function, input_dtypes, all_as_kwargs_np
         )
-        return
-    frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
-    # tuplify the frontend return
-    if not isinstance(frontend_ret, tuple):
-        frontend_ret = (frontend_ret,)
+        # create frontend framework args
+        args_frontend = ivy.nested_map(
+            args_np,
+            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        )
+        kwargs_frontend = ivy.nested_map(
+            kwargs_np,
+            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        )
 
-    # flatten the frontend return and convert to NumPy arrays
-    frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
-    frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+        # compute the return via the frontend framework
+        frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
+        if test_unsupported:
+            test_unsupported_function(
+                frontend_fw.__dict__[fn_name], args_frontend, kwargs_frontend
+            )
+            return
+        frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
+        # tuplify the frontend return
+        if not isinstance(frontend_ret, tuple):
+            frontend_ret = (frontend_ret,)
+
+        # flatten the frontend return and convert to NumPy arrays
+        frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
+        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+    except Exception as e:
+        ivy.unset_backend()
+        raise e
     # unset frontend framework from backend
     ivy.unset_backend()
 
@@ -1067,13 +1117,17 @@ def test_frontend_function(
 
 
 @st.composite
-def array_dtypes(draw, na=st.shared(st.integers(), key="num_arrays")):
+def array_dtypes(
+    draw,
+    na=st.shared(st.integers(), key="num_arrays"),
+    dtype_set=ivy_np.valid_float_dtypes,
+    shared_dtype=False,
+):
     size = na if isinstance(na, int) else draw(na)
-    return draw(
-        st.lists(
-            st.sampled_from(ivy_np.valid_float_dtypes), min_size=size, max_size=size
-        )
-    )
+    if shared_dtype:
+        dtype = draw(st.sampled_from(dtype_set))
+        return [dtype for _ in range(size)]
+    return draw(st.lists(st.sampled_from(dtype_set), min_size=size, max_size=size))
 
 
 @st.composite
@@ -1114,7 +1168,7 @@ def integers(draw, min_value=None, max_value=None):
 @st.composite
 def dtype_and_values(
     draw,
-    available_dtypes,
+    available_dtypes=ivy_np.valid_dtypes,
     n_arrays=1,
     min_value=None,
     max_value=None,
@@ -1128,27 +1182,29 @@ def dtype_and_values(
     shape=None,
     shared_dtype=False,
     ret_shape=False,
+    dtype=None,
 ):
     if not isinstance(n_arrays, int):
         n_arrays = draw(n_arrays)
-    if n_arrays == 1:
-        dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-        dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
-    elif shared_dtype:
-        dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-        dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
-        dtype = [dtype[0] for _ in range(n_arrays)]
-    else:
-        unwanted_types = set(ivy.invalid_dtypes).union(
-            set(ivy.all_dtypes).difference(set(available_dtypes))
-        )
-        pairs = ivy.promotion_table.keys()
-        dtypes = [
-            pair for pair in pairs if not any([d in pair for d in unwanted_types])
-        ]
-        dtype = list(draw(st.sampled_from(dtypes)))
-        if n_arrays > 2:
-            dtype += [dtype[i % 2] for i in range(n_arrays - 2)]
+    if dtype is None:
+        if n_arrays == 1:
+            dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
+            dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+        elif shared_dtype:
+            dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
+            dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
+            dtype = [dtype[0] for _ in range(n_arrays)]
+        else:
+            unwanted_types = set(ivy.invalid_dtypes).union(
+                set(ivy.all_dtypes).difference(set(available_dtypes))
+            )
+            pairs = ivy.promotion_table.keys()
+            dtypes = [
+                pair for pair in pairs if not any([d in pair for d in unwanted_types])
+            ]
+            dtype = list(draw(st.sampled_from(dtypes)))
+            if n_arrays > 2:
+                dtype += [dtype[i % 2] for i in range(n_arrays - 2)]
     if shape:
         shape = draw(shape)
     else:

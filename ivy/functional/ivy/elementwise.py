@@ -1272,11 +1272,35 @@ def cos(
 
     Examples
     --------
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.cos(x)
     >>> print(y)
     ivy.array([1., 0.54, -0.416])
 
+    >>> x = ivy.array([4., 0., -6.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.cos(x, out=y)
+    >>> print(y)
+    ivy.array([-0.654, 1., 0.96])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([1., 0., 2.])
+    >>> y = ivy.cos(x)
+    >>> print(y)
+    ivy.array([0.54 , 1., -0.416])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+    >>> y = ivy.cos(x)
+    >>> print(y)
+    {
+        a: ivy.array([1., 0.54, 0.54]),
+        b: ivy.array([0.54, 1., 0.96])
+    }
     """
     return current_backend(x).cos(x, out=out)
 
@@ -3384,6 +3408,36 @@ def sinh(
         an array containing the hyperbolic sine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.sinh(x)
+    >>> print(y)
+        ivy.array([1.18, 3.63, 10.])
+
+    >>> x = ivy.array([0.23, 3., -1.2])
+    >>> ivy.sinh(x, out=x)
+    >>> print(x)
+        ivy.array([0.232, 10., -1.51])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([2, 4, 7])
+    >>> y = ivy.sinh(x)
+    >>> print(y)
+        ivy.array([3.63, 27.3, 548.])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.23, -0.25, 1]), b=ivy.array([3, -4, 1.26]))
+    >>> y = ivy.sinh(x)
+    >>> print(y)
+    {
+        a: ivy.array([0.232, -0.253, 1.18]),
+        b: ivy.array([10., -27.3, 1.62])
+    }
     """
     return current_backend(x).sinh(x, out=out)
 
@@ -3436,7 +3490,7 @@ def sqrt(
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([0, 4., 8.])
     >>> y = ivy.sqrt(x)
     >>> print(y)
@@ -3459,7 +3513,7 @@ def sqrt(
     ivy.array([nan, 31.6, 5.83])
 
     With :code:`ivy.Container` input:
-    
+
     >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]]))
     >>> y = ivy.sqrt(x)
     >>> print(y)
@@ -3473,7 +3527,7 @@ def sqrt(
     ------------------------
 
     Using :code:`ivy.Array` instance method:
-    
+
     >>> x = ivy.array([[1., 2.],  [3., 4.]])
     >>> y = x.sqrt()
     >>> print(y)
@@ -3481,7 +3535,7 @@ def sqrt(
                [1.73, 2.  ]])
 
     Using :code:`ivy.Container` instance method:
-    
+
     >>> x = ivy.Container(a=ivy.array([0., 100., 27.]), b=ivy.native_array([93., 54., 25.]))
     >>> y = x.sqrt()
     >>> print(y)
@@ -3489,7 +3543,7 @@ def sqrt(
         a: ivy.array([0., 10., 5.2]),
         b: ivy.array([9.64, 7.35, 5.])
     }
-    
+
     """
     return current_backend(x).sqrt(x, out=out)
 
