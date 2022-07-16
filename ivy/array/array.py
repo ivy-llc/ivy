@@ -313,6 +313,20 @@ class Array(
         function, and so the docstring for ivy.add also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type.
+        other
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
         Examples
         --------
         With :code:`ivy.Array` instances only:
@@ -347,6 +361,20 @@ class Array(
         ivy.Array reverse special method variant of ivy.add. This method simply wraps
         the function, and so the docstring for ivy.add also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type.
+        other
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
 
         Examples
         --------

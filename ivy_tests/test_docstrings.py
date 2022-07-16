@@ -55,7 +55,10 @@ def test_docstrings(backend):
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = ["cross_entropy"]
+    skip_arr_cont = [
+        "cross_entropy",
+        "depthwise_conv2d",
+    ]
 
     # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp
@@ -88,11 +91,10 @@ def test_docstrings(backend):
             failures.append(k)
 
     if not success:
-        ivy.warn(
-            "the following methods had failing docstrings:\n\n{}".format(
-                "\n".join(failures)
-            )
+        assert (
+            success
+        ), "\nThe following methods had failing docstrings:\n\n{}\n".format(
+            "\n".join(failures)
         )
-        assert success
 
     ivy.unset_backend()
