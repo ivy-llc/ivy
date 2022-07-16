@@ -1,11 +1,11 @@
 """Collection of tests for creation functions."""
 
 # global
-
 import numpy as np
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import hypothesis.extra.numpy as hnp
@@ -92,6 +92,7 @@ def test_linspace(
         num=num,
         axis=axis,
         device=device,
+        dtype=dtype,
     )
 
 
@@ -432,17 +433,45 @@ def test_full(
     )
 
 
+@st.composite
+def _dtype(draw):
+    return draw(
+        st.shared(
+            helpers.list_of_length(st.sampled_from(ivy_np.valid_numeric_dtypes), 1),
+            key="dtype",
+        )
+    )
+
+
+@st.composite
+def _fill_value(draw):
+    dtype = draw(_dtype())[0]
+    if ivy.is_int_dtype(dtype):
+        # ToDo: set min to -5 for int and add an explicitl uint check, once
+        #  ivy.is_uint_dtype is implemented
+        return draw(st.integers(0, 5))
+    return draw(st.floats(-5, 5))
+
+
+@st.composite
+def _dtype_and_values(draw):
+    return draw(
+        helpers.dtype_and_values(
+            ivy_np.valid_numeric_dtypes,
+            n_arrays=1,
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+            dtype=draw(_dtype()),
+        )
+    )
+
+
 # full_like()
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-    ),
-    fill_value=st.integers(-5, 5) | st.floats(-5, 5),
+    dtype_and_x=_dtype_and_values(),
+    fill_value=_fill_value(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="full_like"),
@@ -461,7 +490,6 @@ def test_full_like(
     fill_value,
 ):
     dtype, x = dtype_and_x
-
     helpers.test_function(
         dtype,
         as_variable,

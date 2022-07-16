@@ -28,6 +28,19 @@ class ArrayWithDataTypes(abc.ABC):
         the function, and so the docstring for `ivy.can_cast` also applies to this
         method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array from which to cast.
+        to
+            desired data type.
+
+        Returns
+        -------
+        ret
+            ``True`` if the cast can occur according to :ref:`type-promotion` rules;
+            otherwise, ``False``.
+
         Examples
         --------
         >>> x = ivy.array([1., 2., 3.])
