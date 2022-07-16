@@ -13,6 +13,7 @@ NativeArray = mx.nd.NDArray
 NativeVariable = mx.nd.NDArray
 NativeDevice = mx.context.Context
 NativeDtype = type
+NativeShape = tuple
 
 # native data types
 native_int8 = np.int8
