@@ -255,7 +255,7 @@ where the :code:`dtype` argument is optional and :code:`ivy.default_dtype` is ca
 backend-specific implementation.
 
 Unsupported data types
-----------------------------
+----------------------
 
 Some backend functions have an attribute named :code:`unsupported_dtypes` which flags data types
 which this particular backend version of the function doesn't support but other backends might
