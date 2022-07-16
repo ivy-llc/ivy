@@ -1,6 +1,6 @@
 # global
 import tensorflow as tf
-from typing import Union, Tuple, List, Optional
+from typing import Union, Sequence, List, Optional
 
 # local
 import ivy
@@ -101,7 +101,7 @@ def asarray(object_in, *, copy=None, dtype: tf.DType = None, device: str):
 
 
 def empty(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str,
@@ -154,19 +154,25 @@ def from_dlpack(x):
     return tf.experimental.dlpack.from_dlpack(x)
 
 
+def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
+    assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
+        ivy.is_float_dtype(dtype) and isinstance(fill_value, float)
+    ), "the fill_value and data type"
+
+
 def full(
-    shape: Union[int, Tuple[int, ...]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float],
     *,
-    dtype: tf.DType = None,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
+    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     with tf.device(as_native_dev(default_device(device))):
         return tf.fill(
             shape,
-            tf.constant(
-                fill_value, dtype=as_native_dtype(default_dtype(dtype, fill_value))
-            ),
+            tf.constant(fill_value, dtype=dtype),
         )
 
 
@@ -174,10 +180,11 @@ def full_like(
     x: Union[tf.Tensor, tf.Variable],
     fill_value: Union[int, float],
     *,
-    dtype: tf.DType,
+    dtype: Optional[Union[ivy.Dtype, tf.DType]] = None,
     device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = tf.DType(dtype) if dtype is str else dtype
+    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     device = as_native_dev(default_device(device))
     with tf.device(device):
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
@@ -188,6 +195,7 @@ def linspace(
 ):
     if axis is None:
         axis = -1
+    dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
     with tf.device(ivy.as_native_dev(device)):
         start = tf.constant(start, dtype=dtype)
@@ -196,8 +204,6 @@ def linspace(
             ans = tf.linspace(start, stop, num + 1, axis=axis)[:-1]
         else:
             ans = tf.linspace(start, stop, num, axis=axis)
-        if dtype is None:
-            dtype = tf.float32
         ans = tf.cast(ans, dtype)
         return ans
 
@@ -210,7 +216,7 @@ def meshgrid(
 
 
 def ones(
-    shape: Union[int, Tuple[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str,
@@ -242,7 +248,7 @@ def triu(x: Union[tf.Tensor, tf.Variable], k: int = 0) -> Union[tf.Tensor, tf.Va
 
 
 def zeros(
-    shape: Union[int, Tuple[int], List[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: tf.DType,
     device: str,
