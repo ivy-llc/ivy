@@ -6,9 +6,11 @@ from typing import Callable, Union, Sequence, Optional
 import ivy
 
 
-def vmap(func: Callable,
-         in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-         out_axes: Optional[int] = 0) -> Callable:
+def vmap(
+    func: Callable,
+    in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+    out_axes: Optional[int] = 0,
+) -> Callable:
     @ivy.to_native_arrays_and_back
     def _vmap(*args):
 
@@ -20,9 +22,11 @@ def vmap(func: Callable,
             try:
                 assert (len(args)) == len(in_axes)
             except AssertionError:
-                raise Exception('''The in_axes should have length equivalent to the 
+                raise Exception(
+                    """The in_axes should have length equivalent to the 
                 number of positional arguments to the function being vectorized
-                or it should be an integer.''')
+                or it should be an integer."""
+                )
 
         # checking uniqueness of axis_size
         axis_size = set()
@@ -36,13 +40,17 @@ def vmap(func: Callable,
                     axis_size.add(arg.shape[axis])
 
         if len(axis_size) > 1:
-            raise ValueError('''Inconsistent sizes. All mapped axes should have the same size''')  # noqa
+            raise ValueError(
+                """Inconsistent sizes. All mapped axes should have the same size"""
+            )
 
         # Making sure not all in_axes are None
         if isinstance(in_axes, (list, tuple)):
-            assert not all(ax is None for ax in in_axes), "At least one of the axes should be specified (not None)"  # noqa
+            assert not all(
+                ax is None for ax in in_axes
+            ), "At least one of the axes should be specified (not None)"
         else:
-            assert not (in_axes is None), "in_axes should be non-None if integer"
+            assert not (in_axes is None), "single value in_axes should not be None"
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
@@ -52,8 +60,10 @@ def vmap(func: Callable,
                     none_axis_index.append(index)
 
             for none_mapped_axis in none_axis_index:
-                args[none_mapped_axis] = np.broadcast_to(args[none_mapped_axis],
-                                                         (tuple(axis_size) + args[none_mapped_axis].shape))  # noqa
+                args[none_mapped_axis] = np.broadcast_to(
+                    args[none_mapped_axis],
+                    (tuple(axis_size) + args[none_mapped_axis].shape),
+                )
 
         # set up the axis to be mapped to index zero.
         if isinstance(in_axes, (tuple, list)):

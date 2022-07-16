@@ -58,7 +58,8 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont, fw):
     ivy.unset_backend()
 
     if fw_res is not None and jax_res is not None:
-        assert np.allclose(fw_res, jax_res), f"Results from {ivy.current_backend_str()} and jax are not equal"  # noqa
+        assert np.allclose(fw_res, jax_res),\
+            f"Results from {ivy.current_backend_str()} and jax are not equal"
 
     elif fw_res is None and jax_res is None:
         pass
