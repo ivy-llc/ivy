@@ -209,7 +209,9 @@ class ContainerBase(dict, abc.ABC):
 
         for values in ret.values():
             if isinstance(values, list):
-                return ret.unstack(0)
+                for v in values:
+                    if isinstance(v, ivy.Array):
+                        return ret.unstack(0)
 
         return ret
 
