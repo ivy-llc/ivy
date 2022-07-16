@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>floormod &mdash; Ivy 1.0 documentation</title>
+  <title>to_ivy_shape &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="unstack" href="unstack.html" />
-    <link rel="prev" title="clip_matrix_norm" href="clip_matrix_norm.html" /> 
+    <link rel="next" title="to_native_shape" href="to_native_shape.html" />
+    <link rel="prev" title="default" href="default.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -74,14 +74,14 @@
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip_matrix_norm.html">clip_matrix_norm</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">floormod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fourier_encode.html">fourier_encode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="value_is_nan.html">value_is_nan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="has_nans.html">has_nans</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exists.html">exists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default.html">default</a></li>
-<li class="toctree-l2"><a class="reference internal" href="to_ivy_shape.html">to_ivy_shape</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">to_ivy_shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_native_shape.html">to_native_shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="try_else_none.html">try_else_none</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arg_names.html">arg_names</a></li>
@@ -188,9 +188,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../general.html">General</a> &raquo;</li>
-      <li>floormod</li>
+      <li>to_ivy_shape</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/general/floormod.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/to_ivy_shape.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -198,26 +198,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="floormod">
-<h1>floormod<a class="headerlink" href="#floormod" title="Permalink to this heading"></a></h1>
+  <section id="to-ivy-shape">
+<h1>to_ivy_shape<a class="headerlink" href="#to-ivy-shape" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.general.floormod">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">floormod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#floormod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.floormod" title="Permalink to this definition"></a></dt>
-<dd><p>Returns element-wise remainder of division.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.general.to_ivy_shape">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">to_ivy_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#to_ivy_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_ivy_shape" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the input shape in ivy.Shape form</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – array, input to floormod</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – array, denominator input for floormod.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-inputs broadcast to.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeShape</span></code>]) – The input to be converted</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – An array of the same shape and type as x, with the elements floor modded.</p>
+<dd class="field-odd"><p><em>ret</em> – the input in ivy.Shape form</p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,8 +228,8 @@ inputs broadcast to.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="clip_matrix_norm.html" class="btn btn-neutral float-left" title="clip_matrix_norm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="unstack.html" class="btn btn-neutral float-right" title="unstack" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="default.html" class="btn btn-neutral float-left" title="default" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="to_native_shape.html" class="btn btn-neutral float-right" title="to_native_shape" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
