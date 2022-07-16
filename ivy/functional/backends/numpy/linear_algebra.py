@@ -137,7 +137,8 @@ def solve(x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
 
 
 def svd(
-    x: np.ndarray, full_matrices: bool = True
+    x: np.ndarray, 
+    full_matrices: bool = True
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
     results = namedtuple("svd", "U S Vh")
     U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)

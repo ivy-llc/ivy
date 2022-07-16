@@ -1078,6 +1078,7 @@ def solve(
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     full_matrices: bool = True,
+    *,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     """Returns a singular value decomposition A = USVh of a matrix (or a stack of
     matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal
@@ -1088,17 +1089,13 @@ def svd(
     ----------
     x
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-        matrices on which to perform singular value decomposition. Should have a
-        floating-point data type.
+        matrices on which to perform singular value decomposition. 
+        Should have a floating-point data type.
     full_matrices
         If ``True``, compute full-sized ``U`` and ``Vh``, such that ``U`` has shape
         ``(..., M, M)`` and ``Vh`` has shape ``(..., N, N)``. If ``False``, compute on
         the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)``
         and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``.
-        Default: ``True``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------
@@ -1106,10 +1103,9 @@ def svd(
       NOTE: once complex numbers are supported, each square matrix must be Hermitian.
     ret
         a namedtuple ``(U, S, Vh)`` whose
-
-        -   first element must have the field name ``U`` and must be an array whose
-            shape depends on the value of ``full_matrices`` and contain matrices with
-            orthonormal columns (i.e., the columns are left singular vectors). If
+        -   first element must have the field name ``U`` and must be an array that 
+            contains matrices with orthonormal columns (i.e., the columns are left 
+            singular vectors) whose shape depends on the value of ``full_matrices``. If
             ``full_matrices`` is ``True``, the array must have shape ``(..., M, M)``.
             If ``full_matrices`` is ``False``, the array must have shape
             ``(..., M, K)``, where ``K = min(M, N)``. The first ``x.ndim-2`` dimensions
@@ -1133,6 +1129,24 @@ def svd(
 
     Examples
     --------
+    >>> A = [[0.0, 1.0, 0.0, 0.0], \
+            [0.0, 0.0, 2.0, 0.0], \
+            [0.0, 0.0, 0.0, 3.0], \
+            [0.0, 0.0, 0.0, 0.0]]
+    >>> U, S, Vh = ivy.svd(A)
+    >>> print(U)
+    ivy.array([[0.0, 0.0, 1.0, 0.0] \
+                [0.0, 1.0, 0.0, 0.0] \
+                [1.0, 0.0, 0.0, 0.0] \
+                [0.0, 0.0, 0.0, 1.0]])
+    >>> print(S)
+    ivy.array([3.0, 2.0, 1.0, 0.0])
+    >>> print(Vh)
+    ivy.array([[0.0, 0.0, 0.0, 1.0] \
+                [0.0, 0.0, 1.0, 0.0] \
+                [0.0, 1.0, 0.0, 0.0] \
+                [1.0, 0.0, 0.0, 0.0]])
+
     >>> x = ivy.random_normal(shape = (9, 6))
     >>> U, S, Vh = ivy.svd(x)
     >>> print(U.shape, S.shape, Vh.shape)

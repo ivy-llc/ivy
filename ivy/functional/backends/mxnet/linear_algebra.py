@@ -140,8 +140,14 @@ def slogdet(
     return res
 
 
-def svd(x: NDArray, full_matrices: bool = True) -> Union[NDArray, Tuple[NDArray, ...]]:
-    return mx.np.linalg.svd(x)
+def svd(
+    x: NDArray, 
+    full_matrices: bool = True
+) -> Union[NDArray, Tuple[NDArray, ...]]:
+    results = namedtuple("svd", "U S Vh")
+    U, D, VT = mx.np.linalg.svd(x)
+    ret = results(U, D, VT)
+    return ret
 
 
 def trace(x: NDArray, offset: int = 0) -> mx.np.ndarray:
