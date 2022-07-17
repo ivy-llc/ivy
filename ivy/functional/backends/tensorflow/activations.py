@@ -11,7 +11,7 @@ from tensorflow.python.types.core import Tensor
 # local
 
 
-def relu(x: Tensor, out: Optional[Tensor] = None) -> Tensor:
+def relu(x: Tensor) -> Tensor:
     return tf.nn.relu(x)
    
 
