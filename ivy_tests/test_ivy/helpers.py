@@ -916,9 +916,9 @@ def test_function(
             ivy.unset_backend()
             return
         ret_from_gt = ivy.to_native(ivy.__dict__[fn_name](*args, **kwargs), nested=True)
-    except Exception:
+    except Exception as e:
         ivy.unset_backend()
-        assert False
+        raise e
     ivy.unset_backend()
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -1095,9 +1095,9 @@ def test_frontend_function(
         frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
         frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
         frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
-    except Exception:
+    except Exception as e:
         ivy.unset_backend()
-        assert False
+        raise e
     # unset frontend framework from backend
     ivy.unset_backend()
 
