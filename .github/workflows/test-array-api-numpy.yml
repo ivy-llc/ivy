@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 jobs:
   run-numpy-array-api-tests:
-    if: ${{ github.event.label.name == ''}}
+    if: ${{ github.event.label.name == None}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
