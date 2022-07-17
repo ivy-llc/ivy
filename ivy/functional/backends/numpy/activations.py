@@ -34,7 +34,7 @@ def gelu(x, approximate: Optional[bool] = True) -> np.ndarray:
 
 
 def sigmoid(x: np.ndarray) -> np.ndarray:
-    return 1 / (1 + np.exp(-x)).astype(x.dtype)
+    return (1 / (1 + np.exp(-x))).astype(x.dtype) 
 
 
 def tanh(x: np.ndarray) -> np.ndarray:
