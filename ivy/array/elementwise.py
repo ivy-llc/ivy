@@ -437,6 +437,45 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.remainder(self._data, x2, out=out)
 
     def round(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.round. This method simply wraps the
+        function, and so the docstring for ivy.round also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the rounded result for each element in ``self``. The
+            returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([6.3, -8.1, 0.5, -4.2, 6.8])
+        >>> y = x.round()
+        >>> print(y)
+        ivy.array([ 6., -8.,  0., -4.,  7.])
+
+        >>> x = ivy.array([-94.2, 256.0, 0.0001, -0.0001, 36.6])
+        >>> y = x.round()
+        >>> print(y)
+        ivy.array([-94., 256., 0., -0., 37.])
+
+        >>> x = ivy.array([[ -1., -67.,  0.,  15.5,  1.], [3, -45, 24.7, -678.5, 32.8]])
+        >>> y = x.round()
+        >>> print(y)
+        ivy.array([[-1., -67., 0., 16., 1.],
+        [3., -45., 25., -678., 33.]])
+        """
         return ivy.round(self._data, out=out)
 
     def sign(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:

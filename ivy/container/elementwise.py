@@ -1660,6 +1660,68 @@ class ContainerWithElementwise(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_round(
+        x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.round. This method simply wraps the
+        function, and so the docstring for ivy.round also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the evaluated result for each element in ``x``. The
+            returned container must have the same data type as ``x``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0, -1., 6.6]),\
+                            b=ivy.array([-14.2, 8.3, 0.1, 5.7]))
+        >>> y = ivy.Container.static_round(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., -1., 7.]),
+            b: ivy.array([-14., 8., 0., 6.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "round",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def round(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1669,15 +1731,8 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.round(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out=out,
+        return self.static_round(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
