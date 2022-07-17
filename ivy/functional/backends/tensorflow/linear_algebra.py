@@ -397,6 +397,9 @@ def vector_norm(
     return ret
 
 
+vector_norm.unsupported_dtypes = ("float16",)
+
+
 # Extra #
 # ------#
 

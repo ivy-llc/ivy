@@ -655,10 +655,13 @@ def test_vecdot(
 
 # vector_norm
 @given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]
+    dtype_x=helpers.dtype_and_values(
+        ivy_np.valid_float_dtypes,
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=5,
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),
@@ -666,11 +669,10 @@ def test_vecdot(
     instance_method=st.booleans(),
     # axis=st.integers(-3, 5),
     kd=st.booleans(),
-    ord=st.integers() | st.floats(),
+    ord=st.integers(1, 2) | st.floats(),
 )
 def test_vector_norm(
-    array_shape,
-    input_dtype,
+    dtype_x,
     as_variable,
     num_positional_args,
     native_array,
@@ -680,12 +682,9 @@ def test_vector_norm(
     kd,
     ord,
 ):
-    if "float16" in input_dtype:
-        return
-    shape = tuple(array_shape)
-    x = np.random.uniform(size=shape).astype(input_dtype)
+    dtype, x = dtype_x
     helpers.test_function(
-        input_dtype,
+        dtype,
         as_variable,
         False,
         num_positional_args,
@@ -694,7 +693,7 @@ def test_vector_norm(
         instance_method,
         fw,
         "vector_norm",
-        x=x,
+        x=np.asarray(x, dtype=dtype),
         axis=None,
         keepdims=kd,
         ord=ord,
