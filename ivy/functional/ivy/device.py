@@ -962,7 +962,8 @@ class MultiDev:
         self._counter = 0
 
     def __len__(self):
-        """Returns the number of items in the iterable passed as data when len() function is used
+        """Returns the number of items in the iterable passed as data when len() 
+        function is used
 
         Returns
         -------
