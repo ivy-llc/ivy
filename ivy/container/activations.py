@@ -16,6 +16,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -34,6 +35,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_relu(
@@ -48,6 +50,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -68,6 +71,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_leaky_relu(
@@ -82,6 +86,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -102,6 +107,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_gelu(
@@ -120,6 +126,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -138,6 +145,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_tanh(
@@ -151,6 +159,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -169,6 +178,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_sigmoid(
@@ -183,6 +193,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -204,6 +215,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_softmax(
@@ -212,12 +224,13 @@ class ContainerWithActivations(ContainerBase):
 
     @staticmethod
     def static_softplus(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "softplus",
@@ -235,6 +248,7 @@ class ContainerWithActivations(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_softplus(
