@@ -407,7 +407,7 @@ def test_clip_vector_norm(
 
 # floormod
 @given(
-    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2, min_value=1),
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, num_arrays=2, min_value=1),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(1, 2),
@@ -1253,7 +1253,7 @@ def test_inplace_variables_supported(device, call):
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
-        n_arrays=2,
+        num_arrays=2,
         shared_dtype=True
     ),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),  
@@ -1282,7 +1282,7 @@ def test_inplace_update(
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
-        n_arrays=2,
+        num_arrays=2,
         shared_dtype=True
     ),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),  
@@ -1313,7 +1313,7 @@ def test_inplace_decrement(
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
-        n_arrays=2,
+        num_arrays=2,
         shared_dtype=True
     ),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),  
