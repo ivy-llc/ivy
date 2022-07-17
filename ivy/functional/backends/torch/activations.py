@@ -33,10 +33,12 @@ def gelu(
     approximate: bool = True,
 ) -> torch.Tensor:
     if approximate:
-        return 0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x ** 3)))
+        return (
+            0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
+        )
     return torch.nn.functional.gelu(x)
- 
- 
+
+
 gelu.unsupported_dtypes = ("float16",)
 
 
@@ -51,16 +53,15 @@ def sigmoid(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 sigmoid.unsupported_dtypes = ("float16",)
 
 
-def softmax(
-    x: torch.Tensor, axis: Optional[int] = None
-) -> torch.Tensor:
+def softmax(x: torch.Tensor, axis: Optional[int] = None) -> torch.Tensor:
     return torch.nn.functional.softmax(x, dim=axis)
+
 
 softmax.unsupported_dtypes = ("float16",)
 
 
 def softplus(x: torch.Tensor) -> torch.Tensor:
     return torch.nn.functional.softplus(x)
-    
-    
+
+
 softplus.unsupported_dtypes = ("float16",)
