@@ -121,6 +121,9 @@ def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
     return ret
 
 
+qr.unsupported_dtypes = ("float16",)
+
+
 def slogdet(x: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = np.linalg.slogdet(x)

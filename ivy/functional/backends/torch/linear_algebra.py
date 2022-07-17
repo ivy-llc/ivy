@@ -149,6 +149,9 @@ def qr(
     return ret
 
 
+qr.unsupported_dtypes = ("float16",)
+
+
 def slogdet(
     x: torch.Tensor, out: Optional[torch.Tensor] = None
 ) -> Union[torch.Tensor, Tuple[torch.Tensor]]:

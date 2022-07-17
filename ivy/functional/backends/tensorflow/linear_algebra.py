@@ -258,6 +258,9 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     return ret
 
 
+qr.unsupported_dtypes = ("float16",)
+
+
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
 ) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:

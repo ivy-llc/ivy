@@ -137,6 +137,9 @@ def qr(x: JaxArray, mode: str = "reduced") -> NamedTuple:
     return ret
 
 
+qr.unsupported_dtypes = ("float16",)
+
+
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray]
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:

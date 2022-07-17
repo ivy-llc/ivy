@@ -747,33 +747,33 @@ def test_pinv(
 
 # qr
 @given(
-    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype_x=helpers.dtype_and_values(
+        ivy_np.valid_float_dtypes,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="qr"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
     mode=st.sampled_from(("reduced", "complete")),
-    a=st.integers(2, 5),
-    b=st.integers(2, 5),
 )
 def test_qr(
-    input_dtype,
+    dtype_x,
     as_variable,
     num_positional_args,
     native_array,
     container,
     instance_method,
     fw,
-    a,
-    b,
     mode,
 ):
-    if "float16" in input_dtype:
-        return
-    x = np.random.uniform(size=(a, b)).astype(input_dtype)
+    dtype, x = dtype_x
     helpers.test_function(
-        input_dtype,
+        dtype,
         as_variable,
         False,
         num_positional_args,
@@ -782,7 +782,7 @@ def test_qr(
         instance_method,
         fw,
         "qr",
-        x=x,
+        x=np.asarray(x, dtype=dtype),
         mode=mode,
     )
 
