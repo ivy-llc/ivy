@@ -440,11 +440,17 @@ def test_squeeze(
         num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
     ),
     data=st.data(),
-    as_variable=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
+    as_variable=helpers.array_bools(
+        num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
+    ),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="expand_dims"),
-    native_array=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
-    container=helpers.array_bools(na=st.shared(st.integers(1, 3), key="num_arrays")),
+    native_array=helpers.array_bools(
+        num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
+    ),
+    container=helpers.array_bools(
+        num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
+    ),
     instance_method=st.booleans(),
 )
 def test_stack(
