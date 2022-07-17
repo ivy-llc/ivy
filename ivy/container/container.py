@@ -97,7 +97,9 @@ class Container(
 
     def __pow__(self, power):
         if isinstance(power, ivy.Container):
-            return self.reduce([self, power], lambda xs: pow(xs[0], xs[1]))
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.pow(xs[0], xs[1]), [self, power], map_nests=True
+            )
         return self.map(lambda x, kc: x**power)
 
     def __rpow__(self, power):
@@ -203,27 +205,41 @@ class Container(
         )
 
     def __sub__(self, other):
-        return self.static_subtract(self, other)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.sub(xs[0], xs[1]), [self, other], map_nests=True
+        )
 
     def __rsub__(self, other):
-        return self.static_subtract(other, self)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.sub(xs[0], xs[1]), [other, self], map_nests=True
+        )
 
     def __mul__(self, other):
-        return self.static_multiply(self, other)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.mul(xs[0], xs[1]), [self, other], map_nests=True
+        )
 
     def __rmul__(self, other):
-        return self.static_multiply(other, self)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.mul(xs[0], xs[1]), [other, self], map_nests=True
+        )
 
     def __truediv__(self, other):
-        return self.static_divide(self, other)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.truediv(xs[0], xs[1]), [self, other], map_nests=True
+        )
 
     def __rtruediv__(self, other):
-        return self.static_divide(other, self)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.truediv(xs[0], xs[1]), [other, self], map_nests=True
+        )
 
     def __floordiv__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce(
-                [self, other], lambda xs: operator.floordiv(xs[0], xs[1])
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.floordiv(xs[0], xs[1]),
+                [self, other],
+                map_nests=True,
             )
         return self.map(lambda x, kc: x // other)
 
@@ -231,41 +247,55 @@ class Container(
         return self.map(lambda x, kc: other // x)
 
     def __abs__(self):
-        return self.map(lambda x, kc: self._ivy.abs(x))
+        return self.map(lambda x, kc: operator.abs(x))
 
     def __lt__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.lt(xs[0], xs[1]))
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.lt(xs[0], xs[1]), [self, other], map_nests=True
+            )
         return self.map(lambda x, kc: x < other)
 
     def __le__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.le(xs[0], xs[1]))
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.le(xs[0], xs[1]), [self, other], map_nests=True
+            )
         return self.map(lambda x, kc: x <= other)
 
     def __eq__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.eq(xs[0], xs[1]))
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.eq(xs[0], xs[1]), [self, other], map_nests=True
+            )
         return self.map(lambda x, kc: x == other)
 
     def __ne__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.ne(xs[0], xs[1]))
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.ne(xs[0], xs[1]), [self, other], map_nests=True
+            )
         return self.map(lambda x, kc: x != other)
 
     def __gt__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.gt(xs[0], xs[1]))
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.gt(xs[0], xs[1]), [self, other], map_nests=True
+            )
         return self.map(lambda x, kc: x > other)
 
     def __ge__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.ge(xs[0], xs[1]))
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.ge(xs[0], xs[1]), [self, other], map_nests=True
+            )
         return self.map(lambda x, kc: x >= other)
 
     def __and__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] and x[1])
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.and_(xs[0], xs[1]), [self, other], map_nests=True
+            )
         return self.map(lambda x, kc: x and other)
 
     def __rand__(self, other):
@@ -273,7 +303,9 @@ class Container(
 
     def __or__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] or x[1])
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.or_(xs[0], xs[1]), [self, other], map_nests=True
+            )
         return self.map(lambda x, kc: x or other)
 
     def __ror__(self, other):
@@ -284,7 +316,9 @@ class Container(
 
     def __xor__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] != x[1])
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.xor(xs[0], xs[1]), [self, other], map_nests=True
+            )
         return self.map(lambda x, kc: x != other)
 
     def __rxor__(self, other):

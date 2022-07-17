@@ -681,22 +681,44 @@ def nested_multi_map(
         nest containing the result of the funciton.
 
     """
-    nest0 = nests[0]
+    nest0 = None
+    for nest in nests:
+        if isinstance(nest, (tuple, list, dict, ivy.Array, ivy.NativeArray)):
+            nest0 = nest
+            break
+    if nest0 is None:
+        nest0 = nests
+    is_dict = isinstance(nest0, dict)
     return_list = list()
     for index, val in enumerate(nest0):
-        values = [nest[index] for nest in nests]
+        if is_dict:
+            values = [
+                nest[index]
+                if isinstance(nest, (tuple, list, ivy.Array, ivy.NativeArray))
+                else nest[val]
+                if isinstance(nest, dict)
+                else nest
+                for nest in nests
+            ]
+        else:
+            values = [
+                nest[index]
+                if isinstance(nest, (tuple, list, ivy.Array, ivy.NativeArray))
+                else nest[list(nest)[index]]
+                if isinstance(nest, dict)
+                else nest
+                for nest in nests
+            ]
         value0 = values[0]
         this_key_chain = (
             str(index) if key_chain == "" else (key_chain + "/" + str(index))
         )
-        if (
-            (isinstance(value0, ivy.Array) or isinstance(value0, ivy.NativeArray))
-            and ivy.get_num_dims(value0) > 0
-        ) or (
-            isinstance(value0, list)
-            or isinstance(value0, tuple)
-            or isinstance(value0, dict)
-        ):
+        is_nest = [
+            isinstance(x, (tuple, list, dict))
+            or (isinstance(x, (ivy.Array, ivy.NativeArray)) and ivy.get_num_dims(x) > 0)
+            for x in values
+        ]
+        if any(is_nest):
             ret = ivy.nested_multi_map(
                 func,
                 values,
@@ -705,12 +727,12 @@ def nested_multi_map(
                 prune_unapplied,
                 this_key_chain,
                 config,
+                False,
             )
-            if ret:
-                if ivy.is_array(ret):
-                    return_list.insert(index, ivy.to_list(ret))
-                else:
-                    return_list.insert(index, ret)
+            if ivy.is_array(ret):
+                return_list.insert(index, ivy.to_list(ret))
+            else:
+                return_list.insert(index, ret)
         else:
             if key_chains is not None:
                 if (this_key_chain in key_chains and not to_apply) or (
