@@ -183,6 +183,9 @@ def svd(
     return ret
 
 
+svd.unsupported_dtypes = ("float16",)
+
+
 def svdvals(x: JaxArray) -> JaxArray:
     ret = jnp.linalg.svd(x, compute_uv=False)
     return ret

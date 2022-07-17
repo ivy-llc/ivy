@@ -789,10 +789,13 @@ def test_qr(
 
 # svd
 @given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[2, 5]
+    dtype_x=helpers.dtype_and_values(
+        ivy_np.valid_float_dtypes,
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),
@@ -801,8 +804,7 @@ def test_qr(
     fm=st.booleans(),
 )
 def test_svd(
-    array_shape,
-    input_dtype,
+    dtype_x,
     as_variable,
     num_positional_args,
     native_array,
@@ -811,24 +813,25 @@ def test_svd(
     fw,
     fm,
 ):
-    if "float16" in input_dtype:
+    dtype, x = dtype_x
+    try:
+        ret, ret_from_np = helpers.test_function(
+            dtype,
+            as_variable,
+            False,
+            num_positional_args,
+            native_array,
+            container,
+            instance_method,
+            fw,
+            "svd",
+            test_values=False,
+            x=np.asarray(x, dtype=dtype),
+            full_matrices=fm,
+        )
+    except TypeError:
         return
-    shape = tuple(array_shape)
-    x = np.random.uniform(size=shape).astype(input_dtype)
-    ret, ret_from_np = helpers.test_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "svd",
-        x=x,
-        full_matrices=fm,
-        test_values=False,
-    )
+
     # flattened array returns
     ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
         ret, ret_from_np

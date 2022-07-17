@@ -79,6 +79,7 @@ def matrix_norm(
 
 matrix_norm.unsupported_dtypes = ("float16",)
 
+
 def matrix_power(x: np.ndarray, n: int) -> np.ndarray:
     return np.linalg.matrix_power(x, n)
 
@@ -148,6 +149,9 @@ def svd(
     U, D, VT = np.linalg.svd(x, full_matrices=full_matrices)
     ret = results(U, D, VT)
     return ret
+
+
+svd.unsupported_dtypes = ("float16",)
 
 
 def svdvals(x: np.ndarray) -> np.ndarray:
