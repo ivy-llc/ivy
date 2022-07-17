@@ -435,7 +435,7 @@ def get_flattened_array_returns(ret, ret_from_gt):
     return flatten(ret), flatten(ret_from_gt)
 
 
-def value_test(ret_np_flat, ret_from_np_flat, rtol, atol):
+def value_test(ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
