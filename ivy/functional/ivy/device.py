@@ -1125,8 +1125,7 @@ def dev_dist_array(
     axis
         The axis along which to split the array. Default is 0.
     devices
-
-    Dict
+        Dict of (device,int) or Array of devices.
 
     Returns
     -------
@@ -1163,7 +1162,6 @@ def dev_dist_array(
             )
         }
     )
-
 
 
 @handle_nestable
