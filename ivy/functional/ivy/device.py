@@ -1439,7 +1439,7 @@ def dev_unify_array(
     mode
         The mode by which to unify, must be one of [ concat | mean | sum ]
     axis
-        The axis along which to concattenate the array, if concat mode is set. Default
+        The axis along which to concatenate the array, if concat mode is set. Default
         is 0.
 
     Returns
