@@ -402,7 +402,7 @@ def shape(x: torch.Tensor, as_array: bool = False) -> Union[torch.Size, torch.Te
     if as_array:
         return torch.tensor(x.shape)
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:

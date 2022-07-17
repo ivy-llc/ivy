@@ -250,7 +250,7 @@ def shape(x: mx.nd.NDArray, as_array: bool = False) -> Union[tuple, mx.nd.NDArra
     if as_array:
         return mx.nd.shape_array(x)
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):

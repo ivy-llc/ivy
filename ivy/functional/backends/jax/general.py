@@ -71,7 +71,7 @@ def shape(x: JaxArray, as_array: bool = False) -> Union[tuple, JaxArray]:
     if as_array:
         return jnp.asarray(jnp.shape(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):

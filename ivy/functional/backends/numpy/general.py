@@ -269,7 +269,7 @@ def shape(x: np.ndarray, as_array: bool = False) -> Union[tuple, np.ndarray]:
     if as_array:
         return np.asarray(np.shape(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):

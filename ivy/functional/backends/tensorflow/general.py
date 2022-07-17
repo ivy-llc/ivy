@@ -356,7 +356,7 @@ def shape(
     if as_array:
         return tf.shape(x)
     else:
-        return tuple(x.shape)
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):

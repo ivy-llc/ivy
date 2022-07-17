@@ -295,36 +295,27 @@ def test_to_list(x0_n_x1_n_res, device, call, fw):
 # shape
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes),
-    as_tensor=st.booleans(),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+    as_array=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name='shape'),
+    native_array=st.booleans(),
+    container=st.booleans(),
 )
-def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
-    dtype, object_in = x0_n_x1_n_res
-    if fw == "torch" and (
-        dtype in ["uint16", "uint32", "uint64"]
-        or (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn)
-    ):
-        # torch does not support those dtypes
-        return
-    ret = ivy.shape(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
-    # type test
-    if as_tensor:
-        assert ivy.is_ivy_array(ret)
-    else:
-        assert isinstance(ret, tuple)
-
-        ret = ivy.array(ret)
-    # cardinality test
-    assert ret.shape[0] == len(np.asarray(object_in).shape)
-    # value test
-    assert np.array_equal(
-        ivy.to_numpy(ret), np.asarray(np.asarray(object_in).shape, np.int32)
+def test_shape(x0_n_x1_n_res, as_array, as_variable, num_positional_args, native_array, container, device, call, fw):
+    dtype, x = x0_n_x1_n_res
+    helpers.test_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        False,
+        fw,
+        "shape",
+        x=np.asarray(x, dtype=dtype),
+        as_array=as_array,
     )
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support Union
-        return
-
 
 # get_num_dims
 @given(
