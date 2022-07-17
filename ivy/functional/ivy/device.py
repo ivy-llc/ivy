@@ -1108,13 +1108,13 @@ class DevDistNest(MultiDevNest):
 @handle_nestable
 def dev_dist_array(
         x: Union[ivy.Array, ivy.NativeArray],
-        devices: Union[Iterable[str],Dict[str, int]],
+        devices: Union[Iterable[str], Dict[str, int]],
         axis=0
-) ->DevDistItem:
+) -> DevDistItem:
     """Distribute an array across the specified devices, returning a list of sub-arrays,
     each on a different device.
-
-    .. note:: It is pointless to run this function on a single device like devices=['cpu'], if you do so...nothing would happen!
+    .. note:: It is pointless to run this function on a single device like devices=['cpu'],
+    if you do so...nothing would happen!
     
     Parameters
     ----------
