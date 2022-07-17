@@ -2,8 +2,7 @@ name: test-array-api-torch
 on:
   push:
   pull_request:
-    types:
-      - unlabeled
+    types: [unlabeled, opened]
   workflow_dispatch:
 
 jobs:
