@@ -197,6 +197,85 @@ of **any** of the arguments.
 Here, we expand on this explanation.
 Please check out the explanation in the :ref:`Function Types` section first.
 
+**Explicitly Nestable Functions**
+
+The *nestable* behaviour is added to any function which is decorated with the
+`handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_
+wrapper. This wrapper causes the function to be applied at each leaf of any containers
+passed in the input. More information on this can be found in the `Function Wrapping <https://github.com/unifyai/ivy/commit/384963a6d41801e713ec3d203b42bf78d1d7aa0d>`_
+section of the Deep Dive.
+
+Additionally, any nestable function which returns multiple arrays, will return the same number of containers for it's container
+counterpart. This property makes the function symmetric with regards to the input-output behavior, irrespective of whether
+:code:`ivy.Array` or :code:`ivy.Container` instances are based used. Any argument in the input can be replaced with a container
+without changing the number of inputs, and the presence or absence of ivy.Container instances in the input should not change the
+number of return values of the function. In other words, if containers are detected in the input, then we should return a separate
+container for each array that the function would otherwise return.
+
+The current implementation checks if the leaves of the container have a list of arrays. If they do, this container is then
+unstacked to multiple containers(as many as the number of arrays), which are then returned inside a list.
+
+**Implicitly Nestable Functions**
+
+*Compositional* functions are composed of other nestable functions, and hence are already **implicitly nestable**. So,
+we do not need to explicitly wrap it at all.
+
+Let's take the function :code:`ivy.cross_entropy` as an example.
+The internally called functions are: :code:`ivy.clip`, :code:`ivy.log`, :code:`ivy.sum`
+and :code:`ivy.negative`, each of which are themselves *nestable*.
+
+.. code-block:: python
+
+    def cross_entropy(
+        true: Union[ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = -1,
+        epsilon: Optional[float] = 1e-7,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        pred = ivy.clip(pred, epsilon, 1 - epsilon)
+        log_pred = ivy.log(pred)
+        return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
+
+Therefore, when passing an :code:`ivy.Container` instance in the input,
+each internal function will, in turn, correctly handle the container, and return
+a new container with the correct operations having been performed. This makes it very
+easy and intuitive to debug the code, as the code is stepped through chronologically.
+In effect, all leaves of the input container are being processed concurrently,
+during the computation steps of the :code:`ivy.cross_entropy` function.
+
+However, what if we had added the
+`handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_
+wrapping as a decorator directly to the function :code:`ivy.cross_entropy`?
+
+In this case, the :code:`ivy.cross_entropy` function would itself be called
+multiple times, on each of the leaves of the container.
+The functions :code:`ivy.clip`, :code:`ivy.log`, :code:`ivy.sum`
+and :code:`ivy.negative` would each only consume and return arrays,
+and debugging the :code:`ivy.cross_entropy` function
+would then become less intuitively chronological,
+with each leaf of the input container now processed sequentially,
+rather than concurrently.
+
+Therefore, our approach is to **not** wrap any compositional functions which are
+already *implicitly nestable* as a result of the *nestable* functions called internally.
+
+There may be some compositional functions which are not implicitly nestable for some
+reason, and in such cases adding the explicit
+`handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_
+wrapping may be necessary. But we should try to avoid this,
+in order to make the flow of computation as intuitive to the user as possible.
+
+When compiling the code, the computation graph is **identical** in either case,
+and there will be no implications on performance whatsoever.
+The implicit nestable solution may be slightly less efficient in eager mode,
+as the leaves of the container are traversed multiple times rather than once,
+but if performance is of concern then the code should always be compiled in any case.
+The distinction is only really relevant when stepping through and debugging with eager
+mode execution, and for the reasons outlined above, the preference is to keep
+compositional implicitly nestable where possible.
+
 **Shared Nested Structure**
 
 NOTE - implementing the behaviour for shared nested structures is a work in progress,
@@ -367,71 +446,6 @@ passed in the input would not make any sense.
 Hopefully, these two examples explain why *Container-dependent* functions
 (with arguments which, if provided, **must** be provided as an :code:`ivy.Container`),
 are never implemented as *nestable* functions.
-
-**Implicitly Nestable Functions**
-
-The *nestable* behaviour is added to any function which is decorated with the
-`handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_
-wrapper. This wrapper causes the function to be applied at each leaf of any containers
-passed in the input. For *compositional* functions which are composed of other nestable
-functions, then this compositional function is already **implicitly nestable**,
-without us needing to explicitly wrap it at all.
-
-Let's take the function :code:`ivy.cross_entropy` as an example.
-The internally called functions are: :code:`ivy.clip`, :code:`ivy.log`, :code:`ivy.sum`
-and :code:`ivy.negative`, each of which are themselves *nestable*.
-
-.. code-block:: python
-
-    def cross_entropy(
-        true: Union[ivy.Array, ivy.NativeArray],
-        pred: Union[ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = -1,
-        epsilon: Optional[float] = 1e-7,
-        *,
-        out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
-        pred = ivy.clip(pred, epsilon, 1 - epsilon)
-        log_pred = ivy.log(pred)
-        return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
-
-Therefore, when passing an :code:`ivy.Container` instance in the input,
-each internal function will, in turn, correctly handle the container, and return
-a new container with the correct operations having been performed. This makes it very
-easy and intuitive to debug the code, as the code is stepped through chronologically.
-In effect, all leaves of the input container are being processed concurrently,
-during the computation steps of the :code:`ivy.cross_entropy` function.
-
-However, what if we had added the
-`handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_
-wrapping as a decorator directly to the function :code:`ivy.cross_entropy`?
-
-In this case, the :code:`ivy.cross_entropy` function would itself be called
-multiple times, on each of the leaves of the container.
-The functions :code:`ivy.clip`, :code:`ivy.log`, :code:`ivy.sum`
-and :code:`ivy.negative` would each only consume and return arrays,
-and debugging the :code:`ivy.cross_entropy` function
-would then become less intuitively chronological,
-with each leaf of the input container now processed sequentially,
-rather than concurrently.
-
-Therefore, our approach is to **not** wrap any compositional functions which are
-already *implicitly nestable* as a result of the *nestable* functions called internally.
-
-There may be some compositional functions which are not implicitly nestable for some
-reason, and in such cases adding the explicit
-`handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_
-wrapping may be necessary. But we should try to avoid this,
-in order to make the flow of computation as intuitive to the user as possible.
-
-When compiling the code, the computation graph is **identical** in either case,
-and there will be no implications on performance whatsoever.
-The implicit nestable solution may be slightly less efficient in eager mode,
-as the leaves of the container are traversed multiple times rather than once,
-but if performance is of concern then the code should always be compiled in any case.
-The distinction is only really relevant when stepping through and debugging with eager
-mode execution, and for the reasons outlined above, the preference is to keep
-compositional implicitly nestable where possible.
 
 **Round Up**
 
