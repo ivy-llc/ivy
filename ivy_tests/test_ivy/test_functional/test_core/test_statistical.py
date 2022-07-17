@@ -242,8 +242,7 @@ def test_sum(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and ivy.is_int_dtype(input_dtype):
-        return
+
     helpers.test_function(
         input_dtype,
         as_variable,
