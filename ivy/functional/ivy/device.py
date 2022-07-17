@@ -18,7 +18,7 @@ try:
     nvidia_smi.nvmlInit()
 except (nvidia_smi.NVMLError_LibraryNotFound, nvidia_smi.NVMLError_DriverNotLoaded):
     pass
-from typing import Union, Type, Callable, Iterable, Dict, Any
+from typing import Union, Type, Callable, Iterable, Dict, Any, Literal
 
 # local
 import ivy
@@ -1421,7 +1421,12 @@ def _mean_unify_array(xs, device, _=None):
 
 
 @handle_nestable
-def dev_unify_array(xs, device, mode, axis=0):
+def dev_unify_array(
+    xs: DevDistItem,
+    device: ivy.Device,
+    mode: Literal["concat", "mean", "sum"],
+    axis: int = 0,
+):
     """Unify a list of sub-arrays, on arbitrary devices, to a single array on the
     specified device.
 
