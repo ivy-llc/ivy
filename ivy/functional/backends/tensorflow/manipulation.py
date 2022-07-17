@@ -10,7 +10,12 @@ from typing import Union, Tuple, Optional, List, Sequence
 # -------------------#
 
 
-def concat(xs: List[tf.Tensor], axis: int = 0, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None) -> Union[tf.Tensor, tf.Variable]:
+def concat(
+    xs: List[tf.Tensor],
+    axis: int = 0,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     is_tuple = type(xs) is tuple
     is_axis_none = axis is None
     if is_tuple:
@@ -35,7 +40,7 @@ def expand_dims(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
         ret = tf.expand_dims(x, axis)
@@ -71,7 +76,7 @@ def permute_dims(
     x: Union[tf.Tensor, tf.Variable],
     axes: Tuple[int, ...],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.transpose(x, perm=axes)
     return ret
@@ -81,7 +86,7 @@ def reshape(
     x: Union[tf.Tensor, tf.Variable],
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.reshape(x, shape)
     return ret
@@ -92,7 +97,7 @@ def roll(
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         originalShape = x.shape
@@ -111,7 +116,7 @@ def squeeze(
     x: Union[tf.Tensor, tf.Variable],
     axis: Union[int, Tuple[int], List[int]],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if x.shape[axis] > 1:
@@ -149,7 +154,7 @@ def stack(
     x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     axis: Optional[int] = 0,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.stack(x, axis)
     return ret
@@ -159,7 +164,14 @@ def stack(
 # ------#
 
 
-def split(x, num_or_size_splits=None, axis=0, with_remainder=False, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def split(
+    x,
+    num_or_size_splits=None,
+    axis=0,
+    with_remainder=False,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception(
@@ -187,7 +199,7 @@ def repeat(
     repeats: Union[int, List[int]],
     axis: int = None,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.repeat(x, repeats, axis)
     return ret
@@ -204,7 +216,9 @@ def tile(x, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
     return ret
 
 
-def constant_pad(x, pad_width, value=0, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def constant_pad(
+    x, pad_width, value=0, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None
+):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     ret = tf.pad(x, pad_width, constant_values=value)
@@ -237,7 +251,7 @@ def clip(
     x_min: Union[Number, tf.Tensor, tf.Variable],
     x_max: Union[Number, tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
