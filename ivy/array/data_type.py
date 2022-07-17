@@ -72,9 +72,9 @@ class ArrayWithDataTypes(abc.ABC):
         *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
     ) -> ivy.Dtype:
         """
-        `ivy.Array` instance method variant of `ivy.result_type`. This method simply wraps
-        the function, and so the docstring for `ivy.result_type` also applies to this
-        method with minimal changes.
+        `ivy.Array` instance method variant of `ivy.result_type`.
+        This method simply wraps the function, and so the docstring for
+        `ivy.result_type` also applies to this method with minimal changes.
 
         Examples
         --------
