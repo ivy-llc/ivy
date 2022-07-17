@@ -156,7 +156,7 @@ def cross(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
+    """Computes the cross product of 3-element vectors. If x1 and x2 are multi- dimensional
     arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
     of corresponding 3-element vectors is independently computed.
 
@@ -180,6 +180,10 @@ def cross(
     ret
          an array containing the cross products. The returned array must have a data
          type determined by Type Promotion Rules.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     --------
