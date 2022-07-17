@@ -14,10 +14,8 @@ from ivy.functional.backends.jax import JaxArray
 # -------------------#
 
 
-def cholesky(x: JaxArray, 
-             upper: bool = False, 
-             *, 
-             out: Optional[JaxArray] = None
+def cholesky(
+    x: JaxArray, upper: bool = False, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
@@ -28,11 +26,7 @@ def cholesky(x: JaxArray,
 
 
 def cross(
-    x1: JaxArray, 
-    x2: JaxArray, 
-    axis: int = -1,
-    *,
-    out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, axis: int = -1, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jnp.cross(a=x1, b=x2, axis=axis)
     return ret
@@ -81,12 +75,7 @@ def inv(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
-def matmul(
-    x1: JaxArray, 
-    x2: JaxArray, 
-    *, 
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def matmul(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.matmul(x1, x2)
     return ret
 
@@ -108,12 +97,7 @@ def matrix_norm(
     return ret
 
 
-def matrix_power(
-    x: JaxArray, 
-    n: int, 
-    *, 
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def matrix_power(x: JaxArray, n: int, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.matrix_power(x, n)
 
 
@@ -139,17 +123,12 @@ def matrix_transpose(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray
     return ret
 
 
-def outer(
-    x1: JaxArray, 
-    x2: JaxArray,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def outer(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.outer(x1, x2)
 
 
 def pinv(
-    x: JaxArray, 
+    x: JaxArray,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     *,
     out: Optional[JaxArray] = None
@@ -169,9 +148,7 @@ def qr(x: JaxArray, mode: str = "reduced") -> NamedTuple:
 
 
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[JaxArray]
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[JaxArray]
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
@@ -179,12 +156,7 @@ def slogdet(
     return ret
 
 
-def solve(
-    x1: JaxArray, 
-    x2: JaxArray,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def solve(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     expanded_last = False
     if len(x2.shape) <= 1:
         if x2.shape[-1] == x1.shape[-1]:
@@ -237,21 +209,12 @@ def tensordot(
     return ret
 
 
-def trace(
-    x: JaxArray, 
-    offset: int = 0,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def trace(x: JaxArray, offset: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype)
 
 
 def vecdot(
-    x1: JaxArray, 
-    x2: JaxArray, 
-    axis: int = -1,
-    *,
-    out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, axis: int = -1, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jnp.tensordot(x1, x2, (axis, axis))
     return ret
@@ -282,9 +245,7 @@ def vector_norm(
 
 
 def vector_to_skew_symmetric_matrix(
-    vector: JaxArray,
-    *,
-    out: Optional[JaxArray] = None
+    vector: JaxArray, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1

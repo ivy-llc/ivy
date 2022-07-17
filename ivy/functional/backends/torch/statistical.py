@@ -218,5 +218,7 @@ var.support_native_out = True
 # ------#
 
 
-def einsum(equation: str, *operands: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def einsum(
+    equation: str, *operands: torch.Tensor, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.einsum(equation, *operands)

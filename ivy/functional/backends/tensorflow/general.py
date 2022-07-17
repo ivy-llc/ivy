@@ -231,7 +231,7 @@ def scatter_nd(
     updates: Union[tf.Tensor, tf.Variable], 
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
     tensor: Optional[Union[tf.Tensor, tf.Variable]] = None, 
-    reduction:str = "sum",
+    reduction: str = "sum",
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
