@@ -41,7 +41,6 @@ def add(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.experimental.numpy.add(x1, x2)
 
 
