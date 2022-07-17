@@ -312,6 +312,7 @@ def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
         assert ivy.is_ivy_array(ret)
     else:
         assert isinstance(ret, tuple)
+
         ret = ivy.array(ret)
     # cardinality test
     assert ret.shape[0] == len(np.asarray(object_in).shape)
