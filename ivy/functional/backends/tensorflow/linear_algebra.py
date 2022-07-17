@@ -242,6 +242,9 @@ def pinv(
     return ret
 
 
+pinv.unsupported_dtypes = ("float16",)
+
+
 def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":

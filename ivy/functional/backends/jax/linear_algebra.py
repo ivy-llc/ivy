@@ -130,6 +130,9 @@ def pinv(x: JaxArray, rtol: Optional[Union[float, Tuple[float]]] = None) -> JaxA
     return ret
 
 
+pinv.unsupported_dtypes = ("float16",)
+
+
 def qr(x: JaxArray, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)

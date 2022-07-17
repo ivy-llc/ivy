@@ -132,6 +132,9 @@ def pinv(
     return torch.linalg.pinv(x, rtol, out=out)
 
 
+pinv.unsupported_dtypes = ("float16",)
+
+
 def qr(
     x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
 ) -> NamedTuple:
