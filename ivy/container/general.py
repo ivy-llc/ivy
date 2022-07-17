@@ -440,10 +440,6 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_to_numpy(
             self, key_chains, to_apply, prune_unapplied, map_sequences
-
-
-
-
         )
 
     @staticmethod
