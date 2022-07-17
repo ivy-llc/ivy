@@ -37,10 +37,10 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
     def gather_nd(
-            self: ivy.Array,
-            indices: Union[ivy.Array, ivy.NativeArray],
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        indices: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the

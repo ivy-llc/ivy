@@ -12,16 +12,16 @@ import ivy
 # noinspection PyMissingConstructor
 class ContainerWithGeneral(ContainerBase):
     def clip_vector_norm(
-            self,
-            max_norm,
-            p,
-            global_norm=False,
-            key_chains=None,
-            to_apply=True,
-            prune_unapplied=False,
-            map_sequences=False,
-            *,
-            out: Optional[ivy.Container] = None,
+        self,
+        max_norm,
+        p,
+        global_norm=False,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=False,
+        *,
+        out: Optional[ivy.Container] = None,
     ):
         max_norm_is_container = isinstance(max_norm, ivy.Container)
         p_is_container = isinstance(p, ivy.Container)
@@ -58,13 +58,13 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_all_equal(
-            x1: Iterable[Any],
-            x2: Iterable[Any],
-            equality_matrix: bool = False,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        x1: Iterable[Any],
+        x2: Iterable[Any],
+        equality_matrix: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.all_equal. This method simply wraps
@@ -110,13 +110,13 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def all_equal(
-            self: ivy.Container,
-            x2: Iterable[Any],
-            equality_matrix: bool = False,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        self: ivy.Container,
+        x2: Iterable[Any],
+        equality_matrix: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.all_equal.
@@ -182,14 +182,14 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_gather_nd(
-            params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.gather_nd.
@@ -236,14 +236,14 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def gather_nd(
-            self: ivy.Container,
-            indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.gather_nd.
