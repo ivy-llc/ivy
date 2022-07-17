@@ -849,10 +849,6 @@ def test_svd(
 
 # matrix_norm
 @given(
-    # array_shape=helpers.lists(
-    #     st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[2, 5]
-    # ),
-    # input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     dtype_x=helpers.dtype_and_values(
         ivy_np.valid_float_dtypes,
         min_num_dims=2,
