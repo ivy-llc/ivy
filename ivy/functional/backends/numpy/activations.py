@@ -12,7 +12,7 @@ except (ImportError, ModuleNotFoundError):
     erf = None
 
 
-def relu(x: np.ndarray, , out: Optional[np.ndarray] = None) -> np.ndarray:
+def relu (x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.maximum(x, 0, out = out, dtype = x.dtype)
 
 
