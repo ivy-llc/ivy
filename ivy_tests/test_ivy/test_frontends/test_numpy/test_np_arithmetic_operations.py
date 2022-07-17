@@ -7,24 +7,23 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
 
+@st.composite
+def _where(draw):
+    _, values = draw(helpers.dtype_and_values(("bool",)))
+    return draw(st.just(values) | st.just(True))
+
+
 # add
 @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, 2),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
-    where=st.sampled_from(
-        (
-            helpers.dtype_and_values(
-                ("bool",), shape=st.shared(helpers.get_shape(), key="shape")
-            ),
-            True,
-        )
-    ),
-    as_variable=st.booleans(),
+    where=_where(),
+    as_variable=helpers.array_bools(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.add"
     ),
-    native_array=st.booleans(),
+    native_array=helpers.array_bools(),
 )
 def test_numpy_add(
     dtype_and_x,
@@ -37,7 +36,13 @@ def test_numpy_add(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    where_array = isinstance(where, list)
+    if where_array:
+        where = np.asarray(where, dtype=np.bool)
+        input_dtype += ["bool"]
+        as_variable += [False]
+        native_array += [False]
+    values = helpers.test_frontend_function(
         input_dtype,
         as_variable,
         with_out,
@@ -54,4 +59,13 @@ def test_numpy_add(
         order="k",
         dtype=dtype,
         subok=True,
+        test_values=False,
     )
+    if values is None:
+        return
+    ret, frontend_ret = values
+    ret_flat = [np.where(where, x, np.zeros_like(x)) for x in helpers.flatten(ret)]
+    frontend_ret_flat = [
+        np.where(where, x, np.zeros_like(x)) for x in helpers.flatten(frontend_ret)
+    ]
+    helpers.value_test(ret_flat, frontend_ret_flat)
