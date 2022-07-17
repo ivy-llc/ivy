@@ -471,7 +471,7 @@ def default_float_dtype(
         return float_dtype
     as_native = ivy.default(as_native, False)
     if ivy.exists(input):
-        if ivy.is_native_array(input):
+        if ivy.is_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
             ret = input.dtype
@@ -591,7 +591,7 @@ def default_int_dtype(
         return int_dtype
     as_native = ivy.default(as_native, False)
     if ivy.exists(input):
-        if ivy.is_native_array(input):
+        if ivy.is_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
             ret = input.dtype
@@ -904,7 +904,7 @@ def is_int_dtype(
         b: true
     }
     """
-    if ivy.is_native_array(dtype_in):
+    if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
         return "int" in dtype_in.dtype.name
@@ -945,7 +945,7 @@ def is_float_dtype(
         Whether or not the array or data type is of a floating point dtype
 
     """
-    if ivy.is_native_array(dtype_in):
+    if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, np.ndarray):
         return "float" in dtype_in.dtype.name
