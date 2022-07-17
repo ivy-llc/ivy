@@ -156,8 +156,9 @@ def from_dlpack(x):
 
 def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
     assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
-        ivy.is_float_dtype(dtype) and isinstance(fill_value, float) or
-        (isinstance(fill_value,bool))
+        ivy.is_float_dtype(dtype)
+        and isinstance(fill_value, float)
+        or (isinstance(fill_value, bool))
     ), "the fill_value and data type"
 
 
