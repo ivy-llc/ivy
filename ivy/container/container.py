@@ -93,17 +93,17 @@ class Container(
         return self
 
     def __neg__(self):
-        return self.map(lambda x, kc: -x)
+        return self.map(lambda x, kc: -x, map_sequences=True)
 
     def __pow__(self, power):
         if isinstance(power, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.pow(xs[0], xs[1]), [self, power], map_nests=True
             )
-        return self.map(lambda x, kc: x**power)
+        return self.map(lambda x, kc: x**power, map_sequences=True)
 
     def __rpow__(self, power):
-        return self.map(lambda x, kc: power**x)
+        return self.map(lambda x, kc: power**x, map_sequences=True)
 
     def __add__(self, other):
         """
@@ -241,88 +241,88 @@ class Container(
                 [self, other],
                 map_nests=True,
             )
-        return self.map(lambda x, kc: x // other)
+        return self.map(lambda x, kc: x // other, map_sequences=True)
 
     def __rfloordiv__(self, other):
-        return self.map(lambda x, kc: other // x)
+        return self.map(lambda x, kc: other // x, map_sequences=True)
 
     def __abs__(self):
-        return self.map(lambda x, kc: operator.abs(x))
+        return self.map(lambda x, kc: operator.abs(x), map_sequences=True)
 
     def __lt__(self, other):
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.lt(xs[0], xs[1]), [self, other], map_nests=True
             )
-        return self.map(lambda x, kc: x < other)
+        return self.map(lambda x, kc: x < other, map_sequences=True)
 
     def __le__(self, other):
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.le(xs[0], xs[1]), [self, other], map_nests=True
             )
-        return self.map(lambda x, kc: x <= other)
+        return self.map(lambda x, kc: x <= other, map_sequences=True)
 
     def __eq__(self, other):
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.eq(xs[0], xs[1]), [self, other], map_nests=True
             )
-        return self.map(lambda x, kc: x == other)
+        return self.map(lambda x, kc: x == other, map_sequences=True)
 
     def __ne__(self, other):
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.ne(xs[0], xs[1]), [self, other], map_nests=True
             )
-        return self.map(lambda x, kc: x != other)
+        return self.map(lambda x, kc: x != other, map_sequences=True)
 
     def __gt__(self, other):
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.gt(xs[0], xs[1]), [self, other], map_nests=True
             )
-        return self.map(lambda x, kc: x > other)
+        return self.map(lambda x, kc: x > other, map_sequences=True)
 
     def __ge__(self, other):
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.ge(xs[0], xs[1]), [self, other], map_nests=True
             )
-        return self.map(lambda x, kc: x >= other)
+        return self.map(lambda x, kc: x >= other, map_sequences=True)
 
     def __and__(self, other):
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.and_(xs[0], xs[1]), [self, other], map_nests=True
             )
-        return self.map(lambda x, kc: x and other)
+        return self.map(lambda x, kc: x and other, map_sequences=True)
 
     def __rand__(self, other):
-        return self.map(lambda x, kc: other and x)
+        return self.map(lambda x, kc: other and x, map_sequences=True)
 
     def __or__(self, other):
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.or_(xs[0], xs[1]), [self, other], map_nests=True
             )
-        return self.map(lambda x, kc: x or other)
+        return self.map(lambda x, kc: x or other, map_sequences=True)
 
     def __ror__(self, other):
-        return self.map(lambda x, kc: other or x)
+        return self.map(lambda x, kc: other or x, map_sequences=True)
 
     def __invert__(self):
-        return self.map(lambda x, kc: operator.not_(x))
+        return self.map(lambda x, kc: operator.not_(x), map_sequences=True)
 
     def __xor__(self, other):
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.xor(xs[0], xs[1]), [self, other], map_nests=True
             )
-        return self.map(lambda x, kc: x != other)
+        return self.map(lambda x, kc: x != other, map_sequences=True)
 
     def __rxor__(self, other):
-        return self.map(lambda x, kc: other != x)
+        return self.map(lambda x, kc: other != x, map_sequences=True)
 
     def __getstate__(self):
         state_dict = copy.copy(self.__dict__)
