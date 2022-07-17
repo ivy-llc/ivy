@@ -13,6 +13,9 @@ import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
 import ivy.functional.backends.mxnet
+from functools import reduce  # for making strategy
+from operator import mul  # for making strategy
+from typing import Tuple
 
 
 # dtype objects
@@ -31,8 +34,94 @@ def test_dtype_instances(device, call):
     assert ivy.exists(ivy.bool)
 
 
-# for data generation in multiple tests
+# Functions to use in strategy #
+# -------------------------- #
+
+# taken from array-api repo
+def _broadcast_shapes(shape1, shape2):
+    """Broadcasts `shape1` and `shape2`"""
+    N1 = len(shape1)
+    N2 = len(shape2)
+    N = max(N1, N2)
+    shape = [None for _ in range(N)]
+    i = N - 1
+    while i >= 0:
+        n1 = N1 - N + i
+        if N1 - N + i >= 0:
+            d1 = shape1[n1]
+        else:
+            d1 = 1
+        n2 = N2 - N + i
+        if N2 - N + i >= 0:
+            d2 = shape2[n2]
+        else:
+            d2 = 1
+
+        if d1 == 1:
+            shape[i] = d2
+        elif d2 == 1:
+            shape[i] = d1
+        elif d1 == d2:
+            shape[i] = d1
+        else:
+            raise Exception("Broadcast error")
+
+        i = i - 1
+
+    return tuple(shape)
+
+
+# taken from array-api repo
+def broadcast_shapes(*shapes):
+    if len(shapes) == 0:
+        raise ValueError("shapes=[] must be non-empty")
+    elif len(shapes) == 1:
+        return shapes[0]
+    result = _broadcast_shapes(shapes[0], shapes[1])
+    for i in range(2, len(shapes)):
+        result = _broadcast_shapes(result, shapes[i])
+    return result
+
+
+# np.prod and others have overflow and math.prod is Python 3.8+ only
+def prod(seq):
+    return reduce(mul, seq, 1)
+
+
+# taken from array-api repo
+def mutually_broadcastable_shapes(
+    num_shapes: int,
+    *,
+    base_shape: Tuple[int, ...] = (),
+    min_dims: int = 1,
+    max_dims: int = 4,
+    min_side: int = 1,
+    max_side: int = 4,
+):
+    if max_dims is None:
+        max_dims = min(max(len(base_shape), min_dims) + 5, 32)
+    if max_side is None:
+        max_side = max(base_shape[-max_dims:] + (min_side,)) + 5
+    return (
+        helpers.nph.mutually_broadcastable_shapes(
+            num_shapes=num_shapes,
+            base_shape=base_shape,
+            min_dims=min_dims,
+            max_dims=max_dims,
+            min_side=min_side,
+            max_side=max_side,
+        )
+        .map(lambda BS: BS.input_shapes)
+        .filter(lambda shapes: all(prod(i for i in s if i > 0) < 1000 for s in shapes))
+    )
+
+
+# For data generation in multiple tests
 dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
+
+
+# Ivy Unit Tests #
+# -------------- #
 
 
 # astype
@@ -71,43 +160,98 @@ def test_astype(
     )
 
 
-# broadcast_to
+# broadcast arrays
+@st.composite
+def broadcastable_arrays(draw, dtype):
+    shapes = draw(st.integers(2, 5).flatmap(mutually_broadcastable_shapes))
+    arrays = []
+    for c, shape in enumerate(shapes, 1):
+        x = draw(helpers.nph.arrays(dtype=dtype, shape=shape), label=f"x{c}")
+        arrays.append(x)
+    return helpers.as_lists(*arrays)
+
+
 @given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
-    ),
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
-    data=st.data(),
+    arrays=broadcastable_arrays(dtype_shared),
+    dtype=dtype_shared,
     as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="broadcast_to"),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans(),
 )
-def test_broadcast_to(
-    array_shape,
-    input_dtype,
-    data,
+def test_broadcast_arrays(
+    arrays,
+    dtype,
     as_variable,
-    num_positional_args,
     native_array,
     container,
-    instance_method,
     fw,
 ):
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
+    kw = {}
+    for i, array in enumerate(zip(arrays)):
+        kw["x{}".format(i)] = ivy.asarray(array)
+    num_positional_args = len(kw)
     helpers.test_function(
-        input_dtype,
+        dtype,
         as_variable,
         False,
         num_positional_args,
         native_array,
         container,
-        instance_method,
+        False,
         fw,
-        "broadcast_to",
-        x=x,
-        shape=array_shape,
+        "broadcast_arrays",
+        **kw,
+    )
+
+
+# broadcast_to
+@st.composite
+def array_and_broadcastable_shape(draw, in_dtype):
+    dtype = in_dtype
+    in_shape = draw(helpers.nph.array_shapes(min_dims=1, max_dims=4))
+    x = draw(helpers.nph.arrays(shape=in_shape, dtype=dtype))
+    to_shape = draw(
+        mutually_broadcastable_shapes(1, base_shape=in_shape)
+        .map(lambda S: S[0])
+        .filter(lambda s: broadcast_shapes(in_shape, s) == s),
+        label="shape",
+    )
+    return (x, to_shape)
+
+
+@given(
+    array_and_shape=array_and_broadcastable_shape(dtype_shared),
+    in_dtype=dtype_shared,
+    as_variable_flags=st.booleans(),
+    with_out=st.booleans(),
+    native_array_flags=st.booleans(),
+    container_flags=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_broadcast_to(
+    array_and_shape,
+    in_dtype,
+    as_variable_flags,
+    with_out,
+    native_array_flags,
+    container_flags,
+    instance_method,
+    fw,
+):
+    array, to_shape = array_and_shape
+    num_positional_args = len(array)
+    helpers.test_function(
+        input_dtypes=in_dtype,
+        as_variable_flags=as_variable_flags,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array_flags,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="broadcast_to",
+        x=array,
+        shape=to_shape,
     )
 
 
@@ -464,9 +608,3 @@ def test_type_promote_arrays(
         x2=np.array(x2),
         test_values=True,
     )
-
-
-# Still to Add #
-# -------------#
-
-# broadcast_arrays

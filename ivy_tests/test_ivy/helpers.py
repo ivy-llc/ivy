@@ -697,7 +697,7 @@ def test_function(
     test_atol: float = 1e-06,
     test_values: bool = True,
     ground_truth_backend: str = "numpy",
-    **all_as_kwargs_np
+    **all_as_kwargs_np,
 ):
     """Tests a function that consumes (or returns) arrays for the current backend
     by comparing the result with numpy.
@@ -949,7 +949,7 @@ def test_frontend_function(
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
-    **all_as_kwargs_np
+    **all_as_kwargs_np,
 ):
     """Tests a frontend function for the current backend by comparing the result with
     the function in the associated framework.
