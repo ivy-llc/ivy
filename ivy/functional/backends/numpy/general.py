@@ -42,6 +42,8 @@ def container_types():
 
 def inplace_arrays_supported():
     return True
+    
+    
 inplace_variables_supported = lambda: True
 
 
