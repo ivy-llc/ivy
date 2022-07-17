@@ -895,8 +895,12 @@ def test_matrix_norm(
 
 # matrix_rank
 @given(
-    input_dtype=helpers.list_of_length(
-        st.sampled_from(ivy_np.valid_float_dtypes[1:]), 1
+    dtype_x=helpers.dtype_and_values(
+        ivy_np.valid_float_dtypes[1:],
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=3,
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -904,13 +908,10 @@ def test_matrix_norm(
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
-    a=st.integers(1, 50),
-    b=st.integers(1, 50),
-    c=st.integers(1, 50),
     rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_matrix_rank(
-    input_dtype,
+    dtype_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -918,15 +919,11 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
-    a,
-    b,
-    c,
     rtol,
 ):
-    if "float16" in input_dtype:
-        return
+    dtype, x = dtype_x
     helpers.test_function(
-        input_dtype,
+        dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -937,7 +934,7 @@ def test_matrix_rank(
         "matrix_rank",
         test_atol=1e-04,
         test_rtol=1e-04,
-        x=np.random.uniform(size=(a, b, c)).astype(input_dtype[0]),
+        x=np.asarray(x, dtype=dtype),
         rtol=rtol,
     )
 
