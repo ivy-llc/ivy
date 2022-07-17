@@ -4,6 +4,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.torch as ivy_torch
 
 
 # noinspection DuplicatedCode
@@ -19,7 +20,10 @@ def _arrays_idx_n_dtypes(draw):
         helpers.lists(st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
     )
     xs = list()
-    input_dtypes = draw(helpers.array_dtypes(shared_dtype=True))
+    available_dtypes = set(ivy_torch.valid_float_dtypes).intersection(
+        ivy_torch.valid_float_dtypes
+    )
+    input_dtypes = draw(helpers.array_dtypes(available_dtypes=available_dtypes))
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
             helpers.array_values(
