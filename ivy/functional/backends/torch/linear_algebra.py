@@ -90,6 +90,9 @@ def matrix_norm(
     return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims, out=out)
 
 
+matrix_norm.unsupported_dtypes = ("float16",)
+
+
 def matrix_power(
     x: torch.Tensor, n: int, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:

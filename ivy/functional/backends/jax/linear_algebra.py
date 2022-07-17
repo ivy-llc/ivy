@@ -91,6 +91,9 @@ def matrix_norm(
     return ret
 
 
+matrix_norm.unsupported_dtypes = ("float16",)
+
+
 def matrix_power(x: JaxArray, n: int) -> JaxArray:
     return jnp.linalg.matrix_power(x, n)
 

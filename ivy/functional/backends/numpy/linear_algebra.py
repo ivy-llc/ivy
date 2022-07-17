@@ -77,6 +77,8 @@ def matrix_norm(
     return ret
 
 
+matrix_norm.unsupported_dtypes = ("float16",)
+
 def matrix_power(x: np.ndarray, n: int) -> np.ndarray:
     return np.linalg.matrix_power(x, n)
 
