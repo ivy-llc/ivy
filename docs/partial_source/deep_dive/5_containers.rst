@@ -205,9 +205,12 @@ wrapper. This wrapper causes the function to be applied at each leaf of any cont
 passed in the input. More information on this can be found in the `Function Wrapping <https://github.com/unifyai/ivy/commit/384963a6d41801e713ec3d203b42bf78d1d7aa0d>`_
 section of the Deep Dive.
 
-Additionally, any nestable function which returns multiple arrays, will return multiple containers for the it's container
-counterpart. This property makes the function symmetric with regards to the input-output behavior. Any argument in the input,
-can be replaced with a container, without changing the number of inputs.
+Additionally, any nestable function which returns multiple arrays, will return the same number of containers for it's container
+counterpart. This property makes the function symmetric with regards to the input-output behavior, irrespective of whether
+:code:`ivy.Array` or :code:`ivy.Container` instances are based used. Any argument in the input can be replaced with a container
+without changing the number of inputs, and the presence or absence of ivy.Container instances in the input should not change the
+number of return values of the function. In other words, if containers are detected in the input, then we should return a separate
+container for each array that the function would otherwise return.
 
 The current implementation checks if the leaves of the container have a list of arrays. If they do, this container is then
 unstacked to multiple containers(as many as the number of arrays), which are then returned inside a list.
