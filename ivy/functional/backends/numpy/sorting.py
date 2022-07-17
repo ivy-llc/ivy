@@ -1,9 +1,15 @@
 # global
 import numpy as np
+from typing import Optional
 
 
 def argsort(
-    x: np.ndarray, axis: int = -1, descending: bool = False, stable: bool = True
+    x: np.ndarray,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if descending:
         ret = np.asarray(
@@ -15,7 +21,12 @@ def argsort(
 
 
 def sort(
-    x: np.ndarray, axis: int = -1, descending: bool = False, stable: bool = True
+    x: np.ndarray,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     kind = "stable" if stable else "quicksort"
     ret = np.asarray(np.sort(x, axis=axis, kind=kind))
