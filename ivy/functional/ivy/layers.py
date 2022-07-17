@@ -440,7 +440,7 @@ def multi_head_attention(
         mask = ivy.einops_repeat(mask, "... q k -> ... h q k", h=num_heads)
 
     # BS x H x Q x F
-    sdpa = scaled_dot_product_attention(q, k, v, scale, mask)
+    sdpa = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
 
     # BS x Q x (HxF)
     sdpa = ivy.einops_rearrange(sdpa, "... h q f -> ... q (h f)")

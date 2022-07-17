@@ -353,7 +353,7 @@ def test_is_int_dtype(
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=ivy.valid_dtypes,
-        n_arrays=2,
+        num_arrays=2,
         shared_dtype=False,
     ),
     as_variable=helpers.list_of_length(st.booleans(), 2),
@@ -432,7 +432,7 @@ def test_result_type(
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
-        n_arrays=2,
+        num_arrays=2,
         shared_dtype=False,
     ),
     as_variable=helpers.list_of_length(st.booleans(), 2),
