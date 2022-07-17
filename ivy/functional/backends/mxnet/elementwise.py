@@ -217,9 +217,7 @@ def subtract(
 
 
 @_handle_flat_arrays_in_out
-def abs(
-    x: Union[float, mx.nd.NDArray]
-) -> mx.nd.ndarray.NDArray:
+def abs(x: Union[float, mx.nd.NDArray]) -> mx.nd.ndarray.NDArray:
     return mx.nd.abs(x)
 
 
