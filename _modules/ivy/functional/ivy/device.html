@@ -1127,10 +1127,10 @@
             <span class="k">if</span> <span class="n">slice_obj</span><span class="o">.</span><span class="n">start</span> <span class="o">&lt;</span> <span class="n">stacked_dim_size</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">slice_obj</span><span class="o">.</span><span class="n">stop</span> <span class="o">&lt;</span> <span class="n">stacked_dim_size</span><span class="p">:</span>
                     <span class="n">ret_dict</span><span class="p">[</span><span class="n">ds</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_item</span><span class="p">[</span><span class="n">rel_slice_obj</span><span class="p">]</span>
-                    <span class="k">return</span> <span class="n">MultiDevItem</span><span class="p">(</span><span class="n">ret_dict</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">MultiDevItem</span><span class="p">(</span><span class="n">ret_dict</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">ret_dict</span><span class="p">[</span><span class="n">ds</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_item</span><span class="p">[</span><span class="n">rel_slice_obj</span><span class="o">.</span><span class="n">start</span> <span class="p">:]</span>
-        <span class="k">return</span> <span class="n">MultiDevItem</span><span class="p">(</span><span class="n">ret_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">MultiDevItem</span><span class="p">(</span><span class="n">ret_dict</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -1321,7 +1321,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">devices</span> <span class="o">=</span> <span class="p">[</span><span class="n">devices</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">DevDistIter</span><span class="p">([</span><span class="n">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">devices</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">DevDistIter</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">devices</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="dev_dist_nest"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_dist_nest.html#ivy.functional.ivy.device.dev_dist_nest">[docs]</a><span class="nd">@handle_nestable</span>
@@ -1604,13 +1604,13 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">MultiDevContainer</span><span class="p">):</span>
-        <span class="n">xs</span> <span class="o">=</span> <span class="n">MultiDevItem</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">at_devs</span><span class="p">())</span>
-    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">MultiDevItem</span><span class="p">):</span>
+        <span class="n">xs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">MultiDevItem</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">at_devs</span><span class="p">())</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">MultiDevItem</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">xs</span>
     <span class="c1"># noinspection PyProtectedMember</span>
     <span class="n">xs0</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">items</span><span class="p">()))[</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">xs0</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">dev_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs0</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">xs</span></div>
@@ -1641,7 +1641,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># noinspection PyProtectedMember</span>
-    <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">_data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">MultiDevIter</span><span class="p">)</span> <span class="k">else</span> <span class="n">xs</span>
+    <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">_data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">MultiDevIter</span><span class="p">)</span> <span class="k">else</span> <span class="n">xs</span>
     <span class="k">if</span> <span class="n">transpose</span><span class="p">:</span>
         <span class="c1"># ToDo: make this more elegant, this method should not be</span>
         <span class="c1">#  responsible for transposing iterators</span>
