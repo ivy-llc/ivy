@@ -19,12 +19,12 @@ RNG = jax.random.PRNGKey(0)
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
+    low: Union[float, JaxArray] = 0.0,
+    high: Union[float, JaxArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
-    dtype=None,
+    dtype: jnp.dtype,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     global RNG
@@ -33,7 +33,7 @@ def random_uniform(
         jax.random.uniform(
             rng_input, shape if shape else (), minval=low, maxval=high, dtype=dtype
         ),
-        device=default_device(device),
+        device=device,
     )
 
 

@@ -20,14 +20,14 @@ import ivy
 # ------#
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
 @infer_dtype
 @handle_nestable
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
+    low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
+    high: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
