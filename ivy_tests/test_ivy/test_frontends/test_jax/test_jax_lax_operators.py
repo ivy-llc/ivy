@@ -90,7 +90,12 @@ def _arrays_idx_n_dtypes(draw):
         helpers.lists(st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
     )
     xs = list()
-    input_dtypes = draw(helpers.array_dtypes(shared_dtype=True))
+    available_dtypes = tuple(
+        set(ivy_np.valid_float_dtypes).intersection(ivy_jax.valid_float_dtypes)
+    )
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=available_dtypes, shared_dtype=True)
+    )
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
             helpers.array_values(
