@@ -1423,7 +1423,7 @@ def _mean_unify_array(xs, device, _=None):
 @handle_nestable
 def dev_unify_array(
     xs: DevDistItem,
-    device: ivy.Device,
+    device: Union[ivy.Device, ivy.NativeDevice],
     mode: Literal["concat", "mean", "sum"],
     axis: int = 0,
 ):
@@ -1447,6 +1447,9 @@ def dev_unify_array(
     ret
         array unified to the target device
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
     """
     return {
         "concat": _concat_unify_array,
