@@ -845,7 +845,7 @@ def test_floor(
 # for special cases
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        ivy_np.valid_numeric_dtypes, n_arrays=2, allow_inf=False
+        ivy_np.valid_numeric_dtypes, num_arrays=2, allow_inf=False
     ),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
@@ -1655,7 +1655,7 @@ def test_pow(
 # remainder
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        ivy_np.valid_numeric_dtypes, n_arrays=2, allow_inf=False
+        ivy_np.valid_numeric_dtypes, num_arrays=2, allow_inf=False
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -2085,7 +2085,7 @@ def test_erf(
 
 # minimum
 @given(
-    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, num_arrays=2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
@@ -2131,7 +2131,7 @@ def test_minimum(
 
 # maximum
 @given(
-    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, num_arrays=2),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),

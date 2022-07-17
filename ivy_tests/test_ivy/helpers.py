@@ -1117,13 +1117,29 @@ def test_frontend_function(
 
 
 @st.composite
-def array_dtypes(draw, na=st.shared(st.integers(), key="num_arrays")):
-    size = na if isinstance(na, int) else draw(na)
-    return draw(
-        st.lists(
-            st.sampled_from(ivy_np.valid_float_dtypes), min_size=size, max_size=size
-        )
-    )
+def array_dtypes(
+    draw,
+    num_arrays=st.shared(st.integers(), key="num_arrays"),
+    available_dtypes=ivy_np.valid_float_dtypes,
+    shared_dtype=False,
+):
+    if not isinstance(num_arrays, int):
+        num_arrays = draw(num_arrays)
+    if num_arrays == 1:
+        dtypes = draw(list_of_length(st.sampled_from(available_dtypes), 1))
+    elif shared_dtype:
+        dtypes = draw(list_of_length(st.sampled_from(available_dtypes), 1))
+        dtypes = [dtypes[0] for _ in range(num_arrays)]
+    else:
+        unwanted_types = set(ivy.all_dtypes).difference(set(available_dtypes))
+        pairs = ivy.promotion_table.keys()
+        available_dtypes = [
+            pair for pair in pairs if not any([d in pair for d in unwanted_types])
+        ]
+        dtypes = list(draw(st.sampled_from(available_dtypes)))
+        if num_arrays > 2:
+            dtypes += [dtypes[i % 2] for i in range(num_arrays - 2)]
+    return dtypes
 
 
 @st.composite
@@ -1164,8 +1180,8 @@ def integers(draw, min_value=None, max_value=None):
 @st.composite
 def dtype_and_values(
     draw,
-    available_dtypes,
-    n_arrays=1,
+    available_dtypes=ivy_np.valid_dtypes,
+    num_arrays=1,
     min_value=None,
     max_value=None,
     allow_inf=False,
@@ -1180,29 +1196,19 @@ def dtype_and_values(
     ret_shape=False,
     dtype=None,
 ):
-    if not isinstance(n_arrays, int):
-        n_arrays = draw(n_arrays)
+    if not isinstance(num_arrays, int):
+        num_arrays = draw(num_arrays)
     if dtype is None:
-        if n_arrays == 1:
-            dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-            dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
-        elif shared_dtype:
-            dtypes = set(available_dtypes).difference(set(ivy.invalid_dtypes))
-            dtype = draw(list_of_length(st.sampled_from(tuple(dtypes)), 1))
-            dtype = [dtype[0] for _ in range(n_arrays)]
-        else:
-            unwanted_types = set(ivy.invalid_dtypes).union(
-                set(ivy.all_dtypes).difference(set(available_dtypes))
+        dtype = draw(
+            array_dtypes(
+                num_arrays=num_arrays,
+                available_dtypes=available_dtypes,
+                shared_dtype=shared_dtype,
             )
-            pairs = ivy.promotion_table.keys()
-            dtypes = [
-                pair for pair in pairs if not any([d in pair for d in unwanted_types])
-            ]
-            dtype = list(draw(st.sampled_from(dtypes)))
-            if n_arrays > 2:
-                dtype += [dtype[i % 2] for i in range(n_arrays - 2)]
-    if shape:
-        shape = draw(shape)
+        )
+    if shape is not None:
+        if not isinstance(shape, (tuple, list)):
+            shape = draw(shape)
     else:
         shape = draw(
             st.shared(
@@ -1216,7 +1222,7 @@ def dtype_and_values(
             )
         )
     values = []
-    for i in range(n_arrays):
+    for i in range(num_arrays):
         values.append(
             draw(
                 array_values(
@@ -1230,7 +1236,7 @@ def dtype_and_values(
                 )
             )
         )
-    if n_arrays == 1:
+    if num_arrays == 1:
         dtype = dtype[0]
         values = values[0]
     if ret_shape:
@@ -1320,8 +1326,10 @@ def array_values(
     allow_negative=True,
     safety_factor=0.95,
 ):
+    exclude_min = exclude_min if ivy.exists(min_value) else False
+    exclude_max = exclude_max if ivy.exists(max_value) else False
     size = 1
-    if type(shape) != tuple:
+    if isinstance(shape, int):
         size = shape
     else:
         for dim in shape:
@@ -1414,7 +1422,7 @@ def array_values(
     array = np.array(values)
     if dtype != "bool" and not allow_negative:
         array = np.abs(array)
-    if type(shape) == tuple:
+    if isinstance(shape, (tuple, list)):
         array = array.reshape(shape)
     return array.tolist()
 
