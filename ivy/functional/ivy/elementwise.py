@@ -2947,8 +2947,8 @@ def positive(
                        [-4.4, -5.5, -6.6]])
     >>> ivy.positive(x, out=x)
     >>> print(x)
-    ivy.array([[1.1, 2.2, 3.3],
-               [-4.4, -5.5, -6.6]])
+    ivy.array([[1.1000, 2.2000, 3.3000],
+               [-4.4000, -5.5000, -6.6000]])
 
     With :code:`ivy.Container` input:
 
@@ -2971,7 +2971,7 @@ def positive(
     {
         a: ivy.array([0, 1, 0]),
         b: ivy.array([1.1, 2.1, 3.1]),
-        c: ivy.array([1.0, 2.0, 4.0])
+        c: ivy.array([1., 2., 4.])
     }
 
     Operator Examples
@@ -3005,7 +3005,7 @@ def positive(
     >>> y = +x
     >>> print(y)
     {
-        a: ivy.array([1.0, 2.0, 3.0]),
+        a: ivy.array([1., 2., 3.]),
         b: ivy.array([1, -4, 5])
     }
     """
