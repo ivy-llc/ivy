@@ -999,10 +999,10 @@ class MultiDevItem(MultiDev):
             if slice_obj.start < stacked_dim_size:
                 if slice_obj.stop < stacked_dim_size:
                     ret_dict[ds] = sub_item[rel_slice_obj]
-                    return MultiDevItem(ret_dict)
+                    return ivy.MultiDevItem(ret_dict)
                 else:
                     ret_dict[ds] = sub_item[rel_slice_obj.start :]
-        return MultiDevItem(ret_dict)
+        return ivy.MultiDevItem(ret_dict)
 
     def __getitem__(self, query):
         if isinstance(query, str):
@@ -1193,7 +1193,7 @@ def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     """
     if isinstance(devices, str):
         devices = [devices]
-    return ivy.DevDistIter([dev_dist(x, devices, axis) for x in xs], devices)
+    return ivy.DevDistIter([ivy.dev_dist(x, devices, axis) for x in xs], devices)
 
 
 @handle_nestable
@@ -1476,13 +1476,13 @@ def dev_unify(xs, device, mode, axis=0):
 
     """
     if isinstance(xs, ivy.MultiDevContainer):
-        xs = MultiDevItem(xs.at_devs())
-    elif not isinstance(xs, MultiDevItem):
+        xs = ivy.MultiDevItem(xs.at_devs())
+    elif not isinstance(xs, ivy.MultiDevItem):
         return xs
     # noinspection PyProtectedMember
     xs0 = next(iter(xs.items()))[1]
     if ivy.is_array(xs0):
-        return dev_unify_array(xs, device=device, mode=mode, axis=axis)
+        return ivy.dev_unify_array(xs, device=device, mode=mode, axis=axis)
     elif isinstance(xs0, ivy.Container):
         return ivy.Container.unify(xs, device=device, mode=mode, axis=axis)
     return xs
@@ -1513,7 +1513,7 @@ def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
 
     """
     # noinspection PyProtectedMember
-    xs = xs._data if isinstance(xs, MultiDevIter) else xs
+    xs = xs._data if isinstance(xs, ivy.MultiDevIter) else xs
     if transpose:
         # ToDo: make this more elegant, this method should not be
         #  responsible for transposing iterators
