@@ -14,50 +14,54 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
 
+@st.composite
+def _arrays_idx_n_dtypes(draw):
+    num_dims = draw(st.shared(st.integers(1, 4), key="num_dims"))
+    num_arrays = draw(st.shared(st.integers(2, 4), key="num_arrays"))
+    common_shape = draw(
+        helpers.lists(st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1)
+    )
+    unique_idx = draw(helpers.integers(0, num_dims - 1))
+    unique_dims = draw(
+        helpers.lists(st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
+    )
+    xs = list()
+    input_dtypes = draw(helpers.array_dtypes())
+    for ud, dt in zip(unique_dims, input_dtypes):
+        x = draw(
+            helpers.array_values(
+                shape=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:],
+                dtype=dt,
+            )
+        )
+        xs.append(x)
+    return xs, input_dtypes, unique_idx
+
+
 # concat
 @given(
-    common_shape=helpers.lists(
-        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
-    ),
-    unique_idx=helpers.integers(0, "num_dims"),
-    unique_dims=helpers.lists(
-        st.integers(2, 3),
-        min_size="num_arrays",
-        max_size="num_arrays",
-        size_bounds=[2, 3],
-    ),
-    input_dtype=helpers.array_dtypes(),
+    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="concat"),
     native_array=helpers.array_bools(),
     container=helpers.array_bools(),
     instance_method=st.booleans(),
-    seed=st.integers(0, 2**32 - 1),
 )
 def test_concat(
-    common_shape,
-    unique_idx,
-    unique_dims,
-    input_dtype,
+    xs_n_input_dtypes_n_unique_idx,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     container,
     instance_method,
-    seed,
     fw,
 ):
-    np.random.seed(seed)
-    xs = [
-        np.random.uniform(
-            size=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:]
-        ).astype(dt)
-        for ud, dt in zip(unique_dims, input_dtype)
-    ]
+    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_function(
-        input_dtype,
+        input_dtypes,
         as_variable,
         with_out,
         num_positional_args,
