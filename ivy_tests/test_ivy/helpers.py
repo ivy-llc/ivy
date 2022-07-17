@@ -385,13 +385,19 @@ def f_n_calls():
     ]
 
 
-def assert_all_close(x, y, rtol=1e-05, atol=1e-08):
-    if ivy.is_ivy_container(x) and ivy.is_ivy_container(y):
-        ivy.Container.multi_map(assert_all_close, [x, y])
+def assert_all_close(ret_np, ret_from_np, rtol=1e-05, atol=1e-08):
+    assert ret_np.dtype is ret_from_np.dtype, (
+        "the return with a NumPy backend produced data type of {}, "
+        "while the return with a {} backend returned a data type of {}.".format(
+            ret_from_np.dtype, ivy.current_backend_str(), ret_np.dtype
+        )
+    )
+    if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
+        ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
     else:
         assert np.allclose(
-            np.nan_to_num(x), np.nan_to_num(y), rtol=rtol, atol=atol
-        ), "{} != {}".format(x, y)
+            np.nan_to_num(ret_np), np.nan_to_num(ret_from_np), rtol=rtol, atol=atol
+        ), "{} != {}".format(ret_np, ret_from_np)
 
 
 def kwargs_to_args_n_kwargs(num_positional_args, kwargs):
@@ -429,7 +435,7 @@ def get_flattened_array_returns(ret, ret_from_gt):
     return flatten(ret), flatten(ret_from_gt)
 
 
-def value_test(ret_np_flat, ret_from_np_flat, rtol, atol):
+def value_test(ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
@@ -492,7 +498,9 @@ def create_args_kwargs(
             "Found {} arrays in the input arguments, but {} dtypes and "
             "as_variable_flags. Make sure to pass in a sequence of bools for all "
             "associated boolean flag inputs to test_function, with the sequence length "
-            "being equal to the number of arrays in the arguments."
+            "being equal to the number of arrays in the arguments.".format(
+                num_arrays, len(input_dtypes)
+            )
         )
 
     # create args
@@ -1119,7 +1127,7 @@ def test_frontend_function(
 @st.composite
 def array_dtypes(
     draw,
-    num_arrays=st.shared(st.integers(), key="num_arrays"),
+    num_arrays=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays"),
     available_dtypes=ivy_np.valid_float_dtypes,
     shared_dtype=False,
 ):
@@ -1143,8 +1151,10 @@ def array_dtypes(
 
 
 @st.composite
-def array_bools(draw, na=st.shared(st.integers(), key="num_arrays")):
-    size = na if isinstance(na, int) else draw(na)
+def array_bools(
+    draw, num_arrays=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays")
+):
+    size = num_arrays if isinstance(num_arrays, int) else draw(num_arrays)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
