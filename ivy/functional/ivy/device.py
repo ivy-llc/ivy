@@ -1111,10 +1111,12 @@ def dev_dist_array(
         devices: Union[Iterable[str], Dict[str, int]],
         axis=0
 ) -> DevDistItem:
-    """Distribute an array across the specified devices, returning a list of sub-arrays,
+    """
+    Distribute an array across the specified devices, returning a list of sub-arrays,
     each on a different device.
-    .. note:: It is pointless to run this function on a single device like devices=['cpu'],
-    if you do so...nothing would happen!
+
+    .. note:: It is pointless to run this function on a single device like
+    devices=['cpu'], if you do so...nothing would happen!
     
     Parameters
     ----------
