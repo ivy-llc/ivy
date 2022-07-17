@@ -1127,7 +1127,7 @@ def test_frontend_function(
 @st.composite
 def array_dtypes(
     draw,
-    num_arrays=st.shared(st.integers(), key="num_arrays"),
+    num_arrays=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays"),
     available_dtypes=ivy_np.valid_float_dtypes,
     shared_dtype=False,
 ):
@@ -1151,7 +1151,9 @@ def array_dtypes(
 
 
 @st.composite
-def array_bools(draw, na=st.shared(st.integers(), key="num_arrays")):
+def array_bools(
+    draw, na=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays")
+):
     size = na if isinstance(na, int) else draw(na)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
