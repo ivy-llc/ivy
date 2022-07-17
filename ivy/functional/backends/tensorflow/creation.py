@@ -159,7 +159,7 @@ def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
         ivy.is_float_dtype(dtype)
         and isinstance(fill_value, float)
         or (isinstance(fill_value, bool))
-    ), "the fill_value and data type"
+    ), "the fill_value and data type are not same"
 
 
 def full(
