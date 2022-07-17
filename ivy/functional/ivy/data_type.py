@@ -539,11 +539,11 @@ def default_dtype(
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_float_dtype(item):
-            return default_float_dtype(item, as_native=as_native)
+            return ivy.default_float_dtype(item, as_native=as_native)
         elif ivy.is_int_dtype(item):
-            return default_int_dtype(item, as_native=as_native)
+            return ivy.default_int_dtype(item, as_native=as_native)
         elif as_native:
-            return as_native_dtype("bool")
+            return ivy.as_native_dtype("bool")
         else:
             return "bool"
     global default_dtype_stack
@@ -605,7 +605,7 @@ def default_int_dtype(
             ):
                 ret = ivy.int64
             else:
-                def_dtype = default_dtype()
+                def_dtype = ivy.default_dtype()
                 if ivy.is_int_dtype(def_dtype):
                     ret = def_dtype
                 else:
@@ -620,7 +620,7 @@ def default_int_dtype(
             elif input > 2147483647 and input != ivy.inf:
                 ret = ivy.int64
             else:
-                def_dtype = default_dtype()
+                def_dtype = ivy.default_dtype()
                 if ivy.is_int_dtype(def_dtype):
                     ret = def_dtype
                 else:
@@ -628,7 +628,7 @@ def default_int_dtype(
     else:
         global default_int_dtype_stack
         if not default_int_dtype_stack:
-            def_dtype = default_dtype()
+            def_dtype = ivy.default_dtype()
             if ivy.is_int_dtype(def_dtype):
                 ret = def_dtype
             else:
@@ -936,7 +936,7 @@ def is_int_dtype(
             )
             else False
         )
-    return "int" in as_ivy_dtype(dtype_in)
+    return "int" in ivy.as_ivy_dtype(dtype_in)
 
 
 @inputs_to_native_arrays
