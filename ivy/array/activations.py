@@ -11,7 +11,7 @@ import ivy
 class ArrayWithActivations(abc.ABC):
     def relu(
         self: ivy.Array,
-         *,
+        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
@@ -31,7 +31,7 @@ class ArrayWithActivations(abc.ABC):
     def leaky_relu(
         self: ivy.Array,
         alpha: Optional[float] = 0.2,
-         *,
+        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
@@ -51,7 +51,7 @@ class ArrayWithActivations(abc.ABC):
     def gelu(
         self: ivy.Array,
         approximate: Optional[bool] = True,
-         *,
+        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
@@ -70,7 +70,7 @@ class ArrayWithActivations(abc.ABC):
 
     def tanh(
         self: ivy.Array,
-         *,
+        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
@@ -89,7 +89,7 @@ class ArrayWithActivations(abc.ABC):
 
     def sigmoid(
         self: ivy.Array,
-         *,
+        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
@@ -109,7 +109,7 @@ class ArrayWithActivations(abc.ABC):
     def softmax(
         self: ivy.Array,
         axis: Optional[int] = None,
-         *,
+        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
@@ -128,7 +128,7 @@ class ArrayWithActivations(abc.ABC):
 
     def softplus(
         self: ivy.Array,
-         *,
+        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
