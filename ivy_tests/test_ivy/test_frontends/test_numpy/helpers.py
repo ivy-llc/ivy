@@ -14,9 +14,8 @@ def where(draw):
 
 
 # noinspection PyShadowingNames
-def test_frontend_function(*args, where=None, **kwargs):
-    if ivy.exists(where):
-        kwargs["where"] = where
+def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
+    where = kwargs["where"]
     values = helpers.test_frontend_function(*args, **kwargs)
     if values is None:
         return
@@ -26,6 +25,16 @@ def test_frontend_function(*args, where=None, **kwargs):
         np.where(where, x, np.zeros_like(x)) for x in helpers.flatten(frontend_ret)
     ]
     helpers.value_test(ret_flat, frontend_ret_flat)
+
+
+# noinspection PyShadowingNames
+def test_frontend_function(*args, where=None, **kwargs):
+    if not ivy.exists(where):
+        helpers.test_frontend_function(*args, **kwargs)
+    kwargs["where"] = where
+    if "out" in kwargs and kwargs["out"] is None:
+        _test_frontend_function_ignoring_unitialized(*args, **kwargs)
+    helpers.test_frontend_function(*args, **kwargs)
 
 
 # noinspection PyShadowingNames
