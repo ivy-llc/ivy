@@ -1106,10 +1106,16 @@ class DevDistNest(MultiDevNest):
 
 
 @handle_nestable
-def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
+def dev_dist_array(
+        x: Union[ivy.Array, ivy.NativeArray],
+        devices: Union[Iterable[str],Dict[str, int]],
+        axis=0
+) ->DevDistItem:
     """Distribute an array across the specified devices, returning a list of sub-arrays,
     each on a different device.
 
+    .. note:: It is pointless to run this function on a single device like devices=['cpu'], if you do so...nothing would happen!
+    
     Parameters
     ----------
     x
@@ -1127,6 +1133,26 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
     ret
         array distributed across the target devices
 
+    Examples
+    --------
+
+        x= ivy.array(
+            [   [[0.549, 0.715, 0.603],
+                 [0.545, 0.424, 0.646]],
+
+                [[0.438, 0.892, 0.964],
+                 [0.384, 0.792, 0.529]]]
+        )
+        devices=  {'cpu': 2}
+        axis=  1
+        x_split = ivy.dev_dist_array(x, devices, axis)
+        result: DevDistItem({'cpu': ivy.array(
+            [  [[0.549, 0.715, 0.603],
+                [0.545, 0.424, 0.646]],
+
+               [[0.438, 0.892, 0.964],
+                [0.384, 0.792, 0.529]]  ]
+        )})
     """
     split_arg = list(devices.values()) if isinstance(devices, dict) else len(devices)
     return DevDistItem(
@@ -1137,6 +1163,7 @@ def dev_dist_array(x, devices: Union[Iterable[str], Dict[str, int]], axis=0):
             )
         }
     )
+
 
 
 @handle_nestable
