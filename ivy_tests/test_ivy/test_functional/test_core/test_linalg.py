@@ -943,33 +943,38 @@ def test_matrix_rank(
 
 
 # cholesky
+# Todo: this test is not passed
 @given(
-    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype_x=helpers.dtype_and_values(
+        ivy_np.valid_float_dtypes,
+        min_value=0,
+        max_value=1000,
+        shape=st.integers(2, 5).map(lambda x: tuple([x, x]))
+    ).filter(lambda dtype_x: np.linalg.matrix_rank(np.asarray(dtype_x[1])) == len(dtype_x[1])),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
-    a=st.integers(2, 5),
     upper=st.booleans(),
 )
 def test_cholesky(
-    input_dtype,
+    dtype_x,
     as_variable,
     num_positional_args,
     native_array,
     container,
     instance_method,
     fw,
-    a,
     upper,
 ):
-    if "float16" in input_dtype:
-        return
-    x = np.random.uniform(size=(a, a)).astype(input_dtype)
-    x = np.matmul(x, x.T + 1e-3)  # make symmetric positive-definite
+    dtype, x = dtype_x
+    x = np.asarray(x, dtype=dtype)
+    x = x + (np.identity(x.shape[0]) * 1e-3)
+    x = np.matmul(x, x.T)  # make symmetric positive-definite
+
     helpers.test_function(
-        input_dtype,
+        dtype,
         as_variable,
         False,
         num_positional_args,

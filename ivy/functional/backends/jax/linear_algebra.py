@@ -22,6 +22,9 @@ def cholesky(x: JaxArray, upper: bool = False) -> JaxArray:
     return ret
 
 
+cholesky.unsupported_dtypes = ("float16",)
+
+
 def cross(x1: JaxArray, x2: JaxArray, axis: int = -1) -> JaxArray:
     ret = jnp.cross(a=x1, b=x2, axis=axis)
     return ret

@@ -20,6 +20,9 @@ def cholesky(x: np.ndarray, upper: bool = False) -> np.ndarray:
     return ret
 
 
+cholesky.unsupported_dtypes = ("float16",)
+
+
 def cross(x1: np.ndarray, x2: np.ndarray, axis: int = -1) -> np.ndarray:
     ret = np.cross(a=x1, b=x2, axis=axis)
     return ret

@@ -28,6 +28,9 @@ def cholesky(
     return ret
 
 
+cholesky.unsupported_dtypes = ("float16",)
+
+
 def cross(
     x1: torch.Tensor,
     x2: torch.Tensor,
