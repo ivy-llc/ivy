@@ -1152,9 +1152,9 @@ def array_dtypes(
 
 @st.composite
 def array_bools(
-    draw, na=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays")
+    draw, num_arrays=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays")
 ):
-    size = na if isinstance(na, int) else draw(na)
+    size = num_arrays if isinstance(num_arrays, int) else draw(num_arrays)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
