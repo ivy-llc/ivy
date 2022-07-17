@@ -31,11 +31,11 @@ def gelu(
     return torch.nn.functional.gelu(x)
    
 
-def tanh(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def tanh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.tanh(x, out=out)
 
 
-def sigmoid(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def sigmoid(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.sigmoid(x, out=out)
 
 
