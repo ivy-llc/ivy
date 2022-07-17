@@ -385,13 +385,19 @@ def f_n_calls():
     ]
 
 
-def assert_all_close(x, y, rtol=1e-05, atol=1e-08):
-    if ivy.is_ivy_container(x) and ivy.is_ivy_container(y):
-        ivy.Container.multi_map(assert_all_close, [x, y])
+def assert_all_close(ret_np, ret_from_np, rtol=1e-05, atol=1e-08):
+    assert ret_np.dtype is ret_from_np.dtype, (
+        "the return with a NumPy backend produced data type of {}, "
+        "while the return with a {} backend returned a data type of {}.".format(
+            ret_from_np.dtype, ivy.current_backend_str(), ret_np.dtype
+        )
+    )
+    if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
+        ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
     else:
         assert np.allclose(
-            np.nan_to_num(x), np.nan_to_num(y), rtol=rtol, atol=atol
-        ), "{} != {}".format(x, y)
+            np.nan_to_num(ret_np), np.nan_to_num(ret_from_np), rtol=rtol, atol=atol
+        ), "{} != {}".format(ret_np, ret_from_np)
 
 
 def kwargs_to_args_n_kwargs(num_positional_args, kwargs):
