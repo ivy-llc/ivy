@@ -271,6 +271,11 @@ def add(
     >>> print(z)
     ivy.array([5, 7, 9])
 
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.add(x, 5.)
+    >>> print(y)
+    ivy.array([6., 7., 8.])
+
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
     >>> y = ivy.array([[4.8], [5.2], [6.1]])
     >>> z = ivy.zeros((3, 3))
