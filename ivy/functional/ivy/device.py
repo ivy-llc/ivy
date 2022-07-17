@@ -962,6 +962,23 @@ class MultiDev:
         self._counter = 0
 
     def __len__(self):
+        """Returns the number of items in the iterable passed as data when len() function is used
+
+        Returns
+        -------
+        ret
+            returns an integer count of the number of items passed as data
+
+        Examples
+        --------
+        >>> x = ivy.MultiDev(['gpu', 'cpu'])
+        >>> print(len(x))
+        2
+
+        >>> x = x = ivy.MultiDev(data=['abc', 'lmn','xyz'])
+        >>> print(x._length)
+        3
+        """
         return self._length
 
     def __repr__(self):
