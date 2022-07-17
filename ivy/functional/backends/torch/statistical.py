@@ -157,7 +157,7 @@ def sum(
     dtype = ivy.as_native_dtype(dtype)
 
     if axis is None:
-            return torch.sum(input=x, dtype=dtype)
+        return torch.sum(input=x, dtype=dtype)
     elif type(axis) == list:
         return torch.sum(input=x, dim=axis)
     elif type(axis) == tuple:
@@ -172,7 +172,6 @@ def sum(
                     ]
                 ),
                 dtype=dtype,
-                out=out,
             )
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
