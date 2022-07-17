@@ -5,6 +5,7 @@ import gc
 import math
 import einops
 import inspect
+import builtins
 import numpy as np
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
@@ -25,6 +26,8 @@ FN_CACHE = dict()
 INF = float("inf")
 TIMEOUT = 15.0
 TMP_DIR = "/tmp"
+
+shape_array_mode_stack = list()
 
 
 def get_referrers_recursive(
@@ -490,7 +493,7 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
 @handle_nestable
 def all_equal(
     *xs: Iterable[Any], equality_matrix: bool = False
-) -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
+) -> Union[bool, ivy.Array, ivy.NativeArray]:
     """Determines whether the inputs are all equal.
 
     Parameters
@@ -1073,7 +1076,7 @@ def clip_matrix_norm(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-        
+
     Returns
     -------
     ret
@@ -1144,7 +1147,7 @@ def unstack(
 @handle_nestable
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
-    max_freq: Union[float, Union[ivy.Array, ivy.NativeArray]],
+    max_freq: Union[float, ivy.Array, ivy.NativeArray],
     num_bands: int = 4,
     linear: bool = False,
     concat: bool = True,
@@ -1397,76 +1400,48 @@ def default(
     return x if exists(x) else default_val() if default_callable else default_val
 
 
-def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
-    """Returns a tuple representation of the input shape.
+def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
+    """Returns the input shape in ivy.Shape form
 
     Parameters
     ----------
     shape
-        The shape input to convert to tuple representation.
+        The input to be converted
 
     Returns
     -------
-        The shape in tuple representation
-
-    Examples
-    --------
-    With :code:`ivy.Array.shape` input:
-
-    >>> x = ivy.array([1., 2., 3.]).shape
-    >>> print(ivy.shape_to_tuple(x))
-    (3,)
-
-    >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape
-    >>> print(ivy.shape_to_tuple(x))
-    (2, 3)
-
-    >>> x = ivy.array((1., 2., 3.)).shape
-    >>> print(ivy.shape_to_tuple(x))
-    (3,)
-
-    >>> x = ivy.array(((1., 2., 3.), (4., 5., 6.))).shape
-    >>> print(ivy.shape_to_tuple(x))
-    (2, 3)
-
-    With :code:`ivy.NativeArray.shape` input:
-
-    >>> x = ivy.native_array([1., 2., 3.]).shape
-    >>> print(ivy.shape_to_tuple(x))
-    (3,)
-
-    >>> x = ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape
-    >>> print(ivy.shape_to_tuple(x))
-    (2, 3)
-
-    >>> x = ivy.native_array((1., 2., 3.)).shape
-    >>> print(ivy.shape_to_tuple(x))
-    (3,)
-
-    >>> x = ivy.native_array(((1., 2., 3.), (4., 5., 6.))).shape
-    >>> print(ivy.shape_to_tuple(x))
-    (2, 3)
-
-    With :code:`Tuple[int]` input:
-
-    >>> x = (1, 2, 3)
-    >>> print(ivy.shape_to_tuple(x))
-    (1, 2, 3)
-
-    With :code:`List[int]` input:
-
-    >>> x = [1, 2, 3]
-    >>> print(ivy.shape_to_tuple(x))
-    (1, 2, 3)
+     ret
+        the input in ivy.Shape form
 
     """
-    if ivy.is_array(shape):
-        raise Exception("shape_to_tuple does not accept arrays as input")
-    if isinstance(shape, int):
+    if isinstance(shape, ivy.Shape):
         return shape
-    elif isinstance(shape, (tuple, list)):
-        assert min([isinstance(d, int) for d in shape]) is True
-    return tuple(shape)
+    return ivy.Shape(shape)
+
+
+def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape:
+    """Returns the input shape in its native backend framework form
+
+    Parameters
+    ----------
+    shape
+        The input to be converted
+
+    Returns
+    -------
+     ret
+        the input in its native framework form
+
+    """
+    if isinstance(shape, ivy.NativeShape):
+        return shape
+    assert isinstance(shape, (int, list, tuple))
+    if isinstance(shape, int):
+        shape = (shape,)
+    elif isinstance(shape, list):
+        shape = tuple(shape)
+    assert builtins.all([isinstance(v, int) for v in shape])
+    return ivy.NativeShape(shape)
 
 
 @handle_nestable
@@ -2084,7 +2059,7 @@ def cumprod(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    
+
     Returns
     -------
     ret
@@ -2199,7 +2174,7 @@ def scatter_flat(
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
-    shape: Optional[Iterable[int]] = None,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
     *,
@@ -2542,7 +2517,7 @@ def one_hot(
 @handle_nestable
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
-) -> Iterable[int]:
+) -> Union[ivy.Shape, ivy.NativeShape]:
     """Returns the shape of the array ``x``.
 
     Parameters
@@ -2571,6 +2546,64 @@ def shape(
 
     """
     return current_backend(x).shape(x, as_array)
+
+
+def set_shape_array_mode(mode: bool) -> None:
+    """Set the mode of returning shape as ivy.Array to the given mode instance
+
+    Parameter
+    ---------
+    mode
+        boolean whether to return shape as ivy.Array
+
+    Examples
+    --------
+    >>> ivy.set_shape_array_mode(False)
+    >>> ivy.shape_array_mode()
+    False
+
+    >>> ivy.set_shape_array_mode(True)
+    >>> ivy.shape_array_mode()
+    True
+    """
+    global shape_array_mode_stack
+    shape_array_mode_stack.append(mode)
+
+
+def unset_shape_array_mode() -> None:
+    """Reset the mode of returning shape as ivy.Array to the previous state
+
+    Examples
+    --------
+    >>> ivy.set_shape_array_mode(True)
+    >>> ivy.shape_array_mode()
+    True
+
+    >>> ivy.unset_shape_array_mode()
+    >>> ivy.shape_array_mode()
+    False
+    """
+    global shape_array_mode_stack
+    if shape_array_mode_stack:
+        shape_array_mode_stack.pop(-1)
+
+
+def shape_array_mode() -> bool:
+    """Get the current state of shape_array_mode
+
+    Examples
+    --------
+    >>> ivy.shape_array_mode()
+    False
+
+    >>> ivy.set_shape_array_mode(True)
+    >>> ivy.shape_array_mode()
+    True
+    """
+    global shape_array_mode_stack
+    if not shape_array_mode_stack:
+        return False
+    return shape_array_mode_stack[-1]
 
 
 @to_native_arrays_and_back

@@ -166,6 +166,29 @@ class ContainerWithDataTypes(ContainerBase):
         wraps the function, and so the docstring for `ivy.can_cast` also applies to
         this method with minimal changes.
 
+        Parameters
+        ----------
+        from_
+            input container from which to cast.
+        to
+            desired data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            ``True`` if the cast can occur according to :ref:`type-promotion` rules;
+            otherwise, ``False``.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
@@ -201,6 +224,29 @@ class ContainerWithDataTypes(ContainerBase):
         `ivy.Container` instance method variant of `ivy.can_cast`. This method simply
         wraps the function, and so the docstring for `ivy.can_cast` also applies to
         this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container from which to cast.
+        to
+            desired data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            ``True`` if the cast can occur according to :ref:`type-promotion` rules;
+            otherwise, ``False``.
 
         Examples
         --------
