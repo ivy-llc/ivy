@@ -498,7 +498,9 @@ def create_args_kwargs(
             "Found {} arrays in the input arguments, but {} dtypes and "
             "as_variable_flags. Make sure to pass in a sequence of bools for all "
             "associated boolean flag inputs to test_function, with the sequence length "
-            "being equal to the number of arrays in the arguments."
+            "being equal to the number of arrays in the arguments.".format(
+                num_arrays, len(input_dtypes)
+            )
         )
 
     # create args
