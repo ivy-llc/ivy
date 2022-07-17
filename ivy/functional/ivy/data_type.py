@@ -652,30 +652,37 @@ def dtype(
     as_native
         Whether or not to return the dtype in string format. Default is False.
 
-# noinspection PyShadowingNames
-def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]) -> None:
-    """Default the type to int and append the type to stack.
-
-    Parameters
-    ----------
-    int_dtype
-        int data type
-
     Returns
     -------
-        Return None
+    ret
+        Data type of the array
 
-    Examples:
-    -------
-    >>> set_default_int_dtype(int_dtype)
-    >>> print(ivy.default_int_dtype())
+    Functional Method Examples
+    --------------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([1, 0, 1, -1, 0])
+    >>> y = ivy.dtype(x1)
+    >>> print(y)
     int32
 
-    """
-    int_dtype = ivy.default_dtype(ivy.as_ivy_dtype(int_dtype))
-    global default_int_dtype_stack
-    default_int_dtype_stack.append(int_dtype)
+    >>> x1 = ivy.array([1.0, 2.0, 3.5, 4.5, 5, 6])
+    >>> y = ivy.dtype(x1)
+    >>> print(y)
+    float32
 
+    With :code:`ivy.Native_Array` inputs:
+
+    >>> x1 = ivy.native_array([1, 0, 1, -1, 0])
+    >>> y = ivy.dtype(x1)
+    >>> print(y)
+    int32
+
+    >>> x1 = ivy.native_array([1.0, 2.0, 3.5, 4.5, 5, 6])
+    >>> y = ivy.dtype(x1)
+    >>> print(y)
+    float32
 
     With :code:`ivy.Container` inputs:
 
@@ -1020,11 +1027,18 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str]):
 
 
 def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
-    """Summary.
+    """Default the type to int and append the type to stack.
 
     Parameters
     ----------
     int_dtype
+        int data type
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype(int_dtype)
+    >>> print(default_int_dtype_stack)
+    ivy.default_dtype
 
     """
     int_dtype = ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
