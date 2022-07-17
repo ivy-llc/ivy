@@ -16,8 +16,8 @@ from ivy.functional.ivy.device import default_device
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
+    low: Union[float, tf.Tensor, tf.Variable] = 0.0,
+    high: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype=None,
     *,

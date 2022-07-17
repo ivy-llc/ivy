@@ -46,8 +46,14 @@ def test_random_uniform(data, shape, dtype, as_variable, device, call):
         assert ret.shape == shape
     # value test
     ret_np = call(ivy.random_uniform, **kwargs, device=device)
-    assert np.min((ret_np < (high if high else 1.0)).astype(np.int32)) == 1
-    assert np.min((ret_np >= (low if low else 0.0)).astype(np.int32)) == 1
+    assert (
+        np.min((ret_np <= (high + abs(high) * 0.01 if high else 1.01)).astype(np.int32))
+        == 1
+    )
+    assert (
+        np.min((ret_np >= (low - abs(low) * 0.01 if low else -0.01)).astype(np.int32))
+        == 1
+    )
 
 
 # random_normal

@@ -158,11 +158,7 @@ asin.support_native_out = True
 asin.unsupported_dtypes = ("float16",)
 
 
-def asinh(
-        x: torch.Tensor,
-        *,
-        out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def asinh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.asinh(x, out=out)
 
 
@@ -481,9 +477,7 @@ trunc.unsupported_dtypes = ("float16",)
 
 
 def abs(
-    x: Union[float, torch.Tensor], 
-    *, 
-    out: Optional[torch.Tensor] = None
+    x: Union[float, torch.Tensor], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.abs(x, out=out)
