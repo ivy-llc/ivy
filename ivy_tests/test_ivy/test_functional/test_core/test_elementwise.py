@@ -372,7 +372,9 @@ def test_bitwise_and(
 
 # bitwise_left_shift
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.all_int_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy.all_int_dtypes, num_arrays=2, shared_dtype=True
+    ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
@@ -391,12 +393,8 @@ def test_bitwise_left_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(x)
-    x1 = np.asarray(x, dtype=input_dtype)
-    n_bits = ivy.dtype_bits(input_dtype)
-    x2 = np.random.randint(n_bits, size=x1.shape, dtype=input_dtype)
     helpers.test_function(
-        input_dtypes=[input_dtype, input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -405,8 +403,8 @@ def test_bitwise_left_shift(
         instance_method=instance_method,
         fw=fw,
         fn_name="bitwise_left_shift",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -487,7 +485,9 @@ def test_bitwise_or(
 
 # bitwise_right_shift
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.all_int_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy.all_int_dtypes, num_arrays=2, shared_dtype=True
+    ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
@@ -506,12 +506,8 @@ def test_bitwise_right_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(x)
-    x1 = np.asarray(x, dtype=input_dtype)
-    n_bits = ivy.dtype_bits(input_dtype)
-    x2 = np.random.randint(n_bits, size=x1.shape, dtype=input_dtype)
     helpers.test_function(
-        input_dtypes=[input_dtype, input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -520,8 +516,8 @@ def test_bitwise_right_shift(
         instance_method=instance_method,
         fw=fw,
         fn_name="bitwise_right_shift",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -693,12 +689,10 @@ def test_divide(
     input_dtype, x = dtype_and_x
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    # ToDo: remove the checks below, and instead handle this during the
-    #  hypothesis data generation
-    if np.any(x2 == 0):
-        return  # don't divide by 0
-    elif np.any(x1 > 9223372036854775807):
-        return  # np.divide converts to signed int so values can't be too large
+    # np.divide converts to signed int so values can't be too large
+    assume(np.all(x1 <= 9223372036854775807))
+    # prevent division by 0
+    assume(np.all(x2 != 0))
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
