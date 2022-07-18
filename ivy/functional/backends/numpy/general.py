@@ -120,8 +120,8 @@ def cumprod(
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = np.cumprod(x, -1, out=out)
+        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        res = np.cumprod(x, -1)
         return np.swapaxes(res, axis, -1)
     return np.cumprod(x, axis, out=out)
 
@@ -173,7 +173,7 @@ def scatter_nd(
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
