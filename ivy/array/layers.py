@@ -20,9 +20,33 @@ class ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.depthwise_conv2d. This method
-        simply wraps the function, and so the docstring for ivy.depthwise_conv2d
-        also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.depthwise_conv2d. This method simply
+        wraps the function, and so the docstring for ivy.depthwise_conv2d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input image *[batch_size,h,w,d]*.
+        filters
+            Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from self)
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating the
+            per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
 
         Examples
         --------
