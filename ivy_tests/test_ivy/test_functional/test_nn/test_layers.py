@@ -203,6 +203,130 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
 # Convolutions #
 # -------------#
 
+@st.composite
+def x_and_filters(
+        draw,
+        dtypes,
+        data_format,
+        type: str = '2d'
+):
+    data_format = draw(data_format)
+    dtype = draw(dtypes)
+    dilations = draw(st.integers(min_value=1, max_value=3))
+    if type == '1d':
+        filter_shape = draw(
+            st.tuples(
+                st.integers(3, 5),
+                st.integers(1, 3),
+                st.integers(1, 3),
+            )
+        )
+
+        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        d_in = filter_shape[1]
+        if data_format == 'NWC':
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(min_value=min_x_width, max_value=100),
+                    st.integers(d_in, d_in),
+                )
+            )
+        else:
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(d_in, d_in),
+                    st.integers(min_value=min_x_width, max_value=100),
+                )
+            )
+    elif type == '2d':
+        filter_shape = draw(
+            st.tuples(
+                st.integers(3, 5),
+                st.integers(3, 5),
+                st.integers(1, 3),
+                st.integers(1, 3),
+            )
+        )
+
+        min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        d_in = filter_shape[2]
+        if data_format == 'NHWC':
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_width, max_value=100),
+                    st.integers(d_in, d_in),
+                )
+            )
+            # print("x_shape")
+            # print(x_shape)
+        else:
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(d_in, d_in),
+                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_width, max_value=100),
+                )
+            )
+
+    else:
+        filter_shape = draw(
+            st.tuples(
+                st.integers(3, 5),
+                st.integers(3, 5),
+                st.integers(3, 5),
+                st.integers(1, 3),
+                st.integers(1, 3),
+            )
+        )
+
+        min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        d_in = filter_shape[3]
+        if data_format == 'NDHWC':
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_width, max_value=100),
+                    st.integers(d_in, d_in),
+                )
+            )
+        else:
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(d_in, d_in),
+                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_width, max_value=100),
+                    st.integers(min_value=min_x_width, max_value=100),
+                )
+            )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=x_shape,
+            min_value=0,
+            max_value=1
+        )
+    )
+    filters = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=filter_shape,
+            min_value=0,
+            max_value=1
+        )
+    )
+    return dtype, x, filters, dilations, data_format
+
+
 # conv1d
 @given(
     batch_size=st.integers(min_value=1, max_value=5),
@@ -330,18 +454,13 @@ def test_conv1d_transpose(
 
 # conv2d
 @given(
-    batch_size=st.integers(min_value=1, max_value=5),
-    x_h=st.integers(min_value=1, max_value=100),
-    x_w=st.integers(min_value=1, max_value=100),
-    d_in=st.integers(min_value=1, max_value=5),
-    d_out=st.integers(min_value=1, max_value=5),
-    f_w=st.integers(min_value=1, max_value=5),
-    f_h=st.integers(min_value=1, max_value=5),
+    x_f_d_df=x_and_filters(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        data_format=st.sampled_from(["NHWC", "NCHW"]),
+        type='2d'
+    ),
     stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
-    data_format=st.sampled_from(["NHWC", "NCHW"]),
-    dilations=st.integers(min_value=1, max_value=3),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
@@ -349,18 +468,9 @@ def test_conv1d_transpose(
     instance_method=st.booleans(),
 )
 def test_conv2d(
-    batch_size,
-    x_h,
-    x_w,
-    d_in,
-    d_out,
-    f_w,
-    f_h,
+    x_f_d_df,
     stride,
     pad,
-    data_format,
-    dilations,
-    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -369,27 +479,9 @@ def test_conv2d(
     fw,
     device,
 ):
-    if fw in ["tensorflow"] and "cpu" in device:
-        # tf conv2d does not work when CUDA is installed, but array is on CPU
-        return
+    dtype, x, filters, dilations, data_format = x_f_d_df
+    dtype = [dtype] * 2
 
-    if fw == "torch" and "float16" in dtype:
-        # not implemented for Half
-        return
-
-    if f_w + (f_w - 1) * (dilations - 1) > x_w:
-        # kernel size can't be greater than input
-        x_w = f_w + (f_w - 1) * (dilations - 1)
-
-    if f_h + (f_h - 1) * (dilations - 1) > x_h:
-        # kernel size can't be greater than input
-        x_h = f_h + (f_h - 1) * (dilations - 1)
-
-    if data_format == "NHWC":
-        x = np.random.uniform(size=[batch_size, x_h, x_w, d_in]).astype(dtype)
-    else:
-        x = np.random.uniform(size=[batch_size, d_in, x_h, x_w]).astype(dtype)
-    filters = np.random.uniform(size=[f_h, f_w, d_in, d_out]).astype(dtype)
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -400,8 +492,8 @@ def test_conv2d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv2d",
-        x=x,
-        filters=filters,
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
         data_format=data_format,
