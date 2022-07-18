@@ -267,4 +267,8 @@ Additional examples for each framework on concatenation is added for better unde
 
 **Round Up**
 
+Hope that you have a better grasp on the Ivy Frontend Functional APIs after going
+through the above contents! If you prefer a verbal explanation, we have a tutorial
+series on YouTube explaining on this. The links will be attached in the next section!
+
 **Video**
