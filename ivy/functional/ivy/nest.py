@@ -140,6 +140,15 @@ def map_nest_at_index(nest, index, fn):
 
 
 def multi_index_nest(nest, indices):
+    if res==type(nest) is tuple:
+        for index in range(indices):
+            index_nest(nest,index)
+    
+    else :
+        tm=len(nest.keys())
+        for index in range(tm):
+            index_nest(nest, index)
+        
     """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
     the case of dicts.
 
@@ -149,9 +158,11 @@ def multi_index_nest(nest, indices):
         The nested object to slice.
     indices
         A tuple of tuples of indices to apply.
+    keys
+        key values of nest if it is in dict
 
     """
-    return [index_nest(nest, index) for index in indices]
+    
 
 
 def prune_nest_at_indices(nest, indices):
