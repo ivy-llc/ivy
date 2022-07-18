@@ -1217,13 +1217,13 @@ def unset_default_uint_dtype():
 
     Examples
     --------
-    >>> ivy.set_shape_array_mode(True)
-    >>> ivy.shape_array_mode()
-    True
+    >>> ivy.set_default_uint_dtype(ivy.UintDtype("uint8"))
+    >>> ivy.default_uint_dtype()
+    'uint8'
 
-    >>> ivy.unset_shape_array_mode()
-    >>> ivy.shape_array_mode()
-    False
+    >>> ivy.unset_default_uint_dtype()
+    >>> ivy.default_uint_dtype()
+    'uint32'
     """
     global default_uint_dtype_stack
     if default_uint_dtype_stack:
