@@ -249,8 +249,8 @@ def any(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0, 0.9, 0.8]), \
+                          b=ivy.array([0.7, 0.6, 0.5]))
     >>> y = ivy.any(x)
     >>> print(y)
     {
@@ -258,9 +258,9 @@ def any(
         b: ivy.array(True)
     }
     
-    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
-    >>> y = x.any(x)
+    >>> x = ivy.Container(a=ivy.array([0, 0.9, 0.8]), \
+                          b=ivy.array([0.7, 0.6, 0.5]))
+    >>> y = x.any()
     >>> print(y)
 
     {
@@ -280,8 +280,8 @@ def any(
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0, 0.9, 0.8]), \
+                          b=ivy.array([0.7, 0.6, 0.5]))
     >>> y = x.any()
     >>> print(y)
     {
@@ -289,8 +289,8 @@ def any(
         b: ivy.array(True)
     }
 
-    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), \
-                          b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.native_array([0, 0.9, 0.8]), \
+                          b=ivy.array([0.7, 0.6, 0.5]))
     >>> y = x.any()
     >>> print(y)
     {
