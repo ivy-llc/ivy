@@ -96,7 +96,7 @@ class ArrayWithStatistical(abc.ABC):
         With :code:`ivy.Array` input:
 
          >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
-         >>> y = ivy.var(x)
+         >>> y = x.var()
          >>> print(y)
          ivy.array(0.075)
 
