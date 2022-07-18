@@ -1560,7 +1560,7 @@ def expm1(
        [147.  ],
        [ -1.  ]])
     
-    With :code:`ivy.Array` Method:
+    With :code:`ivy.Array` instance method:
     
     >>> x = ivy.array([20])
     >>> x.expm1()
