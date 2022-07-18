@@ -319,7 +319,7 @@ class Container(
             return ivy.Container.multi_map(
                 lambda xs, _: operator.xor(xs[0], xs[1]), [self, other], map_nests=True
             )
-        return self.map(lambda x, kc: x != other, map_sequences=True)
+        return self.map(lambda x, kc: operator.xor(x,other), map_sequences=True)
 
     def __rxor__(self, other):
         return self.map(lambda x, kc: other != x, map_sequences=True)
