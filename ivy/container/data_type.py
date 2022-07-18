@@ -342,6 +342,38 @@ class ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
+    def static_is_bool_dtype(
+        dtype_in: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "is_bool_dtype",
+            dtype_in,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def is_bool_dtype(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return self.static_is_bool_dtype(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_is_float_dtype(
         dtype_in: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
