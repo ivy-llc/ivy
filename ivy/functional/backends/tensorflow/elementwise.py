@@ -420,6 +420,9 @@ def maximum(x1, x2) -> Union[tf.Tensor, tf.Variable]:
     return tf.maximum(x1, x2)
 
 
-def minimum(x1, x2) -> Union[tf.Tensor, tf.Variable]:
+def minimum(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable]
+) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.minimum(x1, x2)
