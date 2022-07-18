@@ -86,7 +86,7 @@ def test_leaky_relu(
 
 # gelu
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, allow_inf=False),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     approximate=st.booleans(),
