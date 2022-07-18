@@ -35,6 +35,7 @@ def test_docstrings(backend):
         "Dtype",
         "multinomial",
         "num_cpu_cores",
+        "total_mem_on_dev",
         "get_all_ivy_arrays_on_dev",
         "num_ivy_arrays_on_dev",
         "function_unsupported_dtypes",
