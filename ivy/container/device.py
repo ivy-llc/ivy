@@ -2,10 +2,16 @@
 from typing import Union, Literal, Optional, List, Dict
 
 import ivy
-from ivy import DevDistItem
+
+# from ivy import DevDistItem
 from ivy.container.base import ContainerBase
 
 # ToDo: implement all methods here as public instance methods
+
+
+# Placeholder for type hints.
+class DevDistItem:
+    pass
 
 
 # noinspection PyMissingConstructor
