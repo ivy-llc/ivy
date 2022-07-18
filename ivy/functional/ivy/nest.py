@@ -169,11 +169,10 @@ def prune_nest_at_indices(nest, indices):
 
 
 def set_nest_at_indices(
-    nest: Union[List, Tuple, ivy.Array, ivy.NativeArray],
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
     indices: Union[List[int], Tuple[int], Iterable[int]],
     values: Union[List[int], Tuple[int], Iterable[int]],
 ) -> Any:
-
     """Set the value of a nested item at specified indices with specified values.
 
     Parameters
@@ -224,7 +223,6 @@ def set_nest_at_indices(
     >>> print(nest)
     {'a': [1.0, 11.0, 3.0], 'b': [4.0, 5.0, 22.0], 'c': [33.0]}
     """
-
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
     [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
