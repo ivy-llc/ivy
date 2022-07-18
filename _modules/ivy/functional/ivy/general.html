@@ -2695,6 +2695,8 @@
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">shape_array_mode_stack</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;set_shape_array_mode only accepts type bool&quot;</span><span class="p">)</span>
     <span class="n">shape_array_mode_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span></div>
 
 
