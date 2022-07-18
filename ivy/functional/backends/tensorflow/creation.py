@@ -151,15 +151,14 @@ def eye(
         if k == 0:
             return tf.eye(n_rows, n_cols, batch_shape=batch_shape, dtype=dtype)
 
-        # when k is negative    
+        # when k is negative
         elif -n_rows < k < 0:
             mat = tf.concat(
                 [tf.zeros([-k, n_cols], dtype=dtype), i[: n_rows + k]],
                 0,
             )
-            return tf.tile(tf.reshape(mat, reshape_dims),tile_dims)
+            return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
 
-        
         elif 0 < k < n_cols:
             mat = tf.concat(
                 [
@@ -168,9 +167,9 @@ def eye(
                 ],
                 1,
             )
-            return tf.tile(tf.reshape(mat, reshape_dims),tile_dims)
+            return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
         else:
-            return tf.zeros(batch_shape+[n_rows,n_cols], dtype=dtype)
+            return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
 # noinspection PyShadowingNames

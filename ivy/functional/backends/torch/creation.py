@@ -155,17 +155,15 @@ def eye(
     # k=index of the diagonal. A positive value refers to an upper diagonal, a negative
     # value to a lower diagonal, and 0 to the main diagonal. Default: 0.
     # value of k ranges from -n_rows < k < n_cols
-    
-    if k == 0: #refers to the main diagonal
+
+    if k == 0:  # refers to the main diagonal
         return return_mat
 
     # when k is negative
-    elif -n_rows < k < 0: 
+    elif -n_rows < k < 0:
         mat = torch.concat(
             [
-                torch.zeros(
-                    [-k, n_cols], dtype=dtype, device=device, out=out
-                ),
+                torch.zeros([-k, n_cols], dtype=dtype, device=device, out=out),
                 i[: n_rows + k],
             ],
             0,
@@ -176,16 +174,16 @@ def eye(
     elif 0 < k < n_cols:
         mat = torch.concat(
             [
-                torch.zeros(
-                    [n_rows, k], dtype=dtype, device=device, out=out
-                ),
-                i[:,: n_cols - k],
+                torch.zeros([n_rows, k], dtype=dtype, device=device, out=out),
+                i[:, : n_cols - k],
             ],
             1,
         )
         return torch.reshape(mat, reshape_dims).repeat(tile_dims)
     else:
-        return torch.zeros(batch_shape+[n_rows,n_cols], dtype=dtype, device=device, out=out)
+        return torch.zeros(
+            batch_shape + [n_rows, n_cols], dtype=dtype, device=device, out=out
+        )
 
 
 def from_dlpack(x):
