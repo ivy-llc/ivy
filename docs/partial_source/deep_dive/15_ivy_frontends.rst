@@ -60,7 +60,6 @@ specified with the help of this attribute.
     def tan(x):
         return ivy.tan(x)
 
-
     tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 Looking at a second example, :code:`tan`, it is placed under operators according to
