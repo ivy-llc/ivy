@@ -55,13 +55,12 @@ class Finfo:
     def __init__(self, np_finfo: np.finfo):
         self._np_finfo = np_finfo
 
-    @property
-    def bits(self):
-        return self._np_finfo.bits
-    
-    @property
     def __repr__(self):
         return repr(self._np_finfo)
+
+    @property
+    def bits(self):
+        return self._np_finfo.bits    
 
     @property
     def eps(self):
