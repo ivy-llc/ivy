@@ -217,23 +217,54 @@ def argmin(
 
 @to_native_arrays_and_back
 @handle_nestable
-def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
-    """Returns the indices of the array elements which are non-zero.
+def nonzero(
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> Tuple[ivy.Array]:
 
+    """
+    Returns the indices of the array elements which are non-zero.
+    .. note::
+       If ``x`` has a complex floating-point data type, non-zero elements are those elements having at least one component (real or imaginary) which is non-zero.
+    .. note::
+       If ``x`` has a boolean data type, non-zero elements are those elements which are equal to ``True``.
+    .. admonition:: Data-dependent output shape
+       :class: admonition important
+       The shape of the output array for this function depends on the data values in the input array; 
+       hence, array libraries which build computation graphs (e.g., JAX, Dask, etc.) may find this function difficult to implement without knowing array values. 
+       Accordingly, such libraries may choose to omit this function. See :ref:`data-dependent-output-shapes` section for more details.
+    
     Parameters
     ----------
     x
-        input array. Must have a positive rank. If `x` is zero-dimensional, the function
-        must raise an exception.
+        input array. Must have a positive rank. If ``x`` is zero-dimensional, the function must raise an exception.
+    dtype
+        data type of the returned array. If ``None``,
+        -   if the default data type corresponding to the data type "kind" (integer or floating-point) of ``x`` has a smaller range of values than the data type of ``x`` (e.g., ``x`` has data type ``int64`` and the default data type is ``int32``, or ``x`` has data type ``uint64`` and the default data type is ``int64``), the returned array must have the same data type as ``x``.
+        -   if ``x`` has a real-valued floating-point data type, the returned array must have the default real-valued floating-point data type.
+        -   if ``x`` has a signed integer data type (e.g., ``int16``), the returned array must have the default integer data type.
+        -   if ``x`` has an unsigned integer data type (e.g., ``uint16``), the returned array must have an unsigned integer data type having the same number of bits as the default integer data type (e.g., if the default integer data type is ``int32``, the returned array must have a ``uint32`` data type).
+        If the data type (either specified or resolved) differs from the data type of ``x``, the input array should be cast to the specified data type before computing the sum. Default: ``None``.
+        .. note::
+           keyword argument is intended to help prevent data type overflows.`
 
     Returns
     -------
     ret
-        a tuple of `k` arrays, one for each dimension of `x` and each of size `n`
-        (where `n` is the total number of non-zero elements), containing the indices of
-        the non-zero elements in that dimension. The indices must be returned in
-        row-major, C-style order. The returned array must have the default array index
-        data type.
+        a tuple of ``k`` arrays, one for each dimension of ``x`` and each of size ``n`` (where ``n`` is the total number of non-zero elements), 
+        containing the indices of the non-zero elements in that dimension. 
+        The indices must be returned in row-major, C-style order. The returned array must have the default array index data type.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
@@ -268,8 +299,8 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> y = ivy.nonzero(x)
     >>> print(y)
     {
-        a: (list[1], <class ivy.array.array.Array> shape=[3]),
-        b: (list[2], <class ivy.array.array.Array> shape=[2])
+        a: (list[1], <class ivy.array.Array> shape=[3]),
+        b: (list[2], <class ivy.array.Array> shape=[2])
     }
 
     >>> print(y.a)
@@ -301,8 +332,8 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> y = x.nonzero()
     >>> print(y)
     {
-        a: (list[1], <class ivy.array.array.Array> shape=[3]),
-        b: (list[1], <class ivy.array.array.Array> shape=[0])
+        a: (list[1], <class ivy.array.Array> shape=[3]),
+        b: (list[1], <class ivy.array.Array> shape=[0])
     }
 
     >>> print(y.a)
