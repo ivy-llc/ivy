@@ -690,7 +690,7 @@ def test_num_cpu_cores():
 
 
 def test_num_gpus():
-    # Using nvidia_smi to check number of gpu
+    # If there is a gpu then use nvidia_smi to check how many
     if ivy.gpu_is_available():
         # Initialise nvidia_smi
         nvidia_smi.nvmlInit()
@@ -700,6 +700,9 @@ def test_num_gpus():
         assert type(ivy.num_gpus()) == int
         # Value check
         assert ivy.num_gpus() == gpu_cores
+    else:
+        # Otherwise there must be no gpus
+        assert ivy.num_gpus() == 0
 
 
 # Still to Add #
