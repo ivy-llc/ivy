@@ -23,6 +23,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container static method variant of ivy.relu.
         This method simply wraps the function, and so the docstring
         for ivy.relu also applies to this method with minimal changes.
+        
         Parameters
         ----------
         x
@@ -40,10 +41,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
-            a container with the rectified linear activation unit function applied element-wise.      
+            a container with the rectified linear activation unit function applied element-wise.     
+            
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
@@ -77,6 +80,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container instance method variant of ivy.relu.
         This method simply wraps the function, and so the docstring
         for ivy.relu also applies to this method with minimal changes.
+        
         Parameters
         ----------
         self
@@ -94,10 +98,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
             a container with the rectified linear activation unit function applied element-wise.   
+            
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
@@ -127,6 +133,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container static method variant of ivy.leaky_relu.
         This method simply wraps the function, and so the docstring
         for ivy.leaky_relu also applies to this method with minimal changes.
+        
         Parameters
         ----------
         x
@@ -146,10 +153,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
              a container with the leaky relu unit function applied element-wise.
+             
         Examples
         --------
         >>> x = ivy.Container(a =ivy.array([0.39, -0.85]))
@@ -185,6 +194,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container instance method variant of ivy.leaky_relu.
         This method simply wraps the function, and so the docstring
         for ivy.leaky_relu also applies to this method with minimal changes.
+        
         Parameters
         ----------
         self
@@ -204,10 +214,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
-           a container with the leaky relu unit function applied element-wise.      
+           a container with the leaky relu unit function applied element-wise.  
+           
         Examples
         --------
         >>> x = ivy.Container(a =ivy.array([0.39, -0.85]))
@@ -237,6 +249,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container static method variant of ivy.gelu.
         This method simply wraps the function, and so the docstring
         for ivy.gelu also applies to this method with minimal changes.
+        
         Parameters
         ----------
         x
@@ -256,10 +269,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
             a container with the gelu unit function applied element-wise.
+            
         Examples
         --------
         >>> x = ivy.Container(a =ivy.array([0.3, -0.1]))
@@ -295,6 +310,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container instance method variant of ivy.gelu.
         This method simply wraps the function, and so the docstring
         for ivy.gelu also applies to this method with minimal changes.
+        
         Parameters
         ----------
         self
@@ -314,10 +330,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
             a container with the gelu unit function applied element-wise.
+            
         Examples
         --------
         >>> x = ivy.Container(a =ivy.array([0.3, -0.1]))
@@ -351,6 +369,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container static method variant of ivy.tanh.
         This method simply wraps the function, and so the docstring
         for ivy.tanh also applies to this method with minimal changes.
+        
         Parameters
         ----------
         x
@@ -368,10 +387,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
             a container with Hyperbolic tangent activation function applied element-wise.    
+            
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[0.55 , -0.55]]))
@@ -405,6 +426,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container instance method variant of ivy.tanh.
         This method simply wraps the function, and so the docstring
         for ivy.tanh also applies to this method with minimal changes.
+        
         Parameters
         ----------
         self
@@ -422,10 +444,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
-              a container with Hyperbolic tangent activation function applied element-wise.      
+              a container with Hyperbolic tangent activation function applied element-wise.
+              
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[0.55 , -0.55]]))
@@ -454,6 +478,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container static method variant of ivy.sigmoid.
         This method simply wraps the function, and so the docstring
         for ivy.sigmoid also applies to this method with minimal changes.
+        
         Parameters
         ----------
         x
@@ -471,10 +496,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
             a container with the sigmoid unit function applied element-wise.    
+            
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]))
@@ -508,6 +535,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container instance method variant of ivy.sigmoid.
         This method simply wraps the function, and so the docstring
         for ivy.sigmoid also applies to this method with minimal changes.
+        
         Parameters
         ----------
         self
@@ -525,10 +553,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
             a container with the sigmoid unit function applied element-wise.
+            
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]))
@@ -558,6 +588,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container static method variant of ivy.softmax.
         This method simply wraps the function, and so the docstring
         for ivy.softmax also applies to this method with minimal changes.
+        
         Parameters
         ----------
         x
@@ -577,10 +608,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
-            a container with the softmax unit function applied element-wise.     
+            a container with the softmax unit function applied element-wise.  
+            
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
@@ -617,6 +650,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container instance method variant of ivy.softmax.
         This method simply wraps the function, and so the docstring
         for ivy.softmax also applies to this method with minimal changes.
+        
         Parameters
         ----------
         self
@@ -636,10 +670,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
-            a container with the softmax unit function applied element-wise.    
+            a container with the softmax unit function applied element-wise. 
+            
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
@@ -668,6 +704,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container static method variant of ivy.softplus.
         This method simply wraps the function, and so the docstring
         for ivy.softplus also applies to this method with minimal changes.
+        
         Parameters
         ----------
         x
@@ -685,10 +722,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
-            a container with the softplus unit function applied element-wise.    
+            a container with the softplus unit function applied element-wise.
+            
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
@@ -722,6 +761,7 @@ class ContainerWithActivations(ContainerBase):
         ivy.Container instance method variant of ivy.softplus.
         This method simply wraps the function, and so the docstring
         for ivy.softplus also applies to this method with minimal changes.
+        
         Parameters
         ----------
         self
@@ -739,10 +779,12 @@ class ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
-            a container with the softplus unit function applied element-wise.    
+            a container with the softplus unit function applied element-wise.  
+            
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
