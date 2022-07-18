@@ -80,6 +80,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../array.html">Array</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../activations.html">Activations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../array.html">Array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../conversions.html">Conversions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../data_type.html">Data type</a><ul class="current">
@@ -163,11 +164,56 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.array.data_type.</span></span><span class="sig-name descname"><span class="pre">ArrayWithDataTypes</span></span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.astype">
+<span class="sig-name descname"><span class="pre">astype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.astype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.astype" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../array.html#module-ivy.Array" title="ivy.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.broadcast_arrays">
+<span class="sig-name descname"><span class="pre">broadcast_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.broadcast_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.broadcast_arrays" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../../array.html#module-ivy.Array" title="ivy.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.broadcast_to">
+<span class="sig-name descname"><span class="pre">broadcast_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.broadcast_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.broadcast_to" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../array.html#module-ivy.Array" title="ivy.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.can_cast">
 <span class="sig-name descname"><span class="pre">can_cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.can_cast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.can_cast" title="Permalink to this definition"></a></dt>
 <dd><p><cite>ivy.Array</cite> instance method variant of <cite>ivy.can_cast</cite>. This method simply wraps
 the function, and so the docstring for <cite>ivy.can_cast</cite> also applies to this
 method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="../../array.html#module-ivy.Array" title="ivy.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – input array from which to cast.</p></li>
+<li><p><strong>to</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>) – desired data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – <code class="docutils literal notranslate"><span class="pre">True</span></code> if the cast can occur according to <span class="xref std std-ref">type-promotion</span> rules;
+otherwise, <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -178,9 +224,54 @@ method with minimal changes.</p>
 <span class="go">True</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.dtype">
+<span class="sig-name descname"><span class="pre">dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">as_native</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.dtype" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.finfo">
+<span class="sig-name descname"><span class="pre">finfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.finfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.finfo" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.iinfo">
+<span class="sig-name descname"><span class="pre">iinfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.iinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.iinfo" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.is_float_dtype">
+<span class="sig-name descname"><span class="pre">is_float_dtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.is_float_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.is_float_dtype" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.is_int_dtype">
+<span class="sig-name descname"><span class="pre">is_int_dtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.is_int_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.is_int_dtype" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.result_type">
+<span class="sig-name descname"><span class="pre">result_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays_and_dtypes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.result_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.result_type" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code></p>
 </dd>
 </dl>
 </dd></dl>

@@ -14,6 +14,7 @@ Array
    :caption: Array
 
    array/activations.rst
+   array/array.rst
    array/conversions.rst
    array/creation.rst
    array/data_type.rst

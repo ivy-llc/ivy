@@ -265,7 +265,7 @@
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -306,8 +306,8 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.zeros(shape)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[0., 0., 0., 0., 0.],</span>
-<span class="sd">               [0., 0., 0., 0., 0.],</span>
-<span class="sd">               [0., 0., 0., 0., 0.]])</span>
+<span class="sd">           [0., 0., 0., 0., 0.],</span>
+<span class="sd">           [0., 0., 0., 0., 0.]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -319,7 +319,7 @@
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">ones</span><span class="p">(</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -359,8 +359,8 @@
 <span class="sd">    &gt;&gt;&gt; shape = (2,2)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ones(shape)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[1.,  1.],</span>
-<span class="sd">               [1.,  1.]])</span>
+<span class="sd">    ivy.array([[1., 1.],</span>
+<span class="sd">           [1., 1.]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -368,7 +368,6 @@
 
 <div class="viewcode-block" id="full_like"><a class="viewcode-back" href="../../../../functional/ivy/creation/full_like/full_like_functional.html#ivy.functional.ivy.creation.full_like">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
-<span class="nd">@infer_dtype</span>
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">full_like</span><span class="p">(</span>
@@ -475,7 +474,8 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],[3, 4, 5]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ones_like(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[1, 1, 1],[1, 1, 1]])</span>
+<span class="sd">    ivy.array([[1, 1, 1],</span>
+<span class="sd">           [1, 1, 1]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -524,14 +524,72 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],[3, 4, 5]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.zeros_like(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[0, 0, 0],</span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With &#39;ivy.Array&#39; input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([1, 2, 3, 4, 5, 6])</span>
+<span class="sd">        &gt;&gt;&gt; y1 = ivy.zeros_like(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(y1)</span>
+<span class="sd">        ivy.array([0, 0, 0, 0, 0, 0])</span>
+
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)</span>
+<span class="sd">        &gt;&gt;&gt; y2 = ivy.zeros_like(x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y2)</span>
+<span class="sd">        ivy.array([[0., 0., 0.],</span>
+<span class="sd">               [0., 0., 0.]])</span>
+
+<span class="sd">        &gt;&gt;&gt; x3 = ivy.array([3., 2., 1.])</span>
+<span class="sd">        &gt;&gt;&gt; y3 = ivy.ones(3)</span>
+<span class="sd">        &gt;&gt;&gt; ivy.zeros_like(x3, out=y3)</span>
+<span class="sd">        ivy.array([0., 0., 0.])</span>
+
+<span class="sd">    With &#39;ivy.NativeArray&#39; input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])</span>
+<span class="sd">        &gt;&gt;&gt; y1 = ivy.zeros_like(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(y1)</span>
+<span class="sd">        ivy.array([[0, 0, 0],</span>
 <span class="sd">               [0, 0, 0]])</span>
 
+
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.native_array([3, 8, 2, 0, 0, 2])</span>
+<span class="sd">        &gt;&gt;&gt; y2 = ivy.zeros_like(x2, dtype=ivy.IntDtype(&#39;int32&#39;), device=ivy.Device(&#39;cpu&#39;))</span>
+<span class="sd">        &gt;&gt;&gt; print(y2)</span>
+<span class="sd">        ivy.array([0, 0, 0, 0, 0, 0])</span>
+
+<span class="sd">        # Array ``y2`` is now stored on the CPU.</span>
+
+<span class="sd">    With &#39;ivy.Container&#39; input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.zeros_like(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0, 0, 0]),</span>
+<span class="sd">            b: ivy.array([0, 0, 0])</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With &#39;ivy.Array&#39; input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([2, 3, 8, 2, 1])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.zeros_like()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([0, 0, 0, 0, 0])</span>
+
+<span class="sd">    With &#39;ivy.Container&#39; input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.zeros_like()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0., 0.]),</span>
+<span class="sd">            b: ivy.array([0., 0.])</span>
+<span class="sd">        }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -624,7 +682,7 @@
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -718,7 +776,6 @@
     <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">batch_shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -760,9 +817,7 @@
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span>
-        <span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="linspace"><a class="viewcode-back" href="../../../../functional/ivy/creation/linspace/linspace_functional.html#ivy.functional.ivy.creation.linspace">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -884,24 +939,24 @@
 <span class="sd">        &gt;&gt;&gt; xv, yv = ivy.meshgrid(x, y)</span>
 <span class="sd">        &gt;&gt;&gt; print(xv)</span>
 <span class="sd">        ivy.array([[1, 2],</span>
-<span class="sd">                   [1, 2]])</span>
+<span class="sd">               [1, 2]])</span>
 
 <span class="sd">        &gt;&gt;&gt; print(yv)</span>
 <span class="sd">        ivy.array([[3, 3],</span>
-<span class="sd">                   [4, 4]])</span>
+<span class="sd">               [4, 4]])</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 5])</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.array([4, 1])</span>
 <span class="sd">        &gt;&gt;&gt; xv, yv = ivy.meshgrid(x, y, indexing=&#39;ij&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(xv)</span>
 <span class="sd">        ivy.array([[1, 1],</span>
-<span class="sd">                   [2, 2],</span>
-<span class="sd">                   [5, 5]])</span>
+<span class="sd">               [2, 2],</span>
+<span class="sd">               [5, 5]])</span>
 
 <span class="sd">        &gt;&gt;&gt; print(yv)</span>
 <span class="sd">        ivy.array([[4, 1],</span>
-<span class="sd">                   [4, 1],</span>
-<span class="sd">                   [4, 1]])</span>
+<span class="sd">               [4, 1],</span>
+<span class="sd">               [4, 1]])</span>
 
 <span class="sd">        With :code:`ivy.NativeArray` input:</span>
 
@@ -910,11 +965,11 @@
 <span class="sd">        &gt;&gt;&gt; xv, yv = ivy.meshgrid(x, y)</span>
 <span class="sd">        &gt;&gt;&gt; print(xv)</span>
 <span class="sd">        ivy.array([[1, 2],</span>
-<span class="sd">                   [1, 2]])</span>
+<span class="sd">               [1, 2]])</span>
 
 <span class="sd">        &gt;&gt;&gt; print(yv)</span>
 <span class="sd">        ivy.array([[3, 3],</span>
-<span class="sd">                   [4, 4]])</span>
+<span class="sd">               [4, 4]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span></div>
@@ -925,7 +980,7 @@
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">full</span><span class="p">(</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">],</span>
     <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -973,7 +1028,8 @@
 <span class="sd">    &gt;&gt;&gt; fill_value = 10</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.full(shape, fill_value)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[10,10],[10,10]])</span>
+<span class="sd">    ivy.array([[10, 10],</span>
+<span class="sd">           [10, 10]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
