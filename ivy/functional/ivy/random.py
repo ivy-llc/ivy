@@ -1,7 +1,7 @@
 """Collection of random Ivy functions."""
 
 # global
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Union
 
 # local
 from ivy.backend_handler import current_backend
@@ -20,15 +20,15 @@ import ivy
 # ------#
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
 @infer_dtype
 @handle_nestable
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
+    high: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -111,7 +111,7 @@ def random_uniform(
 def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -280,7 +280,7 @@ def multinomial(
 def randint(
     low: int,
     high: int,
-    shape: Union[int, Sequence[int]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,

@@ -4,9 +4,10 @@ signature.
 
 # global
 import tensorflow as tf
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Union, Sequence
 
 # local
+import ivy
 from ivy.functional.ivy.device import default_device
 
 
@@ -22,7 +23,7 @@ def random_uniform(
     device: str,
     #dtype = None,
     dtype: tf.dtypes = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    #out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
@@ -34,7 +35,7 @@ def random_uniform(
 def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -71,7 +72,7 @@ def multinomial(
 
 
 def randint(
-    low: int, high: int, shape: Union[int, Sequence[int]], *, device: str
+    low: int, high: int, shape: Union[ivy.NativeShape, Sequence[int]], *, device: str
 ) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     low = tf.cast(low, "int64")

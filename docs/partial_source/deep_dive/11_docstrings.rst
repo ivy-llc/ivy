@@ -154,9 +154,17 @@ Therefore, these docstrings should all simply contain the following text:
 
 .. code-block:: python
 
-        ivy.<Array|Container> <instance|static|special|reverse special> method variant of ivy.<func_name>. This method simply wraps the
-        function, and so the docstring for ivy.<func_name> also applies to this method
-        with minimal changes.
+    ivy.<Array|Container> <instance|static|special|reverse special> method variant of ivy.<func_name>. This method simply wraps the
+    function, and so the docstring for ivy.<func_name> also applies to this method
+    with minimal changes.
+
+    Parameters
+    ----------
+    <parameters with their description>
+
+    Returns
+    -------
+    <return value with its description>
 
 The exception to this is :code:`ivy.Container` :code:`special` method docstrings,
 which should instead use the following text, as these do not *directly* wrap a function
@@ -165,26 +173,34 @@ which can be called on any types that support the corresponding special methods:
 
 .. code-block:: python
 
-        ivy.Container <special|reverse special> method for the <operator_name> operator,
-        calling :code:`operator.<operator_name>` for each of the corresponding leaves of
-        the two containers.
+    ivy.Container <special|reverse special> method for the <operator_name> operator,
+    calling :code:`operator.<operator_name>` for each of the corresponding leaves of
+    the two containers.
+
+    Parameters
+    ----------
+    <parameters with their description>
+
+    Returns
+    -------
+    <return value with its description>
 
 Let's take :code:`ivy.add` as an example.
 The docstring for
-`ivy.add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/functional/ivy/elementwise.py#L144>`_
+`ivy.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/functional/ivy/elementwise.py#L191>`_
 is thorough, as explained above.
 However, the docstrings for
-`ivy.Array.add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/array/elementwise.py#L27>`_,
-`ivy.Container.add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/elementwise.py#L129>`_
+`ivy.Array.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/elementwise.py#L36>`_,
+`ivy.Container.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L209>`_
 and
-`ivy.Container.static_add <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/elementwise.py#L71>`_
+`ivy.Container.static_add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L125>`_
 all follow the succinct pattern outlined above.
 Likewise, the docstrings for the special methods
-`ivy.Array.__add__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/array/__init__.py#L306>`_,
-`ivy.Array.__radd__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/array/__init__.py#L342>`_,
-`ivy.Container.__add__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/container.py#L106>`_,
+`ivy.Array.__add__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L310>`_,
+`ivy.Array.__radd__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L359>`_,
+`ivy.Container.__add__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L106>`_,
 and
-`ivy.Container.__radd__ <https://github.com/unifyai/ivy/blob/e902ea0457f216697a5587d667d2e4d328371499/ivy/container/container.py#L158>`_,
+`ivy.Container.__radd__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L171>`_,
 also follow the succinct pattern outlined above.
 Note that these docstrings all *also* include examples,
 which we will cover in the next section.
