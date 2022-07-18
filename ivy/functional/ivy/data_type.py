@@ -354,6 +354,22 @@ class DefaultIntDtype:
         return self
 
 
+# class DefaultUintDtype:
+#     """"""
+#
+#     # noinspection PyShadowingNames
+#     def __init__(self, float_dtype: ivy.Dtype):
+#         self._float_dtype = float_dtype
+#
+#     def __enter__(self):
+#         set_default_uint_dtype(self._float_dtype)
+#         return self
+#
+#     def __exit__(self, exc_type, exc_val, exc_tb):
+#         unset_default_uint_dtype()
+#         return self
+
+
 def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
     """Get the number of bits used for representing the input data type.
 
@@ -960,6 +976,37 @@ def is_float_dtype(
             else False
         )
     return "float" in as_ivy_dtype(dtype_in)
+
+
+@inputs_to_native_arrays
+@handle_nestable
+def is_uint_dtype(
+    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
+) -> bool:
+    """Determine whether the input data type is a uint dtype.
+
+    Parameters
+    ----------
+    dtype_in
+        The array or data type to check
+
+    Returns
+    -------
+    ret
+        Whether or not the array or data type is of a uint dtype
+
+    """
+    if ivy.is_array(dtype_in):
+        dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, np.ndarray):
+        return "uint" in dtype_in.dtype.name
+    elif isinstance(dtype_in, Number):
+        return isinstance(dtype_in, np.unsignedinteger)
+    elif isinstance(dtype_in, (list, tuple, dict)):
+        return ivy.nested_indices_where(
+            dtype_in, lambda x: isinstance(x, np.unsignedinteger)
+        )
+    return "uint" in as_ivy_dtype(dtype_in)
 
 
 def promote_types(
