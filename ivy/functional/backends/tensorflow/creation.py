@@ -163,19 +163,27 @@ def from_dlpack(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variabl
     return tf.experimental.dlpack.from_dlpack(x)
 
 
+def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
+    assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
+        ivy.is_float_dtype(dtype)
+        and isinstance(fill_value, float)
+        or (isinstance(fill_value, bool))
+    ), "the fill_value and data type are not same"
+
+
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]],
-    fill_value: Union[int, float],
+    fill_value: Union[int, float, bool],
     *,
     dtype: tf.DType = None,
     device: str
 ) -> Union[tf.Tensor, tf.Variable]:
+    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     with tf.device(as_native_dev(default_device(device))):
         return tf.fill(
             shape,
-            tf.constant(
-                fill_value, dtype=as_native_dtype(default_dtype(dtype, fill_value))
-            ),
+            tf.constant(fill_value, dtype=dtype),
         )
 
 
@@ -186,7 +194,8 @@ def full_like(
     dtype: tf.DType,
     device: str
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = tf.DType(dtype) if dtype is str else dtype
+    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     device = as_native_dev(default_device(device))
     with tf.device(device):
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)

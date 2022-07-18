@@ -25,6 +25,30 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.abs also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x
+            input container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the absolute value of each element in ``x``. The
+            returned container must have the same data type as ``x``.
+
         Examples
         --------
         With one :code:`ivy.Container` input:
@@ -62,6 +86,30 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.abs. This method simply wraps the
         function, and so the docstring for ivy.abs also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the absolute value of each element in ``self``. The
+            returned container must have the same data type as ``self``.
 
         Examples
         --------
@@ -301,6 +349,32 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.asinh also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x
+            input container whose elements each represent the area of a hyperbolic
+            sector. Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the inverse hyperbolic sine of each element in ``x``.
+            The returned array must have a floating-point data type determined by
+            :ref:`type-promotion`.
+
         Examples
         --------
         With one :code:`ivy.Container` input:
@@ -337,6 +411,32 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.asinh. This method simply wraps the
         function, and so the docstring for ivy.asinh also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container whose elements each represent the area of a hyperbolic
+            sector. Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the inverse hyperbolic sine of each element in
+            ``self``. The returned array must have a floating-point data type determined
+            by :ref:`type-promotion`.
 
         Examples
         --------
@@ -507,34 +607,90 @@ class ContainerWithElementwise(ContainerBase):
             out=out,
         )
 
-    def bitwise_or(
-        self: ivy.Container,
-        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_nests: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
+    @staticmethod
+    def static_bitwise_or(
+            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        kw = {}
-        conts = {"x1": self}
-        if ivy.is_array(x2):
-            kw["x2"] = x2
-        else:
-            conts["x2"] = x2
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs, _: ivy.bitwise_or(**dict(zip(conts.keys(), xs)), **kw)
-                if ivy.is_array(xs[0])
-                else xs,
-                list(conts.values()),
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_nests=map_nests,
-            ),
+        """
+        ivy.Container static method variant of ivy.bitwise_or. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_or also applies
+        to this method with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> y = ivy.array([1, 2, 3])
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]))
+        >>> z = ivy.Container.static_bitwise_or(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 7]),
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                            b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                            b=ivy.array([5, 6, 7]))
+        >>> z = ivy.Container.static_bitwise_or(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 7]),
+            b: ivy.array([7, 7, 7])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "bitwise_or",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
+        )
+
+    def bitwise_or(
+            self: ivy.Container,
+            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.bitwise_or. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_or also applies to
+        this method with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                                b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
+                                b=ivy.array([5, 6, 7]))
+        >>> z = x.bitwise_or(y)
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 7]),
+            b: ivy.array([7, 7, 7])
+        }
+        """
+        return self.static_bitwise_or(
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def bitwise_right_shift(
@@ -613,6 +769,30 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.ceil also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the rounded result for each element in ``self``. The
+            returned container must have the same data type as ``self``.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
@@ -637,18 +817,44 @@ class ContainerWithElementwise(ContainerBase):
 
     @staticmethod
     def static_cos(
-            x: ivy.Container,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.cos. This method simply wraps the
         function, and so the docstring for ivy.cos also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container whose elements are each expressed in radians. Should have a
+            floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the cosine of each element in ``x``. The returned
+            container must have a floating-point data type determined by
+            :ref:`type-promotion`.
 
         Examples
         --------
@@ -685,6 +891,32 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.cos. This method simply wraps the
         function, and so the docstring for ivy.cos also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container whose elements are each expressed in radians. Should have a
+            floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the cosine of each element in ``self``. The returned
+            container must have a floating-point data type determined by
+            :ref:`type-promotion`.
 
         Examples
         --------
@@ -817,6 +1049,30 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.expm1. This method simply wraps the
+        function, and so the docstring for ivy.expm1 also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5]),\
+                              b=ivy.array([5.4, -3.2]))
+        >>> y = x.expm1()
+        >>> print(y)
+        {
+            a: ivy.array([11.2, 0.649]),
+            b: ivy.array([220., -0.959])
+        }
+
+        >>> y = ivy.Container(a=ivy.array([0., 0.]))
+        >>> x = ivy.Container(a=ivy.array([4., -2.]))
+        >>> _ = x.expm1(out=y)
+        >>> print(y)
+        {
+            a: ivy.array([53.6, -0.865])
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.expm1(x_) if ivy.is_array(x_) else x_,
@@ -841,6 +1097,30 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.floor. This method simply wraps the
         function, and so the docstring for ivy.floor also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an container containing the rounded result for each element in ``self``. The
+            returned container must have the same data type as ``self``.
 
         Examples
         --------
@@ -1495,6 +1775,30 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.sign also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x
+            input container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the evaluated result for each element in ``x``. The
+            returned container must have the same data type as ``x``.
+
         Examples
         --------
         With one :code:`ivy.Container` input:
@@ -1532,6 +1836,30 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.sign also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the evaluated result for each element in ``self``.
+            The returned container must have the same data type as ``self``.
+
         Examples
         --------
         Using :code:`ivy.Container` instance method:
@@ -1565,6 +1893,32 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container static method variant of ivy.sin. This method simply wraps the
         function, and so the docstring for ivy.sin also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container whose elements are each expressed in radians. Should have a
+            floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the sine of each element in ``x``. The returned
+            container must have a floating-point data type determined by
+            :ref:`type-promotion`.
 
         Examples
         --------
@@ -1603,6 +1957,32 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.sin also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input container whose elements are each expressed in radians. Should have a
+            floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the sine of each element in ``self``. The returned
+            container must have a floating-point data type determined by
+            :ref:`type-promotion`.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -1632,6 +2012,32 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.sinh. This method simply wraps the
         function, and so the docstring for ivy.sinh also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container whose elements each represent a hyperbolic angle. Should
+            have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an container containing the hyperbolic sine of each element in ``x``. The
+            returned container must have a floating-point data type determined by
+            :ref:`type-promotion`.
 
         Examples
         --------
@@ -1678,6 +2084,32 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.sinh. This method simply wraps the
         function, and so the docstring for ivy.sinh also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container whose elements each represent a hyperbolic angle. Should
+            have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an container containing the hyperbolic sine of each element in ``self``. The
+            returned container must have a floating-point data type determined by
+            :ref:`type-promotion`.
 
         Examples
         --------
@@ -1911,6 +2343,32 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.tanh also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x
+            input container whose elements each represent a hyperbolic angle. Should
+            have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an container containing the hyperbolic tangent of each element in ``x``. The
+            returned array must have a real-valued floating-point data type determined
+            by :ref:`type-promotion`.
+
         Examples
         --------
         With :code:`ivy.Container` input:
@@ -1946,6 +2404,32 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.tanh. This method simply wraps the
         function, and so the docstring for ivy.tanh also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container whose elements each represent a hyperbolic angle. Should
+            have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an container containing the hyperbolic tangent of each element in ``self``.
+            The returned container must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         Examples
         --------
