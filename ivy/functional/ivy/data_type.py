@@ -661,16 +661,17 @@ def default_uint_dtype(
     uint_dtype: Optional[Union[ivy.UintDtype, ivy.NativeDtype]] = None,
     as_native: Optional[bool] = None,
 ) -> Union[ivy.UintDtype, ivy.NativeDtype]:
-    """Summary.
+    """Returns the default uint dtype currently set. If input number or array is
+    given, returns uint dtype according to input, else uint32 by default.
 
     Parameters
     ----------
     input
-         (Default value = None)
+        Number or array for inferring default uint dtype. Optional.
     uint_dtype
-
+        Uint dtype to be returned as defualt. Optional.
     as_native
-         (Default value = None)
+        Whether to return the default uint dtype as native dtype. Optional.
 
     Returns
     -------
@@ -1142,11 +1143,12 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
 
 
 def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str]):
-    """Summary.
+    """Set the uint dtype to be default.
 
     Parameters
     ----------
     uint_dtype
+        The uint dtype to be set as default.
 
     """
     uint_dtype = ivy.UintDtype(ivy.as_ivy_dtype(uint_dtype))
@@ -1202,7 +1204,18 @@ def unset_default_int_dtype():
 
 
 def unset_default_uint_dtype():
-    """"""
+    """Reset the current default uint dtype to the previous state
+
+    Examples
+    --------
+    >>> ivy.set_shape_array_mode(True)
+    >>> ivy.shape_array_mode()
+    True
+
+    >>> ivy.unset_shape_array_mode()
+    >>> ivy.shape_array_mode()
+    False
+    """
     global default_uint_dtype_stack
     if default_uint_dtype_stack:
         default_uint_dtype_stack.pop(-1)
