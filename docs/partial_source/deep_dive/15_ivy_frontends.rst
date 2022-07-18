@@ -3,6 +3,7 @@ Ivy Frontends
 
 .. _`jax.lax.add`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html
 .. _`jax.lax`: https://jax.readthedocs.io/en/latest/jax.lax.html
+.. _`jax.lax.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html
 
 Introduction
 ------------
@@ -52,6 +53,20 @@ operating framework which is not Jax. There may be certain :code:`dtype` which
 the backend cannot support, for instance, PyTorch does not support
 :code:`float16` and :code:`bfloat16` in their :code:`add` function. These are then
 specified with the help of this attribute.
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/jax/lax/operators.py
+    def tan(x):
+        return ivy.tan(x)
+
+
+    tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+Looking at a second example, :code:`tan`, it is placed under operators according to
+the `jax.lax`_ directory. By referring to the `jax.lax.tan`_ documentation, it
+has only one argument, and just as our :code:`add` function, we link its return to
+:code:`ivy.tan` so that the computation operation depends on the backend framework.
 
 **NumPy**
 
