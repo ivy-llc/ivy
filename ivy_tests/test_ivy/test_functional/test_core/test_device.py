@@ -705,6 +705,36 @@ def test_num_gpus():
         assert ivy.num_gpus() == 0
 
 
+@given(arr=st.lists(st.integers(0, 10), min_size=1, max_size=5))
+def test_set_unset_default_device(arr):
+    has_gpu = ivy.gpu_is_available()
+
+    # If using cpu, try changing to gpu, and vise versa
+    if ivy.default_device() == "cpu":
+        # Arrays must use the default device if not specified
+        assert ivy.array(arr).dev().startswith("cpu")
+
+        # If it has gpu try setting it to gpu, otherwise try setting it to cpu
+        ivy.set_default_device(ivy.Device("gpu:0" if has_gpu else "cpu"))
+        assert ivy.array(arr).dev().startswith("gpu" if has_gpu else "cpu")
+
+        # unsetting will revert to what it was before
+        ivy.unset_default_device()
+        assert ivy.array(arr).dev().startswith("cpu")
+
+    else:
+        # Arrays must use the default device if not specified
+        assert ivy.array(arr).dev().startswith("gpu")
+
+        # Try setting to gpu, and default device should change
+        ivy.set_default_device(ivy.Device("cpu"))
+        assert ivy.array(arr).dev().startswith("cpu")
+
+        # unsetting will revert to what it was before
+        ivy.unset_default_device()
+        assert ivy.array(arr).dev().startswith("gpu")
+
+
 # Still to Add #
 # ---------------#
 
@@ -715,8 +745,6 @@ def test_num_gpus():
 # dev_util # working fine for cpu
 # tpu_is_available
 # _assert_dev_correct_formatting
-# set_default_device
-# unset_default_device
 # split_factor
 # set_split_factor
 # Class MultiDev
