@@ -225,7 +225,8 @@ def unset_nestable_mode() -> None:
 
 
 def get_nestable_mode() -> bool:
-    """Get the current mode of whether to check if function inputs are ivy.Container
+    """Get the current mode of whether to check if function inputs are ivy.Container.
+    Default is True.
 
     Examples
     --------
@@ -238,7 +239,7 @@ def get_nestable_mode() -> bool:
     """
     global nestable_mode_stack
     if not nestable_mode_stack:
-        return False
+        return True
     return nestable_mode_stack[-1]
 
 
