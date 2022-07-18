@@ -445,15 +445,15 @@ def test_is_bool_dtype(
     fw,
 ):
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "is_bool_dtype",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="is_bool_dtype",
         dtype_in=array,
     )
 
