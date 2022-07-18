@@ -12,98 +12,45 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # random_uniform
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, 2, max_num_dims=1),
-    #data=st.data(),
-    #input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    #as_variable=st.booleans(),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
-    # shape=helpers.get_shape(),
+    data=st.data(),
+    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    #input_dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
+    shape_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
+    as_variable=st.booleans(),
     with_out=st.booleans(),
-    # num_positional_args=st.integers(0, 1),
-    num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
-    # num_positional_args=st.shared(st.integers(1, 6), key="random_uniform"),
-    #native_array=st.booleans(),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    #container=st.booleans(),
-    container=helpers.list_of_length(st.booleans(), 2),
+    num_positional_args=st.integers(3, 3),
+    #num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
+    native_array=st.booleans(),
+    #native_array=st.just(True),
+    container=st.booleans(),
     instance_method=st.booleans(),
-    # shape = st.sampled_from(ivy_np.valid_int_dtypes),
-    # shape = st.integers(1, 3),
+    #instance_method=st.just(False),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1),
 )
 def test_random_uniform(
-    dtype_and_x,
-    #data,
-    #input_dtype,
+    data,
+    input_dtype,
+    shape_dtype,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     container,
     instance_method,
-    fw,
-    # shape,
+    shape,
     device,
+    fw,
 ):
-    input_dtype, x = dtype_and_x
-    low = np.asarray(x[0], dtype=input_dtype[0])
-    high = np.asarray(x[1], dtype=input_dtype[1])
-
-    #num_positional_args = data.draw(
-    #    helpers.num_positional_args(fn_name="random_uniform")
-    #)
-    #shape = data.draw(helpers.get_shape(min_num_dims=1))
-    #shape = data.draw(helpers.get_shape(min_dim_size=1, max_dim_size=2))
-
-
-    #low, high = data.draw(helpers.array_values(dtype=input_dtype, shape=shape))
-    #low, high = data.draw(helpers.get_bounds(input_dtype))
-
-    # values = data.draw(helpers.none_or_list_of_floats(input_dtype, 2, 1, 10, no_none=True))
-    #values = data.draw(helpers.array_values(dtype=input_dtype, shape=2, min_value=0))
-    #if values[0] is not None and values[1] is not None:
-    #    low, high = min(values), max(values)
-    #else:
-    #    low, high = values[0], values[1]
-
-    # low, high = helpers.get_bounds(data, dtype=input_dtype)
-    # if type(low) == float:
-    #    low = int(low)
-    # if type(high) == float:
-    #    high = int(high)
-
-    # shape = helpers.get_shape()
-    # shape = data.draw(helpers.get_shape())
-    # shape = st.draw(st.shared(helpers.get_shape(), key="shape"))
-
-    #x = data.draw(
-    #    helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
-    #        lambda x: not np.any(np.isnan(x))
-    #    )
-    #)
-
-    """
-    # smoke test
-    if as_variable and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
+    if input_dtype in ["float16"]:
         return
-    low_tnsr = ivy.array(low, dtype=input_dtype, device=device) if low is not None else None
-    high_tnsr = (
-        ivy.array(high, dtype=input_dtype, device=device) if high is not None else None
-    )
-    if as_variable and (low is not None):
-        low_tnsr = ivy.variable(low_tnsr)
-    if as_variable and (high is not None):
-        high_tnsr = ivy.variable(high_tnsr)
-    kwargs = {
-        k: v for k, v in zip(["low", "high"], [low_tnsr, high_tnsr]) if v is not None
-    }
-    if shape is not None:
-        kwargs["shape"] = shape
-    ret = ivy.random_uniform(**kwargs, device=device)
-    """
+    #if fw == "torch" and input_dtype in ["float64"]:
+    #    return
+
+    low, high = data.draw(helpers.get_bounds(input_dtype))
+    input_dtypes = [input_dtype, input_dtype, shape_dtype]
 
     helpers.test_function(
-        input_dtype,
+        input_dtypes,
         as_variable,
         with_out,
         num_positional_args,
@@ -112,26 +59,12 @@ def test_random_uniform(
         instance_method,
         fw,
         "random_uniform",
-        low=low,
-        high=high,
-        #shape=shape,
+        low=np.array(low, dtype=input_dtypes[0]),
+        high=np.array(high, dtype=input_dtypes[1]),
+        shape=np.array(shape, dtype=input_dtypes[2]),
         device=device,
-        #dtype=input_dtype,
+        dtype=input_dtypes[0],
     )
-
-    """
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if shape is None:
-        assert ret.shape == ()
-    else:
-        assert ret.shape == shape
-    # value test
-    ret_np = call(ivy.random_uniform, **kwargs, device=device)
-    assert np.min((ret_np < (high if high else 1.0)).astype(np.int32)) == 1
-    assert np.min((ret_np >= (low if low else 0.0)).astype(np.int32)) == 1
-    """
 
 
 # random_normal

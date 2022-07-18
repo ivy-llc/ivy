@@ -10,6 +10,7 @@ from typing import Optional, Union, Tuple, Sequence
 from ivy.functional.backends.jax.device import to_device
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.jax import JaxArray
+from ivy.array import Array
 
 # Extra #
 # ------#
@@ -20,17 +21,20 @@ RNG = jax.random.PRNGKey(0)
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    shape: Union[int, Tuple[int, ...]] = None,
     *,
     device: jaxlib.xla_extension.Device,
-    dtype=None,
+    dtype = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
+    #if isinstance(low, Array):
+    #    low =
     return to_device(
         jax.random.uniform(
-            rng_input, shape if shape else (), minval=low, maxval=high, dtype=dtype
-        ),
+            rng_input, shape, minval=low, maxval=high, dtype=dtype
+            #rng_input, shape if shape else (), minval = low, maxval = high, dtype = dtype
+    ),
         device=default_device(device),
     )
 

@@ -784,7 +784,7 @@ def test_function(
         as_cont(x) if c else x
         for x, c in zip(arg_array_vals, container_flags[:num_arg_vals])
     ]
-    args = ivy.copy_nest(args_np, to_mutable=True)
+    args = ivy.copy_nest(args_np, include_derived=True, to_mutable=True)
     ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
 
     # create kwargs
@@ -824,6 +824,11 @@ def test_function(
     # run either as an instance method or from the API directly
     instance = None
     if instance_method:
+        # check whether array instance method is available
+        fn_test_backend = getattr(ivy.get_backend(fw), fn_name)
+        if hasattr(fn_test_backend, "container_instance_only"):
+            if not all(container_flags):
+                test_unsupported = True
         is_instance = [
             (not n) or c for n, c in zip(native_array_flags, container_flags)
         ]
@@ -1399,7 +1404,7 @@ def get_shape(
         )
     if shape is None:
         return shape
-    return tuple(shape)
+    return tuple(set(shape))
 
 
 def none_or_list_of_floats(
@@ -1519,13 +1524,19 @@ def get_bounds(draw, dtype):
         if low == high:
             return draw(get_bounds(dtype))
     else:
-        values = draw(none_or_list_of_floats(dtype, 2))
-        if values[0] is not None and values[1] is not None:
-            low, high = min(values), max(values)
-        else:
-            low, high = values[0], values[1]
-        if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
-            return draw(get_bounds(dtype))
+        values = draw(none_or_list_of_floats(dtype, 2, 0, 1e10, no_none=True))
+        from decimal import Decimal
+        if len(str(Decimal(values[0]))) and len(str(Decimal(values[1])))  < 1e300:
+            if values[0] is not None and values[1] is not None:
+                #values[0], values[1] = abs(values[0]), abs(values[1])
+                low, high = min(values), max(values)
+            else:
+                low, high = values[0], values[1]
+            if values[0] or values[1] < 0:
+                values[0], values[1] = abs(values[0]), abs(values[1])
+                low, high = min(values), max(values)
+            if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
+                return draw(get_bounds(dtype))
     return low, high
 
 
@@ -1588,6 +1599,8 @@ def num_positional_args(draw, fn_name: str = None):
     for param in inspect.signature(fn).parameters.values():
         total += 1
         if param.kind == param.POSITIONAL_ONLY:
+            num_positional_only += 1
+        elif param.kind == param.POSITIONAL_OR_KEYWORD:
             num_positional_only += 1
         elif param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1

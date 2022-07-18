@@ -17,15 +17,18 @@ from ivy.functional.ivy.device import default_device
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype=None,
+    shape: Union[int, Tuple[int, ...]] = None,
     *,
     device: str,
+    #dtype = None,
+    dtype: tf.dtypes = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
     with tf.device(default_device(device)):
-        return tf.random.uniform(shape if shape else (), low, high, dtype=dtype)
+        return tf.random.uniform(shape, low, high, dtype=dtype)
+        #return tf.random.uniform(shape if shape else (), low, high, dtype=dtype)
 
 
 def random_normal(

@@ -6,6 +6,7 @@ from typing import Optional, List, Union, Tuple, Sequence
 
 # local
 from ivy.functional.ivy.device import default_device
+from ivy.functional.ivy.data_type import as_native_dtype
 
 
 # Extra #
@@ -15,20 +16,26 @@ from ivy.functional.ivy.device import default_device
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype=None,
+    shape: Union[int, Tuple[int, ...]] = None,
     *,
-    device: torch.device,
+    device: torch.device = None,
+    dtype: torch.dtype = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    #rand_range = torch.asarray(float(high)) - torch.asarray(float(low))
     rand_range = high - low
-    if shape is None:
-        shape = []
+    #if shape is None:
+    #    shape = []
     return (
+        #torch.rand(shape, device=device, dtype=dtype, out=out)
+        #torch.rand(shape, device=default_device(device), dtype=dtype, out=out)
         torch.rand(shape, device=default_device(device), dtype=dtype, out=out)
         * rand_range
         + low
     )
+
+
+random_uniform.container_instance_only = [True]
 
 
 def random_normal(
