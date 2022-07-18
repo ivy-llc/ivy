@@ -229,7 +229,7 @@ def test_eigh(
 
     # flattened array returns
     ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
-        ret, ret_from_np
+        ret=ret, ret_from_gt=ret_from_np
     )
 
     # value test
@@ -863,7 +863,7 @@ def test_svd(
     )
     # flattened array returns
     ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
-        ret, ret_from_np
+        ret=ret, ret_from_gt=ret_from_np
     )
 
     # value test
