@@ -769,6 +769,57 @@ def test_split_factor(facs):
         ivy.set_split_factor(0, other_device)
 
 
+@given(arr=st.lists(st.integers(0, 10), min_size=1, max_size=5))
+def test_dev_clone_array(arr):
+    has_gpu = ivy.gpu_is_available()
+    default_device = ivy.default_device()
+
+    ivy_arr = ivy.array(arr)
+
+    # Clone the array
+    cloned = ivy.dev_clone_array(ivy_arr, [default_device])
+
+    # Check it did get cloned
+    assert default_device in cloned.keys()
+
+    # Check the array is in the correct device
+    assert cloned[default_device].dev() == default_device
+
+    # Check the value is the same
+    assert list(cloned[default_device]) == list(arr)
+
+    # Check the array instance method
+    instance_cloned = ivy_arr.dev_clone_array([default_device])
+    assert list(instance_cloned[default_device]) == list(arr)
+
+    # Check the container instance method
+    container = ivy.Container({"arr": ivy_arr})
+    instance_cloned = container.dev_clone_array([default_device])
+    assert list(instance_cloned["arr"][default_device]) == list(arr)
+
+    # Check the container static method
+    instance_cloned = ivy.Container.dev_clone_array_static(container, [default_device])
+    assert list(instance_cloned["arr"][default_device]) == list(arr)
+
+    # Extra test if gpu is available
+    if has_gpu:
+        other_device = ivy.Device("gpu:0" if default_device == "cpu" else "cpu")
+        multi_cloned = ivy.dev_clone_array(ivy_arr, [default_device, other_device])
+
+        # Check there is 2 arrays that was cloned
+        assert len(multi_cloned) == 2
+
+        # Check both array have the right device
+        assert multi_cloned[default_device].dev() == default_device
+        assert multi_cloned[other_device].dev() == other_device
+
+        # Check both array have the right values
+        assert list(multi_cloned[default_device]) == arr
+        assert list(multi_cloned[other_device]) == arr
+
+    pass
+
+
 # Still to Add #
 # ---------------#
 
