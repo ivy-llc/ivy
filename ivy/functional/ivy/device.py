@@ -741,7 +741,7 @@ def to_device(
     device: Union[ivy.Device, ivy.NativeDevice],
     *,
     stream: Optional[Union[int, Any]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
@@ -1423,10 +1423,11 @@ def _mean_unify_array(xs, device, _=None):
 @handle_nestable
 def dev_unify_array(
     xs: DevDistItem,
+    *,
     device: Union[ivy.Device, ivy.NativeDevice],
     mode: Literal["concat", "mean", "sum"],
     axis: int = 0,
-):
+) -> ivy.Array:
     """Unify a list of sub-arrays, on arbitrary devices, to a single array on the
     specified device.
 
@@ -2374,7 +2375,7 @@ class DevManager:
                 **distributed,
                 **to_distribute,
                 used_devs=used_devs,
-                split_factors=self._devs_ds
+                split_factors=self._devs_ds,
             )
         else:
             ret = self._dev_mapper.map(
@@ -2382,7 +2383,7 @@ class DevManager:
                 **to_clone,
                 **distributed,
                 **to_distribute,
-                used_devs=used_devs
+                used_devs=used_devs,
             )
         if self._tuned:
             return ret
