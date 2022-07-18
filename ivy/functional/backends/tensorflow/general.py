@@ -338,11 +338,11 @@ def indices_where(x):
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
-) -> Union[tf.Tensor, tf.Variable, TensorShape]:
+) -> Union[tf.Tensor, tf.Variable, TensorShape, ivy.Shape, ivy.Array]:
     if as_array:
         return tf.shape(x)
     else:
-        return tuple(x.shape)
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):
