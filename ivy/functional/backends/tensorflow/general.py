@@ -95,7 +95,10 @@ def inplace_update(
     return x
 
 
-inplace_arrays_supported = lambda: False
+def inplace_arrays_supported():
+    return False
+    
+    
 inplace_variables_supported = lambda: True
 
 
@@ -267,7 +270,7 @@ def scatter_nd(
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     if reduction == "sum":
@@ -342,7 +345,7 @@ def shape(
     if as_array:
         return tf.shape(x)
     else:
-        return x.shape
+        return tuple(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):

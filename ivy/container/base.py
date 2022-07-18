@@ -206,6 +206,13 @@ class ContainerBase(dict, abc.ABC):
         if ivy.exists(out):
             out.inplace_update(ret)
             ret = out
+
+        # Multiple containers for functions returning multiple arrays
+        for values in ret.values():
+            if isinstance(values, list):
+                for v in values:
+                    if ivy.is_ivy_array(v):
+                        return ret.unstack(0)
         return ret
 
     @staticmethod
