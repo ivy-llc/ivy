@@ -182,7 +182,7 @@ def mean(
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -454,15 +454,10 @@ def var(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the variance of the input array x.
-
     **Special Cases**
-
     Let N equal the number of elements over which to compute the variance.
-
     If N - correction is less than or equal to 0, the variance is NaN.
-
     If x_i is NaN, the variance is NaN (i.e., NaN values propagate).
-
     Parameters
     ----------
     x
@@ -489,14 +484,12 @@ def var(
         (dimensions) must not be included in the result. Default: False.
     out
         optional output array, for writing the result to.
-
     Returns
     -------
     ret
         if the variance was computed over the entire array, a zero-dimensional array
         containing the variance; otherwise, a non-zero-dimensional array containing the
         variances. The returned array must have the same data type as x.
-
     """
     return current_backend(x).var(x, axis, correction, keepdims, out=out)
 
