@@ -4100,71 +4100,66 @@ def minimum(
     ret
         An array with the elements of x1, but clipped to not exceed the x2 values.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
 
-    Functional Examples
-    -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
     With :code:`ivy.Array` inputs:
-    >>> x = ivy.array([1, 5, 9])
-    >>> y = ivy.array([2, 6, 8])
+    >>> x = ivy.array([7, 9, 5])
+    >>> y = ivy.array([9, 3, 2])
     >>> z = ivy.minimum(x, y)
     >>> print(z)
-    ivy.array([1, 5, 8])
+    ivy.array([7, 3, 2])
 
-    With :code:`ivy.NativeArray` inputs:
-    >>> x = ivy.native_array([2, 6, 8, 5])
-    >>> y = ivy.native_array([1, 5, 9, 6])
-    >>> z= ivy.minimum(x, y)
+    >>> x = ivy.array([1, 5, 9, 8, 3, 7])
+    >>> y = ivy.array([[9], [3], [2]])
+    >>> z = ivy.zeros((3, 6))
+    >>> ivy.minimum(x, y, out=z)
     >>> print(z)
-    ivy.array([1, 5, 8, 5])
+    ivy.array([[1.,5.,9.,8.,3.,7.],
+               [1.,3.,3.,3.,3.,3.],
+               [1.,2.,2.,2.,2.,2.]])
 
-    With :code:`Number` inputs:
-    >>> z = ivy.zeros(1)
-    >>> ivy.minimum(1, 5, out=z)
-    >>> print(z)
-    ivy.array(1.)
+    >>> x = ivy.array([[7, 3]])
+    >>> y = ivy.array([0, 7])
+    >>> ivy.minimum(x, y, out=x)
+    >>> print(x)
+    ivy.array([[0, 3]])
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-    >>> x = ivy.array([2, 3])
-    >>> y = ivy.native_array([0, 4])
+    With one :code:`ivy.Container` input:
+
+    >>> x = ivy.array([[1, 3], [2, 4], [3, 7]])
+    >>> y = ivy.Container(a=ivy.array([1, 0,]), \
+                          b=ivy.array([-5, 9]))
     >>> z = ivy.minimum(x, y)
     >>> print(z)
-    ivy.array([0, 3])
+    {
+        a: ivy.array([[1, 0],
+                      [1, 0],
+                      [1, 0]]),
+        b: ivy.array([[-5, 3],
+                      [-5, 4],
+                      [-5, 7]])
+    }
 
-    With a mix of :code:`ivy.Array` and :code:`Number` inputs:
-    >>> x = ivy.array([2, 3, 9])
-    >>> z = ivy.minimum(x, 5)
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([1, 3, 1]),\
+                        b=ivy.array([2, 8, 5]))
+    >>> y = ivy.Container(a=ivy.array([1, 5, 6]),\
+                        b=ivy.array([5, 9, 7]))
+    >>> z = ivy.minimum(x, y)
     >>> print(z)
-    ivy.array([2, 3, 5])
-
-    With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:
-    >>> x = ivy.native_array([2, 3, 9, 7, 3])
-    >>> z = ivy.minimum(x, 5)
-    >>> print(z)
-    ivy.array([2, 3, 5, 5, 3])
-
-    Instance Method Examples
-    ------------------------
-    With :code:`ivy.Array` instance method using :code:`ivy.Array` input:
-    >>> x = ivy.array([4, 7, 3])
-    >>> y = ivy.array([3, 3, 2])
-    >>> z = x.minimum(y)
-    >>> print(z)
-    ivy.array([3, 3, 2])
-
-    With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:
-    >>> x = ivy.array([4, 7])
-    >>> y = ivy.native_array([6, 0])
-    >>> z=x.minimum(y)
-    >>> print(z)
-    ivy.array([4, 0])
-
-    With :code:`ivy.Array` instance method using :code:`Number` input:
-    >>> x = ivy.array([1, 4, 8])
-    >>> y = ivy.zeros(3)
-    >>> z=x.minimum(3)
-    >>> print(z)
-    ivy.array([1, 3, 3])
-
-
+    {
+        a: ivy.array([1, 3, 1]),
+        b: ivy.array([2, 8, 5])
+    }
     """
     return current_backend(x1).minimum(x1, x2, out=out)
