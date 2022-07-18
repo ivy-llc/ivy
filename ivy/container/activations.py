@@ -115,6 +115,8 @@ class ContainerWithActivations(ContainerBase):
         ----------
         x
             input container.
+        alpha
+            array or scalar specifying the negative slope.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -162,6 +164,8 @@ class ContainerWithActivations(ContainerBase):
         ----------
         self
             input container.
+        alpha
+            array or scalar specifying the negative slope.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -203,6 +207,8 @@ class ContainerWithActivations(ContainerBase):
         ----------
         x
             input container.
+        approximate
+            whether to use the gelu approximation algorithm or exact formulation.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -250,6 +256,8 @@ class ContainerWithActivations(ContainerBase):
         ----------
         self
             input container.
+        approximate
+            whether to use the gelu approximation algorithm or exact formulation.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -466,6 +474,8 @@ class ContainerWithActivations(ContainerBase):
         ----------
         x
             input container.
+        axis
+            the axis or axes along which the softmax should be computed
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -514,6 +524,8 @@ class ContainerWithActivations(ContainerBase):
         ----------
         self
             input container.
+        axis
+            the axis or axes along which the softmax should be computed
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
