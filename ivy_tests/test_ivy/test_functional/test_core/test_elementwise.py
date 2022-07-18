@@ -1,5 +1,6 @@
 """Collection of tests for elementwise functions."""
 
+# for review
 # global
 import numpy as np
 from hypothesis import given, assume, strategies as st
@@ -2121,7 +2122,7 @@ def test_erf(
 
 # minimum
 @given(
-    xy=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
@@ -2132,7 +2133,7 @@ def test_erf(
     instance_method=st.booleans(),
 )
 def test_minimum(
-    xy,
+    dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -2141,12 +2142,10 @@ def test_minimum(
     instance_method,
     fw,
 ):
-    # smoke test
-    input_dtype = xy[0]
-    x = xy[1][0]
-    y = xy[1][1]
+    input_dtype, x = dtype_and_x
+
     if (
-        (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
+        (isinstance(x[0], Number) or isinstance(x[1], Number))
         and as_variable is True
         and fw == "mxnet"
     ):
@@ -2162,14 +2161,14 @@ def test_minimum(
         instance_method=instance_method,
         fw=fw,
         fn_name="minimum",
-        x1=np.array(x, dtype=input_dtype[0]),
-        x2=np.array(y, dtype=input_dtype[1]),
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
 # maximum
 @given(
-    xy=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
@@ -2180,7 +2179,7 @@ def test_minimum(
     instance_method=st.booleans(),
 )
 def test_maximum(
-    xy,
+    dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -2189,12 +2188,9 @@ def test_maximum(
     instance_method,
     fw,
 ):
-    # smoke test
-    input_dtype = xy[0]
-    x = xy[1][0]
-    y = xy[1][1]
+    input_dtype, x = dtype_and_x
     if (
-        (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
+        (isinstance(x[0], Number) or isinstance(x[1], Number))
         and as_variable is True
         and fw == "mxnet"
     ):
@@ -2210,6 +2206,6 @@ def test_maximum(
         instance_method=instance_method,
         fw=fw,
         fn_name="maximum",
-        x1=np.array(x, dtype=input_dtype[0]),
-        x2=np.array(y, dtype=input_dtype[1]),
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
