@@ -19,6 +19,33 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.relu also applies to this method with minimal changes.
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with the rectified linear activation unit function applied element-wise.
+        
+        """
         return ContainerBase.multi_map_in_static_method(
             "relu",
             x,
@@ -38,6 +65,33 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.relu also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with the rectified linear activation unit function applied element-wise.
+        
+        """
         return self.static_relu(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -53,6 +107,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.leaky_relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.leaky_relu also applies to this method with minimal changes.
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+             a container with the leaky relu unit function applied element-wise.
+        """
         return ContainerBase.multi_map_in_static_method(
             "leaky_relu",
             x,
@@ -74,6 +154,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.leaky_relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.leaky_relu also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+           a container with the leaky relu unit function applied element-wise.
+        """
         return self.static_leaky_relu(
             self, alpha, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -89,6 +195,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.gelu.
+        This method simply wraps the function, and so the docstring
+        for ivy.gelu also applies to this method with minimal changes.
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with the gelu unit function applied element-wise.
+        """
         return ContainerBase.multi_map_in_static_method(
             "gelu",
             x,
@@ -110,6 +242,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.gelu.
+        This method simply wraps the function, and so the docstring
+        for ivy.gelu also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with the gelu unit function applied element-wise.
+        """
         return self.static_gelu(
             self,
             approximate,
@@ -129,6 +287,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.tanh.
+        This method simply wraps the function, and so the docstring
+        for ivy.tanh also applies to this method with minimal changes.
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with Hyperbolic tangent activation function applied element-wise.
+        """
         return ContainerBase.multi_map_in_static_method(
             "tanh",
             x,
@@ -148,6 +332,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.tanh.
+        This method simply wraps the function, and so the docstring
+        for ivy.tanh also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+              a container with Hyperbolic tangent activation function applied element-wise.
+        """
         return self.static_tanh(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -162,6 +372,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sigmoid.
+        This method simply wraps the function, and so the docstring
+        for ivy.sigmoid also applies to this method with minimal changes.
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with the sigmoid unit function applied element-wise.
+        """
         return ContainerBase.multi_map_in_static_method(
             "sigmoid",
             x,
@@ -181,6 +417,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sigmoid.
+        This method simply wraps the function, and so the docstring
+        for ivy.sigmoid also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with the sigmoid unit function applied element-wise.
+        """
         return self.static_sigmoid(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -196,6 +458,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.softmax.
+        This method simply wraps the function, and so the docstring
+        for ivy.softmax also applies to this method with minimal changes.
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with the softmax unit function applied element-wise.
+        """
         return ContainerBase.multi_map_in_static_method(
             "softmax",
             x,
@@ -218,6 +506,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.softmax.
+        This method simply wraps the function, and so the docstring
+        for ivy.softmax also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with the softmax unit function applied element-wise.
+        """
         return self.static_softmax(
             self, axis, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -232,6 +546,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+        """
         return ContainerBase.multi_map_in_static_method(
             "softplus",
             x,
@@ -251,6 +591,32 @@ class ContainerWithActivations(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+        """
         return self.static_softplus(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
