@@ -102,3 +102,5 @@ def conv3d_transpose(
     return tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
     )
+def dropout(x:Tensor[Float], rate:Tensor[Float]):
+    return tf.nn.dropout(x, rate)
