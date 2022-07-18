@@ -58,8 +58,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the inverse hyperbolic cosine of each element in ``self``. The
-            returned array must have the same data type as ``self``.
+            an array containing the inverse hyperbolic cosine
+            of each element in ``self``.
+            The returned array must have the same data type as ``self``.
         """
         return ivy.acosh(self._data, out=out)
 
@@ -80,8 +81,8 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the inverse cosine of each element in ``self``. The
-            returned array must have the same data type as ``self``.
+            an array containing the inverse cosine of each element in ``self``.
+            The  returned array must have the same data type as ``self``.
         """
         return ivy.acos(self._data, out=out)
 
@@ -212,10 +213,12 @@ class ArrayWithElementwise(abc.ABC):
         Parameters
         ----------
         self
-            first input array corresponding to the y-coordinates. Should have a real-valued floating-point data type.
+            first input array corresponding to the y-coordinates.
+            Should have a real-valued floating-point data type.
         x2
-            second input array corresponding to the x-coordinates. Must be compatible with ``self``
-            (see :ref:`broadcasting`). Should have a real-valued floating-point data type.
+            second input array corresponding to the x-coordinates.
+            Must be compatible with ``self``(see :ref:`broadcasting`).
+            Should have a real-valued floating-point data type.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -223,8 +226,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the inverse tangent of the quotient ``self/x2``. The returned
-            array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            an array containing the inverse tangent of the quotient ``self/x2``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
         """
         return ivy.atan2(self._data, x2, out=out)
 
@@ -246,9 +250,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the inverse hyperbolic tangent of each element in ``self``.
-            The returned array must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            an array containing the inverse hyperbolic tangent of each element
+            in ``self``. The returned array must have a floating-point data type
+            determined by :ref:`type-promotion`.
         """
         return ivy.atanh(self._data, out=out)
 
@@ -259,17 +263,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_and. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_and also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_and.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_and also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have an integer or boolean data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
-            Should have an integer or boolean data type.
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have an integer or boolean data type.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -277,8 +281,8 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have a data
-            type determined by :ref:`type-promotion`.
+            an array containing the element-wise results.
+            The returned array must have a data type determined by :ref:`type-promotion`.
         """
         return ivy.bitwise_and(self._data, x2, out=out)
 
@@ -289,16 +293,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_left_shift. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_left_shift also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_left_shift.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_left_shift also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have an integer or boolean data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -307,8 +312,8 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have a data
-            type determined by :ref:`type-promotion`.
+            an array containing the element-wise results.
+            The returned array must have a data type determined by :ref:`type-promotion`.
         """
         return ivy.bitwise_left_shift(self._data, x2, out=out)
 
@@ -316,9 +321,9 @@ class ArrayWithElementwise(abc.ABC):
         self: ivy.Array, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_invert. This method simply wraps the
-        function, and so the docstring for ivy.bitiwse_invert also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_invert.
+        This method simply wraps the function, and so the docstring
+        for ivy.bitiwse_invert also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -331,7 +336,8 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have the same data type as ``self``.
+            an array containing the element-wise results.
+            The returned array must have the same data type as ``self``.
         """
         return ivy.bitwise_invert(self._data, out=out)
 
@@ -345,6 +351,20 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.bitwise_or. This method simply
         wraps the function, and so the docstring for ivy.bitwise_or also applies
         to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have an integer or boolean data type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results.
+            The returned array must have the same data type as ``self``.
 
         Examples
         --------
@@ -363,17 +383,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_right_shift. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_right_shift also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_right_shift.
+        This method simply wraps the function, and so the docstring
+        for ivy.bitwise_right_shift also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have an integer or boolean data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
-            Should have an integer or boolean data type.
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have an integer or boolean data type.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -381,8 +401,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have a data
-            type determined by :ref:`type-promotion`.
+            an array containing the element-wise results.
+            The returned array must have a data type determined
+            by :ref:`type-promotion`.
         """
         return ivy.bitwise_right_shift(self._data, x2, out=out)
 
@@ -393,16 +414,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_xor. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_xor also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_xor.
+        This method simply wraps the function, and so the docstring
+        for ivy.bitwise_xor also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have an integer or boolean data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -411,16 +433,17 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have a data
-            type determined by :ref:`type-promotion`.
+            an array containing the element-wise results.
+            The returned array must have a data type determined
+            by :ref:`type-promotion`.
         """
         return ivy.bitwise_xor(self._data, x2, out=out)
 
     def ceil(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.ceil. This method simply wraps the
-        function, and so the docstring for ivy.ceil also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.ceil.
+        This method simply wraps the function, and so the docstring for
+        ivy.ceil also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -486,15 +509,15 @@ class ArrayWithElementwise(abc.ABC):
 
     def cosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.cosh. This method simply wraps the
-        function, and so the docstring for ivy.cosh also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.cosh. This method simply wraps
+        the function, and so the docstring for ivy.cosh also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
         self
-            input array whose elements each represent a hyperbolic angle. Should have a
-            floating-point data type.
+            input array whose elements each represent a hyperbolic angle.
+            Should have a floating-point data type.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -502,8 +525,8 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the hyperbolic cosine of each element in ``self``. The
-            returned array must have a floating-point data type determined by
+            an array containing the hyperbolic cosine of each element in ``self``.
+            The returned array must have a floating-point data type determined by
             :ref:`type-promotion`.
         """
         return ivy.cosh(self._data, out=out)
@@ -515,16 +538,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.divide. This method simply wraps the
-        function, and so the docstring for ivy.divide also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.divide. This method simply
+        wraps the function, and so the docstring for ivy.divide also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
         self
             dividend input array. Should have a real-valued data type.
         x2
-            divisor input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            divisor input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -533,8 +557,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have a data
-            type determined by :ref:`type-promotion`.
+            an array containing the element-wise results.
+            The returned array must have a data type determined
+            by :ref:`type-promotion`.
         """
         return ivy.divide(self._data, x2, out=out)
 
@@ -545,16 +570,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.equal. This method simply wraps the
-        function, and so the docstring for ivy.equal also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. May have any data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             May have any data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -570,9 +596,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def exp(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.exp. This method simply wraps the
-        function, and so the docstring for ivy.exp also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.exp. This method simply
+        wraps the function, and so the docstring for ivy.exp also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -585,16 +611,17 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the evaluated exponential function result for each element in ``self``.
-            The returned array must have a floating-point data type determined by :ref:`type-promotion`.
+            an array containing the evaluated exponential function result for
+            each element in ``self``. The returned array must have a floating-point
+            data type determined by :ref:`type-promotion`.
         """
         return ivy.exp(self._data, out=out)
 
     def expm1(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.expm1. This method simply wraps the
-        function, and so the docstring for ivy.expm1 also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.expm1. This method simply wraps
+        the function, and so the docstring for ivy.expm1 also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -607,16 +634,17 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the evaluated result for each element in ``self``. The returned array must have a
-            real-valued floating-point data type determined by :ref:`type-promotion`.
+            an array containing the evaluated result for each element in ``self``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
         """
         return ivy.expm1(self._data, out=out)
 
     def floor(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.floor. This method simply wraps the
-        function, and so the docstring for ivy.floor also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.floor. This method simply wraps
+        the function, and so the docstring for ivy.floor also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -648,16 +676,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.floor_divide. This method simply wraps the
-        function, and so the docstring for ivy.floor_divide also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.floor_divide.
+        This method simply wraps the function, and so the docstring for ivy.floor_divide
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             dividend input array. Should have a real-valued data type.
         x2
-            divisor input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            divisor input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -666,8 +695,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have a data
-            type determined by :ref:`type-promotion`.
+            an array containing the element-wise results.
+            The returned array must have a data type determined
+            by :ref:`type-promotion`.
         """
         return ivy.floor_divide(self._data, x2, out=out)
 
@@ -678,16 +708,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.greater. This method simply wraps the
-        function, and so the docstring for ivy.greater also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.greater.
+        This method simply wraps the function, and so the docstring for
+        ivy.greater also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have a real-valued data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -708,16 +739,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.greater_equal. This method simply wraps the
-        function, and so the docstring for ivy.greater_equal also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.greater_equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.greater_equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have a real-valued data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -733,9 +765,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def isfinite(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.isfinite. This method simply wraps the
-        function, and so the docstring for ivy.isfinite also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.isfinite.
+        This method simply wraps the function, and so the docstring
+        for ivy.isfinite also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -748,16 +780,17 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing test results. An element ``out_i`` is ``True`` if ``self_i`` is finite and ``False`` otherwise.
+            an array containing test results. An element ``out_i`` is ``True``
+            if ``self_i`` is finite and ``False`` otherwise.
             The returned array must have a data type of ``bool``.
         """
         return ivy.isfinite(self._data, out=out)
 
     def isinf(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.isinf. This method simply wraps the
-        function, and so the docstring for ivy.isinf also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.isinf. This method simply wraps
+        the function, and so the docstring for ivy.isinf also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -770,16 +803,17 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing test results. An element ``out_i`` is ``True`` if ``self_i`` is either positive or negative infinity and ``False``
+            an array containing test results. An element ``out_i`` is ``True``
+            if ``self_i`` is either positive or negative infinity and ``False``
             otherwise. The returned array must have a data type of ``bool``.
         """
         return ivy.isinf(self._data, out=out)
 
     def isnan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.isnan. This method simply wraps the
-        function, and so the docstring for ivy.isnan also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.isnan. This method simply wraps
+        the function, and so the docstring for ivy.isnan also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -792,7 +826,8 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing test results. An element ``out_i`` is ``True`` if ``self_i`` is ``NaN`` and ``False`` otherwise.
+            an array containing test results. An element ``out_i`` is ``True``
+            if ``self_i`` is ``NaN`` and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
         """
         return ivy.isnan(self._data, out=out)
@@ -804,16 +839,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.less. This method simply wraps the
-        function, and so the docstring for ivy.less also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.less. This method simply wraps
+        the function, and so the docstring for ivy.less also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have a real-valued data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -834,16 +870,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.less_equal. This method simply wraps the
-        function, and so the docstring for ivy.less_equal also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.less_equal.
+        This method simply wraps the function, and so the docstring
+        for ivy.less_equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have a real-valued data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -874,16 +911,17 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the evaluated result for each element in ``self``. The returned array must have a real-valued
-            floating-point data type determined by :ref:`type-promotion`.
+            an array containing the evaluated result for each element in ``self``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
         """
         return ivy.log(self._data, out=out)
 
     def log1p(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.log1p. This method simply wraps the
-        function, and so the docstring for ivy.log1p also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.log1p.
+        This method simply wraps the function, and so the docstring
+        for ivy.log1p also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -896,16 +934,17 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the evaluated result for each element in ``self``. The returned array must
-            have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            an array containing the evaluated result for each element in ``self``.
+            The returned array must have a real-valued floating-point data
+            type determined by :ref:`type-promotion`.
         """
         return ivy.log1p(self._data, out=out)
 
     def log2(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.log2. This method simply wraps the
-        function, and so the docstring for ivy.log2 also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.log2.
+        This method simply wraps the function, and so the docstring for
+        ivy.log2 also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -918,8 +957,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the evaluated base ``2`` logarithm for each element in ``self``. The returned array must have
-            a real-valued floating-point data type determined by :ref:`type-promotion`.
+            an array containing the evaluated base ``2`` logarithm for each element
+            in ``self``. The returned array must have a real-valued floating-point
+            data type determined by :ref:`type-promotion`.
         """
         return ivy.log2(self._data, out=out)
 
@@ -940,8 +980,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the evaluated base ``10`` logarithm for each element in ``self``. The returned array must have
-            a real-valued floating-point data type determined by :ref:`type-promotion`.
+            an array containing the evaluated base ``10`` logarithm for each element
+            in ``self``. The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
         """
         return ivy.log10(self._data, out=out)
 
@@ -952,16 +993,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logaddexp. This method simply wraps the
-        function, and so the docstring for ivy.logaddexp also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.logaddexp.
+        This method simply wraps the function, and so the docstring for
+        ivy.logaddexp also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have a real-valued data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -970,8 +1012,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have a
-            real-valued floating-point data type determined by :ref:`type-promotion`.
+            an array containing the element-wise results.
+            The returned array must have a real-valued floating-point data
+            type determined by :ref:`type-promotion`.
         """
         return ivy.logaddexp(self._data, x2, out=out)
 
@@ -982,16 +1025,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logical_and. This method simply wraps the
-        function, and so the docstring for ivy.logical_and also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.logical_and.
+        This method simply wraps the function, and so the docstring for
+        ivy.logical_and also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have a boolean data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a boolean data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -1007,9 +1051,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def logical_not(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logical_not. This method simply wraps the
-        function, and so the docstring for ivy.logical_not also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.logical_not.
+        This method simply wraps the function, and so the docstring
+        for ivy.logical_not also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1022,7 +1066,8 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have a data type of ``bool``.
+            an array containing the element-wise results.
+            The returned array must have a data type of ``bool``.
         """
         return ivy.logical_not(self._data, out=out)
 
@@ -1033,16 +1078,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logical_or. This method simply wraps the
-        function, and so the docstring for ivy.logical_or also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.logical_or.
+        This method simply wraps the function, and so the docstring for
+        ivy.logical_or also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have a boolean data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a boolean data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -1063,16 +1109,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.logical_xor. This method simply wraps the
-        function, and so the docstring for ivy.logical_xor also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.logical_xor.
+        This method simply wraps the function, and so the docstring
+        for ivy.logical_xor also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have a boolean data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -1093,16 +1140,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.multiply. This method simply wraps the
-        function, and so the docstring for ivy.multiply also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.multiply.
+        This method simply wraps the function, and so the docstring for ivy.multiply
+         also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. Should have a real-valued data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -1118,9 +1166,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def negative(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.negative. This method simply wraps the
-        function, and so the docstring for ivy.negative also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.negative.
+        This method simply wraps the function, and so the docstring
+        for ivy.negative also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1145,16 +1193,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.not_equal. This method simply wraps the
-        function, and so the docstring for ivy.not_equal also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.not_equal.
+        This method simply wraps the function, and so the docstring
+        for ivy.not_equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array. May have any data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1169,9 +1218,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def positive(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.positive. This method simply wraps the
-        function, and so the docstring for ivy.positive also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.positive.
+        This method simply wraps the function, and so the docstring
+        for ivy.positive also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1206,8 +1255,9 @@ class ArrayWithElementwise(abc.ABC):
             first input array whose elements correspond to the exponentiation base.
             Should have a real-valued data type.
         x2
-            second input array whose elements correspond to the exponentiation exponent.
-            Must be compatible with ``self`` (see :ref:`broadcasting`). Should have a real-valued data type.
+            second input array whose elements correspond to the exponentiation
+            exponent. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1215,8 +1265,8 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have a data type
-            determined by :ref:`type-promotion`.
+            an array containing the element-wise results.
+            The returned array must have a data type determined by :ref:`type-promotion`.
         """
         return ivy.pow(self._data, x2, out=out)
 
@@ -1227,16 +1277,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.remainder. This method simply wraps the
-        function, and so the docstring for ivy.remainder also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.remainder.
+        This method simply wraps the function, and so the docstring
+        for ivy.remainder also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             dividend input array. Should have a real-valued data type.
         x2
-            divisor input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            divisor input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -1245,9 +1296,10 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results. Each element-wise result must have the
-            same sign as the respective element ``x2_i``.
-            The returned array must have a data type determined by :ref:`type-promotion`.
+            an array containing the element-wise results.
+            Each element-wise result must have the same sign as the respective
+            element ``x2_i``. The returned array must have a data type
+            determined by :ref:`type-promotion`.
         """
         return ivy.remainder(self._data, x2, out=out)
 
@@ -1353,8 +1405,8 @@ class ArrayWithElementwise(abc.ABC):
         Parameters
         ----------
         self
-            input array whose elements each represent a hyperbolic angle. Should have a
-            floating-point data type.
+            input array whose elements each represent a hyperbolic angle.
+            Should have a floating-point data type.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1381,9 +1433,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def square(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.square. This method simply wraps the
-        function, and so the docstring for ivy.square also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.square.
+        This method simply wraps the function, and so the docstring
+        for ivy.square also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1397,7 +1449,8 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the square of each element in ``self``.
-            The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
         """
         return ivy.square(self._data, out=out)
 
@@ -1419,7 +1472,8 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the square root of each element in ``self``.
-            The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
         """
         return ivy.sqrt(self._data, out=out)
 
@@ -1430,8 +1484,9 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.subtract. This method simply wraps the
-        function, and so the docstring for ivy.subtract also applies to this method
+        ivy.Array instance method variant of ivy.subtract.
+        This method simply wraps the function, and so the docstring
+        for ivy.subtract also applies to this method
         with minimal changes.
 
         Parameters
@@ -1439,7 +1494,8 @@ class ArrayWithElementwise(abc.ABC):
         self
             first input array. Should have a real-valued data type.
         x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -1471,8 +1527,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the tangent of each element in ``self``. The return must
-            have a floating-point data type determined by :ref:`type-promotion`.
+            an array containing the tangent of each element in ``self``.
+            The return must have a floating-point data type determined
+            by :ref:`type-promotion`.
 
         Examples
         --------
@@ -1492,8 +1549,8 @@ class ArrayWithElementwise(abc.ABC):
         Parameters
         ----------
         self
-            input array whose elements each represent a hyperbolic angle. Should have a
-            real-valued floating-point data type.
+            input array whose elements each represent a hyperbolic angle.
+            Should have a real-valued floating-point data type.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -1501,9 +1558,9 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the hyperbolic tangent of each element in ``self``. The
-            returned array must have a real-valued floating-point data type determined
-            by :ref:`type-promotion`.
+            an array containing the hyperbolic tangent of each element in ``self``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         Examples
         --------
