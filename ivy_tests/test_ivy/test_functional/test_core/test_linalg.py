@@ -566,20 +566,23 @@ def test_tensordot(
 
 # trace
 @given(
-    input_dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_numeric_dtypes), 1),
+    dtype_x=helpers.dtype_and_values(
+        ivy_np.valid_float_dtypes,
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=50,
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
-    a=st.integers(1, 50),
-    b=st.integers(1, 50),
-    c=st.integers(1, 50),
     offset=st.integers(-10, 10),
 )
 def test_trace(
-    input_dtype,
+    dtype_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -587,15 +590,11 @@ def test_trace(
     container,
     instance_method,
     fw,
-    a,
-    b,
-    c,
     offset,
 ):
-    if "float16" or "int8" in input_dtype:
-        return
+    dtype, x = dtype_x
     helpers.test_function(
-        input_dtype,
+        dtype,
         as_variable,
         with_out,
         num_positional_args,
@@ -604,8 +603,8 @@ def test_trace(
         instance_method,
         fw,
         "trace",
+        x=np.asarray(x, dtype=dtype),
         offset=offset,
-        x=np.random.uniform(size=(a, b, c)).astype(input_dtype[0]),
     )
 
 
