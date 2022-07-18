@@ -342,26 +342,17 @@ class ArrayWithElementwise(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.bitwise_or. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_or also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.bitwise_or. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_or also applies
+        to this method with minimal changes.
 
-        Parameters
-        ----------
-        self
-            first input array. Should have an integer or boolean data type.
-        x2
-            second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
-            Should have an integer or boolean data type.
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            an array containing the element-wise results. The returned array must have a data
-            type determined by :ref:`type-promotion`.
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x.bitwise_or(y)
+        >>> print(z)
+        ivy.array([5, 7, 7])
         """
         return ivy.bitwise_or(self._data, x2, out=out)
 
