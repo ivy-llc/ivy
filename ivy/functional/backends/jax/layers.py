@@ -141,7 +141,7 @@ def conv3d_transpose(
     padding: Union[str, Sequence[Tuple[int, int]]],
     output_shape=None,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    data_format: str = "NDHWC"
+    data_format: str = "NDHWC",
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
