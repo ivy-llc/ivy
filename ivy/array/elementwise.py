@@ -282,7 +282,8 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the element-wise results.
-            The returned array must have a data type determined by :ref:`type-promotion`.
+            The returned array must have a data type determined 
+            by :ref:`type-promotion`.
         """
         return ivy.bitwise_and(self._data, x2, out=out)
 
@@ -313,7 +314,8 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the element-wise results.
-            The returned array must have a data type determined by :ref:`type-promotion`.
+            The returned array must have a data type determined 
+            by :ref:`type-promotion`.
         """
         return ivy.bitwise_left_shift(self._data, x2, out=out)
 
@@ -981,8 +983,8 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the evaluated base ``10`` logarithm for each element
-            in ``self``. The returned array must have a real-valued floating-point data type
-            determined by :ref:`type-promotion`.
+            in ``self``. The returned array must have a real-valued 
+            floating-point data type determined by :ref:`type-promotion`.
         """
         return ivy.log10(self._data, out=out)
 
@@ -1266,7 +1268,8 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the element-wise results.
-            The returned array must have a data type determined by :ref:`type-promotion`.
+            The returned array must have a data type determined 
+            by :ref:`type-promotion`.
         """
         return ivy.pow(self._data, x2, out=out)
 
