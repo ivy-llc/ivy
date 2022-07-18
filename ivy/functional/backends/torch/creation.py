@@ -151,9 +151,11 @@ def eye(
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
     return_mat = torch.reshape(i, reshape_dims).repeat(tile_dims)
+
     # k=index of the diagonal. A positive value refers to an upper diagonal, a negative
     # value to a lower diagonal, and 0 to the main diagonal. Default: 0.
     # value of k ranges from -n_rows < k < n_cols
+    
     if k == 0: #refers to the main diagonal
         return return_mat
 
