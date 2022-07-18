@@ -4,18 +4,16 @@ Ivy Frontends
 .. _`jax.lax.add`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html
 .. _`jax.lax`: https://jax.readthedocs.io/en/latest/jax.lax.html
 .. _`jax.lax.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html
-
 .. _`numpy.add`: https://numpy.org/doc/stable/reference/generated/numpy.add.html
 .. _`numpy mathematical functions`: https://numpy.org/doc/stable/reference/index.html
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
-
 .. _`tf.add`: https://www.tensorflow.org/api_docs/python/tf/math/add
 .. _`tf`: https://www.tensorflow.org/api_docs/python/tf
 .. _`tf.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
-
 .. _`torch.add`: https://pytorch.org/docs/stable/generated/torch.add.html#torch.add
 .. _`torch`: https://pytorch.org/docs/stable/torch.html#math-operations
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
+.. _`link`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
 
 Introduction
 ------------
@@ -268,7 +266,6 @@ Additional examples for each framework on concatenation is added for better unde
 **Round Up**
 
 Hope that you have a better grasp on the Ivy Frontend Functional APIs after going
-through the above contents! If you prefer a verbal explanation, we have a tutorial
-series on YouTube explaining on this. The links will be attached in the next section!
-
-**Video**
+through the above contents! If you prefer a video explanation, we have a tutorial
+series on YouTube explaining on this as well. You can access them through this
+`link`_!
