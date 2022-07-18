@@ -1001,7 +1001,7 @@ class ArrayWithElementwise(abc.ABC):
             first input array. Should have a boolean data type.
         x2
             second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
-            Should have a real-valued data type.
+            Should have a boolean data type.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1052,7 +1052,7 @@ class ArrayWithElementwise(abc.ABC):
             first input array. Should have a boolean data type.
         x2
             second input array. Must be compatible with ``self`` (see :ref:`broadcasting`).
-            Should have a real-valued data type.
+            Should have a boolean data type.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
