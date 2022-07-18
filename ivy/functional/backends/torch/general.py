@@ -396,9 +396,7 @@ def one_hot(indices, depth: int, *, device: torch.device):
     )
 
 
-def shape(
-    x: torch.Tensor, as_array: bool = False
-) -> Union[torch.Tensor, ivy.Shape, ivy.Array]:
+def shape(x: torch.Tensor, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(x.shape)
     else:

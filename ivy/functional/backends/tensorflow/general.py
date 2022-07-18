@@ -10,7 +10,6 @@ import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
 import tensorflow as tf
-from tensorflow.python.framework.tensor_shape import TensorShape
 
 # local
 import ivy
@@ -338,7 +337,7 @@ def indices_where(x):
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
-) -> Union[tf.Tensor, tf.Variable, TensorShape, ivy.Shape, ivy.Array]:
+) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(x.shape)
     else:

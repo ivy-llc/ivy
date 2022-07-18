@@ -265,9 +265,7 @@ def one_hot(indices, depth, *, device):
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(
-    x: np.ndarray, as_array: bool = False
-) -> Union[np.ndarray, ivy.Shape, ivy.Array]:
+def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(x.shape)
     else:
