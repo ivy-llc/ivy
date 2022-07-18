@@ -20,8 +20,8 @@ from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
+    low: Union[float, mx.nd.NDArray] = 0.0,
+    high: Union[float, mx.nd.NDArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: Optional[Union[ivy.Device, mx.context.Context]] = None,
     dtype=None,
