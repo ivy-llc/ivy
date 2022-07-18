@@ -1063,6 +1063,16 @@ def is_uint_dtype(
     ret
         Whether or not the array or data type is of a uint dtype
 
+    Examples
+    --------
+    >>> ivy.is_uint_dtype(ivy.UintDtype("uint16"))
+    True
+
+    >>> ivy.is_uint_dtype(ivy.Dtype("uint8"))
+    True
+
+    >>> ivy.is_uint_dtype(ivy.IntDtype("int64"))
+    False
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
