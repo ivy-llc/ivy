@@ -137,38 +137,6 @@
 
 
 <div class="viewcode-block" id="ArrayWithGradients"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithGradients</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="ArrayWithGradients.is_variable"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.is_variable">[docs]</a>    <span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.is_variable. This method simply wraps</span>
-<span class="sd">        the function, and so the docstring for ivy.is_variable also applies to this</span>
-<span class="sd">        method with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            An ivy array.</span>
-<span class="sd">        exclusive</span>
-<span class="sd">            Whether to check if the data type is exclusively a variable, rather than an</span>
-<span class="sd">            array. For frameworks like JAX that do not have exclusive variable types,</span>
-<span class="sd">            the function will always return False if this flag is set, otherwise the</span>
-<span class="sd">            check is the same for general arrays. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            Boolean, true if ``self`` is a trainable variable, false otherwise.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        With :code:`ivy.Array` input:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([-2, 0.4, 7])</span>
-<span class="sd">        &gt;&gt;&gt; is_var = x.is_variable(True)</span>
-<span class="sd">        &gt;&gt;&gt; print(is_var)</span>
-<span class="sd">            False</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="ArrayWithGradients.adam_step"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.adam_step">[docs]</a>    <span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -182,29 +150,6 @@
 <span class="sd">        ivy.Array instance method variant of ivy.adam_step. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.adam_step also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">        mw</span>
-<span class="sd">            running average of the gradients.</span>
-<span class="sd">        vw</span>
-<span class="sd">            running average of second moments of the gradients.</span>
-<span class="sd">        step</span>
-<span class="sd">            training step.</span>
-<span class="sd">        beta1</span>
-<span class="sd">            gradient forgetting factor (Default value = 0.9).</span>
-<span class="sd">        beta2</span>
-<span class="sd">            second moment of gradient forgetting factor (Default value = 0.999).</span>
-<span class="sd">        epsilon</span>
-<span class="sd">            divisor during adam update, preventing division by zero</span>
-<span class="sd">            (Default value = 1e-7).</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            The adam step delta.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>

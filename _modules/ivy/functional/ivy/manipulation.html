@@ -469,7 +469,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">],</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
     <span class="n">copy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -707,8 +707,8 @@
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">x_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">x_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
+    <span class="n">x_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -727,6 +727,7 @@
 <span class="sd">        Minimum value.</span>
 <span class="sd">    x_max</span>
 <span class="sd">        Maximum value.</span>
+
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -753,29 +754,29 @@
 <span class="sd">    ivy.array([2., 2., 2., 3., 4., 5., 6., 7., 7., 7.])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
-<span class="sd">    &gt;&gt;&gt; x_min = ivy.array([3., 3., 1., 0., 2., 3., 4., 0., 4., 4.])</span>
+<span class="sd">    &gt;&gt;&gt; x_min = ivy.array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])</span>
 <span class="sd">    &gt;&gt;&gt; x_max = ivy.array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.clip(x, x_min, x_max)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])</span>
+<span class="sd">    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
-<span class="sd">    &gt;&gt;&gt; x_min = ivy.native_array([3., 3., 1., 0., 2., 3., 4., 2., 4., 4.])</span>
+<span class="sd">    &gt;&gt;&gt; x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])</span>
 <span class="sd">    &gt;&gt;&gt; x_max = ivy.native_array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.clip(x, x_min, x_max)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])</span>
+<span class="sd">    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])</span>
 
 <span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
-<span class="sd">    &gt;&gt;&gt; x_min = ivy.native_array([3., 3., 1., 0., 2., 3., 4., 2., 4., 4.])</span>
+<span class="sd">    &gt;&gt;&gt; x_min = ivy.native_array([3., 4., 1., 0., 2., 3., 4., 4., 4., 4.])</span>
 <span class="sd">    &gt;&gt;&gt; x_max = ivy.native_array([5., 4., 3., 3., 5., 7., 8., 3., 8., 8.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.clip(x, x_min, x_max)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])</span>
+<span class="sd">    ivy.array([3., 4., 2., 3., 4., 5., 6., 3., 8., 8.])</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
@@ -792,31 +793,30 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
-<span class="sd">    &gt;&gt;&gt; x_min = ivy.Container(a=0, b=-3)</span>
+<span class="sd">    &gt;&gt;&gt; x_min = ivy.Container(a=1, b=-1)</span>
 <span class="sd">    &gt;&gt;&gt; x_max = ivy.Container(a=1, b=-1)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.clip(x, x_min,x_max)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0., 1., 1.]),</span>
+<span class="sd">        a: ivy.array([1., 1., 1.]),</span>
 <span class="sd">        b: ivy.array([-1., -1., -1.])</span>
 <span class="sd">    }</span>
 
 <span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
-<span class="sd">    &gt;&gt;&gt; x_min = ivy.array([3., 0., 1])</span>
+<span class="sd">    &gt;&gt;&gt; x_min = ivy.array([3., 4., 1])</span>
 <span class="sd">    &gt;&gt;&gt; x_max = ivy.array([5., 4., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.clip(y, x_min, x_max)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array([3., 1., 2.]),</span>
+<span class="sd">        a: ivy.array([3., 4., 2.]),</span>
 <span class="sd">        b: ivy.array([3., 4., 3.])</span>
 <span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">))</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>

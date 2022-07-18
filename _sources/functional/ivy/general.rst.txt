@@ -34,8 +34,7 @@ General
    general/has_nans.rst
    general/exists.rst
    general/default.rst
-   general/to_ivy_shape.rst
-   general/to_native_shape.rst
+   general/shape_to_tuple.rst
    general/try_else_none.rst
    general/arg_names.rst
    general/match_kwargs.rst
@@ -75,9 +74,6 @@ General
    general/indices_where.rst
    general/one_hot.rst
    general/shape.rst
-   general/set_shape_array_mode.rst
-   general/unset_shape_array_mode.rst
-   general/shape_array_mode.rst
    general/get_num_dims.rst
    general/arg_info.rst
 

@@ -21,7 +21,7 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="ivy.Container.static_asarray" href="static_asarray_container.html" />
+    <link rel="next" title="ivy.Container.asarray" href="asarray_container.html" />
     <link rel="prev" title="ivy.asarray" href="asarray_functional.html" /> 
 </head>
 
@@ -60,6 +60,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../asarray.html">asarray</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="asarray_functional.html">ivy.asarray</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Array.asarray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="asarray_container.html">ivy.Container.asarray</a></li>
 <li class="toctree-l3"><a class="reference internal" href="static_asarray_container.html">ivy.Container.static_asarray</a></li>
 </ul>
 </li>
@@ -164,22 +165,8 @@
 function, and so the docstring for ivy.asarray also applies to this method
 with minimal changes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – input data, in any form that can be converted to an array. This includes
-lists, lists of tuples, tuples, tuples of tuples, tuples of lists and
-ndarrays.</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code>]]) – datatype, optional. Datatype is inferred from the input data. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – device on which to place the created array. Default: None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>out</strong> – optional output array, for writing the result to. It must have a shape that
-the inputs broadcast to.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – An array interpretation of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -196,7 +183,7 @@ the inputs broadcast to.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="asarray_functional.html" class="btn btn-neutral float-left" title="ivy.asarray" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="static_asarray_container.html" class="btn btn-neutral float-right" title="ivy.Container.static_asarray" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="asarray_container.html" class="btn btn-neutral float-right" title="ivy.Container.asarray" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

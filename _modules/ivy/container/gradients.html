@@ -144,59 +144,6 @@
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container static method variant of ivy.is_variable. This method simply wraps</span>
-<span class="sd">        the function, and so the docstring for ivy.is_variable also applies to this</span>
-<span class="sd">        method with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x</span>
-<span class="sd">            An ivy container.</span>
-<span class="sd">        exclusive</span>
-<span class="sd">            Whether to check if the data type is exclusively a variable, rather than an</span>
-<span class="sd">            array. For frameworks like JAX that do not have exclusive variable types,</span>
-<span class="sd">            the function will always return False if this flag is set, otherwise the</span>
-<span class="sd">            check is the same for general arrays. Default is False.</span>
-<span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
-<span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
-<span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            Boolean, true if x is a trainable variable, false otherwise.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        With :code:`ivy.Container` input:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))</span>
-<span class="sd">        &gt;&gt;&gt; is_var = ivy.Container.static_is_variable(x)</span>
-<span class="sd">        &gt;&gt;&gt; print(is_var)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: false,</span>
-<span class="sd">            b: false</span>
-<span class="sd">        }</span>
-
-<span class="sd">        With multiple :code:`ivy.Container` inputs:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))</span>
-<span class="sd">        &gt;&gt;&gt; exclusive = ivy.Container(a=False, b=True)</span>
-<span class="sd">        &gt;&gt;&gt; is_var = ivy.Container.static_is_variable(x, exclusive=exclusive)</span>
-<span class="sd">        &gt;&gt;&gt; print(is_var)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: false,</span>
-<span class="sd">            b: false</span>
-<span class="sd">        }</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;is_variable&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
@@ -215,59 +162,6 @@
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.is_variable. This method simply</span>
-<span class="sd">        wraps the function, and so the docstring for ivy.is_variable also applies to</span>
-<span class="sd">        this method with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            An ivy container.</span>
-<span class="sd">        exclusive</span>
-<span class="sd">            Whether to check if the data type is exclusively a variable, rather than an</span>
-<span class="sd">            array. For frameworks like JAX that do not have exclusive variable types,</span>
-<span class="sd">            the function will always return False if this flag is set, otherwise the</span>
-<span class="sd">            check is the same for general arrays. Default is False.</span>
-<span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
-<span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
-<span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            Boolean, true if x is a trainable variable, false otherwise.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        With :code:`ivy.Container` input:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))</span>
-<span class="sd">        &gt;&gt;&gt; is_var = x.is_variable(exclusive=True)</span>
-<span class="sd">        &gt;&gt;&gt; print(is_var)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: false,</span>
-<span class="sd">            b: false</span>
-<span class="sd">        }</span>
-
-<span class="sd">        With multiple :code:`ivy.Container` inputs:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))</span>
-<span class="sd">        &gt;&gt;&gt; exclusive = ivy.Container(a=True, b=True)</span>
-<span class="sd">        &gt;&gt;&gt; is_var = x.is_variable(exclusive=exclusive)</span>
-<span class="sd">        &gt;&gt;&gt; print(is_var)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: false,</span>
-<span class="sd">            b: false</span>
-<span class="sd">        }</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_is_variable</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span>
         <span class="p">)</span></div>
@@ -283,32 +177,9 @@
         <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.adam_step. This method simply wraps</span>
-<span class="sd">        the function, and so the docstring for ivy.adam_step also applies to this method</span>
-<span class="sd">        with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        dcdw</span>
-<span class="sd">            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">        mw</span>
-<span class="sd">            running average of the gradients.</span>
-<span class="sd">        vw</span>
-<span class="sd">            running average of second moments of the gradients.</span>
-<span class="sd">        step</span>
-<span class="sd">            training step.</span>
-<span class="sd">        beta1</span>
-<span class="sd">            gradient forgetting factor (Default value = 0.9).</span>
-<span class="sd">        beta2</span>
-<span class="sd">            second moment of gradient forgetting factor (Default value = 0.999).</span>
-<span class="sd">        epsilon</span>
-<span class="sd">            divisor during adam update, preventing division by zero</span>
-<span class="sd">            (Default value = 1e-7).</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            The adam step delta.</span>
+<span class="sd">        ivy.Container instance method variant of ivy.adam_step.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for ivy.</span>
+<span class="sd">        adam_step also applies to this method with minimal changes</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -353,32 +224,9 @@
         <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.adam_step. This method simply wraps</span>
-<span class="sd">        the function, and so the docstring for ivy.adam_step also applies to this method</span>
-<span class="sd">        with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">        mw</span>
-<span class="sd">            running average of the gradients.</span>
-<span class="sd">        vw</span>
-<span class="sd">            running average of second moments of the gradients.</span>
-<span class="sd">        step</span>
-<span class="sd">            training step.</span>
-<span class="sd">        beta1</span>
-<span class="sd">            gradient forgetting factor (Default value = 0.9).</span>
-<span class="sd">        beta2</span>
-<span class="sd">            second moment of gradient forgetting factor (Default value = 0.999).</span>
-<span class="sd">        epsilon</span>
-<span class="sd">            divisor during adam update, preventing division by zero</span>
-<span class="sd">            (Default value = 1e-7).</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            The adam step delta.</span>
+<span class="sd">        ivy.Container instance method variant of ivy.adam_step.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for ivy.</span>
+<span class="sd">        adam_step also applies to this method with minimal changes</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
