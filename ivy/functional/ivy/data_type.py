@@ -844,8 +844,6 @@ def is_bool_dtype(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
