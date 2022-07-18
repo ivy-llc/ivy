@@ -1510,10 +1510,10 @@ def dev_unify_array(
     >>> x_gpu = [[1,1], [1,1]]
     >>> y_cpu = [[2,2], [2,2]]
     >>> y_gpu = [[3,3], [3,3]]
-    >>> x = {"started_on_cpu": ivvy.asarray(x_cpu),\
-            "started_on_gpu": ivvy.asarray(x_gpu, device="gpu:0")}
-    >>> y = {"started_on_cpu": ivvy.asarray(y_cpu),\
-            "started_on_gpu": ivvy.asarray(y_gpu, device="gpu:0")}
+    >>> x = {"started_on_cpu": ivy.asarray(x_cpu),\
+            "started_on_gpu": ivy.asarray(x_gpu, device="gpu:0")}
+    >>> y = {"started_on_cpu": ivy.asarray(y_cpu),\
+            "started_on_gpu": ivy.asarray(y_gpu, device="gpu:0")}
     >>> z = ivy.Container(x=x, y=y)
     >>> z_unified_container = ivy.dev_unify_array(\
             ivy.DevDistItem(z), device="gpu:0", mode="concat", axis=1)\
