@@ -29,19 +29,20 @@ class ContainerWithRandom(ContainerBase):
             low,
             high,
             shape,
-            dtype=dtype,
-            device=device,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            device=device,
+            dtype=dtype,
         )
 
     def random_uniform(
         self: ivy.Container,
         low: Union[float, ivy.Container] = 0.0,
         high: Union[float, ivy.Container] = 1.0,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -54,7 +55,8 @@ class ContainerWithRandom(ContainerBase):
         return self.static_random_uniform(
             low,
             high,
-            self,
+            shape,
+            #self,
             device,
             dtype,
             key_chains,

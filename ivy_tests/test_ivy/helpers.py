@@ -840,11 +840,6 @@ def test_function(
     # run either as an instance method or from the API directly
     instance = None
     if instance_method:
-        # check whether array instance method is available
-        fn_test_backend = getattr(ivy.get_backend(fw), fn_name)
-        if hasattr(fn_test_backend, "container_instance_only"):
-            if not all(container_flags):
-                test_unsupported = True
         is_instance = [
             (not n) or c for n, c in zip(native_array_flags, container_flags)
         ]
@@ -868,9 +863,17 @@ def test_function(
             instance = ivy.index_nest(kwargs, instance_idx)
             kwargs = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.prune_nest_at_index(kwargs, instance_idx)
+        #if not test_unsupported:
+        #    try:
+        #        #ret = instance.__getattribute__(fn_name)(*args, **kwargs)
+        #        instance.__getattribute__(fn_name)(*args, **kwargs)
+        #    except TypeError:
+        #        test_unsupported = True
         if test_unsupported:
             test_unsupported_function(instance.__getattribute__(fn_name), args, kwargs)
             return
+        #print("\nargs: "+str(args))
+        #print("\nkwargs: "+str(kwargs))
         ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
         if test_unsupported:
@@ -1470,7 +1473,8 @@ def get_shape(
         )
     if shape is None:
         return shape
-    return tuple(set(shape))
+    #shape = set(shape)
+    return tuple(shape)
 
 
 def none_or_list_of_floats(
@@ -1673,3 +1677,65 @@ def num_positional_args(draw, fn_name: str = None):
     return draw(
         integers(min_value=num_positional_only, max_value=(total - num_keyword_only))
     )
+
+
+if __name__ == "__main__":
+    #fn = ivy.__dict__["random_uniform"]
+    #for param in inspect.signature(fn).parameters.values():
+    #    print(param.kind)
+
+    from hypothesis import given, strategies as st
+    @given(
+        data=st.data(),
+        input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+        #input_dtype=list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
+        shape_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
+        as_variable=st.booleans(),
+        with_out=st.booleans(),
+        num_positional_argss=st.integers(3, 3),
+        #num_positional_argss=num_positional_args(fn_name="random_uniform"),
+        native_array=st.booleans(),
+        container=st.booleans(),
+        instance_method=st.booleans(),
+        shape=get_shape(allow_none=False, min_num_dims=1),
+    )
+    def test_random_uniform(
+            data,
+            input_dtype,
+            shape_dtype,
+            as_variable,
+            with_out,
+            num_positional_argss,
+            native_array,
+            container,
+            instance_method,
+            shape,
+            #device,
+            #fw,
+    ):
+        if input_dtype in ["float16"]:
+            return
+
+        low, high  = data.draw(get_bounds(input_dtype))
+        input_dtypes = [input_dtype, input_dtype, shape_dtype]
+
+        cur_device="cpu"
+
+        test_function(
+            input_dtypes,
+            as_variable,
+            with_out,
+            num_positional_argss,
+            native_array,
+            container,
+            instance_method,
+            fw="tensorflow",
+            fn_name="random_uniform",
+            low=np.array(low, dtype=input_dtypes[0]),
+            high=np.array(high, dtype=input_dtypes[1]),
+            shape=np.array(shape, dtype=input_dtypes[2]),
+            device=cur_device,
+            dtype=input_dtypes[0],
+        )
+
+    test_random_uniform()

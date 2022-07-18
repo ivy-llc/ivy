@@ -2,12 +2,11 @@
 
 # global
 import torch
-from typing import Optional, List, Union, Sequence
+from typing import Optional, List, Union, Sequence, Tuple
 
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-from ivy.functional.ivy.data_type import as_native_dtype
 
 
 # Extra #
@@ -17,26 +16,39 @@ from ivy.functional.ivy.data_type import as_native_dtype
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
-    shape: Union[int, Tuple[int, ...]] = None,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
-    device: torch.device = None,
-    dtype: torch.dtype = None,
-    out: Optional[torch.Tensor] = None,
+    device = None,
+    dtype = None,
+    #dtype: torch.dtype = None,
+    #out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    #rand_range = torch.asarray(float(high)) - torch.asarray(float(low))
+    if isinstance(shape, torch.Tensor):
+        if shape.dim() > 0:
+            if len(shape) == 1:
+                shape = int(shape)
+            else:
+                int_shape = []
+                for s in shape:
+                    int_shape.append(int(s))
+                shape = set(int_shape)
+        elif shape.dim() == 0:
+            shape = int(shape)
+
+    #print(shape)
+    #print(type(shape))
+
     rand_range = high - low
-    #if shape is None:
-    #    shape = []
     return (
         #torch.rand(shape, device=device, dtype=dtype, out=out)
         #torch.rand(shape, device=default_device(device), dtype=dtype, out=out)
-        torch.rand(shape, device=default_device(device), dtype=dtype, out=out)
+        torch.rand(shape, device=default_device(device), dtype=dtype)
         * rand_range
         + low
     )
 
 
-random_uniform.container_instance_only = [True]
+random_uniform.unsupported_dtypes = ("float16",)
 
 
 def random_normal(

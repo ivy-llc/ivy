@@ -4,7 +4,7 @@ signature.
 
 # global
 import tensorflow as tf
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, Tuple
 
 # local
 import ivy
@@ -21,8 +21,8 @@ def random_uniform(
     shape: Union[int, Tuple[int, ...]] = None,
     *,
     device: str,
-    #dtype = None,
-    dtype: tf.dtypes = None,
+    dtype = None,
+    #dtype: tf.dtypes = None,
     #out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
@@ -30,6 +30,9 @@ def random_uniform(
     with tf.device(default_device(device)):
         return tf.random.uniform(shape, low, high, dtype=dtype)
         #return tf.random.uniform(shape if shape else (), low, high, dtype=dtype)
+
+
+random_uniform.unsupported_dtypes = ("float16",)
 
 
 def random_normal(

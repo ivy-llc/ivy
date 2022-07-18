@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, Tuple
 
 # local
 import ivy
@@ -12,14 +12,15 @@ import ivy
 
 
 def random_uniform(
-    low: Union[float] = 0.0,
-    high: Union[float] = 1.0,
-    shape: Optional[Union[int, Sequence[int, ...]]] = None,
+    low: float = 0.0,
+    high: float = 1.0,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     device: str,
     dtype = None,
 ) -> np.ndarray:
 
+    #temporary fix
     if isinstance(low, (np.ndarray, ivy.Array)):
         low = float(low)
     if isinstance(low, tuple):
@@ -29,6 +30,7 @@ def random_uniform(
     if isinstance(high, tuple):
         high = float(high[0])
 
+    '''
     if isinstance(shape, (np.ndarray, ivy.Array)):
         if shape.size <= 1:
             shape = int(shape)
@@ -37,9 +39,13 @@ def random_uniform(
             for i in shape:
                 new_shape.append(int(i))
             shape = new_shape
-
+    '''
+    print(low, high, shape)
     #return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
     return np.random.uniform(low, high, shape)
+
+
+random_uniform.unsupported_dtypes = ("float16",)
 
 
 def random_normal(

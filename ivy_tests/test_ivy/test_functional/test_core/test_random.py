@@ -14,7 +14,6 @@ import ivy_tests.test_ivy.helpers as helpers
 @given(
     data=st.data(),
     input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    #input_dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
     shape_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -25,7 +24,7 @@ import ivy_tests.test_ivy.helpers as helpers
     container=st.booleans(),
     instance_method=st.booleans(),
     #instance_method=st.just(False),
-    shape=helpers.get_shape(allow_none=False, min_num_dims=1),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
 )
 def test_random_uniform(
     data,
@@ -43,8 +42,6 @@ def test_random_uniform(
 ):
     if input_dtype in ["float16"]:
         return
-    #if fw == "torch" and input_dtype in ["float64"]:
-    #    return
 
     low, high = data.draw(helpers.get_bounds(input_dtype))
     input_dtypes = [input_dtype, input_dtype, shape_dtype]

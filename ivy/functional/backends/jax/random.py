@@ -4,7 +4,7 @@
 import jax
 import jax.numpy as jnp
 import jaxlib.xla_extension
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, Tuple
 
 # local
 import ivy
@@ -22,12 +22,13 @@ RNG = jax.random.PRNGKey(0)
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
-    shape: Union[int, Sequence[int, ...]] = None,
+    shape: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
     dtype = None,
     #dtype: jnp.dtype,
 ) -> JaxArray:
+    print(shape)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     #if isinstance(low, Array):
@@ -39,6 +40,9 @@ def random_uniform(
     ),
         device=default_device(device),
     )
+
+
+random_uniform.unsupported_dtypes = ("float16",)
 
 
 def random_normal(
