@@ -1,6 +1,3 @@
-Variable
-========
-
 .. autoclass:: ivy.array.array.Variable
    :members:
    :special-members: __init__

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Container &mdash; Ivy 1.0 documentation</title>
+  <title>&lt;no title&gt; &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="MultiDevContainer" href="MultiDevContainer.html" />
-    <link rel="prev" title="Container" href="../container.html" /> 
+    <link rel="next" title="&lt;no title&gt;" href="MultiDevContainer.html" />
+    <link rel="prev" title="Container" href="../../container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -76,36 +76,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../functional/ivy/utility.html">Utility</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../../container.html">Container</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../activations.html">Activations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../base.html">Base</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../container.html">Container</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Container</a></li>
-<li class="toctree-l3"><a class="reference internal" href="MultiDevContainer.html">MultiDevContainer</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../creation.html">Creation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data_type.html">Data type</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../device.html">Device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../general.html">General</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gradients.html">Gradients</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../image.html">Image</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../layers.html">Layers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../losses.html">Losses</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../manipulation.html">Manipulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../norms.html">Norms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../random.html">Random</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../searching.html">Searching</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../set.html">Set</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../sorting.html">Sorting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../statistical.html">Statistical</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utility.html">Utility</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../wrapping.html">Wrapping</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../array.html">Array</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
@@ -147,9 +119,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../container.html">Container</a> &raquo;</li>
-          <li><a href="../container.html">Container</a> &raquo;</li>
-      <li>Container</li>
-      <li class="wy-breadcrumbs-aside">
+            <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/data_classes/container/container/Container.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
@@ -158,9 +128,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="container">
-<h1>Container<a class="headerlink" href="#container" title="Permalink to this heading"></a></h1>
-<dl class="py class">
+  <dl class="py class">
 <dt class="sig sig-object py" id="ivy.container.container.Container">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.container.container.</span></span><span class="sig-name descname"><span class="pre">Container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queues</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_load_sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_combine_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'list_join'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_length_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_line_spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivyh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_key_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'green'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword_color_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebuild_child_containers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types_to_iteratively_nest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphabetical_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/container.html#Container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container.Container" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="../activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations" title="ivy.container.activations.ContainerWithActivations"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithActivations</span></code></a>, <a class="reference internal" href="../creation/ContainerWithCreation.html#ivy.container.creation.ContainerWithCreation" title="ivy.container.creation.ContainerWithCreation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithCreation</span></code></a>, <a class="reference internal" href="../data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes" title="ivy.container.data_type.ContainerWithDataTypes"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithDataTypes</span></code></a>, <a class="reference internal" href="../device/ContainerWithDevice.html#ivy.container.device.ContainerWithDevice" title="ivy.container.device.ContainerWithDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithDevice</span></code></a>, <a class="reference internal" href="../elementwise/ContainerWithElementwise.html#ivy.container.elementwise.ContainerWithElementwise" title="ivy.container.elementwise.ContainerWithElementwise"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithElementwise</span></code></a>, <a class="reference internal" href="../general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral" title="ivy.container.general.ContainerWithGeneral"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithGeneral</span></code></a>, <a class="reference internal" href="../gradients/ContainerWithGradients.html#ivy.container.gradients.ContainerWithGradients" title="ivy.container.gradients.ContainerWithGradients"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithGradients</span></code></a>, <a class="reference internal" href="../image/ContainerWithImage.html#ivy.container.image.ContainerWithImage" title="ivy.container.image.ContainerWithImage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithImage</span></code></a>, <a class="reference internal" href="../layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers" title="ivy.container.layers.ContainerWithLayers"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithLayers</span></code></a>, <a class="reference internal" href="../linear_algebra/ContainerWithLinearAlgebra.html#ivy.container.linear_algebra.ContainerWithLinearAlgebra" title="ivy.container.linear_algebra.ContainerWithLinearAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithLinearAlgebra</span></code></a>, <a class="reference internal" href="../losses/ContainerWithLosses.html#ivy.container.losses.ContainerWithLosses" title="ivy.container.losses.ContainerWithLosses"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithLosses</span></code></a>, <a class="reference internal" href="../manipulation/ContainerWithManipulation.html#ivy.container.manipulation.ContainerWithManipulation" title="ivy.container.manipulation.ContainerWithManipulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithManipulation</span></code></a>, <a class="reference internal" href="../norms/ContainerWithNorms.html#ivy.container.norms.ContainerWithNorms" title="ivy.container.norms.ContainerWithNorms"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithNorms</span></code></a>, <a class="reference internal" href="../random/ContainerWithRandom.html#ivy.container.random.ContainerWithRandom" title="ivy.container.random.ContainerWithRandom"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithRandom</span></code></a>, <a class="reference internal" href="../searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching" title="ivy.container.searching.ContainerWithSearching"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithSearching</span></code></a>, <a class="reference internal" href="../set/ContainerWithSet.html#ivy.container.set.ContainerWithSet" title="ivy.container.set.ContainerWithSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithSet</span></code></a>, <a class="reference internal" href="../sorting/ContainerWithSorting.html#ivy.container.sorting.ContainerWithSorting" title="ivy.container.sorting.ContainerWithSorting"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithSorting</span></code></a>, <a class="reference internal" href="../statistical/ContainerWithStatistical.html#ivy.container.statistical.ContainerWithStatistical" title="ivy.container.statistical.ContainerWithStatistical"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithStatistical</span></code></a>, <a class="reference internal" href="../utility/ContainerWithUtility.html#ivy.container.utility.ContainerWithUtility" title="ivy.container.utility.ContainerWithUtility"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerWithUtility</span></code></a></p>
@@ -2391,14 +2359,13 @@ data type determined by <span class="xref std std-ref">type-promotion</span>.</p
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="data_classes/logos/supported/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="data_classes/logos/supported/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="data_classes/logos/supported/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="data_classes/logos/supported/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="data_classes/logos/supported/numpy_logo.png" /></a></p>
-</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../container.html" class="btn btn-neutral float-left" title="Container" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="MultiDevContainer.html" class="btn btn-neutral float-right" title="MultiDevContainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../container.html" class="btn btn-neutral float-left" title="Container" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="MultiDevContainer.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

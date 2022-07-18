@@ -13,6 +13,4 @@ Data classes
    :maxdepth: -1
    :caption: Data Classes
 
-   data_classes/array.rst
-   data_classes/container.rst
 

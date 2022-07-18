@@ -1,7 +1,7 @@
 Array
 =====
 
-.. automodule:: ivy.Array
+.. automodule:: ivy.array.array
     :members:
     :special-members: __init__
     :undoc-members:
@@ -10,11 +10,21 @@ Array
 
 .. toctree::
    :hidden:
+   :titlesonly:
+   :maxdepth: -1
+   :caption: Array
+
+   array/array/Array.rst
+   array/array/Variable.rst
+
+
+
+.. toctree::
+   :hidden:
    :maxdepth: -1
    :caption: Array
 
    array/activations.rst
-   array/array.rst
    array/conversions.rst
    array/creation.rst
    array/data_type.rst

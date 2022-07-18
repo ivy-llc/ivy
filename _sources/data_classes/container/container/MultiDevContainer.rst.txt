@@ -1,6 +1,3 @@
-MultiDevContainer
-=================
-
 .. autoclass:: ivy.container.container.MultiDevContainer
    :members:
    :special-members: __init__
