@@ -43,7 +43,15 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with the rectified linear activation unit function applied element-wise.
+            a container with the rectified linear activation unit function applied element-wise.      
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> y = ivy.Container.static_relu(x)
+        >>> print(y)
+        {
+            a: ivy.array([1., 0., 1.])
+        }
         
         """
         return ContainerBase.multi_map_in_static_method(
@@ -89,7 +97,15 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with the rectified linear activation unit function applied element-wise.
+            a container with the rectified linear activation unit function applied element-wise.   
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> y = x.relu()
+        >>> print(y)
+        {
+            a: ivy.array([1., 0., 1.])
+        }
         
         """
         return self.static_relu(
@@ -99,7 +115,7 @@ class ContainerWithActivations(ContainerBase):
     @staticmethod
     def static_leaky_relu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        alpha: Optional[ivy.Container] = None,
+        alpha: Optional[ivy.Container] = 0.2,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -134,6 +150,15 @@ class ContainerWithActivations(ContainerBase):
         -------
         ret
              a container with the leaky relu unit function applied element-wise.
+        Examples
+        --------
+        >>> x = ivy.Container(a =ivy.array([0.39, -0.85]))
+        >>> y = ivy.Container.static_leaky_relu(x)
+        >>> print(y)
+        {
+              a: ivy.array([0.39, -0.17])
+        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "leaky_relu",
@@ -148,7 +173,7 @@ class ContainerWithActivations(ContainerBase):
 
     def leaky_relu(
         self: ivy.Container,
-        alpha: Optional[ivy.Container] = None,
+        alpha: Optional[ivy.Container] = 0.2,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -182,7 +207,16 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-           a container with the leaky relu unit function applied element-wise.
+           a container with the leaky relu unit function applied element-wise.      
+        Examples
+        --------
+        >>> x = ivy.Container(a =ivy.array([0.39, -0.85]))
+        >>> y = x.leaky_relu()
+        >>> print(y)
+        {
+            a: ivy.array([0.39, -0.17])
+        }
+        
         """
         return self.static_leaky_relu(
             self, alpha, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -226,6 +260,15 @@ class ContainerWithActivations(ContainerBase):
         -------
         ret
             a container with the gelu unit function applied element-wise.
+        Examples
+        --------
+        >>> x = ivy.Container(a =ivy.array([0.3, -0.1]))
+        >>> y = ivy.Container.static_gelu(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.185, -0.046])
+        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "gelu",
@@ -275,6 +318,15 @@ class ContainerWithActivations(ContainerBase):
         -------
         ret
             a container with the gelu unit function applied element-wise.
+        Examples
+        --------
+        >>> x = ivy.Container(a =ivy.array([0.3, -0.1]))
+        >>> y = x.gelu()
+        >>> print(y)
+        {
+            a: ivy.array([0.185, -0.046])
+        }
+        
         """
         return self.static_gelu(
             self,
@@ -319,7 +371,16 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with Hyperbolic tangent activation function applied element-wise.
+            a container with Hyperbolic tangent activation function applied element-wise.    
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0.55 , -0.55]]))
+        >>> y = ivy.Container.static_tanh(x)
+        >>> print(y)
+        {
+            a: ivy.array([[0.501, -0.501]])
+        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "tanh",
@@ -364,7 +425,16 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-              a container with Hyperbolic tangent activation function applied element-wise.
+              a container with Hyperbolic tangent activation function applied element-wise.      
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0.55 , -0.55]]))
+        >>> y = x.tanh()
+        >>> print(y)
+        {
+            a: ivy.array([[0.501, -0.501]])
+        }
+        
         """
         return self.static_tanh(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -404,7 +474,16 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with the sigmoid unit function applied element-wise.
+            a container with the sigmoid unit function applied element-wise.    
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]))
+        >>> y = ivy.Container.static_sigmoid(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.269, 0.731, 0.881])
+        }
+      
         """
         return ContainerBase.multi_map_in_static_method(
             "sigmoid",
@@ -450,6 +529,15 @@ class ContainerWithActivations(ContainerBase):
         -------
         ret
             a container with the sigmoid unit function applied element-wise.
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]))
+        >>> y = x.sigmoid()
+        >>> print(y)
+        {
+            a: ivy.array([0.269, 0.731, 0.881])
+        }
+        
         """
         return self.static_sigmoid(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -492,7 +580,16 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with the softmax unit function applied element-wise.
+            a container with the softmax unit function applied element-wise.     
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> y = ivy.Container.static_softmax(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.422, 0.155, 0.422])
+        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "softmax",
@@ -542,7 +639,16 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with the softmax unit function applied element-wise.
+            a container with the softmax unit function applied element-wise.    
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> y = x.softmax()
+        >>> print(y)
+        {
+            a: ivy.array([0.422, 0.155, 0.422])
+        }
+        
         """
         return self.static_softmax(
             self, axis, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -582,7 +688,16 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with the softplus unit function applied element-wise.
+            a container with the softplus unit function applied element-wise.    
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
+        >>> y = ivy.Container.static_softplus(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.535, 0.42])
+        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "softplus",
@@ -627,7 +742,16 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with the softplus unit function applied element-wise.
+            a container with the softplus unit function applied element-wise.    
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
+        >>> y = x.softplus()
+        >>> print(y)
+        {
+            a: ivy.array([0.535, 0.42])
+        }
+        
         """
         return self.static_softplus(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
