@@ -193,7 +193,7 @@ def test_broadcast_arrays(
         kw["x{}".format(i)] = ivy.asarray(array)
     num_positional_args = len(kw)
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -305,7 +305,7 @@ def test_dtype_bits(
     fw,
 ):
     ret = helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -487,7 +487,7 @@ def test_is_float_dtype(
     fw,
 ):
     helpers.test_function(
-        input_dtypes=dtype_in,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -529,7 +529,7 @@ def test_is_int_dtype(
     fw,
 ):
     helpers.test_function(
-        input_dtypes=dtype_in,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
