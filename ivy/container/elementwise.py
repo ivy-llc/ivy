@@ -311,7 +311,6 @@ class ContainerWithElementwise(ContainerBase):
             :ref:`type-promotion`.
 
         """
-
         return self.static_acos(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -2349,7 +2348,6 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-
         """
         ivy.Container static method variant of ivy.floor. This method simply wraps the
         function, and so the docstring for ivy.floor also applies to this method
