@@ -4,6 +4,7 @@ from typing import Optional, Union, List, Dict, Tuple
 # local
 from ivy.container.base import ContainerBase
 import ivy
+
 # ToDo: implement all methods here as public instance methods
 
 
@@ -51,10 +52,42 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cholesky.
-        This method simply wraps the function, and so the docstring
-        for ivy.cholesky also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.cholesky. This method simply wraps
+        the function, and so the docstring for ivy.cholesky also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array or container having shape (..., M, M) and whose innermost two
+            dimensions form square symmetric positive-definite matrices. Should have a
+            floating-point data type.
+        upper
+            If True, the result must be the upper-triangular Cholesky factor U. If
+            False, the result must be the lower-triangular Cholesky factor L.
+            Default: False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the Cholesky factors for each square matrix. If upper
+            is False, the returned container must contain lower-triangular matrices;
+            otherwise, the returned container must contain upper-triangular matrices.
+            The returned container must have a floating-point data type determined by
+            Type Promotion Rules and must have the same shape as self.
 
         Examples
         --------
@@ -107,10 +140,42 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cholesky.
-        This method simply wraps the function, and so the docstring
-        for ivy.cholesky also applies to this method
+        ivy.Container instance method variant of ivy.cholesky. This method simply wraps
+        the function, and so the docstring for ivy.cholesky also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container having shape (..., M, M) and whose innermost two dimensions
+            form square symmetric positive-definite matrices. Should have a
+            floating-point data type.
+        upper
+            If True, the result must be the upper-triangular Cholesky factor U. If
+            False, the result must be the lower-triangular Cholesky factor L.
+            Default: False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the Cholesky factors for each square matrix. If upper
+            is False, the returned container must contain lower-triangular matrices;
+            otherwise, the returned container must contain upper-triangular matrices.
+            The returned container must have a floating-point data type determined by
+            Type Promotion Rules and must have the same shape as self.
 
         Examples
         --------

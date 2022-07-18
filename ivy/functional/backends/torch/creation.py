@@ -160,23 +160,34 @@ def eye(
 
 
 def from_dlpack(x):
+    x = x.detach() if x.requires_grad else x
     return torch.utils.dlpack.from_dlpack(x)
+
+
+def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
+    assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
+        ivy.is_float_dtype(dtype)
+        and isinstance(fill_value, float)
+        or (isinstance(fill_value, bool))
+    ), "the fill_value and data type are not same"
 
 
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]],
-    fill_value: Union[int, float],
+    fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
+    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     if isinstance(shape, int):
         shape = (shape,)
     return torch.full(
         shape,
         fill_value,
-        dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
+        dtype=dtype,
         device=device,
         out=out,
     )
@@ -186,9 +197,11 @@ def full_like(
     x: torch.Tensor,
     fill_value: Union[int, float],
     *,
-    dtype: torch.dtype,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
 ) -> torch.Tensor:
+    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     if device is None:
         device = dev(x)
     dtype = as_native_dtype(dtype)

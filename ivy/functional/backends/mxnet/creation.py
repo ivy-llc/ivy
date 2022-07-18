@@ -93,7 +93,7 @@ def from_dlpack(x):
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]], fill_value, dtype=None, device=None
 ):
-    shape = ivy.shape_to_tuple(shape)
+    shape = ivy.to_ivy_shape(shape)
     cont = _mxnet_init_context(default_device(device))
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(
