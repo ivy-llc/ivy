@@ -76,37 +76,36 @@ class ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-                ivy.Array instance method variant of ivy.cholesky. This method simply wraps the
-                function, and so the docstring for ivy.cholesky also applies to this method
-                with minimal changes.
+        ivy.Array instance method variant of ivy.cholesky. This method simply wraps the
+        function, and so the docstring for ivy.cholesky also applies to this method
+        with minimal changes.
 
-                Parameters
-                ----------
-                self
-                    first input array. Should have a numeric data type.
-                x2
-                    second input array. Must have the same shape as x1. Should have a numeric data type.
-                axis
-                    the axis (dimension) of x1 and x2 containing the vectors for which to compute (default: -1)
-                    the cross product.vIf set to -1, the function computes the cross product for vectors
-                    defined by the last axis (dimension). Default: -1.
-                out
-                    optional output array, for writing the result to. It must have a shape that the
-                    (default: None) inputs broadcast to.
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type.
+        x2
+            second input array. Must have the same shape as x1. Should have a numeric data type.
+            axis the axis (dimension) of x1 and x2 containing the vectors for which to compute (default: -1)
+            the cross product.vIf set to -1, the function computes the cross product for vectors
+            defined by the last axis (dimension). Default: -1.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            (default: None) inputs broadcast to.
 
-                Returns
-                -------
-                ret
-                    an array containing the cross products. The returned array must have a data type
-                    determined by Type Promotion Rules.
+        Returns
+        -------
+        ret
+            an array containing the cross products. The returned array must have a data type
+            determined by Type Promotion Rules.
 
-                Examples
-                --------
-                >>> x = ivy.array([1., 0., 0.])
-                >>> y = ivy.array([0., 1., 0.])
-                >>> z = ivy.cross(x, y)
-                ivy.array([0., 0., 1.])
-                """
+        Examples
+        --------
+        >>> x = ivy.array([1., 0., 0.])
+        >>> y = ivy.array([0., 1., 0.])
+        >>> z = ivy.cross(x, y)
+        ivy.array([0., 0., 1.])
+        """
         return ivy.cross(self._data, x2, axis, out=out)
 
     def det(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
