@@ -421,7 +421,7 @@ def test_iinfo(
     array=helpers.nph.arrays(
         dtype=dtype_shared,
         shape=helpers.lists(
-            st.integers(1, 5),
+            arg=st.integers(1, 5),
             min_size="num_dims",
             max_size="num_dims",
             size_bounds=[1, 5],
