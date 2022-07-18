@@ -1142,6 +1142,19 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str]):
     default_int_dtype_stack.append(int_dtype)
 
 
+def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str]):
+    """Summary.
+
+    Parameters
+    ----------
+    uint_dtype
+
+    """
+    uint_dtype = ivy.UintDtype(ivy.as_ivy_dtype(uint_dtype))
+    global default_uint_dtype_stack
+    default_uint_dtype_stack.append(uint_dtype)
+
+
 def type_promote_arrays(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1187,6 +1200,13 @@ def unset_default_int_dtype():
     global default_int_dtype_stack
     if default_int_dtype_stack:
         default_int_dtype_stack.pop(-1)
+
+
+def unset_default_uint_dtype():
+    """"""
+    global default_uint_dtype_stack
+    if default_uint_dtype_stack:
+        default_uint_dtype_stack.pop(-1)
 
 
 def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
