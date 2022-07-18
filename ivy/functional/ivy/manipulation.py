@@ -189,7 +189,7 @@ def expand_dims(
     }
 
     """
-    return current_backend(x).expand_dims(x, axis, out=out)
+    return current_backend(x).expand_dims(x, axis)
 
 
 @to_native_arrays_and_back
