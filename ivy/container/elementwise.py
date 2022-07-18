@@ -607,34 +607,90 @@ class ContainerWithElementwise(ContainerBase):
             out=out,
         )
 
-    def bitwise_or(
-        self: ivy.Container,
-        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_nests: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
+    @staticmethod
+    def static_bitwise_or(
+            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        kw = {}
-        conts = {"x1": self}
-        if ivy.is_array(x2):
-            kw["x2"] = x2
-        else:
-            conts["x2"] = x2
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs, _: ivy.bitwise_or(**dict(zip(conts.keys(), xs)), **kw)
-                if ivy.is_array(xs[0])
-                else xs,
-                list(conts.values()),
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_nests=map_nests,
-            ),
+        """
+        ivy.Container static method variant of ivy.bitwise_or. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_or also applies
+        to this method with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> y = ivy.array([1, 2, 3])
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]))
+        >>> z = ivy.Container.static_bitwise_or(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 7]),
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                            b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                            b=ivy.array([5, 6, 7]))
+        >>> z = ivy.Container.static_bitwise_or(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 7]),
+            b: ivy.array([7, 7, 7])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "bitwise_or",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
+        )
+
+    def bitwise_or(
+            self: ivy.Container,
+            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.bitwise_or. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_or also applies to
+        this method with minimal changes.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                                b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
+                                b=ivy.array([5, 6, 7]))
+        >>> z = x.bitwise_or(y)
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 7]),
+            b: ivy.array([7, 7, 7])
+        }
+        """
+        return self.static_bitwise_or(
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     def bitwise_right_shift(
