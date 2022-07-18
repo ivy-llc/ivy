@@ -137,25 +137,14 @@
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
 
-<div class="viewcode-block" id="softplus"><a class="viewcode-back" href="../../../functional/ivy/activations/softplus/softplus_array.html#ivy.array.array_methods.softplus">[docs]</a><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="softplus"><a class="viewcode-back" href="../../../functional/ivy/activations/softplus/softplus_array.html#ivy.array.array_methods.softplus">[docs]</a><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.softplus. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.softplus also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the softplus activation of each element in ``self``.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -226,26 +215,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.asarray. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.asarray also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input data, in any form that can be converted to an array. This includes</span>
-<span class="sd">        lists, lists of tuples, tuples, tuples of tuples, tuples of lists and</span>
-<span class="sd">        ndarrays.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        datatype, optional. Datatype is inferred from the input data.</span>
-<span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. Default: None.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        An array interpretation of ``self``.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -262,29 +231,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.full_like. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.full_like also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array from which to derive the output array shape.</span>
-<span class="sd">    fill_value</span>
-<span class="sd">        Scalar fill value</span>
-<span class="sd">    dtype</span>
-<span class="sd">        output array data type. If ``dtype`` is `None`, the output array data type</span>
-<span class="sd">        must be inferred from ``self``. Default: ``None``.</span>
-<span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. If ``device`` is ``None``, the</span>
-<span class="sd">        output array device must be inferred from ``self``. Default: ``None``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array having the same shape as ``self`` and where every element is equal</span>
-<span class="sd">        to ``fill_value``.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -300,26 +246,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.ones_like. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.ones_like also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array from which to derive the output array shape.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type</span>
-<span class="sd">        must be inferred from ``self``. Default  ``None``.</span>
-<span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. If device is ``None``, the</span>
-<span class="sd">        output array device must be inferred from ``self``. Default: ``None``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array having the same shape as ``self`` and filled with ones.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -335,26 +261,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.zeros_like. This method simply wraps</span>
 <span class="sd">    the function, and so the docstring for ivy.zeros_like also applies to this</span>
 <span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array from which to derive the output array shape.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type</span>
-<span class="sd">        must be inferred from ``self``. Default: ``None``.</span>
-<span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. If ``device`` is ``None``, the</span>
-<span class="sd">        output array device must be inferred from ``self``. Default: ``None``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array having the same shape as ``self`` and filled with ``zeros``.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -364,28 +270,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.tril. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.tril also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array having shape (..., M, N) and whose innermost two dimensions form</span>
-<span class="sd">        MxN matrices.</span>
-<span class="sd">    k</span>
-<span class="sd">        diagonal above which to zero elements. If k = 0, the diagonal is the main</span>
-<span class="sd">        diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the</span>
-<span class="sd">        diagonal is above the main diagonal. Default: 0.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the lower triangular part(s). The returned array must</span>
-<span class="sd">        have the same shape and data type as ``self``. All elements above the</span>
-<span class="sd">        specified diagonal k must be zeroed. The returned array should be allocated</span>
-<span class="sd">        on the same device as ``self``.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -395,28 +279,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.triu. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.triu also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array having shape (..., M, N) and whose innermost two dimensions form</span>
-<span class="sd">        MxN matrices.    *,</span>
-<span class="sd">    k</span>
-<span class="sd">        diagonal below which to zero elements. If k = 0, the diagonal is the main</span>
-<span class="sd">        diagonal. If k &lt; 0, the diagonal is below the main diagonal. If k &gt; 0, the</span>
-<span class="sd">        diagonal is above the main diagonal. Default: 0.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the upper triangular part(s). The returned array must</span>
-<span class="sd">        have the same shape and data type as ``self``. All elements below the</span>
-<span class="sd">        specified diagonal k must be zeroed. The returned array should be allocated</span>
-<span class="sd">        on the same device as ``self``.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -432,27 +294,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.empty_like. This method simply wraps</span>
 <span class="sd">    the function, and so the docstring for ivy.empty_like also applies to this</span>
 <span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array from which to derive the output array shape.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        output array data type. If dtype is None, the output array data type must be</span>
-<span class="sd">        inferred from ``self``. Default  None.</span>
-<span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. If device is None, the output</span>
-<span class="sd">        array device must be inferred from ``self``. Default: None.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array having the same shape as ``self`` and containing uninitialized</span>
-<span class="sd">        data.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -467,27 +308,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.meshgrid. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.meshgrid also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        one-dimensional input array.</span>
-<span class="sd">    arrays</span>
-<span class="sd">        an arbitrary number of one-dimensional arrays representing grid coordinates.</span>
-<span class="sd">        Each array should have the same numeric data type.</span>
-<span class="sd">    indexing</span>
-<span class="sd">        Cartesian ``&#39;xy&#39;`` or matrix ``&#39;ij&#39;`` indexing of output. If provided zero</span>
-<span class="sd">        or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,</span>
-<span class="sd">        respectively), the ``indexing`` keyword has no effect and should be ignored.</span>
-<span class="sd">        Default: ``&#39;xy&#39;``.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        list of N arrays, where ``N`` is the number of provided one-dimensional</span>
-<span class="sd">        input arrays. Each returned array must have rank ``N``. For ``N``</span>
-<span class="sd">        one-dimensional arrays having lengths ``Ni = len(xi)``.</span>
-<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">list_arrays</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span></div>
 
@@ -499,20 +319,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.from_dlpack. This method simply wraps</span>
 <span class="sd">    the function, and so the docstring for ivy.from_dlpack also applies to this</span>
 <span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the data in ``self``.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -527,21 +333,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.native_array. This method simply wraps</span>
 <span class="sd">    the function, and so the docstring for ivy.native_array also applies to this</span>
 <span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        datatype, optional. Datatype is inferred from the input data.</span>
-<span class="sd">    device</span>
-<span class="sd">        device on which to place the created array. Default: None.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        A native array interpretation of ``self``.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
 
@@ -576,19 +367,6 @@
 <span class="sd">    `ivy.Array` instance method variant of `ivy.can_cast`. This method simply wraps</span>
 <span class="sd">    the function, and so the docstring for `ivy.can_cast` also applies to this</span>
 <span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array from which to cast.</span>
-<span class="sd">    to</span>
-<span class="sd">        desired data type.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        ``True`` if the cast can occur according to :ref:`type-promotion` rules;</span>
-<span class="sd">        otherwise, ``False``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -641,20 +419,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.abs. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.abs also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the absolute value of each element in ``self``. The</span>
-<span class="sd">        returned array must have the same data type as ``self``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -724,22 +488,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.asinh. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.asinh also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array whose elements each represent the area of a hyperbolic sector.</span>
-<span class="sd">        Should have a floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the inverse hyperbolic sine of each element in ``self``.</span>
-<span class="sd">        The returned array must have a floating-point data type determined by</span>
-<span class="sd">        :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -827,20 +575,6 @@
 <span class="sd">    function, and so the docstring for ivy.ceil also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the rounded result for each element in ``self``. The</span>
-<span class="sd">        returned array must have the same data type as ``self``.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([5.5, -2.5, 1.5, -0])</span>
@@ -856,22 +590,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.cos. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.cos also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array whose elements are each expressed in radians. Should have a</span>
-<span class="sd">        floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the cosine of each element in ``self``. The returned</span>
-<span class="sd">        array must have a floating-point data type determined by</span>
-<span class="sd">        :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -926,20 +644,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.floor. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.floor also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the rounded result for each element in ``self``. The</span>
-<span class="sd">        returned array must have the same data type as ``self``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1118,20 +822,6 @@
 <span class="sd">    function, and so the docstring for ivy.sign also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the evaluated result for each element in ``self``. The</span>
-<span class="sd">        returned array must have the same data type as ``self``.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
@@ -1161,22 +851,6 @@
 <span class="sd">    function, and so the docstring for ivy.sin also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array whose elements are each expressed in radians. Should have a</span>
-<span class="sd">        floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the sine of each element in ``self``. The returned</span>
-<span class="sd">        array must have a floating-point data type determined by</span>
-<span class="sd">        :ref:`type-promotion`.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2., 3.])</span>
@@ -1192,22 +866,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.sinh. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.sinh also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array whose elements each represent a hyperbolic angle. Should have a</span>
-<span class="sd">        floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the hyperbolic sine of each element in ``self``. The</span>
-<span class="sd">        returned array must have a floating-point data type determined by</span>
-<span class="sd">        :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1279,22 +937,6 @@
 <span class="sd">    function, and so the docstring for ivy.tanh also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array whose elements each represent a hyperbolic angle. Should have a</span>
-<span class="sd">        real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the hyperbolic tangent of each element in ``self``. The</span>
-<span class="sd">        returned array must have a real-valued floating-point data type determined</span>
-<span class="sd">        by :ref:`type-promotion`.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
@@ -1326,25 +968,9 @@
 
 <div class="viewcode-block" id="all_equal"><a class="viewcode-back" href="../../../functional/ivy/general/all_equal/all_equal_array.html#ivy.array.array_methods.all_equal">[docs]</a><span class="k">def</span> <span class="nf">all_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">equality_matrix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.all_equal. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.all_equal also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array</span>
-<span class="sd">    x2</span>
-<span class="sd">        input iterable to compare to ``self``</span>
-<span class="sd">    equality_matrix</span>
-<span class="sd">        Whether to return a matrix of equalities comparing each input with every</span>
-<span class="sd">        other. Default is False.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Boolean, whether or not the inputs are equal, or matrix array of booleans if</span>
-<span class="sd">        equality_matrix=True is set.</span>
+<span class="sd">    ivy.Container instance method variant of ivy.all_equal.</span>
+<span class="sd">    This method simply wraps the function, and so the docstring for</span>
+<span class="sd">    ivy.all_equal also applies to this method with minimal changes.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1379,24 +1005,6 @@
 <span class="sd">    function, and so the docstring for ivy.gather_nd also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        The array from which to gather values.</span>
-<span class="sd">    indices</span>
-<span class="sd">        Index array.</span>
-<span class="sd">    device</span>
-<span class="sd">        device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as</span>
-<span class="sd">        ``x`` if None.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        New array of given shape, with the values gathered at the indices.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
@@ -1409,19 +1017,9 @@
 
 <div class="viewcode-block" id="to_numpy"><a class="viewcode-back" href="../../../functional/ivy/general/to_numpy/to_numpy_array.html#ivy.array.array_methods.to_numpy">[docs]</a><span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.to_numpy. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.to_numpy also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        a numpy array copying all the element of the array ``self``.</span>
+<span class="sd">    ivy.Container instance method variant of ivy.to_numpy.</span>
+<span class="sd">    This method simply wraps the function, and so the docstring for</span>
+<span class="sd">    ivy.to_numpy also applies to this method with minimal changes.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1454,24 +1052,9 @@
 
 <div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../functional/ivy/gradients/is_variable/is_variable_array.html#ivy.array.array_methods.is_variable">[docs]</a><span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.is_variable. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.is_variable also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        An ivy array.</span>
-<span class="sd">    exclusive</span>
-<span class="sd">        Whether to check if the data type is exclusively a variable, rather than an</span>
-<span class="sd">        array. For frameworks like JAX that do not have exclusive variable types,</span>
-<span class="sd">        the function will always return False if this flag is set, otherwise the</span>
-<span class="sd">        check is the same for general arrays. Default is False.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Boolean, true if ``self`` is a trainable variable, false otherwise.</span>
+<span class="sd">    ivy.Array instance method variant of ivy.is_variable.</span>
+<span class="sd">    This method simply wraps the function, and so the docstring</span>
+<span class="sd">    for ivy.is_variable also applies to this method with minimal changes.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1497,29 +1080,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.adam_step. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.adam_step also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    mw</span>
-<span class="sd">        running average of the gradients.</span>
-<span class="sd">    vw</span>
-<span class="sd">        running average of second moments of the gradients.</span>
-<span class="sd">    step</span>
-<span class="sd">        training step.</span>
-<span class="sd">    beta1</span>
-<span class="sd">        gradient forgetting factor (Default value = 0.9).</span>
-<span class="sd">    beta2</span>
-<span class="sd">        second moment of gradient forgetting factor (Default value = 0.999).</span>
-<span class="sd">    epsilon</span>
-<span class="sd">        divisor during adam update, preventing division by zero</span>
-<span class="sd">        (Default value = 1e-7).</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The adam step delta.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1560,33 +1120,9 @@
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.depthwise_conv2d. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.depthwise_conv2d also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Input image *[batch_size,h,w,d]*.</span>
-<span class="sd">    filters</span>
-<span class="sd">        Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from self)</span>
-<span class="sd">    strides</span>
-<span class="sd">        The stride of the sliding window for each dimension of input.</span>
-<span class="sd">    padding</span>
-<span class="sd">        &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the</span>
-<span class="sd">        per-dimension paddings.</span>
-<span class="sd">    data_format</span>
-<span class="sd">        &quot;NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
-<span class="sd">    dilations</span>
-<span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The result of the convolution operation.</span>
+<span class="sd">    ivy.Array instance method variant of ivy.depthwise_conv2d. This method</span>
+<span class="sd">    simply wraps the function, and so the docstring for ivy.depthwise_conv2d</span>
+<span class="sd">    also applies to this method with minimal changes.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1629,29 +1165,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.cholesky. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.cholesky also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array having shape (..., M, M) and whose innermost two dimensions form</span>
-<span class="sd">        square symmetric positive-definite matrices. Should have a floating-point</span>
-<span class="sd">        data type.</span>
-<span class="sd">    upper</span>
-<span class="sd">        If True, the result must be the upper-triangular Cholesky factor U. If</span>
-<span class="sd">        False, the result must be the lower-triangular Cholesky factor L.</span>
-<span class="sd">        Default: False.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the Cholesky factors for each square matrix. If upper is</span>
-<span class="sd">        False, the returned array must contain lower-triangular matrices; otherwise,</span>
-<span class="sd">        the returned array must contain upper-triangular matrices. The returned</span>
-<span class="sd">        array must have a floating-point data type determined by Type Promotion</span>
-<span class="sd">        Rules and must have the same shape as self.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>

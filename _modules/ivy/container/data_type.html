@@ -294,29 +294,6 @@
 <span class="sd">        wraps the function, and so the docstring for `ivy.can_cast` also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        from_</span>
-<span class="sd">            input container from which to cast.</span>
-<span class="sd">        to</span>
-<span class="sd">            desired data type.</span>
-<span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
-<span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
-<span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            ``True`` if the cast can occur according to :ref:`type-promotion` rules;</span>
-<span class="sd">            otherwise, ``False``.</span>
-
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
@@ -352,29 +329,6 @@
 <span class="sd">        `ivy.Container` instance method variant of `ivy.can_cast`. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for `ivy.can_cast` also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            input container from which to cast.</span>
-<span class="sd">        to</span>
-<span class="sd">            desired data type.</span>
-<span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
-<span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
-<span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            ``True`` if the cast can occur according to :ref:`type-promotion` rules;</span>
-<span class="sd">            otherwise, ``False``.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
