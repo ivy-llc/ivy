@@ -936,6 +936,59 @@ def bitwise_or(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = ivy.bitwise_or(x, y)
+    >>> print(z)
+    ivy.array([5, 7, 7])
+
+    >>> x = ivy.array([[[1], [2], [3], [4]]])
+    >>> y = ivy.array([[[4], [5], [6], [7]]])
+    >>> ivy.bitwise_or(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[5],
+                [7],
+                [7],
+                [7]]])
+
+    >>> x = ivy.array([[[1], [2], [3], [4]]])
+    >>> y = ivy.array([4, 5, 6, 7])
+    >>> z = ivy.bitwise_or(x, y)
+    >>> print(z)
+    ivy.array([[[5, 5, 7, 7],
+                [6, 7, 6, 7],
+                [7, 7, 7, 7],
+                [4, 5, 6, 7]]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                            b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                            b=ivy.array([5, 6, 7]))
+    >>> z = ivy.bitwise_or(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([5, 7, 7]),
+        b: ivy.array([7, 7, 7])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                            b=ivy.array([5, 6, 7]))
+    >>> z = ivy.bitwise_or(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([5,7,7]),
+        b: ivy.array([5,6,7])
+    }
+
+
     """
     return current_backend(x1, x2).bitwise_or(x1, x2, out=out)
 
