@@ -6,8 +6,6 @@ from typing import Optional, Union, List, Dict
 import ivy
 from ivy.container.base import ContainerBase
 
-# ToDo: implement all methods here as public instance methods
-
 
 # noinspection PyMissingConstructor
 class ContainerWithElementwise(ContainerBase):
@@ -551,7 +549,7 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the inverse sine of each element in ``x``.
+            a container containing the inverse sine of each element in ``self``.
             The returned container must have a floating-point data type determined by
             :ref:`type-promotion`.
 
@@ -2147,6 +2145,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.equal. This method simply wraps the
+        function, and so the docstring for ivy.equal also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            input array or container. May have any data type.
+        x2
+            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            May have any data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type of ``bool``.
+        """
         return self.static_equal(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -2350,6 +2380,37 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
+        """
+        ivy.Container static method variant of ivy.floor. This method simply wraps the
+        function, and so the docstring for ivy.floor also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the rounded result for each element in ``x``. The
+            returned array must have the same data type as ``x``.
+
+        """
+
         return ContainerBase.multi_map_in_static_method(
             "floor",
             x,
@@ -2374,6 +2435,30 @@ class ContainerWithElementwise(ContainerBase):
         function, and so the docstring for ivy.floor also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x
+            input container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the rounded result for each element in ``self``. The
+            returned array must have the same data type as ``self``.
+         
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
@@ -2385,15 +2470,8 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([5., -4., 5.])
         }
         """
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.floor(x_) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out=out,
+        return self.static_floor(
+            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
@@ -2461,6 +2539,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.floor_divide. This method simply wraps the
+        function, and so the docstring for ivy.floor_divide also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            dividend input array or container. Should have a real-valued data type.
+        x2
+            divisor input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container must have a data
+            type determined by :ref:`type-promotion`.
+        """
         return self.static_floor_divide(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -2476,7 +2586,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.greater. This method simply wraps the
+        function, and so the docstring for ivy.greater also applies to this method
+        with minimal changes.
 
+        Parameters
+        ----------
+        x1
+            input array or container. Should have a real-valued data type.
+        x2
+            divisor input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned array must
+            have a data type of ``bool``.
+        """
         return ContainerBase.multi_map_in_static_method(
             "greater",
             x1,
@@ -2498,6 +2639,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.greater. This method simply wraps the
+        function, and so the docstring for ivy.greater also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a real-valued data type.
+        x2
+            divisor input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned array must
+            have a data type of ``bool``.
+        """
         return self.static_greater(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -2567,6 +2740,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.greater_equal. This method simply wraps the
+        function, and so the docstring for ivy.greater_equal also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a real-valued data type.
+        x2
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type of ``bool``.
+        """
         return self.static_greater_equal(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -2918,6 +3123,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.less. This method simply wraps the
+        function, and so the docstring for ivy.less also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a real-valued data type.
+        x2
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type of ``bool``.
+        """
         return self.static_less(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -2987,6 +3224,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.less_equal. This method simply wraps the
+        function, and so the docstring for ivy.less_equal also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a real-valued data type.
+        x2
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type of ``bool``.
+        """
         return self.static_less_equal(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -3240,7 +3509,7 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.log2. This method simply wraps the
+        ivy.Container instance method variant of ivy.log2. This method simply wraps the
         function, and so the docstring for ivy.log2 also applies to this method
         with minimal changes.
 
@@ -3432,6 +3701,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.greater_equal. This method simply wraps the
+        function, and so the docstring for ivy.greater_equal also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a real-valued data type.
+        x2
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+        """
         return self.static_logaddexp(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -3447,7 +3748,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.logical_and. This method simply wraps the
+        function, and so the docstring for ivy.logical_and also applies to this method
+        with minimal changes.
 
+        Parameters
+        ----------
+        x1
+            input array or container. Should have a boolean data type.
+        x2
+            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            Should have a boolean data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type of ``bool``.
+        """
         return ContainerBase.multi_map_in_static_method(
             "logical_and",
             x1,
@@ -3470,16 +3802,16 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.logical_and. This method simply wraps the
+        ivy.Container instance method variant of ivy.logical_and. This method simply wraps the
         function, and so the docstring for ivy.logical_and also applies to this method
         with minimal changes.
 
         Parameters
         ----------
-        x1
+        self
             input array or container. Should have a boolean data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3664,6 +3996,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.logical_or. This method simply wraps the
+        function, and so the docstring for ivy.logical_or also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a boolean data type.
+        x2
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a boolean data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type of ``bool``.
+        """
         return self.static_logical_or(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -3733,6 +4097,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.logical_xor. This method simply wraps the
+        function, and so the docstring for ivy.logical_xor also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a boolean data type.
+        x2
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a boolean data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type of ``bool``.
+        """
         return self.static_logical_xor(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -3801,6 +4197,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.multiply. This method simply wraps the
+        function, and so the docstring for ivy.multiply also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a real-valued data type.
+        x2
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type determined by :ref:`type-promotion`.
+        """
         return self.static_multiply(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -3964,6 +4392,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.not_equal. This method simply wraps the
+        function, and so the docstring for ivy.not_equal also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. May have any data type.
+        x2
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            May have any data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type of ``bool``.
+        """
         return self.static_not_equal(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -4123,28 +4583,44 @@ class ContainerWithElementwise(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_nests: bool = False,
+        map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        kw = {}
-        conts = {"x1": self}
-        if ivy.is_array(x2):
-            kw["x2"] = x2
-        else:
-            conts["x2"] = x2
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs, _: ivy.pow(**dict(zip(conts.keys(), xs)), **kw)
-                if ivy.is_array(xs[0])
-                else xs,
-                list(conts.values()),
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_nests=map_nests,
-            ),
-            out=out,
+        """
+        ivy.Container instance method variant of ivy.pow. This method simply wraps the
+        function, and so the docstring for ivy.pow also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a real-valued data type.
+        x2
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type determined by :ref:`type-promotion`.
+        """
+        return self.static_pow(
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
     @staticmethod
@@ -4212,6 +4688,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.remainder. This method simply wraps the
+        function, and so the docstring for ivy.remainder also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a real-valued data type.
+        x2
+            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have must have the same sign as the respective element ``x2_i``.
+        """
         return self.static_remainder(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
@@ -4929,6 +5437,38 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.subtract. This method simply wraps the
+        function, and so the docstring for ivy.subtract also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array or container. Should have a numeric data type.
+        x2
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned container must have a
+            data type determined by :ref:`type-promotion`.
+        """
         return self.static_subtract(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
