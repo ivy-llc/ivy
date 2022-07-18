@@ -735,6 +735,40 @@ def test_set_unset_default_device(arr):
         assert ivy.array(arr).dev().startswith("gpu")
 
 
+@given(facs=st.lists(st.floats(0, 1), min_size=2, max_size=2).map(tuple))
+def test_split_factor(facs):
+    (fac1, fac2) = facs
+    has_gpu = ivy.gpu_is_available()
+    default_device = ivy.default_device()
+
+    # If not configured then default is 0
+    assert ivy.split_factor() == 0
+
+    # Setting the split factor should change the value
+    ivy.set_split_factor(fac1)
+    assert ivy.split_factor() == fac1
+
+    # Setting the split factor with without a device sets the default device
+    assert ivy.split_factor(default_device) == fac1
+
+    # Unsetting the split factor for tests
+    ivy.set_split_factor(0)
+
+    # Additional test if gpu is available
+    if has_gpu:
+        other_device = ivy.Device("gpu:0" if default_device == "cpu" else "cpu")
+
+        # The other device defaults to 0 too
+        assert ivy.split_factor(other_device) == 0
+
+        # Setting the split factor
+        ivy.set_split_factor(fac2, other_device)
+        assert ivy.split_factor(other_device) == fac2
+
+        # unsetting the split factor for tests
+        ivy.set_split_factor(0, other_device)
+
+
 # Still to Add #
 # ---------------#
 
@@ -745,8 +779,6 @@ def test_set_unset_default_device(arr):
 # dev_util # working fine for cpu
 # tpu_is_available
 # _assert_dev_correct_formatting
-# split_factor
-# set_split_factor
 # Class MultiDev
 # class MultiDevItem
 # class MultiDevIter
