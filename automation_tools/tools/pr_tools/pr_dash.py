@@ -3,8 +3,16 @@ import sys
 import json
 import datetime
 import subprocess
-from sys import argv
+from sys import argv, platform
 from prettytable import PrettyTable
+
+
+def set_platform():
+    if 'linux' in platform:
+        return True
+    elif 'win' in platform:
+        return False
+    return False
 
 
 def set_path():
@@ -67,9 +75,9 @@ def command(cmd, save_output=True):
     set_path()
     try:
         if save_output:
-            return json.loads(subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0])
+            return json.loads(subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=set_platform()).communicate()[0])
         else:
-            subprocess.run(cmd, shell=True)
+            subprocess.run(cmd, shell=set_platform())
     except json.decoder.JSONDecodeError as e:
         print(e)
         exit()
