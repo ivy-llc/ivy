@@ -1150,6 +1150,15 @@ def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str]):
     uint_dtype
         The uint dtype to be set as default.
 
+    Examples
+    --------
+    >>> ivy.set_default_uint_dtype(ivy.UintDtype("uint8"))
+    >>> ivy.default_uint_dtype()
+    'uint8'
+
+    >>> ivy.set_default_uint_dtype(ivy.UintDtype("uint64"))
+    >>> ivy.default_uint_dtype()
+    'uint64'
     """
     uint_dtype = ivy.UintDtype(ivy.as_ivy_dtype(uint_dtype))
     global default_uint_dtype_stack
