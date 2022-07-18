@@ -45,7 +45,8 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with the rectified linear activation unit function applied element-wise.     
+            a container with the rectified linear activation unit function 
+            applied element-wise.     
             
         Examples
         --------
@@ -102,7 +103,8 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with the rectified linear activation unit function applied element-wise.   
+            a container with the rectified linear activation unit function 
+            applied element-wise.   
             
         Examples
         --------
@@ -391,7 +393,8 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with Hyperbolic tangent activation function applied element-wise.    
+            a container with Hyperbolic tangent activation function 
+            applied element-wise.    
             
         Examples
         --------
@@ -448,7 +451,8 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-              a container with Hyperbolic tangent activation function applied element-wise.
+              a container with Hyperbolic tangent activation function 
+              applied element-wise.
               
         Examples
         --------
