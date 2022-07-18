@@ -2,6 +2,7 @@ Ivy Frontends
 =============
 
 .. _`jax.lax.add`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html
+.. _`jax.lax`: https://jax.readthedocs.io/en/latest/jax.lax.html
 
 Introduction
 ------------
@@ -32,7 +33,25 @@ Examples
 
     add.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
-In the original Jax library, :code:`add` is under `jax.lax.add`_
+In the original Jax library, :code:`add` is under `jax.lax.add`_. Thus, an
+identical module of :code:`lax` is created and the function is placed there. It
+is then categorised under operators as shown in the `jax.lax`_ package directory.
+This is to ensure that :code:`jax.lax.add` is available directly without further
+major changes when using :code:`ivy`. It is valid by simply importing
+:code:`ivy.functional.frontends.jax`.
+
+For the function arguments, it has to be identical to the original function in
+Jax to ensure identical behaviour. In this case, `jax.lax.add`_ has two arguments,
+where we will also have the same two arguments in our Jax frontend :code:`add`.
+Then, this function will return :code:`ivy.add`, which links to the :code:`add`
+function according to the framework set in the backend.
+
+You may have noticed that the function has an additional attribute
+:code:`unsupported_dtypes`. This is because users are allowed to set a backend
+operating framework which is not Jax. There may be certain :code:`dtype` which
+the backend cannot support, for instance, PyTorch does not support
+:code:`float16` and :code:`bfloat16` in their :code:`add` function. These are then
+specified with the help of this attribute.
 
 **NumPy**
 
