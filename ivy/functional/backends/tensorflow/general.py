@@ -95,7 +95,10 @@ def inplace_update(
     return x
 
 
-inplace_arrays_supported = lambda: False
+def inplace_arrays_supported():
+    return False
+    
+    
 inplace_variables_supported = lambda: True
 
 
@@ -342,7 +345,7 @@ def shape(
     if as_array:
         return tf.shape(x)
     else:
-        return x.shape
+        return tuple(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):

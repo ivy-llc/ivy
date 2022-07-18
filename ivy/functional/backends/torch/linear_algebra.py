@@ -51,7 +51,7 @@ def diagonal(
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
@@ -101,7 +101,7 @@ def matrix_rank(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
-    return torch.linalg.matrix_rank(x, rtol, out=out)
+    return torch.linalg.matrix_rank(x, rtol=rtol, out=out)
 
 
 def matrix_transpose(x: torch.Tensor) -> torch.Tensor:
