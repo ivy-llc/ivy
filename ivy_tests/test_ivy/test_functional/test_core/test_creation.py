@@ -15,7 +15,7 @@ import hypothesis.extra.numpy as hnp
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
+        num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -57,7 +57,7 @@ def test_native_array(
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
+        num_arrays=1,
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
@@ -100,7 +100,7 @@ def test_linspace(
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
+        num_arrays=1,
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
@@ -185,7 +185,7 @@ def test_arange(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
+        num_arrays=1,
         min_num_dims=0,
         max_num_dims=5,
         min_dim_size=1,
@@ -268,7 +268,7 @@ def test_empty(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
+        num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -351,7 +351,7 @@ def test_eye(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
+        num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -458,7 +458,7 @@ def _dtype_and_values(draw):
     return draw(
         helpers.dtype_and_values(
             ivy_np.valid_numeric_dtypes,
-            n_arrays=1,
+            num_arrays=1,
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=1,
@@ -597,7 +597,7 @@ def test_ones(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
+        num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -640,7 +640,7 @@ def test_ones_like(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
+        num_arrays=1,
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -684,7 +684,7 @@ def test_tril(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
+        num_arrays=1,
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -765,7 +765,7 @@ def test_zeros(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
-        n_arrays=1,
+        num_arrays=1,
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
