@@ -21,7 +21,12 @@ def argmin(
     return np.argmin(x, axis=axis, keepdims=keepdims, out=out)
 
 
-def nonzero(x: np.ndarray) -> Tuple[np.ndarray]:
+def nonzero(
+    x: np.ndarray,
+    *,
+    dtype: np.dtype,
+    device: str,
+) -> Tuple[np.ndarray]:
     return np.nonzero(x)
 
 
