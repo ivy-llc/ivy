@@ -1341,10 +1341,6 @@ def dtype_value1_value2_axis(
     return dtype, value1, value2, axis
 
 
-
-
-
-
 # taken from
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
