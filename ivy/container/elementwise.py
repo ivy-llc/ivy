@@ -261,7 +261,6 @@ class ContainerWithElementwise(ContainerBase):
             :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "acos",
             x,
@@ -503,7 +502,6 @@ class ContainerWithElementwise(ContainerBase):
             :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "asin",
             x,
@@ -814,7 +812,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of the quotient ``x1/x2``. The returned
             array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "atan2",
             x1,
@@ -915,7 +912,6 @@ class ContainerWithElementwise(ContainerBase):
             :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "atanh",
             x,
@@ -1014,7 +1010,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container must have a data
             type determined by :ref:`type-promotion`.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "bitwise_and",
             x1,
@@ -1115,7 +1110,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container must have a data
             type determined by :ref:`type-promotion`.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "bitwise_left_shift",
             x1,
@@ -1211,7 +1205,6 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned array must have the same data type as ``x``.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "bitwise_invert",
             x,
@@ -1511,7 +1504,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container must have a data
             type determined by :ref:`type-promotion`.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "bitwise_right_shift",
             x1,
@@ -1612,7 +1604,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container must have a data
             type determined by :ref:`type-promotion`.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "bitwise_xor",
             x1,
@@ -1709,7 +1700,6 @@ class ContainerWithElementwise(ContainerBase):
             an container containing the rounded result for each element in ``x``. The
             returned array must have the same data type as ``x``.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "ceil",
             x,
@@ -1814,7 +1804,6 @@ class ContainerWithElementwise(ContainerBase):
             array must have a floating-point data type determined by
             :ref:`type-promotion`.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "cos",
             x,
@@ -1910,7 +1899,6 @@ class ContainerWithElementwise(ContainerBase):
             returned container must have a floating-point data type determined by
             :ref:`type-promotion`.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "cosh",
             x,
@@ -2108,7 +2096,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "equal",
             x1,
@@ -2206,7 +2193,6 @@ class ContainerWithElementwise(ContainerBase):
             real-valued floating-point data type determined by :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "exp",
             x,
@@ -2300,7 +2286,6 @@ class ContainerWithElementwise(ContainerBase):
             real-valued floating-point data type determined by :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "expm1",
             x,
@@ -2395,7 +2380,6 @@ class ContainerWithElementwise(ContainerBase):
             returned array must have the same data type as ``x``.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "floor",
             x,
@@ -2502,7 +2486,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container must have a data
             type determined by :ref:`type-promotion`.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "floor_divide",
             x1,
@@ -2703,7 +2686,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "greater_equal",
             x1,
@@ -2801,7 +2783,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned array must have a data type of ``bool``.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "isfinite",
             x,
@@ -2895,7 +2876,6 @@ class ContainerWithElementwise(ContainerBase):
             otherwise. The returned array must have a data type of ``bool``.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "isinf",
             x,
@@ -2989,7 +2969,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned array should have a data type of ``bool``.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "isnan",
             x,
@@ -3086,7 +3065,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "less",
             x1,
@@ -3187,7 +3165,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "less_equal",
             x1,
@@ -3285,7 +3262,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "log",
             x,
@@ -3379,7 +3355,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "log1p",
             x,
@@ -3473,7 +3448,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "log2",
             x,
@@ -3567,7 +3541,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "log10",
             x,
@@ -3664,7 +3637,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a real-valued floating-point data type determined by :ref:`type-promotion`.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "logaddexp",
             x1,
@@ -3862,7 +3834,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have a data type of ``bool``.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "logical_not",
             x,
@@ -3959,7 +3930,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "logical_or",
             x1,
@@ -4060,7 +4030,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "logical_xor",
             x1,
@@ -4258,7 +4227,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have the same data type as ``x``.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "negative",
             x,
@@ -4355,7 +4323,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "not_equal",
             x1,
@@ -4453,7 +4420,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have the same data type as ``x``.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "positive",
             x,
@@ -4550,7 +4516,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "pow",
             x1,
@@ -4651,7 +4616,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have must have the same sign as the respective element ``x2_i``.
         """
-
         return ContainerBase.multi_map_in_static_method(
             "remainder",
             x1,
@@ -4749,7 +4713,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have the same data type as ``x``.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "round",
             x,
@@ -5210,7 +5173,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have a real-valued floating-point data type determined by :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "square",
             x,
@@ -5304,7 +5266,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have a real-valued floating-point data type determined by :ref:`type-promotion`.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "sqrt",
             x,
@@ -5727,7 +5688,6 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have the same data type as ``x``.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "trunc",
             x,
@@ -5820,7 +5780,6 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the Gauss error of ``x``.
 
         """
-
         return ContainerBase.multi_map_in_static_method(
             "erf",
             x,
