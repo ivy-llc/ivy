@@ -355,20 +355,19 @@ class DefaultIntDtype:
         return self
 
 
-# class DefaultUintDtype:
-#     """"""
-#
-#     # noinspection PyShadowingNames
-#     def __init__(self, float_dtype: ivy.Dtype):
-#         self._float_dtype = float_dtype
-#
-#     def __enter__(self):
-#         set_default_uint_dtype(self._float_dtype)
-#         return self
-#
-#     def __exit__(self, exc_type, exc_val, exc_tb):
-#         unset_default_uint_dtype()
-#         return self
+class DefaultUintDtype:
+    """"""
+
+    def __init__(self, uint_dtype: ivy.UintDtype):
+        self._uint_dtype = uint_dtype
+
+    def __enter__(self):
+        set_default_uint_dtype(self._uint_dtype)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        unset_default_uint_dtype()
+        return self
 
 
 def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
