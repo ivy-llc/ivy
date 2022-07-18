@@ -206,8 +206,8 @@ def set_nest_at_indices(
 
     With :code:`Dict` input:
 
-    >>> x = {'a': [1., 2., 3.], 'b': [4., 5., 6.], 'c': [0.]}
-    >>> y = (('a', 1), ('b', 2), ('c', 0))
+    >>> nest = {'a': [1., 2., 3.], 'b': [4., 5., 6.], 'c': [0.]}
+    >>> indices = (('a', 1), ('b', 2), ('c', 0))
     >>> values = (11., 22., 33.)
     >>> ivy.set_nest_at_indices(nest, indices, values)
     >>> print(nest)
