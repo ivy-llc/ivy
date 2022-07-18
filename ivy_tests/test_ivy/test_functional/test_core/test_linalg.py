@@ -950,7 +950,7 @@ def test_matrix_rank(
         min_value=0,
         max_value=1000,
         shape=st.integers(2, 5).map(lambda x: tuple([x, x]))
-    ).filter(lambda dtype_x: np.linalg.matrix_rank(np.asarray(dtype_x[1])) == len(dtype_x[1])),
+    ).filter(lambda dtype_x: np.linalg.det(np.asarray(dtype_x[1])) > 0),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),
@@ -970,8 +970,7 @@ def test_cholesky(
 ):
     dtype, x = dtype_x
     x = np.asarray(x, dtype=dtype)
-    x = x + (np.identity(x.shape[0]) * 1e-3)
-    x = np.matmul(x, x.T)  # make symmetric positive-definite
+    x = np.matmul(x, x.T) + np.identity(x.shape[0]) * 1e-3  # make symmetric positive-definite
 
     helpers.test_function(
         dtype,
