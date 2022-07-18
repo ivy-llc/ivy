@@ -2325,6 +2325,25 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the evaluated result for each element in ``self``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5]),\
+                              b=ivy.array([5.4, -3.2]))
+        >>> y = x.expm1()
+        >>> print(y)
+        {
+            a: ivy.array([11.2, 0.649]),
+            b: ivy.array([220., -0.959])
+        }
+
+        >>> y = ivy.Container(a=ivy.array([0., 0.]))
+        >>> x = ivy.Container(a=ivy.array([4., -2.]))
+        >>> _ = x.expm1(out=y)
+        >>> print(y)
+        {
+            a: ivy.array([53.6, -0.865])
+        }
 
         """
         return self.static_expm1(
