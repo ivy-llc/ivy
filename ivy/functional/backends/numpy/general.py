@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import List, Optional, Union
+from typing import Optional, Union, Sequence
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -120,8 +120,8 @@ def cumprod(
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = np.cumprod(x, -1, out=out)
+        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        res = np.cumprod(x, -1)
         return np.swapaxes(res, axis, -1)
     return np.cumprod(x, axis, out=out)
 
@@ -163,11 +163,17 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
+def scatter_nd(
+    indices,
+    updates,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor=None,
+    reduction="sum",
+):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -259,7 +265,7 @@ def one_hot(indices, depth, *, device):
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(x: np.ndarray, as_array: bool = False) -> Union[np.ndarray, List[int]]:
+def shape(x: np.ndarray, as_array: bool = False) -> Union[tuple, np.ndarray]:
     if as_array:
         return np.asarray(np.shape(x))
     else:

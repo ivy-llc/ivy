@@ -845,7 +845,7 @@ def test_floor(
 # for special cases
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        ivy_np.valid_numeric_dtypes, n_arrays=2, allow_inf=False
+        ivy_np.valid_numeric_dtypes, num_arrays=2, allow_inf=False
     ),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
@@ -1655,7 +1655,7 @@ def test_pow(
 # remainder
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        ivy_np.valid_numeric_dtypes, n_arrays=2, allow_inf=False
+        ivy_np.valid_numeric_dtypes, num_arrays=2, allow_inf=False
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -2085,12 +2085,12 @@ def test_erf(
 
 # minimum
 @given(
-    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
-    as_variable=st.booleans(),
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, num_arrays=2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
 )
 def test_minimum(
@@ -2101,8 +2101,6 @@ def test_minimum(
     native_array,
     container,
     instance_method,
-    device,
-    call,
     fw,
 ):
     # smoke test
@@ -2126,19 +2124,19 @@ def test_minimum(
         instance_method,
         fw,
         "minimum",
-        x1=np.asarray(x, dtype=input_dtype[0]),
-        x2=ivy.array(y, dtype=input_dtype[1]),
+        x1=np.array(x, dtype=input_dtype[0]),
+        x2=np.array(y, dtype=input_dtype[1]),
     )
 
 
 # maximum
 @given(
-    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, n_arrays=2),
-    as_variable=st.booleans(),
+    xy=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, num_arrays=2),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
 )
 def test_maximum(
@@ -2149,8 +2147,6 @@ def test_maximum(
     native_array,
     container,
     instance_method,
-    device,
-    call,
     fw,
 ):
     # smoke test
@@ -2174,6 +2170,6 @@ def test_maximum(
         instance_method,
         fw,
         "maximum",
-        x1=np.asarray(x, dtype=input_dtype[0]),
-        x2=ivy.array(y, dtype=input_dtype[1]),
+        x1=np.array(x, dtype=input_dtype[0]),
+        x2=np.array(y, dtype=input_dtype[1]),
     )
