@@ -678,6 +678,21 @@ def default_uint_dtype(
         Return the input uint dtype if provided, otherwise return the global default
         uint dtype.
 
+    Examples
+    --------
+    >>> ivy.set_default_uint_dtype(ivy.UintDtype("uint16"))
+    >>> ivy.default_uint_dtype()
+    'uint16'
+
+    >>> ivy.default_uint_dtype(4294967346)
+    'uint64'
+
+    >>> ivy.default_uint_dtype(uint_dtype=ivy.UintDtype("uint8"))
+    'uint8'
+
+    >>> x = ivy.array([9,8], dtype="uint32")
+    >>> ivy.default_uint_dtype(x)
+    'uint32'
     """
     if ivy.exists(uint_dtype):
         if as_native is True:
