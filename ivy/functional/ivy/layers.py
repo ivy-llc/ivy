@@ -1101,3 +1101,76 @@ def lstm_update(
         hts_list.append(ivy.expand_dims(ht, -2))
 
     return ivy.concat(hts_list, -2), ct
+
+# Logistic #
+
+
+@handle_nestable
+def logistic(
+    x: Union[ivy.Array, ivy.NativeArray],
+    weight: Union[ivy.Array, ivy.NativeArray],
+    bias: Union[ivy.Array, ivy.NativeArray] = None,
+    activation: str = "sigmoid",
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
+    The operation also supports batching of the weight matrices. This is useful if a
+    batch of different network parameters are to be represented.
+    Parameters
+    ----------
+    x
+        The input x compute linear transformation on.
+        *[outer_batch_shape,inner_batch_shape,in_features]*
+    weight
+        The weight matrix. *[outer_batch_shape,out_features,in_features]*
+    bias
+        The bias vector, default is None. *[outer_batch_shape,out_features]*
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+    Returns
+    -------
+    ret
+        Result array of the linear transformation.
+        *[outer_batch_shape,inner_batch_shape,out_features]*
+    """
+    outer_batch_shape = list(weight.shape[:-2])
+    num_outer_batch_dims = len(outer_batch_shape)
+    inner_batch_shape = list(x.shape[num_outer_batch_dims:-1])
+    num_inner_batch_dims = len(inner_batch_shape)
+    num_out_feats, num_in_feats = list(weight.shape[-2:])
+
+    # OBS x IBS x OF
+    if activation=="sigmoid":
+        y = ivy.sigmoid(ivy.matmul(
+            x,
+            ivy.swapaxes(
+                ivy.reshape(
+                    weight,
+                    outer_batch_shape
+                    + [1] * max(num_inner_batch_dims - 1, 0)
+                    + [num_out_feats, num_in_feats],
+                ),
+                -1,
+                -2,
+            ),
+        ))
+        
+    if activation=="tanh":
+        y = ivy.tanh(ivy.matmul(
+            x,
+            ivy.swapaxes(
+                ivy.reshape(
+                    weight,
+                    outer_batch_shape
+                    + [1] * max(num_inner_batch_dims - 1, 0)
+                    + [num_out_feats, num_in_feats],
+                ),
+                -1,
+                -2,
+            ),
+        ))    
+    
+ 
+    return y
