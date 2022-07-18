@@ -106,7 +106,7 @@ def set_nest_at_index(nest, index, value):
     if len(index) == 1:
         nest[index[0]] = value
     else:
-        set_nest_at_index(nest[index[0]], index[1:], value)
+        ivy.set_nest_at_index(nest[index[0]], index[1:], value)
 
 
 def insert_into_nest_at_index(nest, index, value):
