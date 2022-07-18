@@ -1,10 +1,10 @@
+#global
+from typing import Optional, Union
+
+#local
 from ivy.container.base import ContainerBase
 import ivy
 from typing import Optional, List, Union, Dict
-
-
-# local
-from typing import Optional, Union
 
 # ToDo: implement all methods here as public instance methods
 

@@ -1,4 +1,5 @@
 # global
+import abc
 from typing import Optional, Union
 
 # local
@@ -18,12 +19,12 @@ class ArrayWithSorting(abc.ABC):
         return ivy.argsort(self._data, axis, descending, stable, out=out)
         
     def sort(
-            self,
-            axis: int = -1,
-            descending: bool = False,
-            stable: bool = True,
-            *,
-            out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        self:ivy.Array,
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sort. This method simply wraps the
