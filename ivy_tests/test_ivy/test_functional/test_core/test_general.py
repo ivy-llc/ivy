@@ -1180,31 +1180,71 @@ def test_einops_reduce(x_n_pattern_n_red_n_newx, dtype, tensor_fn, device, call)
 
 
 # einops_repeat
-@pytest.mark.parametrize(
-    "x_n_pattern_n_al_n_newx",
-    [
-        (
-            [[0.0, 1.0, 2.0, 3.0]],
-            "b n -> b n c",
-            {"c": 2},
-            [[[0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [3.0, 3.0]]],
-        )
-    ],
+# @pytest.mark.parametrize(
+#     "x_n_pattern_n_al_n_newx",
+#     [
+#         (
+#             [[0.0, 1.0, 2.0, 3.0]],
+#             "b n -> b n c",
+#             {"c": 2},
+#             [[[0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [3.0, 3.0]]],
+#         )
+#     ],
+# )
+# @pytest.mark.parametrize("dtype", ["float32"])
+# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+@given(
+    x=helpers.dtype_and_values(
+        ivy_np.valid_numeric_dtypes,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ), 
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+    pattern=st.sampled_from(["b n -> b n c"]),
+    axes_lengths=st.integers(min_value=1, max_value=5),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="einops_repeat"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_einops_repeat(x_n_pattern_n_al_n_newx, dtype, tensor_fn, device, call):
+def test_einops_repeat(x, pattern, axes_lengths, tensor_fn, with_out, as_variable, num_positional_args, native_array, container, instance_method, fw, device):
     # smoke test
-    x, pattern, axes_lengths, new_x = x_n_pattern_n_al_n_newx
-    x = tensor_fn(x, dtype=dtype, device=device)
-    ret = ivy.einops_repeat(x, pattern, **axes_lengths)
-    true_ret = einops.repeat(ivy.to_native(x), pattern, **axes_lengths)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert list(ret.shape) == list(true_ret.shape)
-    # value test
-    assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(true_ret))
+    dtype, x = x
+    x = [x]
+    with_out = True
+    container = True
+    instance_method = True
+    # r = ivy.einops_repeat(ivy.array(x, dtype=dtype, device=device), pattern, c=3)
+    # o = r
+    # r = ivy.einops_repeat(ivy.array(x, dtype=dtype, device=device), pattern, c=3, out=o)
+    # d = 0
+    # x = tensor_fn(x, dtype="float32", device=device)
+    helpers.test_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "einops_repeat",
+        x=np.asarray(x, dtype=dtype),
+        pattern=pattern,
+        c=3
+    )
+    # ret = ivy.einops_repeat(x, pattern, **axes_lengths)
+    # true_ret = einops.repeat(ivy.to_native(x), pattern, **axes_lengths)
+    # # type test
+    # assert ivy.is_ivy_array(ret)
+    # # cardinality test
+    # assert list(ret.shape) == list(true_ret.shape)
+    # # value test
+    # assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(true_ret))
 
 
 # container types
@@ -1237,7 +1277,7 @@ def test_inplace_variables_supported(device, call):
         raise Exception("Unrecognized framework")
 
 
-@given(
+@ given(
     x_val_and_dtypes=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
         allow_inf=False,
@@ -1266,7 +1306,8 @@ def test_inplace_update(
         assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(val))
         return
 
-@given(
+
+@ given(
     x_val_and_dtypes=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
         allow_inf=False,
@@ -1297,7 +1338,7 @@ def test_inplace_decrement(
         return
 
 
-@given(
+@ given(
     x_val_and_dtypes=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
         allow_inf=False,

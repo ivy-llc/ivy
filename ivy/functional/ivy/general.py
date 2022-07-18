@@ -1015,6 +1015,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     """
     return current_backend(x).to_list(x)
 
+
 @handle_nestable
 @outputs_to_ivy_arrays
 def clip_vector_norm(
@@ -1634,7 +1635,7 @@ def einops_reduce(
     return ret
 
 
-@to_native_arrays_and_back
+# @inputs_to_native_arrays
 @handle_nestable
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1663,8 +1664,12 @@ def einops_repeat(
         New array with einops.repeat having been applied.
 
     """
+    x = ivy.to_native(x)
     ret = einops.repeat(x, pattern, **axes_lengths)
+    ret = ivy.array(ret)
+
     if ivy.exists(out):
+        # out = ivy.to_ivy(out)
         return ivy.inplace_update(out, ret)
     return ret
 
