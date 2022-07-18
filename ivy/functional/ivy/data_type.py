@@ -304,6 +304,7 @@ def result_type(
 default_dtype_stack = list()
 default_float_dtype_stack = list()
 default_int_dtype_stack = list()
+default_uint_dtype_stack = list()
 
 
 class DefaultDtype:
@@ -654,6 +655,73 @@ def default_int_dtype(
     if as_native:
         return ivy.as_native_dtype(ret)
     return ivy.IntDtype(ivy.as_ivy_dtype(ret))
+
+
+def default_uint_dtype(
+    input=None,
+    uint_dtype: Optional[Union[ivy.UintDtype, ivy.NativeDtype]] = None,
+    as_native: Optional[bool] = None,
+) -> Union[ivy.UintDtype, ivy.NativeDtype]:
+    """Summary.
+
+    Parameters
+    ----------
+    input
+         (Default value = None)
+    uint_dtype
+
+    as_native
+         (Default value = None)
+
+    Returns
+    -------
+        Return the input uint dtype if provided, otherwise return the global default
+        uint dtype.
+
+    """
+    if ivy.exists(uint_dtype):
+        if as_native is True:
+            return ivy.as_native_dtype(uint_dtype)
+        return ivy.UintDtype(ivy.as_ivy_dtype(uint_dtype))
+    as_native = ivy.default(as_native, False)
+    if ivy.exists(input):
+        if ivy.is_array(input):
+            ret = ivy.dtype(input)
+        elif isinstance(input, np.ndarray):
+            ret = input.dtype
+        elif isinstance(input, (list, tuple, dict)):
+            if ivy.nested_indices_where(
+                input, lambda x: x > 4294967295 and x != ivy.inf
+            ):
+                ret = ivy.uint64
+            else:
+                def_dtype = ivy.default_dtype()
+                if ivy.is_uint_dtype(def_dtype):
+                    ret = def_dtype
+                else:
+                    ret = ivy.uint32
+        elif isinstance(input, Number):
+            if input > 4294967295 and input != ivy.inf and ivy.backend != "torch":
+                ret = ivy.uint64
+            else:
+                def_dtype = ivy.default_dtype()
+                if ivy.is_uint_dtype(def_dtype):
+                    ret = def_dtype
+                else:
+                    ret = ivy.uint32
+    else:
+        global default_uint_dtype_stack
+        if default_uint_dtype_stack:
+            ret = default_uint_dtype_stack[-1]
+        else:
+            def_dtype = ivy.default_dtype()
+            if ivy.is_uint_dtype(def_dtype):
+                ret = def_dtype
+            else:
+                ret = "uint32"
+    if as_native:
+        return ivy.as_native_dtype(ret)
+    return ivy.UintDtype(ivy.as_ivy_dtype(ret))
 
 
 def dtype(
