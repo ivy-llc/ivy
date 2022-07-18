@@ -161,9 +161,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the inverse hyperbolic cosine of each element in ``x``.
-            The returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            a container containing the inverse hyperbolic cosine of each element
+            in ``x``. The returned container must have a floating-point data
+            type determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -186,9 +186,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.acosh. This method simply wraps the
-        function, and so the docstring for ivy.acosh also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.acosh.
+        This method simply wraps the function, and so the docstring for
+        ivy.acosh also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -213,8 +213,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the inverse hyperbolic cosine of each element in
-            ``self``. The returned container must have a floating-point data type determined
-            by :ref:`type-promotion`.
+            ``self``. The returned container must have a floating-point data
+            type determined by :ref:`type-promotion`.
         """
         return self.static_acosh(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -231,9 +231,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.acos. This method simply wraps the
-        function, and so the docstring for ivy.acos also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.acos.
+        This method simply wraps the function, and so the docstring for
+        ivy.acos also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -257,8 +257,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the inverse cosine of each element in ``x``.
-            The returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            The returned container must have a floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -281,9 +281,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.acos. This method simply wraps the
-        function, and so the docstring for ivy.acos also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.acos.
+        This method simply wraps the function, and so the docstring for
+        ivy.acos also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -307,8 +307,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the inverse cosine of each element in ``self``.
-            The returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            The returned container must have a floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return self.static_acos(
@@ -327,9 +327,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.add. This method simply wraps the
-        function, and so the docstring for ivy.add also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.add. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.add also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -355,8 +355,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise sums. The returned container must have a
-            data type determined by :ref:`type-promotion`.
+            a container containing the element-wise sums. 
+            The returned container must have a data type determined 
+            by :ref:`type-promotion`.
 
         Examples
         --------
@@ -411,9 +412,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.add. This method simply wraps the
-        function, and so the docstring for ivy.add also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.add. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.add also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -439,8 +440,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise sums. The returned container must have a
-            data type determined by :ref:`type-promotion`.
+            a container containing the element-wise sums. 
+            The returned container must have a data type determined 
+            by :ref:`type-promotion`.
 
         Examples
         --------
@@ -471,9 +473,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.asin. This method simply wraps the
-        function, and so the docstring for ivy.asin also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.asin.
+        This method simply wraps the function, and so the docstring for
+        ivy.asin also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -497,8 +499,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the inverse sine of each element in ``x``.
-            The returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            The returned container must have a floating-point data
+            type determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -521,9 +523,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.asin. This method simply wraps the
-        function, and so the docstring for ivy.asin also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.asin.
+        This method simply wraps the function, and so the docstring for
+        ivy.asin also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -547,8 +549,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the inverse sine of each element in ``self``.
-            The returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            The returned container must have a floating-point
+            data type determined by :ref:`type-promotion`.
 
         """
         return self.static_asin(
@@ -566,9 +568,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.asinh. This method simply wraps the
-        function, and so the docstring for ivy.asinh also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.asinh. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.asinh also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -592,9 +594,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the inverse hyperbolic sine of each element in ``x``.
-            The returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            a container containing the inverse hyperbolic sine of each element 
+            in ``x``. The returned container must have a floating-point data 
+            type determined by :ref:`type-promotion`.
 
         Examples
         --------
@@ -627,9 +629,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.asinh. This method simply wraps the
-        function, and so the docstring for ivy.asinh also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.asinh. 
+        This method simply wraps the function, and so the docstring 
+        for ivy.asinh also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -654,8 +656,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the inverse hyperbolic sine of each element in
-            ``self``. The returned container must have a floating-point data type determined
-            by :ref:`type-promotion`.
+            ``self``. The returned container must have a floating-point 
+            data type determined by :ref:`type-promotion`.
 
         Examples
         --------
@@ -709,8 +711,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the inverse tangent of each element in ``x``.
-            The returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            The returned container must have a floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -733,9 +735,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.atan. This method simply wraps the
-        function, and so the docstring for ivy.atan also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.atan.
+        This method simply wraps the function, and so the docstring for
+        ivy.atan also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -759,8 +761,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the inverse tangent of each element in ``x``.
-            The returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            The returned container must have a floating-point data
+            type determined by :ref:`type-promotion`.
 
         """
         return self.static_atan(
@@ -779,9 +781,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.atan2. This method simply wraps the
-        function, and so the docstring for ivy.atan2 also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.atan2.
+        This method simply wraps the function, and so the docstring for
+        ivy.atan2 also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -789,8 +791,10 @@ class ContainerWithElementwise(ContainerBase):
             first input array or container corresponding to the y-coordinates.
             Should have a real-valued floating-point data type.
         x2
-            second input array or container corresponding to the x-coordinates. Must be compatible with ``x1``
-            (see :ref:`broadcasting`). Should have a real-valued floating-point data type.
+            second input array or container corresponding to the x-coordinates.
+            Must be compatible with ``x1``
+            (see :ref:`broadcasting`). Should have a real-valued
+            floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -808,8 +812,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the inverse tangent of the quotient ``x1/x2``. The returned
-            array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            a container containing the inverse tangent of the quotient ``x1/x2``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "atan2",
@@ -833,9 +838,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.atan2. This method simply wraps the
-        function, and so the docstring for ivy.atan2 also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.atan2.
+        This method simply wraps the function, and so the docstring for ivy.atan2
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -843,8 +848,9 @@ class ContainerWithElementwise(ContainerBase):
             first input array or container corresponding to the y-coordinates.
             Should have a real-valued floating-point data type.
         x2
-            second input array or container corresponding to the x-coordinates. Must be compatible with ``self``
-            (see :ref:`broadcasting`). Should have a real-valued floating-point data type.
+            second input array or container corresponding to the x-coordinates.
+            Must be compatible with ``self`` (see :ref:`broadcasting`).
+            Should have a real-valued floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -862,8 +868,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the inverse tangent of the quotient ``self/x2``. The returned
-            array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            a container containing the inverse tangent of the quotient ``self/x2``.
+            The returned array must have a real-valued floating-point data
+            type determined by :ref:`type-promotion`.
         """
         return self.static_atan2(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -880,9 +887,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.atanh. This method simply wraps the
-        function, and so the docstring for ivy.atanh also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.atanh.
+        This method simply wraps the function, and so the docstring for
+        ivy.atanh also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -906,9 +913,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the inverse hyperbolic tangent of each element in ``x``.
-            The returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            a container containing the inverse hyperbolic tangent of each
+            element in ``x``. The returned container must have a floating-point data
+            type determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -931,15 +938,15 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.atanh. This method simply wraps the
-        function, and so the docstring for ivy.atanh also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.atanh.
+        This method simply wraps the function, and so the docstring for
+        ivy.atanh also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            input container whose elements each represent the area of a hyperbolic
-            sector. Should have a floating-point data type.
+            input container whose elements each represent the area of a
+            hyperbolic sector. Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -957,9 +964,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the inverse hyperbolic tangent of each element in ``self``.
-            The returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            a container containing the inverse hyperbolic tangent of each element
+            in ``self``. The returned container must have a floating-point
+            data type determined by :ref:`type-promotion`.
 
         """
         return self.static_atanh(
@@ -978,16 +985,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.bitwise_and. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_and also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.bitwise_and.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_and also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
-            first input array or container. Should have an integer or boolean data type.
+            first input array or container. Should have an integer or boolean
+            data type.
         x2
-            second input array or container Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            second input array or container Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1006,8 +1015,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "bitwise_and",
@@ -1031,16 +1041,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.bitwise_and. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_and also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.bitwise_and.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_and also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            first input array or container. Should have an integer or boolean data type.
+            first input array or container. Should have an integer or boolean
+            data type.
         x2
-            second input array or container Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array or container Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1059,8 +1071,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined by :ref:`type-promotion`.
         """
         return self.static_bitwise_and(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -1078,16 +1090,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.bitwise_left_shift. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_left_shift also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.bitwise_left_shift.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_left_shift also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
-            first input array or container. Should have an integer or boolean data type.
+            first input array or container. Should have an integer or boolean
+            data type.
         x2
-            second input array or container Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            second input array or container Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1106,8 +1120,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined by
+            :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "bitwise_left_shift",
@@ -1131,16 +1146,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.bitwise_left_shift. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_left_shift also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.bitwise_left_shift.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_left_shift also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            first input array or container. Should have an integer or boolean data type.
+            first input array or container. Should have an integer or boolean
+            data type.
         x2
-            second input array or container Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array or container Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1159,8 +1176,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results. The returned container
+            must have a data type determined by :ref:`type-promotion`.
         """
         return self.static_bitwise_left_shift(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -1177,9 +1194,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.bitwise_invert. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_invert also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.bitwise_invert.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_invert also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1202,7 +1219,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned array must have the same data type as ``x``.
+            a container containing the element-wise results.
+            The returned array must have the same data type as ``x``.
         """
         return ContainerBase.multi_map_in_static_method(
             "bitwise_invert",
@@ -1224,9 +1242,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.bitwise_invert. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_invert also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.bitwise_invert.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_invert also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1249,7 +1267,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned array must have the same data type as ``self``.
+            a container containing the element-wise results.
+            The returned array must have the same data type as ``self``.
         """
         return self.static_bitwise_invert(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -1266,15 +1285,15 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cos. This method simply wraps the
-        function, and so the docstring for ivy.cos also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.cos.
+        This method simply wraps the function, and so the docstring for
+        ivy.cos also applies to this method with minimal changes.
 
         Parameters
         ----------
         x
-            input container whose elements are each expressed in radians. Should have a
-            floating-point data type.
+            input container whose elements are each expressed in radians.
+            Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1328,15 +1347,15 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cos. This method simply wraps the
-        function, and so the docstring for ivy.cos also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.cos.
+        This method simply wraps the function, and so the docstring for
+        ivy.cos also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            input container whose elements are each expressed in radians. Should have a
-            floating-point data type.
+            input container whose elements are each expressed in radians.
+            Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1354,9 +1373,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the cosine of each element in ``self``. The returned
-            container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            a container containing the cosine of each element in ``self``.
+            The returned container must have a floating-point data type
+            determined by :ref:`type-promotion`.
 
         Examples
         --------
@@ -1389,6 +1408,30 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container static method variant of ivy.bitwise_or. This method simply
         wraps the function, and so the docstring for ivy.bitwise_or also applies
         to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. Should have an integer or boolean data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results.
+            The returned array must have the same data type as ``x``.
 
         Examples
         --------
@@ -1441,6 +1484,30 @@ class ContainerWithElementwise(ContainerBase):
         wraps the function, and so the docstring for ivy.bitwise_or also applies to
         this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input container. Should have an integer or boolean data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results.
+            The returned array must have the same data type as ``self``.
+
         Examples
         --------
         Using :code:`ivy.Container` instance method:
@@ -1472,16 +1539,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.bitwise_right_shift. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_right_shift also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.bitwise_right_shift.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_right_shift also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             first input array or container. Should have an integer or boolean data type.
         x2
-            second input array or container Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            second input array or container Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1500,8 +1568,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "bitwise_right_shift",
@@ -1572,16 +1641,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.bitwise_xor. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_xor also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.bitwise_xor.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_xor also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
-            first input array or container. Should have an integer or boolean data type.
+            first input array or container. Should have an integer or boolean
+            data type.
         x2
-            second input array or container Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            second input array or container Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1600,8 +1671,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined by :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "bitwise_xor",
@@ -1625,16 +1696,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.bitwise_xor. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_xor also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.bitwise_xor.
+        This method simply wraps the function, and so the docstring for ivy.bitwise_xor
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            first input array or container. Should have an integer or boolean data type.
+            first input array or container. Should have an integer or
+            boolean data type.
         x2
-            second input array or container Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array or container Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1653,8 +1726,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined by :ref:`type-promotion`.
         """
         return self.static_bitwise_xor(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -1671,9 +1744,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.ceil. This method simply wraps the
-        function, and so the docstring for ivy.ceil also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.ceil.
+        This method simply wraps the function, and so the docstring for ivy.ceil
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1696,8 +1769,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an container containing the rounded result for each element in ``x``. The
-            returned array must have the same data type as ``x``.
+            an container containing the rounded result for each element in ``x``.
+            The returned array must have the same data type as ``x``.
         """
         return ContainerBase.multi_map_in_static_method(
             "ceil",
@@ -1719,9 +1792,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.ceil. This method simply wraps the
-        function, and so the docstring for ivy.ceil also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.ceil. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.ceil also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1744,8 +1817,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an container containing the rounded result for each element in ``self``. The
-            returned container must have the same data type as ``self``.
+            an container containing the rounded result for each element in ``self``.
+            The returned container must have the same data type as ``self``.
 
         Examples
         --------
@@ -1763,101 +1836,6 @@ class ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_cos(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.cos. This method simply wraps the
-        function, and so the docstring for ivy.cos also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        x
-            input container whose elements are each expressed in radians. Should have a
-            floating-point data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            an container containing the cosine of each element in ``x``. The returned
-            array must have a floating-point data type determined by
-            :ref:`type-promotion`.
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "cos",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def cos(
-        self: ivy.Container,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.cos. This method simply wraps the
-        function, and so the docstring for ivy.cos also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input container whose elements are each expressed in radians. Should have a
-            floating-point data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            an container containing the cosine of each element in ``self``. The returned
-            array must have a floating-point data type determined by
-            :ref:`type-promotion`.
-        """
-        return self.static_cos(
-            self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
-        )
-
-    @staticmethod
     def static_cosh(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1868,9 +1846,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.cosh. This method simply wraps the
-        function, and so the docstring for ivy.cosh also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.cosh.
+        This method simply wraps the function, and so the docstring for
+        ivy.cosh also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1894,9 +1872,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an container containing the hyperbolic cosine of each element in ``x``. The
-            returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            an container containing the hyperbolic cosine of each element in ``x``.
+            The returned container must have a floating-point data type determined
+            by :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "cosh",
@@ -1918,8 +1896,8 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cosh. This method simply wraps the
-        function, and so the docstring for ivy.cosh also applies to this method
+        ivy.Container instance method variant of ivy.cosh. This method simply wraps
+        the function, and so the docstring for ivy.cosh also applies to this method
         with minimal changes.
 
         Parameters
@@ -1944,8 +1922,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an container containing the hyperbolic cosine of each element in ``self``. The
-            returned container must have a floating-point data type determined by
+            an container containing the hyperbolic cosine of each element in ``self``.
+            The returned container must have a floating-point data type determined by
             :ref:`type-promotion`.
         """
         return self.static_cosh(
@@ -1964,8 +1942,8 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.divide. This method simply wraps the
-        function, and so the docstring for ivy.divide also applies to this method
+        ivy.Container static method variant of ivy.divide. This method simply wraps
+        the function, and so the docstring for ivy.divide also applies to this method
         with minimal changes.
 
         Parameters
@@ -1973,7 +1951,8 @@ class ContainerWithElementwise(ContainerBase):
         x1
             dividend input array or container. Should have a real-valued data type.
         x2
-            divisor input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            divisor input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1992,8 +1971,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "divide",
@@ -2017,16 +1997,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.divide. This method simply wraps the
-        function, and so the docstring for ivy.divide also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.divide.
+        This method simply wraps the function, and so the docstring for
+        ivy.divide also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            dividend input array or container. Should have a real-valued data type.
+            dividend input array or container. Should have a real-valued
+            data type.
         x2
-            divisor input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            divisor input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -2045,8 +2027,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined by :ref:`type-promotion`.
         """
         return self.static_divide(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -2064,16 +2046,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.equal. This method simply wraps the
-        function, and so the docstring for ivy.equal also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. May have any data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             May have any data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -2117,16 +2100,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.equal. This method simply wraps the
-        function, and so the docstring for ivy.equal also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. May have any data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             May have any data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -2163,9 +2147,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.exp. This method simply wraps the
-        function, and so the docstring for ivy.exp also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.exp. This method simply
+        wraps the function, and so the docstring for ivy.exp also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -2188,8 +2172,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated result for each element in ``x``. The returned array must have a
-            real-valued floating-point data type determined by :ref:`type-promotion`.
+            a container containing the evaluated result for each element in ``x``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -2212,9 +2197,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.exp. This method simply wraps the
-        function, and so the docstring for ivy.exp also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.exp.
+        This method simply wraps the function, and so the docstring
+        for ivy.exp also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2237,8 +2222,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated result for each element in ``self``. The returned array must have a
-            real-valued floating-point data type determined by :ref:`type-promotion`.
+            a container containing the evaluated result for each element in ``self``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return self.static_exp(
@@ -2256,9 +2242,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.expm1. This method simply wraps the
-        function, and so the docstring for ivy.expm1 also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.expm1.
+        This method simply wraps thefunction, and so the docstring
+        for ivy.expm1 also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2281,8 +2267,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated result for each element in ``x``. The returned array must have a
-            real-valued floating-point data type determined by :ref:`type-promotion`.
+            a container containing the evaluated result for each element in ``x``.
+            The returned array must have areal-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -2305,9 +2292,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.expm1. This method simply wraps the
-        function, and so the docstring for ivy.expm1 also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.expm1.
+        This method simply wraps the function, and so the docstring
+        for ivy.expm1 also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2330,8 +2317,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated result for each element in ``self``. The returned array must have a
-            real-valued floating-point data type determined by :ref:`type-promotion`.
+            a container containing the evaluated result for each element in ``self``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return self.static_expm1(
@@ -2349,9 +2337,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.floor. This method simply wraps the
-        function, and so the docstring for ivy.floor also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.floor.
+        This method simply wraps thefunction, and so the docstring for
+        ivy.floor also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2398,9 +2386,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.floor. This method simply wraps the
-        function, and so the docstring for ivy.floor also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.floor. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.floor also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2423,8 +2411,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the rounded result for each element in ``self``. The
-            returned array must have the same data type as ``self``.
+            a container containing the rounded result for each element in ``self``.
+            The returned array must have the same data type as ``self``.
          
         Examples
         --------
@@ -2453,16 +2441,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.floor_divide. This method simply wraps the
-        function, and so the docstring for ivy.floor_divide also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.floor_divide.
+        This method simply wraps the function, and so the docstring for
+        ivy.floor_divide also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             dividend input array or container. Should have a real-valued data type.
         x2
-            divisor input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            divisor input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -2481,8 +2470,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined by :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "floor_divide",
@@ -2506,16 +2495,18 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.floor_divide. This method simply wraps the
-        function, and so the docstring for ivy.floor_divide also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.floor_divide.
+        This method simply wraps the function, and so the docstring for
+        ivy.floor_divide also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            dividend input array or container. Should have a real-valued data type.
+            dividend input array or container. Should have a real-valued
+            data type.
         x2
-            divisor input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            divisor input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -2534,8 +2525,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         """
         return self.static_floor_divide(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -2553,16 +2545,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.greater. This method simply wraps the
-        function, and so the docstring for ivy.greater also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.greater.
+        This method simply wraps the function, and so the docstring
+        for ivy.greater also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a real-valued data type.
         x2
-            divisor input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            divisor input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -2606,16 +2599,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.greater. This method simply wraps the
-        function, and so the docstring for ivy.greater also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.greater.
+        This method simply wraps the function, and so the docstring for
+        ivy.greater also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a real-valued data type.
         x2
-            divisor input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            divisor input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -2653,16 +2647,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.greater_equal. This method simply wraps the
-        function, and so the docstring for ivy.greater_equal also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.greater_equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.greater_equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -2706,16 +2701,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.greater_equal. This method simply wraps the
-        function, and so the docstring for ivy.greater_equal also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.greater_equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.greater_equal also applies to this metho with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -2752,9 +2748,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.isfinite. This method simply wraps the
-        function, and so the docstring for ivy.isfinite also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.isfinite.
+        This method simply wraps the function, and so the docstring for
+        ivy.isfinite also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2777,7 +2773,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the test result. An element ``out_i`` is ``True`` if ``x_i`` is finite and ``False`` otherwise.
+            a container containing the test result. An element ``out_i`` is ``True``
+            if ``x_i`` is finite and ``False`` otherwise.
             The returned array must have a data type of ``bool``.
 
         """
@@ -2801,9 +2798,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.isfinite. This method simply wraps the
-        function, and so the docstring for ivy.isfinite also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.isfinite.
+        This method simply wraps the function, and so the docstring for
+        ivy.isfinite also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2826,7 +2823,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the test result. An element ``out_i`` is ``True`` if ``self_i`` is finite and ``False`` otherwise.
+            a container containing the test result. An element ``out_i`` is ``True``
+            if ``self_i`` is finite and ``False`` otherwise.
             The returned array must have a data type of ``bool``.
 
         """
@@ -2845,9 +2843,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.isinf. This method simply wraps the
-        function, and so the docstring for ivy.isinf also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.isinf.
+        This method simply wraps the function, and so the docstring for
+        ivy.isinf also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2870,7 +2868,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the test result. An element ``out_i`` is ``True`` if ``x_i`` is either positive or negative infinity and ``False``
+            a container containing the test result. An element ``out_i`` is ``True``
+            if ``x_i`` is either positive or negative infinity and ``False``
             otherwise. The returned array must have a data type of ``bool``.
 
         """
@@ -2894,9 +2893,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.isinf. This method simply wraps the
-        function, and so the docstring for ivy.isinf also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.isinf.
+        This method simply wraps the function, and so the docstring for
+        ivy.isinf also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2919,7 +2918,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the test result. An element ``out_i`` is ``True`` if ``self_i`` is either positive or negative infinity and ``False``
+            a container containing the test result. An element ``out_i`` is ``True``
+            if ``self_i`` is either positive or negative infinity and ``False``
             otherwise. The returned array must have a data type of ``bool``.
 
         """
@@ -2938,9 +2938,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.isnan. This method simply wraps the
-        function, and so the docstring for ivy.isnan also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.isnan.
+        This method simply wraps the function, and so the docstring for
+        ivy.isnan also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2963,7 +2963,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the test result. An element ``out_i`` is ``True`` if ``x_i`` is ``NaN`` and ``False`` otherwise.
+            a container containing the test result. An element ``out_i`` is ``True``
+            if ``x_i`` is ``NaN`` and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
 
         """
@@ -2987,9 +2988,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.isnan. This method simply wraps the
-        function, and so the docstring for ivy.isnan also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.isnan.
+        This method simply wraps the function, and so the docstring
+        for ivy.isnan also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3012,7 +3013,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the test result. An element ``out_i`` is ``True`` if ``self_i`` is ``NaN`` and ``False`` otherwise.
+            a container containing the test result. An element ``out_i`` is ``True``
+            if ``self_i`` is ``NaN`` and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
 
         """
@@ -3032,16 +3034,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.less. This method simply wraps the
-        function, and so the docstring for ivy.less also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.less.
+        This method simply wraps the function, and so the docstring for
+         ivy.less also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3085,16 +3088,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.less. This method simply wraps the
-        function, and so the docstring for ivy.less also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.less.
+        This method simply wraps the function, and so the docstring for
+        ivy.less also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3132,16 +3136,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.less_equal. This method simply wraps the
-        function, and so the docstring for ivy.less_equal also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.less_equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.less_equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3185,16 +3190,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.less_equal. This method simply wraps the
-        function, and so the docstring for ivy.less_equal also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.less_equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.less_equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3231,9 +3237,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.log. This method simply wraps the
-        function, and so the docstring for ivy.log also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.log.
+        This method simply wraps the function, and so the docstring for
+        ivy.log also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3257,7 +3263,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the log for each element in ``x``.
-            The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -3280,9 +3287,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.log. This method simply wraps the
-        function, and so the docstring for ivy.log also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.log.
+        This method simply wraps the function, and so the docstring for
+        ivy.log also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3306,7 +3313,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the log for each element in ``self``.
-            The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return self.static_log(
@@ -3324,9 +3332,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.log1p. This method simply wraps the
-        function, and so the docstring for ivy.log1p also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.log1p.
+        This method simply wraps the function, and so the docstring for
+        ivy.log1p also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3350,7 +3358,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the evaluated result for each element in ``x``.
-            The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -3373,9 +3382,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.log1p. This method simply wraps the
-        function, and so the docstring for ivy.log1p also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.log1p.
+        This method simply wraps the function, and so the docstring for
+        ivy.log1p also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3399,7 +3408,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the evaluated result for each element in ``self``.
-            The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return self.static_log1p(
@@ -3417,9 +3427,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.log2. This method simply wraps the
-        function, and so the docstring for ivy.log2 also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.log2.
+        This method simply wraps the function, and so the docstring for
+        ivy.log2 also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3443,7 +3453,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the evaluated base ``2`` logarithm for each element in ``x``.
-            The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -3466,9 +3477,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.log2. This method simply wraps the
-        function, and so the docstring for ivy.log2 also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.log2.
+        This method simply wraps the function, and so the docstring for
+        ivy.log2 also applies to this metho with minimal changes.
 
         Parameters
         ----------
@@ -3492,7 +3503,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the evaluated base ``2`` logarithm for each element in ``self``.
-            The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return self.static_log2(
@@ -3510,9 +3522,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.log10. This method simply wraps the
-        function, and so the docstring for ivy.log10 also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.log10.
+        This method simply wraps the function, and so the docstring for
+        ivy.log10 also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3535,8 +3547,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated base ``10`` logarithm for each element in ``x``.
-            The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            a container containing the evaluated base ``10`` logarithm for each
+            element in ``x``. The returned array must have a real-valued
+            floating-point data type determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -3559,9 +3572,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.log10. This method simply wraps the
-        function, and so the docstring for ivy.log10 also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.log10.
+        This method simply wraps the function, and so the docstring for
+        ivy.log10 also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3584,8 +3597,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated base ``10`` logarithm for each element in ``self``.
-            The returned array must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            a container containing the evaluated base ``10`` logarithm for
+            each element in ``self``. The returned array must have a real-valued
+            floating-point data type determined by :ref:`type-promotion`.
 
         """
         return self.static_log10(
@@ -3604,16 +3618,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.greater_equal. This method simply wraps the
-        function, and so the docstring for ivy.greater_equal also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.greater_equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.greater_equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3633,7 +3648,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the element-wise results. The returned container
-            must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            must have a real-valued floating-point data type determined
+            by :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "logaddexp",
@@ -3657,16 +3673,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.greater_equal. This method simply wraps the
-        function, and so the docstring for ivy.greater_equal also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.greater_equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.greater_equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3686,7 +3703,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the element-wise results. The returned container
-            must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            must have a real-valued floating-point data type determined
+            by :ref:`type-promotion`.
         """
         return self.static_logaddexp(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -3704,16 +3722,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.logical_and. This method simply wraps the
-        function, and so the docstring for ivy.logical_and also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.logical_and.
+        This method simply wraps the function, and so the docstring for
+        ivy.logical_and also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a boolean data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3757,16 +3776,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.logical_and. This method simply wraps the
-        function, and so the docstring for ivy.logical_and also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.logical_and.
+        This method simply wraps the function, and so the docstring for
+        ivy.logical_and also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a boolean data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3803,9 +3823,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.logical_not. This method simply wraps the
-        function, and so the docstring for ivy.logical_not also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.logical_not.
+        This method simply wraps the function, and so the docstring for
+        ivy.logical_not also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3852,9 +3872,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.logical_not. This method simply wraps the
-        function, and so the docstring for ivy.logical_not also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.logical_not.
+        This method simply wraps the function, and so the docstring for
+        ivy.logical_not also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -3897,16 +3917,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.logical_or. This method simply wraps the
-        function, and so the docstring for ivy.logical_or also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.logical_or.
+        This method simply wraps the function, and so the docstring for
+        ivy.logical_or also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a boolean data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3950,16 +3971,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.logical_or. This method simply wraps the
-        function, and so the docstring for ivy.logical_or also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.logical_or.
+        This method simply wraps the function, and so the docstring for
+        ivy.logical_or also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a boolean data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -3997,16 +4019,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.logical_xor. This method simply wraps the
-        function, and so the docstring for ivy.logical_xor also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.logical_xor.
+        This method simply wraps the function, and so the docstring for
+        ivy.logical_xor also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a boolean data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -4050,16 +4073,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.logical_xor. This method simply wraps the
-        function, and so the docstring for ivy.logical_xor also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.logical_xor.
+        This method simply wraps the function, and so the docstring for
+        ivy.logical_xor also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a boolean data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -4097,16 +4121,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.multiply. This method simply wraps the
-        function, and so the docstring for ivy.multiply also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.multiply.
+        This method simply wraps the function, and so the docstring for
+        ivy.multiply also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -4150,16 +4175,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.multiply. This method simply wraps the
-        function, and so the docstring for ivy.multiply also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.multiply.
+        This method simply wraps the function, and so the docstring for
+        ivy.multiply also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -4196,9 +4222,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.negative. This method simply wraps the
-        function, and so the docstring for ivy.negative also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.negative.
+        This method simply wraps the function, and so the docstring for
+        ivy.negative also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -4245,9 +4271,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.negative. This method simply wraps the
-        function, and so the docstring for ivy.negative also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.negative.
+        This method simply wraps the function, and so the docstring for
+        ivy.negative also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -4290,16 +4316,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.not_equal. This method simply wraps the
-        function, and so the docstring for ivy.not_equal also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.not_equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.not_equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. May have any data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             May have any data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -4343,16 +4370,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.not_equal. This method simply wraps the
-        function, and so the docstring for ivy.not_equal also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.not_equal.
+        This method simply wraps the function, and so the docstring for
+        ivy.not_equal also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. May have any data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             May have any data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -4389,9 +4417,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.positive. This method simply wraps the
-        function, and so the docstring for ivy.positive also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.positive.
+        This method simply wraps the function, and so the docstring for
+        ivy.positive also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -4438,9 +4466,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.positive. This method simply wraps the
-        function, and so the docstring for ivy.positive also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.positive.
+        This method simply wraps the function, and so the docstring for
+        ivy.positive also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -4483,16 +4511,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.pow. This method simply wraps the
-        function, and so the docstring for ivy.pow also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.pow. This method simply wraps
+        the function, and so the docstring for ivy.pow also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -4536,16 +4565,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.pow. This method simply wraps the
-        function, and so the docstring for ivy.pow also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.pow. This method simply
+        wraps the function, and so the docstring for ivy.pow also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -4583,16 +4613,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.remainder. This method simply wraps the
-        function, and so the docstring for ivy.remainder also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.remainder.
+        This method simply wraps the function, and so the docstring for
+        ivy.remainder also applies to this method with minimal changes.
 
         Parameters
         ----------
         x1
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -4636,16 +4667,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.remainder. This method simply wraps the
-        function, and so the docstring for ivy.remainder also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.remainder.
+        This method simply wraps the function, and so the docstring for
+        ivy.remainder also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input array or container. Should have a real-valued data type.
         x2
-            input array or container. Must be compatible with ``self`` (see :ref:`broadcasting`).
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have a real-valued data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -4682,9 +4714,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.round. This method simply wraps the
-        function, and so the docstring for ivy.round also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.round. This method simply
+        wraps thevfunction, and so the docstring for ivy.round also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -4731,9 +4763,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.round. This method simply wraps the
-        function, and so the docstring for ivy.round also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.round. This method simply
+        wraps the function, and so the docstring for ivy.round also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -4775,9 +4807,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.sign. This method simply wraps the
-        function, and so the docstring for ivy.sign also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.sign. This method simply 
+        wraps the function, and so the docstring for ivy.sign also applies 
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -4800,8 +4832,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated result for each element in ``x``. The
-            returned container must have the same data type as ``x``.
+            a container containing the evaluated result for each element in ``x``.
+            The returned container must have the same data type as ``x``.
 
         Examples
         --------
@@ -4834,9 +4866,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.sign. This method simply wraps the
-        function, and so the docstring for ivy.sign also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.sign. This method simply 
+        wraps the function, and so the docstring for ivy.sign also 
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -4890,15 +4922,15 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.sin. This method simply wraps the
-        function, and so the docstring for ivy.sin also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.sin. This method simply 
+        wraps the function, and so the docstring for ivy.sin also 
+        applies to this method with minimal changes.
 
         Parameters
         ----------
         x
-            input container whose elements are each expressed in radians. Should have a
-            floating-point data type.
+            input container whose elements are each expressed in radians. 
+            Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -4951,15 +4983,15 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.sin. This method simply wraps the
-        function, and so the docstring for ivy.sin also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.sin. This method simply 
+        wraps the function, and so the docstring for ivy.sin also 
+        applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            input container whose elements are each expressed in radians. Should have a
-            floating-point data type.
+            input container whose elements are each expressed in radians. 
+            Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -4977,9 +5009,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the sine of each element in ``self``. The returned
-            container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            a container containing the sine of each element in ``self``. 
+            The returned container must have a floating-point data type 
+            determined by :ref:`type-promotion`.
 
         Examples
         --------
@@ -5007,15 +5039,15 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.sinh. This method simply wraps the
-        function, and so the docstring for ivy.sinh also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.sinh. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.sinh also applies to this method with minimal changes.
 
         Parameters
         ----------
         x
-            input container whose elements each represent a hyperbolic angle. Should
-            have a floating-point data type.
+            input container whose elements each represent a hyperbolic angle. 
+            Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -5033,9 +5065,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an container containing the hyperbolic sine of each element in ``x``. The
-            returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            an container containing the hyperbolic sine of each element in ``x``.
+            The returned container must have a floating-point data type determined
+            by :ref:`type-promotion`.
 
         Examples
         --------
@@ -5077,15 +5109,15 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.sinh. This method simply wraps the
-        function, and so the docstring for ivy.sinh also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.sinh. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.sinh also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            input container whose elements each represent a hyperbolic angle. Should
-            have a floating-point data type.
+            input container whose elements each represent a hyperbolic angle. 
+            Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -5103,9 +5135,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an container containing the hyperbolic sine of each element in ``self``. The
-            returned container must have a floating-point data type determined by
-            :ref:`type-promotion`.
+            an container containing the hyperbolic sine of each element in ``self``.
+            The returned container must have a floating-point data type determined
+            by :ref:`type-promotion`.
 
         Examples
         --------
@@ -5142,9 +5174,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.square. This method simply wraps the
-        function, and so the docstring for ivy.square also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.square.
+        This method simply wraps the function, and so the docstring for
+        ivy.square also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5168,7 +5200,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the square of each element in ``x``.
-            The returned container must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned container must have a real-valued floating-point
+            data type determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -5191,9 +5224,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.square. This method simply wraps the
-        function, and so the docstring for ivy.square also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.square.
+        This method simply wraps the function, and so the docstring for
+        ivy.square also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5217,7 +5250,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the square of each element in ``self``.
-            The returned container must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned container must have a real-valued floating-point
+            data type determined by :ref:`type-promotion`.
 
         """
         return self.static_square(
@@ -5235,9 +5269,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.sqrt. This method simply wraps the
-        function, and so the docstring for ivy.sqrt also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.sqrt.
+        This method simply wraps the function, and so the docstring for
+        ivy.sqrt also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5261,7 +5295,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the square root of each element in ``x``.
-            The returned container must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            The returned container must have a real-valued floating-point
+            data type determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -5284,9 +5319,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.sqrt. This method simply wraps the
-        function, and so the docstring for ivy.sqrt also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.sqrt.
+        This method simply wraps the function, and so the docstring
+        for ivy.sqrt also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5309,8 +5344,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the square root of each element in ``self``.
-            The returned container must have a real-valued floating-point data type determined by :ref:`type-promotion`.
+            a container containing the square root of each element in
+            ``self``. The returned container must have a real-valued
+            floating-point data type determined by :ref:`type-promotion`.
 
         """
         return self.static_sqrt(
@@ -5329,9 +5365,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.subtract. This method simply wraps the
-        function, and so the docstring for ivy.subtract also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.subtract.
+        This method simply wraps the function, and so the docstring
+        for ivy.subtract also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5357,8 +5393,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise sums. The returned container must have a
-            data type determined by :ref:`type-promotion`.
+            a container containing the element-wise sums.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "subtract",
@@ -5382,9 +5419,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.subtract. This method simply wraps the
-        function, and so the docstring for ivy.subtract also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.subtract.
+        This method simply wraps the function, and so the docstring
+        for ivy.subtract also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5410,8 +5447,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise sums. The returned container must have a
-            data type determined by :ref:`type-promotion`.
+            a container containing the element-wise sums.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         """
         return self.static_subtract(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -5428,9 +5466,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.tan. This method simply wraps the
-        function, and so the docstring for ivy.tan also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.tan.
+        This method simply wraps the function, and so the docstring for
+        ivy.tan also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5454,8 +5492,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an array containing the tangent of each element in ``x``. The return must
-            have a floating-point data type determined by :ref:`type-promotion`.
+            an array containing the tangent of each element in ``x``.
+            The return must have a floating-point data type determined
+            by :ref:`type-promotion`.
 
         Examples
         --------
@@ -5487,9 +5526,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.tan. This method simply wraps the
-        function, and so the docstring for ivy.tan also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.tan.
+        This method simply wraps the function, and so the docstring for
+        ivy.tan also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5513,8 +5552,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an array containing the tangent of each element in ``self``. The return must
-            have a floating-point data type determined by :ref:`type-promotion`.
+            an array containing the tangent of each element in ``self``.
+            The return must have a floating-point data type determined
+            by :ref:`type-promotion`.
 
         Examples
         --------
@@ -5541,15 +5581,15 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.tanh. This method simply wraps the
-        function, and so the docstring for ivy.tanh also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.tanh.
+        This method simply wraps the function, and so the docstring for
+        ivy.tanh also applies to this method with minimal changes.
 
         Parameters
         ----------
         x
-            input container whose elements each represent a hyperbolic angle. Should
-            have a real-valued floating-point data type.
+            input container whose elements each represent a hyperbolic angle.
+            Should have a real-valued floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -5567,8 +5607,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an container containing the hyperbolic tangent of each element in ``x``. The
-            returned array must have a real-valued floating-point data type determined
+            an container containing the hyperbolic tangent of each element in ``x``.
+            The returned array must have a real-valued floating-point data type determined
             by :ref:`type-promotion`.
 
         Examples
@@ -5601,15 +5641,15 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.tanh. This method simply wraps the
-        function, and so the docstring for ivy.tanh also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.tanh. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.tanh also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            input container whose elements each represent a hyperbolic angle. Should
-            have a real-valued floating-point data type.
+            input container whose elements each represent a hyperbolic angle.
+            Should have a real-valued floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -5627,9 +5667,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an container containing the hyperbolic tangent of each element in ``self``.
-            The returned container must have a real-valued floating-point data type
-            determined by :ref:`type-promotion`.
+            an container containing the hyperbolic tangent of each element in 
+            ``self``. The returned container must have a real-valued floating-point 
+            data type determined by :ref:`type-promotion`.
 
         Examples
         --------
@@ -5657,9 +5697,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.trunc. This method simply wraps the
-        function, and so the docstring for ivy.trunc also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.trunc.
+        This method simply wraps the function, and so the docstring for
+        ivy.trunc also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5706,9 +5746,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.trunc. This method simply wraps the
-        function, and so the docstring for ivy.trunc also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.trunc.
+        This method simply wraps the function, and so the docstring for
+        ivy.trunc also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5750,9 +5790,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.erf. This method simply wraps the
-        function, and so the docstring for ivy.erf also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.erf.
+        This method simply wraps the function, and so the docstring for
+        ivy.erf also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -5798,9 +5838,9 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.erf. This method simply wraps the
-        function, and so the docstring for ivy.erf also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.erf.
+        This method simply wraps thefunction, and so the docstring for
+        ivy.erf also applies to this method with minimal changes.
 
         Parameters
         ----------
