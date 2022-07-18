@@ -168,6 +168,18 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.repeat. This method simply wraps the
+        function, and so the docstring for ivy.repeat also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([0., 1., 2.])
+        >>> x.repeat(2)
+        >>> print(x)
+        ivy.array([0., 0., 1., 1., 2., 2.])
+        """
         return ivy.repeat(self._data, repeats=repeats, axis=axis, out=out)
 
     def tile(
