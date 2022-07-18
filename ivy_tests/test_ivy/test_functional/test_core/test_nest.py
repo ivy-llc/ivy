@@ -5,6 +5,7 @@ import copy
 import pytest
 
 # local
+import numpy as np
 from hypothesis import given
 import ivy
 from ivy_tests.test_ivy import helpers
@@ -231,19 +232,19 @@ def test_copy_nest(device, call):
 
 
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
+    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, num_arrays=2),
     num_positional_args=helpers.num_positional_args(fn_name="nested_multi_map"),
 )
 def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
     # without key_chains specification
     dtype = x0_n_x1_n_res[0]
-    nest0 = ivy.array(x0_n_x1_n_res[1], dtype=dtype)
-    nest1 = nest0 * 2
+    nest0 = np.asarray(x0_n_x1_n_res[1][0], dtype=dtype[0])
+    nest1 = np.asarray(x0_n_x1_n_res[1][1], dtype=dtype[1])
     if nest0.shape == ():
         return
     helpers.test_function(
-        dtype,
-        False,
+        [dtype[0], dtype[1]],
+        [False, False],
         False,
         num_positional_args,
         False,

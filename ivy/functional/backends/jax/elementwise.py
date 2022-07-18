@@ -105,7 +105,7 @@ def cosh(x: JaxArray) -> JaxArray:
 
 
 def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)    
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.divide(x1, x2)
 
 
