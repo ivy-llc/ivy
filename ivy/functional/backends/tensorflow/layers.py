@@ -2,6 +2,7 @@
 
 # global
 import tensorflow as tf
+from tensorflow import keras
 from typing import Optional, Tuple, Union, List, Sequence
 from tensorflow.python.types.core import Tensor
 
@@ -102,3 +103,5 @@ def conv3d_transpose(
     return tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
     )
+def dropout(x, noise_shape=None, seed=None):
+    return tf.keras.layers.Dropout(x, noise_shape, seed)
