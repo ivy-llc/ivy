@@ -627,8 +627,7 @@ def test_get_all_arrays_on_dev(num, device):
 
 @given(num=st.integers(0, 2), attr_only=st.booleans())
 def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
-    for _ in range(num):
-        ivy.array(np.random.uniform(size=2))
+    arr = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
 
     # Flush to avoid artifact
     sys.stdout.flush()
@@ -644,7 +643,7 @@ def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     sys.stdout = sys.__stdout__
 
     # Should have written same number of lines as the number of array in device
-    assert len(written) == len(ivy.get_all_ivy_arrays_on_dev(device))
+    assert len(written) == num
 
     if attr_only:
         # Check that the attribute are printed are in the format of ((dim,...), type)
@@ -652,6 +651,10 @@ def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     else:
         # Check that the arrays are printed are in the format of ivy.array(...)
         regex = r"^ivy\.array\(\[.*\]\)$"
+
+    # Clear the array from device
+    for item in arr:
+        del item
 
     # Apply the regex search
     assert all([re.match(regex, line) for line in written])
@@ -690,7 +693,6 @@ def test_num_cpu_cores():
 # ---------------#
 
 
-# print_all_arrays_on_dev
 # clear_mem_on_dev
 # used_mem_on_dev # working fine for cpu
 # percent_used_mem_on_dev # working fine for cpu
