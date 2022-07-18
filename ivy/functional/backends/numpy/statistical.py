@@ -115,7 +115,7 @@ def var(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:

@@ -153,7 +153,7 @@ def sum(
 def var(
     x: mx.nd.NDArray,
     axis: Union[int, Tuple[int, ...]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     mean_of_x_sqrd = mean(x**2, axis, keepdims)

@@ -180,7 +180,7 @@ def var(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

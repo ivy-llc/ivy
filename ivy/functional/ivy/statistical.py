@@ -439,7 +439,7 @@ def var(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -486,6 +486,81 @@ def var(
         if the variance was computed over the entire array, a zero-dimensional array
         containing the variance; otherwise, a non-zero-dimensional array containing the
         variances. The returned array must have the same data type as x.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0, 1, 2, 3, 4, 5, 6, 7, 8])
+    >>> y = ivy.var(x)
+    >>> print(y)
+    ivy.array(6.66666667)
+
+    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
+    >>> y = ivy.var(x)
+    >>> print(y)
+    ivy.array(6.66666667)
+
+    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
+    >>> y = ivy.var(x, axis=1)
+    >>> print(y)
+    ivy.array([0.667, 0.667, 0.667])
+
+    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
+    >>> y = ivy.var(x, axis=0)
+    >>> print(y)
+    ivy.array([6., 6., 6.])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1,2,2,3])
+    >>> y = ivy.var(x)
+    >>> print(y)
+    ivy.array(0.5)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.var(x)
+    >>> print(y)
+    {
+        a: ivy.array(0.66666667),
+        b: ivy.array(0.66666667)
+    }
+
+    Instance Method Examples
+    ------------------------
+    Using :code:`ivy.Array` instance method:
+    
+    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
+    >>> y = x.var()
+    >>> print(y)
+    ivy.array(6.66666667)
+
+    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
+    >>> y = x.var(axis=0)
+    >>> print(y)
+    ivy.array([6., 6., 6.])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> y = x.var()
+    >>> y
+    {
+        a: ivy.array(0.66666667),
+        b: ivy.array(0.66666667)
+    }
 
     """
     return current_backend(x).var(x, axis, correction, keepdims, out=out)
