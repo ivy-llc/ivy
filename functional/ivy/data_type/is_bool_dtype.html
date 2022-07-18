@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>result_type &mdash; Ivy 1.0 documentation</title>
+  <title>is_bool_dtype &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ivy.result_type" href="result_type/result_type_functional.html" />
-    <link rel="prev" title="ivy.Container.static_iinfo" href="iinfo/static_iinfo_container.html" /> 
+    <link rel="next" title="is_int_dtype" href="is_int_dtype.html" />
+    <link rel="prev" title="invalid_dtype" href="invalid_dtype.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -63,13 +63,7 @@
 <li class="toctree-l2"><a class="reference internal" href="can_cast.html">can_cast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="finfo.html">finfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="iinfo.html">iinfo</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">result_type</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="result_type/result_type_functional.html">ivy.result_type</a></li>
-<li class="toctree-l3"><a class="reference internal" href="result_type/result_type_array.html">ivy.Array.result_type</a></li>
-<li class="toctree-l3"><a class="reference internal" href="result_type/result_type_container.html">ivy.Container.result_type</a></li>
-<li class="toctree-l3"><a class="reference internal" href="result_type/static_result_type_container.html">ivy.Container.static_result_type</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="result_type.html">result_type</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="as_ivy_dtype.html">as_ivy_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="as_native_dtype.html">as_native_dtype</a></li>
@@ -81,7 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_supported_dtypes.html">function_supported_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_unsupported_dtypes.html">function_unsupported_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="invalid_dtype.html">invalid_dtype</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_bool_dtype.html">is_bool_dtype</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">is_bool_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_int_dtype.html">is_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="promote_types.html">promote_types</a></li>
@@ -157,9 +151,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../data_type.html">Data type</a> &raquo;</li>
-      <li>result_type</li>
+      <li>is_bool_dtype</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/data_type/result_type.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/is_bool_dtype.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -167,59 +161,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="result-type">
-<h1>result_type<a class="headerlink" href="#result-type" title="Permalink to this heading"></a></h1>
+  <section id="is-bool-dtype">
+<h1>is_bool_dtype<a class="headerlink" href="#is-bool-dtype" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.result_type">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">result_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays_and_dtypes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#result_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.result_type" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the dtype that results from applying the type promotion rules (see
-<span class="xref std std-ref">type-promotion</span>) to the arguments.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
-will be implementation-specific.</p>
-</div>
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.is_bool_dtype">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">is_bool_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#is_bool_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.is_bool_dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether the input data type is a bool data type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>arrays_and_dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]) – an arbitrary number of input arrays and/or dtypes.</p>
+<dd class="field-odd"><p><strong>dtype_in</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]) – input data type to test.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – the dtype resulting from an operation involving the input arrays and dtypes.</p>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>ret</em> – “True” if the input data type is a bool, otherwise “False”.</p></li>
+<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
+<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
+<li><p><em>instances in place of any of the arguments.</em></p></li>
+</ul>
+</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.array.array_methods.result_type">
-<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">result_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays_and_dtypes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithData_type.result_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.result_type" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.static_result_type">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_result_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays_and_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/data_type.html#ContainerWithData_type.static_result_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_result_type" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.result_type">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">result_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arrays_and_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/data_type.html#ContainerWithData_type.result_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.result_type" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
-</dd>
-</dl>
+<p class="rubric">Examples</p>
 </dd></dl>
 
 <div class="line-block">
@@ -227,16 +192,14 @@ will be implementation-specific.</p>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="iinfo/static_iinfo_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_iinfo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="result_type/result_type_functional.html" class="btn btn-neutral float-right" title="ivy.result_type" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="invalid_dtype.html" class="btn btn-neutral float-left" title="invalid_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="is_int_dtype.html" class="btn btn-neutral float-right" title="is_int_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
