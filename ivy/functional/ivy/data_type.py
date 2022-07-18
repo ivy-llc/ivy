@@ -824,6 +824,53 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
 
 @handle_nestable
 @inputs_to_native_arrays
+def is_bool_dtype(
+    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
+) -> bool:
+    """
+    Determine whether the input data type is a bool data type.
+
+    Parameters
+    ----------
+    dtype_in
+        input data type to test.
+
+    Returns
+    -------
+    ret
+        "True" if the input data type is a bool, otherwise "False".
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    """
+    if ivy.is_array(dtype_in):
+        dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, np.ndarray):
+        return "bool" in dtype_in.dtype.name
+    elif isinstance(dtype_in, Number):
+        return (
+            True
+            if isinstance(dtype_in, (bool, np.bool)) and not isinstance(dtype_in, bool)
+            else False
+        )
+    elif isinstance(dtype_in, (list, tuple, dict)):
+        return (
+            True
+            if ivy.nested_indices_where(
+                dtype_in,
+                lambda x: isinstance(x, (bool, np.bool)) and not type(x) == int,
+            )
+            else False
+        )
+    return "bool" in ivy.as_ivy_dtype(dtype_in)
+
+
+@handle_nestable
+@inputs_to_native_arrays
 def is_int_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
 ) -> bool:
