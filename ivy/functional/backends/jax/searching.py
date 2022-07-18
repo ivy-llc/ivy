@@ -24,7 +24,12 @@ def argmin(
     return jnp.argmin(x, axis=axis, out=out, keepdims=keepdims)
 
 
-def nonzero(x: JaxArray) -> JaxArray:
+def nonzero(
+    x: JaxArray,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+) -> JaxArray:
     return jnp.nonzero(x)
 
 
