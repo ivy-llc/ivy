@@ -28,7 +28,12 @@ def argmin(
     return ret
 
 
-def nonzero(x: torch.Tensor) -> Tuple[torch.Tensor]:
+def nonzero(
+    x: torch.Tensor,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+) -> Tuple[torch.Tensor]:
     return torch.nonzero(x, as_tuple=True)
 
 
