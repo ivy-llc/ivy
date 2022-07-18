@@ -495,6 +495,34 @@ class ContainerWithManipulation(ContainerBase):
         function, and so the docstring for ivy.clip also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x
+            Input array or container containing elements to clip.
+        x_min
+            Minimum value.
+        x_max
+            Maximum value.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container with the elements of x, but where values < x_min are replaced
+            with x_min, and those > x_max with x_max.
+
         Examples
         --------
         With one :code:`ivy.Container` input:
@@ -548,6 +576,34 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.clip. This method simply wraps the
         function, and so the docstring for ivy.clip also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing elements to clip.
+        x_min
+            Minimum value.
+        x_max
+            Maximum value.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container with the elements of x, but where values < x_min are replaced
+            with x_min, and those > x_max with x_max.
 
         Examples
         --------

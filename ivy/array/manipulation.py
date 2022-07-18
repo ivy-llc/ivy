@@ -134,6 +134,24 @@ class ArrayWithManipulation(abc.ABC):
         function, and so the docstring for ivy.roll also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            Input array containing elements to clip.
+        x_min
+            Minimum value.
+        x_max
+            Maximum value.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the elements of self, but where values < x_min are replaced
+            with x_min, and those > x_max with x_max.
+
         Examples
         --------
         >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])

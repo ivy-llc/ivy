@@ -71,30 +71,6 @@ class ContainerWithCreation(ContainerBase):
             device=device,
         )
 
-    def asarray(
-        self: ivy.Container,
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    ) -> ivy.Container:
-        return self.static_asarray(
-            self,
-            copy,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out,
-            dtype=dtype,
-            device=device,
-        )
-
     @staticmethod
     def static_zeros(
         shape: Union[int, Tuple[int], List[int]],
