@@ -201,7 +201,7 @@ def set_nestable_mode(mode: bool) -> None:
     """
     global nestable_mode_stack
     if not isinstance(mode, bool):
-        raise Exception("set_shape_array_mode only accepts type bool")
+        raise Exception("set_nestable_mode only accepts type bool")
     nestable_mode_stack.append(mode)
 
 
