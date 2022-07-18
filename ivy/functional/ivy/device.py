@@ -1450,7 +1450,100 @@ def dev_unify_array(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    >>> x = {"cpu": ivy.asarray([1., 2.], device="cpu"),\
+        "gpu": ivy.asarray([3., 4.], device="gpu:0")}
+
+    >>> print(x["cpu"].dev())
+    cpu
+    >>> print(x["gpu"].dev())
+    gpu
+
+    >>> x_unified = ivy.dev_unify_array(\
+        ivy.DevDistItem(x), device="cpu", mode="concat", axis=0\
+    )
+
+    >>> print(x_unified)
+    ivy.array([1., 2., 3., 4.])
+    >>> print(x_unified.dev())
+    cpu
+
+    >>> y_cpu = [[0, 1, 2, 3],\
+                 [0, 2, 4, 6]]
+
+    >>> y_gpu = [[5, 5, 5, 5],\
+                 [5, 6, 7, 8]]
+
+    >>> y = {"cpu": ivy.asarray(y_cpu, device=ivy.Device("cpu")),\
+             "gpu": ivy.asarray(y_gpu, device=ivy.Device("gpu:0"))}
+
+    >>> y_unified_mean = ivy.dev_unify_array(\
+            ivy.DevDistItem(y), device="gpu:0", mode="mean", axis=1\
+        )
+
+    >>> print(y_unified_mean)
+    ivy.array([[2.5, 3. , 3.5, 4. ],
+       [2.5, 4. , 5.5, 7. ]], dev=gpu:0)
+
+    >>> z_cpu = [[1, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1]]
+    >>> z_tpu = [[1, 2], [1, 4], [1, 8], [1, 16], [1, 32], [1, 64]]
+
+    >>> z = {"cpu": ivy.asarray(z_cpu), "tpu": ivy.asarray(z_tpu, device="tpu:0")}
+    >>> z_unified_sum = ivy.dev_unify_array(\
+            ivy.DevDistItem(z), device="tpu", mode="sum")\
+    )
+
+    >>> print(z_unified_sum)
+    ivy.array([[2., 3.],
+        [ 1., 5.],
+        [ 1., 9.],
+        [ 1., 17.],
+        [ 1., 33.],
+        [ 1., 65.]], device=tpu:0)
+
+    >>> x_cpu = [[1, 1],[1, 1],[1, 1],[1, 1]]
+    >>> x_gpu = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
+
+    >>> x = {"cpu": ivy.asarray(x_cpu), "gpu": ivy.asarray(x_gpu, device="gpu:0")}
+
+    >>> x_unified_broadcast = ivy.dev_unify_array(\
+            ivy.DevDistItem(x), device="gpu:0", mode="concat", axis=1)\
+        )
+
+    >>> print(x_unified_broadcast)
+    ivy.array([[1, 1, 0, 0, 0, 0],
+            [1, 1, 0, 0, 0, 0],
+            [1, 1, 0, 0, 0, 0],
+            [1, 1, 0, 0, 0, 0]], dev=gpu:0)
+
+    >>> x_cpu = [[0,0], [0,0]]
+    >>> x_gpu = [[1,1], [1,1]]
+    >>> y_cpu = [[2,2], [2,2]]
+    >>> y_gpu = [[3,3], [3,3]]
+
+    >>> x = {"started_on_cpu": ivvy.asarray(x_cpu),\
+            "started_on_gpu": ivvy.asarray(x_gpu, device="gpu:0")}
+
+    >>> y = {"started_on_cpu": ivvy.asarray(y_cpu),\
+            "started_on_gpu": ivvy.asarray(y_gpu, device="gpu:0")}
+
+    >>> z = ivy.Container(x=x, y=y)
+    >>> z_unified_container = ivy.dev_unify_array(\
+            ivy.DevDistItem(z), device="gpu:0", mode="concat", axis=1)\
+        )
+
+    >>> print(z_unified_container)
+    {
+        started_on_cpu: ivy.array([[0, 0, 2, 2],
+                                   [0, 0, 2, 2]], dev=gpu:0),
+        started_on_gpu: ivy.array([[1, 1, 3, 3],
+                                   [1, 1, 3, 3]], dev=gpu:0)
+   }
+
     """
+
     return {
         "concat": _concat_unify_array,
         "sum": _sum_unify_array,
