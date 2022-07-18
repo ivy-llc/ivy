@@ -61,7 +61,7 @@ class Finfo:
     
     @property
     def __repr__(self):
-        print(f'bits={self.bits}, eps={self.eps}, max={self.max}, min={self.min}, smallest_normal={self.smallest_normal}')
+        return repr(self._np_finfo)
 
     @property
     def eps(self):
