@@ -1720,16 +1720,79 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="bitwise_or"><a class="viewcode-back" href="../../../functional/ivy/elementwise/bitwise_or/bitwise_or_container.html#ivy.container.container_methods.bitwise_or">[docs]</a><span class="k">def</span> <span class="nf">bitwise_or</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
-    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">map_nests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="static_bitwise_or"><a class="viewcode-back" href="../../../functional/ivy/elementwise/bitwise_or/static_bitwise_or_container.html#ivy.container.container_methods.static_bitwise_or">[docs]</a><span class="k">def</span> <span class="nf">static_bitwise_or</span><span class="p">(</span>
+        <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container static method variant of ivy.bitwise_or. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.bitwise_or also applies</span>
+<span class="sd">    to this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With one :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_bitwise_or(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([5, 7, 7]),</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
+<span class="sd">                        b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
+<span class="sd">                        b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_bitwise_or(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([5, 7, 7]),</span>
+<span class="sd">        b: ivy.array([7, 7, 7])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="bitwise_or"><a class="viewcode-back" href="../../../functional/ivy/elementwise/bitwise_or/bitwise_or_container.html#ivy.container.container_methods.bitwise_or">[docs]</a><span class="k">def</span> <span class="nf">bitwise_or</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container instance method variant of ivy.bitwise_or. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.bitwise_or also applies to</span>
+<span class="sd">    this method with minimal changes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
+<span class="sd">                            b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]), \</span>
+<span class="sd">                            b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; z = x.bitwise_or(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([5, 7, 7]),</span>
+<span class="sd">        b: ivy.array([7, 7, 7])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
