@@ -543,6 +543,7 @@ def squeeze(
 
     Functional Examples
     -------------------
+
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([[[0, 1], [2, 3]]])
@@ -567,16 +568,16 @@ def squeeze(
     (1, 3, 1)
 
     >>> print(ivy.squeeze(x))
-    [0, 1, 2]
+    ivy.array([0, 1, 2])
 
     >>> print(ivy.squeeze(x, axis=0))
-    [[0], [1], [2]]
+    ivy.array([[0], [1], [2]])
 
     >>> print(ivy.squeeze(x, axis=2))
-    [[0, 1, 2]]
+    ivy.array([[0, 1, 2]])
 
     >>> print(ivy.squeeze(x, axis=(0, 2)))
-    [0, 1, 2]
+    ivy.array([0, 1, 2])
 
     With :code:`ivy.NativeArray` input:
 
@@ -586,14 +587,14 @@ def squeeze(
 
     >>> x = ivy.native_array([[[3]]])
     >>> print(x.shape)
-    (1, 1, 1)
+    torch.Size([1, 1, 1])
 
     >>> print(ivy.squeeze(x, 2))
     ivy.array([[3]])
 
     >>> x = ivy.native_array(0)
     >>> print(x.shape)
-    ()
+    torch.Size([])
 
     >>> print(ivy.squeeze(x, 0))
     ivy.array(0)
