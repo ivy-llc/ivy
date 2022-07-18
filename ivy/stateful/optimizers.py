@@ -188,7 +188,9 @@ class SGD(Optimizer):
         compile_on_next_step
             Whether to compile the optimizer on the next step. Default is False.
         """
-        Optimizer.__init__(self, lr, inplace, stop_gradients, compile_on_next_step)
+        Optimizer.__init__(
+            self, lr, inplace, stop_gradients, compile_on_next_step=compile_on_next_step
+        )
 
     # Custom Step
 
@@ -363,7 +365,7 @@ class Adam(Optimizer):
         self._should_compile = False
 
         Optimizer.__init__(
-            self, lr, inplace, stop_gradients, compile_on_next_step, device
+            self, lr, inplace, stop_gradients, True, compile_on_next_step, device=device
         )
 
     # Custom Step
@@ -471,7 +473,7 @@ class LAMB(Optimizer):
             etc. (Default value = None)
         """
         Optimizer.__init__(
-            self, lr, inplace, stop_gradients, True, compile_on_next_step, device
+            self, lr, inplace, stop_gradients, True, compile_on_next_step, device=device
         )
         self._beta1 = beta1
         self._beta2 = beta2
