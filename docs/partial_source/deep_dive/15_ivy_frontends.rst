@@ -5,6 +5,10 @@ Ivy Frontends
 .. _`jax.lax`: https://jax.readthedocs.io/en/latest/jax.lax.html
 .. _`jax.lax.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html
 
+.. _`tf.add`: https://www.tensorflow.org/api_docs/python/tf/math/add
+.. _`tf`: https://www.tensorflow.org/api_docs/python/tf
+.. _`tf.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
+
 Introduction
 ------------
 
@@ -103,6 +107,30 @@ has only one argument, and just as our :code:`add` function, we link its return 
         return ivy.add(x, y)
 
     add.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+In the original TensorFlow library (`tf`_ directory), :code:`add` does not have
+a specific category. Therefore, it is categorised under functions in Ivy. This
+ensures that :code:`tf.add` is available directly without further major changes
+when using :code:`ivy`. It is valid by simply importing
+:code:`ivy.functional.frontends.tensorflow`.
+
+There are three arguments according to the `tf.add`_ documentation, where we
+have written accordingly as shown above. Just like the previous examples, it will
+also return :code:`ivy.add` for the linking of backend framework. If there are any
+unsupported dtypes in any backend, it is specified with the help of the
+:code:`unsupported_dtypes` attribute.
+
+.. code-block:: python
+
+    def tan(x, name=None):
+        return ivy.tan(x)
+
+    tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+Let's look at another example, :code:`tan`, it is placed under functions just
+like :code:`add`. By referring to the `tf.tan`_ documentation, we code the arguments
+accordingly, then link its return to :code:`ivy.tan` so that the computation
+operation is decided according to the backend framework.
 
 **PyTorch**
 
