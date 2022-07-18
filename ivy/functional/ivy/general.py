@@ -1256,16 +1256,27 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     x
         Input array.
     include_infs
-        Whether to include infs and -infs in the check. Default is True.
+        Whether to include ``+infinity`` and ``-infinity`` in the check. Default is True.
 
     Returns
     -------
     ret
         Boolean as to whether the array contains nans.
 
-    Functional Examples
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
     --------
-    With :code:`ivy.Array` inputs:
+
+    With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.has_nans(x)
@@ -1287,35 +1298,10 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     >>> print(y)
     False
 
-    With :code:`ivy.native_array` inputs:
+    With :code:`ivy.Container` input:
 
-    >>> x = ivy.native_array([1, 2, 3])
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.has_nans(x)
-    >>> print(y)
-    False
-
-    >>> x = ivy.native_array([float('nan'), 2, 3])
-    >>> y = ivy.has_nans(x)
-    >>> print(y)
-    True
-
-    >>> x = ivy.native_array([float('inf'), 2, 3])
-    >>> y = ivy.has_nans(x)
-    >>> print(y)
-    True
-
-    >>> x = ivy.native_array([float('inf'), 2, 3])
-    >>> y = ivy.has_nans(x, False)
-    >>> print(y)
-    False
-
-
-    Instance Method Examples
-
-    With :code:`ivy.array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = x.has_nans()
     >>> print(y)
     False
 
@@ -1323,28 +1309,6 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     >>> y = x.has_nans()
     >>> print(y)
     True
-
-    >>> x = ivy.array([float('inf'), 2, 3])
-    >>> y = x.has_nans(False)
-    >>> print(y)
-    False
-
-    With :code:`ivy.native_array` instance method:
-
-    >>> x = ivy.native_array([1, 2, 3])
-    >>> y = x.has_nans()
-    >>> print(y)
-    False
-
-    >>> x = ivy.native_array([float('inf'), 2, 3])
-    >>> y = x.has_nans()
-    >>> print(y)
-    True
-
-    >>> x = ivy.native_array([float('inf'), 2, 3])
-    >>> y = x.has_nans(False)
-    >>> print(y)
-    False
 
     """
     return ivy.value_is_nan(ivy.sum(x), include_infs)
