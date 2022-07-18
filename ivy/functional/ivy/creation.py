@@ -240,7 +240,6 @@ def ones(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@infer_dtype
 @infer_device
 @handle_nestable
 def full_like(
@@ -854,7 +853,7 @@ def meshgrid(
 @handle_nestable
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
-    fill_value: Union[int, float],
+    fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
