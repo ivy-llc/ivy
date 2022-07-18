@@ -5,6 +5,8 @@ bitwise_invert
 
 .. autofunction:: ivy.array.array_methods.bitwise_invert
 
+.. autofunction:: ivy.container.container_methods.static_bitwise_invert
+
 .. autofunction:: ivy.container.container_methods.bitwise_invert
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ bitwise_invert
    bitwise_invert/bitwise_invert_functional.rst
    bitwise_invert/bitwise_invert_array.rst
    bitwise_invert/bitwise_invert_container.rst
+   bitwise_invert/static_bitwise_invert_container.rst
 

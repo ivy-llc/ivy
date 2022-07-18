@@ -5,6 +5,8 @@ less_equal
 
 .. autofunction:: ivy.array.array_methods.less_equal
 
+.. autofunction:: ivy.container.container_methods.static_less_equal
+
 .. autofunction:: ivy.container.container_methods.less_equal
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ less_equal
    less_equal/less_equal_functional.rst
    less_equal/less_equal_array.rst
    less_equal/less_equal_container.rst
+   less_equal/static_less_equal_container.rst
 

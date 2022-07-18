@@ -202,8 +202,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.container_methods.add">
 <span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/elementwise.html#ContainerWithElementwise.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.add" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container instance method variant of <a href="../add/add_functional.html">ivy.add</a>. This method simply for <a href="../add/add_functional.html">ivy.add</a> and so the docstring for ivy.add also applies to this method
-with minimal changes.</p>
+<dd><p>ivy.Container instance method variant of <a href="../add/add_functional.html">ivy.add</a>. method simply wraps the function, and so the docstring for
+ivy.add also applies to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -224,8 +224,9 @@ that the inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – a container containing the element-wise sums. The returned array must have a
-data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+<dd class="field-odd"><p><em>ret</em> – a container containing the element-wise sums.
+The returned container must have a data type determined
+by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

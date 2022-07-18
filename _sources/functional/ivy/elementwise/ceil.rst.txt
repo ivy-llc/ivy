@@ -5,6 +5,8 @@ ceil
 
 .. autofunction:: ivy.array.array_methods.ceil
 
+.. autofunction:: ivy.container.container_methods.static_ceil
+
 .. autofunction:: ivy.container.container_methods.ceil
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ ceil
    ceil/ceil_functional.rst
    ceil/ceil_array.rst
    ceil/ceil_container.rst
+   ceil/static_ceil_container.rst
 
