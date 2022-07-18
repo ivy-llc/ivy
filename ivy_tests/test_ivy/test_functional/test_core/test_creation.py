@@ -15,8 +15,7 @@ import hypothesis.extra.numpy as hnp
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
-        num_arrays=1,
-        ivy_np.valid_numeric_dtypes,
+        dtype=ivy_np.valid_numeric_dtypes,
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,

@@ -119,7 +119,7 @@ def test_acos(
 # add
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -262,7 +262,7 @@ def test_atan(
 # atan2
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -335,7 +335,7 @@ def test_atanh(
 # bitwise_and
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",), n_arrays=2
+        available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -450,7 +450,7 @@ def test_bitwise_invert(
 # bitwise_or
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",), n_arrays=2
+        available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -528,7 +528,7 @@ def test_bitwise_right_shift(
 # bitwise_xor
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",), n_arrays=2
+        available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -671,7 +671,7 @@ def test_cosh(
 # divide
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -717,7 +717,7 @@ def test_divide(
 # equal
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -914,7 +914,7 @@ def test_floor_divide(
 # greater
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -952,7 +952,7 @@ def test_greater(
 # greater_equal
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -1095,7 +1095,7 @@ def test_isnan(
 # less
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -1133,7 +1133,7 @@ def test_less(
 # less_equal
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -1311,7 +1311,7 @@ def test_log10(
 # logaddexp
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -1349,7 +1349,7 @@ def test_logaddexp(
 
 # logical_and
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), n_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="logical_and"),
@@ -1420,7 +1420,7 @@ def test_logical_not(
 
 # logical_or
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), n_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="logical_or"),
@@ -1456,7 +1456,7 @@ def test_logical_or(
 
 # logical_xor
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), n_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="logical_xor"),
@@ -1493,7 +1493,7 @@ def test_logical_xor(
 # multiply
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -1566,7 +1566,7 @@ def test_negative(
 # not_equal
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -1639,7 +1639,7 @@ def test_positive(
 # pow
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -1940,7 +1940,7 @@ def test_sqrt(
 # subtract
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, n_arrays=2
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -2121,7 +2121,9 @@ def test_erf(
 
 # minimum
 @given(
-    xy=helpers.dtype_and_values(available_dtypes = ivy_np.valid_numeric_dtypes, num_arrays=2),
+    xy=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
+    ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
@@ -2167,7 +2169,9 @@ def test_minimum(
 
 # maximum
 @given(
-    xy=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2),
+    xy=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
+    ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),

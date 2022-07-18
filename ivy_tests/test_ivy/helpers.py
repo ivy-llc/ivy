@@ -1138,9 +1138,9 @@ def array_dtypes(
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if num_arrays == 1:
-        dtypes = draw(list_of_length(st.sampled_from(available_dtypes), 1))
+        dtypes = draw(list_of_length(x=st.sampled_from(available_dtypes), length=1))
     elif shared_dtype:
-        dtypes = draw(list_of_length(st.sampled_from(available_dtypes), 1))
+        dtypes = draw(list_of_length(x=st.sampled_from(available_dtypes), length=1))
         dtypes = [dtypes[0] for _ in range(num_arrays)]
     else:
         unwanted_types = set(ivy.all_dtypes).difference(set(available_dtypes))
@@ -1156,7 +1156,9 @@ def array_dtypes(
 
 @st.composite
 def array_bools(
-    draw, *, num_arrays=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays")
+    draw,
+    *,
+    num_arrays=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays"),
 ):
     size = num_arrays if isinstance(num_arrays, int) else draw(num_arrays)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))

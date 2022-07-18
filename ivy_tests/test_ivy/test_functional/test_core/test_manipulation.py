@@ -19,11 +19,13 @@ def _arrays_idx_n_dtypes(draw):
     num_dims = draw(st.shared(st.integers(1, 4), key="num_dims"))
     num_arrays = draw(st.shared(st.integers(2, 4), key="num_arrays"))
     common_shape = draw(
-        helpers.lists(st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1)
+        helpers.lists(
+            arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
+        )
     )
     unique_idx = draw(helpers.integers(0, num_dims - 1))
     unique_dims = draw(
-        helpers.lists(st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
+        helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
     )
     xs = list()
     input_dtypes = draw(helpers.array_dtypes())
@@ -61,7 +63,7 @@ def test_concat(
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -820,7 +822,9 @@ def test_swapaxes(
 
 # clip
 @given(
-    x_min_n_max=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3),
+    x_min_n_max=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="clip"),

@@ -169,7 +169,9 @@ def test_seed(seed_val):
 
 # shuffle
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+    ),
     as_variable=st.booleans(),
 )
 def test_shuffle(dtype_and_x, as_variable, device, call):
