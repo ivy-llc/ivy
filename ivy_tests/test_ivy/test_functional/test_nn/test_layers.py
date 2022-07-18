@@ -222,7 +222,7 @@ def x_and_filters(
             )
         )
 
-        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         d_in = filter_shape[1]
         if data_format == 'NWC':
             x_shape = draw(
@@ -285,14 +285,15 @@ def x_and_filters(
             )
         )
 
-        min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        min_x_depth = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+        min_x_height = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        min_x_width = filter_shape[2] + (filter_shape[2] - 1) * (dilations - 1)
         d_in = filter_shape[3]
         if data_format == 'NDHWC':
             x_shape = draw(
                 st.tuples(
                     st.integers(1, 5),
-                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_depth, max_value=100),
                     st.integers(min_value=min_x_height, max_value=100),
                     st.integers(min_value=min_x_width, max_value=100),
                     st.integers(d_in, d_in),
@@ -303,7 +304,7 @@ def x_and_filters(
                 st.tuples(
                     st.integers(1, 5),
                     st.integers(d_in, d_in),
-                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_depth, max_value=100),
                     st.integers(min_value=min_x_width, max_value=100),
                     st.integers(min_value=min_x_width, max_value=100),
                 )
