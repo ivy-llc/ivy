@@ -284,6 +284,24 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.exp(self._data, out=out)
 
     def expm1(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.expm1. This method simply wraps the
+        function, and so the docstring for ivy.expm1 also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([5.5, -2.5, 1.5, -0])
+        >>> y = x.expm1()
+        >>> print(y)
+        ivy.array([244.   ,  -0.918,   3.48 ,   0.   ])
+
+        >>> y = ivy.array([0., 0.])
+        >>> x = ivy.array([5., 0.])
+        >>> _ = x.expm1(out=y)
+        >>> print(y)
+        ivy.array([147.,   0.])
+        """
         return ivy.expm1(self._data, out=out)
 
     def floor(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
