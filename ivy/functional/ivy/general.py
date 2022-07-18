@@ -1305,11 +1305,6 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     >>> print(y)
     False
 
-    >>> x = ivy.array([float('inf'), 2, 3])
-    >>> y = x.has_nans()
-    >>> print(y)
-    True
-
     """
     return ivy.value_is_nan(ivy.sum(x), include_infs)
 
