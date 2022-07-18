@@ -9,6 +9,11 @@ Ivy Frontends
 .. _`tf`: https://www.tensorflow.org/api_docs/python/tf
 .. _`tf.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 
+.. _`jax`
+.. _`numpy`
+.. _`tensorflow`
+.. _`torch`
+
 Introduction
 ------------
 
@@ -141,3 +146,9 @@ operation is decided according to the backend framework.
         return ivy.add(input, other * alpha, out=out)
 
     add.unsupported_dtypes = ("float16",)
+
+**More Examples**
+
+**Round Up**
+
+**Video**
