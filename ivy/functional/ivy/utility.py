@@ -259,7 +259,7 @@ def any(
     }
     >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), \
                           b=ivy.array([3, 4, 5]))
-    >>> y = x.any()
+    >>> y = x.any(x)
     >>> print(y)
 
     {
