@@ -2,6 +2,12 @@ broadcast_to
 ============
 
 .. autofunction:: ivy.functional.ivy.data_type.broadcast_to
+
+.. autofunction:: ivy.array.array_methods.broadcast_to
+
+.. autofunction:: ivy.container.container_methods.static_broadcast_to
+
+.. autofunction:: ivy.container.container_methods.broadcast_to
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ broadcast_to
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: broadcast_to
+
+   broadcast_to/broadcast_to_functional.rst
+   broadcast_to/broadcast_to_array.rst
+   broadcast_to/broadcast_to_container.rst
+   broadcast_to/static_broadcast_to_container.rst
+

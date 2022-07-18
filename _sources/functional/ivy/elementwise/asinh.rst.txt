@@ -6,6 +6,8 @@ asinh
 .. autofunction:: ivy.array.array_methods.asinh
 
 .. autofunction:: ivy.container.container_methods.asinh
+
+.. autofunction:: ivy.container.container_methods.static_asinh
 |
 | **Supported Frameworks:**
 
@@ -35,4 +37,5 @@ asinh
    asinh/asinh_functional.rst
    asinh/asinh_array.rst
    asinh/asinh_container.rst
+   asinh/static_asinh_container.rst
 

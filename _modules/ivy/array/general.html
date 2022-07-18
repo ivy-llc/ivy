@@ -139,9 +139,25 @@
 <div class="viewcode-block" id="ArrayWithGeneral"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithGeneral</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <div class="viewcode-block" id="ArrayWithGeneral.all_equal"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.all_equal">[docs]</a>    <span class="k">def</span> <span class="nf">all_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">equality_matrix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.all_equal.</span>
-<span class="sd">        This method simply wraps the function, and so the docstring for</span>
-<span class="sd">        ivy.all_equal also applies to this method with minimal changes.</span>
+<span class="sd">        ivy.Array instance method variant of ivy.all_equal. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.all_equal also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array</span>
+<span class="sd">        x2</span>
+<span class="sd">            input iterable to compare to ``self``</span>
+<span class="sd">        equality_matrix</span>
+<span class="sd">            Whether to return a matrix of equalities comparing each input with every</span>
+<span class="sd">            other. Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Boolean, whether or not the inputs are equal, or matrix array of booleans if</span>
+<span class="sd">            equality_matrix=True is set.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -175,6 +191,24 @@
 <span class="sd">        function, and so the docstring for ivy.gather_nd also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            The array from which to gather values.</span>
+<span class="sd">        indices</span>
+<span class="sd">            Index array.</span>
+<span class="sd">        device</span>
+<span class="sd">            device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as</span>
+<span class="sd">            ``x`` if None.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            New array of given shape, with the values gathered at the indices.</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
@@ -183,7 +217,40 @@
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        ivy.array(2)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gather_nd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gather_nd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithGeneral.to_numpy"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.to_numpy">[docs]</a>    <span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.to_numpy. This method simply wraps</span>
+<span class="sd">        the function, and so the docstring for ivy.to_numpy also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            a numpy array copying all the element of the array ``self``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Array` instance methods:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 0, 1, 1])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.to_numpy()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        [1 0 1 1]</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 0, 0, 1])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.to_numpy()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        [1 0 0 1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
