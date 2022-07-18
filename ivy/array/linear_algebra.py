@@ -91,14 +91,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
             the function computes the cross product for vectors defined by
             the last axis (dimension). Default: -1.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            (default: None) inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape
+            that the (default: None) inputs broadcast to.
 
         Returns
         -------
         ret
-            an array containing the cross products. The returned array must have a data type
-            determined by Type Promotion Rules.
+            an array containing the cross products. The returned array must have
+            a data type determined by Type Promotion Rules.
 
         Examples
         --------

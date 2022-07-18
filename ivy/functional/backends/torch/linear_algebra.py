@@ -34,6 +34,31 @@ def cross(
     axis: int = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    """
+    The cross product of 3-element vectors. If x1 and x2 are 
+    multi- dimensional arrays (i.e., both have a rank greater than 1), 
+    then the cross- product of each pair of corresponding 3-element vectors
+    is independently computed.
+
+    Parameters
+    ----------
+    x1
+        first input array. Should have a numeric data type.
+    x2
+        second input array. Must have the same shape as x1. Should have a numeric
+        data type. should have numeric data type
+    axis
+        the axis (dimension) of x1 and x2 containing the vectors for which to compute 
+        (default: -1) the cross product.If set to -1, the function 
+        computes the cross product for vectors defined by 
+        the last axis (dimension). Default: -1.
+
+    Returns
+    -------
+    ret
+        an array containing the cross products. The returned array must have
+        a data type determined by Type Promotion Rules.
+    """
     if axis is None:
         axis = -1
     promote_type = torch.promote_types(x1.dtype, x2.dtype)

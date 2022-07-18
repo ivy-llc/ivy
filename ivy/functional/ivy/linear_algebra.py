@@ -156,9 +156,10 @@ def cross(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
-    arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
-    of corresponding 3-element vectors is independently computed.
+    """
+    The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
+    arrays (i.e., both have a rank greater than 1), then the cross- product of 
+    each pair of corresponding 3-element vectors is independently computed.
 
     Parameters
     ----------
