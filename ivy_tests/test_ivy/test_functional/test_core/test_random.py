@@ -46,8 +46,14 @@ def test_random_uniform(data, shape, dtype, as_variable, device, call):
         assert ret.shape == shape
     # value test
     ret_np = call(ivy.random_uniform, **kwargs, device=device)
-    assert np.min((ret_np < (high if high else 1.0)).astype(np.int32)) == 1
-    assert np.min((ret_np >= (low if low else 0.0)).astype(np.int32)) == 1
+    assert (
+        np.min((ret_np <= (high + abs(high) * 0.01 if high else 1.01)).astype(np.int32))
+        == 1
+    )
+    assert (
+        np.min((ret_np >= (low - abs(low) * 0.01 if low else -0.01)).astype(np.int32))
+        == 1
+    )
 
 
 # random_normal
@@ -163,14 +169,12 @@ def test_seed(seed_val):
 
 # shuffle
 @given(
-    data=st.data(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
     as_variable=st.booleans(),
 )
-def test_shuffle(data, dtype, as_variable, device, call):
+def test_shuffle(dtype_and_x, as_variable, device, call):
     # smoke test
-    shape = data.draw(helpers.get_shape(min_num_dims=1))
-    x = data.draw(helpers.array_values(dtype, shape))
+    dtype, x = dtype_and_x
     x = ivy.array(x, dtype=dtype, device=device)
     if as_variable:
         x = ivy.variable(x)

@@ -922,8 +922,7 @@ def test_matrix_rank(
     c,
     rtol,
 ):
-    if "float16" in input_dtype:
-        return
+
     helpers.test_function(
         input_dtype,
         as_variable,
