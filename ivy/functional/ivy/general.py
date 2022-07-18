@@ -2567,6 +2567,8 @@ def set_shape_array_mode(mode: bool) -> None:
     True
     """
     global shape_array_mode_stack
+    if not isinstance(mode, bool):
+        raise Exception("set_shape_array_mode only accepts type bool")
     shape_array_mode_stack.append(mode)
 
 
