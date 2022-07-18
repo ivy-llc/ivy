@@ -2,6 +2,7 @@
 
 # global
 import copy
+import warnings
 import pytest
 
 # local
@@ -26,6 +27,13 @@ def _mnai(n, idx, fn):
         n[idx[0]] = fn(n[idx[0]])
     else:
         _mnai(n[idx[0]], idx[1:], fn)
+
+
+def _pnai(n, idx):
+    if len(idx) == 1:
+        del n[idx[0]]
+    else:
+        _pnai(n[idx[0]], idx[1:])
 
 
 # Tests #
@@ -259,10 +267,52 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
 # Still to Add #
 # ---------------#
 
-# prune_nest_at_index
-# insert_into_nest_at_index
 # prune_nest_at_indices
 # insert_into_nest_at_indices
 # map
 # nested_map
 # nested_any
+
+
+@pytest.mark.parametrize(
+    "nest",
+    [
+        {
+            "a": [[0], [1]],
+            "b": {
+                "c": [
+                    [
+                        [
+                            2,
+                        ],
+                        [
+                            4,
+                        ],
+                    ],
+                    [
+                        [
+                            6,
+                        ],
+                        [
+                            8,
+                        ],
+                    ],
+                ]
+            },
+        }
+    ],
+)
+@pytest.mark.parametrize(
+    "index", [("a", 0, 0), ("a", 1, 0), ("b", "c", 0), ("b", "c", 1, 0)]
+)
+def test_prune_nest_at_index(nest, index, device, call):
+    nest_copy = copy.deepcopy(nest)
+
+    # find a better way of doing this
+    try:
+        ivy.prune_nest_at_index(nest, index)
+        _pnai(nest_copy, index)
+    except Warning:
+        warnings.warn("Nothing to delete in dict. ")
+
+    assert nest == nest_copy
