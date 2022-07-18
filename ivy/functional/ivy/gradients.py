@@ -207,16 +207,16 @@ def execute_with_gradients(func: Callable,
     -------
     ret
         the function first output y, the gradients [dy/dx for x in xs], and any other
-        extra function outputs
+        extra function outputs.
 
     Examples
     --------
     class MyModel(ivy.Module):
-        def __init__(self):
+        def __init__(self): 
             self.linear = ivy.Linear(3, 1)
             ivy.Module.__init__(self)
 
-        def _forward(self, x):
+        def _forward(self, x): 
             x = ivy.relu(self.linear(x))
             return x 
 
@@ -240,9 +240,6 @@ def execute_with_gradients(func: Callable,
         print('step {} loss {}'.format(step, ivy.to_numpy(loss).item()))
 
     print('Finished training!')
-
-
-
     """
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
