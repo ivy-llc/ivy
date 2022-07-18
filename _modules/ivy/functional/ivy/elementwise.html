@@ -592,55 +592,6 @@
 <span class="sd">        returned array must have a floating-point data type determined by</span>
 <span class="sd">        :ref:`type-promotion`.</span>
 
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html&gt;`_ </span>
-<span class="sd">    in the standard.</span>
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([-3.5, -0, +0, 1.3, float(&#39;nan&#39;)])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.asinh(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([-1.97, 0., 0., 1.08, nan])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([-2, -0.75, 0.9, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(4)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.asinh(x, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([-1.44, -0.693, 0.809, 0.881])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.2, 0.4, 0.6], \</span>
-<span class="sd">                       [-0.8, -1, -2]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.asinh(x, out=x)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[ 0.199, 0.39, 0.569],</span>
-<span class="sd">               [-0.733, -0.881, -1.44]])</span>
-
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([-0, -2.6, 1, 3.6])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.asinh(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([ 0. , -1.68 , 0.881, 1.99 ])</span>
-
-<span class="sd">    With :code:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1, 2]),\</span>
-<span class="sd">                            b=ivy.array([4.2, -5.3, -0, -2.3]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.asinh(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0., 0.881, 1.44]),</span>
-<span class="sd">        b: ivy.array([2.14, -2.37, 0., -1.57])</span>
-<span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">asinh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -1400,35 +1351,11 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.cos(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([1., 0.54, -0.416])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([4., 0., -6.])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(3)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.cos(x, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([-0.654, 1., 0.96])</span>
-
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 0., 2.])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.cos(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0.54 , 1., -0.416])</span>
-
-<span class="sd">    With :code:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.cos(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([1., 0.54, 0.54]),</span>
-<span class="sd">        b: ivy.array([0.54, 1., 0.96])</span>
-<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -3362,51 +3289,6 @@
 <span class="sd">        an array containing the evaluated result for each element in ``x``. The returned</span>
 <span class="sd">        array must have the same data type as ``x``.</span>
 
-
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html&gt;`_ </span>
-<span class="sd">    in the standard.</span>
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([8.3, -0, 6.8, 0.07])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.sign(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([1., 0., 1., 1.])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.78, -4., -6.9, 0],\</span>
-<span class="sd">                       [-.4, 0.5, 8, -0.01]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.sign(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[ 1., -1., -1.,  0.],</span>
-<span class="sd">               [-1.,  1.,  1., -1.]])</span>
-
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([8.95, -124.6, -0.001, 0, 1.5, 7.1])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.sign(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([ 1., -1., -1.,  0.,  1.,  1.])</span>
-
-<span class="sd">    With :code:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., -0.]),\</span>
-<span class="sd">                          b=ivy.array([1.46, 5.9, -0.0]),\</span>
-<span class="sd">                          c=ivy.array([-8.23, -4.9, -2.6, 7.4]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.sign(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0., 0.]),</span>
-<span class="sd">        b: ivy.array([1., 1., 0.]),</span>
-<span class="sd">        c: ivy.array([-1., -1., -1., 1.])</span>
-<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -3447,54 +3329,6 @@
 <span class="sd">        an array containing the sine of each element in ``x``. The returned array must</span>
 <span class="sd">        have a floating-point data type determined by :ref:`type-promotion`.</span>
 
-<span class="sd">    This method conforms to the</span>
-<span class="sd">    `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
-<span class="sd">    This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/</span>
-<span class="sd">    signatures.elementwise_functions.sin.html&gt;` _ in the standard.</span>
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.sin(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0., 0.841, 0.909])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1.2, -2.3, 3.6])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(4)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.sin(x, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0., 0.932, -0.746, -0.443])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2., 3.], [-4., -5., -6.]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.sin(x, out=x)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[0.841, 0.909, 0.141],</span>
-<span class="sd">               [0.757, 0.959, 0.279]])</span>
-
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., 1.2, -2.3, 3.6])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.sin(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0., 0.932, -0.746, -0.443])</span>
-
-<span class="sd">    With :code:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2., 3.]),\</span>
-<span class="sd">                          b=ivy.array([-4., -5., -6., -7.]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.sin(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0., 0.841, 0.909, 0.141]),</span>
-<span class="sd">        b: ivy.array([0.757, 0.959, 0.279, -0.657])</span>
-<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -3536,36 +3370,6 @@
 <span class="sd">        an array containing the hyperbolic sine of each element in ``x``. The returned</span>
 <span class="sd">        array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.sinh(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">        ivy.array([1.18, 3.63, 10.])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.23, 3., -1.2])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.sinh(x, out=x)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">        ivy.array([0.232, 10., -1.51])</span>
-
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([2, 4, 7])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.sinh(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">        ivy.array([3.63, 27.3, 548.])</span>
-
-<span class="sd">    With :code:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.23, -0.25, 1]), b=ivy.array([3, -4, 1.26]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.sinh(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0.232, -0.253, 1.18]),</span>
-<span class="sd">        b: ivy.array([10., -27.3, 1.62])</span>
-<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -3618,7 +3422,7 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 <span class="sd">    With :code:`ivy.Array` input:</span>
-
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 4., 8.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.sqrt(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -3641,7 +3445,7 @@
 <span class="sd">    ivy.array([nan, 31.6, 5.83])</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
-
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.sqrt(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -3655,7 +3459,7 @@
 <span class="sd">    ------------------------</span>
 
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
-
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],  [3., 4.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.sqrt()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -3663,7 +3467,7 @@
 <span class="sd">               [1.73, 2.  ]])</span>
 
 <span class="sd">    Using :code:`ivy.Container` instance method:</span>
-
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 100., 27.]), b=ivy.native_array([93., 54., 25.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.sqrt()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -3671,7 +3475,7 @@
 <span class="sd">        a: ivy.array([0., 10., 5.2]),</span>
 <span class="sd">        b: ivy.array([9.64, 7.35, 5.])</span>
 <span class="sd">    }</span>
-
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -4084,17 +3888,9 @@
 <span class="sd">        An array with the elements of x1, but clipped to not be lower than the x2</span>
 <span class="sd">        values.</span>
 
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html&gt;`_ </span>
-<span class="sd">    in the standard.</span>
 
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
 <span class="sd">    With :code:`ivy.Array` inputs:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([7, 9, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([9, 3, 2])</span>
@@ -4102,49 +3898,61 @@
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([9, 9, 5])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 5, 9, 8, 3, 7])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([[9], [3], [2]])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.zeros((3, 6))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.maximum(x, y, out=z)</span>
+<span class="sd">    With :code:`ivy.NativeArray` inputs:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1, 5, 9, 8, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([9, 3, 2, 0, 7])</span>
+<span class="sd">    &gt;&gt;&gt; z= ivy.maximum(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([[9.,9.,9.,9.,9.,9.],</span>
-<span class="sd">               [3.,5.,9.,8.,3.,7.],</span>
-<span class="sd">               [2.,5.,9.,8.,3.,7.]])</span>
+<span class="sd">    ivy.array([9, 5, 9, 8, 7])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[7, 3]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([0, 7])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.maximum(x, y, out=x)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[7, 7]])</span>
+<span class="sd">    With :code:`Number` inputs:</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.zeros(1)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.maximum(1, 5, out=z)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array(5.)</span>
 
-<span class="sd">    With one :code:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 3], [2, 4], [3, 7]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 0,]), \</span>
-<span class="sd">                          b=ivy.array([-5, 9]))</span>
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([7, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([0, 7])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.maximum(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([[1, 3],</span>
-<span class="sd">                      [2, 4],</span>
-<span class="sd">                      [3, 7]]),</span>
-<span class="sd">        b: ivy.array([[1, 9],</span>
-<span class="sd">                      [2, 9],</span>
-<span class="sd">                      [3, 9]])</span>
-<span class="sd">    }</span>
+<span class="sd">    ivy.array([7, 7])</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 3, 1]),\</span>
-<span class="sd">                        b=ivy.array([2, 8, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 5, 6]),\</span>
-<span class="sd">                        b=ivy.array([5, 9, 7]))</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.maximum(x, y)</span>
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`Number` inputs:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 7, 3])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.maximum(x, 5)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([1, 5, 6]),</span>
-<span class="sd">        b: ivy.array([5, 9, 7])</span>
-<span class="sd">    }</span>
+<span class="sd">    ivy.array([5, 7, 5])</span>
+
+<span class="sd">    With a mix of :code:`ivy.NativeArray` and :code:`Number` inputs:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1, 3])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.maximum(x, 5)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([5, 5])</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+<span class="sd">    With :code:`ivy.Array` instance method using :code:`ivy.Array` input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([4, 8, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([9, 3, 2])</span>
+<span class="sd">    &gt;&gt;&gt; x.maximum(y, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([9, 8, 3])</span>
+
+<span class="sd">    With :code:`ivy.Array` instance method using :code:`ivy.NativeArray` input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([4, 1, 8, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([9, 3, 2, 6])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.maximum(y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([9, 3, 8, 6])</span>
+
+<span class="sd">    With :code:`ivy.Array` instance method using :code:`Number` input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 7, 8])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; x.maximum(3, out=z)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([3., 7., 8.])</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 

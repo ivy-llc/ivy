@@ -129,7 +129,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Collection of random Ivy functions.&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
@@ -156,7 +156,7 @@
 <span class="k">def</span> <span class="nf">random_uniform</span><span class="p">(</span>
     <span class="n">low</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
     <span class="n">high</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -192,7 +192,7 @@
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
-
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.random_uniform()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array(0.26431865)</span>
@@ -204,7 +204,7 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.random_uniform(0.0, 2.0, device=&quot;cpu&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array(1.89150229)</span>
-
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.random_uniform(0.7, 1.0, device=&quot;cpu&quot;, shape=(2, 2))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[0.89629126, 0.94198485],</span>
@@ -212,9 +212,9 @@
 
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
-
+<span class="sd">    </span>
 <span class="sd">    With :code:`ivy.Container` input:</span>
-
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.random_uniform(), \</span>
 <span class="sd">                          b=ivy.random_uniform(shape=2))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -222,7 +222,7 @@
 <span class="sd">    a: ivy.array(0.7550739),</span>
 <span class="sd">    b: ivy.array([0.624, 0.00109])</span>
 <span class="sd">    }</span>
-
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span>
         <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -236,7 +236,7 @@
 <span class="k">def</span> <span class="nf">random_normal</span><span class="p">(</span>
     <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
     <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -275,11 +275,11 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.random_normal(shape=3)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([ 0.811, -0.508, -0.564])</span>
-
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.random_normal(0.0,2.0,device=&#39;cpu&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array(-0.7268672)</span>
-
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.random_normal(0.7, 1.0, device=&quot;cpu&quot;, shape=(2, 2))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[1.17 , 0.968],</span>
@@ -289,7 +289,7 @@
 <span class="sd">    ------------------------</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
-
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.random_normal(), \</span>
 <span class="sd">                          b=ivy.random_normal(shape=2))</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -405,7 +405,7 @@
 <span class="k">def</span> <span class="nf">randint</span><span class="p">(</span>
     <span class="n">low</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">high</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">],</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

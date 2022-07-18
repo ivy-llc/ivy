@@ -5,8 +5,6 @@ sin
 
 .. autofunction:: ivy.array.array_methods.sin
 
-.. autofunction:: ivy.container.container_methods.static_sin
-
 .. autofunction:: ivy.container.container_methods.sin
 |
 | **Supported Frameworks:**
@@ -37,5 +35,4 @@ sin
    sin/sin_functional.rst
    sin/sin_array.rst
    sin/sin_container.rst
-   sin/static_sin_container.rst
 

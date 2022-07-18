@@ -80,7 +80,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../array.html">Array</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="activations.html">Activations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="array.html">Array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conversions.html">Conversions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="creation.html">Creation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type.html">Data type</a></li>
@@ -206,28 +205,6 @@ with minimal changes.</p>
 <dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../array.html#module-ivy.Array" title="ivy.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.to_numpy">
-<span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/general.html#ArrayWithGeneral.to_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.to_numpy" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container instance method variant of ivy.to_numpy.
-This method simply wraps the function, and so the docstring for
-ivy.to_numpy also applies to this method with minimal changes.</p>
-<p class="rubric">Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance methods:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">[1 0 1 1]</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">[1 0 0 1]</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </dd></dl>

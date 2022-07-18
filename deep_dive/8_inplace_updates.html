@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Formatting" href="9_formatting.html" />
+    <link rel="next" title="Function Arguments" href="9_function_arguments.html" />
     <link rel="prev" title="Devices" href="7_devices.html" /> 
 </head>
 
@@ -61,12 +61,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#copy-argument">copy argument</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="9_formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_ivy_tests.html">Ivy Tests</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -286,7 +285,7 @@ This could for example be the input array itself, but can also be any other arra
 The type hint of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is <code class="code docutils literal notranslate"><span class="pre">Optional[ivy.Array]</span></code>.
 However, as discussed above, if the function is <em>nestable</em> then <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are also supported.
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is omitted from the type hint in such cases,
-as explained in the <a class="reference internal" href="10_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
+as explained in the <a class="reference internal" href="9_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
 <p>When the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is unspecified, then the return is simply provided in a newly created <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>
 (or <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> if <em>nestable</em>).
 However, when <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, then the return is provided as an inplace update of the
@@ -424,7 +423,7 @@ or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQ
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="7_devices.html" class="btn btn-neutral float-left" title="Devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="9_formatting.html" class="btn btn-neutral float-right" title="Formatting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="9_function_arguments.html" class="btn btn-neutral float-right" title="Function Arguments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
