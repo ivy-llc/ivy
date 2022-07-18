@@ -689,6 +689,19 @@ def test_num_cpu_cores():
     assert ivy.num_cpu_cores() == m_cpu_cores
 
 
+def test_num_gpus():
+    # Using nvidia_smi to check number of gpu
+    if ivy.gpu_is_available():
+        # Initialise nvidia_smi
+        nvidia_smi.nvmlInit()
+        gpu_cores = nvidia_smi.nvmlDeviceGetCount()
+
+        # Type check
+        assert type(ivy.num_gpus()) == int
+        # Value check
+        assert ivy.num_gpus() == gpu_cores
+
+
 # Still to Add #
 # ---------------#
 
@@ -697,8 +710,6 @@ def test_num_cpu_cores():
 # used_mem_on_dev # working fine for cpu
 # percent_used_mem_on_dev # working fine for cpu
 # dev_util # working fine for cpu
-# num_cpu_cores
-# num_gpus
 # tpu_is_available
 # _assert_dev_correct_formatting
 # set_default_device
