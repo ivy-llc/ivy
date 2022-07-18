@@ -5,6 +5,10 @@ Ivy Frontends
 .. _`jax.lax`: https://jax.readthedocs.io/en/latest/jax.lax.html
 .. _`jax.lax.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html
 
+.. _`numpy.add`: https://numpy.org/doc/stable/reference/generated/numpy.add.html
+.. _`numpy mathematical functions`: https://numpy.org/doc/stable/reference/index.html
+.. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
+
 .. _`tf.add`: https://www.tensorflow.org/api_docs/python/tf/math/add
 .. _`tf`: https://www.tensorflow.org/api_docs/python/tf
 .. _`tf.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
@@ -106,6 +110,51 @@ it has only one argument, and just as our :code:`add` function, we link its retu
         return ret
 
     add.unsupported_dtypes = {"torch": ("float16",)}
+
+In NumPy, :code:`add` is categorised under :code:`mathematical_functions` with a
+sub-category of :code:`arithmetic_operations` as shown in the
+`numpy mathematical functions`_ directory. This ensures direct access to
+:code:`numpy.add` in :code:`ivy` by simply importing
+:code:`ivy.functional.frontends.numpy`.
+
+The function arguments for this method is slightly more complex due to the extra
+optional arguments. Additional handling code is added to recover the behaviour
+according to the `numpy.add`_ documentation. For example, if :code:`dtype` is specified,
+the arguments to be added will be casted to the desired type through
+:code:`ivy.astype`. The returned result is then obtained through :code:`ivy.add`
+just like the other examples.
+
+Just like the Jax frontend version of this :code:`add` function, a :code:`dict` is
+specified in the :code:`unsupported_dtypes` attribute to indicate the list of
+invalid :code:`dtype` for the backend framework.
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
+    def tan(
+        x,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="k",
+        dtype=None,
+        subok=True,
+    ):
+        if dtype:
+            x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+        ret = ivy.tan(x, out=out)
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        return ret
+
+    tan.unsupported_dtypes = {"torch": ("float16",)}
+
+With :code:`tan` as the second example, it has a sub-category of
+:code:`trigonometric_functions` according to the `numpy mathematical functions`_
+directory. By referring to the `numpy.tan`_ documentation, it has additional
+arguments just like its :code:`add` function, thus needing additional handling code.
 
 **TensorFlow**
 
