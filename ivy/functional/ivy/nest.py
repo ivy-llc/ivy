@@ -195,7 +195,6 @@ def set_nest_at_indices(
     >>> print(nest)
     [[1, 2, 3, 4, 111, 6], ['a', 'b', 'c', 'x', 'e', 'f']]
 
-
     With :code:`Tuple` inputs:
 
     >>> nest = (['abc', 'xyz', 'pqr'],[1, 4, 'a', 'b'])
@@ -205,15 +204,6 @@ def set_nest_at_indices(
     >>> print(nest)
     (['abc', 'ivy', 'pqr'], [1, 4, 'x', 'b'])
 
-    With :code:`ivy.Array` inputs:
-
-    >>> nest = ivy.array([[1., 2., 3.],[4., 5., 6.]])
-    >>> indices = ((0, 1),(1, 2))
-    >>> values = (11., 22.)
-    >>> ivy.set_nest_at_indices(nest, indices, values)
-    >>> print(nest)
-    ivy.array([[1., 11., 3.], [4., 5., 22.]])
-
     With :code:`Dict` input:
 
     >>> x = {'a': [1., 2., 3.], 'b': [4., 5., 6.], 'c': [0.]}
@@ -222,6 +212,15 @@ def set_nest_at_indices(
     >>> ivy.set_nest_at_indices(nest, indices, values)
     >>> print(nest)
     {'a': [1.0, 11.0, 3.0], 'b': [4.0, 5.0, 22.0], 'c': [33.0]}
+
+    With :code:`ivy.Array` inputs:
+
+    >>> nest = ivy.array([[1., 2., 3.],[4., 5., 6.]])
+    >>> indices = ((0, 1),(1, 2))
+    >>> values = (11., 22.)
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    ivy.array([[1., 11., 3.], [4., 5., 22.]])
     """
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
