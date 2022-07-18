@@ -16,16 +16,18 @@ import ivy.functional.backends.numpy as ivy_np
 
 # linear
 @given(
-    outer_batch_shape=helpers.lists(st.integers(2, 5), min_size=1, max_size=3),
-    inner_batch_shape=helpers.lists(st.integers(2, 5), min_size=1, max_size=3),
+    outer_batch_shape=helpers.lists(arg=st.integers(2, 5), min_size=1, max_size=3),
+    inner_batch_shape=helpers.lists(arg=st.integers(2, 5), min_size=1, max_size=3),
     num_out_feats=st.integers(min_value=1, max_value=5),
     num_in_feats=st.integers(min_value=1, max_value=5),
-    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 3),
-    as_variable=helpers.list_of_length(st.booleans(), 3),
+    dtype=helpers.list_of_length(
+        x=st.sampled_from(ivy_np.valid_float_dtypes), length=3
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=3),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
-    native_array=helpers.list_of_length(st.booleans(), 3),
-    container=helpers.list_of_length(st.booleans(), 3),
+    native_array=helpers.list_of_length(x=st.booleans(), length=3),
+    container=helpers.list_of_length(x=st.booleans(), length=3),
     instance_method=st.booleans(),
 )
 def test_linear(
@@ -53,15 +55,15 @@ def test_linear(
     bias = np.random.uniform(size=weight.shape[:-1]).astype(dtype[2])
 
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "linear",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="linear",
         test_rtol=1e-03,
         x=x,
         weight=weight,
@@ -75,7 +77,10 @@ def test_linear(
 # dropout
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+        arg=st.integers(1, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
@@ -104,19 +109,22 @@ def test_dropout(array_shape, dtype, as_variable, fw, device, call):
 # # scaled_dot_product_attention
 @given(
     batch_shape=helpers.lists(
-        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+        arg=st.integers(1, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
     ),
     num_queries=st.integers(min_value=1, max_value=5),
     num_keys=st.integers(min_value=1, max_value=5),
     feat_dim=st.integers(min_value=1, max_value=5),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 5),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=5),
     num_positional_args=helpers.num_positional_args(
         fn_name="scaled_dot_product_attention"
     ),
     with_out=st.booleans(),
-    native_array=helpers.list_of_length(st.booleans(), 5),
-    container=helpers.list_of_length(st.booleans(), 5),
+    native_array=helpers.list_of_length(x=st.booleans(), length=5),
+    container=helpers.list_of_length(x=st.booleans(), length=5),
     instance_method=st.booleans(),
 )
 def test_scaled_dot_product_attention(
@@ -149,15 +157,15 @@ def test_scaled_dot_product_attention(
     scale = np.random.uniform(size=[1]).astype(dtype[4])
 
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "scaled_dot_product_attention",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="scaled_dot_product_attention",
         q=q,
         k=k,
         v=v,
@@ -331,31 +339,33 @@ def x_and_filters(
     data_format=st.sampled_from(["NWC", "NCW"]),
     dilations=st.integers(min_value=1, max_value=3),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv1d"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
     instance_method=st.booleans(),
 )
-def test_conv1d(batch_size,
-                w,
-                d_in,
-                d_out,
-                filter,
-                stride,
-                pad,
-                data_format,
-                dilations,
-                dtype,
-                as_variable,
-                num_positional_args,
-                native_array,
-                container,
-                instance_method,
-                fw,
-                device):
+def test_conv1d(
+    batch_size,
+    w,
+    d_in,
+    d_out,
+    filter,
+    stride,
+    pad,
+    data_format,
+    dilations,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
     dtype = [dtype] * 2
-    if fw == 'torch' and 'float16' in dtype:
+    if fw == "torch" and "float16" in dtype:
         # not implemented for Half in torch
         return
 
@@ -367,19 +377,17 @@ def test_conv1d(batch_size,
         x = np.random.uniform(size=[batch_size] + [w] + [d_in]).astype(dtype[0])
     else:
         x = np.random.uniform(size=[batch_size, d_in, w]).astype(dtype[0])
-    filters = np.random.uniform(size=[filter] + [d_in] + [d_out]).astype(
-        dtype[1]
-    )
+    filters = np.random.uniform(size=[filter] + [d_in] + [d_out]).astype(dtype[1])
     helpers.test_function(
-        dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "conv1d",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv1d",
         x=x,
         filters=filters,
         strides=stride,
@@ -453,10 +461,10 @@ def test_conv1d_transpose(
     ),
     stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
     instance_method=st.booleans(),
 )
 def test_conv2d(
@@ -475,15 +483,15 @@ def test_conv2d(
     dtype = [dtype] * 2
 
     helpers.test_function(
-        dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "conv2d",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv2d",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
         strides=stride,
@@ -495,18 +503,20 @@ def test_conv2d(
 
 # conv2d_transpose
 @given(
-    array_shape=helpers.lists(st.integers(1, 5), min_size=3, max_size=3),
+    array_shape=helpers.lists(arg=st.integers(1, 5), min_size=3, max_size=3),
     filter_shape=st.integers(min_value=1, max_value=5),
     stride=st.integers(min_value=1, max_value=3),
     pad=st.sampled_from(["VALID", "SAME"]),
-    output_shape=helpers.lists(st.integers(1, 5), min_size=4, max_size=4),
+    output_shape=helpers.lists(arg=st.integers(1, 5), min_size=4, max_size=4),
     data_format=st.sampled_from(["NHWC", "NCHW"]),
     dilations=st.integers(min_value=1, max_value=5),
-    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    dtype=helpers.list_of_length(
+        x=st.sampled_from(ivy_np.valid_float_dtypes), length=2
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
     instance_method=st.booleans(),
 )
 def test_conv2d_transpose(
@@ -541,15 +551,15 @@ def test_conv2d_transpose(
         dtype[1]
     )
     helpers.test_function(
-        dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "conv2d_transpose",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv2d_transpose",
         x=x,
         filters=filters,
         strides=stride,
@@ -804,18 +814,20 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
 
 # conv3d_transpose
 @given(
-    array_shape=helpers.lists(st.integers(1, 5), min_size=4, max_size=4),
+    array_shape=helpers.lists(arg=st.integers(1, 5), min_size=4, max_size=4),
     filter_shape=st.integers(min_value=1, max_value=5),
     stride=st.integers(min_value=1, max_value=3),
     pad=st.sampled_from(["VALID", "SAME"]),
-    output_shape=helpers.lists(st.integers(1, 5), min_size=5, max_size=5),
+    output_shape=helpers.lists(arg=st.integers(1, 5), min_size=5, max_size=5),
     data_format=st.sampled_from(["NHWC", "NCHW"]),
     dilations=st.integers(min_value=1, max_value=5),
-    dtype=helpers.list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    dtype=helpers.list_of_length(
+        x=st.sampled_from(ivy_np.valid_float_dtypes), length=2
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d_transpose"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
     instance_method=st.booleans(),
 )
 def test_conv3d_transpose(
@@ -855,15 +867,15 @@ def test_conv3d_transpose(
         size=(filter_shape, filter_shape, filter_shape, 1, 1)
     ).astype(dtype[1])
     helpers.test_function(
-        dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "conv3d_transpose",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv3d_transpose",
         x=x,
         filters=filters,
         strides=stride,
@@ -879,15 +891,15 @@ def test_conv3d_transpose(
 
 # lstm
 @given(
-    b=helpers.lists(st.integers(1, 5), min_size=4, max_size=4),
+    b=helpers.lists(arg=st.integers(1, 5), min_size=4, max_size=4),
     t=st.integers(min_value=1, max_value=5),
     input_channel=st.integers(min_value=1, max_value=5),
     hidden_channel=st.integers(min_value=1, max_value=5),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 7),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=7),
     num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
-    native_array=helpers.list_of_length(st.booleans(), 7),
-    container=helpers.list_of_length(st.booleans(), 7),
+    native_array=helpers.list_of_length(x=st.booleans(), length=7),
+    container=helpers.list_of_length(x=st.booleans(), length=7),
     instance_method=st.booleans(),
 )
 def test_lstm(
@@ -907,7 +919,7 @@ def test_lstm(
     dtype = [dtype] * 7
 
     # smoke test
-    if fw == 'torch' and device == 'cpu' and 'float16' in dtype:
+    if fw == "torch" and device == "cpu" and "float16" in dtype:
         # "sigmoid_cpu" not implemented for 'Half'
         return
 
@@ -915,37 +927,33 @@ def test_lstm(
     init_h = np.ones(b + [hidden_channel]).astype(dtype[1])
     init_c = np.ones(b + [hidden_channel]).astype(dtype[2])
 
-    kernel = np.array(
-        np.ones([input_channel, 4 * hidden_channel])
-    ).astype(dtype[3]) * 0.5
+    kernel = (
+        np.array(np.ones([input_channel, 4 * hidden_channel])).astype(dtype[3]) * 0.5
+    )
 
     recurrent_kernel = (
-        np.array(
-            np.ones([hidden_channel, 4 * hidden_channel])
-        ).astype(dtype[4]) * 0.5
+        np.array(np.ones([hidden_channel, 4 * hidden_channel])).astype(dtype[4]) * 0.5
     )
 
     bias = np.random.uniform(size=[4 * hidden_channel]).astype(dtype[5])
 
-    recurrent_bias = np.random.uniform(
-        size=[4 * hidden_channel]
-    ).astype(dtype[6])
+    recurrent_bias = np.random.uniform(size=[4 * hidden_channel]).astype(dtype[6])
 
     helpers.test_function(
-        dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "lstm_update",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="lstm_update",
         x=x,
         init_h=init_h,
         init_c=init_c,
         kernel=kernel,
         recurrent_kernel=recurrent_kernel,
         bias=bias,
-        recurrent_bias=recurrent_bias
+        recurrent_bias=recurrent_bias,
     )
