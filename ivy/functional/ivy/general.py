@@ -1264,7 +1264,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
         Boolean as to whether the array contains nans.
 
     """
-    return value_is_nan(ivy.sum(x), include_infs)
+    return ivy.value_is_nan(ivy.sum(x), include_infs)
 
 
 def exists(x: Any) -> bool:
@@ -2567,6 +2567,8 @@ def set_shape_array_mode(mode: bool) -> None:
     True
     """
     global shape_array_mode_stack
+    if not isinstance(mode, bool):
+        raise Exception("set_shape_array_mode only accepts type bool")
     shape_array_mode_stack.append(mode)
 
 
