@@ -1072,7 +1072,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the element-wise results.
-            The returned container must have a data type determined by :ref:`type-promotion`.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         """
         return self.static_bitwise_and(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -1594,16 +1595,17 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.bitwise_right_shift. This method simply wraps the
-        function, and so the docstring for ivy.bitwise_right_shift also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.bitwise_right_shift.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_right_shift also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             first input array or container. Should have an integer or boolean data type.
         x2
-            second input array or container Must be compatible with ``self`` (see :ref:`broadcasting`).
+            second input array or container Must be compatible with ``self``
+            (see :ref:`broadcasting`).
             Should have an integer or boolean data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1622,8 +1624,8 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container must have a data
-            type determined by :ref:`type-promotion`.
+            a container containing the element-wise results. The returned container
+            must have a data type determined by :ref:`type-promotion`.
         """
         return self.static_bitwise_right_shift(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -1672,7 +1674,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the element-wise results.
-            The returned container must have a data type determined by :ref:`type-promotion`.
+            The returned container must have a data type determined by
+            :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "bitwise_xor",
@@ -1727,7 +1730,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the element-wise results.
-            The returned container must have a data type determined by :ref:`type-promotion`.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         """
         return self.static_bitwise_xor(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -2028,7 +2032,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the element-wise results.
-            The returned container must have a data type determined by :ref:`type-promotion`.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         """
         return self.static_divide(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -2471,7 +2476,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the element-wise results.
-            The returned container must have a data type determined by :ref:`type-promotion`.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         """
         return ContainerBase.multi_map_in_static_method(
             "floor_divide",
@@ -3452,9 +3458,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated base ``2`` logarithm for each element in ``x``.
-            The returned array must have a real-valued floating-point data type
-            determined by :ref:`type-promotion`.
+            a container containing the evaluated base ``2`` logarithm for
+            each element in ``x``. The returned array must have a real-valued
+            floating-point data type determined by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -3502,9 +3508,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated base ``2`` logarithm for each element in ``self``.
-            The returned array must have a real-valued floating-point data type
-            determined by :ref:`type-promotion`.
+            a container containing the evaluated base ``2`` logarithm for each
+            element in ``self``. The returned array must have a real-valued
+            floating-point data type determined by :ref:`type-promotion`.
 
         """
         return self.static_log2(
@@ -5608,8 +5614,8 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             an container containing the hyperbolic tangent of each element in ``x``.
-            The returned array must have a real-valued floating-point data type determined
-            by :ref:`type-promotion`.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         Examples
         --------
