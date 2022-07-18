@@ -120,8 +120,8 @@ def mutually_broadcastable_shapes(
 dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
 
 
-# Ivy Unit Tests #
-# -------------- #
+# Array API Standard Function Tests #
+# --------------------------------- #
 
 
 # astype
@@ -294,35 +294,6 @@ def test_can_cast(
     )
 
 
-# dtype_bits
-@given(
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
-    num_positional_args=helpers.num_positional_args(fn_name="dtype_bits"),
-)
-def test_dtype_bits(
-    input_dtype,
-    num_positional_args,
-    fw,
-):
-    ret = helpers.test_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=False,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=True,
-        container_flags=False,
-        instance_method=False,
-        fw=fw,
-        fn_name="dtype_bits",
-        dtype_in=input_dtype,
-        test_values=False,
-    )
-    if not ivy.exists(ret):
-        return
-    num_bits, num_bits_np = ret
-    assert num_bits == num_bits_np
-
-
 @st.composite
 def _array_or_type(draw, float_or_int):
     valid_dtypes = {"float": ivy_np.valid_float_dtypes, "int": ivy_np.valid_int_dtypes}[
@@ -414,6 +385,79 @@ def test_iinfo(
     assert mach_lims.max == mach_lims_np.max
     assert mach_lims.dtype == mach_lims_np.dtype
     assert mach_lims.bits == mach_lims_np.bits
+
+
+# result_type
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy.valid_dtypes,
+        num_arrays=st.shared(st.integers(2, 5), key="num_arrays"),
+        shared_dtype=False,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=st.shared(st.integers(2, 5), key="num_arrays"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_result_type(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = helpers.as_lists(*dtype_and_x)
+    kw = {}
+    for i, (dtype_, x_) in enumerate(zip(dtype, x)):
+        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype_)
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="result_type",
+        **kw,
+    )
+
+
+# Extra Ivy Function Tests #
+# ------------------------ #
+
+
+# dtype_bits
+@given(
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="dtype_bits"),
+)
+def test_dtype_bits(
+    input_dtype,
+    num_positional_args,
+    fw,
+):
+    ret = helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=True,
+        container_flags=False,
+        instance_method=False,
+        fw=fw,
+        fn_name="dtype_bits",
+        dtype_in=input_dtype,
+        test_values=False,
+    )
+    if not ivy.exists(ret):
+        return
+    num_bits, num_bits_np = ret
+    assert num_bits == num_bits_np
 
 
 # is_bool_dtype
@@ -581,46 +625,6 @@ def test_promote_types(
     )
 
 
-# result_type
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_dtypes,
-        num_arrays=st.shared(st.integers(2, 5), key="num_arrays"),
-        shared_dtype=False,
-    ),
-    as_variable=st.booleans(),
-    num_positional_args=st.shared(st.integers(2, 5), key="num_arrays"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-)
-def test_result_type(
-    dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-):
-    dtype, x = helpers.as_lists(*dtype_and_x)
-    kw = {}
-    for i, (dtype_, x_) in enumerate(zip(dtype, x)):
-        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype_)
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="result_type",
-        **kw,
-    )
-
-
 # type_promote_arrays
 @given(
     dtype_and_values=helpers.dtype_and_values(
@@ -657,3 +661,21 @@ def test_type_promote_arrays(
         x2=np.array(x2),
         test_values=True,
     )
+
+
+# Still to Add #
+# ------------ #
+# as_ivy_dtype
+# as_native_dtype
+# closest_valid_dtype
+# default_float_dtype
+# default_dtype
+# default_int_dtype
+# test_dtype
+# function_supported_dtypes
+# function_unsupported_dtypes
+# invalid_dtype
+# unset_default_dtype()
+# unset_default_float_dtype()
+# unset_default_int_dtype()
+# valid_dtype
