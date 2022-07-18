@@ -132,7 +132,6 @@
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
 
@@ -180,42 +179,10 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container static method variant of ivy.cholesky. This method simply wraps</span>
-<span class="sd">        the function, and so the docstring for ivy.cholesky also applies to this</span>
-<span class="sd">        method with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x</span>
-<span class="sd">            input array or container having shape (..., M, M) and whose innermost two</span>
-<span class="sd">            dimensions form square symmetric positive-definite matrices. Should have a</span>
-<span class="sd">            floating-point data type.</span>
-<span class="sd">        upper</span>
-<span class="sd">            If True, the result must be the upper-triangular Cholesky factor U. If</span>
-<span class="sd">            False, the result must be the lower-triangular Cholesky factor L.</span>
-<span class="sd">            Default: False.</span>
-<span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
-<span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
-<span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        out</span>
-<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
-<span class="sd">            that the inputs broadcast to.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            a container containing the Cholesky factors for each square matrix. If upper</span>
-<span class="sd">            is False, the returned container must contain lower-triangular matrices;</span>
-<span class="sd">            otherwise, the returned container must contain upper-triangular matrices.</span>
-<span class="sd">            The returned container must have a floating-point data type determined by</span>
-<span class="sd">            Type Promotion Rules and must have the same shape as self.</span>
+<span class="sd">        ivy.Container static method variant of ivy.cholesky.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring</span>
+<span class="sd">        for ivy.cholesky also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -268,42 +235,10 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.cholesky. This method simply wraps</span>
-<span class="sd">        the function, and so the docstring for ivy.cholesky also applies to this method</span>
+<span class="sd">        ivy.Container instance method variant of ivy.cholesky.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring</span>
+<span class="sd">        for ivy.cholesky also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            input container having shape (..., M, M) and whose innermost two dimensions</span>
-<span class="sd">            form square symmetric positive-definite matrices. Should have a</span>
-<span class="sd">            floating-point data type.</span>
-<span class="sd">        upper</span>
-<span class="sd">            If True, the result must be the upper-triangular Cholesky factor U. If</span>
-<span class="sd">            False, the result must be the lower-triangular Cholesky factor L.</span>
-<span class="sd">            Default: False.</span>
-<span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
-<span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
-<span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        out</span>
-<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
-<span class="sd">            that the inputs broadcast to.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            a container containing the Cholesky factors for each square matrix. If upper</span>
-<span class="sd">            is False, the returned container must contain lower-triangular matrices;</span>
-<span class="sd">            otherwise, the returned container must contain upper-triangular matrices.</span>
-<span class="sd">            The returned container must have a floating-point data type determined by</span>
-<span class="sd">            Type Promotion Rules and must have the same shape as self.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
