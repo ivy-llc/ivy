@@ -195,6 +195,130 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
 # Convolutions #
 # -------------#
 
+@st.composite
+def x_and_filters(
+        draw,
+        dtypes,
+        data_format,
+        type: str = '2d'
+):
+    data_format = draw(data_format)
+    dtype = draw(dtypes)
+    dilations = draw(st.integers(min_value=1, max_value=3))
+    if type == '1d':
+        filter_shape = draw(
+            st.tuples(
+                st.integers(3, 5),
+                st.integers(1, 3),
+                st.integers(1, 3),
+            )
+        )
+
+        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        d_in = filter_shape[1]
+        if data_format == 'NWC':
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(min_value=min_x_width, max_value=100),
+                    st.integers(d_in, d_in),
+                )
+            )
+        else:
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(d_in, d_in),
+                    st.integers(min_value=min_x_width, max_value=100),
+                )
+            )
+    elif type == '2d':
+        filter_shape = draw(
+            st.tuples(
+                st.integers(3, 5),
+                st.integers(3, 5),
+                st.integers(1, 3),
+                st.integers(1, 3),
+            )
+        )
+
+        min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        d_in = filter_shape[2]
+        if data_format == 'NHWC':
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_width, max_value=100),
+                    st.integers(d_in, d_in),
+                )
+            )
+            # print("x_shape")
+            # print(x_shape)
+        else:
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(d_in, d_in),
+                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_width, max_value=100),
+                )
+            )
+
+    else:
+        filter_shape = draw(
+            st.tuples(
+                st.integers(3, 5),
+                st.integers(3, 5),
+                st.integers(3, 5),
+                st.integers(1, 3),
+                st.integers(1, 3),
+            )
+        )
+
+        min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        d_in = filter_shape[3]
+        if data_format == 'NDHWC':
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_width, max_value=100),
+                    st.integers(d_in, d_in),
+                )
+            )
+        else:
+            x_shape = draw(
+                st.tuples(
+                    st.integers(1, 5),
+                    st.integers(d_in, d_in),
+                    st.integers(min_value=min_x_height, max_value=100),
+                    st.integers(min_value=min_x_width, max_value=100),
+                    st.integers(min_value=min_x_width, max_value=100),
+                )
+            )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=x_shape,
+            min_value=0,
+            max_value=1
+        )
+    )
+    filters = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=filter_shape,
+            min_value=0,
+            max_value=1
+        )
+    )
+    return dtype, x, filters, dilations, data_format
+
+
 # conv1d
 @given(
     batch_size=st.integers(min_value=1, max_value=5),
