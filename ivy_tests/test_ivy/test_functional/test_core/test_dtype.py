@@ -409,6 +409,48 @@ def test_iinfo(
     assert mach_lims.bits == mach_lims_np.bits
 
 
+# is_bool_dtype
+@given(
+    array=helpers.nph.arrays(
+        dtype=dtype_shared,
+        shape=helpers.lists(
+            st.integers(1, 5),
+            min_size="num_dims",
+            max_size="num_dims",
+            size_bounds=[1, 5],
+        ),
+    ),
+    dtype_in=dtype_shared,
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="is_bool_dtype"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_is_bool_dtype(
+    array,
+    dtype_in,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    helpers.test_function(
+        dtype_in,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "is_bool_dtype",
+        dtype_in=array,
+    )
+
+
 # is_float_dtype
 @given(
     array=helpers.nph.arrays(
