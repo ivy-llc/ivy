@@ -94,16 +94,6 @@ has only one argument, and just as our :code:`add` function, we link its return 
 
     add.unsupported_dtypes = {"torch": ("float16",)}
 
-**PyTorch**
-
-.. code-block:: python
-
-    # in ivy/functional/frontends/torch/pointwise_ops.py
-    def add(input, other, *, alpha=1, out=None):
-        return ivy.add(input, other * alpha, out=out)
-
-    add.unsupported_dtypes = ("float16",)
-
 **TensorFlow**
 
 .. code-block:: python
@@ -113,3 +103,13 @@ has only one argument, and just as our :code:`add` function, we link its return 
         return ivy.add(x, y)
 
     add.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+**PyTorch**
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/torch/pointwise_ops.py
+    def add(input, other, *, alpha=1, out=None):
+        return ivy.add(input, other * alpha, out=out)
+
+    add.unsupported_dtypes = ("float16",)
