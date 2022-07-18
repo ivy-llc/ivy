@@ -762,74 +762,34 @@ def repeat(
         The repeated output array.
 
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([3, 4, 5])
-    >>> y = ivy.flip(x)
-    >>> print(y)
-    ivy.array([5, 4, 3])
-
-    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> y = ivy.zeros((3, 3))
-    >>> ivy.flip(x, out=y)
-    >>> print(y)
-    ivy.array([[6, 5, 4],
-               [3, 2, 1]])
-
-    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> y = ivy.zeros((3, 3))
-    >>> ivy.flip(x, axis=0, out=y)
-    >>> print(y)
-    ivy.array([[4, 5, 6],
-               [1, 2, 3]])
-
-    >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
-    >>> ivy.flip(x, axis=[0, 1], out=x)
+    >>> ivy.repeat(x, 2)
     >>> print(x)
-    ivy.array([[[10,11,12],[7,8,9]],[[4,5,6],[1,2,3]]])
-
-    >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
-    >>> ivy.flip(x, axis=(2, 1), out=x)
-    >>> print(x)
-    ivy.array([[[ 6,  5,  4],
-                [ 3,  2,  1]],
-               [[12, 11, 10],
-                [ 9,  8,  7]]])
+    ivy.array([3, 3, 4, 4, 5, 5])
 
     With :code:`ivy.NativeArray` input:
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.flip(x)
+
+    >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.repeat(x, [1, 2], axis=0)
     >>> print(y)
-    ivy.array([2., 1., 0.])
+    ivy.array([[1, 2, 3],
+               [4, 5, 6],
+               [4, 5, 6]])
 
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                      b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.flip(x)
-    >>> print(y)
+                          b=ivy.array([[0., 1., 2.], [3., 4., 5.]]))
+    >>> ivy.repeat(x, 2, axis=1)
+    >>> print(x)
     {
-        a: ivy.array([2., 1., 0.]),
-        b: ivy.array([5., 4., 3.])
+        a: ivy.array([0., 0., 1., 1., 2., 2.]),
+        b: ivy.array([[0., 0., 1., 1., 2., 2.], [3., 3., 4., 4., 5., 5.]])
     }
-
-    Instance Method Examples
-    ------------------------
-    Using :code:`ivy.Array` instance method:
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.flip()
-    >>> print(y)
-    ivy.array([2., 1., 0.])
-
-    Using :code:`ivy.Container` instance method:
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.flip()
-    >>> print(y)
-    {
-        a: ivy.array([2., 1., 0.]),
-        b: ivy.array([5., 4., 3.])
-    }
-
     """
     return current_backend(x).repeat(x, repeats, axis, out=out)
 
