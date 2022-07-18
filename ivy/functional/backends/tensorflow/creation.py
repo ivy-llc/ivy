@@ -139,25 +139,28 @@ def eye(
             n_cols = n_rows
         if batch_shape is None:
             batch_shape = []
-        i = tf.eye(n_rows, n_cols, batch_shape, dtype=dtype)
+        i = tf.eye(n_rows, n_cols, dtype=dtype)
         reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+        tile_dims = list(batch_shape) + [1, 1]
         if k == 0:
-            return i
+            return tf.eye(n_rows, n_cols, batch_shape=batch_shape, dtype=dtype)
         elif -n_rows < k < 0:
-            return tf.concat(
-                [tf.zeros(batch_shape + [-k, n_cols], dtype=dtype), i[:, : n_rows + k]],
+            mat = tf.concat(
+                [tf.zeros([-k, n_cols], dtype=dtype), i[: n_rows + k]],
+                0,
+            )
+            return tf.tile(tf.reshape(mat, reshape_dims),tile_dims)
+        elif 0 < k < n_cols:
+            mat = tf.concat(
+                [
+                    tf.zeros([n_rows, k], dtype=dtype),
+                    i[:, : n_cols - k],
+                ],
                 1,
             )
-        elif 0 < k < n_cols:
-            return tf.concat(
-                [
-                    tf.zeros(batch_shape + [n_rows, k], dtype=dtype),
-                    i[:, :, : n_cols - k],
-                ],
-                -1,
-            )
+            return tf.tile(tf.reshape(mat, reshape_dims),tile_dims)
         else:
-            return tf.zeros(reshape_dims, dtype=dtype)
+            return tf.zeros(batch_shape+[n_rows,n_cols], dtype=dtype)
 
 
 # noinspection PyShadowingNames
