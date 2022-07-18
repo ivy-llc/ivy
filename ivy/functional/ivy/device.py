@@ -1273,7 +1273,7 @@ class DevClonedNest(MultiDevNest):
 
 @handle_nestable
 def dev_clone_array(
-    x: Union[ivy.Array, ivy.NativeArray], devices: Union[Iterable[str], Dict[str, int]]
+    x: Union[ivy.Array, ivy.NativeArray], devices: Iterable[ivy.Device]
 ) -> DevClonedItem:
     """Clone an array across the specified devices, returning a list of cloned arrays,
     each on a different device.
