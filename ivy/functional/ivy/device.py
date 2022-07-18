@@ -1529,6 +1529,46 @@ def dev_unify_array(
                                    [1, 1, 3, 3]], dev=gpu:0)
     }
 
+    With :code: `ivy.Container` input:
+
+    >>> x_cpu = [0., 0., 0.,]
+    >>> x_gpu = [1., 1., 1.,]
+    >>> x = {"cpu": ivy.asarray(x_cpu),\
+             "gpu": ivy.asarray(x_gpu, device="gpu:0")}
+    >>> y_cpu = [2., 2., 2.,]
+    >>> y_gpu = [3., 3., 3.,]
+    >>> y = {"cpu": ivy.asarray(y_cpu),\
+             "gpu": ivy.asarray(y_gpu, device="gpu:0")}
+    >>> z = ivy.Container(x=ivy.DevDistItem(x), y=ivy.DevDistItem(y))
+    >>> z_unified = ivy.dev_unify_array(\
+            z, device="cpu", mode="concat", axis=0)\
+        )
+    >>> print(z_unified)
+    {
+        x: ivy.array([0., 0., 0., 1., 1., 1.,])
+        y: ivy.array([2., 2., 2., 3., 3., 3.,])
+    }
+    >>> print(z_unified.dev)
+    cpu
+
+    >>> x_cpu = [0., 0., 0.,]
+    >>> x_gpu = [1., 1., 1.,]
+    >>> x = {"cpu": ivy.asarray(x_cpu),\
+             "gpu": ivy.asarray(x_gpu, device="gpu:0")}
+    >>> y_cpu = [2., 2., 2.,]
+    >>> y_gpu = [3., 3., 3.,]
+    >>> y = {"cpu": ivy.asarray(y_cpu),\
+             "gpu": ivy.asarray(y_gpu, device="gpu:0")}
+    >>> z = ivy.Container(x=ivy.DevDistItem(x), y=ivy.DevDistItem(y))
+    >>> z_devices(x="gpu:0", y="cpu")
+    >>> z_unified = ivy.dev_unify_array(\
+            z, device=z_devices, mode="concat", axis=0)\
+        )
+    >>> print(z_unified)
+    {
+        x: ivy.array([0., 0., 0., 1., 1., 1.,], dev=gpu:0)
+        y: ivy.array([2., 2., 2., 3., 3., 3.,])
+    }
 
     """
 
