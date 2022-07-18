@@ -1529,7 +1529,7 @@ def dev_unify_array(
                                    [1, 1, 3, 3]], dev=gpu:0)
     }
 
-    With :code: `ivy.Container` input:
+    With :code:`ivy.Container` input:
 
     >>> x_cpu = [0., 0., 0.,]
     >>> x_gpu = [1., 1., 1.,]
