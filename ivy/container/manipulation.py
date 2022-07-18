@@ -312,6 +312,31 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.squeeze. This method simply wraps
+        the function, and so the docstring for ivy.squeeze also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
+                              b=ivy.array([[[11.], [12.]]]))
+        >>> y = x.squeeze(2)
+        >>> print(y)
+        {
+            a: ivy.array([[10., 11.]]),
+            b: ivy.array([[11., 12.]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
+                              b=ivy.array([[[11.], [12.]]]))
+        >>> y = x.squeeze(0)
+        >>> print(y)
+        {
+            a: ivy.array([[10.], [11.]]),
+            b: ivy.array([[11.], [12.]])
+        }
+        """
         return ContainerBase.handle_inplace(
             self.map(
                 lambda x_, _: ivy.squeeze(x_, axis=axis) if ivy.is_array(x_) else x_,
