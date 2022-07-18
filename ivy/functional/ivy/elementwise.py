@@ -1607,6 +1607,68 @@ def expm1(
         an array containing the evaluated result for each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.expm1.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    
+    >>> x = ivy.array([[0, 5, float('-0'), ivy.nan]])
+    >>> ivy.expm1(x)
+    ivy.array([[  0., 147.,  -0.,  nan]])
+    
+    >>> x = ivy.array([ivy.inf, 1, float('-inf')])
+    >>> y = ivy.zeros(3)
+    >>> ivy.expm1(x, out=y)
+    ivy.array([  inf,  1.72, -1.  ])
+    
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
+    >>> ivy.expm1(x)
+    ivy.array([[  1.72],
+       [147.  ],
+       [ -1.  ]])
+    
+    With :code:`ivy.Array` instance method:
+    
+    >>> x = ivy.array([20])
+    >>> x.expm1()
+    ivy.array([4.85e+08])
+    
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0,]), \
+                        b=ivy.array([10, 1]))
+    >>> ivy.expm1(x)
+    {
+        a: ivy.array([-0.632, 0.]),
+        b: ivy.array([2.20e+04, 1.72e+00])
+    }
+    
+    With :code:`ivy.Container` instance method:
+    
+    >>> x = ivy.Container(a=ivy.array([10, 13]))
+    >>> x.expm1(x)
+    {
+        a: ivy.array([22000., 442000.])
+    }
+
+    With :code:`ivy.Container` static method:
+    
+    >>> x = ivy.Container(a=ivy.array([1]))
+    >>> ivy.Container.static_expm1(x)
+    {
+        a: ivy.array([1.72])
+    }
+    
     """
     return current_backend(x).expm1(x, out=out)
 
