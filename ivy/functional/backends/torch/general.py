@@ -396,11 +396,13 @@ def one_hot(indices, depth: int, *, device: torch.device):
     )
 
 
-def shape(x: torch.Tensor, as_array: bool = False) -> Union[torch.Size, torch.Tensor]:
+def shape(
+    x: torch.Tensor, as_array: bool = False
+) -> Union[torch.Tensor, ivy.Shape, ivy.Array]:
     if as_array:
         return torch.tensor(x.shape)
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
