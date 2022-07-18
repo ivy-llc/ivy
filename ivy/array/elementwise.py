@@ -162,6 +162,19 @@ class ArrayWithElementwise(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.bitwise_or. This method simply
+        wraps the function, and so the docstring for ivy.bitwise_or also applies
+        to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x.bitwise_or(y)
+        >>> print(z)
+        ivy.array([5, 7, 7])
+        """
         return ivy.bitwise_or(self._data, x2, out=out)
 
     def bitwise_right_shift(
