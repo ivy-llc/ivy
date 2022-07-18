@@ -17,11 +17,6 @@ Ivy Frontends
 .. _`torch`: https://pytorch.org/docs/stable/torch.html#math-operations
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
 
-.. _`jax`
-.. _`numpy`
-.. _`tensorflow`
-.. _`torch`
-
 Introduction
 ------------
 
@@ -233,6 +228,42 @@ we code its positional and keyword arguments accordingly, then return with
 :code:`ivy.tan` to link the operation to the backend framework.
 
 **More Examples**
+
+Additional examples for each framework on concatenation is added for better understanding!
+
+**Jax**
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/jax/lax/operators.py
+    def concatenate(operands: Sequence[Any], dimension: int) -> Any:
+        return ivy.concat(operands, dimension)
+
+**Numpy**
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/numpy/manipulation_routines/joining_arrays.py
+    def concatenate(arrays, /, axis=0, out=None, *, dtype=None, casting="same_kind"):
+        if dtype:
+            arrays = [ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype)) for a in arrays]
+        return ivy.concat(arrays, axis, out=out)
+
+**TensorFlow**
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/tensorflow/functions.py
+    def concat(values, axis, name="concat"):
+        return ivy.concat(values, axis)
+
+**PyTorch**
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/torch/indexing_slicing_joining_mutating_ops.py
+    def cat(tensors, dim=0, *, out=None):
+        return ivy.concat(tensors, dim, out=out)
 
 **Round Up**
 
