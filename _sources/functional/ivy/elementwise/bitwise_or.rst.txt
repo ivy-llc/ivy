@@ -5,6 +5,8 @@ bitwise_or
 
 .. autofunction:: ivy.array.array_methods.bitwise_or
 
+.. autofunction:: ivy.container.container_methods.static_bitwise_or
+
 .. autofunction:: ivy.container.container_methods.bitwise_or
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ bitwise_or
    bitwise_or/bitwise_or_functional.rst
    bitwise_or/bitwise_or_array.rst
    bitwise_or/bitwise_or_container.rst
+   bitwise_or/static_bitwise_or_container.rst
 
