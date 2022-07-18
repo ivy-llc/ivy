@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import List, Iterable, Optional, Union
+from typing import Iterable, Optional, Union, Sequence
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -49,7 +49,7 @@ def copy_array(x: JaxArray) -> JaxArray:
 
 
 def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
-    return jnp.array_equal(x0, x1)
+    return bool(jnp.array_equal(x0, x1))
 
 
 def to_numpy(x: JaxArray) -> np.ndarray:
@@ -67,7 +67,7 @@ def to_list(x: JaxArray) -> list:
     return _to_array(x).tolist()
 
 
-def shape(x: JaxArray, as_array: bool = False) -> Union[JaxArray, List[int]]:
+def shape(x: JaxArray, as_array: bool = False) -> Union[tuple, JaxArray]:
     if as_array:
         return jnp.asarray(jnp.shape(x))
     else:
@@ -169,7 +169,13 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
+def scatter_nd(
+    indices,
+    updates,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor=None,
+    reduction="sum",
+):
 
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (
@@ -201,7 +207,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     if reduction == "sum":
         if not target_given:
