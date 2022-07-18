@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ivy.dtype &mdash; Ivy 1.0 documentation</title>
+  <title>ivy.Array.is_bool_dtype &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="ivy.Array.dtype" href="dtype_array.html" />
-    <link rel="prev" title="dtype" href="../dtype.html" /> 
+    <link rel="next" title="ivy.Container.is_bool_dtype" href="is_bool_dtype_container.html" />
+    <link rel="prev" title="ivy.is_bool_dtype" href="is_bool_dtype_functional.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -71,17 +71,17 @@
 <li class="toctree-l2"><a class="reference internal" href="../default_float_dtype.html">default_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../default_dtype.html">default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../default_int_dtype.html">default_int_dtype</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../dtype.html">dtype</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.dtype</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dtype_array.html">ivy.Array.dtype</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dtype_container.html">ivy.Container.dtype</a></li>
-<li class="toctree-l3"><a class="reference internal" href="static_dtype_container.html">ivy.Container.static_dtype</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../function_supported_dtypes.html">function_supported_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../function_unsupported_dtypes.html">function_unsupported_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../invalid_dtype.html">invalid_dtype</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../is_bool_dtype.html">is_bool_dtype</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../is_bool_dtype.html">is_bool_dtype</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="is_bool_dtype_functional.html">ivy.is_bool_dtype</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Array.is_bool_dtype</a></li>
+<li class="toctree-l3"><a class="reference internal" href="is_bool_dtype_container.html">ivy.Container.is_bool_dtype</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_is_bool_dtype_container.html">ivy.Container.static_is_bool_dtype</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../is_int_dtype.html">is_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../promote_types.html">promote_types</a></li>
@@ -157,10 +157,10 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../../data_type.html">Data type</a> &raquo;</li>
-          <li><a href="../dtype.html">dtype</a> &raquo;</li>
-      <li>ivy.dtype</li>
+          <li><a href="../is_bool_dtype.html">is_bool_dtype</a> &raquo;</li>
+      <li>ivy.Array.is_bool_dtype</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/functional/ivy/data_type/dtype/dtype_functional.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/data_type/is_bool_dtype/is_bool_dtype_array.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -168,76 +168,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ivy-dtype">
-<h1>ivy.dtype<a class="headerlink" href="#ivy-dtype" title="Permalink to this heading"></a></h1>
+  <section id="ivy-array-is-bool-dtype">
+<h1>ivy.Array.is_bool_dtype<a class="headerlink" href="#ivy-array-is-bool-dtype" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.dtype">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_native</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/data_type.html#dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.dtype" title="Permalink to this definition"></a></dt>
-<dd><p>Get the data type for input array x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Tensor for which to get the data type.</p></li>
-<li><p><strong>as_native</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not to return the dtype in string format. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – Data type of the array</p></li>
-<li><p><em>Functional Method Examples</em></p></li>
-<li><p><em>————————–</em></p></li>
-<li><p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs</p></li>
-<li><p><em>&gt;&gt;&gt; x1 = ivy.array([1, 0, 1, -1, 0])</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.dtype(x1)</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
-<li><p><em>int32</em></p></li>
-<li><p><em>&gt;&gt;&gt; x1 = ivy.array([1.0, 2.0, 3.5, 4.5, 5, 6])</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.dtype(x1)</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
-<li><p><em>float32</em></p></li>
-<li><p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Native_Array</span></code> inputs</p></li>
-<li><p><em>&gt;&gt;&gt; x1 = ivy.native_array([1, 0, 1, -1, 0])</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.dtype(x1)</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
-<li><p><em>int32</em></p></li>
-<li><p><em>&gt;&gt;&gt; x1 = ivy.native_array([1.0, 2.0, 3.5, 4.5, 5, 6])</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.dtype(x1)</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
-<li><p><em>float32</em></p></li>
-<li><p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs</p></li>
-<li><p><em>&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, -1, 0, 1]),                     b=ivy.array([1, 0, -1, 0, 1]))</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.dtype(x.a)</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
-<li><p><em>int32</em></p></li>
-<li><p><em>&gt;&gt;&gt; x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),                             b=ivy.native_array([1, 0, 0, 0, 1]))</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.dtype(x.a)</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
-<li><p><em>float32</em></p></li>
-</ul>
-</p>
+<dt class="sig sig-object py" id="ivy.array.array_methods.is_bool_dtype">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">is_bool_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/data_type.html#ArrayWithData_type.is_bool_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.is_bool_dtype" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
-<p class="rubric">Instance Method Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">int32</span>
-</pre></div>
-</div>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>                      <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">{</span>
-<span class="go">    a: int32,</span>
-<span class="go">    b: int32</span>
-<span class="go">}</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <div class="line-block">
@@ -251,8 +191,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../dtype.html" class="btn btn-neutral float-left" title="dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="dtype_array.html" class="btn btn-neutral float-right" title="ivy.Array.dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="is_bool_dtype_functional.html" class="btn btn-neutral float-left" title="ivy.is_bool_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="is_bool_dtype_container.html" class="btn btn-neutral float-right" title="ivy.Container.is_bool_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

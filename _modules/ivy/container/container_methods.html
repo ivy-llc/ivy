@@ -1023,6 +1023,18 @@
     <span class="k">pass</span></div>
 
 
+<div class="viewcode-block" id="static_dtype"><a class="viewcode-back" href="../../../functional/ivy/data_type/dtype/static_dtype_container.html#ivy.container.container_methods.static_dtype">[docs]</a><span class="k">def</span> <span class="nf">static_dtype</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+    <span class="n">as_native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
 <div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../functional/ivy/data_type/dtype/dtype_container.html#ivy.container.container_methods.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">as_native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1170,6 +1182,26 @@
 
 
 <div class="viewcode-block" id="iinfo"><a class="viewcode-back" href="../../../functional/ivy/data_type/iinfo/iinfo_container.html#ivy.container.container_methods.iinfo">[docs]</a><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+    <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="static_is_bool_dtype"><a class="viewcode-back" href="../../../functional/ivy/data_type/is_bool_dtype/static_is_bool_dtype_container.html#ivy.container.container_methods.static_is_bool_dtype">[docs]</a><span class="k">def</span> <span class="nf">static_is_bool_dtype</span><span class="p">(</span>
+    <span class="n">dtype_in</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+    <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="is_bool_dtype"><a class="viewcode-back" href="../../../functional/ivy/data_type/is_bool_dtype/is_bool_dtype_container.html#ivy.container.container_methods.is_bool_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_bool_dtype</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
