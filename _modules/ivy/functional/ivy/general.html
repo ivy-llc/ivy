@@ -133,7 +133,6 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">einops</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">builtins</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
@@ -1392,7 +1391,7 @@
 <span class="sd">        Boolean as to whether the array contains nans.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">value_is_nan</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">include_infs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">value_is_nan</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">include_infs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="exists"><a class="viewcode-back" href="../../../../functional/ivy/general/exists.html#ivy.functional.ivy.general.exists">[docs]</a><span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -1528,48 +1527,76 @@
     <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">default_val</span><span class="p">()</span> <span class="k">if</span> <span class="n">default_callable</span> <span class="k">else</span> <span class="n">default_val</span></div>
 
 
-<div class="viewcode-block" id="to_ivy_shape"><a class="viewcode-back" href="../../../../functional/ivy/general/to_ivy_shape.html#ivy.functional.ivy.general.to_ivy_shape">[docs]</a><span class="k">def</span> <span class="nf">to_ivy_shape</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the input shape in ivy.Shape form</span>
+<div class="viewcode-block" id="shape_to_tuple"><a class="viewcode-back" href="../../../../functional/ivy/general/shape_to_tuple.html#ivy.functional.ivy.general.shape_to_tuple">[docs]</a><span class="k">def</span> <span class="nf">shape_to_tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a tuple representation of the input shape.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    shape</span>
-<span class="sd">        The input to be converted</span>
+<span class="sd">        The shape input to convert to tuple representation.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
-<span class="sd">        the input in ivy.Shape form</span>
+<span class="sd">        The shape in tuple representation</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array.shape` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.]).shape</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.shape_to_tuple(x))</span>
+<span class="sd">    (3,)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2., 3.], [4., 5., 6.]]).shape</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.shape_to_tuple(x))</span>
+<span class="sd">    (2, 3)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array((1., 2., 3.)).shape</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.shape_to_tuple(x))</span>
+<span class="sd">    (3,)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array(((1., 2., 3.), (4., 5., 6.))).shape</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.shape_to_tuple(x))</span>
+<span class="sd">    (2, 3)</span>
+
+<span class="sd">    With :code:`ivy.NativeArray.shape` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1., 2., 3.]).shape</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.shape_to_tuple(x))</span>
+<span class="sd">    (3,)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2., 3.], [4., 5., 6.]]).shape</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.shape_to_tuple(x))</span>
+<span class="sd">    (2, 3)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array((1., 2., 3.)).shape</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.shape_to_tuple(x))</span>
+<span class="sd">    (3,)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array(((1., 2., 3.), (4., 5., 6.))).shape</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.shape_to_tuple(x))</span>
+<span class="sd">    (2, 3)</span>
+
+<span class="sd">    With :code:`Tuple[int]` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = (1, 2, 3)</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.shape_to_tuple(x))</span>
+<span class="sd">    (1, 2, 3)</span>
+
+<span class="sd">    With :code:`List[int]` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = [1, 2, 3]</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.shape_to_tuple(x))</span>
+<span class="sd">    (1, 2, 3)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">shape</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="to_native_shape"><a class="viewcode-back" href="../../../../functional/ivy/general/to_native_shape.html#ivy.functional.ivy.general.to_native_shape">[docs]</a><span class="k">def</span> <span class="nf">to_native_shape</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the input shape in its native backend framework form</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    shape</span>
-<span class="sd">        The input to be converted</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">     ret</span>
-<span class="sd">        the input in its native framework form</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">shape</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;shape_to_tuple does not accept arrays as input&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">shape</span><span class="p">,)</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">builtins</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">shape</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+        <span class="k">assert</span> <span class="nb">min</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">])</span> <span class="ow">is</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="try_else_none"><a class="viewcode-back" href="../../../../functional/ivy/general/try_else_none.html#ivy.functional.ivy.general.try_else_none">[docs]</a><span class="nd">@handle_nestable</span>
@@ -2695,8 +2722,6 @@
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">shape_array_mode_stack</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;set_shape_array_mode only accepts type bool&quot;</span><span class="p">)</span>
     <span class="n">shape_array_mode_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span></div>
 
 
