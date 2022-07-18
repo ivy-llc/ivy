@@ -5,9 +5,9 @@ adam_step
 
 .. autofunction:: ivy.array.array_methods.adam_step
 
-.. autofunction:: ivy.container.container_methods.adam_step
-
 .. autofunction:: ivy.container.container_methods.static_adam_step
+
+.. autofunction:: ivy.container.container_methods.adam_step
 |
 | **Supported Frameworks:**
 

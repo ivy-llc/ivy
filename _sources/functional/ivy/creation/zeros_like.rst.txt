@@ -5,9 +5,9 @@ zeros_like
 
 .. autofunction:: ivy.array.array_methods.zeros_like
 
-.. autofunction:: ivy.container.container_methods.static_zeros_like
-
 .. autofunction:: ivy.container.container_methods.zeros_like
+
+.. autofunction:: ivy.container.container_methods.static_zeros_like
 |
 | **Supported Frameworks:**
 

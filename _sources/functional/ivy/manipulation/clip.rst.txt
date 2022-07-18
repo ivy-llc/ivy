@@ -5,9 +5,9 @@ clip
 
 .. autofunction:: ivy.array.array_methods.clip
 
-.. autofunction:: ivy.container.container_methods.clip
-
 .. autofunction:: ivy.container.container_methods.static_clip
+
+.. autofunction:: ivy.container.container_methods.clip
 |
 | **Supported Frameworks:**
 
