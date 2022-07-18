@@ -210,6 +210,9 @@ def trace(x: JaxArray, offset: int = 0) -> JaxArray:
     return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype)
 
 
+trace.unsupported_dtypes = ("float16",)
+
+
 def vecdot(x1: JaxArray, x2: JaxArray, axis: int = -1) -> JaxArray:
     ret = jnp.tensordot(x1, x2, (axis, axis))
     return ret

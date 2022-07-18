@@ -178,6 +178,9 @@ def trace(
     return np.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype, out=out)
 
 
+trace.unsupported_dtypes = ("float16",)
+
+
 def vecdot(x1: np.ndarray, x2: np.ndarray, axis: int = -1) -> np.ndarray:
     ret = np.tensordot(x1, x2, axes=(axis, axis))
     return ret

@@ -358,6 +358,9 @@ def trace(
     return ret
 
 
+trace.unsupported_dtypes = ("float16",)
+
+
 def vecdot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],

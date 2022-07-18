@@ -5,7 +5,6 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
@@ -664,7 +663,7 @@ def test_vecdot(
     instance_method=st.booleans(),
     # axis=st.integers(-3, 5),
     kd=st.booleans(),
-    ord=st.integers(1, 2) | st.floats(),
+    ord=st.integers(1, 2),
 )
 def test_vector_norm(
     dtype_x,
@@ -942,7 +941,7 @@ def test_matrix_rank(
         min_value=0,
         max_value=1000,
         shape=st.integers(2, 5).map(lambda x: tuple([x, x]))
-    ).filter(lambda dtype_x: np.linalg.det(np.asarray(dtype_x[1])) > 0),
+    ).filter(lambda dtype_x: np.linalg.det(np.asarray(dtype_x[1])) != 0),
     as_variable=st.booleans(),
     num_positional_args=st.integers(0, 1),
     native_array=st.booleans(),

@@ -237,6 +237,9 @@ def trace(x: torch.Tensor, offset: int = 0) -> torch.Tensor:
     return ret
 
 
+trace.unsupported_dtypes = ("float16",)
+
+
 def vecdot(
     x1: torch.Tensor,
     x2: torch.Tensor,
