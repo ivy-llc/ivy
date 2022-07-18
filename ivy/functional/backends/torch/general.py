@@ -400,7 +400,7 @@ def shape(
     x: torch.Tensor, as_array: bool = False
 ) -> Union[torch.Tensor, ivy.Shape, ivy.Array]:
     if as_array:
-        return torch.tensor(x.shape)
+        return ivy.array(x.shape)
     else:
         return ivy.Shape(x.shape)
 

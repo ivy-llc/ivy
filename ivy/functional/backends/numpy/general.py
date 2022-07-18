@@ -269,7 +269,7 @@ def shape(
     x: np.ndarray, as_array: bool = False
 ) -> Union[np.ndarray, ivy.Shape, ivy.Array]:
     if as_array:
-        return np.asarray(np.shape(x))
+        return ivy.array(x.shape)
     else:
         return ivy.Shape(x.shape)
 

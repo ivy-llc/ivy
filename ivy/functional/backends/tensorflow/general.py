@@ -340,7 +340,7 @@ def shape(
     as_array: bool = False,
 ) -> Union[tf.Tensor, tf.Variable, TensorShape, ivy.Shape, ivy.Array]:
     if as_array:
-        return tf.shape(x)
+        return ivy.array(x.shape)
     else:
         return ivy.Shape(x.shape)
 
