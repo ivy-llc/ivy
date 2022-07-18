@@ -76,7 +76,6 @@ def roll(
 def squeeze(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
         dim = x.dim()

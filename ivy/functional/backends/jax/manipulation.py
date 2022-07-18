@@ -78,7 +78,6 @@ def roll(
 def squeeze(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:

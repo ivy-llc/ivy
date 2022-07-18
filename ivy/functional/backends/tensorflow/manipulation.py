@@ -100,7 +100,6 @@ def roll(
 def squeeze(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if x.shape[axis] > 1:
