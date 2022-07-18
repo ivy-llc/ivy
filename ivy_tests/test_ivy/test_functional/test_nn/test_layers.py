@@ -446,18 +446,13 @@ def test_conv1d_transpose(
 
 # conv2d
 @given(
-    batch_size=st.integers(min_value=1, max_value=5),
-    x_h=st.integers(min_value=1, max_value=100),
-    x_w=st.integers(min_value=1, max_value=100),
-    d_in=st.integers(min_value=1, max_value=5),
-    d_out=st.integers(min_value=1, max_value=5),
-    f_w=st.integers(min_value=1, max_value=5),
-    f_h=st.integers(min_value=1, max_value=5),
+    x_f_d_df=x_and_filters(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        data_format=st.sampled_from(["NHWC", "NCHW"]),
+        type='2d'
+    ),
     stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
-    data_format=st.sampled_from(["NHWC", "NCHW"]),
-    dilations=st.integers(min_value=1, max_value=3),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
     native_array=helpers.list_of_length(st.booleans(), 2),
@@ -465,18 +460,9 @@ def test_conv1d_transpose(
     instance_method=st.booleans(),
 )
 def test_conv2d(
-    batch_size,
-    x_h,
-    x_w,
-    d_in,
-    d_out,
-    f_w,
-    f_h,
+    x_f_d_df,
     stride,
     pad,
-    data_format,
-    dilations,
-    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -485,29 +471,9 @@ def test_conv2d(
     fw,
     device,
 ):
-    if fw in ["tensorflow"] and "cpu" in device:
-        # tf conv2d does not work when CUDA is installed, but array is on CPU
-        return
+    dtype, x, filters, dilations, data_format = x_f_d_df
+    dtype = [dtype] * 2
 
-    if fw == 'torch' and 'float16' in dtype:
-        # not implemented for Half
-        return
-
-    if f_w + (f_w - 1) * (dilations - 1) > x_w:
-        # kernel size can't be greater than input
-        x_w = f_w + (f_w - 1) * (dilations - 1)
-
-    if f_h + (f_h - 1) * (dilations - 1) > x_h:
-        # kernel size can't be greater than input
-        x_h = f_h + (f_h - 1) * (dilations - 1)
-
-    if data_format == "NHWC":
-        x = np.random.uniform(size=[batch_size, x_h, x_w, d_in]).astype(dtype)
-    else:
-        x = np.random.uniform(size=[batch_size, d_in, x_h, x_w]).astype(dtype)
-    filters = np.random.uniform(size=[f_h, f_w, d_in, d_out]).astype(
-        dtype
-    )
     helpers.test_function(
         dtype,
         as_variable,
@@ -518,8 +484,8 @@ def test_conv2d(
         instance_method,
         fw,
         "conv2d",
-        x=x,
-        filters=filters,
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
         data_format=data_format,
