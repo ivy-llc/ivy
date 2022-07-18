@@ -1,11 +1,12 @@
 # global
 import abc
-from typing import Union, Optional, Any
+from typing import Union, Optional, Any, Iterable
 
 import ivy
 
 
 # ToDo: implement all methods here as public instance methods
+
 
 class ArrayWithDevice(abc.ABC):
     def dev(self: ivy.Array) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -37,3 +38,15 @@ class ArrayWithDevice(abc.ABC):
 
         """
         return ivy.to_device(self, device, stream=stream, out=out)
+
+    def dev_clone_array(self: ivy.Array, devices: Iterable[ivy.Device]):
+        """
+        ivy.Array instance method variant of ivy.device.dev_clone_array. This method
+        simply wraps the function, and so the docstring for ivy.device.dev_clone_array
+        also applies to this method with minimal changes.
+
+        Examples
+        --------
+
+        """
+        return ivy.dev_clone_array(self, devices)
