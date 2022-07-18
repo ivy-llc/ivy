@@ -102,3 +102,17 @@ def conv3d_transpose(
     return tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
     )
+
+
+def batch_normalization(x: tf.Tensor,
+                        mean: Tensor,
+                        variance: Tensor,
+                        offset: Tensor,
+                        scale: Tensor,
+                        variance_epsilon: tf.float32): 
+    return tf.nn.batch_normalization(x,
+                                     mean,
+                                     variance,
+                                     offset,
+                                     scale,
+                                     variance_epsilon) 
