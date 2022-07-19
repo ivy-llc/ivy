@@ -166,3 +166,12 @@ This should have hopefully given you a good feel for how to navigate the Ivy cod
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `project structure discussion`_,
 or reach out on `discord`_ in the `project structure channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/67UYuLcAKbY" class="video">
+    </iframe>
