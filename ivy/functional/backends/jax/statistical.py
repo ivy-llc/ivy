@@ -1,6 +1,6 @@
 # global
 import jax.numpy as jnp
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union, Optional, Sequence
 
 # local
 import ivy
@@ -13,8 +13,8 @@ from ivy.functional.backends.jax import JaxArray
 
 def max(
     x: JaxArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False
 ) -> JaxArray:
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 

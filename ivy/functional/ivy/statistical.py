@@ -21,9 +21,9 @@ from ivy.func_wrapper import (
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     *,
-    out: Optional[ivy.Array] = None,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Calculates the maximum value of the input array ``x``.
 

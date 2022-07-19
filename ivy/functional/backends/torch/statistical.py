@@ -1,7 +1,7 @@
 # global
 torch_scatter = None
 import torch
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union, Optional, Sequence
 
 # local
 import ivy
@@ -13,10 +13,10 @@ import ivy
 
 def max(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
     *,
-    out: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if axis == ():
         if ivy.exists(out):

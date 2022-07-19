@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union, Optional, Sequence
 
 # local
 import ivy
@@ -12,10 +12,10 @@ import ivy
 
 def max(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.asarray(np.amax(a=x, axis=axis, keepdims=keepdims, out=out))
 
