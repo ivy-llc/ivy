@@ -1098,13 +1098,60 @@ def promote_types(
     return ret
 
 
-def set_default_dtype(dtype: Union[ivy.Dtype, str]):
-    """Summary.
+def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str]):
+    """
+    Sets the datatype dtype as default data type
 
     Parameters
     ----------
     dtype
+        the data_type to set as default data type
 
+    Examples
+    --------
+    With :code:`ivy.Dtype` input:
+
+    >>> ivy.set_default_dtype("float64")
+    >>> ivy.default_dtype_stack
+        ['float64']
+    >>> ivy.unset_default_dtype()
+
+    >>> ivy.set_default_dtype(ivy.bool)
+    >>> ivy.default_dtype_stack
+        ['bool']
+    >>> ivy.unset_default_dtype()
+
+    >>> ivy.set_default_dtype(ivy.int32)
+    >>> ivy.default_dtype_stack
+        ['int32']
+    >>> ivy.unset_default_dtype()
+
+    >>> ivy.set_default_dtype('uint8')
+    >>> ivy.default_dtype_stack
+        ['uint8']
+    >>> ivy.unset_default_dtype()
+
+    With :code:`ivy.NativeDtype` input:
+
+    >>> ivy.set_default_dtype(ivy.native_int32)
+    >>> ivy.default_dtype_stack
+        ['int32']
+    >>> ivy.unset_default_dtype()
+
+    >>> ivy.set_default_dtype('native_bool')
+    >>> ivy.default_dtype_stack
+        ['native_bool']
+    >>> ivy.unset_default_dtype()
+
+    >>> ivy.set_default_dtype(ivy.native_uint64)
+    >>> ivy.default_dtype_stack
+        ['uint64']
+    >>> ivy.unset_default_dtype()
+
+    >>> ivy.set_default_dtype('native_float64')
+    >>> ivy.default_dtype_stack
+        ['native_float64']
+    >>> ivy.unset_default_dtype()
     """
     dtype = ivy.as_ivy_dtype(dtype)
     global default_dtype_stack
