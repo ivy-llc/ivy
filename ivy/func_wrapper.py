@@ -87,8 +87,6 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         return fn(*native_args, **native_kwargs)
 
     new_fn.inputs_to_native_arrays = True
-    if hasattr(fn, "array_spec"):
-        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -119,8 +117,6 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         return fn(*ivy_args, **ivy_kwargs)
 
     new_fn.inputs_to_ivy_arrays = True
-    if hasattr(fn, "array_spec"):
-        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -149,8 +145,6 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
 
     new_fn.outputs_to_ivy_arrays = True
-    if hasattr(fn, "array_spec"):
-        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -196,8 +190,6 @@ def infer_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=dtype, **kwargs)
 
     new_fn.infer_dtype = True
-    if hasattr(fn, "array_spec"):
-        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -235,8 +227,6 @@ def infer_device(fn: Callable) -> Callable:
         return fn(*args, device=device, **kwargs)
 
     new_fn.infer_device = True
-    if hasattr(fn, "array_spec"):
-        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -284,8 +274,6 @@ def handle_out_argument(fn: Callable) -> Callable:
         return ivy.inplace_update(out, ret)
 
     new_fn.handle_out_argument = True
-    if hasattr(fn, "array_spec"):
-        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -319,9 +307,10 @@ def handle_nestable(fn: Callable) -> Callable:
         # a container, get the container's version of the function and call it using
         # the passed arguments.
         cont_fn = getattr(ivy.Container, "static_" + fn_name)
-        if ivy.nested_any(
-            args, ivy.is_ivy_container, check_nests=True
-        ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
+        if ivy.get_nestable_mode() and (
+            ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
+            or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
+        ):
             return cont_fn(*args, **kwargs)
 
         # if the passed arguments does not contain a container, the function using
@@ -329,8 +318,6 @@ def handle_nestable(fn: Callable) -> Callable:
         return fn(*args, **kwargs)
 
     new_fn.handle_nestable = True
-    if hasattr(fn, "array_spec"):
-        new_fn.array_spec = fn.array_spec
     return new_fn
 
 
@@ -379,6 +366,10 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             to_wrap, "inputs_to_native_arrays"
         ):
             to_wrap = inputs_to_native_arrays(to_wrap)
+        if hasattr(original, "inputs_to_ivy_arrays") and not hasattr(
+            to_wrap, "inputs_to_ivy_arrays"
+        ):
+            to_wrap = inputs_to_ivy_arrays(to_wrap)
         if hasattr(original, "handle_out_argument") and not hasattr(
             to_wrap, "handle_out_argument"
         ):

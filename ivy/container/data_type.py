@@ -122,8 +122,35 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_broacast_to(
-            self, shape, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        return self.static_broadcast_to(
+            self,
+            shape,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_dtype(
+        x: ivy.Container,
+        as_native: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "dtype",
+            x,
+            as_native,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def dtype(
@@ -135,15 +162,14 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.dtype(x_, as_native) if ivy.is_array(x_) else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        return self.static_dtype(
+            self,
+            as_native,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     @staticmethod
@@ -159,6 +185,29 @@ class ContainerWithDataTypes(ContainerBase):
         `ivy.Container` static method variant of `ivy.can_cast`. This method simply
         wraps the function, and so the docstring for `ivy.can_cast` also applies to
         this method with minimal changes.
+
+        Parameters
+        ----------
+        from_
+            input container from which to cast.
+        to
+            desired data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            ``True`` if the cast can occur according to :ref:`type-promotion` rules;
+            otherwise, ``False``.
 
         Examples
         --------
@@ -195,6 +244,29 @@ class ContainerWithDataTypes(ContainerBase):
         `ivy.Container` instance method variant of `ivy.can_cast`. This method simply
         wraps the function, and so the docstring for `ivy.can_cast` also applies to
         this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container from which to cast.
+        to
+            desired data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            ``True`` if the cast can occur according to :ref:`type-promotion` rules;
+            otherwise, ``False``.
 
         Examples
         --------
@@ -267,6 +339,38 @@ class ContainerWithDataTypes(ContainerBase):
     ) -> ivy.Container:
         return self.static_iinfo(
             self, key_chains, to_apply, prune_unapplied, map_sequences
+        )
+
+    @staticmethod
+    def static_is_bool_dtype(
+        dtype_in: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "is_bool_dtype",
+            dtype_in,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def is_bool_dtype(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return self.static_is_bool_dtype(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod

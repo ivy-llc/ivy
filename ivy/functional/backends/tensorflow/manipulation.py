@@ -3,7 +3,7 @@ import ivy
 import math
 import tensorflow as tf
 from numbers import Number
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 
 
 # Array API Standard #
@@ -74,7 +74,7 @@ def permute_dims(
 
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
-    shape: Tuple[int, ...],
+    shape: Union[ivy.NativeShape, Sequence[int]],
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.reshape(x, shape)
     return ret
@@ -82,8 +82,8 @@ def reshape(
 
 def roll(
     x: Union[tf.Tensor, tf.Variable],
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         originalShape = x.shape
@@ -100,7 +100,7 @@ def roll(
 
 def squeeze(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if x.shape[axis] > 1:
@@ -110,6 +110,8 @@ def squeeze(
                 )
             )
         ret = tf.squeeze(x, axis)
+    elif axis is None:
+        ret = x
     else:
         if isinstance(axis, tuple):
             axis = list(axis)
@@ -222,7 +224,6 @@ def clip(
     x_min: Union[Number, tf.Tensor, tf.Variable],
     x_max: Union[Number, tf.Tensor, tf.Variable],
 ) -> Union[tf.Tensor, tf.Variable]:
-    assert ivy.all(ivy.less(x_min, x_max))
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)

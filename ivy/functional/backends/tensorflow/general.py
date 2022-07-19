@@ -3,13 +3,14 @@ signature.
 """
 
 # global
-from typing import List, Optional, Union
+from typing import Optional, Union, Sequence
 
 _round = round
 import numpy as np
-import tensorflow as tf
 import multiprocessing as _multiprocessing
 from numbers import Number
+import tensorflow as tf
+from tensorflow.python.framework.tensor_shape import TensorShape
 
 # local
 import ivy
@@ -94,7 +95,10 @@ def inplace_update(
     return x
 
 
-inplace_arrays_supported = lambda: False
+def inplace_arrays_supported():
+    return False
+    
+    
 inplace_variables_supported = lambda: True
 
 
@@ -205,7 +209,13 @@ def _parse_ellipsis(so, ndims):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
+def scatter_nd(
+    indices,
+    updates,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor=None,
+    reduction="sum",
+):
 
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
@@ -260,7 +270,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum"):
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     if reduction == "sum":
@@ -331,7 +341,7 @@ def indices_where(x):
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
-) -> Union[tf.Tensor, tf.Variable, List[int]]:
+) -> Union[tf.Tensor, tf.Variable, TensorShape]:
     if as_array:
         return tf.shape(x)
     else:
