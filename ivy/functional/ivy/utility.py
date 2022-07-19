@@ -273,7 +273,7 @@ def any(
 
     Using :code:`ivy.Array` instance method:
 
-    >>> x = ivy.array([1, 2, 3])
+    >>> x = ivy.array([2, 3, 4])
     >>> y = x.any()
     >>> print(y)
     ivy.array(True)
