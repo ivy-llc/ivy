@@ -49,7 +49,7 @@ def create_rows(prs):
         except (IndexError, KeyError):
             diff = diff_between_2_dates(pr["updatedAt"][:-10])
 
-        if diff > 3 and pr['author']['login'] not in interns:
+        if diff > 3 and pr["author"]["login"] not in interns:
             row = [pr["title"].strip(), diff, pr["url"], pr["author"]["login"]]
             if pr["latestReviews"] and pr["assignees"]:
                 row += [
