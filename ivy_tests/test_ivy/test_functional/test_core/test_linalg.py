@@ -579,7 +579,7 @@ def test_svdvals(
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         ivy_np.valid_numeric_dtypes,
-        min_num_dims=1,
+        min_num_dims=2,
         max_num_dims=10,
         min_dim_size=1,
         max_dim_size=50,
