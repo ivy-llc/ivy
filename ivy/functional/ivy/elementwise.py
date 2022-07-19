@@ -3296,6 +3296,7 @@ def round(
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([1.2, 2.4, 3.6])
     >>> y = ivy.round(x)
     >>> print(y)
@@ -3319,36 +3320,22 @@ def round(
     ivy.array([[0.,5.,-343.,2.],[-6.,44.,12.,12.]])
 
     With :code:`ivy.NativeArray` input:
-    >>> x = ivy.NativeArray([20.2, 30.5, -5.81])
+
+    >>> x = ivy.native_array([20.2, 30.5, -5.81])
     >>> y = ivy.round(x)
     >>> print(y)
     ivy.array([20.,30.,-6.])
 
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
                   b=ivy.array([-300.9, -527.3, 4.5]))
     >>> y = ivy.round(x)
     >>> print(y)
-    {a:ivy.array([4.,9.,7.,0.]),b:ivy.array([-301.,-527.,4.])}
-
-    Instance Method Examples
-    ------------------------
-    Using :code:`ivy.Array` instance method:
-    >>> x = ivy.array([5.4, 1.2, 2.3])
-    >>> y = x.round()
-    >>> print(y)
-    ivy.array([5., 1., 2.])
-
-    Using :code:`ivy.Container` instance method:
-    >>> x = ivy.Container(a=ivy.array([0.3, 1.5, 201.5]), b=ivy.array([3.6, 4.4, -5.2]))
-    >>> y = x.round()
-    >>> print(y)
     {
-        a: ivy.array([0., 2., 202.]),
-        b: ivy.array([4., 4., -5.])
+        a:ivy.array([4.,9.,7.,0.]),
+        b:ivy.array([-301.,-527.,4.])
     }
-
-
     """
     return ivy.current_backend(x).round(x, out=out)
 
