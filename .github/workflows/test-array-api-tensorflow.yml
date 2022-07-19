@@ -1,15 +1,15 @@
-name: test-array-api-tensorflow
-on: [push, pull_request, workflow_dispatch]
-jobs:
-  run-tensorflow-array-api-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout 🛎️Ivy
-        uses: actions/checkout@v2
-        with:
-          path: ivy
-          persist-credentials: false
-          submodules: "recursive"
+# name: test-array-api-tensorflow
+# on: [push, pull_request, workflow_dispatch]
+# jobs:
+#   run-tensorflow-array-api-tests:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout 🛎️Ivy
+#         uses: actions/checkout@v2
+#         with:
+#           path: ivy
+#           persist-credentials: false
+#           submodules: "recursive"
 #       - name: Download artifact
 #         uses: dawidd6/action-download-artifact@v2
 #         with:
