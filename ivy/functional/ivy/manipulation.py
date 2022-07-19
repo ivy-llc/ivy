@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, List, Iterable
+from typing import Union, Optional, Tuple, List, Iterable, Sequence
 from numbers import Number
 
 # local

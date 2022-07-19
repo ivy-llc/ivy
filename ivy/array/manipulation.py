@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, List, Iterable
+from typing import Optional, Union, Tuple, List, Iterable, Sequence
 from numbers import Number
 
 # local

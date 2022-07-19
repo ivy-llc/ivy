@@ -2,7 +2,7 @@
 import torch
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Tuple, List, Sequence
 
 
 # Array API Standard #

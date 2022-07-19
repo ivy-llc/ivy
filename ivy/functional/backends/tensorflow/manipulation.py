@@ -2,7 +2,7 @@
 import math
 import tensorflow as tf
 from numbers import Number
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 
 
 # Array API Standard #

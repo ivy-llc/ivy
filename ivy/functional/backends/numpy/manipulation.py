@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import math
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
 
 

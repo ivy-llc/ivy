@@ -1,7 +1,7 @@
 # global
 import math
 import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
 
 # local
