@@ -3,7 +3,7 @@ import ivy
 import torch
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Tuple, List, Sequence
 
 
 # Array API Standard #
@@ -56,7 +56,9 @@ def permute_dims(x: torch.Tensor, axes: Tuple[int, ...]) -> torch.Tensor:
 
 
 def reshape(
-    x: torch.Tensor, shape: Tuple[int, ...], copy: Optional[bool] = None
+    x: torch.Tensor,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None,
 ) -> torch.Tensor:
     ret = torch.reshape(x, shape)
     return ret
@@ -64,8 +66,8 @@ def reshape(
 
 def roll(
     x: torch.Tensor,
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
 ) -> torch.Tensor:
     # manually cover the case when shift is int, and axis is a tuple/list
     if isinstance(shift, int) and (type(axis) in [list, tuple]):
@@ -75,30 +77,33 @@ def roll(
 
 
 def squeeze(
-    x: torch.Tensor, axis: Union[int, Tuple[int], List[int]] = None
+    x: torch.Tensor,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
-        if x.shape[axis] > 1:
+        dim = x.dim()
+        if dim > 0 and (axis < -dim or dim <= axis):
             raise ValueError(
-                "Expected dimension of size 1, but found dimension size {}".format(
-                    x.shape[axis]
-                )
+                "Expected dimension of size [{}, {}], but found dimension size {}"
+                .format(-dim, dim, axis)
             )
-        ret = torch.squeeze(x, axis)
-        return ret
-    elif isinstance(axis, tuple):
+        return torch.squeeze(x, axis)
+    if axis is None:
+        return torch.squeeze(x)
+    if isinstance(axis, tuple):
         axis = list(axis)
     normalise_axis = [
         (len(x.shape) - abs(element)) if element < 0 else element for element in axis
     ]
     normalise_axis.sort()
     axis_updated_after_squeeze = [dim - key for (key, dim) in enumerate(normalise_axis)]
+    dim = x.dim()
     for i in axis_updated_after_squeeze:
-        if x.shape[i] > 1:
+        shape = x.shape[i]
+        if shape > 1 and (shape < -dim or dim <= shape):
             raise ValueError(
-                "Expected dimension of size 1, but found dimension size {}".format(
-                    x.shape[i]
-                )
+                "Expected dimension of size [{}, {}], but found dimension size {}"
+                .format(-dim, dim, shape)
             )
         else:
             x = torch.squeeze(x, i)
@@ -210,7 +215,6 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    assert ivy.all(ivy.less(x_min, x_max))
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
@@ -219,3 +223,6 @@ def clip(
         x = x.to(promoted_type)
     ret = torch.clamp(x, x_min, x_max, out=out)
     return ret
+
+
+clip.unsupported_dtypes = ("float16",)
