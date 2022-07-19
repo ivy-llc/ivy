@@ -267,7 +267,6 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
 # Still to Add #
 # ---------------#
 
-# prune_nest_at_indices
 # insert_into_nest_at_indices
 # map
 # nested_map
@@ -288,8 +287,28 @@ def test_prune_nest_at_index(nest, index, device, call):
     try:
         ivy.prune_nest_at_index(nest, index)
         _pnai(nest_copy, index)
-    except Warning:
-        warnings.warn("Nothing to delete in dict. ")
+    except Exception:
+        warnings.warn("Nothing to delete.")
+
+    assert nest == nest_copy
+
+
+# prune_nest_at_indices
+@pytest.mark.parametrize(
+    "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
+)
+@pytest.mark.parametrize("indices", [(("a", 0, 0), ("b", "c", 0))])
+def test_prune_nest_at_indices(nest, indices, device, call):
+    nest_copy = copy.deepcopy(nest)
+
+    def pnais(n, idxs):
+        [_pnai(n, index) for index in idxs]
+
+    try:
+        ivy.prune_nest_at_indices(nest, indices)
+        pnais(nest_copy, indices)
+    except Exception:
+        warnings.warn("Nothing to delete.")
 
     assert nest == nest_copy
 
