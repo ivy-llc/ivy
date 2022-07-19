@@ -177,7 +177,11 @@ def set_backend(backend: str):
         temp_stack = list()
         while backend_stack:
             temp_stack.append(unset_backend())
-        backend = importlib.import_module(_backend_dict[backend])
+        try:
+            backend = importlib.import_module(_backend_dict[backend])
+        except KeyError:
+            backend_stack.extend(reversed(temp_stack))
+            raise KeyError("Backend {} is not found.".format(backend))
         for fw in reversed(temp_stack):
             backend_stack.append(fw)
     if backend.current_backend_str() == "numpy":
