@@ -12,7 +12,7 @@ import ivy.functional.backends.numpy as ivy_np
 # argsort
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_numeric_dtypes,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -44,15 +44,15 @@ def test_argsort(
     dtype, x, axis = dtype_x_axis
 
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "argsort",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="argsort",
         x=np.asarray(x, dtype=dtype),
         axis=axis,
         descending=descending,
@@ -63,7 +63,7 @@ def test_argsort(
 # sort
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_numeric_dtypes,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -95,15 +95,15 @@ def test_sort(
     dtype, x, axis = dtype_x_axis
 
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "sort",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="sort",
         x=np.asarray(x, dtype=dtype),
         axis=axis,
         descending=descending,

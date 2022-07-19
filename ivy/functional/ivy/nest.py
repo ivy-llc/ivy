@@ -168,7 +168,11 @@ def prune_nest_at_indices(nest, indices):
     [prune_nest_at_index(nest, index) for index in indices]
 
 
-def set_nest_at_indices(nest, indices, values):
+def set_nest_at_indices(
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+    indices: Union[List[int], Tuple[int], Iterable[int]],
+    values: Union[List[int], Tuple[int], Iterable[int]],
+) -> Any:
     """Set the value of a nested item at specified indices with specified values.
 
     Parameters
@@ -180,6 +184,43 @@ def set_nest_at_indices(nest, indices, values):
     values
         The new values for updating.
 
+    Examples
+    --------
+    With :code:`List` inputs:
+
+    >>> nest = [[1, 2, 3, 4, 5, 6], ['a', 'b', 'c', 'd', 'e', 'f']]
+    >>> indices = [[0, 4], [1, 3]]
+    >>> values = [111, 'x']
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    [[1, 2, 3, 4, 111, 6], ['a', 'b', 'c', 'x', 'e', 'f']]
+
+    With :code:`Tuple` inputs:
+
+    >>> nest = (['abc', 'xyz', 'pqr'],[1, 4, 'a', 'b'])
+    >>> indices = ((0, 1),(1, 2))
+    >>> values = ('ivy', 'x')
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    (['abc', 'ivy', 'pqr'], [1, 4, 'x', 'b'])
+
+    With :code:`Dict` input:
+
+    >>> nest = {'a': [1., 2., 3.], 'b': [4., 5., 6.], 'c': [0.]}
+    >>> indices = (('a', 1), ('b', 2), ('c', 0))
+    >>> values = (11., 22., 33.)
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    {'a': [1.0, 11.0, 3.0], 'b': [4.0, 5.0, 22.0], 'c': [33.0]}
+
+    With :code:`ivy.Array` inputs:
+
+    >>> nest = ivy.array([[1., 2., 3.],[4., 5., 6.]])
+    >>> indices = ((0, 1),(1, 2))
+    >>> values = (11., 22.)
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    ivy.array([[1., 11., 3.], [4., 5., 22.]])
     """
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
