@@ -127,7 +127,6 @@
              
   <h1>Source code for ivy.func_wrapper</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
@@ -363,7 +362,7 @@
 
 
 <div class="viewcode-block" id="handle_out_argument"><a class="viewcode-back" href="../../func_wrapper/handle_out_argument.html#ivy.func_wrapper.handle_out_argument">[docs]</a><span class="k">def</span> <span class="nf">handle_out_argument</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="n">handle_out_in_backend</span> <span class="o">=</span> <span class="s2">&quot;out&quot;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">handle_out_in_backend</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;support_native_out&quot;</span><span class="p">)</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
