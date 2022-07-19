@@ -5,9 +5,9 @@ floor
 
 .. autofunction:: ivy.array.array_methods.floor
 
-.. autofunction:: ivy.container.container_methods.static_floor
-
 .. autofunction:: ivy.container.container_methods.floor
+
+.. autofunction:: ivy.container.container_methods.static_floor
 |
 | **Supported Frameworks:**
 
