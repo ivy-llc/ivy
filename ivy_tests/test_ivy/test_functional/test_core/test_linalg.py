@@ -707,24 +707,25 @@ def test_vecdot(
 
 # vector_norm
 @given(
-    dtype_x=helpers.dtype_and_values(
+    dtype_values_axis=helpers.dtype_values_axis(
         ivy_np.valid_float_dtypes,
         min_num_dims=2,
         max_num_dims=3,
         min_dim_size=2,
         max_dim_size=5,
+        min_axis=-2,
+        max_axis=1,
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="vector_norm"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
-    # axis=st.integers(-3, 5),
     kd=st.booleans(),
     ord=st.integers(1, 2),
 )
 def test_vector_norm(
-    dtype_x,
+    dtype_values_axis,
     as_variable,
     num_positional_args,
     native_array,
@@ -734,7 +735,7 @@ def test_vector_norm(
     kd,
     ord,
 ):
-    dtype, x = dtype_x
+    dtype, x, axis = dtype_values_axis
     helpers.test_function(
         dtype,
         as_variable,
@@ -746,7 +747,7 @@ def test_vector_norm(
         fw,
         "vector_norm",
         x=np.asarray(x, dtype=dtype),
-        axis=None,
+        axis=axis,
         keepdims=kd,
         ord=ord,
     )
