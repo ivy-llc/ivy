@@ -82,8 +82,8 @@ def reshape(
 
 def roll(
     x: Union[tf.Tensor, tf.Variable],
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         originalShape = x.shape
