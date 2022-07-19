@@ -72,7 +72,7 @@ def test_random_uniform(
     as_variable=st.booleans(),
 )
 def test_random_normal(data, shape, dtype, as_variable, device, call):
-    mean, std = data.draw(helpers.get_mean_std(dtype))
+    mean, std = data.draw(helpers.get_mean_std(dtype=dtype))
     ivy.seed(0)
     # smoke test
     if as_variable and call is helpers.mx_call:
@@ -110,7 +110,7 @@ def test_random_normal(data, shape, dtype, as_variable, device, call):
     tensor_fn=st.sampled_from([ivy.array]),
 )
 def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call):
-    probs, population_size = data.draw(helpers.get_probs(dtype))
+    probs, population_size = data.draw(helpers.get_probs(dtype=dtype))
     if (
         call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
         and not replace
@@ -141,6 +141,7 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
     container=st.booleans(),
     instance_method=st.booleans(),
 )
+<<<<<<< HEAD
 def test_randint(
     data,
     arr_shape,
@@ -154,28 +155,17 @@ def test_randint(
     device,
     fw,
 ):
-    #NEXT: ret_from_np and ret: x and y
 
-    #if type(shape) == tuple:
-        #shape = int(shape[0])
-        #else:
-        #    shape = list(shape)
-
-    shape = data.draw(helpers.array_values(dtype, arr_shape, min_value=1))
-    shape = shape[0]
-
-    val = data.draw(helpers.array_values(dtype, (2,), min_value=0))
-
-    if val[1] > val[0]:
-        low = val[0]
-        high = val[1]
-    elif val[1] < val[0]:
-        low = val[1]
-        high = val[0]
-    elif val[1] == val[0]:
-        return
-        #low = val[0]
-        #high = val[1]+1
+    low, high = data.draw(helpers.get_bounds(dtype=dtype))
+    #if (
+    #    call in [helpers.mx_call, helpers.torch_call]
+    #    and as_variable
+    #    or dtype == "uint64"
+    #    or call == helpers.torch_call
+    #    and dtype[0] == "u"
+    #):
+    #    # PyTorch and MXNet do not support non-float variables
+    #    return
 
 
     # PyTorch and MXNet do not support non-float variables
@@ -236,7 +226,9 @@ def test_seed(seed_val):
 
 # shuffle
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+    ),
     as_variable=st.booleans(),
 )
 def test_shuffle(dtype_and_x, as_variable, device, call):
