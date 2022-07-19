@@ -412,12 +412,6 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     -------
     ret
         The total memory on the device in GB.
-
-    Examples
-    --------
-    >>> x = ivy.total_mem_on_dev("cpu")
-    >>> print(x)
-    7.28100864
     """
     if "gpu" in device:
         handle = _get_nvml_gpu_handle(device)
