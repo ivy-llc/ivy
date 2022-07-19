@@ -16,7 +16,7 @@ from ivy.functional.backends.numpy.device import _to_device
 # --------#
 
 
-def copy_array(x: np.ndarray) -> np.ndarray:
+def copy_array(x: np.ndarray, *, out: Optional[np.ndarray]) -> np.ndarray:
     return x.copy()
 
 
@@ -75,7 +75,12 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def floormod(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+def floormod(
+    x: np.ndarray, 
+    y: np.ndarray, 
+    *, 
+    out: Optional[np.ndarray]
+) -> np.ndarray:
     ret = np.asarray(x % y)
     return ret
 
@@ -115,6 +120,9 @@ def cumsum(
     return np.cumsum(x, axis, out=out)
 
 
+cumsum.support_native_out = True
+
+
 def cumprod(
     x: np.ndarray,
     axis: int = 0,
@@ -129,7 +137,18 @@ def cumprod(
     return np.cumprod(x, axis, out=out)
 
 
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
+cumprod.support_native_out = True
+
+
+def scatter_flat(
+    indices: np.ndarray, 
+    updates: np.ndarray, 
+    size: Optional[int] = None, 
+    tensor: Optional[np.ndarray] = None, 
+    reduction: str = "sum",
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -167,12 +186,14 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
 
 # noinspection PyShadowingNames
 def scatter_nd(
-    indices,
-    updates,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor=None,
-    reduction="sum",
-):
+    indices: np.ndarray, 
+    updates: np.ndarray, 
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
+    tensor: Optional[np.ndarray] = None, 
+    reduction: str = "sum",
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
@@ -215,11 +236,18 @@ def gather(
     params: np.ndarray,
     indices: np.ndarray,
     axis: Optional[int] = -1,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return _to_device(np.take_along_axis(params, indices, axis))
 
 
-def gather_nd(params, indices):
+def gather_nd(
+    params: np.ndarray, 
+    indices: np.ndarray,
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -261,8 +289,17 @@ def indices_where(x, out: Optional[np.ndarray] = None):
     return res
 
 
+indices_where.support_native_out = True
+
+
 # noinspection PyUnusedLocal
-def one_hot(indices, depth, *, device):
+def one_hot(
+    indices: np.ndarray, 
+    depth: int, 
+    *, 
+    device, 
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = np.eye(depth)[np.array(indices).reshape(-1)]
     return res.reshape(list(indices.shape) + [depth])
