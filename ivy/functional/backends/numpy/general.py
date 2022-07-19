@@ -267,10 +267,7 @@ def one_hot(indices, depth, *, device):
 
 def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        shape = np.shape(x)
-        if isinstance(shape, tuple):
-            return ivy.array(shape)
-        return shape
+        return ivy.array(np.shape(x))
     else:
         return ivy.Shape(x.shape)
 
