@@ -2,11 +2,9 @@ Ivy Frontend tests
 ====================
 
 .. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
-.. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
-.. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`test_ivy`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy
-.. _`test_frontend_function`_: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
+.. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`hypothesis`_: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html#id1
 .. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
