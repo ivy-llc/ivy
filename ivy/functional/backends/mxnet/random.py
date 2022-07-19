@@ -2,7 +2,7 @@
 
 # global
 import mxnet as mx
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Union, Sequence
 
 # local
 import ivy
@@ -20,9 +20,9 @@ from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    low: Union[float, mx.nd.NDArray] = 0.0,
+    high: Union[float, mx.nd.NDArray] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: Optional[Union[ivy.Device, mx.context.Context]] = None,
     dtype=None,
 ) -> mx.nd.NDArray:
@@ -41,7 +41,7 @@ def random_uniform(
 def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: Optional[Union[ivy.Device, mx.context.Context]] = None,
 ) -> mx.nd.NDArray:
     if isinstance(mean, mx.nd.NDArray):
@@ -83,7 +83,7 @@ def multinomial(
 def randint(
     low: int,
     high: int,
-    shape: Union[int, Sequence[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: mx.context.Context,
     out: Optional[mx.nd.NDArray],
