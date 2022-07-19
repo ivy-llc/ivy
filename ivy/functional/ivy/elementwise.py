@@ -3020,12 +3020,13 @@ def positive(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array with the positive value of each element in ``x``.
+    """
+    Computes the numerical positive of each element ``x_i`` (i.e., ``y_i = +x_i``) of the input array ``x``.
 
     Parameters
     ----------
     x
-        Input array.
+        input array. Should have a numeric data type.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3033,8 +3034,118 @@ def positive(
     Returns
     -------
     ret
-        A new array with the positive value of each element in ``x``.
+        an array containing the evaluated result for each element in ``x``. The returned array must have the same data type as ``x``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.not_equal.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    ------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = ivy.positive(x)
+    >>> print(y)
+    ivy.array([0, 1, 2])
+
+    >>> x = ivy.array([0.5, -0.7, 2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.positive(x, out=y)
+    >>> print(y)
+    ivy.array([0.5, -0.7, 2.4])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], \
+                       [-4.4, -5.5, -6.6]])
+    >>> ivy.positive(x, out=x)
+    >>> print(x)
+    ivy.array([[1.1, 2.2, 3.3],
+               [-4.4, -5.5, -6.6]])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([0, 1, 2])
+    >>> y = ivy.positive(x)
+    >>> print(y)
+    ivy.array([0, 1, 2])
+
+    >>> x = ivy.native_array([0.5, -0.7, 2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.positive(x, out=y)
+    >>> print(y)
+    ivy.array([0.5, -0.7, 2.4])
+
+    >>> x = ivy.native_array([[1.1, 2.2, 3.3], \
+                       [-4.4, -5.5, -6.6]])
+    >>> ivy.positive(x, out=x)
+    >>> print(x)
+    ivy.array([[1.1000, 2.2000, 3.3000],
+               [-4.4000, -5.5000, -6.6000]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 0, 3]), \
+                           b=ivy.array([1, 2, 3]), \
+                           c=ivy.native_array([-1, -2, -4]))
+    >>> y = ivy.positive(x)
+    >>> print(y)
+    {
+        a: ivy.array([1, 0, 3]),
+        b: ivy.array([1, 2, 3]),
+        c: ivy.array([-1, -2, -4])
+    }
+
+    >>> x = ivy.Container(a=ivy.native_array([0, 1, 0]), \
+                           b=ivy.array([1.1, 2.1, 3.1]), \
+                           c=ivy.native_array([1.0, 2.0, 4.0]))
+    >>> y = ivy.positive(x)
+    >>> print(y)
+    {
+        a: ivy.array([0, 1, 0]),
+        b: ivy.array([1.1, 2.1, 3.1]),
+        c: ivy.array([1., 2., 4.])
+    }
+
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> y = +x
+    >>> print(y)
+    ivy.array([1, 0, 1, 1])
+
+    >>> x = ivy.array([1, 0, -1, 0])
+    >>> y = +x
+    >>> print(y)
+    ivy.array([1, 0, -1, 0])
+
+    With :code:`ivy.Container` instances:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 3, 5]))
+    >>> y = +x
+    >>> print(y)
+    {
+        a: ivy.array([1, 2, 3]),
+        b: ivy.array([1, 3, 5])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
+                           b=ivy.array([1, -4, 5]))
+    >>> y = +x
+    >>> print(y)
+    {
+        a: ivy.array([1., 2., 3.]),
+        b: ivy.array([1, -4, 5])
+    }
     """
     return ivy.current_backend(x).positive(x, out=out)
 
