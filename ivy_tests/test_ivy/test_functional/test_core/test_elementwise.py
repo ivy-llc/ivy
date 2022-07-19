@@ -1655,14 +1655,14 @@ def test_pow(
     input_dtype, x = dtype_and_x
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    if fw in ["jax", "tensorflow"]:
-        return
+
     if (
         np.any(x2 < 0)
         and ivy.is_int_dtype(input_dtype[1])
         and ivy.is_int_dtype(input_dtype[0])
     ):
         return  # ints to negative int powers not allowed
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
