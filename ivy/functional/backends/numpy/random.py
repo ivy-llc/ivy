@@ -19,33 +19,7 @@ def random_uniform(
     device: str,
     dtype = None,
 ) -> np.ndarray:
-
-    #temporary fix
-    if isinstance(low, (np.ndarray, ivy.Array)):
-        low = float(low)
-    if isinstance(low, tuple):
-        low = float(low[0])
-    if isinstance(high, (np.ndarray, ivy.Array)):
-        high = float(high)
-    if isinstance(high, tuple):
-        high = float(high[0])
-
-    '''
-    if isinstance(shape, (np.ndarray, ivy.Array)):
-        if shape.size <= 1:
-            shape = int(shape)
-        else:
-            new_shape = []
-            for i in shape:
-                new_shape.append(int(i))
-            shape = new_shape
-    '''
-    print(low, high, shape)
-    #return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
-    return np.random.uniform(low, high, shape)
-
-
-random_uniform.unsupported_dtypes = ("float16",)
+    return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
 
 def random_normal(

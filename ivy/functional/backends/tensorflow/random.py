@@ -16,23 +16,23 @@ from ivy.functional.ivy.device import default_device
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Union[int, Tuple[int, ...]] = None,
+    low: Union[float, int, tf.Tensor, tf.Variable] = 0.0,
+    high: Union[float, int, tf.Tensor, tf.Variable] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
     dtype = None,
-    #dtype: tf.dtypes = None,
-    #out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
+    if isinstance(shape, tf.Tensor):
+        shape = list(shape)
     with tf.device(default_device(device)):
-        return tf.random.uniform(shape, low, high, dtype=dtype)
-        #return tf.random.uniform(shape if shape else (), low, high, dtype=dtype)
+        return tf.random.uniform(shape if shape else (), low, high, dtype=dtype)
 
 
-random_uniform.unsupported_dtypes = ("float16",)
+random_uniform.unsupported_dtypes = ("int8", "int16", "uint8",
+                                        "uint16", "uint32", "uint64",)
 
 
 def random_normal(

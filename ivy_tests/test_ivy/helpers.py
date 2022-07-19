@@ -955,19 +955,18 @@ def test_function(
             instance = ivy.index_nest(kwargs, instance_idx)
             kwargs = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.prune_nest_at_index(kwargs, instance_idx)
-        #if not test_unsupported:
-        #    try:
-        #        #ret = instance.__getattribute__(fn_name)(*args, **kwargs)
-        #        instance.__getattribute__(fn_name)(*args, **kwargs)
-        #    except TypeError:
-        #        test_unsupported = True
+        if not test_unsupported:
+            #check if instance method is available for the function
+            try:
+                #ret = instance.__getattribute__(fn_name)(*args, **kwargs)
+                instance.__getattribute__(fn_name)(*args, **kwargs)
+            except TypeError:
+                test_unsupported = True
         if test_unsupported:
             test_unsupported_function(
                 fn=instance.__getattribute__(fn_name), args=args, kwargs=kwargs
             )
             return
-        #print("\nargs: "+str(args))
-        #print("\nkwargs: "+str(kwargs))
         ret = instance.__getattribute__(fn_name)(*args, **kwargs)
     else:
         if test_unsupported:
@@ -1607,7 +1606,7 @@ def get_shape(
         )
     if shape is None:
         return shape
-    #shape = set(shape)
+    shape = list(set(shape))
     return tuple(shape)
 
 
@@ -1729,19 +1728,15 @@ def get_bounds(draw, *, dtype):
         if low == high:
             return draw(get_bounds(dtype=dtype))
     else:
-        values = draw(none_or_list_of_floats(dtype, 2, 0, 1e10, no_none=True))
-        from decimal import Decimal
-        if len(str(Decimal(values[0]))) and len(str(Decimal(values[1])))  < 1e300:
-            if values[0] is not None and values[1] is not None:
-                values[0], values[1] = abs(values[0]), abs(values[1])
-                low, high = min(values), max(values)
-            else:
-                low, high = values[0], values[1]
-            #if values[0] or values[1] < 0:
-            #    values[0], values[1] = abs(values[0]), abs(values[1])
-            #    low, high = min(values), max(values)
-            if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
-                return draw(get_bounds(dtype))
+        values = draw(none_or_list_of_floats(
+            dtype=dtype, size=2, min_value=0, no_none=True)
+        )
+        if values[0] is not None and values[1] is not None:
+            low, high = min(values), max(values)
+        else:
+            low, high = values[0], values[1]
+        if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
+            return draw(get_bounds(dtype=dtype))
     return low, high
 
 
@@ -1805,72 +1800,8 @@ def num_positional_args(draw, *, fn_name: str = None):
         total += 1
         if param.kind == param.POSITIONAL_ONLY:
             num_positional_only += 1
-        elif param.kind == param.POSITIONAL_OR_KEYWORD:
-            num_positional_only += 1
         elif param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1
     return draw(
         integers(min_value=num_positional_only, max_value=(total - num_keyword_only))
     )
-
-
-if __name__ == "__main__":
-    #fn = ivy.__dict__["random_uniform"]
-    #for param in inspect.signature(fn).parameters.values():
-    #    print(param.kind)
-
-    from hypothesis import given, strategies as st
-    @given(
-        data=st.data(),
-        input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-        #input_dtype=list_of_length(st.sampled_from(ivy_np.valid_float_dtypes), 2),
-        shape_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
-        as_variable=st.booleans(),
-        with_out=st.booleans(),
-        num_positional_argss=st.integers(3, 3),
-        #num_positional_argss=num_positional_args(fn_name="random_uniform"),
-        native_array=st.booleans(),
-        container=st.booleans(),
-        instance_method=st.booleans(),
-        shape=get_shape(allow_none=False, min_num_dims=1),
-    )
-    def test_random_uniform(
-            data,
-            input_dtype,
-            shape_dtype,
-            as_variable,
-            with_out,
-            num_positional_argss,
-            native_array,
-            container,
-            instance_method,
-            shape,
-            #device,
-            #fw,
-    ):
-        if input_dtype in ["float16"]:
-            return
-
-        low, high  = data.draw(get_bounds(input_dtype))
-        input_dtypes = [input_dtype, input_dtype, shape_dtype]
-
-        cur_device="cpu"
-
-        test_function(
-            input_dtypes,
-            as_variable,
-            with_out,
-            num_positional_argss,
-            native_array,
-            container,
-            instance_method,
-            fw="tensorflow",
-            fn_name="random_uniform",
-            low=np.array(low, dtype=input_dtypes[0]),
-            high=np.array(high, dtype=input_dtypes[1]),
-            shape=np.array(shape, dtype=input_dtypes[2]),
-            device=cur_device,
-            dtype=input_dtypes[0],
-        )
-
-    test_random_uniform()

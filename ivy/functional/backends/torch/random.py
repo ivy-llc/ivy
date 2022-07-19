@@ -20,35 +20,18 @@ def random_uniform(
     *,
     device = None,
     dtype = None,
-    #dtype: torch.dtype = None,
-    #out: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(shape, torch.Tensor):
-        if shape.dim() > 0:
-            if len(shape) == 1:
-                shape = int(shape)
-            else:
-                int_shape = []
-                for s in shape:
-                    int_shape.append(int(s))
-                shape = set(int_shape)
-        elif shape.dim() == 0:
-            shape = int(shape)
-
-    #print(shape)
-    #print(type(shape))
-
+    if shape is None:
+        shape = []
+    if not isinstance(shape, int):
+        shape = list(shape)
     rand_range = high - low
     return (
-        #torch.rand(shape, device=device, dtype=dtype, out=out)
-        #torch.rand(shape, device=default_device(device), dtype=dtype, out=out)
-        torch.rand(shape, device=default_device(device), dtype=dtype)
+        torch.rand(shape, device=default_device(device), dtype=dtype, out=out)
         * rand_range
         + low
     )
-
-
-random_uniform.unsupported_dtypes = ("float16",)
 
 
 def random_normal(

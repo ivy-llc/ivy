@@ -22,27 +22,25 @@ RNG = jax.random.PRNGKey(0)
 def random_uniform(
     low: float = 0.0,
     high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
     dtype = None,
-    #dtype: jnp.dtype,
 ) -> JaxArray:
-    print(shape)
+    if isinstance(low, jaxlib.xla_extension.DeviceArray):
+        low = low.tolist()
+    if isinstance(high, jaxlib.xla_extension.DeviceArray):
+        high = high.tolist()
+    if isinstance(shape, jaxlib.xla_extension.DeviceArray):
+        shape = shape.tolist()
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    #if isinstance(low, Array):
-    #    low =
     return to_device(
         jax.random.uniform(
-            rng_input, shape, minval=low, maxval=high, dtype=dtype
-            #rng_input, shape if shape else (), minval = low, maxval = high, dtype = dtype
+            rng_input, shape if shape else (), minval = low, maxval = high, dtype = dtype
     ),
         device=default_device(device),
     )
-
-
-random_uniform.unsupported_dtypes = ("float16",)
 
 
 def random_normal(

@@ -15,13 +15,13 @@ import ivy_tests.test_ivy.helpers as helpers
     data=st.data(),
     input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     shape_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
-    as_variable=st.booleans(),
+    as_variable_flags=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(3, 3),
+    num_positional_args=st.integers(2, 3),
     #num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
-    native_array=st.booleans(),
+    native_array_flags=st.booleans(),
     #native_array=st.just(True),
-    container=st.booleans(),
+    container_flags=st.booleans(),
     instance_method=st.booleans(),
     #instance_method=st.just(False),
     shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
@@ -30,32 +30,29 @@ def test_random_uniform(
     data,
     input_dtype,
     shape_dtype,
-    as_variable,
+    as_variable_flags,
     with_out,
     num_positional_args,
-    native_array,
-    container,
+    native_array_flags,
+    container_flags,
     instance_method,
     shape,
     device,
     fw,
 ):
-    if input_dtype in ["float16"]:
-        return
-
-    low, high = data.draw(helpers.get_bounds(input_dtype))
+    low, high = data.draw(helpers.get_bounds(dtype=input_dtype))
     input_dtypes = [input_dtype, input_dtype, shape_dtype]
 
     helpers.test_function(
-        input_dtypes,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "random_uniform",
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable_flags,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array_flags,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="random_uniform",
         low=np.array(low, dtype=input_dtypes[0]),
         high=np.array(high, dtype=input_dtypes[1]),
         shape=np.array(shape, dtype=input_dtypes[2]),
@@ -141,7 +138,6 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-<<<<<<< HEAD
 def test_randint(
     data,
     arr_shape,
