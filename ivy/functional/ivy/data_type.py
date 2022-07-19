@@ -277,7 +277,8 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
-    """Returns the dtype that results from applying the type promotion rules (see
+    """
+    Returns the dtype that results from applying the type promotion rules (see
     :ref:`type-promotion`) to the arguments.
 
     .. note::
@@ -294,8 +295,33 @@ def result_type(
     ret
         the dtype resulting from an operation involving the input arrays and dtypes.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Examples
+    --------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1,2,3])
+    >>> print(ivy.result_type(x))
+    int32
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([3., 4, 7.5])
+    >>> print(ivy.result_type(x))
+    float32
+
+    With :code:`ivy.Dtype` input:
+
+    >>> print(ivy.result_type(ivy.uint8))
+    uint8
     """
     return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
+
 
 
 # Extra #
