@@ -47,7 +47,7 @@ def prod(
     x: np.ndarray,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: np.dtype = None,
+    dtype: Optional[np.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:

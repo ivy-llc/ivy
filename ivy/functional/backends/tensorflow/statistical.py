@@ -44,7 +44,7 @@ def prod(
     x: Union[tf.Tensor, tf.Variable],
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: tf.DType = None,
+    dtype: Optional[tf.DType] = None,
     keepdims: Optional[bool] = False,
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is None:
