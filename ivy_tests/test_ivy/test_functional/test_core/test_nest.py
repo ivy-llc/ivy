@@ -267,7 +267,6 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
 # Still to Add #
 # ---------------#
 
-# insert_into_nest_at_indices
 # map
 # nested_map
 # nested_any
@@ -324,3 +323,21 @@ def test_insert_into_nest_index(nest, index, value, device, call):
     ivy.insert_into_nest_at_index(nest, index, value)
 
     assert ivy.index_nest(nest, index) == value
+
+
+# insert_into_nest_at_indices
+@pytest.mark.parametrize(
+    "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
+)
+@pytest.mark.parametrize("indices", [(("a", 0, 0), ("b", "c", 1, 0))])
+@pytest.mark.parametrize("values", [(1, 2)])
+def test_insert_into_nest_at_indices(nest, indices, values, device, call):
+
+    ivy.insert_into_nest_at_indices(nest, indices, values)
+
+    def indices_nest(nest, indices):
+        ret = tuple(ivy.index_nest(nest, index) for index in indices)
+
+        return ret
+
+    assert indices_nest(nest, indices) == values
