@@ -182,25 +182,20 @@ def mean(
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Union[int, Tuple[int]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the minimum value of the input array x.
-
     .. note::
     When the number of elements over which to compute the minimum value is zero, the
     minimum value is implementation-defined. Specification-compliant libraries may
     choose to raise an error, return a sentinel value (e.g., if x is a floating-point
     input array, return NaN), or return the maximum possible value for the input array x
     data type (e.g., if x is a floating-point array, return +infinity).
-
     **Special Cases**
-
     For floating-point operands,
-
     If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
-
     Parameters
     ----------
     x
@@ -216,7 +211,6 @@ def min(
         (dimensions) must not be included in the result. Default: False.
     out
         optional output array, for writing the result to.
-
     Returns
     -------
     ret
@@ -224,7 +218,6 @@ def min(
         array containing the minimum value; otherwise, a non-zero-dimensional array
         containing the minimum values. The returned array must have the same data type
         as x.
-
     """
     return current_backend.min(x, axis, keepdims, out=out)
 
