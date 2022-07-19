@@ -71,15 +71,15 @@ def reshape(
 
 def roll(
     x: np.ndarray,
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
 ) -> np.ndarray:
     return np.roll(x, shift, axis)
 
 
 def squeeze(
     x: np.ndarray,
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)

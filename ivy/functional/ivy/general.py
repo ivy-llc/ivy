@@ -28,6 +28,7 @@ TIMEOUT = 15.0
 TMP_DIR = "/tmp"
 
 shape_array_mode_stack = list()
+nestable_mode_stack = list()
 
 
 def get_referrers_recursive(
@@ -178,6 +179,68 @@ def is_ivy_container(x: Any) -> bool:
 
     """
     return isinstance(x, ivy.Container)
+
+
+def set_nestable_mode(mode: bool) -> None:
+    """Set the mode of whether to check if function inputs are ivy.Container
+
+    Parameter
+    ---------
+    mode
+        boolean whether to check if function inputs are ivy.Container
+
+    Examples
+    --------
+    >>> ivy.set_nestable_mode(False)
+    >>> ivy.get_nestable_mode()
+    False
+
+    >>> ivy.set_nestable_mode(True)
+    >>> ivy.get_nestable_mode()
+    True
+    """
+    global nestable_mode_stack
+    if not isinstance(mode, bool):
+        raise Exception("set_nestable_mode only accepts type bool")
+    nestable_mode_stack.append(mode)
+
+
+def unset_nestable_mode() -> None:
+    """Reset the mode of whether to check if function inputs are ivy.Container
+    to the previous state
+
+    Examples
+    --------
+    >>> ivy.set_nestable_mode(True)
+    >>> ivy.get_nestable_mode()
+    True
+
+    >>> ivy.unset_nestable_mode()
+    >>> ivy.get_nestable_mode()
+    False
+    """
+    global nestable_mode_stack
+    if nestable_mode_stack:
+        nestable_mode_stack.pop(-1)
+
+
+def get_nestable_mode() -> bool:
+    """Get the current mode of whether to check if function inputs are ivy.Container.
+    Default is True.
+
+    Examples
+    --------
+    >>> ivy.get_nestable_mode()
+    False
+
+    >>> ivy.set_nestable_mode(True)
+    >>> ivy.get_nestable_mode()
+    True
+    """
+    global nestable_mode_stack
+    if not nestable_mode_stack:
+        return True
+    return nestable_mode_stack[-1]
 
 
 @to_native_arrays_and_back
