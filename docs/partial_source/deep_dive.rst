@@ -61,6 +61,12 @@ We're excited for you to get involved!  🦾
 |
 | (o) :ref:`Ivy Tests`
 | How to add new Ivy tests for each function ❓
+|
+| (p) :ref:`Ivy Frontends`
+| How to add the correct frontend function for each backend 🖥
+|
+| (q) :ref:`Ivy Frontend Tests`
+| How to add new Ivy frontend tests for each function ⚙️
 
 .. toctree::
    :hidden:
@@ -82,3 +88,5 @@ We're excited for you to get involved!  🦾
    deep_dive/12_docstring_examples.rst
    deep_dive/13_array_api_tests.rst
    deep_dive/14_ivy_tests.rst
+   deep_dive/15_ivy_frontends.rst
+   deep_dive/16_ivy_frontend_tests.rst
