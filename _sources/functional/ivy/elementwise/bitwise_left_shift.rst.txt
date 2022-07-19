@@ -5,9 +5,9 @@ bitwise_left_shift
 
 .. autofunction:: ivy.array.array_methods.bitwise_left_shift
 
-.. autofunction:: ivy.container.container_methods.static_bitwise_left_shift
-
 .. autofunction:: ivy.container.container_methods.bitwise_left_shift
+
+.. autofunction:: ivy.container.container_methods.static_bitwise_left_shift
 |
 | **Supported Frameworks:**
 

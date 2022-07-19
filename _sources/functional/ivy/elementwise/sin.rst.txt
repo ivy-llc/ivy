@@ -5,9 +5,9 @@ sin
 
 .. autofunction:: ivy.array.array_methods.sin
 
-.. autofunction:: ivy.container.container_methods.static_sin
-
 .. autofunction:: ivy.container.container_methods.sin
+
+.. autofunction:: ivy.container.container_methods.static_sin
 |
 | **Supported Frameworks:**
 

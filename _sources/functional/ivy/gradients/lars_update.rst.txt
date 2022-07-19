@@ -3,9 +3,9 @@ lars_update
 
 .. autofunction:: ivy.functional.ivy.gradients.lars_update
 
-.. autofunction:: ivy.container.container_methods.static_lars_update
-
 .. autofunction:: ivy.container.container_methods.lars_update
+
+.. autofunction:: ivy.container.container_methods.static_lars_update
 |
 | **Supported Frameworks:**
 
