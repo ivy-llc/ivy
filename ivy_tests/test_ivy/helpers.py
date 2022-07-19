@@ -784,7 +784,6 @@ def test_function(
     test_rtol: float = None,
     test_atol: float = 1e-06,
     test_values: bool = True,
-    test_gradients: bool = False,
     ground_truth_backend: str = "numpy",
     **all_as_kwargs_np,
 ):
@@ -822,8 +821,6 @@ def test_function(
         absolute tolerance value.
     test_values
         if True, test for the correctness of the resulting values.
-    test_gradients
-        if True, test for the correctness of gradient computation.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     all_as_kwargs_np
