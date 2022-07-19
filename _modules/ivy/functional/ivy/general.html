@@ -156,7 +156,6 @@
 <span class="n">TMP_DIR</span> <span class="o">=</span> <span class="s2">&quot;/tmp&quot;</span>
 
 <span class="n">shape_array_mode_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-<span class="n">nestable_mode_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="get_referrers_recursive"><a class="viewcode-back" href="../../../../functional/ivy/general/get_referrers_recursive.html#ivy.functional.ivy.general.get_referrers_recursive">[docs]</a><span class="k">def</span> <span class="nf">get_referrers_recursive</span><span class="p">(</span>
@@ -307,68 +306,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="set_nestable_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/set_nestable_mode.html#ivy.functional.ivy.general.set_nestable_mode">[docs]</a><span class="k">def</span> <span class="nf">set_nestable_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Set the mode of whether to check if function inputs are ivy.Container</span>
-
-<span class="sd">    Parameter</span>
-<span class="sd">    ---------</span>
-<span class="sd">    mode</span>
-<span class="sd">        boolean whether to check if function inputs are ivy.Container</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_nestable_mode(False)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
-<span class="sd">    False</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_nestable_mode(True)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
-<span class="sd">    True</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">global</span> <span class="n">nestable_mode_stack</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;set_nestable_mode only accepts type bool&quot;</span><span class="p">)</span>
-    <span class="n">nestable_mode_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="unset_nestable_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/unset_nestable_mode.html#ivy.functional.ivy.general.unset_nestable_mode">[docs]</a><span class="k">def</span> <span class="nf">unset_nestable_mode</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Reset the mode of whether to check if function inputs are ivy.Container</span>
-<span class="sd">    to the previous state</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_nestable_mode(True)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
-<span class="sd">    True</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.unset_nestable_mode()</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
-<span class="sd">    False</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">global</span> <span class="n">nestable_mode_stack</span>
-    <span class="k">if</span> <span class="n">nestable_mode_stack</span><span class="p">:</span>
-        <span class="n">nestable_mode_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="get_nestable_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/get_nestable_mode.html#ivy.functional.ivy.general.get_nestable_mode">[docs]</a><span class="k">def</span> <span class="nf">get_nestable_mode</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get the current mode of whether to check if function inputs are ivy.Container.</span>
-<span class="sd">    Default is True.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
-<span class="sd">    False</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_nestable_mode(True)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
-<span class="sd">    True</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">global</span> <span class="n">nestable_mode_stack</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">nestable_mode_stack</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="n">nestable_mode_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="copy_array"><a class="viewcode-back" href="../../../../functional/ivy/general/copy_array.html#ivy.functional.ivy.general.copy_array">[docs]</a><span class="nd">@to_native_arrays_and_back</span>

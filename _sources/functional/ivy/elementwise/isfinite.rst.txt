@@ -5,8 +5,6 @@ isfinite
 
 .. autofunction:: ivy.array.array_methods.isfinite
 
-.. autofunction:: ivy.container.container_methods.static_isfinite
-
 .. autofunction:: ivy.container.container_methods.isfinite
 |
 | **Supported Frameworks:**
@@ -37,5 +35,4 @@ isfinite
    isfinite/isfinite_functional.rst
    isfinite/isfinite_array.rst
    isfinite/isfinite_container.rst
-   isfinite/static_isfinite_container.rst
 

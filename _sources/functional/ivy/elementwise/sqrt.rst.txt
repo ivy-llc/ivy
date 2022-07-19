@@ -5,8 +5,6 @@ sqrt
 
 .. autofunction:: ivy.array.array_methods.sqrt
 
-.. autofunction:: ivy.container.container_methods.static_sqrt
-
 .. autofunction:: ivy.container.container_methods.sqrt
 |
 | **Supported Frameworks:**
@@ -37,5 +35,4 @@ sqrt
    sqrt/sqrt_functional.rst
    sqrt/sqrt_array.rst
    sqrt/sqrt_container.rst
-   sqrt/static_sqrt_container.rst
 

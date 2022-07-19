@@ -6,8 +6,6 @@ log1p
 .. autofunction:: ivy.array.array_methods.log1p
 
 .. autofunction:: ivy.container.container_methods.log1p
-
-.. autofunction:: ivy.container.container_methods.static_log1p
 |
 | **Supported Frameworks:**
 
@@ -37,5 +35,4 @@ log1p
    log1p/log1p_functional.rst
    log1p/log1p_array.rst
    log1p/log1p_container.rst
-   log1p/static_log1p_container.rst
 
