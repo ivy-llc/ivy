@@ -37,7 +37,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, None, *rest)
 
 
-def stop_gradient(x, preserve_type=True):
+def stop_gradient(x, preserve_type=True, *, out=None):
     logging.warning(
         "NumPy does not support autograd, 'stop_gradient' "
         "has no effect on the array, as gradients are not supported in the first place."

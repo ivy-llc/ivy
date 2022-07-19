@@ -128,6 +128,9 @@ def conv2d(
     return res
 
 
+conv2d.unsupported_dtypes = ('float16',)
+
+
 # noinspection PyUnresolvedReferences
 def conv2d_transpose(
     x: torch.Tensor,

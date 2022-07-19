@@ -11,7 +11,9 @@ from tensorflow.python.types.core import Tensor
 # local
 
 
-def relu(x: Tensor) -> Tensor:
+def relu(
+    x: Tensor,
+) -> Tensor:
     return tf.nn.relu(x)
    
 
@@ -29,11 +31,15 @@ def gelu(
     return tf.nn.gelu(x, approximate)
 
 
-def sigmoid(x: Tensor) -> Tensor:
+def sigmoid(
+    x: Tensor,
+) -> Tensor:
     return tf.nn.sigmoid(x)
 
 
-def tanh(x: Tensor) -> Tensor:
+def tanh(
+    x: Tensor,
+) -> Tensor:
     return tf.nn.tanh(x)
 
 
@@ -44,5 +50,7 @@ def softmax(
     return tf.exp(x) / tf.reduce_sum(tf.exp(x), axis, keepdims=True)
 
 
-def softplus(x: Tensor) -> Tensor:
+def softplus(
+    x: Tensor,
+) -> Tensor:
     return tf.nn.softplus(x)

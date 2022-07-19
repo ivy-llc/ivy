@@ -10,7 +10,9 @@ import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
 
-def relu(x: JaxArray) -> JaxArray:
+def relu(
+    x: JaxArray, 
+) -> JaxArray:
     return jnp.maximum(x, 0)
 
 
@@ -28,11 +30,15 @@ def gelu(
     return jax.nn.gelu(x, approximate)
 
 
-def sigmoid(x: JaxArray) -> JaxArray:
+def sigmoid(
+    x: JaxArray,
+) -> JaxArray:
     return 1 / (1 + jnp.exp(-x))
 
 
-def tanh(x: JaxArray) -> JaxArray:
+def tanh(
+    x: JaxArray,
+) -> JaxArray:
     return jnp.tanh(x)
 
 

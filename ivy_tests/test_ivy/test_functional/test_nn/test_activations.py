@@ -11,7 +11,7 @@ import ivy.functional.backends.numpy as ivy_np
 
 # relu
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="relu"),
@@ -46,11 +46,11 @@ def test_relu(
 
 # leaky_relu
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     native_array=st.booleans(),
-    num_positional_args=helpers.num_positional_args("leaky_relu"),
+    num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
     container=st.booleans(),
     instance_method=st.booleans(),
     alpha=st.floats(width=16),
@@ -86,7 +86,7 @@ def test_leaky_relu(
 
 # gelu
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     approximate=st.booleans(),
@@ -126,7 +126,7 @@ def test_gelu(
 
 # tanh
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="tanh"),
@@ -161,7 +161,7 @@ def test_tanh(
 
 # sigmoid
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
