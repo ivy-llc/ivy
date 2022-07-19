@@ -246,9 +246,11 @@ def one_hot(indices, depth, device=None):
     return mx.nd.one_hot(indices, depth)
 
 
-def shape(x: mx.nd.NDArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+def shape(
+    x: mx.nd.NDArray, as_array: bool = False
+) -> Union[mx.nd.NDArray, ivy.Shape, ivy.Array]:
     if as_array:
-        return ivy.array(x.shape)
+        return mx.nd.shape_array(x)
     else:
         return ivy.Shape(x.shape)
 
