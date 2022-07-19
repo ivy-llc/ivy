@@ -1,5 +1,5 @@
 # local
-from typing import Union, Optional, Any, Iterable
+from typing import Union, Optional, Any, Iterable, Dict
 
 import ivy
 from ivy.container.base import ContainerBase
@@ -101,3 +101,23 @@ class ContainerWithDevice(ContainerBase):
 
         """
         return self.static_dev_clone_array(self, devices)
+
+    @staticmethod
+    def static_dev_clone_nest(
+        args: Union[ivy.Container, ivy.Array, Iterable],
+        kwargs: Union[ivy.Container, Dict[str, any]],
+        devices: Iterable[ivy.Device],
+        max_depth=1,
+    ):
+        """
+        ivy.Container instance method variant of ivy.device.dev_clone_nest. This method
+        simply wraps the function, and so the docstring for ivy.device.dev_clone_nest
+        also applies to this method with minimal changes.
+
+        Examples
+        --------
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "dev_clone_nest", args, kwargs, devices, max_depth=max_depth
+        )
