@@ -5,8 +5,6 @@ square
 
 .. autofunction:: ivy.array.array_methods.square
 
-.. autofunction:: ivy.container.container_methods.static_square
-
 .. autofunction:: ivy.container.container_methods.square
 |
 | **Supported Frameworks:**
@@ -37,5 +35,4 @@ square
    square/square_functional.rst
    square/square_array.rst
    square/square_container.rst
-   square/static_square_container.rst
 

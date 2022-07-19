@@ -6,8 +6,6 @@ logical_and
 .. autofunction:: ivy.array.array_methods.logical_and
 
 .. autofunction:: ivy.container.container_methods.logical_and
-
-.. autofunction:: ivy.container.container_methods.static_logical_and
 |
 | **Supported Frameworks:**
 
@@ -37,5 +35,4 @@ logical_and
    logical_and/logical_and_functional.rst
    logical_and/logical_and_array.rst
    logical_and/logical_and_container.rst
-   logical_and/static_logical_and_container.rst
 
