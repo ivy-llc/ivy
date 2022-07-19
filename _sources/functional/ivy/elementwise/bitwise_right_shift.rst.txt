@@ -5,6 +5,8 @@ bitwise_right_shift
 
 .. autofunction:: ivy.array.array_methods.bitwise_right_shift
 
+.. autofunction:: ivy.container.container_methods.static_bitwise_right_shift
+
 .. autofunction:: ivy.container.container_methods.bitwise_right_shift
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ bitwise_right_shift
    bitwise_right_shift/bitwise_right_shift_functional.rst
    bitwise_right_shift/bitwise_right_shift_array.rst
    bitwise_right_shift/bitwise_right_shift_container.rst
+   bitwise_right_shift/static_bitwise_right_shift_container.rst
 

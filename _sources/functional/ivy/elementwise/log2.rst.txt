@@ -6,6 +6,8 @@ log2
 .. autofunction:: ivy.array.array_methods.log2
 
 .. autofunction:: ivy.container.container_methods.log2
+
+.. autofunction:: ivy.container.container_methods.static_log2
 |
 | **Supported Frameworks:**
 
@@ -35,4 +37,5 @@ log2
    log2/log2_functional.rst
    log2/log2_array.rst
    log2/log2_container.rst
+   log2/static_log2_container.rst
 

@@ -6,6 +6,8 @@ equal
 .. autofunction:: ivy.array.array_methods.equal
 
 .. autofunction:: ivy.container.container_methods.equal
+
+.. autofunction:: ivy.container.container_methods.static_equal
 |
 | **Supported Frameworks:**
 
@@ -35,4 +37,5 @@ equal
    equal/equal_functional.rst
    equal/equal_array.rst
    equal/equal_container.rst
+   equal/static_equal_container.rst
 

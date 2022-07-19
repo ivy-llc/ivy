@@ -5,6 +5,8 @@ erf
 
 .. autofunction:: ivy.array.array_methods.erf
 
+.. autofunction:: ivy.container.container_methods.static_erf
+
 .. autofunction:: ivy.container.container_methods.erf
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ erf
    erf/erf_functional.rst
    erf/erf_array.rst
    erf/erf_container.rst
+   erf/static_erf_container.rst
 

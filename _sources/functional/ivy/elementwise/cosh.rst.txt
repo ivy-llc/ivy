@@ -6,6 +6,8 @@ cosh
 .. autofunction:: ivy.array.array_methods.cosh
 
 .. autofunction:: ivy.container.container_methods.cosh
+
+.. autofunction:: ivy.container.container_methods.static_cosh
 |
 | **Supported Frameworks:**
 
@@ -35,4 +37,5 @@ cosh
    cosh/cosh_functional.rst
    cosh/cosh_array.rst
    cosh/cosh_container.rst
+   cosh/static_cosh_container.rst
 

@@ -5,6 +5,8 @@ log
 
 .. autofunction:: ivy.array.array_methods.log
 
+.. autofunction:: ivy.container.container_methods.static_log
+
 .. autofunction:: ivy.container.container_methods.log
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ log
    log/log_functional.rst
    log/log_array.rst
    log/log_container.rst
+   log/static_log_container.rst
 
