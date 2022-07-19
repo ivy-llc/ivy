@@ -334,13 +334,6 @@
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
             <span class="n">out</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="n">out</span>
-
-        <span class="c1"># Multiple containers for functions returning multiple arrays</span>
-        <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-                        <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="ContainerBase.handle_inplace"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.handle_inplace">[docs]</a>    <span class="nd">@staticmethod</span>

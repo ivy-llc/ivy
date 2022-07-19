@@ -5,8 +5,6 @@ repeat
 
 .. autofunction:: ivy.array.array_methods.repeat
 
-.. autofunction:: ivy.container.container_methods.static_repeat
-
 .. autofunction:: ivy.container.container_methods.repeat
 |
 | **Supported Frameworks:**
@@ -37,5 +35,4 @@ repeat
    repeat/repeat_functional.rst
    repeat/repeat_array.rst
    repeat/repeat_container.rst
-   repeat/static_repeat_container.rst
 

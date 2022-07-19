@@ -612,9 +612,6 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="is_bool_dtype"><a class="viewcode-back" href="../../../functional/ivy/data_type/is_bool_dtype/is_bool_dtype_array.html#ivy.array.array_methods.is_bool_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_bool_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="is_float_dtype"><a class="viewcode-back" href="../../../functional/ivy/data_type/is_float_dtype/is_float_dtype_array.html#ivy.array.array_methods.is_float_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
@@ -661,6 +658,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([2.6, -6.6, 1.6, -0])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.abs()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -670,50 +669,10 @@
 
 
 <div class="viewcode-block" id="acosh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/acosh/acosh_array.html#ivy.array.array_methods.acosh">[docs]</a><span class="k">def</span> <span class="nf">acosh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.acosh. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.acosh also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array whose elements each represent the area of a hyperbolic sector.</span>
-<span class="sd">        Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the inverse hyperbolic cosine</span>
-<span class="sd">        of each element in ``self``.</span>
-<span class="sd">        The returned array must have the same data type as ``self``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="acos"><a class="viewcode-back" href="../../../functional/ivy/elementwise/acos/acos_array.html#ivy.array.array_methods.acos">[docs]</a><span class="k">def</span> <span class="nf">acos</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.acos. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.acos also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the inverse cosine of each element in ``self``.</span>
-<span class="sd">        The  returned array must have the same data type as ``self``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -757,25 +716,6 @@
 
 
 <div class="viewcode-block" id="asin"><a class="viewcode-back" href="../../../functional/ivy/elementwise/asin/asin_array.html#ivy.array.array_methods.asin">[docs]</a><span class="k">def</span> <span class="nf">asin</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.asin. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.asin also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the inverse sine of each element in ``self``. The</span>
-<span class="sd">        returned array must have the same data type as ``self``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -803,6 +743,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1., 0., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.asinh()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -812,25 +754,6 @@
 
 
 <div class="viewcode-block" id="atan"><a class="viewcode-back" href="../../../functional/ivy/elementwise/atan/atan_array.html#ivy.array.array_methods.atan">[docs]</a><span class="k">def</span> <span class="nf">atan</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.atan. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.atan also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the inverse tangent of each element in ``self``. The</span>
-<span class="sd">        returned array must have the same data type as ``self``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -840,56 +763,10 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.atan2. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.atan2 also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array corresponding to the y-coordinates.</span>
-<span class="sd">        Should have a real-valued floating-point data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array corresponding to the x-coordinates.</span>
-<span class="sd">        Must be compatible with ``self``(see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the inverse tangent of the quotient ``self/x2``.</span>
-<span class="sd">        The returned array must have a real-valued floating-point data type</span>
-<span class="sd">        determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="atanh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/atanh/atanh_array.html#ivy.array.array_methods.atanh">[docs]</a><span class="k">def</span> <span class="nf">atanh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.atanh. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.atanh also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array whose elements each represent the area of a hyperbolic sector.</span>
-<span class="sd">        Should have a floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the inverse hyperbolic tangent of each element</span>
-<span class="sd">        in ``self``. The returned array must have a floating-point data type</span>
-<span class="sd">        determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -899,29 +776,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.bitwise_and.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.bitwise_and also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have an integer or boolean data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`). Should have an integer or boolean data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have a data type determined</span>
-<span class="sd">        by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -931,55 +785,12 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.bitwise_left_shift.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.bitwise_left_shift also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have an integer or boolean data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have an integer or boolean data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have a data type determined</span>
-<span class="sd">        by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="bitwise_invert"><a class="viewcode-back" href="../../../functional/ivy/elementwise/bitwise_invert/bitwise_invert_array.html#ivy.array.array_methods.bitwise_invert">[docs]</a><span class="k">def</span> <span class="nf">bitwise_invert</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.bitwise_invert.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.bitiwse_invert also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have an integer or boolean data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have the same data type as ``self``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -989,33 +800,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.bitwise_or. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.bitwise_or also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have an integer or boolean data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have the same data type as ``self``.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
-<span class="sd">    &gt;&gt;&gt; z = x.bitwise_or(y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([5, 7, 7])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1025,29 +809,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.bitwise_right_shift.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.bitwise_right_shift also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have an integer or boolean data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`). Should have an integer or boolean data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have a data type determined</span>
-<span class="sd">        by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1057,38 +818,14 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.bitwise_xor.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.bitwise_xor also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have an integer or boolean data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have an integer or boolean data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have a data type determined</span>
-<span class="sd">        by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="ceil"><a class="viewcode-back" href="../../../functional/ivy/elementwise/ceil/ceil_array.html#ivy.array.array_methods.ceil">[docs]</a><span class="k">def</span> <span class="nf">ceil</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.ceil.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.ceil also applies to this method with minimal changes.</span>
+<span class="sd">    ivy.Array instance method variant of ivy.ceil. This method simply wraps the</span>
+<span class="sd">    function, and so the docstring for ivy.ceil also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1155,27 +892,6 @@
 
 
 <div class="viewcode-block" id="cosh"><a class="viewcode-back" href="../../../functional/ivy/elementwise/cosh/cosh_array.html#ivy.array.array_methods.cosh">[docs]</a><span class="k">def</span> <span class="nf">cosh</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.cosh. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.cosh also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array whose elements each represent a hyperbolic angle.</span>
-<span class="sd">        Should have a floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the hyperbolic cosine of each element in ``self``.</span>
-<span class="sd">        The returned array must have a floating-point data type determined by</span>
-<span class="sd">        :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1185,30 +901,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.divide. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.divide also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        dividend input array. Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        divisor input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have a data type determined</span>
-<span class="sd">        by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1218,83 +910,22 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.equal.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.equal also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. May have any data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        May have any data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results. The returned array</span>
-<span class="sd">        must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="exp"><a class="viewcode-back" href="../../../functional/ivy/elementwise/exp/exp_array.html#ivy.array.array_methods.exp">[docs]</a><span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.exp. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.exp also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the evaluated exponential function result for</span>
-<span class="sd">        each element in ``self``. The returned array must have a floating-point</span>
-<span class="sd">        data type determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="expm1"><a class="viewcode-back" href="../../../functional/ivy/elementwise/expm1/expm1_array.html#ivy.array.array_methods.expm1">[docs]</a><span class="k">def</span> <span class="nf">expm1</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.expm1. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.expm1 also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([5.5, -2.5, 1.5, -0])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.expm1()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([244.   ,  -0.918,   3.48 ,   0.   ])</span>
-
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([0., 0.])</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([5., 0.])</span>
-<span class="sd">    &gt;&gt;&gt; _ = x.expm1(out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([147.,   0.])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="floor"><a class="viewcode-back" href="../../../functional/ivy/elementwise/floor/floor_array.html#ivy.array.array_methods.floor">[docs]</a><span class="k">def</span> <span class="nf">floor</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.floor. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.floor also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
+<span class="sd">    ivy.Array instance method variant of ivy.floor. This method simply wraps the</span>
+<span class="sd">    function, and so the docstring for ivy.floor also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1326,30 +957,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.floor_divide.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for ivy.floor_divide</span>
-<span class="sd">    also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        dividend input array. Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        divisor input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have a data type determined</span>
-<span class="sd">        by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1359,29 +966,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.greater.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.greater also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results. The returned array must</span>
-<span class="sd">        have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1391,101 +975,18 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.greater_equal.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.greater_equal also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results. The returned array</span>
-<span class="sd">        must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="isfinite"><a class="viewcode-back" href="../../../functional/ivy/elementwise/isfinite/isfinite_array.html#ivy.array.array_methods.isfinite">[docs]</a><span class="k">def</span> <span class="nf">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.isfinite.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.isfinite also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing test results. An element ``out_i`` is ``True``</span>
-<span class="sd">        if ``self_i`` is finite and ``False`` otherwise.</span>
-<span class="sd">        The returned array must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="isinf"><a class="viewcode-back" href="../../../functional/ivy/elementwise/isinf/isinf_array.html#ivy.array.array_methods.isinf">[docs]</a><span class="k">def</span> <span class="nf">isinf</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.isinf. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.isinf also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing test results. An element ``out_i`` is ``True``</span>
-<span class="sd">        if ``self_i`` is either positive or negative infinity and ``False``</span>
-<span class="sd">        otherwise. The returned array must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="isnan"><a class="viewcode-back" href="../../../functional/ivy/elementwise/isnan/isnan_array.html#ivy.array.array_methods.isnan">[docs]</a><span class="k">def</span> <span class="nf">isnan</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.isnan. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.isnan also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing test results. An element ``out_i`` is ``True``</span>
-<span class="sd">        if ``self_i`` is ``NaN`` and ``False`` otherwise.</span>
-<span class="sd">        The returned array should have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1495,29 +996,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.less. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.less also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results. The returned array</span>
-<span class="sd">        must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1527,125 +1005,22 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.less_equal.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.less_equal also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results. The returned array</span>
-<span class="sd">        must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="log"><a class="viewcode-back" href="../../../functional/ivy/elementwise/log/log_array.html#ivy.array.array_methods.log">[docs]</a><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.log. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.log also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the evaluated result for each element in ``self``.</span>
-<span class="sd">        The returned array must have a real-valued floating-point data type</span>
-<span class="sd">        determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="log1p"><a class="viewcode-back" href="../../../functional/ivy/elementwise/log1p/log1p_array.html#ivy.array.array_methods.log1p">[docs]</a><span class="k">def</span> <span class="nf">log1p</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.log1p.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.log1p also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the evaluated result for each element in ``self``.</span>
-<span class="sd">        The returned array must have a real-valued floating-point data</span>
-<span class="sd">        type determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="log2"><a class="viewcode-back" href="../../../functional/ivy/elementwise/log2/log2_array.html#ivy.array.array_methods.log2">[docs]</a><span class="k">def</span> <span class="nf">log2</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.log2.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.log2 also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the evaluated base ``2`` logarithm for each element</span>
-<span class="sd">        in ``self``. The returned array must have a real-valued floating-point</span>
-<span class="sd">        data type determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="log10"><a class="viewcode-back" href="../../../functional/ivy/elementwise/log10/log10_array.html#ivy.array.array_methods.log10">[docs]</a><span class="k">def</span> <span class="nf">log10</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.log10. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.log10 also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the evaluated base ``10`` logarithm for each element</span>
-<span class="sd">        in ``self``. The returned array must have a real-valued</span>
-<span class="sd">        floating-point data type determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1655,30 +1030,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.logaddexp.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.logaddexp also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have a real-valued floating-point data</span>
-<span class="sd">        type determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1688,52 +1039,10 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.logical_and.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.logical_and also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a boolean data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a boolean data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results. The returned array</span>
-<span class="sd">        must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="logical_not"><a class="viewcode-back" href="../../../functional/ivy/elementwise/logical_not/logical_not_array.html#ivy.array.array_methods.logical_not">[docs]</a><span class="k">def</span> <span class="nf">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.logical_not.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.logical_not also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a boolean data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1743,29 +1052,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.logical_or.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.logical_or also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a boolean data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a boolean data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results. The returned array</span>
-<span class="sd">        must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1775,29 +1061,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.logical_xor.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.logical_xor also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a boolean data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results. The returned array</span>
-<span class="sd">        must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1807,52 +1070,10 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.multiply.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for ivy.multiply</span>
-<span class="sd">     also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise products. The returned array</span>
-<span class="sd">        must have a data type determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="negative"><a class="viewcode-back" href="../../../functional/ivy/elementwise/negative/negative_array.html#ivy.array.array_methods.negative">[docs]</a><span class="k">def</span> <span class="nf">negative</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.negative.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.negative also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the evaluated result for each element in ``self``.</span>
-<span class="sd">        The returned array must have the same data type as ``self``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1862,51 +1083,10 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.not_equal.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.not_equal also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. May have any data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results. The returned</span>
-<span class="sd">        array must have a data type of ``bool``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="positive"><a class="viewcode-back" href="../../../functional/ivy/elementwise/positive/positive_array.html#ivy.array.array_methods.positive">[docs]</a><span class="k">def</span> <span class="nf">positive</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.positive.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.positive also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the evaluated result for each element in ``self``.</span>
-<span class="sd">        The returned array must have the same data type as ``self``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1916,31 +1096,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.pow. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.pow also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array whose elements correspond to the exponentiation base.</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array whose elements correspond to the exponentiation</span>
-<span class="sd">        exponent. Must be compatible with ``self`` (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        The returned array must have a data type determined</span>
-<span class="sd">        by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -1950,81 +1105,10 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.remainder.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.remainder also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        dividend input array. Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        divisor input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results.</span>
-<span class="sd">        Each element-wise result must have the same sign as the respective</span>
-<span class="sd">        element ``x2_i``. The returned array must have a data type</span>
-<span class="sd">        determined by :ref:`type-promotion`.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code: `ivy.Array` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([2., 5., 15.])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([3., 2., 4.])</span>
-<span class="sd">    &gt;&gt;&gt; y = x1.remainder(x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([2., 1., 3.])</span>
-
-<span class="sd">    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([11., 4., 18.])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([2., 5., 8.])</span>
-<span class="sd">    &gt;&gt;&gt; y = x1.remainder(x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([1., 4., 2.])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="round"><a class="viewcode-back" href="../../../functional/ivy/elementwise/round/round_array.html#ivy.array.array_methods.round">[docs]</a><span class="k">def</span> <span class="nf">round</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.round. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.round also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the rounded result for each element in ``self``.</span>
-<span class="sd">        The returned array must have the same data type as ``self``.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1.2, 2.4, 3.6])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.round()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([1., 2., 4.])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -2050,6 +1134,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([5.7, -7.1, 0, -0, 6.8])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.sign()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -2110,8 +1196,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    self</span>
-<span class="sd">        input array whose elements each represent a hyperbolic angle.</span>
-<span class="sd">        Should have a floating-point data type.</span>
+<span class="sd">        input array whose elements each represent a hyperbolic angle. Should have a</span>
+<span class="sd">        floating-point data type.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">        the inputs broadcast to.</span>
@@ -2125,6 +1211,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; print(x.sinh())</span>
 <span class="sd">        ivy.array([1.18, 3.63, 10.])</span>
@@ -2138,50 +1226,10 @@
 
 
 <div class="viewcode-block" id="square"><a class="viewcode-back" href="../../../functional/ivy/elementwise/square/square_array.html#ivy.array.array_methods.square">[docs]</a><span class="k">def</span> <span class="nf">square</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.square.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.square also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the square of each element in ``self``.</span>
-<span class="sd">        The returned array must have a real-valued floating-point data type</span>
-<span class="sd">        determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="sqrt"><a class="viewcode-back" href="../../../functional/ivy/elementwise/sqrt/sqrt_array.html#ivy.array.array_methods.sqrt">[docs]</a><span class="k">def</span> <span class="nf">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.sqrt. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.sqrt also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued floating-point data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the square root of each element in ``self``.</span>
-<span class="sd">        The returned array must have a real-valued floating-point data type</span>
-<span class="sd">        determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -2191,30 +1239,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.subtract.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.subtract also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a real-valued data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`).</span>
-<span class="sd">        Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise differences. The returned array</span>
-<span class="sd">        must have a data type determined by :ref:`type-promotion`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -2236,9 +1260,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the tangent of each element in ``self``.</span>
-<span class="sd">        The return must have a floating-point data type determined</span>
-<span class="sd">        by :ref:`type-promotion`.</span>
+<span class="sd">        an array containing the tangent of each element in ``self``. The return must</span>
+<span class="sd">        have a floating-point data type determined by :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -2259,8 +1282,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    self</span>
-<span class="sd">        input array whose elements each represent a hyperbolic angle.</span>
-<span class="sd">        Should have a real-valued floating-point data type.</span>
+<span class="sd">        input array whose elements each represent a hyperbolic angle. Should have a</span>
+<span class="sd">        real-valued floating-point data type.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -2268,9 +1291,9 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the hyperbolic tangent of each element in ``self``.</span>
-<span class="sd">        The returned array must have a real-valued floating-point data type</span>
-<span class="sd">        determined by :ref:`type-promotion`.</span>
+<span class="sd">        an array containing the hyperbolic tangent of each element in ``self``. The</span>
+<span class="sd">        returned array must have a real-valued floating-point data type determined</span>
+<span class="sd">        by :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -2283,47 +1306,10 @@
 
 
 <div class="viewcode-block" id="trunc"><a class="viewcode-back" href="../../../functional/ivy/elementwise/trunc/trunc_array.html#ivy.array.array_methods.trunc">[docs]</a><span class="k">def</span> <span class="nf">trunc</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.trunc. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.trunc also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a real-valued data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the rounded result for each element in ``self``.</span>
-<span class="sd">        The returned array must have the same data type as ``self``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="erf"><a class="viewcode-back" href="../../../functional/ivy/elementwise/erf/erf_array.html#ivy.array.array_methods.erf">[docs]</a><span class="k">def</span> <span class="nf">erf</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.erf. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.erf also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array to compute exponential for.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the Gauss error of ``self``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -2854,32 +1840,9 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.cross_entropy. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.cross_entropy also applies to</span>
-<span class="sd">    this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array containing true labels.</span>
-<span class="sd">    pred</span>
-<span class="sd">        input array containing the predicted labels.</span>
-<span class="sd">    axis</span>
-<span class="sd">        the axis along which to compute the cross-entropy. If axis is ``-1``,</span>
-<span class="sd">        the cross-entropy will be computed along the last dimension.</span>
-<span class="sd">        Default: ``-1``.</span>
-<span class="sd">    epsilon</span>
-<span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
-<span class="sd">        the loss. If epsilon is ``0``, no smoothing will be applied.</span>
-<span class="sd">        Default: ``1e-7``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The cross-entropy loss between the given distributions.</span>
+    <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.cross_entropy. This method</span>
+<span class="sd">    simply wraps the function, and so the docstring for ivy.cross_entropy</span>
+<span class="sd">    also applies to this method with minimal changes.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -2902,25 +1865,6 @@
     <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.binary_cross_entropy. This method</span>
 <span class="sd">    simply wraps the function, and so the docstring for ivy.binary_cross_entropy</span>
 <span class="sd">    also applies to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array containing true labels.</span>
-<span class="sd">    pred</span>
-<span class="sd">        input array containing Predicted labels.</span>
-<span class="sd">    epsilon</span>
-<span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
-<span class="sd">        the loss. If epsilon is ``0``, no smoothing will be applied.</span>
-<span class="sd">        Default: ``1e-7``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The binary cross entropy between the given distributions.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -2946,28 +1890,6 @@
 <span class="sd">    simply wraps the function, and so the docstring for ivy.sparse_cross_entropy</span>
 <span class="sd">    also applies to this method with minimal changes.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array containing the true labels as logits.</span>
-<span class="sd">    pred</span>
-<span class="sd">        input array containing the predicted labels as logits.</span>
-<span class="sd">    axis</span>
-<span class="sd">        the axis along which to compute the cross-entropy. If axis is ``-1``, the</span>
-<span class="sd">        cross-entropy will be computed along the last dimension. Default: ``-1``.</span>
-<span class="sd">        epsilon</span>
-<span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
-<span class="sd">        the loss. If epsilon is ``0``, no smoothing will be applied.</span>
-<span class="sd">        Default: ``1e-7``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The sparse cross-entropy loss between the given distributions.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1 , 1, 0])</span>
@@ -2982,7 +1904,7 @@
 <span class="c1">#ivy.array.manipulation</span>
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 
 <span class="c1"># local</span>
@@ -3042,8 +1964,8 @@
 
 <div class="viewcode-block" id="roll"><a class="viewcode-back" href="../../../functional/ivy/manipulation/roll/roll_array.html#ivy.array.array_methods.roll">[docs]</a><span class="k">def</span> <span class="nf">roll</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -3095,18 +2017,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.squeeze. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.squeeze also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[0.],[ 1.]]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.squeeze(2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[0., 1.]])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -3135,24 +2045,6 @@
 <span class="sd">    function, and so the docstring for ivy.roll also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Input array containing elements to clip.</span>
-<span class="sd">    x_min</span>
-<span class="sd">        Minimum value.</span>
-<span class="sd">    x_max</span>
-<span class="sd">        Maximum value.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        An array with the elements of self, but where values &lt; x_min are replaced</span>
-<span class="sd">        with x_min, and those &gt; x_max with x_max.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
@@ -3170,18 +2062,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.repeat. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.repeat also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
-<span class="sd">    &gt;&gt;&gt; x.repeat(2)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([0., 0., 1., 1., 2., 2.])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -3249,30 +2129,6 @@
 <span class="sd">    the function, and so the docstring for ivy.layer_norm also applies to this</span>
 <span class="sd">    method with minimal changes.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Input array</span>
-<span class="sd">    normalized_idxs</span>
-<span class="sd">        Indices to apply the normalization to.</span>
-<span class="sd">    epsilon</span>
-<span class="sd">        small constant to add to the denominator, use global ivy._MIN_BASE by</span>
-<span class="sd">        default.</span>
-<span class="sd">    scale</span>
-<span class="sd">        Learnable gamma variables for post-multiplication, default is None.</span>
-<span class="sd">    offset</span>
-<span class="sd">        Learnable beta variables for post-addition, default is None.</span>
-<span class="sd">    new_std</span>
-<span class="sd">        The standard deviation of the new normalized values. Default is 1.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The layer after applying layer normalization.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.0976, -0.3452,  1.2740], \</span>
@@ -3303,25 +2159,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.unique_counts. This method simply</span>
 <span class="sd">    wraps the function, and so the docstring for ivy.unique_counts also applies</span>
 <span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. If ``x`` has more than one dimension, the function must flatten</span>
-<span class="sd">        ``x`` and return the unique elements of the flattened array.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        a namedtuple ``(values, counts)`` whose</span>
-
-<span class="sd">        - first element must have the field name ``values`` and must be an</span>
-<span class="sd">        array containing the unique elements of ``x``.</span>
-<span class="sd">        The array must have the same data type as ``x``.</span>
-<span class="sd">        - second element must have the field name ``counts`` and must be an array</span>
-<span class="sd">        containing the number of times each unique element occurs in ``x``.</span>
-<span class="sd">        The returned array must have same shape as ``values`` and must</span>
-<span class="sd">        have the default array index data type.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -3488,39 +2325,6 @@
 <span class="sd">    function, and so the docstring for ivy.all also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array.</span>
-<span class="sd">    axis</span>
-<span class="sd">        axis or axes along which to perform a logical AND reduction. By default, a</span>
-<span class="sd">        logical AND reduction must be performed over the entire array. If a tuple of</span>
-<span class="sd">        integers, logical AND reductions must be performed over multiple axes. A</span>
-<span class="sd">        valid ``axis`` must be an integer on the interval ``[-N, N)``, where ``N``</span>
-<span class="sd">        is the rank(number of dimensions) of ``self``. If an ``axis`` is specified</span>
-<span class="sd">        as a negative integer, the function must determine the axis along which to</span>
-<span class="sd">        perform a reduction by counting backward from the last dimension (where</span>
-<span class="sd">        ``-1`` refers to the last dimension). If provided an invalid ``axis``, the</span>
-<span class="sd">        function must raise an exception. Default  ``None``.</span>
-<span class="sd">    keepdims</span>
-<span class="sd">        If ``True``, the reduced axes (dimensions) must be included in the result as</span>
-<span class="sd">        singleton dimensions, and, accordingly, the result must be compatible with</span>
-<span class="sd">        the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the</span>
-<span class="sd">        reduced axes(dimensions) must not be included in the result.</span>
-<span class="sd">        Default: ``False``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        if a logical AND reduction was performed over the entire array, the returned</span>
-<span class="sd">        array must be a zero-dimensional array containing the test result;</span>
-<span class="sd">        otherwise, the returned array must be a non-zero-dimensional array</span>
-<span class="sd">        containing the test results. The returned array must have a data type of</span>
-<span class="sd">        ``bool``.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
@@ -3542,39 +2346,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.any. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.any also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array.</span>
-<span class="sd">    axis</span>
-<span class="sd">        axis or axes along which to perform a logical OR reduction. By default, a</span>
-<span class="sd">        logical OR reduction must be performed over the entire array. If a tuple of</span>
-<span class="sd">        integers, logical OR reductions must be performed over multiple axes. A</span>
-<span class="sd">        valid ``axis`` must be an integer on the interval ``[-N, N)``, where ``N``</span>
-<span class="sd">        is the rank(number of dimensions) of ``self``. If an ``axis`` is specified</span>
-<span class="sd">        as a negative integer, the function must determine the axis along which to</span>
-<span class="sd">        perform a reduction by counting backward from the last dimension (where</span>
-<span class="sd">        ``-1`` refers to the last dimension). If provided an invalid ``axis``, the</span>
-<span class="sd">        function must raise an exception. Default: ``None``.</span>
-<span class="sd">    keepdims</span>
-<span class="sd">        If ``True``, the reduced axes (dimensions) must be included in the result as</span>
-<span class="sd">        singleton dimensions, and, accordingly, the result must be compatible with</span>
-<span class="sd">        the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the</span>
-<span class="sd">        reduced axes(dimensions) must not be included in the result.</span>
-<span class="sd">        Default: ``False``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        if a logical OR reduction was performed over the entire array, the returned</span>
-<span class="sd">        array must be a zero-dimensional array containing the test result;</span>
-<span class="sd">        otherwise, the returned array must be a non-zero-dimensional array</span>
-<span class="sd">        containing the test results. The returned array must have a data type of</span>
-<span class="sd">        ``bool``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>

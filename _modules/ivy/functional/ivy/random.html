@@ -148,14 +148,14 @@
 <span class="c1"># ------#</span>
 
 
-<div class="viewcode-block" id="random_uniform"><a class="viewcode-back" href="../../../../functional/ivy/random/random_uniform/random_uniform_functional.html#ivy.functional.ivy.random.random_uniform">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="random_uniform"><a class="viewcode-back" href="../../../../functional/ivy/random/random_uniform/random_uniform_functional.html#ivy.functional.ivy.random.random_uniform">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_device</span>
 <span class="nd">@infer_dtype</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">random_uniform</span><span class="p">(</span>
-    <span class="n">low</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-    <span class="n">high</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">low</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">high</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

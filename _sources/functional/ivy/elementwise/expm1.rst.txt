@@ -5,8 +5,6 @@ expm1
 
 .. autofunction:: ivy.array.array_methods.expm1
 
-.. autofunction:: ivy.container.container_methods.static_expm1
-
 .. autofunction:: ivy.container.container_methods.expm1
 |
 | **Supported Frameworks:**
@@ -37,5 +35,4 @@ expm1
    expm1/expm1_functional.rst
    expm1/expm1_array.rst
    expm1/expm1_container.rst
-   expm1/static_expm1_container.rst
 

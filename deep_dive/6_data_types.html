@@ -57,7 +57,6 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Data Types</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#data-type-module">Data Type Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arguments-in-other-functions">Arguments in other Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#unsupported-data-types">Unsupported data types</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
@@ -333,15 +332,6 @@ because of the <em>relevant</em> <code class="code docutils literal notranslate"
 <p>The implementations for all other backends follow a similar pattern to this PyTorch implementation,
 where the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is optional and <code class="code docutils literal notranslate"><span class="pre">ivy.default_dtype</span></code> is called inside the
 backend-specific implementation.</p>
-</section>
-<section id="unsupported-data-types">
-<h2>Unsupported data types<a class="headerlink" href="#unsupported-data-types" title="Permalink to this heading"></a></h2>
-<p>Some backend functions have an attribute named <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> which flags data types
-which this particular backend version of the function doesn’t support but other backends might
-do. It should be noted that the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> is different from <code class="code docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code>
-which consists of all the <code class="code docutils literal notranslate"><span class="pre">dtypes</span></code> that every function of that particular backend doesn’t support
-and so if a certain <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is already present in the <code class="code docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code> then we should
-not repeat flag it by adding it into the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code>.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for data types, and how these are handled in Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,

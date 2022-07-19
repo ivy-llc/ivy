@@ -359,82 +359,17 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an object having the followng attributes:</span>
-<span class="sd">    </span>
 <span class="sd">        - **bits**: *int*</span>
-<span class="sd">    </span>
 <span class="sd">          number of bits occupied by the floating-point data type.</span>
-<span class="sd">    </span>
 <span class="sd">        - **eps**: *float*</span>
-<span class="sd">    </span>
 <span class="sd">          difference between 1.0 and the next smallest representable floating-point</span>
 <span class="sd">          number larger than 1.0 according to the IEEE-754 standard.</span>
-<span class="sd">    </span>
 <span class="sd">        - **max**: *float*</span>
-<span class="sd">    </span>
 <span class="sd">          largest representable number.</span>
-<span class="sd">    </span>
 <span class="sd">        - **min**: *float*</span>
-<span class="sd">    </span>
 <span class="sd">          smallest representable number.</span>
-<span class="sd">    </span>
 <span class="sd">        - **smallest_normal**: *float*</span>
-<span class="sd">    </span>
 <span class="sd">          smallest positive floating-point number with full precision.</span>
-
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html&gt;`_ </span>
-<span class="sd">    in the standard.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Dtype` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.finfo(ivy.float32)</span>
-<span class="sd">    finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)</span>
-
-<span class="sd">    With :code:`str` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.finfo(&#39;float32&#39;)</span>
-<span class="sd">    finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)</span>
-
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1.3,2.1,3.4], dtype=ivy.float64)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.finfo(x)</span>
-<span class="sd">    finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
-
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0.7,8.4,3.14], dtype=ivy.float16)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.finfo(x)</span>
-<span class="sd">    finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16)</span>
-
-<span class="sd">    With :code:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([-9.5,1.8,-8.9], dtype=ivy.float16), /</span>
-<span class="sd">                          y=ivy.array([7.6,8.1,1.6], dtype=ivy.float64))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.finfo(c)</span>
-<span class="sd">    {</span>
-<span class="sd">        x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),</span>
-<span class="sd">        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
-<span class="sd">    }</span>
-
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.7,8.4,3.14], dtype=ivy.float32)</span>
-<span class="sd">    &gt;&gt;&gt; x.finfo()</span>
-<span class="sd">    finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)</span>
-
-<span class="sd">    Using :code:`ivy.Container` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([1.2,3.5,8.], dtype=ivy.float64), /</span>
-<span class="sd">                          y=ivy.array([1.3,2.1,3.4], dtype=ivy.float16))</span>
-<span class="sd">    &gt;&gt;&gt; c.finfo()</span>
-<span class="sd">    {</span>
-<span class="sd">        x: finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
-<span class="sd">        y: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),</span>
-<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
@@ -664,7 +599,7 @@
         <span class="k">return</span> <span class="n">float_dtype</span>
     <span class="n">as_native</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">as_native</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span>
@@ -732,11 +667,11 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_float_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">default_float_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_int_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">default_int_dtype</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">as_native</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dtype</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_native_dtype</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;bool&quot;</span>
     <span class="k">global</span> <span class="n">default_dtype_stack</span>
@@ -784,7 +719,7 @@
         <span class="k">return</span> <span class="n">int_dtype</span>
     <span class="n">as_native</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">as_native</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span>
@@ -798,7 +733,7 @@
             <span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int64</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
+                <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -813,7 +748,7 @@
             <span class="k">elif</span> <span class="nb">input</span> <span class="o">&gt;</span> <span class="mi">2147483647</span> <span class="ow">and</span> <span class="nb">input</span> <span class="o">!=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int64</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
+                <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -821,7 +756,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">global</span> <span class="n">default_int_dtype_stack</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">default_int_dtype_stack</span><span class="p">:</span>
-            <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">()</span>
+            <span class="n">def_dtype</span> <span class="o">=</span> <span class="n">default_dtype</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">def_dtype</span><span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">def_dtype</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1015,51 +950,6 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtypes</span></div>
 
 
-<div class="viewcode-block" id="is_bool_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/is_bool_dtype/is_bool_dtype_functional.html#ivy.functional.ivy.data_type.is_bool_dtype">[docs]</a><span class="nd">@handle_nestable</span>
-<span class="nd">@inputs_to_native_arrays</span>
-<span class="k">def</span> <span class="nf">is_bool_dtype</span><span class="p">(</span>
-    <span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determine whether the input data type is a bool data type.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    dtype_in</span>
-<span class="sd">        input data type to test.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        &quot;True&quot; if the input data type is a bool, otherwise &quot;False&quot;.</span>
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
-        <span class="n">dtype_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;bool&quot;</span> <span class="ow">in</span> <span class="n">dtype_in</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">True</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-            <span class="k">else</span> <span class="kc">False</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">True</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span>
-                <span class="n">dtype_in</span><span class="p">,</span>
-                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">else</span> <span class="kc">False</span>
-        <span class="p">)</span>
-    <span class="k">return</span> <span class="s2">&quot;bool&quot;</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="is_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/is_int_dtype/is_int_dtype_functional.html#ivy.functional.ivy.data_type.is_int_dtype">[docs]</a><span class="nd">@handle_nestable</span>
 <span class="nd">@inputs_to_native_arrays</span>
 <span class="k">def</span> <span class="nf">is_int_dtype</span><span class="p">(</span>
@@ -1094,15 +984,27 @@
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    True</span>
 
+<span class="sd">    &gt;&gt;&gt; x = ivy.is_int_dtype(ivy.uint64)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    True</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.is_int_dtype(ivy.float64)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    False</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.is_int_dtype(ivy.bool)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    False</span>
 
+<span class="sd">    With :code:`str` input:</span>
 
+<span class="sd">    &gt;&gt;&gt; x = &quot;1&quot;</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.is_int_dtype(x))</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; x = &quot;int&quot;</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.is_int_dtype(x))</span>
+<span class="sd">    False</span>
 
 <span class="sd">    With :code:`ivy.Array` input:</span>
 
@@ -1118,7 +1020,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \</span>
 <span class="sd">        dtype = ivy.int16)</span>
 <span class="sd">    &gt;&gt;&gt; print(x.dtype)</span>
-<span class="sd">    torch.int16</span>
+<span class="sd">    &lt;dtype:&#39;int16&#39;&gt;</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.is_int_dtype(x))</span>
 <span class="sd">    True</span>
@@ -1138,11 +1040,11 @@
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.is_int_dtype(x))</span>
 <span class="sd">    {</span>
-<span class="sd">        a: false,</span>
-<span class="sd">        b: true</span>
+<span class="sd">        a: False,</span>
+<span class="sd">        b: True</span>
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
         <span class="n">dtype_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;int&quot;</span> <span class="ow">in</span> <span class="n">dtype_in</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span>
@@ -1162,7 +1064,7 @@
             <span class="p">)</span>
             <span class="k">else</span> <span class="kc">False</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="s2">&quot;int&quot;</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="s2">&quot;int&quot;</span> <span class="ow">in</span> <span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="is_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/is_float_dtype/is_float_dtype_functional.html#ivy.functional.ivy.data_type.is_float_dtype">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
@@ -1183,7 +1085,7 @@
 <span class="sd">        Whether or not the array or data type is of a floating point dtype</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
         <span class="n">dtype_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;float&quot;</span> <span class="ow">in</span> <span class="n">dtype_in</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span>
@@ -1219,67 +1121,16 @@
 <span class="sd">    ret</span>
 <span class="sd">        The type that both input types promote to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promotion_table</span><span class="p">[(</span><span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">type1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">type2</span><span class="p">))]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;these dtypes are not type promotable&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ret</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promotion_table</span><span class="p">[(</span><span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">type1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">type2</span><span class="p">))]</span></div>
 
 
-<div class="viewcode-block" id="set_default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/set_default_dtype.html#ivy.functional.ivy.data_type.set_default_dtype">[docs]</a><span class="k">def</span> <span class="nf">set_default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sets the datatype dtype as default data type</span>
+<div class="viewcode-block" id="set_default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/set_default_dtype.html#ivy.functional.ivy.data_type.set_default_dtype">[docs]</a><span class="k">def</span> <span class="nf">set_default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dtype</span>
-<span class="sd">        the data_type to set as default data type</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Dtype` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(&quot;float64&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;float64&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.bool)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;bool&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.int32)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;int32&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(&#39;uint8&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;uint8&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    With :code:`ivy.NativeDtype` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.native_int32)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;int32&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(&#39;native_bool&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;native_bool&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.native_uint64)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;uint64&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(&#39;native_float64&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
-<span class="sd">        [&#39;native_float64&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">default_dtype_stack</span>
