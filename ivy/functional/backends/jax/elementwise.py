@@ -539,8 +539,8 @@ def maximum(
 
 
 def minimum(
-    x1: JaxArray, 
-    x2: JaxArray,
+    x1: Union[float, JaxArray],
+    x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
