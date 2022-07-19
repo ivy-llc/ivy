@@ -2,6 +2,12 @@ sigmoid
 =======
 
 .. autofunction:: ivy.functional.ivy.activations.sigmoid
+
+.. autofunction:: ivy.array.array_methods.sigmoid
+
+.. autofunction:: ivy.container.container_methods.sigmoid
+
+.. autofunction:: ivy.container.container_methods.static_sigmoid
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ sigmoid
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: sigmoid
+
+   sigmoid/sigmoid_functional.rst
+   sigmoid/sigmoid_array.rst
+   sigmoid/sigmoid_container.rst
+   sigmoid/static_sigmoid_container.rst
+
