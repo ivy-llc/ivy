@@ -2518,7 +2518,8 @@ def multiprocessing(context: str = None):
 @handle_nestable
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns indices or true elements in an input boolean array.
 
@@ -2576,7 +2577,6 @@ def one_hot(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
