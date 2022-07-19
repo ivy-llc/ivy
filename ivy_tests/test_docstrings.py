@@ -37,6 +37,8 @@ def test_docstrings(backend):
         "num_cpu_cores",
         "get_all_ivy_arrays_on_dev",
         "num_ivy_arrays_on_dev",
+        "total_mem_on_dev",
+        "used_mem_on_dev",
         "function_unsupported_dtypes",
         "randint",
         "unique_counts",
@@ -68,7 +70,7 @@ def test_docstrings(backend):
             for method_name in dir(v):
                 method = getattr(ivy.Array, method_name)
                 if method_name in skip_arr_cont or helpers.docstring_examples_run(
-                    method, from_array=True
+                    fn=method, from_array=True
                 ):
                     continue
                 success = False
@@ -78,14 +80,14 @@ def test_docstrings(backend):
             for method_name in dir(v):
                 method = getattr(ivy.Container, method_name)
                 if method_name in skip_arr_cont or helpers.docstring_examples_run(
-                    method, from_container=True
+                    fn=method, from_container=True
                 ):
                     continue
                 success = False
                 failures.append("Container." + method_name)
 
         else:
-            if k in to_skip or helpers.docstring_examples_run(v):
+            if k in to_skip or helpers.docstring_examples_run(fn=v):
                 continue
             success = False
             failures.append(k)

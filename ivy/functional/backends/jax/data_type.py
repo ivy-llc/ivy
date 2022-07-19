@@ -59,6 +59,9 @@ class Finfo:
     def __init__(self, jnp_finfo: jnp.finfo):
         self._jnp_finfo = jnp_finfo
 
+    def __repr__(self):
+        return repr(self._jnp_finfo)
+
     @property
     def bits(self):
         return self._jnp_finfo.bits

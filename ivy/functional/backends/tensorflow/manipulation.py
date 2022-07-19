@@ -94,8 +94,8 @@ def reshape(
 
 def roll(
     x: Union[tf.Tensor, tf.Variable],
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -114,7 +114,7 @@ def roll(
 
 def squeeze(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -126,6 +126,8 @@ def squeeze(
                 )
             )
         ret = tf.squeeze(x, axis)
+    elif axis is None:
+        ret = x
     else:
         if isinstance(axis, tuple):
             axis = list(axis)
