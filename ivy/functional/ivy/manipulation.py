@@ -833,21 +833,22 @@ def repeat(
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
-    >>> y = ivy.repeat(x, [1, 2], axis=0)
+    >>> y = ivy.repeat(x, 2, axis=0)
     >>> print(y)
     ivy.array([[1, 2, 3],
-               [4, 5, 6],
-               [4, 5, 6]])
+           [1, 2, 3],
+           [4, 5, 6],
+           [4, 5, 6]])
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
                           b=ivy.array([[0., 1., 2.], [3., 4., 5.]]))
     >>> y = ivy.repeat(x, 2, axis=1)
     >>> print(y)
     {
-        a: ivy.array([0., 0., 1., 1., 2., 2.]),
-        b: ivy.array([[0., 0., 1., 1., 2., 2.], [3., 3., 4., 4., 5., 5.]])
+        a: ivy.array([[0., 0., 1., 1., 2., 2.]]),
+        b: (<class ivy.array.Array> shape=[2, 6])
     }
     """
     return current_backend(x).repeat(x, repeats, axis, out=out)

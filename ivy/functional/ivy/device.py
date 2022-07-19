@@ -418,10 +418,6 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     >>> x = ivy.total_mem_on_dev("cpu")
     >>> print(x)
     7.283843072
-
-    >>> x = ivy.total_mem_on_dev("gpu:0")
-    >>> print(x)
-    7.283843072
     """
     if "gpu" in device:
         handle = _get_nvml_gpu_handle(device)
