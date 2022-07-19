@@ -255,7 +255,9 @@ def subtract(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray
     return jnp.subtract(x1, x2)
 
 
-def tan(x: JaxArray) -> JaxArray:
+def tan(
+    x: JaxArray,
+) -> JaxArray:
     return jnp.tan(x)
 
 
@@ -282,5 +284,8 @@ def maximum(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.maximum(x1, x2)
 
 
-def minimum(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def minimum(
+    x1: Union[float, JaxArray],
+    x2: Union[float, JaxArray]
+) -> JaxArray:
     return jnp.minimum(x1, x2)

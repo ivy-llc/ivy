@@ -7,7 +7,7 @@ import ivy
 from .activations import ContainerWithActivations
 from .base import ContainerBase
 from .creation import ContainerWithCreation
-from .data_types import ContainerWithDataTypes
+from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
 from .elementwise import ContainerWithElementwise
 from .general import ContainerWithGeneral
@@ -108,6 +108,20 @@ class Container(
         ivy.Container special method for the add operator, calling :code:`operator.add`
         for each of the corresponding leaves of the two containers.
 
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
         Examples
         --------
         With :code:`Number` instances at the leaves:
@@ -158,6 +172,20 @@ class Container(
         """
         ivy.Container reverse special method for the add operator, calling
         :code:`operator.add` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
 
         Examples
         --------

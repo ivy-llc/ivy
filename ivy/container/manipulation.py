@@ -22,6 +22,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         conts = [self]
@@ -45,7 +46,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
         )
 
     def expand_dims(
@@ -55,6 +56,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -67,7 +69,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def permute_dims(
@@ -77,6 +79,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -89,7 +92,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def flip(
@@ -99,6 +102,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -109,16 +113,17 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def reshape(
         self: ivy.Container,
-        shape: Tuple[int, ...],
+        shape: Union[ivy.Shape, ivy.NativeShape, ivy.Container],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -129,7 +134,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     @staticmethod
@@ -148,6 +153,43 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.roll. This method simply wraps the
         function, and so the docstring for ivy.roll also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        shift
+            number of places by which the elements are shifted. If ``shift`` is a tuple,
+            then ``axis`` must be a tuple of the same size, and each of the given axes
+            must be shifted by the corresponding element in ``shift``. If ``shift`` is
+            an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for
+            all specified axes. If a shift is positive, then array elements must be
+            shifted positively (toward larger indices) along the dimension of ``axis``.
+            If a shift is negative, then array elements must be shifted negatively
+            (toward smaller indices) along the dimension of ``axis``.
+        axis
+            axis (or axes) along which elements to shift. If ``axis`` is ``None``, the
+            array must be flattened, shifted, and then restored to its original shape.
+            Default ``None``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container having the same data type as ``x`` and whose elements,
+            relative to ``x``, are shifted.
 
         Examples
         --------
@@ -202,6 +244,43 @@ class ContainerWithManipulation(ContainerBase):
         function, and so the docstring for ivy.roll also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input container.
+        shift
+            number of places by which the elements are shifted. If ``shift`` is a tuple,
+            then ``axis`` must be a tuple of the same size, and each of the given axes
+            must be shifted by the corresponding element in ``shift``. If ``shift`` is
+            an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for
+            all specified axes. If a shift is positive, then array elements must be
+            shifted positively (toward larger indices) along the dimension of ``axis``.
+            If a shift is negative, then array elements must be shifted negatively
+            (toward smaller indices) along the dimension of ``axis``.
+        axis
+            axis (or axes) along which elements to shift. If ``axis`` is ``None``, the
+            array must be flattened, shifted, and then restored to its original shape.
+            Default ``None``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container having the same data type as ``self`` and whose
+            elements, relative to ``self``, are shifted.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
@@ -230,8 +309,34 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.squeeze. This method simply wraps
+        the function, and so the docstring for ivy.squeeze also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
+                              b=ivy.array([[[11.], [12.]]]))
+        >>> y = x.squeeze(2)
+        >>> print(y)
+        {
+            a: ivy.array([[10., 11.]]),
+            b: ivy.array([[11., 12.]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
+                              b=ivy.array([[[11.], [12.]]]))
+        >>> y = x.squeeze(0)
+        >>> print(y)
+        {
+            a: ivy.array([[10.], [11.]]),
+            b: ivy.array([[11.], [12.]])
+        }
+        """
         return ContainerBase.handle_inplace(
             self.map(
                 lambda x_, _: ivy.squeeze(x_, axis=axis) if ivy.is_array(x_) else x_,
@@ -240,7 +345,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def stack(
@@ -254,6 +359,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_nests: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         conts = [self]
@@ -277,7 +383,46 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
-            out,
+            out=out,
+        )
+
+    @staticmethod
+    def static_repeat(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        repeats: Union[int, Iterable[int]],
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.repeat. This method simply wraps the
+        function, and so the docstring for ivy.repeat also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_repeat(2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0., 1., 1., 2., 2.]),
+            b: ivy.array([3., 3., 4., 4., 5., 5.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "repeat",
+            x,
+            repeats,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def repeat(
@@ -288,19 +433,33 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.repeat(x_, repeats=repeats, axis=axis)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
+        """
+        ivy.Container instance method variant of ivy.repeat. This method
+        simply wraps the function, and so the docstring for ivy.repeat
+        also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.repeat(2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0., 1., 1., 2., 2.]),
+            b: ivy.array([3., 3., 4., 4., 5., 5.])
+        }
+        """
+        return self.static_repeat(
+            self,
+            repeats,
+            axis,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
         )
 
     def tile(
@@ -310,6 +469,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -320,7 +480,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def constant_pad(
@@ -331,6 +491,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -343,7 +504,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def zero_pad(
@@ -354,6 +515,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -366,7 +528,7 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def swapaxes(
@@ -377,6 +539,7 @@ class ContainerWithManipulation(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.handle_inplace(
@@ -389,14 +552,14 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     @staticmethod
     def static_clip(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
-        x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+        x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -408,6 +571,34 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.clip. This method simply wraps the
         function, and so the docstring for ivy.clip also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array or container containing elements to clip.
+        x_min
+            Minimum value.
+        x_max
+            Maximum value.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container with the elements of x, but where values < x_min are replaced
+            with x_min, and those > x_max with x_max.
 
         Examples
         --------
@@ -449,8 +640,8 @@ class ContainerWithManipulation(ContainerBase):
 
     def clip(
         self: ivy.Container,
-        x_min: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
-        x_max: Optional[Union[Number, Union[ivy.Array, ivy.NativeArray]]] = None,
+        x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+        x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -462,6 +653,34 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.clip. This method simply wraps the
         function, and so the docstring for ivy.clip also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing elements to clip.
+        x_min
+            Minimum value.
+        x_max
+            Maximum value.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container with the elements of x, but where values < x_min are replaced
+            with x_min, and those > x_max with x_max.
 
         Examples
         --------

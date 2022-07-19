@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List
+from typing import Optional, Tuple, Union, List, Any
 
 # local
 import ivy
@@ -20,9 +20,14 @@ from ivy.func_wrapper import (
 # Linear #
 
 
-@to_native_arrays_and_back
 @handle_nestable
-def linear(x, weight, bias=None, out: Optional[ivy.Array] = None):
+def linear(
+    x: Union[ivy.Array, ivy.NativeArray],
+    weight: Union[ivy.Array, ivy.NativeArray],
+    bias: Union[ivy.Array, ivy.NativeArray] = None,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
     batch of different network parameters are to be represented.
@@ -36,6 +41,9 @@ def linear(x, weight, bias=None, out: Optional[ivy.Array] = None):
         The weight matrix. *[outer_batch_shape,out_features,in_features]*
     bias
         The bias vector, default is None. *[outer_batch_shape,out_features]*
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -84,7 +92,9 @@ def linear(x, weight, bias=None, out: Optional[ivy.Array] = None):
 
 
 @handle_nestable
-def dropout(x, prob, scale=True, dtype=None, out: Optional[ivy.Array] = None):
+def dropout(
+    x, prob, scale=True, dtype=None, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Randomly zeroes some elements of the input tensor with probability p using
     samples from a Bernoulli distribution.
 
@@ -96,6 +106,9 @@ def dropout(x, prob, scale=True, dtype=None, out: Optional[ivy.Array] = None):
         The probability of zeroing out each array element.
     scale
         Whether to scale the output by 1/(1-prob), default is True.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -126,6 +139,7 @@ def scaled_dot_product_attention(
     v: Union[ivy.Array, ivy.NativeArray],
     scale: float,
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies scaled dot product attention to inputs x using optional mask.
@@ -150,6 +164,9 @@ def scaled_dot_product_attention(
     mask
         The mask input array. The mask to apply to the query-key values. Default is
         None. The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -349,6 +366,7 @@ def multi_head_attention(
     to_q_v=None,
     to_kv_v=None,
     to_out_v=None,
+    *,
     out: Optional[ivy.Array] = None,
 ):
     """Applies multi-head attention to inputs x.
@@ -381,6 +399,9 @@ def multi_head_attention(
         The variables for function to_kv_fn. Default is None.
     to_out_v
         The variables for function to_out_fn. Default is None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -419,7 +440,7 @@ def multi_head_attention(
         mask = ivy.einops_repeat(mask, "... q k -> ... h q k", h=num_heads)
 
     # BS x H x Q x F
-    sdpa = scaled_dot_product_attention(q, k, v, scale, mask)
+    sdpa = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
 
     # BS x Q x (HxF)
     sdpa = ivy.einops_rearrange(sdpa, "... h q f -> ... q (h f)")
@@ -444,6 +465,7 @@ def conv1d(
     padding: str,
     data_format: str = "NWC",
     dilations: int = 1,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D convolution given 3-D input x and filters arrays.
@@ -463,6 +485,9 @@ def conv1d(
         NWC" or "NCW". Defaults to "NWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -491,11 +516,12 @@ def conv1d_transpose(
     filters,
     strides,
     padding,
-    output_shape=None,
-    data_format="NWC",
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    data_format: str = "NWC",
     dilations=1,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-):
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
 
     Parameters
@@ -515,6 +541,9 @@ def conv1d_transpose(
         NWC" or "NCW". Defaults to "NWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -537,7 +566,8 @@ def conv2d(
     padding: str,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
 
@@ -556,6 +586,9 @@ def conv2d(
         NHWC" or "NCHW". Defaults to "NHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -625,11 +658,12 @@ def conv2d_transpose(
     filters,
     strides,
     padding,
-    output_shape=None,
-    data_format="NHWC",
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    data_format: str = "NHWC",
     dilations=1,
+    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-):
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
 
     Parameters
@@ -649,6 +683,9 @@ def conv2d_transpose(
         NHWC" or "NCHW". Defaults to "NHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -671,7 +708,8 @@ def depthwise_conv2d(
     padding: Union[str, List[int]],
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Computes a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
@@ -681,7 +719,7 @@ def depthwise_conv2d(
     x
         Input image *[batch_size,h,w,d]*.
     filters
-        Convolution filters *[fh,fw,d]*.
+        Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from x)
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -691,33 +729,53 @@ def depthwise_conv2d(
         "NHWC" or "NCHW". Defaults to "NHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
         The result of the convolution operation.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.random_normal(0, 1, [1, 28, 28, 3])
-    >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
+    >>> x = ivy.random_normal(0, 1, [1, 28, 28, 3]) #NHWC
+    >>> filters = ivy.random_normal(0, 1, [3, 3, 3]) #HWI (I == d_in)
     >>> y = ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding='VALID')
     >>> print(y.shape)
     (1, 26, 26, 3)
 
+    >>> x = ivy.random_normal(0, 1, [1, 32, 32, 3]) #NHWC
+    >>> y = ivy.zeros_like(x)
+    >>> filters = ivy.random_normal(0, 1, [5, 5, 3]) #HWI (I == d_in)
+    >>> ivy.depthwise_conv2d(x, filters, strides=[2, 2], padding='SAME', out=y)
+    >>> print(y.shape)
+    (1, 16, 16, 3)
+
+    >>> x = ivy.random_normal(0, 1, [1, 64, 64, 32]) #NHWC
+    >>> filters = ivy.random_normal(0, 1, [4, 4, 32]) #HWI (I == d_in)
+    >>> ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding='VALID', out=x)
+    >>> print(x.shape)
+    (1, 61, 61, 32)
+
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array(ivy.random_normal(0, 1, [1, 7, 7, 64]))
-    >>> filters = ivy.native_array(ivy.random_normal(0, 1, [3, 3, 64]))
+    >>> x = ivy.native_array(ivy.random_normal(0, 1, [1, 7, 7, 64])) #NHWC
+    >>> filters = ivy.native_array(ivy.random_normal(0, 1, [3, 3, 64])) #HWI (I == d_in)
     >>> y = ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding='SAME')
     >>> print(y.shape)
     (1, 7, 7, 64)
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1)
+    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC
     >>> a = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
     >>> b = ivy.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]).unsqueeze(-1) / 9.0
     >>> filters = ivy.Container(a = a, b = b)
@@ -737,7 +795,7 @@ def depthwise_conv2d(
     With a mix of :code:`ivy.Array`, code:`ivy.NativeArray`
     and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1)
+    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC
     >>> y = ivy.native_array(ivy.eye(6, 6, 1).view(1, 6, 6, 1))
     >>> inp = ivy.Container(x = x, y = y)
     >>> filter = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
@@ -770,6 +828,7 @@ def conv3d(
     padding: str,
     data_format: str = "NDHWC",
     dilations: int = 1,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
@@ -789,6 +848,9 @@ def conv3d(
         NDHWC" or "NCDHW". Defaults to "NDHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -826,9 +888,10 @@ def conv3d_transpose(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: Union[str, List[int]],
-    output_shape: Union[ivy.Array, ivy.NativeArray] = None,
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
@@ -850,6 +913,9 @@ def conv3d_transpose(
         "NDHWC" or "NCDHW". Defaults to "NDHWC".
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -949,8 +1015,14 @@ def conv3d_transpose(
 @to_native_arrays_and_back
 @handle_nestable
 def lstm_update(
-    x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurrent_bias=None
-):
+    x: Union[ivy.Array, ivy.NativeArray],
+    init_h: Union[ivy.Array, ivy.NativeArray],
+    init_c: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[ivy.Array, ivy.NativeArray],
+    recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
+    bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
     """Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters

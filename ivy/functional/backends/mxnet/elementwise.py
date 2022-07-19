@@ -163,7 +163,9 @@ def negative(x: Union[float, mx.nd.NDArray]) -> mx.nd.NDArray:
 
 
 @_handle_flat_arrays_in_out
-def tanh(x: mx.nd.NDArray) -> mx.nd.NDArray:
+def tanh(
+    x: mx.nd.NDArray,
+) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.tanh(x)
     else:
