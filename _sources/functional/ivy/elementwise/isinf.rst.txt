@@ -6,6 +6,8 @@ isinf
 .. autofunction:: ivy.array.array_methods.isinf
 
 .. autofunction:: ivy.container.container_methods.isinf
+
+.. autofunction:: ivy.container.container_methods.static_isinf
 |
 | **Supported Frameworks:**
 
@@ -35,4 +37,5 @@ isinf
    isinf/isinf_functional.rst
    isinf/isinf_array.rst
    isinf/isinf_container.rst
+   isinf/static_isinf_container.rst
 

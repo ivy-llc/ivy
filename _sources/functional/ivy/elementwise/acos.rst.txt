@@ -5,6 +5,8 @@ acos
 
 .. autofunction:: ivy.array.array_methods.acos
 
+.. autofunction:: ivy.container.container_methods.static_acos
+
 .. autofunction:: ivy.container.container_methods.acos
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ acos
    acos/acos_functional.rst
    acos/acos_array.rst
    acos/acos_container.rst
+   acos/static_acos_container.rst
 

@@ -5,6 +5,8 @@ remainder
 
 .. autofunction:: ivy.array.array_methods.remainder
 
+.. autofunction:: ivy.container.container_methods.static_remainder
+
 .. autofunction:: ivy.container.container_methods.remainder
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ remainder
    remainder/remainder_functional.rst
    remainder/remainder_array.rst
    remainder/remainder_container.rst
+   remainder/static_remainder_container.rst
 
