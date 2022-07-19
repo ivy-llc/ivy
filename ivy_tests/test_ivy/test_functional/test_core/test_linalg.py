@@ -8,6 +8,64 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
+@st.composite
+def dtype_value1_value2_axis(
+    draw,
+    available_dtypes,
+    min_value=None,
+    max_value=None,
+    allow_inf=True,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+    specific_dim_size=3,
+):
+    # For cross product, a dim with size 3 is required
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    axis = draw(
+        st.integers(0, len(shape))
+    )
+    # make sure there is a dim with specific dim size
+    shape = list(shape)
+    shape = shape[:axis] + [specific_dim_size] + shape[axis:]
+    shape = tuple(shape)
+
+    dtype = draw(
+        st.sampled_from(available_dtypes)
+    )
+
+    values = []
+    for i in range(2):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
+        )
+
+    value1, value2 = values[0], values[1]
+    return dtype, value1, value2, axis
+
+
+
 
 # vector_to_skew_symmetric_matrix
 @given(
@@ -519,7 +577,7 @@ def test_svdvals(
 
 # tensordot
 @given(
-    dtype_x1_x2_axis=helpers.dtype_value1_value2_axis(
+    dtype_x1_x2_axis=dtype_value1_value2_axis(
         ivy_np.valid_numeric_dtypes,
         min_num_dims=1,
         max_num_dims=10,
@@ -606,7 +664,7 @@ def test_trace(
 
 # vecdot
 @given(
-    dtype_x1_x2_axis=helpers.dtype_value1_value2_axis(
+    dtype_x1_x2_axis=dtype_value1_value2_axis(
         ivy_np.valid_numeric_dtypes,
         min_num_dims=1,
         max_num_dims=10,
@@ -982,7 +1040,7 @@ def test_cholesky(
 
 # cross
 @given(
-    dtype_x1_x2_axis=helpers.dtype_value1_value2_axis(
+    dtype_x1_x2_axis=dtype_value1_value2_axis(
         ivy_np.valid_numeric_dtypes,
         min_num_dims=1,
         max_num_dims=10,
