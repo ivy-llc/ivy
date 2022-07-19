@@ -8,6 +8,10 @@ Ivy Frontend tests
 .. _`test_ivy`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy
 .. _`test_frontend_function`_: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`hypothesis`_: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html#id1
+.. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
+
 Ivy Frontends are the framework-specific frontend functional APIs defined to 
 help with code transpilations as explained `here`_. This in turn makes it necessary 
 to thoroughly test for each backend separately unlike the `test_ivy`_.
@@ -25,16 +29,27 @@ function gives the same result.
 It takes the following parameters -
 
 **input_dtypes**: Specifies the data types of the input arguments in order.
+
 **as_variable_flags**: States whether the corresponding input argument should be treated as an ivy Variable.
+
 **with_out**: When set to true, the function is also tested with the optional out argument.
+
 **num_positional_args**: Specifies the number of input arguments that must be passed as positional arguments.
+
 **native_array_flags**: States whether the corresponding input argument should be treated as a native array.
+
 **fw**: Current backend framework.
+
 **frontend**: Current frontend framework.
+
 **fn_name**: Specifies the name of the function to be tested.
+
 **rtol**: Specifies the relative tolerance value for the test to succeed/fail.
+
 **atol**: Specifies the absolute tolerance value for the test to succeed/fail.
+
 **test_values**: When set to true, it allows to test for the correctness of the resulting values.
+
 **all_as_kwargs_np**: This corresponds to all the input arguments to be passed to the frontend 
 function as keyword arguments.
 
@@ -81,7 +96,7 @@ Examples
 The data required for hypothesis tests is generated with the help of hypothesis strategies and is better explained at `hypothesis`_. 
 The crux of the test lies in the :code:`test_frontend_function` which takes inputs as defined above. Here, the 
 :code:`all_as_kwargs_np` is composed of the last argument :code:`x=np.asarray(x, dtype=input_dtype)` and is the input
-to `jax.lax.tan`
+to :code:`jax.lax.tan`
 
 .. code-block:: python
 
@@ -122,7 +137,7 @@ to `jax.lax.tan`
             y=np.asarray(x[1], dtype=input_dtype[1]),
         )
 Similarly, for :code:`add`, the :code:`all_as_kwargs_np` is composed of the last 2 arguments and are the inputs
-to `jax.lax.add`.
+to :code:`jax.lax.add`.
 
 **NumPy**
 
@@ -178,7 +193,7 @@ to `jax.lax.add`.
         )
     
 Here, the :code:`all_as_kwargs_np` is composed of the arguments followed by :code:`fn_name` and are the input
-to `numpy.tan`
+to :code:`numpy.tan`
 
 **TensorFlow**
 
@@ -209,9 +224,9 @@ to `numpy.tan`
             x=np.asarray(x, dtype=input_dtype),
         )
 Here, the :code:`all_as_kwargs_np` is composed of the last argument :code:`x=np.asarray(x, dtype=input_dtype)` 
-only and serve the input to `tensorflow.tan`.
+only and serve the input to :code:`tensorflow.tan`.
 
-**Torch**
+**PyTorch**
 
 .. code-block:: python
 
@@ -252,7 +267,7 @@ only and serve the input to `tensorflow.tan`.
             input=np.asarray(x, dtype=input_dtype),
             out=None,
         )
-Here, the :code:`all_as_kwargs_np` is composed of the last two arguments and serve the input to `torch.tan`.
+Here, the :code:`all_as_kwargs_np` is composed of the last two arguments and serve the input to :code:`torch.tan`.
 It might be intriguing to observe both the :code:`out` as well as the :code:`with_out` arguments. 
 To clarify, the :code:`with_out` argument is used to specify whether the inplace update operation is 
 supported by the function for the given framework and is present by design in Ivy . 
@@ -263,5 +278,5 @@ However, the :code:`out` argument is required when calling the for the framework
 This should have hopefully given you a good idea about implementing Ivy Frontend tests.
 
 If you're ever unsure of how best to proceed,
-please feel free to engage with the `ivy tests discussion`_,
-or reach out on `discord`_ in the `ivy tests channel`_!
+please feel free to engage with the `ivy frontends discussion`_,
+or reach out on `discord`_ in the `ivy frontends channel`_!
