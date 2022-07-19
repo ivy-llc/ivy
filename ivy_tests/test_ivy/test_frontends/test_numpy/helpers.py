@@ -9,7 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 @st.composite
 def where(draw):
-    _, values = draw(helpers.dtype_and_values(("bool",)))
+    _, values = draw(helpers.dtype_and_values(available_dtypes=("bool",)))
     return draw(st.just(values) | st.just(True))
 
 
@@ -20,11 +20,11 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     if values is None:
         return
     ret, frontend_ret = values
-    ret_flat = [np.where(where, x, np.zeros_like(x)) for x in helpers.flatten(ret)]
+    ret_flat = [np.where(where, x, np.zeros_like(x)) for x in helpers.flatten(ret=ret)]
     frontend_ret_flat = [
-        np.where(where, x, np.zeros_like(x)) for x in helpers.flatten(frontend_ret)
+        np.where(where, x, np.zeros_like(x)) for x in helpers.flatten(ret=frontend_ret)
     ]
-    helpers.value_test(ret_flat, frontend_ret_flat)
+    helpers.value_test(ret_np_flat=ret_flat, ret_from_np_flat=frontend_ret_flat)
 
 
 # noinspection PyShadowingNames
