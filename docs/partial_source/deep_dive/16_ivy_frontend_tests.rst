@@ -52,7 +52,7 @@ It takes the following parameters -
 function as keyword arguments.
 
 Inorder to get a better understanding of how these tests are written for each framework,
-let's begin with exploring the tan function
+let's begin with exploring some implementations -
 
 Examples
 --------
@@ -93,8 +93,8 @@ Examples
     
 The data required for hypothesis tests is generated with the help of hypothesis strategies and is better explained at `hypothesis`_. 
 The crux of the test lies in the :code:`test_frontend_function` which takes inputs as defined above. Here, the 
-:code:`all_as_kwargs_np` is composed of the last argument :code:`x=np.asarray(x, dtype=input_dtype)` and is the input
-to :code:`jax.lax.tan`
+:code:`all_as_kwargs_np` is composed of the last argument :code:`x=np.asarray(x, dtype=input_dtype)` and becomes the input
+for :code:`jax.lax.tan`
 
 .. code-block:: python
 
@@ -134,7 +134,7 @@ to :code:`jax.lax.tan`
             x=np.asarray(x[0], dtype=input_dtype[0]),
             y=np.asarray(x[1], dtype=input_dtype[1]),
         )
-Similarly, for :code:`add`, the :code:`all_as_kwargs_np` is composed of the last 2 arguments and are the inputs
+Similarly, for :code:`add`, the :code:`all_as_kwargs_np` is composed of the last 2 arguments and become the inputs
 to :code:`jax.lax.add`.
 
 **NumPy**
@@ -190,7 +190,7 @@ to :code:`jax.lax.add`.
             test_values=False,
         )
     
-Here, the :code:`all_as_kwargs_np` is composed of the arguments followed by :code:`fn_name` and are the input
+Here, the :code:`all_as_kwargs_np` is composed of the arguments followed by :code:`fn_name` and become the inputs
 to :code:`numpy.tan`
 
 **TensorFlow**
@@ -222,7 +222,7 @@ to :code:`numpy.tan`
             x=np.asarray(x, dtype=input_dtype),
         )
 Here, the :code:`all_as_kwargs_np` is composed of the last argument :code:`x=np.asarray(x, dtype=input_dtype)` 
-only and serve the input to :code:`tensorflow.tan`.
+only and serves as the input to :code:`tensorflow.tan`.
 
 **PyTorch**
 
@@ -265,7 +265,7 @@ only and serve the input to :code:`tensorflow.tan`.
             input=np.asarray(x, dtype=input_dtype),
             out=None,
         )
-Here, the :code:`all_as_kwargs_np` is composed of the last two arguments and serve the input to :code:`torch.tan`.
+Here, the :code:`all_as_kwargs_np` is composed of the last two arguments and serves as the input to :code:`torch.tan`.
 It might be intriguing to observe both the :code:`out` as well as the :code:`with_out` arguments. 
 To clarify, the :code:`with_out` argument is used to specify whether the inplace update operation is 
 supported by the function for the given framework and is present by design in Ivy . 
