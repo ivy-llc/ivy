@@ -847,8 +847,8 @@ def repeat(
     >>> y = ivy.repeat(x, 2, axis=1)
     >>> print(y)
     {
-        a: ivy.array([[0., 0., 1., 1., 2., 2.]]),
-        b: (<class ivy.array.Array> shape=[2, 6])
+        a: ivy.array([[0.,0.,1.,1.,2.,2.]]),
+        b: (<class ivy.array.array.Array>shape=[2,6])
     }
     """
     return current_backend(x).repeat(x, repeats, axis, out=out)
