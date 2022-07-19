@@ -33,7 +33,7 @@ def diff_between_2_dates(d1, d2=datetime.datetime.now().date(), dformat="%Y-%m-%
 
 def get_interns():
     with open("automation_tools/tools/pr_tools/assets/interns.txt", "r") as file:
-        return [intern_.replace("\n", "") for intern_ in file.readlines()] 
+        return [intern_.replace("\n", "") for intern_ in file.readlines()]
 
 
 def create_rows(prs):
@@ -142,7 +142,7 @@ def main():
             r_index = -1
         elif argv[1] == "-all":
             prs = command(
-                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"
+                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
             )
             rows = create_rows(prs)
             for row in rows:
@@ -152,7 +152,7 @@ def main():
 
         if r_index:
             prs = command(
-                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"
+                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
             )
             rows = create_rows(prs)
 
