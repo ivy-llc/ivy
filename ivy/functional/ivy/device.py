@@ -417,12 +417,11 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     --------
     >>> x = ivy.total_mem_on_dev("cpu")
     >>> print(x)
-    53.66700032
+    7.283843072
 
     >>> x = ivy.total_mem_on_dev("gpu:0")
     >>> print(x)
-    8.589934592
-
+    7.283843072
     """
     if "gpu" in device:
         handle = _get_nvml_gpu_handle(device)
@@ -837,8 +836,9 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
     return split_factors.setdefault(device, 0.0)
 
 
-def set_split_factor(factor: float, 
-                     device: Union[ivy.Device, ivy.NativeDevice] = None) -> None:
+def set_split_factor(
+    factor: float, device: Union[ivy.Device, ivy.NativeDevice] = None
+) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
 
@@ -848,7 +848,7 @@ def set_split_factor(factor: float,
         The factor to set the device-specific split factor to.
     device
         The device to set the split factor for. Sets the default device by default.
-    
+
     Examples
     --------
     >>> ivy.default_device()
@@ -856,18 +856,18 @@ def set_split_factor(factor: float,
     >>> ivy.set_split_factor(0.5)
     >>> ivy.split_factors
     {'cpu': 0.5}
-    
+
     >>> import torch
     >>> ivy.set_backend("torch")
     >>> device = torch.device("cuda")
     >>> ivy.set_split_factor(0.3,device)
     >>> ivy.split_factors
     {device(type='cuda'): 0.3}
-    
+
     >>> ivy.set_split_factor(0.4,"tpu")
     >>> ivy.split_factors
     {'tpu': 0.4}
-    
+
     >>> import torch
     >>> ivy.set_backend("torch")
     >>> device = torch.device("cuda")
