@@ -616,7 +616,12 @@ erf.support_native_out = True
 erf.unsupported_dtypes = ("float16",)
 
 
-def minimum(x1, x2, *, out: Optional[torch.Tensor] = None):
+def minimum(
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     x_val = torch.tensor(x1) if (isinstance(x1, int) or isinstance(x1, float)) else x1
     y_val = torch.tensor(x2) if (isinstance(x2, int) or isinstance(x2, float)) else x2
     return torch.min(x_val, y_val, out=out)
