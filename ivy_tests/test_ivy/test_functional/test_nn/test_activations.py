@@ -31,15 +31,15 @@ def test_relu(
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "relu",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="relu",
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -69,15 +69,15 @@ def test_leaky_relu(
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "leaky_relu",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="leaky_relu",
         test_rtol=1e-4,
         x=np.asarray(x, dtype=dtype),
         alpha=alpha,
@@ -108,15 +108,15 @@ def test_gelu(
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "gelu",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="gelu",
         test_atol=1e-4,
         test_rtol=1e-4,
         x=np.asarray(x, dtype=dtype),
@@ -146,15 +146,15 @@ def test_tanh(
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "tanh",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="tanh",
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -181,22 +181,22 @@ def test_sigmoid(
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "sigmoid",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="sigmoid",
         x=np.asarray(x, dtype=dtype),
     )
 
 
 # softmax
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     axis=st.integers(-1, 0),
@@ -218,15 +218,15 @@ def test_softmax(
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "softmax",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="softmax",
         x=np.asarray(x, dtype=dtype),
         axis=axis,
     )
@@ -234,7 +234,7 @@ def test_softmax(
 
 # softplus
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
@@ -254,14 +254,14 @@ def test_softplus(
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "softplus",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="softplus",
         x=np.asarray(x, dtype=dtype),
     )
