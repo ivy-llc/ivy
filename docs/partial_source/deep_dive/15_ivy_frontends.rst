@@ -26,11 +26,6 @@ On top of the Ivy and backend functional APIs, Ivy has another set of
 framework-specific frontend functional APIs, which play an important role in code
 transpilations, as explained `here`_.
 
-The frontend functional APIs will also be coded according to the module structure
-in their respective framework. This is to ensure that codes are framework agnostic.
-For example, a certain piece of completed PyTorch code can be directly used with
-Ivy without changes due to the presence of this set of APIs.
-
 Let's start with some examples to have a better idea on Ivy Frontends!
 
 Examples
