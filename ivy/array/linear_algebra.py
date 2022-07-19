@@ -78,7 +78,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """Computes the cross product of 3-element vectors. If the array calling the function
         and x2 are multi- dimensional arrays (i.e., both have a rank greater than 1), then 
         the cross- product of each pair of corresponding 3-element vectors is independently 
-        computed.
+        computed. This is just a wrapper of the cross function for the ivy Array object.
 
         Parameters
         ----------
@@ -157,7 +157,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> z = x.cross(y)
         >>> print(z)
         ivy.array([0., 0., 1.])
-        
+
         """
         return ivy.cross(self._data, x2, axis, out=out)
 

@@ -199,3 +199,203 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_cross(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        axis: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """Computes the cross product of 3-element vectors. If self and x2 are multi- dimensional
+        arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
+        of corresponding 3-element vectors is independently computed. This is just a wrapper of
+        the cross function for the ivy Container object.
+
+        Parameters
+        ----------
+        x1
+            first input array. Should have a numeric data type.
+        x2
+            second input array. Must have the same shape as x1. Should have a numeric data
+            type.
+        axis
+            the axis (dimension) of x1 and x2 containing the vectors for which to compute
+            the cross product.vIf set to -1, the function computes the cross product for
+            vectors defined by the last axis (dimension). Default: -1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the cross products. The returned array must have a data
+            type determined by Type Promotion Rules.
+
+        Functional Examples
+        --------
+
+        With :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+        >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+        >>> z = ivy.cross(x,y)
+        >>> print(z)
+        {
+        a: ivy.array([0., 0., 35.]),
+        b: ivy.array([0., 6., 0.])
+        }
+
+        With a combination of :code:`ivy.Array`
+        and :code:`ivy.Container` inputs:
+
+        >>> x = ivy.array([9., 0., 3.])
+        >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
+        >>> z = ivy.cross(x,y)
+        >>> print(z)
+        {
+        a: ivy.array([-3., 3., 9.]),
+        b: ivy.array([0., -6., 0.])
+        }
+
+        Instance Method Examples
+        ------------------------
+
+        With :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+        >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+        >>> z = x.cross(y)
+        >>> print(z)
+        {
+        a: ivy.array([0., 0., 35.]),
+        b: ivy.array([0., 6., 0.])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "cross",
+            x1,
+            x2,
+            axis,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
+        )
+
+    def cross(
+        self: ivy.Container,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        axis: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """Computes the cross product of 3-element vectors. If self and x2 are multi- dimensional
+        arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
+        of corresponding 3-element vectors is independently computed. This is just a wrapper of
+        the cross function for the ivy Container object.
+
+        Parameters
+        ----------
+        x1
+            container with first input array. Should have a numeric data type.
+        x2
+            second input array. Must have the same shape as x1. Should have a numeric data
+            type.
+        axis
+            the axis (dimension) of x1 and x2 containing the vectors for which to compute
+            the cross product.vIf set to -1, the function computes the cross product for
+            vectors defined by the last axis (dimension). Default: -1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the cross products. The returned array must have a data
+            type determined by Type Promotion Rules.
+
+        Functional Examples
+        --------
+
+        With :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+        >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+        >>> z = ivy.cross(x,y)
+        >>> print(z)
+        {
+        a: ivy.array([0., 0., 35.]),
+        b: ivy.array([0., 6., 0.])
+        }
+
+        With a combination of :code:`ivy.Array`
+        and :code:`ivy.Container` inputs:
+
+        >>> x = ivy.array([9., 0., 3.])
+        >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
+        >>> z = ivy.cross(x,y)
+        >>> print(z)
+        {
+        a: ivy.array([-3., 3., 9.]),
+        b: ivy.array([0., -6., 0.])
+        }
+
+        Instance Method Examples
+        ------------------------
+
+        With :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+        >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+        >>> z = x.cross(y)
+        >>> print(z)
+        {
+        a: ivy.array([0., 0., 35.]),
+        b: ivy.array([0., 6., 0.])
+        }
+
+        """
+        return self.static_cross(
+            self,
+            x2,
+            axis,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
+        )
