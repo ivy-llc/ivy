@@ -79,8 +79,8 @@ def reshape(
 
 def roll(
     x: JaxArray,
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -89,13 +89,13 @@ def roll(
 
 def squeeze(
     x: JaxArray,
-    axis: Union[int, Tuple[int], List[int]] = None,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
-            ret = x
+            return x
         raise ValueError(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )

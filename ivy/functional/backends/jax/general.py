@@ -118,7 +118,10 @@ def inplace_update(
     return x
 
 
-inplace_arrays_supported = lambda: False
+def inplace_arrays_supported():
+    return False 
+    
+    
 inplace_variables_supported = lambda: False
 
 
