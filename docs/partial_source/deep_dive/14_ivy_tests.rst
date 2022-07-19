@@ -540,7 +540,7 @@ h. Sometimes, the use of
    avoiding zeros would require extra implementational effort in the data generation
    helpers. Using :code:`assume` is an
    `acceptable solution <https://github.com/unifyai/ivy/blob/2ddaff94ad9e20a1a0511d272a0501fa3b904edc/ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py#L695>`_
-   in such cases.
+   in such cases, and other similar scenarios you may encounter.
 
 
 Bonus: Hypothesis' Extended Features
