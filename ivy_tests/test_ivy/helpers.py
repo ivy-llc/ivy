@@ -681,7 +681,7 @@ def test_method(
     atol
         absolute tolerance value.
     test_values
-        if true, test for the correctness of the resulting values.
+        if True, test for the correctness of the resulting values.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
 
@@ -784,6 +784,7 @@ def test_function(
     test_rtol: float = None,
     test_atol: float = 1e-06,
     test_values: bool = True,
+    test_gradients: bool = False,
     ground_truth_backend: str = "numpy",
     **all_as_kwargs_np,
 ):
@@ -798,7 +799,7 @@ def test_function(
         dictates whether the corresponding input argument should be treated
         as an ivy Variable.
     with_out
-        if true, the function is also tested with the optional out argument.
+        if True, the function is also tested with the optional out argument.
     num_positional_args
         number of input arguments that must be passed as positional
         arguments.
@@ -809,7 +810,7 @@ def test_function(
         dictates whether the corresponding input argument should be treated
          as an ivy Container.
     instance_method
-        if true, the function is run as an instance method of the first
+        if True, the function is run as an instance method of the first
          argument (should be an ivy Array or Container).
     fw
         current backend (framework).
@@ -820,7 +821,9 @@ def test_function(
     test_atol
         absolute tolerance value.
     test_values
-        if true, test for the correctness of the resulting values.
+        if True, test for the correctness of the resulting values.
+    test_gradients
+        if True, test for the correctness of gradient computation.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     all_as_kwargs_np
@@ -1070,7 +1073,7 @@ def test_frontend_function(
         dictates whether the corresponding input argument should be treated
         as an ivy Variable.
     with_out
-        if true, the function is also tested with the optional out argument.
+        if True, the function is also tested with the optional out argument.
     num_positional_args
         number of input arguments that must be passed as positional
         arguments.
@@ -1088,7 +1091,7 @@ def test_frontend_function(
     atol
         absolute tolerance value.
     test_values
-        if true, test for the correctness of the resulting values.
+        if True, test for the correctness of the resulting values.
     all_as_kwargs_np
         input arguments to the function as keyword arguments.
 
