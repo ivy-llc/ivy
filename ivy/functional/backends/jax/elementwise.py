@@ -284,5 +284,8 @@ def maximum(x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.maximum(x1, x2)
 
 
-def minimum(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def minimum(
+    x1: Union[float, JaxArray],
+    x2: Union[float, JaxArray]
+) -> JaxArray:
     return jnp.minimum(x1, x2)
