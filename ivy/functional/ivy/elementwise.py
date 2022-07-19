@@ -643,6 +643,93 @@ def atan2(
         an array containing the inverse tangent of the quotient ``x1/x2``. The returned
         array must have a floating-point data type.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan2.html>`_ # noqa
+    in the standard. 
+    
+    The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1.0, -1.0, -2.0])
+    >>> y = ivy.array([2.0, 0.0, 3.0])
+    >>> z = ivy.atan2(x, y)
+    >>> print(z)
+    ivy.array([ 0.464, -1.57 , -0.588])
+
+    >>> x = ivy.array([1.0, 2.0])
+    >>> y = ivy.array([-2.0, 3.0])
+    >>> z = ivy.zeros(2)
+    >>> x.atan2(y, out=z)
+    >>> print(z)
+    ivy.array([2.68 , 0.588])
+    
+    >>> nan = float("nan")
+    >>> x = ivy.array([nan, 1.0, 1.0, -1.0, -1.0])
+    >>> y = ivy.array([1.0, +0, -0, +0, -0])
+    >>> x.atan2(y)
+    ivy.array([  nan,  1.57,  1.57, -1.57, -1.57])
+
+    >>> x = ivy.array([+0, +0, +0, +0, -0, -0, -0, -0])
+    >>> y = ivy.array([1.0, +0, -0, -1.0, 1.0, +0, -0, -1.0])
+    >>> x.atan2(y)
+    ivy.array([0.  , 0.  , 0.  , 3.14, 0.  , 0.  , 0.  , 3.14])
+    >>> y.atan2(x)
+    ivy.array([ 1.57,  0.  ,  0.  , -1.57,  1.57,  0.  ,  0.  , -1.57])
+
+    >>> inf = float("infinity")
+    >>> x = ivy.array([inf, -inf, inf, inf, -inf, -inf])
+    >>> y = ivy.array([1.0, 1.0, inf, -inf, inf, -inf])
+    >>> z = x.atan2(y)
+    >>> print(z)
+    ivy.array([ 1.57 , -1.57 ,  0.785,  2.36 , -0.785, -2.36 ])
+
+    >>> x = ivy.array([2.5, -1.75, 3.2, 0, -1.0])
+    >>> y = ivy.array([-3.5, 2, 0, 0, 5])
+    >>> z = x.atan2(y)
+    >>> print(z)
+    ivy.array([ 2.52 , -0.719,  1.57 ,  0.   , -0.197])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
+    >>> y = x.atan2(x)
+    >>> print(y)
+    ivy.array([[ 0.785,  0.785,  0.785],
+        [-2.36 , -2.36 , -2.36 ]])
+               
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
+    >>> y = ivy.native_array([-1.1, 2.5, -2.0, 1.0, 5.0, -2.5])
+    >>> z = ivy.atan2(x, y)
+    >>> print(z)
+    ivy.array([ 3.14 ,  0.   , -2.23 , -0.785,  0.197,  2.18 ])
+
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                          b=ivy.array([4.5, -5.3, -0]))
+    >>> y = ivy.array([3.0, 2.0, 1.0])
+    >>> x.atan2(y)
+    {
+        a: ivy.array([0., 0.915, -1.29]),
+        b: ivy.array([0.983, -1.21, 0.])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                          b=ivy.array([4.5, -5.3, -0, -2.3]))
+    >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
+                          b=ivy.array([2.45, 6.35, 0, 1.5]))
+    >>> z = x.atan2(y)
+    >>> print(z)
+    {
+        a: ivy.array([3.14, 0.978, -0.785]),
+        b: ivy.array([1.07, -0.696, 0., -0.993])
+    }
     """
     return ivy.current_backend(x1).atan2(x1, x2, out=out)
 

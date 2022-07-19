@@ -228,6 +228,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse tangent of the quotient ``self/x2``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 0.5, 0.0, -0.5, 0.0])
+        >>> y = ivy.array([1.0, 2.0, -1.5, 0, 1.0])
+        >>> z = x.atan2(y)
+        >>> print(z)
+        ivy.array([ 0.785,  0.245,  3.14 , -1.57 ,  0.   ])
         """
         return ivy.atan2(self._data, x2, out=out)
 
