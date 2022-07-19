@@ -337,9 +337,9 @@ def indices_where(x):
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
-) -> Union[ivy.Shape, ivy.Array]:
+) -> Union[tf.Tensor, ivy.Shape, ivy.Array]:
     if as_array:
-        return ivy.array(x.shape)
+        return tf.shape(x)
     else:
         return ivy.Shape(x.shape)
 
