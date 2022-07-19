@@ -15,7 +15,6 @@ from haiku._src.data_structures import FlatMapping
 
 # local
 import ivy
-from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.backends.jax import JaxArray
 
@@ -114,9 +113,9 @@ def inplace_update(
 
 
 def inplace_arrays_supported():
-    return False 
-    
-    
+    return False
+
+
 inplace_variables_supported = lambda: False
 
 
@@ -283,9 +282,7 @@ def multiprocessing(context=None):
 def one_hot(indices, depth, *, device):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
-    return _to_device(
-        res.reshape(list(indices.shape) + [depth]), default_device(device)
-    )
+    return _to_device(res.reshape(list(indices.shape) + [depth]), device)
 
 
 def indices_where(x):
