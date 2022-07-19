@@ -274,33 +274,9 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
 # nested_any
 
 
+# prune_nest_at_index
 @pytest.mark.parametrize(
-    "nest",
-    [
-        {
-            "a": [[0], [1]],
-            "b": {
-                "c": [
-                    [
-                        [
-                            2,
-                        ],
-                        [
-                            4,
-                        ],
-                    ],
-                    [
-                        [
-                            6,
-                        ],
-                        [
-                            8,
-                        ],
-                    ],
-                ]
-            },
-        }
-    ],
+    "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
 )
 @pytest.mark.parametrize(
     "index", [("a", 0, 0), ("a", 1, 0), ("b", "c", 0), ("b", "c", 1, 0)]
@@ -316,3 +292,16 @@ def test_prune_nest_at_index(nest, index, device, call):
         warnings.warn("Nothing to delete in dict. ")
 
     assert nest == nest_copy
+
+
+# insert_into_nest_at_index
+@pytest.mark.parametrize(
+    "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
+)
+@pytest.mark.parametrize("index", [("a", 0, 0), ("a", 1, 0), ("b", "c", 0)])
+@pytest.mark.parametrize("value", [1])
+def test_insert_into_nest_index(nest, index, value, device, call):
+
+    ivy.insert_into_nest_at_index(nest, index, value)
+
+    assert ivy.index_nest(nest, index) == value
