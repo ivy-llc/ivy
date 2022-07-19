@@ -34,7 +34,10 @@ def concat(
     return ret
 
 
-def expand_dims(x: np.ndarray, axis: int = 0) -> np.ndarray:
+def expand_dims(
+    x: np.ndarray,
+    axis: Union[int, Tuple[int], List[int]] = 0,
+) -> np.ndarray:
     ret = np.expand_dims(x, axis)
     return ret
 

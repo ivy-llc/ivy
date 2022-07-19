@@ -41,7 +41,7 @@ def flip(
 
 def expand_dims(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: int = 0,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if x.shape == ():

@@ -63,12 +63,13 @@ def concat(
 @handle_nestable
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: int = 0,
+    axis: Union[int, Tuple[int], List[int]] = 0,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Expands the shape of an array by inserting a new axis with the size of one. This
-    new axis will appear at the ``axis`` position in the expanded array shape.
+    """
+    Expands the shape of an array by inserting a new axis (dimension) of size one
+    at the position specified by ``axis``
 
     Parameters
     ----------
@@ -88,12 +89,13 @@ def expand_dims(
         an array with its dimension added by one in a given ``axis``.
 
     This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.expand_dims.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring # noqa
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
@@ -101,51 +103,59 @@ def expand_dims(
     >>> x = ivy.array([0, 1, 2])
     >>> print(x.shape)
     (3,)
-
     >>> y = ivy.expand_dims(x)
     >>> print(y.shape)
     (1, 3)
-
     >>> print(y)
     ivy.array([[0, 1, 2]])
 
-    >>> x = ivy.array([[0.5, -0.7, 2.4], [1, 2, 3]])
+    >>> x = ivy.array([[0.5, -0.7, 2.4],
+                       [  1,    2,   3]])
     >>> print(x.shape)
     (2, 3)
-
     >>> y = ivy.zeros((2, 1, 3))
     >>> print(y)
     ivy.array([[[0., 0., 0.]],
-           [[0., 0., 0.]]])
-
+               [[0., 0., 0.]]])
     >>> ivy.expand_dims(x, axis=1, out=y)
     >>> print(y)
-    ivy.array([[[0.5,-0.7,2.4]],[[1.,2.,3.]]])
+    ivy.array([[[0.5, -0.7, 2.4]],
+               [[ 1.,   2.,  3.]]])
 
-    >>> x = ivy.array([[-1, -2], [3, 4]])
-    >>> print(x)
-    ivy.array([[-1, -2],
-           [ 3,  4]])
-
+    >>> x = ivy.array([[-1, -2],
+                       [ 3,  4]])
     >>> ivy.expand_dims(x, out=x)
     >>> print(x)
-    ivy.array([[[-1,-2],[3,4]]])
+    ivy.array([[[-1, -2],
+                [3,  4]]])
+
+    >>> x = ivy.array([[-1.7, -3.2, 2.3],
+                       [ 6.3,  1.4, 5.7]])
+    >>> print(x.shape)
+    (2, 3)
+    >>> y = ivy.expand_dims(x, axis=(0, -1))
+    >>> print(y.shape)
+    (1, 2, 3, 1)
+
+    >>> x = ivy.array([[-1.7, -3.2, 2.3],
+                       [ 6.3,  1.4, 5.7]])
+    >>> print(x.shape)
+    (2, 3)
+    >>> y = ivy.expand_dims(x, axis=[1, 2, 3])
+    >>> print(y.shape)
+    (2, 1, 1, 1, 3)
 
     With :code:`ivy.NativeArray` input:
-
     >>> x = ivy.native_array([0, 1, 2])
     >>> print(x)
-    tensor([0,1,2],dtype=torch.int32)
-
+    tensor([0, 1, 2], dtype=torch.int32)
     >>> y = ivy.expand_dims(x)
-    >>> print(y)
-    ivy.array([[0,1,2]])
-
     >>> print(y)
     ivy.array([[0, 1, 2]])
 
     With :code:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+                          b=ivy.array([3., 4., 5.]))
     >>> y = ivy.expand_dims(x, axis=-1)
     >>> print(y)
     {
@@ -164,21 +174,14 @@ def expand_dims(
     >>> y = x.expand_dims()
     >>> print(x.shape, y.shape)
     (3,) (1, 3)
-
     >>> print(y)
     ivy.array([[0., 1., 2.]])
 
     Using :code:`ivy.Container` instance method:
-    >>> x = ivy.Container(a=ivy.array([[0., 1.], [2., 3.]]), \
-                            b=ivy.array([[4., 5.], [6., 7.]]))
-    >>> print(x)
-    {
-        a: ivy.array([[0., 1.],
-                      [2., 3.]]),
-        b: ivy.array([[4., 5.],
-                      [6., 7.]])
-    }
-
+    >>> x = ivy.Container(a=ivy.array([[0., 1.],
+                                       [2., 3.]]),
+                          b=ivy.array([[4., 5.],
+                                       [6., 7.]]))
     >>> y = x.expand_dims(axis=1)
     >>> print(y)
     {

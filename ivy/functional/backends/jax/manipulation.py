@@ -34,7 +34,11 @@ def concat(
     return ret
 
 
-def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
+def expand_dims(
+    x: JaxArray,
+    axis: Union[int, Tuple[int], List[int]] = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     try:
         ret = jnp.expand_dims(x, axis)
         if ivy.exists(out):

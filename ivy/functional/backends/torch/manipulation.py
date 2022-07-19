@@ -25,7 +25,10 @@ def concat(
     return torch.cat(xs, dim=axis, out=out)
 
 
-def expand_dims(x: torch.Tensor, axis: int = 0) -> torch.Tensor:
+def expand_dims(
+    x: torch.Tensor,
+    axis: int = 0,
+) -> torch.Tensor:
     ret = torch.unsqueeze(x, axis)
     return ret
 
