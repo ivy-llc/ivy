@@ -892,6 +892,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of the quotient ``self/x2``.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
+        
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
