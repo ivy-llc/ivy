@@ -54,7 +54,6 @@ def test_relu(
     container=st.booleans(),
     instance_method=st.booleans(),
     alpha=st.floats(width=16),
-
 )
 def test_leaky_relu(
     dtype_and_x,
@@ -196,7 +195,9 @@ def test_sigmoid(
 
 # softmax
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     axis=st.integers(-1, 0),
@@ -234,7 +235,9 @@ def test_softmax(
 
 # softplus
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
