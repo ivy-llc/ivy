@@ -4839,6 +4839,7 @@ class ContainerWithElementwise(ContainerBase):
         Examples
         --------
         With :code:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
                     b=ivy.array([-300.9, -527.3, 4.5]))
         >>> y = ivy.Container.static_round(x)
@@ -4899,6 +4900,7 @@ class ContainerWithElementwise(ContainerBase):
         Examaples
         ---------
         With :code:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
                     b=ivy.array([-300.9, -527.3, 4.5]))
         >>> y = x.round()
