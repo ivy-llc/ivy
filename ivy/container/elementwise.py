@@ -4897,8 +4897,8 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the rounded result for each element in ``self``.
             The returned container must have the same data type as ``self``.
 
-        Examaples
-        ---------
+        Examples
+        --------
         With :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
