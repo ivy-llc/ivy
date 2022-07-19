@@ -1,6 +1,7 @@
 Ivy Frontends
 =============
 
+.. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
 .. _`jax.lax.add`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html
 .. _`jax.lax`: https://jax.readthedocs.io/en/latest/jax.lax.html
 .. _`jax.lax.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html
@@ -13,16 +14,17 @@ Ivy Frontends
 .. _`torch.add`: https://pytorch.org/docs/stable/generated/torch.add.html#torch.add
 .. _`torch`: https://pytorch.org/docs/stable/torch.html#math-operations
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
-.. _`link`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
+.. _`YouTube tutorial series`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
+.. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 
 Introduction
 ------------
 
-On top of the Ivy and backends functional APIs, Ivy has another set of
-framework-specific frontend functional APIs, which play an important role in the
-Ivy transpilation feature. With this, Ivy's graph compiler will be able to analyse
-user's code, then produce an equivalent computation graph where operations are
-specific to the framework set.
+On top of the Ivy and backend functional APIs, Ivy has another set of
+framework-specific frontend functional APIs, which play an important role in code
+transpilations, as explained `here`_.
 
 The frontend functional APIs will also be coded according to the module structure
 in their respective framework. This is to ensure that codes are framework agnostic.
@@ -265,7 +267,10 @@ Additional examples for each framework on concatenation is added for better unde
 
 **Round Up**
 
-Hope that you have a better grasp on the Ivy Frontend Functional APIs after going
-through the above contents! If you prefer a video explanation, we have a tutorial
-series on YouTube explaining on this as well. You can access them through this
-`link`_!
+This should hopefully allow you to have a better grasp on the Ivy Frontend APIs
+after going through the contents! We have a `YouTube tutorial series`_ on this
+as well if you prefer a video explanation!
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `ivy frontends discussion`_,
+or reach out on `discord`_ in the `ivy frontends channel`_!
