@@ -45,7 +45,7 @@ def prod(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: jnp.dtype = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
 ) -> JaxArray:
     if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):
         if jnp.issubdtype(x.dtype, jnp.signedinteger) and x.dtype in [

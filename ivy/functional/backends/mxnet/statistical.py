@@ -85,7 +85,7 @@ def min(
 def prod(
     x: mx.nd.NDArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     dtype: type,
     out: Optional[mx.nd.NDArray] = None,

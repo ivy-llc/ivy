@@ -68,7 +68,7 @@ def prod(
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: torch.dtype = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
