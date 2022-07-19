@@ -1206,7 +1206,7 @@ def test_einops_reduce(x_n_pattern_n_red_n_newx, dtype, tensor_fn, device, call)
     axes_lengths=st.integers(min_value=1, max_value=5),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="einops_repeat"),
+    num_positional_args=st.integers(min_value=0, max_value=2),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -1215,9 +1215,6 @@ def test_einops_repeat(x, pattern, axes_lengths, tensor_fn, with_out, as_variabl
     # smoke test
     dtype, x = x
     x = [x]
-    with_out = True
-    container = True
-    instance_method = True
     # r = ivy.einops_repeat(ivy.array(x, dtype=dtype, device=device), pattern, c=3)
     # o = r
     # r = ivy.einops_repeat(ivy.array(x, dtype=dtype, device=device), pattern, c=3, out=o)
