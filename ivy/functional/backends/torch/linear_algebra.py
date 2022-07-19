@@ -130,7 +130,7 @@ def matrix_rank(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
-    return torch.linalg.matrix_rank(x, rtol, out=out)
+    return torch.linalg.matrix_rank(x, rtol=rtol, out=out)
 
 
 matrix_rank.support_native_out = True

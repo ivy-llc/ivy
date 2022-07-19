@@ -158,7 +158,6 @@ def sum(
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: torch.dtype = None,
     keepdims: bool = False,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
         if x.dtype in [torch.int8, torch.int16]:
@@ -167,16 +166,15 @@ def sum(
             dtype = torch.uint8
         elif x.dtype in [torch.int32, torch.int64]:
             dtype = torch.int64
+        elif x.dtype == torch.float16:
+            dtype = torch.float32
 
     dtype = ivy.as_native_dtype(dtype)
 
     if axis is None:
-        if out:
-            return torch.sum(input=x, dtype=dtype, out=out)
-        else:
-            return torch.sum(input=x, dtype=dtype)
+        return torch.sum(input=x, dtype=dtype)
     elif type(axis) == list:
-        return torch.sum(input=x, dim=axis, out=out)
+        return torch.sum(input=x, dim=axis)
     elif type(axis) == tuple:
         if len(axis) == 0:
             axis = 0
@@ -189,9 +187,8 @@ def sum(
                     ]
                 ),
                 dtype=dtype,
-                out=out,
             )
-    return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
+    return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
 sum.support_native_out = True
