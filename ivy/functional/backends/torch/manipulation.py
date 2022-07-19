@@ -77,30 +77,33 @@ def roll(
 
 
 def squeeze(
-    x: torch.Tensor, axis: Union[int, Tuple[int], List[int]] = None
+    x: torch.Tensor,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
-        if x.shape[axis] > 1:
+        dim = x.dim()
+        if dim > 0 and (axis < -dim or dim <= axis):
             raise ValueError(
-                "Expected dimension of size 1, but found dimension size {}".format(
-                    x.shape[axis]
-                )
+                "Expected dimension of size [{}, {}], but found dimension size {}"
+                .format(-dim, dim, axis)
             )
-        ret = torch.squeeze(x, axis)
-        return ret
-    elif isinstance(axis, tuple):
+        return torch.squeeze(x, axis)
+    if axis is None:
+        return torch.squeeze(x)
+    if isinstance(axis, tuple):
         axis = list(axis)
     normalise_axis = [
         (len(x.shape) - abs(element)) if element < 0 else element for element in axis
     ]
     normalise_axis.sort()
     axis_updated_after_squeeze = [dim - key for (key, dim) in enumerate(normalise_axis)]
+    dim = x.dim()
     for i in axis_updated_after_squeeze:
-        if x.shape[i] > 1:
+        shape = x.shape[i]
+        if shape > 1 and (shape < -dim or dim <= shape):
             raise ValueError(
-                "Expected dimension of size 1, but found dimension size {}".format(
-                    x.shape[i]
-                )
+                "Expected dimension of size [{}, {}], but found dimension size {}"
+                .format(-dim, dim, shape)
             )
         else:
             x = torch.squeeze(x, i)

@@ -25,6 +25,39 @@ class ContainerWithLosses(ContainerBase):
         wraps the function, and so the docstring for ivy.cross_entropy also applies
         to this method with minimal changes.
 
+        Parameters
+        ----------
+        true
+            input array or container containing true labels.
+        pred
+            input array or container containing the predicted labels.
+        axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``,
+            the cross-entropy will be computed along the last dimension.
+            Default: ``-1``.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The cross-entropy loss between the given distributions.
+
         Examples
         --------
         With :code:`ivy.Container` inputs:
@@ -79,6 +112,39 @@ class ContainerWithLosses(ContainerBase):
         wraps the function, and so the docstring for ivy.cross_entropy also applies to
         this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input container containing true labels.
+        pred
+            input array or container containing the predicted labels.
+        axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``,
+            the cross-entropy will be computed along the last dimension.
+            Default: ``-1``.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The cross-entropy loss between the given distributions.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
@@ -118,6 +184,35 @@ class ContainerWithLosses(ContainerBase):
         ivy.Container static method variant of ivy.binary_cross_entropy. This method
         simply wraps the function, and so the docstring for ivy.binary_cross_entropy
         also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        true
+            input array or container containing true labels.
+        pred
+            input array or container containing Predicted labels.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The binary cross entropy between the given distributions.
 
         Examples
         --------
@@ -171,6 +266,35 @@ class ContainerWithLosses(ContainerBase):
         method simply wraps the function, and so the docstring for
         ivy.binary_cross_entropy also applies to this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input container containing true labels.
+        pred
+            input array or container containing Predicted labels.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The binary cross entropy between the given distributions.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
@@ -210,6 +334,38 @@ class ContainerWithLosses(ContainerBase):
         ivy.Container static method variant of ivy.sparse_cross_entropy. This method
         simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
         also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        true
+            input array or container containing the true labels as logits.
+        pred
+            input array or container containing the predicted labels as logits.
+        axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``, the
+            cross-entropy will be computed along the last dimension. Default: ``-1``.
+            epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The sparse cross-entropy loss between the given distributions.
 
         Examples
         --------
@@ -264,6 +420,38 @@ class ContainerWithLosses(ContainerBase):
         ivy.Container instance method variant of ivy.sparse_cross_entropy. This
         method simply wraps the function, and so the docstring for
         ivy.sparse_cross_entropy also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container containing the true labels as logits.
+        pred
+            input array or container containing the predicted labels as logits.
+        axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``, the
+            cross-entropy will be computed along the last dimension. Default: ``-1``.
+            epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The sparse cross-entropy loss between the given distributions.
 
         Examples
         --------
