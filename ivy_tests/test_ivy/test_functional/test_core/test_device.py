@@ -1,9 +1,8 @@
 """Collection of tests for unified device functions."""
+# global
 import io
 import math
 import multiprocessing
-
-# global
 import os
 import re
 import sys
@@ -32,7 +31,10 @@ import ivy_tests.test_ivy.helpers as helpers
 
 @given(
     array_shape=helpers.lists(
-        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+        arg=st.integers(2, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
@@ -63,7 +65,10 @@ def test_dev(array_shape, dtype, as_variable, fw, device):
 # as_ivy_dev
 @given(
     array_shape=helpers.lists(
-        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+        arg=st.integers(2, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
@@ -90,7 +95,10 @@ def test_as_ivy_dev(array_shape, dtype, as_variable, fw, device):
 # as_native_dev
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+        arg=st.integers(1, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
@@ -170,7 +178,10 @@ def test_default_device(device, call):
 # to_dev
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+        arg=st.integers(1, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
@@ -186,7 +197,7 @@ def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, 
         x = ivy.variable(x)
 
     # create a dummy array for out that is broadcastable to x
-    out = ivy.zeros(ivy.shape(x), dtype=dtype) if with_out else None
+    out = ivy.zeros(ivy.shape(x), device=device, dtype=dtype) if with_out else None
 
     device = ivy.dev(x)
     x_on_dev = ivy.to_device(x, device=device, stream=stream, out=out)
@@ -228,14 +239,23 @@ def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, 
 # Function Splitting #
 
 
+@st.composite
+def _axis(draw):
+    max_val = draw(st.shared(st.integers(), key="num_dims"))
+    return draw(st.integers(0, max_val - 1))
+
+
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+        arg=st.integers(1, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     chunk_size=st.integers(1, 3),
-    axis=st.shared(st.integers(1, 3), key="num_dims").map(lambda x: x - 1),
+    axis=_axis(),
 )
 def test_split_func_call(
     array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
@@ -273,7 +293,10 @@ def test_split_func_call(
 
 @given(
     array_shape=helpers.lists(
-        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]
+        arg=st.integers(2, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[2, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
@@ -324,7 +347,10 @@ def test_split_func_call_with_cont_input(
 
 @given(
     array_shape=helpers.lists(
-        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]
+        arg=st.integers(2, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[2, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
@@ -368,7 +394,10 @@ def test_dist_array(
 
 @given(
     array_shape=helpers.lists(
-        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]
+        arg=st.integers(2, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[2, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
@@ -404,7 +433,10 @@ def test_clone_array(array_shape, dtype, as_variable, axis, fw, device, call):
 
 @given(
     array_shape=helpers.lists(
-        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[2, 3]
+        arg=st.integers(2, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[2, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),

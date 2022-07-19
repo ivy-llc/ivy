@@ -3,7 +3,7 @@ import numpy as np
 import jax
 import jaxlib
 import jax.numpy as jnp
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 
 # local
 import ivy
@@ -59,6 +59,9 @@ class Finfo:
     def __init__(self, jnp_finfo: jnp.finfo):
         self._jnp_finfo = jnp_finfo
 
+    def __repr__(self):
+        return repr(self._jnp_finfo)
+
     @property
     def bits(self):
         return self._jnp_finfo.bits
@@ -103,7 +106,7 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
     return jnp.broadcast_arrays(*arrays)
 
 
-def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
+def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> JaxArray:
     return jnp.broadcast_to(x, shape)
 
 

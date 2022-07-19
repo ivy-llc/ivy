@@ -1,8 +1,9 @@
 # global
+import ivy
 import math
 import tensorflow as tf
 from numbers import Number
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 
 
 # Array API Standard #
@@ -73,7 +74,7 @@ def permute_dims(
 
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
-    shape: Tuple[int, ...],
+    shape: Union[ivy.NativeShape, Sequence[int]],
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.reshape(x, shape)
     return ret
@@ -99,7 +100,7 @@ def roll(
 
 def squeeze(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if x.shape[axis] > 1:
@@ -109,6 +110,8 @@ def squeeze(
                 )
             )
         ret = tf.squeeze(x, axis)
+    elif axis is None:
+        ret = x
     else:
         if isinstance(axis, tuple):
             axis = list(axis)

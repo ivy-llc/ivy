@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import tensorflow as tf
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 from tensorflow.python.framework.dtypes import DType
 
 # local
@@ -43,6 +43,9 @@ native_dtype_dict = {
 class Finfo:
     def __init__(self, tf_finfo: tf.experimental.numpy.finfo):
         self._tf_finfo = tf_finfo
+
+    def __repr__(self):
+        return repr(self._tf_finfo)
 
     @property
     def bits(self):
@@ -111,7 +114,7 @@ def broadcast_arrays(
 
 def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
-    shape: Tuple[int, ...],
+    shape: Union[ivy.NativeShape, Sequence[int]],
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.broadcast_to(x, shape)
 

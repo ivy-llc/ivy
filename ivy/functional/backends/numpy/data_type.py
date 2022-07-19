@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 
 # local
 import ivy
@@ -55,9 +55,12 @@ class Finfo:
     def __init__(self, np_finfo: np.finfo):
         self._np_finfo = np_finfo
 
+    def __repr__(self):
+        return repr(self._np_finfo)
+
     @property
     def bits(self):
-        return self._np_finfo.bits
+        return self._np_finfo.bits    
 
     @property
     def eps(self):
@@ -99,7 +102,9 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
     return np.broadcast_arrays(*arrays)
 
 
-def broadcast_to(x: np.ndarray, shape: Tuple[int, ...]) -> np.ndarray:
+def broadcast_to(
+    x: np.ndarray, shape: Union[ivy.NativeShape, Sequence[int]]
+) -> np.ndarray:
     return np.broadcast_to(x, shape)
 
 

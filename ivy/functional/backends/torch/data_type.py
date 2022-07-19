@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 
 # local
 import ivy
@@ -9,6 +9,9 @@ import ivy
 class Finfo:
     def __init__(self, torch_finfo: torch.finfo):
         self._torch_finfo = torch_finfo
+
+    def __repr__(self):
+        return repr(self._torch_finfo)
 
     @property
     def bits(self):
@@ -56,8 +59,13 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     return torch.broadcast_tensors(*arrays)
 
 
-def broadcast_to(x: torch.Tensor, shape: Tuple[int, ...]) -> torch.Tensor:
+def broadcast_to(
+    x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
+) -> torch.Tensor:
     return torch.broadcast_to(x, shape)
+
+
+broadcast_to.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
 
 
 def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:

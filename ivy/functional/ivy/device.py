@@ -1,19 +1,17 @@
 """Collection of device Ivy functions."""
 
-import abc
-import gc
-import inspect
-import logging
-import math
-
 # global
 import os
-import queue
+import gc
+import abc
+import math
 import time
-from typing import Optional
-
-import nvidia_smi
+import queue
 import psutil
+import inspect
+import logging
+import nvidia_smi
+from typing import Optional
 
 # noinspection PyUnresolvedReferences
 try:
@@ -80,7 +78,7 @@ class DefaultDevice:
         "cpu"
 
         """
-        set_default_device(self._dev)
+        ivy.set_default_device(self._dev)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> Union[ivy.Device, str]:
@@ -109,7 +107,7 @@ class DefaultDevice:
         "cpu"
 
         """
-        unset_default_device()
+        ivy.unset_default_device()
         return self
 
 
@@ -295,7 +293,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> int:
     0
 
     """
-    return len(get_all_ivy_arrays_on_dev(device))
+    return len(ivy.get_all_ivy_arrays_on_dev(device))
 
 
 @handle_nestable
@@ -314,7 +312,7 @@ def print_all_ivy_arrays_on_dev(
         Whether or not to only print the `shape` and `dtype` attributes of the array
 
     """
-    arrs = get_all_ivy_arrays_on_dev(device).values()
+    arrs = ivy.get_all_ivy_arrays_on_dev(device).values()
     if attr_only:
         [print((arr.shape, arr.dtype)) for arr in arrs]
     else:
@@ -418,6 +416,16 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     -------
     ret
         The total memory on the device in GB.
+
+    Examples
+    --------
+    >>> x = ivy.total_mem_on_dev("cpu")
+    >>> print(x)
+    53.66700032
+
+    >>> x = ivy.total_mem_on_dev("gpu:0")
+    >>> print(x)
+    8.589934592
 
     """
     if "gpu" in device:
@@ -526,6 +534,20 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     -------
     ret
         The device utilization (%)
+
+    Example
+    -------
+    >>> ivy.dev_util('cpu')
+    13.4
+    >>> ivy.dev_util('gpu:0')
+    7.8
+    >>> ivy.dev_util('cpu')
+    93.4
+    >>> ivy.dev_util('gpu:2')
+    57.4
+    >>> ivy.dev_util('cpu)
+    84.2
+
 
     """
     if device == "cpu":
@@ -832,6 +854,32 @@ def set_split_factor(
     device
         The device to set the split factor for. Sets the default device by default.
 
+    Examples
+    --------
+    >>> ivy.default_device()
+    'cpu'
+    >>> ivy.set_split_factor(0.5)
+    >>> ivy.split_factors
+    {'cpu': 0.5}
+
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.set_split_factor(0.3,device)
+    >>> ivy.split_factors
+    {device(type='cuda'): 0.3}
+
+    >>> ivy.set_split_factor(0.4,"tpu")
+    >>> ivy.split_factors
+    {'tpu': 0.4}
+
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.set_split_factor(0.2)
+    >>> ivy.set_split_factor(0.3,'gpu')
+    >>> ivy.set_split_factor(0.4,device)
+    {'cpu': 0.2, 'gpu': 0.3, device(type='cuda'): 0.4}
     """
     assert 0 <= factor
     global split_factors
@@ -899,13 +947,9 @@ def split_func_call(
             max_chunk_size = max_dim
     chunk_size = ivy.default(
         chunk_size,
-        lambda: (
-            1
-            + int(
-                round(
-                    (max_chunk_size - 1) * ivy.split_factor(ivy.default_device(device))
-                )
-            )
+        lambda: 1
+        + int(
+            round((max_chunk_size - 1) * ivy.split_factor(ivy.default_device(device)))
         ),
         True,
     )
@@ -966,7 +1010,6 @@ def split_func_call(
 class MultiDev:
     def __init__(self, data: Iterable, axis: int = 0):
         if isinstance(data, MultiDev):
-            # TODO: Check if this is supposed to be _dict or _data
             # noinspection PyUnresolvedReferences,PyProtectedMember
             data = data._data
         self._axis = axis
@@ -1012,10 +1055,10 @@ class MultiDevItem(MultiDev):
             if slice_obj.start < stacked_dim_size:
                 if slice_obj.stop < stacked_dim_size:
                     ret_dict[ds] = sub_item[rel_slice_obj]
-                    return MultiDevItem(ret_dict)
+                    return ivy.MultiDevItem(ret_dict)
                 else:
                     ret_dict[ds] = sub_item[rel_slice_obj.start :]
-        return MultiDevItem(ret_dict)
+        return ivy.MultiDevItem(ret_dict)
 
     def __getitem__(self, query):
         if isinstance(query, str):
@@ -1176,7 +1219,7 @@ def dev_dist(x, devices: Union[Iterable[str], Dict[str, int]], axis: int = 0):
 
     """
     if ivy.is_array(x):
-        return dev_dist_array(x, devices, axis)
+        return ivy.dev_dist_array(x, devices, axis)
     elif isinstance(x, ivy.Container):
         return x.dev_dist(devices, axis)
     return x
@@ -1206,7 +1249,7 @@ def dev_dist_iter(xs, devices: Union[Iterable[str], Dict[str, int]], axis: int =
     """
     if isinstance(devices, str):
         devices = [devices]
-    return DevDistIter([dev_dist(x, devices, axis) for x in xs], devices)
+    return ivy.DevDistIter([ivy.dev_dist(x, devices, axis) for x in xs], devices)
 
 
 @handle_nestable
@@ -1246,12 +1289,12 @@ def dev_dist_nest(
     if isinstance(devices, str):
         devices = [devices]
     args_dist = ivy.nested_map(
-        args, lambda x: dev_dist(x, devices, axis), max_depth=max_depth
+        args, lambda x: ivy.dev_dist(x, devices, axis), max_depth=max_depth
     )
     kwargs_dist = ivy.nested_map(
-        kwargs, lambda x: dev_dist(x, devices, axis), max_depth=max_depth
+        kwargs, lambda x: ivy.dev_dist(x, devices, axis), max_depth=max_depth
     )
-    return DevDistNest(args_dist, devices), DevDistNest(kwargs_dist, devices)
+    return ivy.DevDistNest(args_dist, devices), ivy.DevDistNest(kwargs_dist, devices)
 
 
 # Device Cloning #
@@ -1330,7 +1373,7 @@ def dev_clone_array(
     }})
 
     """
-    return DevClonedItem(
+    return ivy.DevClonedItem(
         {ds: ivy.stop_gradient(ivy.to_device(x, device=ds)) for ds in devices}
     )
 
@@ -1356,7 +1399,7 @@ def dev_clone(
 
     """
     if ivy.is_array(x):
-        return dev_clone_array(x, devices)
+        return ivy.dev_clone_array(x, devices)
     elif isinstance(x, ivy.Container):
         return x.dev_clone(devices)
     # return x
@@ -1381,7 +1424,7 @@ def dev_clone_iter(xs, devices):
     """
     if isinstance(devices, str):
         devices = [devices]
-    return DevClonedIter([dev_clone(x, devices) for x in xs], devices)
+    return ivy.DevClonedIter([ivy.dev_clone(x, devices) for x in xs], devices)
 
 
 @handle_nestable
@@ -1409,12 +1452,14 @@ def dev_clone_nest(args, kwargs, devices, max_depth=1):
     if isinstance(devices, str):
         devices = [devices]
     args_cloned = ivy.nested_map(
-        args, lambda x: dev_clone(x, devices), max_depth=max_depth
+        args, lambda x: ivy.dev_clone(x, devices), max_depth=max_depth
     )
     kwargs_cloned = ivy.nested_map(
-        kwargs, lambda x: dev_clone(x, devices), max_depth=max_depth
+        kwargs, lambda x: ivy.dev_clone(x, devices), max_depth=max_depth
     )
-    return DevClonedNest(args_cloned, devices), DevClonedNest(kwargs_cloned, devices)
+    return ivy.DevClonedNest(args_cloned, devices), ivy.DevClonedNest(
+        kwargs_cloned, devices
+    )
 
 
 # Device Unification #
@@ -1493,13 +1538,13 @@ def dev_unify(xs, device, mode, axis=0):
 
     """
     if isinstance(xs, ivy.MultiDevContainer):
-        xs = MultiDevItem(xs.at_devs())
-    elif not isinstance(xs, MultiDevItem):
+        xs = ivy.MultiDevItem(xs.at_devs())
+    elif not isinstance(xs, ivy.MultiDevItem):
         return xs
     # noinspection PyProtectedMember
     xs0 = next(iter(xs.items()))[1]
     if ivy.is_array(xs0):
-        return dev_unify_array(xs, device=device, mode=mode, axis=axis)
+        return ivy.dev_unify_array(xs, device=device, mode=mode, axis=axis)
     elif isinstance(xs0, ivy.Container):
         return ivy.Container.unify(xs, device=device, mode=mode, axis=axis)
     return xs
@@ -1530,16 +1575,16 @@ def dev_unify_iter(xs, device, mode, axis=0, transpose=False):
 
     """
     # noinspection PyProtectedMember
-    xs = xs._data if isinstance(xs, MultiDevIter) else xs
+    xs = xs._data if isinstance(xs, ivy.MultiDevIter) else xs
     if transpose:
         # ToDo: make this more elegant, this method should not be
         #  responsible for transposing iterators
         xs_t = [
-            MultiDevItem({ivy.dev(i) if ivy.is_array(i) else i.dev: i for i in mdi})
+            ivy.MultiDevItem({ivy.dev(i) if ivy.is_array(i) else i.dev: i for i in mdi})
             for mdi in list(map(list, zip(*xs)))
         ]
-        return [dev_unify(x, device=device, mode=mode, axis=axis) for x in xs_t]
-    return dev_unify(xs, device=device, mode=mode, axis=axis)
+        return [ivy.dev_unify(x, device=device, mode=mode, axis=axis) for x in xs_t]
+    return ivy.dev_unify(xs, device=device, mode=mode, axis=axis)
 
 
 @handle_nestable
@@ -1577,12 +1622,12 @@ def dev_unify_nest(
     kwargs = kwargs._data if isinstance(kwargs, MultiDevIter) else kwargs
     args_uni = ivy.nested_map(
         args,
-        lambda x: dev_unify(x, device=device, mode=mode, axis=axis),
+        lambda x: ivy.dev_unify(x, device=device, mode=mode, axis=axis),
         max_depth=max_depth,
     )
     kwargs_uni = ivy.nested_map(
         kwargs,
-        lambda x: dev_unify(x, device=device, mode=mode, axis=axis),
+        lambda x: ivy.dev_unify(x, device=device, mode=mode, axis=axis),
         max_depth=max_depth,
     )
     return args_uni, kwargs_uni

@@ -1,7 +1,7 @@
 # global
 import math
 import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
 
 # local
@@ -61,7 +61,9 @@ def permute_dims(
 
 
 def reshape(
-    x: JaxArray, shape: Tuple[int, ...], copy: Optional[bool] = None
+    x: JaxArray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None,
 ) -> JaxArray:
     ret = jnp.reshape(x, shape)
     return ret
@@ -75,10 +77,13 @@ def roll(
     return jnp.roll(x, shift, axis)
 
 
-def squeeze(x: JaxArray, axis: Union[int, Tuple[int], List[int]] = None) -> JaxArray:
+def squeeze(
+    x: JaxArray,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+) -> JaxArray:
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
-            ret = x
+            return x
         raise ValueError(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
