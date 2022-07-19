@@ -24,6 +24,30 @@ class ArrayWithNorms(abc.ABC):
         the function, and so the docstring for ivy.layer_norm also applies to this
         method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            Input array
+        normalized_idxs
+            Indices to apply the normalization to.
+        epsilon
+            small constant to add to the denominator, use global ivy._MIN_BASE by
+            default.
+        scale
+            Learnable gamma variables for post-multiplication, default is None.
+        offset
+            Learnable beta variables for post-addition, default is None.
+        new_std
+            The standard deviation of the new normalized values. Default is 1.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The layer after applying layer normalization.
+
         Examples
         --------
         >>> x = ivy.array([[0.0976, -0.3452,  1.2740], \
