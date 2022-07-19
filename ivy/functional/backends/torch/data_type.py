@@ -1,14 +1,17 @@
 # global
 import torch
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 
 # local
 import ivy
 
 
 class Finfo:
-    def __init__(self, torch_finfo):
+    def __init__(self, torch_finfo: torch.finfo):
         self._torch_finfo = torch_finfo
+
+    def __repr__(self):
+        return repr(self._torch_finfo)
 
     @property
     def bits(self):
@@ -56,8 +59,13 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     return torch.broadcast_tensors(*arrays)
 
 
-def broadcast_to(x: torch.Tensor, shape: Tuple[int, ...]) -> torch.Tensor:
+def broadcast_to(
+    x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
+) -> torch.Tensor:
     return torch.broadcast_to(x, shape)
+
+
+broadcast_to.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
 
 
 def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
@@ -114,26 +122,7 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> torch.d
 # ------#
 
 
-def dtype_bits(dtype_in):
-    dtype_str = as_ivy_dtype(dtype_in)
-    if "bool" in dtype_str:
-        return 1
-    return int(
-        dtype_str.replace("torch.", "")
-        .replace("uint", "")
-        .replace("int", "")
-        .replace("bfloat", "")
-        .replace("float", "")
-    )
-
-
-def dtype(x, as_native=False):
-    if as_native:
-        return ivy.to_native(x).dtype
-    return as_ivy_dtype(x.dtype)
-
-
-def as_ivy_dtype(dtype_in):
+def as_ivy_dtype(dtype_in: Union[torch.dtype, str]) -> ivy.Dtype:
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
     return ivy.Dtype(
@@ -152,7 +141,7 @@ def as_ivy_dtype(dtype_in):
     )
 
 
-def as_native_dtype(dtype_in: str) -> torch.dtype:
+def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
     return {
@@ -167,3 +156,22 @@ def as_native_dtype(dtype_in: str) -> torch.dtype:
         "float64": torch.float64,
         "bool": torch.bool,
     }[ivy.Dtype(dtype_in)]
+
+
+def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
+
+
+def dtype_bits(dtype_in: Union[torch.dtype, str]) -> int:
+    dtype_str = as_ivy_dtype(dtype_in)
+    if "bool" in dtype_str:
+        return 1
+    return int(
+        dtype_str.replace("torch.", "")
+        .replace("uint", "")
+        .replace("int", "")
+        .replace("bfloat", "")
+        .replace("float", "")
+    )

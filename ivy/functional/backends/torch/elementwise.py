@@ -132,11 +132,7 @@ def asin(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor
 asin.unsupported_dtypes = ("float16",)
 
 
-def asinh(
-        x: torch.Tensor,
-        *,
-        out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def asinh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.asinh(x, out=out)
 
 
@@ -388,9 +384,7 @@ trunc.unsupported_dtypes = ("float16",)
 
 
 def abs(
-    x: Union[float, torch.Tensor], 
-    *, 
-    out: Optional[torch.Tensor] = None
+    x: Union[float, torch.Tensor], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.abs(x, out=out)
@@ -506,7 +500,12 @@ def erf(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
 erf.unsupported_dtypes = ("float16",)
 
 
-def minimum(x1, x2, *, out: Optional[torch.Tensor] = None):
+def minimum(
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     x_val = torch.tensor(x1) if (isinstance(x1, int) or isinstance(x1, float)) else x1
     y_val = torch.tensor(x2) if (isinstance(x2, int) or isinstance(x2, float)) else x2
     return torch.min(x_val, y_val, out=out)
