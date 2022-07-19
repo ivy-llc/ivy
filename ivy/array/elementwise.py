@@ -1344,6 +1344,7 @@ class ArrayWithElementwise(abc.ABC):
         Examples
         --------
         With :code:`ivy.Array` input:
+
         >>> x = ivy.array([1.2, 2.4, 3.6])
         >>> y = x.round()
         >>> print(y)
