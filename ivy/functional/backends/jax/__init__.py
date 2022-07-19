@@ -2,7 +2,7 @@
 import sys
 from jax.config import config
 import jaxlib
-import jax as jax
+import jax
 import jax.numpy as jnp
 from typing import Union
 
@@ -140,8 +140,6 @@ from . import general
 from .general import *
 from . import gradients
 from .gradients import *
-from . import image
-from .image import *
 from . import layers
 from .layers import *
 from . import linear_algebra as linalg

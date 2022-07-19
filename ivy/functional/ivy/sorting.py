@@ -3,8 +3,12 @@ from typing import Union, Optional
 
 # local
 import ivy
-from ivy.backend_handler import current_backend as _cur_backend
-from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
+from ivy.backend_handler import current_backend
+from ivy.func_wrapper import (
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+)
 
 
 # Array API Standard #
@@ -13,6 +17,7 @@ from ivy.func_wrapper import to_native_arrays_and_back, handle_out_argument
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
@@ -70,8 +75,8 @@ def argsort(
     ivy.array([1,2,0])
 
     >>> x = ivy.array([[1.5, 3.2], [2.3, 2.3]])
-    >>> ivy.argsort(x, 0, True, False, y)
-    >>> print(y)
+    >>> ivy.argsort(x, 0, True, False, out=x)
+    >>> print(x)
     ivy.array([[1, 0], [0, 1]])
 
     >>> x = ivy.array([[[1,3], [3,2]], [[2,4], [2,0]]])
@@ -86,14 +91,15 @@ def argsort(
     >>> print(y)
     {
         a: ivy.array([1, 2, 0]),
-        b: ivy.array([[0, 1], [0, 1]])
+        b: ivy.array([[0, 1], [1, 0]])
     }
     """
-    return _cur_backend(x).argsort(x, axis, descending, stable, out=out)
+    return current_backend(x).argsort(x, axis, descending, stable, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
@@ -131,7 +137,7 @@ def sort(
         along the given `axis`.
 
     """
-    return _cur_backend(x).sort(x, axis, descending, stable, out=out)
+    return current_backend(x).sort(x, axis, descending, stable, out=out)
 
 
 # Extra #

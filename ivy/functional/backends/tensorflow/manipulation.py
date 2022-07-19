@@ -3,16 +3,87 @@ import math
 import tensorflow as tf
 from numbers import Number
 from typing import Union, Tuple, Optional, List
-from tensorflow.python.types.core import Tensor
 
-# local
+
+# Array API Standard #
+# -------------------#
+
+
+def concat(xs: List[tf.Tensor], axis: int = 0) -> Union[tf.Tensor, tf.Variable]:
+    is_tuple = type(xs) is tuple
+    is_axis_none = axis is None
+    if is_tuple:
+        xs = list(xs)
+    highest_dtype = xs[0].dtype
+    for i in xs:
+        highest_dtype = tf.experimental.numpy.promote_types(highest_dtype, i.dtype)
+
+    for i in range(len(xs)):
+        if is_axis_none:
+            xs[i] = tf.reshape(xs[i], -1)
+        xs[i] = tf.cast(xs[i], highest_dtype)
+    if is_axis_none:
+        axis = 0
+        if is_tuple:
+            xs = tuple(xs)
+    ret = tf.concat(xs, axis)
+    return ret
+
+
+def expand_dims(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+) -> Union[tf.Tensor, tf.Variable]:
+    try:
+        ret = tf.expand_dims(x, axis)
+        return ret
+    except tf.errors.InvalidArgumentError as error:
+        raise IndexError(error)
+
+
+def flip(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional[tf.Tensor] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    num_dims = len(x.shape)
+    if not num_dims:
+        ret = x
+    else:
+        if axis is None:
+            new_axis = list(range(num_dims))
+        else:
+            new_axis = axis
+        if type(new_axis) is int:
+            new_axis = [new_axis]
+        else:
+            new_axis = new_axis
+        new_axis = [item + num_dims if item < 0 else item for item in new_axis]
+        ret = tf.reverse(x, new_axis)
+    return ret
+
+
+def permute_dims(
+    x: Union[tf.Tensor, tf.Variable],
+    axes: Tuple[int, ...],
+) -> Union[tf.Tensor, tf.Variable]:
+    ret = tf.transpose(x, perm=axes)
+    return ret
+
+
+def reshape(
+    x: Union[tf.Tensor, tf.Variable],
+    shape: Tuple[int, ...],
+) -> Union[tf.Tensor, tf.Variable]:
+    ret = tf.reshape(x, shape)
+    return ret
 
 
 def roll(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     shift: Union[int, Tuple[int, ...]],
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         originalShape = x.shape
         axis = 0
@@ -26,7 +97,10 @@ def roll(
     return ret
 
 
-def squeeze(x: Tensor, axis: Union[int, Tuple[int], List[int]]) -> Tensor:
+def squeeze(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: Union[int, Tuple[int], List[int]],
+) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if x.shape[axis] > 1:
             raise ValueError(
@@ -59,65 +133,11 @@ def squeeze(x: Tensor, axis: Union[int, Tuple[int], List[int]]) -> Tensor:
     return ret
 
 
-def flip(x: Tensor, axis: Optional[Union[int, Tuple[int], List[int]]] = None) -> Tensor:
-    num_dims = len(x.shape)
-    if not num_dims:
-        ret = x
-    else:
-        if axis is None:
-            new_axis = list(range(num_dims))
-        else:
-            new_axis = axis
-        if type(new_axis) is int:
-            new_axis = [new_axis]
-        else:
-            new_axis = new_axis
-        new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-        ret = tf.reverse(x, new_axis)
-    return ret
-
-
-def expand_dims(x: Tensor, axis: int = 0) -> Tensor:
-    try:
-        ret = tf.expand_dims(x, axis)
-        return ret
-    except tf.errors.InvalidArgumentError as error:
-        raise IndexError(error)
-
-
-def permute_dims(x: Tensor, axes: Tuple[int, ...]) -> Tensor:
-    ret = tf.transpose(x, perm=axes)
-    return ret
-
-
-def stack(x: Union[Tuple[Tensor], List[Tensor]], axis: Optional[int] = 0) -> Tensor:
+def stack(
+    x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
+    axis: Optional[int] = 0,
+) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.stack(x, axis)
-    return ret
-
-
-def reshape(x: Tensor, shape: Tuple[int, ...]) -> Tensor:
-    ret = tf.reshape(x, shape)
-    return ret
-
-
-def concat(xs: List[Tensor], axis: int = 0) -> Tensor:
-    is_tuple = type(xs) is tuple
-    is_axis_none = axis is None
-    if is_tuple:
-        xs = list(xs)
-    highest_dtype = xs[0].dtype
-    for i in xs:
-        highest_dtype = tf.experimental.numpy.promote_types(highest_dtype, i.dtype)
-
-    for i in range(len(xs)):
-        if is_axis_none:
-            xs[i] = tf.reshape(xs[i], -1)
-        xs[i] = tf.cast(xs[i], highest_dtype)
-    if is_axis_none:
-        axis = 0
-        if is_tuple:
-            xs = tuple(xs)
-    ret = tf.concat(xs, axis)
     return ret
 
 
@@ -148,7 +168,11 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return tf.split(x, num_or_size_splits, axis)
 
 
-def repeat(x: Tensor, repeats: Union[int, List[int]], axis: int = None) -> Tensor:
+def repeat(
+    x: Union[tf.Tensor, tf.Variable],
+    repeats: Union[int, List[int]],
+    axis: int = None,
+) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.repeat(x, repeats, axis)
     return ret
 
@@ -158,7 +182,7 @@ def tile(x, reps):
         x = tf.reshape(x, (-1,))
     if isinstance(reps, Number):
         reps = [reps]
-    if isinstance(reps, Tensor) and reps.shape == ():
+    if isinstance(reps, tf.Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
     ret = tf.tile(x, reps)
     return ret
@@ -193,8 +217,10 @@ def swapaxes(x, axis0, axis1):
 
 
 def clip(
-    x: Tensor, x_min: Union[Number, Tensor], x_max: Union[Number, Tensor]
-) -> Tensor:
+    x: Union[tf.Tensor, tf.Variable],
+    x_min: Union[Number, tf.Tensor, tf.Variable],
+    x_max: Union[Number, tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)

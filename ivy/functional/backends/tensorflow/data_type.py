@@ -2,35 +2,10 @@
 import numpy as np
 import tensorflow as tf
 from typing import Union, Tuple, List
-from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
-
-
-def can_cast(from_: Union[tf.DType, Tensor], to: tf.DType) -> bool:
-    if isinstance(from_, Tensor):
-        from_ = from_.dtype
-    from_str = str(from_)
-    to_str = str(to)
-    if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
-        return False
-    if "'int" in from_str and "uint" in to_str:
-        return False
-    if "bool" in from_str and (("int" in to_str) or ("float" in to_str)):
-        return False
-    if "int" in from_str and (("float" in to_str) or ("bool" in to_str)):
-        return False
-    if "float" in from_str and "bool" in to_str:
-        return False
-    if "float" in from_str and "int" in to_str:
-        return False
-    if "uint" in from_str and "'int" in to_str:
-        if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
-            return False
-    return True
-
 
 ivy_dtype_dict = {
     tf.int8: "int8",
@@ -65,11 +40,6 @@ native_dtype_dict = {
 }
 
 
-# noinspection PyShadowingBuiltins
-def iinfo(type: Union[DType, str, Tensor]) -> np.iinfo:
-    return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
-
-
 class Finfo:
     def __init__(self, tf_finfo):
         self._tf_finfo = tf_finfo
@@ -95,28 +65,34 @@ class Finfo:
         return float(self._tf_finfo.tiny)
 
 
-# noinspection PyShadowingBuiltins
-def finfo(type: Union[DType, str, Tensor]) -> Finfo:
-    return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
+# Array API Standard #
+# -------------------#
 
 
-def result_type(*arrays_and_dtypes: Union[Tensor, tf.DType]) -> tf.DType:
-    if len(arrays_and_dtypes) <= 1:
-        return tf.experimental.numpy.result_type(arrays_and_dtypes)
+def astype(
+    x: Union[tf.Tensor, tf.Variable],
+    dtype: tf.DType,
+    *,
+    copy: bool = True,
+) -> Union[tf.Tensor, tf.Variable]:
+    dtype = ivy.as_native_dtype(dtype)
+    if copy:
+        if x.dtype == dtype:
+            new_tensor = tf.experimental.numpy.copy(x)
+            return new_tensor
+    else:
+        if x.dtype == dtype:
+            return x
+        else:
+            new_tensor = tf.experimental.numpy.copy(x)
+            new_tensor = tf.cast(new_tensor, dtype)
+            return new_tensor
+    return tf.cast(x, dtype)
 
-    result = tf.experimental.numpy.result_type(
-        arrays_and_dtypes[0], arrays_and_dtypes[1]
-    )
-    for i in range(2, len(arrays_and_dtypes)):
-        result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
-    return result
 
-
-def broadcast_to(x: Tensor, shape: Tuple[int, ...]) -> Tensor:
-    return tf.broadcast_to(x, shape)
-
-
-def broadcast_arrays(*arrays: Tensor) -> List[Tensor]:
+def broadcast_arrays(
+    *arrays: Union[tf.Tensor, tf.Variable],
+) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(arrays) > 1:
         desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
         if len(arrays) > 2:
@@ -133,20 +109,60 @@ def broadcast_arrays(*arrays: Tensor) -> List[Tensor]:
     return result
 
 
-def astype(x: Tensor, dtype: tf.DType, *, copy: bool = True) -> Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if copy:
-        if x.dtype == dtype:
-            new_tensor = tf.experimental.numpy.copy(x)
-            return new_tensor
-    else:
-        if x.dtype == dtype:
-            return x
-        else:
-            new_tensor = tf.experimental.numpy.copy(x)
-            new_tensor = tf.cast(new_tensor, dtype)
-            return new_tensor
-    return tf.cast(x, dtype)
+def broadcast_to(
+    x: Union[tf.Tensor, tf.Variable],
+    shape: Tuple[int, ...],
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.broadcast_to(x, shape)
+
+
+def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bool:
+    if isinstance(from_, tf.Tensor):
+        from_ = from_.dtype
+    from_str = str(from_)
+    to_str = str(to)
+    if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
+        return False
+    if ("int" in from_str and "u" not in from_str) and "uint" in to_str:
+        return False
+    if "bool" in from_str and (("int" in to_str) or ("float" in to_str)):
+        return False
+    if "int" in from_str and (("float" in to_str) or ("bool" in to_str)):
+        return False
+    if "float" in from_str and "bool" in to_str:
+        return False
+    if "float" in from_str and "int" in to_str:
+        return False
+    if "uint" in from_str and ("int" in to_str and "u" not in to_str):
+        if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
+            return False
+    return True
+
+
+def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
+    return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
+
+
+def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
+    return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
+
+
+def result_type(
+    *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
+) -> tf.DType:
+    if len(arrays_and_dtypes) <= 1:
+        return tf.experimental.numpy.result_type(arrays_and_dtypes)
+
+    result = tf.experimental.numpy.result_type(
+        arrays_and_dtypes[0], arrays_and_dtypes[1]
+    )
+    for i in range(2, len(arrays_and_dtypes)):
+        result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
+    return result
+
+
+# Extra #
+# ------#
 
 
 def dtype_bits(dtype_in):

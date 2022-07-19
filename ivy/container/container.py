@@ -1,22 +1,13 @@
 # global
 import copy
-from operator import lt as _lt
-from operator import le as _le
-from operator import eq as _eq
-from operator import ne as _ne
-from operator import gt as _gt
-from operator import ge as _ge
-from operator import pow as _pow
-from operator import not_ as _not
-from functools import reduce as _reduce
-from operator import floordiv as _floordiv
+import operator
 
 # local
 import ivy
 from .activations import ContainerWithActivations
 from .base import ContainerBase
 from .creation import ContainerWithCreation
-from .data_types import ContainerWithDataTypes
+from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
 from .elementwise import ContainerWithElementwise
 from .general import ContainerWithGeneral
@@ -106,29 +97,94 @@ class Container(
 
     def __pow__(self, power):
         if isinstance(power, ivy.Container):
-            return self.reduce([self, power], lambda x: _reduce(_pow, x))
+            return self.reduce([self, power], lambda xs: pow(xs[0], xs[1]))
         return self.map(lambda x, kc: x**power)
 
     def __rpow__(self, power):
         return self.map(lambda x, kc: power**x)
 
     def __add__(self, other):
-        return self.static_add(self, other)
+        """
+        ivy.Container special method for the add operator, calling :code:`operator.add`
+        for each of the corresponding leaves of the two containers.
+
+        Examples
+        --------
+        With :code:`Number` instances at the leaves:
+
+        >>> x = ivy.Container(a=1, b=2)
+        >>> y = ivy.Container(a=3, b=4)
+        >>> z = x + y
+        >>> print(z)
+        {
+            a: 4,
+            b: 6
+        }
+
+        With :code:`ivy.Array` instances at the leaves:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                              b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
+                              b=ivy.array([5, 6, 7]))
+        >>> z = x + y
+        >>> print(z)
+        {
+            a: ivy.array([5, 7, 9]),
+            b: ivy.array([7, 9, 11])
+        }
+
+        With a mix of :code:`ivy.Container` and :code:`ivy.Array` instances:
+
+        >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                              b=ivy.array([[5.], [6.], [7.]]))
+        >>> y = ivy.array([[1.1, 2.3, -3.6]])
+        >>> z = x + y
+        >>> print(z)
+        {
+            a: ivy.array([[5.1, 6.3, 0.4],
+                          [6.1, 7.3, 1.4],
+                          [7.1, 8.3, 2.4]]),
+            b: ivy.array([[6.1, 7.3, 1.4],
+                          [7.1, 8.3, 2.4],
+                          [8.1, 9.3, 3.4]])
+        }
+        """
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.add(xs[0], xs[1]), [self, other], map_nests=True
+        )
 
     def __radd__(self, other):
-        return self.static_add(other, self)
+        """
+        ivy.Container reverse special method for the add operator, calling
+        :code:`operator.add` for each of the corresponding leaves of the two containers.
+
+        Examples
+        --------
+        >>> x = 1
+        >>> y = ivy.Container(a=3, b=4)
+        >>> z = x + y
+        >>> print(z)
+        {
+            a: 4,
+            b: 5
+        }
+        """
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.add(xs[0], xs[1]), [other, self], map_nests=True
+        )
 
     def __sub__(self, other):
-        return self.static_sub(self, other)
+        return self.static_subtract(self, other)
 
     def __rsub__(self, other):
-        return self.static_sub(other, self)
+        return self.static_subtract(other, self)
 
     def __mul__(self, other):
-        return self.static_mul(self, other)
+        return self.static_multiply(self, other)
 
     def __rmul__(self, other):
-        return self.static_mul(other, self)
+        return self.static_multiply(other, self)
 
     def __truediv__(self, other):
         return self.static_divide(self, other)
@@ -138,7 +194,9 @@ class Container(
 
     def __floordiv__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_floordiv, x))
+            return self.reduce(
+                [self, other], lambda xs: operator.floordiv(xs[0], xs[1])
+            )
         return self.map(lambda x, kc: x // other)
 
     def __rfloordiv__(self, other):
@@ -149,32 +207,32 @@ class Container(
 
     def __lt__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_lt, x))
+            return self.reduce([self, other], lambda xs: operator.lt(xs[0], xs[1]))
         return self.map(lambda x, kc: x < other)
 
     def __le__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_le, x))
+            return self.reduce([self, other], lambda xs: operator.le(xs[0], xs[1]))
         return self.map(lambda x, kc: x <= other)
 
     def __eq__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_eq, x))
+            return self.reduce([self, other], lambda xs: operator.eq(xs[0], xs[1]))
         return self.map(lambda x, kc: x == other)
 
     def __ne__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_ne, x))
+            return self.reduce([self, other], lambda xs: operator.ne(xs[0], xs[1]))
         return self.map(lambda x, kc: x != other)
 
     def __gt__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_gt, x))
+            return self.reduce([self, other], lambda xs: operator.gt(xs[0], xs[1]))
         return self.map(lambda x, kc: x > other)
 
     def __ge__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: _reduce(_ge, x))
+            return self.reduce([self, other], lambda xs: operator.ge(xs[0], xs[1]))
         return self.map(lambda x, kc: x >= other)
 
     def __and__(self, other):
@@ -194,7 +252,7 @@ class Container(
         return self.map(lambda x, kc: other or x)
 
     def __invert__(self):
-        return self.map(lambda x, kc: _not(x))
+        return self.map(lambda x, kc: operator.not_(x))
 
     def __xor__(self, other):
         if isinstance(other, ivy.Container):

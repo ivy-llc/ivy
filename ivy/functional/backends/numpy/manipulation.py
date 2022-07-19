@@ -4,27 +4,38 @@ import math
 from typing import Union, Tuple, Optional, List
 from numbers import Number
 
-# local
-
-
-def squeeze(
-    x: np.ndarray,
-    axis: Union[int, Tuple[int], List[int]],
-) -> np.ndarray:
-    if isinstance(axis, list):
-        axis = tuple(axis)
-    if x.shape == ():
-        if axis is None or axis == 0 or axis == -1:
-            return x
-        raise ValueError(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
-        )
-    ret = np.squeeze(x, axis)
-    return ret
-
 
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
+
+
+# Array API Standard #
+# -------------------#
+
+
+def concat(
+    xs: List[np.ndarray], axis: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    is_tuple = type(xs) is tuple
+    if axis is None:
+        if is_tuple:
+            xs = list(xs)
+        for i in range(len(xs)):
+            if xs[i].shape == ():
+                xs[i] = np.ravel(xs[i])
+        if is_tuple:
+            xs = tuple(xs)
+    ret = np.concatenate(xs, axis, out=out)
+    highest_dtype = xs[0].dtype
+    for i in xs:
+        highest_dtype = np.promote_types(highest_dtype, i.dtype)
+    ret = ret.astype(highest_dtype)
+    return ret
+
+
+def expand_dims(x: np.ndarray, axis: int = 0) -> np.ndarray:
+    ret = np.expand_dims(x, axis)
+    return ret
 
 
 def flip(
@@ -43,31 +54,39 @@ def flip(
     return ret
 
 
-def expand_dims(x: np.ndarray, axis: int = 0) -> np.ndarray:
-    ret = np.expand_dims(x, axis)
-    return ret
-
-
 def permute_dims(x: np.ndarray, axes: Tuple[int, ...]) -> np.ndarray:
     ret = np.transpose(x, axes)
     return ret
 
 
-def concat(xs: List[np.ndarray], axis: int = 0) -> np.ndarray:
-    is_tuple = type(xs) is tuple
-    if axis is None:
-        if is_tuple:
-            xs = list(xs)
-        for i in range(len(xs)):
-            if xs[i].shape == ():
-                xs[i] = np.ravel(xs[i])
-        if is_tuple:
-            xs = tuple(xs)
-    ret = np.concatenate(xs, axis)
-    highest_dtype = xs[0].dtype
-    for i in xs:
-        highest_dtype = np.promote_types(highest_dtype, i.dtype)
-    ret = ret.astype(highest_dtype)
+def reshape(
+    x: np.ndarray, shape: Tuple[int, ...], copy: Optional[bool] = None
+) -> np.ndarray:
+    ret = np.reshape(x, shape)
+    return ret
+
+
+def roll(
+    x: np.ndarray,
+    shift: Union[int, Tuple[int, ...]],
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+) -> np.ndarray:
+    return np.roll(x, shift, axis)
+
+
+def squeeze(
+    x: np.ndarray,
+    axis: Union[int, Tuple[int], List[int]],
+) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise ValueError(
+            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+        )
+    ret = np.squeeze(x, axis)
     return ret
 
 
@@ -80,26 +99,17 @@ def stack(
     return np.stack(x, axis, out=out)
 
 
-def reshape(
-    x: np.ndarray, shape: Tuple[int, ...], copy: Optional[bool] = None
-) -> np.ndarray:
-    ret = np.reshape(x, shape)
-    return ret
-
-
 # Extra #
 # ------#
 
 
-def roll(
-    x: np.ndarray,
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-) -> np.ndarray:
-    return np.roll(x, shift, axis)
-
-
-def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
+def split(
+    x,
+    num_or_size_splits=None,
+    axis=0,
+    with_remainder=False,
+    out: Optional[np.ndarray] = None,
+):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception(
@@ -119,7 +129,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
                 int(remainder * num_or_size_splits)
             ]
     if isinstance(num_or_size_splits, (list, tuple)):
-        num_or_size_splits = np.cumsum(num_or_size_splits[:-1])
+        num_or_size_splits = np.cumsum(num_or_size_splits[:-1], out=out)
     return np.split(x, num_or_size_splits, axis)
 
 

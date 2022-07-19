@@ -6,7 +6,6 @@ from typing import Union, Tuple, Optional, List
 from ivy.functional.backends.jax import JaxArray
 
 
-# noinspection PyShadowingBuiltins
 def all(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
@@ -16,7 +15,6 @@ def all(
     return ret
 
 
-# noinspection PyShadowingBuiltins
 def any(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,

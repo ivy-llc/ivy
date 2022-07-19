@@ -14,7 +14,8 @@ def is_variable(x, exclusive=False):
     return isinstance(x, mx.nd.NDArray) and x.grad is not None
 
 
-variable_data = lambda x: x
+def variable_data(x):
+    return x
 
 
 # noinspection PyUnresolvedReferences

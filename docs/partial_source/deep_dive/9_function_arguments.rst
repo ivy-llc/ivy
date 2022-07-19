@@ -35,6 +35,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
 .. code-block:: python
 
     # Ivy
+    @to_native_arrays_and_back
+    @handle_out_argument
     def tan(
         x: Union[ivy.Array, ivy.NativeArray],
         *,
@@ -51,6 +53,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
 .. code-block:: python
 
     # Ivy
+    @to_native_arrays_and_back
+    @handle_out_argument
     def roll(
         x: Union[ivy.Array, ivy.NativeArray],
         shift: Union[int, Sequence[int]],
@@ -69,22 +73,28 @@ We present both the Ivy API signature and also a backend-specific signature for 
 .. code-block:: python
 
     # Ivy
+    @to_native_arrays_and_back
+    @handle_out_argument
     def add(
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
+        x1: Union[ivy.Array, ivy.NativeArray, float],
+        x2: Union[ivy.Array, ivy.NativeArray, float],
         *,
         out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+    ) -> Union[ivy.Array, float]:
 
     # TensorFlow
     def add(
-        x1: Union[tf.Tensor, tf.Variable],
-        x2: Union[tf.Tensor, tf.Variable]
-    ) -> Tensor:
+        x1: Union[tf.Tensor, tf.Variable, float],
+        x2: Union[tf.Tensor, tf.Variable, float]
+    ) -> Union[tf.Tensor, tf.Variable, float]:
 
 .. code-block:: python
 
     # Ivy
+    @outputs_to_ivy_arrays
+    @handle_out_argument
+    @infer_dtype
+    @infer_device
     def zeros(
         shape: Union[int, Sequence[int]],
         *,
@@ -143,6 +153,23 @@ In a nutshell, by the time the backend implementation is enterred,
 the correct :code:`dtype` and :code:`device` to use have both already been correctly handled
 by code which is wrapped around the backend implementation.
 This is futher explained in the :ref:`Data Types` and :ref:`Devices` sections respectively.
+
+Numbers in Operator Functions
+-----------------------------
+
+All operator functions (which have a corresponding
+such as :code:`+`, :code:`-`, :code:`*`, :code:`/`) must also be fully compatible with
+numbers (:code:`float` or :code:`int`) passed into any of the array inputs,
+even in the absence of any arrays.
+For example, :code:`ivy.add(1, 2)`, :code:`ivy.add(1.5, 2)` and
+:code:`ivy.add(1.5, ivy.array([2]))` should all run without error.
+Therefore, the type hints for :code:`ivy.add` include :code:`float` as one of the types
+in the :code:`Union` for the array inputs,
+and also as one of the types in the :code:`Union` for the output.
+`PEP 484 Type Hints <https://peps.python.org/pep-0484/#the-numeric-tower>`_
+state that "when an argument is annotated as having type float,
+an argument of type int is acceptable". Therefore, we only include :code:`float` in the
+type hints.
 
 Integer Sequences
 -----------------

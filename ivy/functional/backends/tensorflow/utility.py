@@ -1,17 +1,13 @@
 # global
 import tensorflow as tf
 from typing import Union, Tuple, Optional, List
-from tensorflow.python.types.core import Tensor
-
-# local
 
 
-# noinspection PyShadowingBuiltins
 def all(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -21,12 +17,11 @@ def all(
     return ret
 
 
-# noinspection PyShadowingBuiltins
 def any(
-    x: Tensor,
+    x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     keepdims: bool = False,
-) -> Tensor:
+) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))

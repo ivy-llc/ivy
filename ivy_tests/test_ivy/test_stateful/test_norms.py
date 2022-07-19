@@ -29,8 +29,8 @@ def test_layer_norm_layer(
 ):
     # smoke test
     x, normalized_shape, target = x_n_ns_n_target
-    x = tensor_fn(x, dtype, device)
-    target = tensor_fn(target, dtype, device)
+    x = tensor_fn(x, dtype=dtype, device=device)
+    target = tensor_fn(target, dtype=dtype, device=device)
     if with_v:
         v = Container(
             {
