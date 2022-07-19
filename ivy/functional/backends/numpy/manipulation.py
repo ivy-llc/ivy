@@ -71,8 +71,8 @@ def reshape(
 
 def roll(
     x: np.ndarray,
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
 ) -> np.ndarray:
     return np.roll(x, shift, axis)
 
