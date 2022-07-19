@@ -35,7 +35,7 @@ def diagonal(
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
     return ret
