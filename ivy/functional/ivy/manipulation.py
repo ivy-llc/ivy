@@ -67,8 +67,7 @@ def expand_dims(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Expands the shape of an array by inserting a new axis (dimension) of size one
+    """Expands the shape of an array by inserting a new axis (dimension) of size one
     at the position specified by ``axis``
 
     Parameters
