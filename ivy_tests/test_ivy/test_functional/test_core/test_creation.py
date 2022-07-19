@@ -374,8 +374,6 @@ def test_from_dlpack(
     instance_method,
     fw,
 ):
-    if fw == "tensorflow" or fw == "jax":  # not working at time of commit
-        return
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -400,14 +398,14 @@ def test_from_dlpack(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    fill_value=st.integers(0, 5) | st.floats(0.0, 5.0),
+    dtype_and_fill=helpers.dtype_and_values(shape=(1,)),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="full"),
 )
 def test_full(
     shape,
-    fill_value,
+    dtype_and_fill,
     dtype,
     with_out,
     device,
@@ -415,9 +413,7 @@ def test_full(
     fw,
 ):
 
-    if type(fill_value) == float and dtype in ivy_np.valid_int_dtypes:
-        return
-
+    dtype, fill = dtype_and_fill
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
@@ -429,7 +425,7 @@ def test_full(
         fw=fw,
         fn_name="full",
         shape=shape,
-        fill_value=fill_value,
+        fill_value=fill[0],
         dtype=dtype,
         device=device,
     )
@@ -535,10 +531,6 @@ def test_meshgrid(
     dtype,
     fw,
 ):
-
-    if fw == "torch" and dtype == "uint16" or "uint32":
-        return
-
     kw = {}
     i = 0
     for x_ in arrays:
