@@ -4836,6 +4836,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the rounded result for each element in ``x``.
             The returned container must have the same data type as ``x``.
 
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
+                    b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> y = ivy.Container.static_round(x)
+        >>> print(y)
+        {
+            a: ivy.array([4., 9., 7., 0.]),
+            b: ivy.array([-301., -527., 4.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "round",
@@ -4885,6 +4897,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the rounded result for each element in ``self``.
             The returned container must have the same data type as ``self``.
 
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
+                    b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> y = x.round()
+        >>> print(y)
+        {
+            a: ivy.array([4., 9., 7., 0.]),
+            b: ivy.array([-301., -527., 4.])
+        }
         """
         return self.static_round(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
