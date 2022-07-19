@@ -1300,6 +1300,24 @@ class ArrayWithElementwise(abc.ABC):
             Each element-wise result must have the same sign as the respective
             element ``x2_i``. The returned array must have a data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code: `ivy.Array` inputs:
+
+        >>> x1 = ivy.array([2., 5., 15.])
+        >>> x2 = ivy.array([3., 2., 4.])
+        >>> y = x1.remainder(x2)
+        >>> print(y)
+        ivy.array([2., 1., 3.])
+
+        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.array([11., 4., 18.])
+        >>> x2 = ivy.native_array([2., 5., 8.])
+        >>> y = x1.remainder(x2)
+        >>> print(y)
+        ivy.array([1., 4., 2.])
         """
         return ivy.remainder(self._data, x2, out=out)
 
