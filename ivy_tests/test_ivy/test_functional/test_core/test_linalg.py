@@ -864,24 +864,25 @@ def test_svd(
     fm,
 ):
     dtype, x = dtype_x
-    try:
-        ret, ret_from_np = helpers.test_function(
-            dtype,
-            as_variable,
-            False,
-            num_positional_args,
-            native_array,
-            container,
-            instance_method,
-            fw,
-            "svd",
-            test_values=False,
-            x=np.asarray(x, dtype=dtype),
-            full_matrices=fm,
-        )
-    except TypeError:
+
+    results = helpers.test_function(
+        dtype,
+        as_variable,
+        False,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "svd",
+        test_values=False,
+        x=np.asarray(x, dtype=dtype),
+        full_matrices=fm,
+    )
+    if results is None:
         return
 
+    ret, ret_from_np = results
     # flattened array returns
     ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
         ret, ret_from_np
