@@ -71,8 +71,8 @@ def reshape(
 
 def roll(
     x: JaxArray,
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
 ) -> JaxArray:
     return jnp.roll(x, shift, axis)
 
