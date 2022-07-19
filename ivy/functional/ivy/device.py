@@ -966,8 +966,9 @@ def split_func_call(
 class MultiDev:
     def __init__(self, data: Iterable, axis: int = 0):
         if isinstance(data, MultiDev):
+            # TODO: Check if this is supposed to be _dict or _data
             # noinspection PyUnresolvedReferences,PyProtectedMember
-            data = data._dict
+            data = data._data
         self._axis = axis
         self._data = data
         self._length = len(data)

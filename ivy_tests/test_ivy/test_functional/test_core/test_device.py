@@ -493,26 +493,33 @@ def test_dist_nest(args, kwargs, axis, tensor_fn, device, call):
     )
 
 
-@pytest.mark.parametrize("args", [[[0, 1, 2, 3, 4], "some_str", ([1, 2])]])
-@pytest.mark.parametrize("kwargs", [{"a": [0, 1, 2, 3, 4], "b": "another_str"}])
-@pytest.mark.parametrize("axis", [0])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
+# @pytest.mark.parametrize("args", [[[0, 1, 2, 3, 4], "some_str", ([1, 2])]])
+# @pytest.mark.parametrize("kwargs", [{"a": [0, 1, 2, 3, 4], "b": "another_str"}])
+# @pytest.mark.parametrize("axis", [0])
+# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+@given(
+    arr1=st.lists(st.integers(1, 4), min_size=1, max_size=5),
+    arr2=st.lists(st.integers(1, 4), min_size=1, max_size=5),
+)
+def test_clone_nest(arr1, arr2):
+    # Test the function by passing the parameter to sum
+
+    # Custom sum function to test the inputs on
+    def my_sum(a1, a2):
+        return sum(a1) + sum(a2)
+
+    # create an array from shape
+    arr1 = ivy.array(arr1)
+    arr2 = ivy.array(arr2)
+
     # inputs
-    args = [tensor_fn(args[0], dtype="float32", device=device)] + args[1:]
-    kwargs = {
-        "a": tensor_fn(kwargs["a"], dtype="float32", device=device),
-        "b": kwargs["b"],
-    }
+    args = [arr1, arr2]
+    kwargs = {"a1": arr1, "a2": arr2}
 
     # devices
-    devices = list()
-    dev0 = device
-    devices.append(dev0)
-    if "gpu" in device and ivy.num_gpus() > 1:
-        idx = ivy.num_gpus() - 1
-        dev1 = device[:-1] + str(idx)
-        devices.append(dev1)
+    devices = ["cpu"]
+    if ivy.gpu_is_available():
+        devices.append(ivy.Device("gpu:0"))
 
     # returns
     cloned_args, cloned_kwargs = ivy.dev_clone_nest(args, kwargs, devices)
@@ -523,18 +530,12 @@ def test_clone_nest(args, kwargs, axis, tensor_fn, device, call):
         assert cloned_kwargs.at_dev(ds)
 
     # value test
-    assert min(
-        [
-            ivy.dev(dist_args_ds[0]) == ds
-            for ds, dist_args_ds in cloned_args.at_devs().items()
-        ]
-    )
-    assert min(
-        [
-            ivy.dev(dist_kwargs_ds["a"]) == ds
-            for ds, dist_kwargs_ds in cloned_kwargs.at_devs().items()
-        ]
-    )
+    for ds, dist_args_ds in cloned_args.at_devs().items():
+        assert list(map(list, dist_args_ds)) == list(map(list, args))
+        assert my_sum(*dist_args_ds) == my_sum(*args)
+    for ds, dist_kwargs_ds in cloned_kwargs.at_devs().items():
+        assert list(map(list, dist_kwargs_ds)) == list(map(list, kwargs))
+        assert my_sum(**dist_kwargs_ds) == my_sum(**kwargs)
 
 
 @pytest.mark.parametrize("args", [[[[0, 1, 2], [3, 4]], "some_str", ([1, 2])]])
