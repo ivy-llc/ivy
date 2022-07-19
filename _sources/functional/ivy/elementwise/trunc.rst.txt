@@ -5,6 +5,8 @@ trunc
 
 .. autofunction:: ivy.array.array_methods.trunc
 
+.. autofunction:: ivy.container.container_methods.static_trunc
+
 .. autofunction:: ivy.container.container_methods.trunc
 |
 | **Supported Frameworks:**
@@ -33,6 +35,7 @@ trunc
    :caption: trunc
 
    trunc/trunc_functional.rst
+   trunc/static_trunc_container.rst
    trunc/trunc_array.rst
    trunc/trunc_container.rst
 

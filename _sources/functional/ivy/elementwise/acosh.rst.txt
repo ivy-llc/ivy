@@ -6,6 +6,8 @@ acosh
 .. autofunction:: ivy.array.array_methods.acosh
 
 .. autofunction:: ivy.container.container_methods.acosh
+
+.. autofunction:: ivy.container.container_methods.static_acosh
 |
 | **Supported Frameworks:**
 
@@ -35,4 +37,5 @@ acosh
    acosh/acosh_functional.rst
    acosh/acosh_array.rst
    acosh/acosh_container.rst
+   acosh/static_acosh_container.rst
 

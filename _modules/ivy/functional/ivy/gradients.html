@@ -192,14 +192,14 @@
 <span class="sd">    &gt;&gt;&gt; ivy.set_with_grads(True)</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.with_grads(with_grads=None))</span>
 <span class="sd">    True</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; ivy.set_with_grads(False)</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.with_grads(with_grads=None))</span>
 <span class="sd">    False</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; print(ivy.with_grads(with_grads=True))</span>
 <span class="sd">    True</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; print(ivy.with_grads(with_grads=False))</span>
 <span class="sd">    False</span>
 
@@ -622,7 +622,7 @@
         <span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">deltas</span>
 
     <span class="k">if</span> <span class="n">stop_gradients</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">stop_gradient</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">w</span></div>
 
 
@@ -662,7 +662,7 @@
 <span class="sd">        The new function weights ws_new, following the gradient descent updates.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="lars_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/lars_update/lars_update_functional.html#ivy.functional.ivy.gradients.lars_update">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -709,7 +709,7 @@
     <span class="n">lr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">w_norm</span> <span class="o">*</span> <span class="n">lr</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">dcdw</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">decay_lambda</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">lr</span> <span class="o">/=</span> <span class="n">w_norm</span> <span class="o">*</span> <span class="n">decay_lambda</span>
-    <span class="k">return</span> <span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_update/adam_update_functional.html#ivy.functional.ivy.gradients.adam_update">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -772,7 +772,7 @@
     <span class="n">effective_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">adam_step</span><span class="p">(</span>
         <span class="n">dcdw</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">effective_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">effective_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
 
 
 <div class="viewcode-block" id="lamb_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/lamb_update/lamb_update_functional.html#ivy.functional.ivy.gradients.lamb_update">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -836,14 +836,14 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">r1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-    <span class="n">eff_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">adam_step</span><span class="p">(</span><span class="n">dcdw</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">eff_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span><span class="n">dcdw</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">decay_lambda</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">eff_grads</span> <span class="o">+</span> <span class="n">decay_lambda</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">eff_grads</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">max_trust_ratio</span><span class="p">)</span>
     <span class="n">lr</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">lr</span>
-    <span class="k">return</span> <span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">eff_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">eff_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
 </pre></div>
 
            </div>

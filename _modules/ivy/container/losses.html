@@ -153,6 +153,39 @@
 <span class="sd">        wraps the function, and so the docstring for ivy.cross_entropy also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        true</span>
+<span class="sd">            input array or container containing true labels.</span>
+<span class="sd">        pred</span>
+<span class="sd">            input array or container containing the predicted labels.</span>
+<span class="sd">        axis</span>
+<span class="sd">            the axis along which to compute the cross-entropy. If axis is ``-1``,</span>
+<span class="sd">            the cross-entropy will be computed along the last dimension.</span>
+<span class="sd">            Default: ``-1``.</span>
+<span class="sd">        epsilon</span>
+<span class="sd">            a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
+<span class="sd">            the loss. If epsilon is ``0``, no smoothing will be applied.</span>
+<span class="sd">            Default: ``1e-7``.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The cross-entropy loss between the given distributions.</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With :code:`ivy.Container` inputs:</span>
@@ -207,6 +240,39 @@
 <span class="sd">        wraps the function, and so the docstring for ivy.cross_entropy also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container containing true labels.</span>
+<span class="sd">        pred</span>
+<span class="sd">            input array or container containing the predicted labels.</span>
+<span class="sd">        axis</span>
+<span class="sd">            the axis along which to compute the cross-entropy. If axis is ``-1``,</span>
+<span class="sd">            the cross-entropy will be computed along the last dimension.</span>
+<span class="sd">            Default: ``-1``.</span>
+<span class="sd">        epsilon</span>
+<span class="sd">            a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
+<span class="sd">            the loss. If epsilon is ``0``, no smoothing will be applied.</span>
+<span class="sd">            Default: ``1e-7``.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The cross-entropy loss between the given distributions.</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))</span>
@@ -246,6 +312,35 @@
 <span class="sd">        ivy.Container static method variant of ivy.binary_cross_entropy. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.binary_cross_entropy</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        true</span>
+<span class="sd">            input array or container containing true labels.</span>
+<span class="sd">        pred</span>
+<span class="sd">            input array or container containing Predicted labels.</span>
+<span class="sd">        epsilon</span>
+<span class="sd">            a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
+<span class="sd">            the loss. If epsilon is ``0``, no smoothing will be applied.</span>
+<span class="sd">            Default: ``1e-7``.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The binary cross entropy between the given distributions.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -299,6 +394,35 @@
 <span class="sd">        method simply wraps the function, and so the docstring for</span>
 <span class="sd">        ivy.binary_cross_entropy also applies to this method with minimal changes.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container containing true labels.</span>
+<span class="sd">        pred</span>
+<span class="sd">            input array or container containing Predicted labels.</span>
+<span class="sd">        epsilon</span>
+<span class="sd">            a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
+<span class="sd">            the loss. If epsilon is ``0``, no smoothing will be applied.</span>
+<span class="sd">            Default: ``1e-7``.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The binary cross entropy between the given distributions.</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))</span>
@@ -338,6 +462,38 @@
 <span class="sd">        ivy.Container static method variant of ivy.sparse_cross_entropy. This method</span>
 <span class="sd">        simply wraps the function, and so the docstring for ivy.sparse_cross_entropy</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        true</span>
+<span class="sd">            input array or container containing the true labels as logits.</span>
+<span class="sd">        pred</span>
+<span class="sd">            input array or container containing the predicted labels as logits.</span>
+<span class="sd">        axis</span>
+<span class="sd">            the axis along which to compute the cross-entropy. If axis is ``-1``, the</span>
+<span class="sd">            cross-entropy will be computed along the last dimension. Default: ``-1``.</span>
+<span class="sd">            epsilon</span>
+<span class="sd">            a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
+<span class="sd">            the loss. If epsilon is ``0``, no smoothing will be applied.</span>
+<span class="sd">            Default: ``1e-7``.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The sparse cross-entropy loss between the given distributions.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -392,6 +548,38 @@
 <span class="sd">        ivy.Container instance method variant of ivy.sparse_cross_entropy. This</span>
 <span class="sd">        method simply wraps the function, and so the docstring for</span>
 <span class="sd">        ivy.sparse_cross_entropy also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container containing the true labels as logits.</span>
+<span class="sd">        pred</span>
+<span class="sd">            input array or container containing the predicted labels as logits.</span>
+<span class="sd">        axis</span>
+<span class="sd">            the axis along which to compute the cross-entropy. If axis is ``-1``, the</span>
+<span class="sd">            cross-entropy will be computed along the last dimension. Default: ``-1``.</span>
+<span class="sd">            epsilon</span>
+<span class="sd">            a float in [0.0, 1.0] specifying the amount of smoothing when calculating</span>
+<span class="sd">            the loss. If epsilon is ``0``, no smoothing will be applied.</span>
+<span class="sd">            Default: ``1e-7``.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The sparse cross-entropy loss between the given distributions.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>

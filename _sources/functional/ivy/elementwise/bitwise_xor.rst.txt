@@ -6,6 +6,8 @@ bitwise_xor
 .. autofunction:: ivy.array.array_methods.bitwise_xor
 
 .. autofunction:: ivy.container.container_methods.bitwise_xor
+
+.. autofunction:: ivy.container.container_methods.static_bitwise_xor
 |
 | **Supported Frameworks:**
 
@@ -35,4 +37,5 @@ bitwise_xor
    bitwise_xor/bitwise_xor_functional.rst
    bitwise_xor/bitwise_xor_array.rst
    bitwise_xor/bitwise_xor_container.rst
+   bitwise_xor/static_bitwise_xor_container.rst
 

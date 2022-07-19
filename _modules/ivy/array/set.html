@@ -141,6 +141,25 @@
 <span class="sd">        wraps the function, and so the docstring for ivy.unique_counts also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array. If ``x`` has more than one dimension, the function must flatten</span>
+<span class="sd">            ``x`` and return the unique elements of the flattened array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            a namedtuple ``(values, counts)`` whose</span>
+
+<span class="sd">            - first element must have the field name ``values`` and must be an</span>
+<span class="sd">            array containing the unique elements of ``x``.</span>
+<span class="sd">            The array must have the same data type as ``x``.</span>
+<span class="sd">            - second element must have the field name ``counts`` and must be an array</span>
+<span class="sd">            containing the number of times each unique element occurs in ``x``.</span>
+<span class="sd">            The returned array must have same shape as ``values`` and must</span>
+<span class="sd">            have the default array index data type.</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([0., 1., 2. , 1. , 0.])</span>
