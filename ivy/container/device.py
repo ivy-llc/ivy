@@ -10,7 +10,7 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithDevice(ContainerBase):
     @staticmethod
-    def static_dev(container: ivy.Container) -> ivy.Container:
+    def static_dev(x: ivy.Container) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.device.dev. This method simply
         wraps the function, and so the docstring for ivy.device.dev also applies to this
@@ -20,7 +20,7 @@ class ContainerWithDevice(ContainerBase):
         --------
 
         """
-        return ContainerBase.multi_map_in_static_method("dev", container)
+        return ContainerBase.multi_map_in_static_method("dev", x)
 
     def dev(self: ivy.Container) -> ivy.Container:
         """
@@ -36,7 +36,7 @@ class ContainerWithDevice(ContainerBase):
 
     @staticmethod
     def static_to_device(
-        container: ivy.Container,
+        x: ivy.Container,
         device: Union[ivy.Device, ivy.NativeDevice],
         *,
         stream: Optional[Union[int, Any]] = None,
@@ -52,7 +52,7 @@ class ContainerWithDevice(ContainerBase):
 
         """
         return ContainerBase.multi_map_in_static_method(
-            "to_device", container, device, stream=stream, out=out
+            "to_device", x, device, stream=stream, out=out
         )
 
     def to_device(
@@ -75,7 +75,7 @@ class ContainerWithDevice(ContainerBase):
 
     @staticmethod
     def static_dev_clone_array(
-        container: ivy.Container, devices: Iterable[ivy.Device]
+        x: ivy.Container, devices: Iterable[ivy.Device]
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.device.dev_clone_array. This method
@@ -86,9 +86,7 @@ class ContainerWithDevice(ContainerBase):
         --------
 
         """
-        return ContainerBase.multi_map_in_static_method(
-            "dev_clone_array", container, devices
-        )
+        return ContainerBase.multi_map_in_static_method("dev_clone_array", x, devices)
 
     def dev_clone_array(
         self: ivy.Container, devices: Iterable[ivy.Device]
