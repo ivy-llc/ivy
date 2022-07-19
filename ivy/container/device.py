@@ -10,7 +10,7 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithDevice(ContainerBase):
     @staticmethod
-    def dev_static(container: ivy.Container) -> ivy.Container:
+    def static_dev(container: ivy.Container) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.device.dev. This method simply
         wraps the function, and so the docstring for ivy.device.dev also applies to this
@@ -32,10 +32,10 @@ class ContainerWithDevice(ContainerBase):
         --------
 
         """
-        return self.dev_static(self)
+        return self.static_dev(self)
 
     @staticmethod
-    def to_device_static(
+    def static_to_device(
         container: ivy.Container,
         device: Union[ivy.Device, ivy.NativeDevice],
         *,
@@ -71,10 +71,10 @@ class ContainerWithDevice(ContainerBase):
         --------
 
         """
-        return self.to_device_static(self, device, stream=stream, out=out)
+        return self.static_to_device(self, device, stream=stream, out=out)
 
     @staticmethod
-    def dev_clone_array_static(
+    def static_dev_clone_array(
         container: ivy.Container, devices: Iterable[ivy.Device]
     ) -> ivy.Container:
         """
@@ -102,4 +102,4 @@ class ContainerWithDevice(ContainerBase):
         --------
 
         """
-        return self.dev_clone_array_static(self, devices)
+        return self.static_dev_clone_array(self, devices)

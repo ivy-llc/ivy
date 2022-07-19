@@ -57,7 +57,7 @@ def test_dev(array_shape, dtype, as_variable, fw, device):
     container_x = ivy.Container({"a": x})
     assert container_x.dev() == device
     # container static test
-    assert ivy.Container.dev_static(container_x) == device
+    assert ivy.Container.static_dev(container_x) == device
 
 
 # as_ivy_dev
@@ -799,7 +799,7 @@ def test_dev_clone_array(arr):
     assert list(instance_cloned["arr"][default_device]) == list(arr)
 
     # Check the container static method
-    instance_cloned = ivy.Container.dev_clone_array_static(container, [default_device])
+    instance_cloned = ivy.Container.static_dev_clone_array(container, [default_device])
     assert list(instance_cloned["arr"][default_device]) == list(arr)
 
     # Extra test if gpu is available
