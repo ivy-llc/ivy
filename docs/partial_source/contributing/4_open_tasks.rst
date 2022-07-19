@@ -93,7 +93,9 @@ with frontend APIs implemented for:
 
 Currently, we have many ToDo list issues
 `open <https://github.com/unifyai/ivy/issues?page=1&q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22>`_
-for this task, which is explained below:
+for this task, which is explained below.
+
+The general workflow for this task is:
 
 #. choose a function from the ToDo list
 #. open an issue to claim your chosen function
