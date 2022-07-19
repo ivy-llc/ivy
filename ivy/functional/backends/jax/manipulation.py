@@ -1,7 +1,7 @@
 # global
 import math
 import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 from numbers import Number
 
 # local
@@ -61,7 +61,9 @@ def permute_dims(
 
 
 def reshape(
-    x: JaxArray, shape: Tuple[int, ...], copy: Optional[bool] = None
+    x: JaxArray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None,
 ) -> JaxArray:
     ret = jnp.reshape(x, shape)
     return ret
@@ -69,16 +71,19 @@ def reshape(
 
 def roll(
     x: JaxArray,
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
 ) -> JaxArray:
     return jnp.roll(x, shift, axis)
 
 
-def squeeze(x: JaxArray, axis: Union[int, Tuple[int], List[int]] = None) -> JaxArray:
+def squeeze(
+    x: JaxArray,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+) -> JaxArray:
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
-            ret = x
+            return x
         raise ValueError(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
@@ -137,7 +142,6 @@ def tile(x: JaxArray, reps, out: Optional[JaxArray] = None) -> JaxArray:
 def clip(
     x: JaxArray, x_min: Union[Number, JaxArray], x_max: Union[Number, JaxArray]
 ) -> JaxArray:
-    assert ivy.all(ivy.less(x_min, x_max))
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
