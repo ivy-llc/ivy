@@ -245,6 +245,7 @@ def ones(
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
+@infer_dtype
 @handle_nestable
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
