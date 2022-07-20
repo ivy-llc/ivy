@@ -189,6 +189,7 @@ Here we describe a workflow to help navigate this question of "who to ask".
 
 With Command Line:
 ****
+
 **git blame** - Show what revision and author last modified each line of a file
 
 **git log**   - Show commit logs
@@ -202,23 +203,24 @@ With Command Line:
 
 With Browser:
 ****
+
 **Git Blame View** is a handy tool to view the line-by-line revision history for an entire file,
 or view the revision history of a single line within a file.
 
-.. image:: content/git_blame_1.png
-   :width: 420
+    .. image:: content/git_blame_1.png
+       :width: 420
 
 This view can be toggled from the option in left vertical pane,
 or from the "blame" icon in top-right, as highlighted above.
 
-.. image:: content/git_blame_2.png
-   :width: 420
+    .. image:: content/git_blame_2.png
+       :width: 420
 
 Each time you click the highlighted icon, the previous revision information
 for that line is shown, including who committed the change and when this happened.
 
-.. image:: content/git_blame_3.png
-   :width: 420
+    .. image:: content/git_blame_3.png
+       :width: 420
 
 Whenever starting a discussion or creating an issue, you are very welcome to tag
 members of the Ivy team using "@", selecting the person you think would most suitable
