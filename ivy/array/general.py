@@ -52,6 +52,56 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
+    def floormod(
+        self: ivy.Array,
+        y: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
+        function, and so the docstring for ivy.gather_nd also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            array, input to floormod
+        y
+            array, denominator input for floormod.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array of the same shape and type as x, with the elements floor modded.
+
+        Examples
+        --------
+
+        >>> x = ivy.array([9, 8, 7])
+        >>> y = ivy.array([2, 3, 4])
+        >>> print(x.floormod(y))
+        ivy.array([1, 2, 3])
+
+        >>> a = ivy.array([3, 5, 8])
+        >>> b = ivy.array([1, 2, 3])
+        >>> c = ivy.array([0, 0, 0])
+        >>> a.floormod(b, c)
+        >>> print(c)
+        ivy.array([0, 1, 2])
+
+        >>> i = ivy.array([7, 6, 4])
+        >>> j = ivy.array([4, 5, 4])
+        >>> i.floormod(j, out=i)
+        >>> print(i)
+        ivy.array([3, 1, 0])
+
+        """
+        return ivy.floormod(self, y, out=out)
+
     def gather_nd(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],

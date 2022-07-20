@@ -232,6 +232,157 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
+    def static_floormod(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        y: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.gather_nd. This method simply wraps
+        the function, and so the docstring for ivy.gather_nd also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            array, input to floormod
+        y
+            array, denominator input for floormod.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container of same shape and type as x, with the elements floor modded.
+
+        Examples
+        --------
+
+        With one :code:`ivy.Container` instances:
+
+        >>> a = ivy.Container(a = ivy.array([7, 6, 4]))
+        >>> b = ivy.array([4, 5, 4])
+        >>> ivy.Container.static_floormod(a, b, out=b)
+        >>> print(b)
+        {
+            a: ivy.array([3, 1, 0])
+        }
+
+        With multiple :code:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a = ivy.array([9, 8, 7]), b = ivy.array([3, 5, 8]))
+        >>> y = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([1, 2, 3]))
+        >>> print(ivy.Container.static_floormod(x, y))
+        {
+            a: ivy.array([1, 2, 3]),
+            b: ivy.array([0, 1, 2])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "floormod",
+            x,
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def floormod(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        y: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.floormod.
+        This method simply wraps the function, and so the docstring
+        for ivy.floormod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            array, input to floormod
+        y
+            array, denominator input for floormod.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container of same shape and type as self, with the elements floor modded.
+
+        Examples
+        --------
+
+        With one :code:`ivy.Container` instances:
+
+        >>> a = ivy.Container(a = ivy.array([7, 6, 4]))
+        >>> b = ivy.array([4, 5, 4])
+        >>> a.floormod(b, out=b)
+        >>> print(b)
+        {
+            a: ivy.array([3, 1, 0])
+        }
+
+        With multiple :code:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a = ivy.array([9, 8, 7]), b = ivy.array([3, 5, 8]))
+        >>> y = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([1, 2, 3]))
+        >>> print(x.floormod(y))
+        {
+            a: ivy.array([1, 2, 3]),
+            b: ivy.array([0, 1, 2])
+        }
+
+        """
+        return self.static_floormod(
+            self,
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_gather_nd(
         params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],

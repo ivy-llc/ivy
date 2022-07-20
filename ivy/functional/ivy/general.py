@@ -1177,6 +1177,66 @@ def floormod(
     ret
         An array of the same shape and type as x, with the elements floor modded.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([9, 8, 7])
+    >>> y = ivy.array([2, 3, 4])
+    >>> print(ivy.floormod(x, y))
+    ivy.array([1, 2, 3])
+
+    >>> a = ivy.array([3, 5, 8])
+    >>> b = ivy.array([1, 2, 3])
+    >>> c = ivy.array([0, 0, 0])
+    >>> ivy.floormod(a, b, out=c)
+    >>> print(c)
+    ivy.array([0, 1, 2])
+
+    >>> i = ivy.array([7, 6, 4])
+    >>> j = ivy.array([4, 5, 4])
+    >>> ivy.floormod(i, j, out=i)
+    >>> print(i)
+    ivy.array([3, 1, 0])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([9, 8, 7])
+    >>> y = ivy.native_array([2, 3, 4])
+    >>> print(ivy.floormod(x, y))
+    ivy.array([1, 2, 3])
+
+    >>> a = ivy.native_array([3, 5, 8])
+    >>> b = ivy.native_array([1, 2, 3])
+    >>> c = ivy.native_array([0, 0, 0])
+    >>> ivy.floormod(a, b, out=c)
+    >>> print(c)
+    ivy.array([0, 1, 2])
+
+    >>> i = ivy.native_array([7, 6, 4])
+    >>> j = ivy.native_array([4, 5, 4])
+    >>> ivy.floormod(i, j, out=i)
+    >>> print(i)
+    ivy.array([3, 1, 0])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([9, 8, 7]), b = ivy.array([3, 5, 8]))
+    >>> y = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([1, 2, 3]))
+    >>> print(ivy.floormod(x, y))
+    {
+        a: ivy.array([1, 2, 3]),
+        b: ivy.array([0, 1, 2])
+    }
+
+    >>> a = ivy.Container(a = ivy.array([7, 6, 4]))
+    >>> b = ivy.array([4, 5, 4])
+    >>> ivy.floormod(a, b, out=b)
+    >>> print(b)
+    {
+        a: ivy.array([3, 1, 0])
+    }
+
     """
     return current_backend(x).floormod(x, y, out=out)
 
