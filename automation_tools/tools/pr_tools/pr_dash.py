@@ -6,6 +6,8 @@ import subprocess
 from sys import argv, platform
 from prettytable import PrettyTable
 
+# flake8: noqa
+
 
 def set_platform():
     if "linux" in platform:
@@ -46,7 +48,12 @@ def get_file_contents(path, mode="r", read_type=None):
 
 def create_rows(prs):
     tmp = []
-    ignore_authors = [auth.replace("\n", "") for auth in get_file_contents("automation_tools/tools/pr_tools/assets/exclude.txt", read_type="readlines")]
+    ignore_authors = [
+        auth.replace("\n", "")
+        for auth in get_file_contents(
+            "automation_tools/tools/pr_tools/assets/exclude.txt", read_type="readlines"
+        )
+    ]
     nr = 1
     for pr in prs:
         # Check for last comment or reviews.
@@ -59,19 +66,28 @@ def create_rows(prs):
         if pr_author not in ignore_authors:
             # Check if the PR has both a review and comments and check which was the last one.
             if last_review and last_comment:
-                review_submit_date = datetime.datetime.strptime(last_review[-1]["submittedAt"][:-10], "%Y-%m-%d").date()
-                comment_submit_date = datetime.datetime.strptime(last_comment[-1]["createdAt"][:-10], "%Y-%m-%d").date()
+                review_submit_date = datetime.datetime.strptime(
+                    last_review[-1]["submittedAt"][:-10], "%Y-%m-%d"
+                ).date()
+                comment_submit_date = datetime.datetime.strptime(
+                    last_comment[-1]["createdAt"][:-10], "%Y-%m-%d"
+                ).date()
                 comment_author = last_comment[-1]["author"]["login"]
 
-                # If the comment was the last update on the PR and the comment author is not one of Ivy 
-                # team members then calculate the inactivity days 
-                if comment_submit_date > review_submit_date and comment_author not in ignore_authors:
+                # If the comment was the last update on the PR and the comment author is not one of Ivy
+                # team members then calculate the inactivity days
+                if (
+                    comment_submit_date > review_submit_date
+                    and comment_author not in ignore_authors
+                ):
                     diff = diff_between_2_dates(comment_submit_date)
             # If the last update on the PR is a comment and the comment author is not a intern calculate the inactivity days
             elif not last_review and last_comment:
                 comment_author = last_comment[-1]["author"]["login"]
                 if comment_author not in ignore_authors:
-                    comment_submit_date = datetime.datetime.strptime(last_comment[-1]["createdAt"][:-10], "%Y-%m-%d").date()
+                    comment_submit_date = datetime.datetime.strptime(
+                        last_comment[-1]["createdAt"][:-10], "%Y-%m-%d"
+                    ).date()
                     diff = diff_between_2_dates(comment_submit_date)
             # If there are no comments or reviews on the PR, calculate the inactivity days based on the last PR update.
             elif not last_review and not last_comment:
