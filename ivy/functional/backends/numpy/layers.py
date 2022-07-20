@@ -17,7 +17,7 @@ def conv1d(
         strides = strides[0]
     if isinstance(dilations, tuple):
         dilations = dilations[0]
-    if data_format == 'NCW':
+    if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
     x_shape = (1,) + x.shape
     filter_shape = (1,) + filters.shape
@@ -33,7 +33,7 @@ def conv1d(
     res = np.lib.stride_tricks.as_strided(
         res, shape=res.shape[1:], strides=res.strides[1:]
     )
-    if data_format == 'NCW':
+    if data_format == "NCW":
         res = np.transpose(res, (0, 2, 1))
     return res
 
@@ -66,14 +66,14 @@ def conv2d(
             filters,
             [i for i in range(1, filters.shape[1])] * (dilations[1] - 1),
             values=0,
-            axis=1
+            axis=1,
         )
     if dilations[0] > 1:
         filters = np.insert(
             filters,
             [i for i in range(1, filters.shape[0])] * (dilations[0] - 1),
             values=0,
-            axis=0
+            axis=0,
         )
 
     filter_shape = filters.shape[0:2]
@@ -95,11 +95,13 @@ def conv2d(
             pad_h = max(filter_shape[0] - (x_shape[0] % strides[0]), 0)
         x = np.pad(
             x,
-            [(0, 0),
-             (pad_h // 2, pad_h - pad_h // 2),
-             (pad_w // 2, pad_w - pad_w // 2),
-             (0, 0)],
-            'constant'
+            [
+                (0, 0),
+                (pad_h // 2, pad_h - pad_h // 2),
+                (pad_w // 2, pad_w - pad_w // 2),
+                (0, 0),
+            ],
+            "constant",
         )
 
     x_shape = x.shape
@@ -114,7 +116,7 @@ def conv2d(
         x.strides[2] * strides[0],
         x.strides[1],
         x.strides[2],
-        x.strides[3]
+        x.strides[3],
     )
     # B x OH x OW x KH x KW x I
     sub_matrices = np.lib.stride_tricks.as_strided(
