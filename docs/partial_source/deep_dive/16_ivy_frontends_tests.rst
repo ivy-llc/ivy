@@ -17,7 +17,7 @@ Just like the backend functional API, our frontend funtional API has a collectio
 In this section of the deep dive we are going to jump into Ivy Frontend Tests!
 
 Writing Ivy Tests
---------------------
+^^^^^^^^^^^^^^^^^
 
 The Ivy tests in this section make use of hypothesis for performing property based testing which is documented in detail in the Ivy Tests Section of the Deep Dive.
 We assume knowledge of hypothesis data generation strategies and how to implement them into tests.
@@ -27,16 +27,16 @@ Frontend Tests
 
 **Important Helper Functions**
 
-. :code:`helpers.test_frontend_function`_ is an important helper function that is designed to do the heavy lifting and make testing Ivy Frontends easy! It is used to test a frontend function for the current backend by comparing the result with the function in the associated framework.
+* :code:`helpers.test_frontend_function`_ is an important helper function that is designed to do the heavy lifting and make testing Ivy Frontends easy! It is used to test a frontend function for the current backend by comparing the result with the function in the associated framework.
 
-. :code:`helpers.dtype_and_values`_ is a convenience function that allows you to generate lists of any dimension and their associated dtype, returned as :code:`(dtype, list)`.
+* :code:`helpers.dtype_and_values`_ is a convenience function that allows you to generate lists of any dimension and their associated dtype, returned as :code:`(dtype, list)`.
 
-. :code:`helpers.num_positional_args`_ is another convenince function that specifies the number of positional arguments for a function.
+* :code:`helpers.num_positional_args`_ is another convenince function that specifies the number of positional arguments for a function.
 
 To get a better understanding for writing frontend tests lets run through some examples!
 
 Examples
---------
+^^^^^^^^
 
 **ivy.tan**
 
