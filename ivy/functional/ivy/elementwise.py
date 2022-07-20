@@ -138,7 +138,43 @@ def acos(
     ret
         an array containing the inverse cosine of each element in x. The returned array
         must have a floating-point data type determined by :ref:`type-promotion`.
+        
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.acos(x)
+    >>> print(y)
+    ivy.array([1.57, 0.  ,  nan])
 
+    >>> x = ivy.array([4., 0., -6.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.acos(x, out=y)
+    >>> print(y)
+    ivy.array([ nan, 1.57,  nan])
+
+    >>> nan = float("nan")
+    >>> x = ivy.array([nan, 1.0, -1.0])
+    >>> x.acos()
+    ivy.array([ nan, 0.  , 3.14])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([1., 0., 2.])
+    >>> y = ivy.acos(x)
+    >>> print(y)
+    ivy.array([0.  , 1.57,  nan])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+    >>> y = ivy.acos(x)
+    >>> print(y)
+    {
+        a: ivy.array([1.57, 3.14, 0.]),
+        b: ivy.array([0., 1.57, nan])
+    }
+    
     """
     return ivy.current_backend(x).acos(x, out=out)
 
