@@ -28,6 +28,7 @@ TIMEOUT = 15.0
 TMP_DIR = "/tmp"
 
 shape_array_mode_stack = list()
+nestable_mode_stack = list()
 
 
 def get_referrers_recursive(
@@ -90,8 +91,12 @@ def get_referrers_recursive(
     return ret_cont
 
 
-def is_native_array(x: Any, exclusive: bool = False) -> bool:
-    """Determines whether the input x is a Native Array.
+def is_native_array(
+    x: Union[ivy.Array, ivy.NativeArray],
+    exclusive: bool = False
+) -> bool:
+    """
+    Determines whether the input x is a Native Array.
 
     Parameters
     ----------
@@ -104,7 +109,29 @@ def is_native_array(x: Any, exclusive: bool = False) -> bool:
     Returns
     -------
     ret
-        Boolean, whether or not x is an array.
+        Boolean, whether or not x is a native array.
+
+    Examples
+    --------
+    >>> x = ivy.array([0, 1, 2])
+    >>> ivy.is_native_array(x)
+    False
+
+    >>> x = ivy.native_array([1.5, 2.3, 4.9, 2.6])
+    >>> ivy.is_native_array(x)
+    True
+
+    >>> x = ivy.native_array([-1, 2, 7, -3])
+    >>> ivy.is_native_array(x, False)
+    True
+
+    >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
+    >>> ivy.is_native_array(x, True)
+    True
+
+    >>> x = ivy.array([5, 2, 6, 9])
+    >>> ivy.is_native_array(x, True)
+    False
 
     """
     try:
@@ -178,6 +205,68 @@ def is_ivy_container(x: Any) -> bool:
 
     """
     return isinstance(x, ivy.Container)
+
+
+def set_nestable_mode(mode: bool) -> None:
+    """Set the mode of whether to check if function inputs are ivy.Container
+
+    Parameter
+    ---------
+    mode
+        boolean whether to check if function inputs are ivy.Container
+
+    Examples
+    --------
+    >>> ivy.set_nestable_mode(False)
+    >>> ivy.get_nestable_mode()
+    False
+
+    >>> ivy.set_nestable_mode(True)
+    >>> ivy.get_nestable_mode()
+    True
+    """
+    global nestable_mode_stack
+    if not isinstance(mode, bool):
+        raise Exception("set_nestable_mode only accepts type bool")
+    nestable_mode_stack.append(mode)
+
+
+def unset_nestable_mode() -> None:
+    """Reset the mode of whether to check if function inputs are ivy.Container
+    to the previous state
+
+    Examples
+    --------
+    >>> ivy.set_nestable_mode(True)
+    >>> ivy.get_nestable_mode()
+    True
+
+    >>> ivy.unset_nestable_mode()
+    >>> ivy.get_nestable_mode()
+    False
+    """
+    global nestable_mode_stack
+    if nestable_mode_stack:
+        nestable_mode_stack.pop(-1)
+
+
+def get_nestable_mode() -> bool:
+    """Get the current mode of whether to check if function inputs are ivy.Container.
+    Default is True.
+
+    Examples
+    --------
+    >>> ivy.get_nestable_mode()
+    False
+
+    >>> ivy.set_nestable_mode(True)
+    >>> ivy.get_nestable_mode()
+    True
+    """
+    global nestable_mode_stack
+    if not nestable_mode_stack:
+        return True
+    return nestable_mode_stack[-1]
 
 
 @to_native_arrays_and_back
@@ -2455,7 +2544,8 @@ def multiprocessing(context: str = None):
 @handle_nestable
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns indices or true elements in an input boolean array.
 
@@ -2513,7 +2603,6 @@ def one_hot(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
@@ -2534,12 +2623,11 @@ def shape(
 
     Examples
     --------
-    >>> ivy.set_backend('torch')
     >>> x = ivy.array([[-1, 0, 1],[1, 0, -1]])
     >>> y = ivy.shape(x)
     >>> z = ivy.shape(x, as_array = True)
     >>> print(y)
-    torch.Size([2, 3])
+    (2, 3)
 
     >>> print(z)
     ivy.array([2, 3])
