@@ -134,3 +134,88 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_matrix_rank(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rtol: Optional[Union[float, Tuple[float], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+
+        """
+        ivy.Container static method variant of ivy.matrix_rank.
+        This method returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of
+        matrices).
+
+        Examples
+        --------
+        With :code: `ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \
+                              b=ivy.array([[1., 0.], [0., 0.]]))
+        >>> y = ivy.Container.static_matrix_rank(x)
+        >>> print(y)
+        {
+            a: ivy.array(2.),
+            b: ivy.array(1.)
+        }
+        
+        """
+
+        return ContainerBase.multi_map_in_static_method(
+                "matrix_rank",
+                x,
+                rtol,
+                key_chains=key_chains,
+                to_apply=to_apply,
+                prune_unapplied=prune_unapplied,
+                map_sequences=map_sequences,
+                out=out,
+            )
+
+    
+    def matrix_rank(
+        self: ivy.Container,
+        rtol: Optional[Union[float, Tuple[float], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+
+        """
+        ivy.Container instance method variant of ivy.matrix_rank.
+        This method returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of
+        matrices).
+
+        Examples
+        --------
+        With :code: `ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \
+                                b=ivy.array([[1., 0.], [0., 0.]]))
+        >>> y = x.matrix_rank('false')
+        >>> print(y)
+        {
+            a: ivy.array(2.),
+            b: ivy.array(1.)
+        }
+        
+        """ 
+
+        return self.matrix_rank(
+            self,
+            rtol,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
+        )
