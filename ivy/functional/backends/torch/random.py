@@ -16,8 +16,8 @@ def random_uniform(
     low: Union[float, torch.Tensor] = 0.0,
     high: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dtype: Optional[ivy.Dtype, torch.dtype] = None,
     *,
+    dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
