@@ -87,7 +87,12 @@ def depthwise_conv2d(
 def conv3d(x, filters, strides, padding, data_format="NDHWC", dilations=1):
     strides = [1] * 2 + ([strides] * 3 if isinstance(strides, int) else strides)
     dilations = [1] * 2 + ([dilations] * 3 if isinstance(dilations, int) else dilations)
-    return tf.nn.conv3d(x, filters, strides, padding, data_format, dilations)
+    if data_format == "NCDHW":
+        x = tf.transpose(x, (0, 2, 3, 4, 1))
+    res = tf.nn.conv3d(x, filters, strides, padding, 'NDHWC', dilations)
+    if data_format == "NCDHW":
+        return tf.transpose(res, (0, 4, 1, 2, 3))
+    return res
 
 
 def conv3d_transpose(

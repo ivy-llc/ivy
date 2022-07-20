@@ -91,8 +91,12 @@ def get_referrers_recursive(
     return ret_cont
 
 
-def is_native_array(x: Any, exclusive: bool = False) -> bool:
-    """Determines whether the input x is a Native Array.
+def is_native_array(
+    x: Union[ivy.Array, ivy.NativeArray],
+    exclusive: bool = False
+) -> bool:
+    """
+    Determines whether the input x is a Native Array.
 
     Parameters
     ----------
@@ -105,7 +109,29 @@ def is_native_array(x: Any, exclusive: bool = False) -> bool:
     Returns
     -------
     ret
-        Boolean, whether or not x is an array.
+        Boolean, whether or not x is a native array.
+
+    Examples
+    --------
+    >>> x = ivy.array([0, 1, 2])
+    >>> ivy.is_native_array(x)
+    False
+
+    >>> x = ivy.native_array([1.5, 2.3, 4.9, 2.6])
+    >>> ivy.is_native_array(x)
+    True
+
+    >>> x = ivy.native_array([-1, 2, 7, -3])
+    >>> ivy.is_native_array(x, False)
+    True
+
+    >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
+    >>> ivy.is_native_array(x, True)
+    True
+
+    >>> x = ivy.array([5, 2, 6, 9])
+    >>> ivy.is_native_array(x, True)
+    False
 
     """
     try:
@@ -2518,7 +2544,8 @@ def multiprocessing(context: str = None):
 @handle_nestable
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray],
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns indices or true elements in an input boolean array.
 
@@ -2576,7 +2603,6 @@ def one_hot(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
@@ -2597,12 +2623,11 @@ def shape(
 
     Examples
     --------
-    >>> ivy.set_backend('torch')
     >>> x = ivy.array([[-1, 0, 1],[1, 0, -1]])
     >>> y = ivy.shape(x)
     >>> z = ivy.shape(x, as_array = True)
     >>> print(y)
-    torch.Size([2, 3])
+    (2, 3)
 
     >>> print(z)
     ivy.array([2, 3])
