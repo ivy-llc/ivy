@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, List, Iterable
+from typing import Optional, Union, Tuple, List, Iterable, Sequence
 from numbers import Number
 
 # local
@@ -56,8 +56,8 @@ class ArrayWithManipulation(abc.ABC):
 
     def roll(
         self: ivy.Array,
-        shift: Union[int, Tuple[int, ...]],
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        shift: Union[int, Sequence[int]],
+        axis: Optional[Union[int, Sequence[int]]] = None,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -108,6 +108,18 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.squeeze. This method simply wraps
+        the function, and so the docstring for ivy.squeeze also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[[0.],[ 1.]]])
+        >>> y = x.squeeze(2)
+        >>> print(y)
+        ivy.array([[0., 1.]])
+        """
         return ivy.squeeze(self._data, axis=axis, out=out)
 
     def stack(
@@ -168,6 +180,18 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.repeat. This method simply wraps the
+        function, and so the docstring for ivy.repeat also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y= x.repeat(2)
+        >>> print(y)
+        ivy.array([0., 0., 1., 1., 2., 2.])
+        """
         return ivy.repeat(self._data, repeats=repeats, axis=axis, out=out)
 
     def tile(
