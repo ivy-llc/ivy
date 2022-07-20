@@ -26,7 +26,7 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def copy_array(x: Union[tf.Tensor, tf.Variable]) -> ivy.Array:
+def copy_array(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.identity(x)
 
 

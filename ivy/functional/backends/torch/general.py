@@ -24,7 +24,7 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def copy_array(x: torch.Tensor) -> ivy.Array:
+def copy_array(x: torch.Tensor) -> torch.Tensor:
     return x.clone()
 
 
