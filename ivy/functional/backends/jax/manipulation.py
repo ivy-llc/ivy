@@ -43,9 +43,6 @@ def expand_dims(
         raise IndexError(error)
 
 
-expand_dims.support_native_out = True
-
-
 def flip(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
