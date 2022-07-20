@@ -31,7 +31,11 @@ Frontend Tests
 
 * :code:`helpers.dtype_and_values` is a convenience function that allows you to generate lists of any dimension and their associated dtype, returned as :code:`(dtype, list)`.
 
-* :code:`helpers.num_positional_args` is another convenince function that specifies the number of positional arguments for a function.
+* :code:`helpers.num_positional_args` is another convenince function that specifies the number of positional arguments for a particular function.
+
+* :code:`np_frontend_helpers.where()` 
+
+* :code:`np_frontend_helpers.test_frontend_function()` 
 
 To get a better understanding for writing frontend tests lets run through some examples!
 
