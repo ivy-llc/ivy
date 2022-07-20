@@ -6,7 +6,6 @@ import multiprocessing
 import os
 import re
 import sys
-import time
 
 import numpy as np
 import nvidia_smi
@@ -183,7 +182,7 @@ def test_memory_on_dev(call):
 # Device Allocation #
 
 # default_device
-def test_default_device(device, call):
+def test_default_device(device):
     # setting and unsetting
     orig_len = len(ivy.default_device_stack)
     ivy.set_default_device("cpu")
@@ -390,8 +389,6 @@ def test_profiler(device, call):
         a = ivy.ones([10])
         b = ivy.zeros([10])
         a + b
-    if call is helpers.mx_call:
-        time.sleep(1)  # required by MXNet for some reason
 
     # start and stop methods
     profiler = ivy.Profiler(log_dir)
@@ -400,8 +397,6 @@ def test_profiler(device, call):
     b = ivy.zeros([10])
     a + b
     profiler.stop()
-    if call is helpers.mx_call:
-        time.sleep(1)  # required by MXNet for some reason
 
 
 @given(num=st.integers(0, 5))
