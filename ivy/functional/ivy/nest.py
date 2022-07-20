@@ -2,7 +2,7 @@
 
 # global
 from builtins import map as _map
-from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable
+from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, Sequence
 
 # local
 import ivy
@@ -90,7 +90,11 @@ def prune_nest_at_index(nest, index):
         prune_nest_at_index(nest[index[0]], index[1:])
 
 
-def set_nest_at_index(nest, index, value):
+def set_nest_at_index(
+    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List], 
+    index: Sequence[Union[str, int]], 
+    value: Any
+):
     """Set the value of a nested item at a specified index.
 
     Parameters
@@ -102,6 +106,51 @@ def set_nest_at_index(nest, index, value):
     value
         The new value for updating.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> y = (1, 1)
+    >>> z = 5.
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    ivy.array([[1., 2.], [3., 5.]])
+
+    >>> x = ivy.array([1., 2., 3., 4.])
+    >>> y = [1]
+    >>> z = 5.
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    ivy.array([1., 5., 3., 4.])
+
+    With :code:`Dict` input:
+    >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
+    >>> y = (1, 1)
+    >>> z = 2
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    {1: [1, 2], 2: (4, 5)}
+
+    With :code:`List` inputs:
+    >>> x = [['a', 'b', 'c'], \
+             ['d', 'e', 'f'], \
+             ['g', ['h', 'i']]]
+    >>> y = (2, 1, 0)
+    >>> z = 'H'
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    [['a','b','c'],['d','e','f'],['g',['H','i']]]
+
+     With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
+    >>> y = ('b',)
+    >>> z = ivy.array([3., 4.])
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    {\
+    a: ivy.array([1., 2.]),\
+    b: ivy.array([3., 4.])\
+    }\
     """
     if len(index) == 1:
         nest[index[0]] = value
