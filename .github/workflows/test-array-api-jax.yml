@@ -9,7 +9,7 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
-          submodules: 'recursive'
+          submodules: "recursive"
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
@@ -24,26 +24,26 @@ jobs:
           cd ivy/.hypothesis
           unzip examples.zip
           rm examples.zip
-          
+
       - name: Run JAX Tests
         id: tests
         run: |
           cd ivy
           ./test_array_api.sh jax
         continue-on-error: true
-      
+
       - name: Zip Hypothesis Examples
         run: |
           cd ivy/.hypothesis
           zip -r examples.zip examples
-          
+
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
           name: hypothesis_jax_zip
           path: |
             ivy/.hypothesis/examples.zip
-    
+
       - name: Check on failures
         if: steps.tests.outcome != 'success'
         run: exit 1
