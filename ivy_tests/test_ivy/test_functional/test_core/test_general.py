@@ -4,7 +4,6 @@
 import time
 import einops
 import jax.numpy as jnp
-from matplotlib.pyplot import axes
 import pytest
 from hypothesis import given, strategies as st
 import numpy as np
