@@ -50,7 +50,7 @@ class ContainerWithElementwise(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
-                              b=ivy.array([4.5, -5.3, -0, -2.3]))
+                            b=ivy.array([4.5, -5.3, -0, -2.3]))
         >>> y = ivy.Container.static_abs(x)
         >>> print(y)
         {
@@ -4295,12 +4295,12 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With one :code:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([8., float('+inf')]),
-                            b=ivy.array([0., 2.0, float('nan')]))
+        >>> x = ivy.Container(a=ivy.array([8.,float('+inf')]),
+                            b=ivy.array([0., 2.0,float('nan')]))
         >>> y = ivy.Container.static_log2(x)
         >>> print(y)
         {
-            a: ivy.array([3., inf]),
+            a: ivy.array([3.,inf]),
             b: ivy.array([-inf, 1., nan])
         }
         """
@@ -4332,13 +4332,13 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :code:`ivy.Container` instance method:
 
-        >>> x = ivy.Container(a=ivy.array([8., float('+inf')]),\
-                              b=ivy.array([0., 2.0, float('nan')]),\
-                              c=ivy.array([-4., 1., -0., 4.]))
+        >>> x = ivy.Container(a=ivy.array([8.,float('+inf')]),\
+                              b=ivy.array([0., 2.0,float('nan')]),\
+                              c=ivy.array([-4.,1.,-0.,4.]))
         >>> y = ivy.log2(x)
         >>> print(y)
         {
-            a: ivy.array([3., inf]),
+            a: ivy.array([3.,inf]),
             b: ivy.array([-inf, 1., nan]),
             c: ivy.array([nan, 0., -inf, 2.])
         }
