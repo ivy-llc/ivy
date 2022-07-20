@@ -42,8 +42,8 @@ def container_types():
 
 def inplace_arrays_supported():
     return True
-    
-    
+
+
 inplace_variables_supported = lambda: True
 
 
@@ -75,12 +75,7 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def floormod(
-    x: np.ndarray, 
-    y: np.ndarray, 
-    *, 
-    out: Optional[np.ndarray]
-) -> np.ndarray:
+def floormod(x: np.ndarray, y: np.ndarray, *, out: Optional[np.ndarray]) -> np.ndarray:
     ret = np.asarray(x % y)
     return ret
 
@@ -141,10 +136,10 @@ cumprod.support_native_out = True
 
 
 def scatter_flat(
-    indices: np.ndarray, 
-    updates: np.ndarray, 
-    size: Optional[int] = None, 
-    tensor: Optional[np.ndarray] = None, 
+    indices: np.ndarray,
+    updates: np.ndarray,
+    size: Optional[int] = None,
+    tensor: Optional[np.ndarray] = None,
     reduction: str = "sum",
     *,
     out: Optional[np.ndarray] = None
@@ -186,10 +181,10 @@ def scatter_flat(
 
 # noinspection PyShadowingNames
 def scatter_nd(
-    indices: np.ndarray, 
-    updates: np.ndarray, 
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
-    tensor: Optional[np.ndarray] = None, 
+    indices: np.ndarray,
+    updates: np.ndarray,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor: Optional[np.ndarray] = None,
     reduction: str = "sum",
     *,
     out: Optional[np.ndarray] = None
@@ -243,10 +238,7 @@ def gather(
 
 
 def gather_nd(
-    params: np.ndarray, 
-    indices: np.ndarray,
-    *,
-    out: Optional[np.ndarray] = None
+    params: np.ndarray, indices: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     indices_shape = indices.shape
     params_shape = params.shape
@@ -294,11 +286,7 @@ indices_where.support_native_out = True
 
 # noinspection PyUnusedLocal
 def one_hot(
-    indices: np.ndarray, 
-    depth: int, 
-    *, 
-    device, 
-    out: Optional[np.ndarray] = None
+    indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = np.eye(depth)[np.array(indices).reshape(-1)]
