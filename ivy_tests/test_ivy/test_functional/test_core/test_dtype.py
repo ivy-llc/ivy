@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 
 # local
@@ -455,6 +455,7 @@ def test_as_ivy_dtype(
 def test_as_native_dtype(
     input_dtype,
 ):
+    assume(input_dtype in ivy.valid_dtypes)
     res = ivy.as_native_dtype(input_dtype)
     if isinstance(input_dtype, ivy.NativeDtype):
         assert isinstance(res, ivy.NativeDtype)
@@ -474,8 +475,8 @@ def test_as_native_dtype(
 def test_closest_valid_dtype(
     input_dtype,
 ):
+    assume(input_dtype in ivy.valid_dtypes)
     res = ivy.closest_valid_dtype(input_dtype)
-    print("res: ", res)
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(input_dtype, str)
     assert isinstance(res, ivy.Dtype) or isinstance(
         res, str
