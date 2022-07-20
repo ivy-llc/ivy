@@ -125,12 +125,11 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
 # randint
 @given(
     data=st.data(),
-    arr_shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
-    #num_positional_args=st.integers(3, 3),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -158,16 +157,8 @@ def test_randint(
         or call == helpers.torch_call
         and dtype[0] == "u"
     ):
-    # PyTorch and MXNet do not support non-float variables
+        # PyTorch and MXNet do not support non-float variables
         return
-
-
-    # PyTorch and MXNet do not support non-float variables
-    if fw == "torch" and dtype in ["int8", "int16", "int32", "int64"]:
-        return
-    if dtype[0] == "u":
-        return
-
     low_tnsr = ivy.array(low, dtype=dtype, device=device)
     high_tnsr = ivy.array(high, dtype=dtype, device=device)
     if as_variable:
