@@ -99,9 +99,8 @@ def squeeze(
         dim = x.dim()
         if dim > 0 and (axis < -dim or dim <= axis):
             raise ValueError(
-                "Expected dimension of size [{}, {}], but found dimension size {}".format(
-                    -dim, dim, axis
-                )
+                "Expected dimension of size [{}, {}], but found "
+                "dimension size {}".format(-dim, dim, axis)
             )
         return torch.squeeze(x, axis)
     if axis is None:
@@ -118,9 +117,8 @@ def squeeze(
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
             raise ValueError(
-                "Expected dimension of size [{}, {}], but found dimension size {}".format(
-                    -dim, dim, shape
-                )
+                "Expected dimension of size [{}, {}], "
+                "but found dimension size {}".format(-dim, dim, shape)
             )
         else:
             x = torch.squeeze(x, i)
