@@ -31,7 +31,7 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 
 * :code:`np_frontend_helpers.where()` a generation strategy to generate values for Numpy's optional :code:`where` argument.
 
-* :code:`np_frontend_helpers.test_frontend_function()` behaves identical to :code:`helpers.test_frontend_function` but is handles Numpy's optional :code:`where` argument
+* :code:`np_frontend_helpers.test_frontend_function()` behaves identical to :code:`helpers.test_frontend_function()` but handles Numpy's optional :code:`where` argument
 
 To get a better understanding for writing frontend tests lets run through some examples!
 
