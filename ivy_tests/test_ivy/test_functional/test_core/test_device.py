@@ -72,27 +72,29 @@ def get_possible_devices():
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
 )
-def test_dev(array_shape, dtype, as_variable, fw, device):
+def test_dev(array_shape, dtype, as_variable, fw):
     if fw == "torch" and "int" in dtype:
         return
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
-    x = ivy.asarray(x)
-    if as_variable:
-        x = ivy.variable(x)
 
-    ret = ivy.dev(x)
-    # type test
-    assert isinstance(ret, str)
-    # value test
-    assert ret == device
-    # array instance test
-    assert x.dev() == device
-    # container instance test
-    container_x = ivy.Container({"a": x})
-    assert container_x.dev() == device
-    # container static test
-    assert ivy.Container.static_dev(container_x) == device
+    for device in get_possible_devices():
+        x = ivy.array(x, device=device)
+        if as_variable:
+            x = ivy.variable(x)
+
+        ret = ivy.dev(x)
+        # type test
+        assert isinstance(ret, str)
+        # value test
+        assert ret == device
+        # array instance test
+        assert x.dev() == device
+        # container instance test
+        container_x = ivy.Container({"a": x})
+        assert container_x.dev() == device
+        # container static test
+        assert ivy.Container.static_dev(container_x) == device
 
 
 # as_ivy_dev
