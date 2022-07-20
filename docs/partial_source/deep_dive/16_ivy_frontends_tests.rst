@@ -27,7 +27,7 @@ Frontend Tests
 
 **Important Helper Functions**
 
-* :code:`helpers.test_frontend_function`is an important helper function that is designed to do the heavy lifting and make testing Ivy Frontends easy! It is used to test a frontend function for the current backend by comparing the result with the function in the associated framework.
+* :code:`helpers.test_frontend_function` is an important helper function that is designed to do the heavy lifting and make testing Ivy Frontends easy! It is used to test a frontend function for the current backend by comparing the result with the function in the associated framework.
 
 * :code:`helpers.dtype_and_values` is a convenience function that allows you to generate lists of any dimension and their associated dtype, returned as :code:`(dtype, list)`.
 
