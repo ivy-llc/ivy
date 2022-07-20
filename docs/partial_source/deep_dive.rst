@@ -60,13 +60,13 @@ We're excited for you to get involved!  🦾
 | How we're borrowing the test suite from the Array API Standard 🤝
 |
 | (o) :ref:`Ivy Tests`
-| How to add new Ivy tests for each function ❓
+| How to add new tests for each Ivy function ❓
 |
 | (p) :ref:`Ivy Frontends`
-| How to add the correct frontend function for each backend 🖥
+| How to implement frontend functions ➡️
 |
 | (q) :ref:`Ivy Frontend Tests`
-| How to add new Ivy frontend tests for each function ⚙️
+| How to add new tests for each frontend function ➡️❓
 
 .. toctree::
    :hidden:
