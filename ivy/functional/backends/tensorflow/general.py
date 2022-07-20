@@ -10,7 +10,6 @@ import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
 import tensorflow as tf
-from tensorflow.python.framework.tensor_shape import TensorShape
 
 # local
 import ivy
@@ -380,11 +379,11 @@ def indices_where(
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
-) -> Union[tf.Tensor, tf.Variable, TensorShape]:
+) -> Union[tf.Tensor, ivy.Shape, ivy.Array]:
     if as_array:
-        return tf.shape(x)
+        return ivy.array(tf.shape(x))
     else:
-        return tuple(x.shape)
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):
