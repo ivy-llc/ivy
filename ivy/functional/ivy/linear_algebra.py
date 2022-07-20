@@ -1078,7 +1078,6 @@ def solve(
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     full_matrices: bool = True,
-    *,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     """Returns a singular value decomposition A = USVh of a matrix (or a stack of
     matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal

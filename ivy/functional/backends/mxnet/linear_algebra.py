@@ -141,9 +141,8 @@ def slogdet(
 
 
 def svd(
-    x: NDArray, 
-    full_matrices: bool = True
-) -> Union[NDArray, Tuple[NDArray, ...]]:
+    x: mx.numpy.ndarray, full_matrices: bool = True
+) -> Union[mx.numpy.ndarray, Tuple[mx.numpy.ndarray, ...]]:
     results = namedtuple("svd", "U S Vh")
     U, D, VT = mx.np.linalg.svd(x)
     ret = results(U, D, VT)

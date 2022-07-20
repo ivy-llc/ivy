@@ -156,7 +156,6 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def svd(
         self: ivy.Array,
         full_matrices: bool = True,
-        *,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
         return ivy.svd(self._data, full_matrices)
 
