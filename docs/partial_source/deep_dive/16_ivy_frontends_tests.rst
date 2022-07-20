@@ -74,52 +74,6 @@ ivy.tan
             fn_name="lax.tan",
             x=np.asarray(x, dtype=input_dtype),
         )
-    
-The data required for hypothesis tests is generated with the help of hypothesis strategies and is better explained at `hypothesis`_. 
-The crux of the test lies in the :code:`test_frontend_function` which takes inputs as defined above. Here, the 
-:code:`all_as_kwargs_np` is composed of the last argument :code:`x=np.asarray(x, dtype=input_dtype)` and becomes the input
-for :code:`jax.lax.tan`
-
-.. code-block:: python
-
-    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py
-    @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_jax.valid_float_dtypes))
-        ),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.lax.add"
-    ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    )
-    def test_jax_lax_add(
-        dtype_and_x,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
-    ):
-        input_dtype, x = dtype_and_x
-
-        helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=False,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="jax",
-            fn_name="lax.add",
-            x=np.asarray(x[0], dtype=input_dtype[0]),
-            y=np.asarray(x[1], dtype=input_dtype[1]),
-        )
-Similarly, for :code:`add`, the :code:`all_as_kwargs_np` is composed of the last 2 arguments and become the inputs
-to :code:`jax.lax.add`.
 
 **NumPy**
 
@@ -173,9 +127,6 @@ to :code:`jax.lax.add`.
             subok=True,
             test_values=False,
         )
-    
-Here, the :code:`all_as_kwargs_np` is composed of the arguments followed by :code:`fn_name` and become the inputs
-to :code:`numpy.tan`
 
 **TensorFlow**
 
@@ -205,8 +156,6 @@ to :code:`numpy.tan`
             fn_name="tan",
             x=np.asarray(x, dtype=input_dtype),
         )
-Here, the :code:`all_as_kwargs_np` is composed of the last argument :code:`x=np.asarray(x, dtype=input_dtype)` 
-only and serves as the input to :code:`tensorflow.tan`.
 
 **PyTorch**
 
@@ -249,11 +198,6 @@ only and serves as the input to :code:`tensorflow.tan`.
             input=np.asarray(x, dtype=input_dtype),
             out=None,
         )
-Here, the :code:`all_as_kwargs_np` is composed of the last two arguments and serves as the input to :code:`torch.tan`.
-It might be intriguing to observe both the :code:`out` as well as the :code:`with_out` arguments. 
-To clarify, the :code:`with_out` argument is used to specify whether the inplace update operation is 
-supported by the function for the given framework and is present by design in Ivy . 
-However, the :code:`out` argument is required when calling the for the framework's function implementation.
 
 **Round Up**
 
