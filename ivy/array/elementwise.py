@@ -39,7 +39,7 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.abs(self, out=out)
 
-    def acosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def a(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.acosh. This method simply wraps the
         function, and so the docstring for ivy.acosh also applies to this method
@@ -63,10 +63,10 @@ class ArrayWithElementwise(abc.ABC):
             
         Examples
         --------
-        >>> x = ivy.array([1.0, 2.0, -3.0])
-        >>> y = x.acos()
+        >>> x = ivy.array([2., 10.0, 1.0, -3.0])
+        >>> y = x.acosh()
         >>> print(y)
-        ivy.array([ 0., nan, nan])
+        ivy.array([1.32, 2.99, 0.  ,  nan])   
 
         """
         return ivy.acosh(self._data, out=out)
@@ -90,6 +90,13 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse cosine of each element in ``self``.
             The  returned array must have the same data type as ``self``.
+            
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 2.0, -3.0])
+        >>> y = x.acos()
+        >>> print(y)
+        ivy.array([ 0., nan, nan])
         """
         return ivy.acos(self._data, out=out)
 
