@@ -1,40 +1,40 @@
-name: test-functional
-on:
-  push:
-  pull_request:
-    types: [labeled, opened, reopened, edited]
-  workflow_dispatch:
-jobs:
-  run-ivy-functional-tests:
-    if: ${{ github.event.label.name!='Function Reformatting' }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        backend: [jax, numpy, tensorflow, torch]
-        submodule: [test_creation.py, test_device.py]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout 🛎️Ivy
-        uses: actions/checkout@v2
-        with:
-          path: ivy
-          persist-credentials: false
-          submodules: "recursive"
+# name: test-functional
+# on:
+#   push:
+#   pull_request:
+#     types: [labeled, opened, reopened, edited]
+#   workflow_dispatch:
+# jobs:
+#   run-ivy-functional-tests:
+#     if: ${{ github.event.label.name!='Function Reformatting' }}
+#     strategy:
+#       matrix:
+#         os: [ubuntu-latest]
+#         backend: [jax, numpy, tensorflow, torch]
+#         submodule: [test_creation.py, test_device.py]
+#     runs-on: ${{ matrix.os }}
+#     steps:
+#       - name: Checkout 🛎️Ivy
+#         uses: actions/checkout@v2
+#         with:
+#           path: ivy
+#           persist-credentials: false
+#           submodules: "recursive"
 
-      - name: Cache hypothesis
-        uses: actions/cache@v3
-        with:
-          path: |
-            ivy/.hypothesis
-          key: ${{ runner.os }}-hypothesis
+#       - name: Cache hypothesis
+#         uses: actions/cache@v3
+#         with:
+#           path: |
+#             ivy/.hypothesis
+#           key: ${{ runner.os }}-hypothesis
 
-      - name: Run Functional Tests
-        id: tests
-        run: |
-          cd ivy
-          ./test_ivy_submodule.sh ${{ matrix.backend }} ${{ matrix.submodule }}
-        continue-on-error: true
+#       - name: Run Functional Tests
+#         id: tests
+#         run: |
+#           cd ivy
+#           ./test_ivy_submodule.sh ${{ matrix.backend }} ${{ matrix.submodule }}
+#         continue-on-error: true
 
-      - name: Check on failures
-        if: steps.tests.outcome != 'success'
-        run: exit 1
+#       - name: Check on failures
+#         if: steps.tests.outcome != 'success'
+#         run: exit 1
