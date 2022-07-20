@@ -4,7 +4,7 @@ signature.
 
 # global
 import tensorflow as tf
-from typing import Union
+from typing import Union, Optional
 
 # local
 import ivy
@@ -50,7 +50,7 @@ def stop_gradient(
     x: Union[tf.Tensor, tf.Variable], 
     preserve_type: bool = True,
     *,
-    out: Union[tf.Tensor, tf.Variable]
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     is_var = is_variable(x)
     x = tf.stop_gradient(x)
