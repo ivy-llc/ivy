@@ -75,6 +75,7 @@ ivy.tan
             x=np.asarray(x, dtype=input_dtype),
         )
 
+
 **NumPy**
 
 .. code-block:: python
@@ -128,6 +129,7 @@ ivy.tan
             test_values=False,
         )
 
+
 **TensorFlow**
 
 .. code-block:: python
@@ -156,6 +158,7 @@ ivy.tan
             fn_name="tan",
             x=np.asarray(x, dtype=input_dtype),
         )
+
 
 **PyTorch**
 
