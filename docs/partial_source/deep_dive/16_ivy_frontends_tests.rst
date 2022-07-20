@@ -29,9 +29,9 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 
 * :code:`helpers.num_positional_args` is another convenince function that specifies the number of positional arguments for a particular function.
 
-* :code:`np_frontend_helpers.where()` 
+* :code:`np_frontend_helpers.where()` a generation strategy to generate values for Numpy's optional `where` argument.
 
-* :code:`np_frontend_helpers.test_frontend_function()` 
+* :code:`np_frontend_helpers.test_frontend_function()` behaves identical to `helpers.test_frontend_function` but is handles Numpy's optional `where` argument
 
 To get a better understanding for writing frontend tests lets run through some examples!
 
