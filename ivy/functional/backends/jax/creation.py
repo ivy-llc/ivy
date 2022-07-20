@@ -99,6 +99,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
@@ -106,7 +107,16 @@ def eye(
 ) -> JaxArray:
     dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
-    return _to_device(jnp.eye(n_rows, n_cols, k, dtype), device=device)
+    if n_cols is None:
+        n_cols = n_rows
+    i = jnp.eye(n_rows, n_cols, k, dtype)
+    if batch_shape is None:
+        return _to_device(i, device=device)
+    else:
+        reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+        tile_dims = list(batch_shape) + [1, 1]
+        return_mat = jnp.tile(jnp.reshape(i, reshape_dims), tile_dims)
+        return _to_device(return_mat, device=device)
 
 
 # noinspection PyShadowingNames
