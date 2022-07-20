@@ -21,7 +21,7 @@ def random_uniform(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
-    dtype = None,
+    dtype = tf.dtypes.DType,
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)

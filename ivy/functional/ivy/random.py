@@ -1,7 +1,7 @@
 """Collection of random Ivy functions."""
 
 # global
-from typing import Optional, Union, Tuple
+from typing import Optional, Union
 
 # local
 from ivy.backend_handler import current_backend
@@ -28,7 +28,6 @@ import ivy
 def random_uniform(
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     high: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
-    #shape: Optional[Union[int, Tuple[int, ...]], ivy.Shape, ivy.NativeShape] = None,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,

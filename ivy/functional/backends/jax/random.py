@@ -11,7 +11,6 @@ import ivy
 from ivy.functional.backends.jax.device import to_device
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.jax import JaxArray
-from ivy.array import Array
 
 # Extra #
 # ------#
@@ -37,8 +36,8 @@ def random_uniform(
     RNG, rng_input = jax.random.split(RNG)
     return to_device(
         jax.random.uniform(
-            rng_input, shape if shape else (), minval = low, maxval = high, dtype = dtype
-    ),
+            rng_input, shape if shape else (), minval=low, maxval=high, dtype=dtype
+        ),
         device=device,
     )
 

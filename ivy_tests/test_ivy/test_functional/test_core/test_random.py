@@ -137,7 +137,7 @@ def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call)
 )
 def test_randint(
     data,
-    arr_shape,
+    shape,
     dtype,
     as_variable,
     with_out,
@@ -147,18 +147,19 @@ def test_randint(
     instance_method,
     device,
     fw,
+    call,
 ):
 
     low, high = data.draw(helpers.get_bounds(dtype=dtype))
-    #if (
-    #    call in [helpers.mx_call, helpers.torch_call]
-    #    and as_variable
-    #    or dtype == "uint64"
-    #    or call == helpers.torch_call
-    #    and dtype[0] == "u"
-    #):
-    #    # PyTorch and MXNet do not support non-float variables
-    #    return
+    if (
+        call in [helpers.mx_call, helpers.torch_call]
+        and as_variable
+        or dtype == "uint64"
+        or call == helpers.torch_call
+        and dtype[0] == "u"
+    ):
+    # PyTorch and MXNet do not support non-float variables
+        return
 
 
     # PyTorch and MXNet do not support non-float variables
@@ -167,9 +168,6 @@ def test_randint(
     if dtype[0] == "u":
         return
 
-    '''
-    low, high = tuple(data.draw(helpers.get_bounds(dtype)))
-    
     low_tnsr = ivy.array(low, dtype=dtype, device=device)
     high_tnsr = ivy.array(high, dtype=dtype, device=device)
     if as_variable:
@@ -184,28 +182,9 @@ def test_randint(
     # cardinality test
     assert ret.shape == shape
     # value test
-    #ret_np = call(ivy.randint, **kwargs, device=device)
-    #assert np.min((ret_np < high).astype(np.int64)) == 1
-    #assert np.min((ret_np >= low).astype(np.int64)) == 1
-    '''
-
-    helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "randint",
-        low=low,
-        high=high,
-        #low=np.asarray(low, dtype=dtype),
-        #high=np.asarray(high, dtype=dtype),
-        shape=shape,
-        device=device,
-    )
+    ret_np = call(ivy.randint, **kwargs, device=device)
+    assert np.min((ret_np < high).astype(np.int64)) == 1
+    assert np.min((ret_np >= low).astype(np.int64)) == 1
 
 
 # seed

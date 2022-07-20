@@ -19,7 +19,7 @@ def random_uniform(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: torch.device,
-    dtype = None,
+    dtype = torch.dtype,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if shape is None:
