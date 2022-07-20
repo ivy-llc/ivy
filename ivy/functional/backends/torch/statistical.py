@@ -28,6 +28,9 @@ def max(
     return torch.amax(input=x, dim=axis, keepdim=keepdims, out=out)
 
 
+max.support_native_out = True
+
+
 def mean(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -46,6 +49,9 @@ def mean(
     return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
 
 
+mean.support_native_out = True
+
+
 def min(
     x: torch.Tensor,
     axis: Union[int, Tuple[int]] = None,
@@ -61,6 +67,9 @@ def min(
     if not keepdims and not axis and axis != 0:
         return torch.amin(input=x, out=out)
     return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+
+
+min.support_native_out = True
 
 
 def prod(
@@ -102,6 +111,9 @@ def prod(
     return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
 
 
+prod.support_native_out = True
+
+
 def std(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
@@ -135,6 +147,9 @@ def std(
                 out=out,
             )
     return x
+
+
+std.support_native_out = True
 
 
 def sum(
@@ -176,6 +191,9 @@ def sum(
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
+sum.support_native_out = True
+
+
 def var(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
@@ -190,9 +208,14 @@ def var(
     return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False, out=out)
 
 
+var.support_native_out = True
+
+
 # Extra #
 # ------#
 
 
-def einsum(equation: str, *operands: torch.Tensor) -> torch.Tensor:
+def einsum(
+    equation: str, *operands: torch.Tensor, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.einsum(equation, *operands)
