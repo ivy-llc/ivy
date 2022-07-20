@@ -166,7 +166,8 @@ class ContainerWithElementwise(ContainerBase):
             
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 2., -1, 1]), b=ivy.array([1., 0., 10.0, -6]))
+        >>> x = ivy.Container(a=ivy.array([0., 2., -1, 1]),\
+                              b=ivy.array([1., 0., 10.0, -6]))
         >>> y = ivy.Container.static_acosh(x)
         >>> print(y)
         {
@@ -227,7 +228,8 @@ class ContainerWithElementwise(ContainerBase):
             
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 2., -1, 1]), b=ivy.array([1., 0., 10.0, -6]))
+        >>> x = ivy.Container(a=ivy.array([0., 2., -1, 1]),\
+                              b=ivy.array([1., 0., 10.0, -6]))
         >>> y = x.acosh()
         >>> print(y)
         {
@@ -1024,7 +1026,8 @@ class ContainerWithElementwise(ContainerBase):
             
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.,0.5, -1, 1]), b=ivy.array([1., 0., 6, -6]))
+        >>> x = ivy.Container(a=ivy.array([0.,0.5, -1, 1]),\
+                              b=ivy.array([1., 0., 6, -6]))
         >>> y = ivy.Container.static_atanh(x)
         >>> print(y)
         {
@@ -1085,7 +1088,8 @@ class ContainerWithElementwise(ContainerBase):
             
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.,0.5, -1, 1]), b=ivy.array([1., 0., 6, -6]))
+        >>> x = ivy.Container(a=ivy.array([0.,0.5, -1, 1]),\
+                              b=ivy.array([1., 0., 6, -6]))
         >>> y = x.atanh()
         >>> print(y)
         {
