@@ -97,11 +97,9 @@ for this task, which is explained below.
 
 The general workflow for this task is:
 
-#. choose a function from the ToDo list
-#. open an issue to claim your chosen function
 #. implement the function by following the `Ivy Frontends`_ guide
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
-#. verify that the tests for your function is passing
+#. verify that the tests for your function are passing
 
 **Round Up**
 
