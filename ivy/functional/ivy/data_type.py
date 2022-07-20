@@ -367,7 +367,6 @@ def result_type(
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1,2,3])
@@ -388,7 +387,6 @@ def result_type(
 
     >>> print(ivy.result_type(ivy.uint8, ivy.uint64))
     uint64
-
     """
     return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 
