@@ -435,6 +435,25 @@ def test_total_mem_on_dev(device):
         assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
 
 
+def ram_array_and_clear_test(metric_fn, size=10000000):
+    # This function checks if the memory usage changes before, during and after
+
+    # Measure usage before creating array
+    before = metric_fn()
+    # Create an array of floats, by default with 10 million elements (40 MB)
+    arr = ivy.ones((size,), dtype="float32", device="cpu")
+    during = metric_fn()
+    # Check that the memory usage has increased
+    assert before < during
+
+    # Delete the array
+    del arr
+    # Measure the memory usage after the array is deleted
+    after = metric_fn()
+    # Check that the memory usage has decreased
+    assert during > after
+
+
 def test_used_mem_on_dev():
     # Test memory is being used by making array of floats
 
@@ -450,20 +469,14 @@ def test_used_mem_on_dev():
 
     # Testing if it's detects changes in RAM usage, cannot apply this to GPU, as we can
     # only get the total memory usage of a GPU, not the usage by the program.
-    device = "cpu"
-    # Measure the memory usage before the array is created
-    before = ivy.used_mem_on_dev(device, True)
-    # Create an array of floats with 10 million elements (40 MB)
-    arr = ivy.ones((10000000,), dtype="float32", device=device)
-    during = ivy.used_mem_on_dev(device, True)
-    # Check that the memory usage has increased
-    assert before < during
-    # Delete the array
-    del arr
-    # Measure the memory usage after the array is deleted
-    after = ivy.used_mem_on_dev(device, True)
-    # Check that the memory usage has decreased
-    assert during > after
+    ram_array_and_clear_test(lambda: ivy.used_mem_on_dev(ivy.Device("cpu"), True))
+
+
+def test_percent_used_mem_on_dev():
+    # Same as test_used_mem_on_dev, but using percent of total memory as metric function
+    ram_array_and_clear_test(
+        lambda: ivy.percent_used_mem_on_dev(ivy.Device("cpu"), True)
+    )
 
 
 def test_gpu_is_available(fw):
