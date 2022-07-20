@@ -215,12 +215,7 @@ log1p.unsupported_dtypes = ("float16",)
 
 def isnan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     ret = torch.isnan(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
-
-
-isnan.support_native_out = True
 
 
 def less(
@@ -424,12 +419,7 @@ def positive(
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     ret = torch.positive(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
     return ret
-
-
-positive.support_native_out = True
 
 
 def square(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
