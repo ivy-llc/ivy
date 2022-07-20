@@ -169,8 +169,7 @@ def set_backend(backend: str):
     <class 'jaxlib.xla_extension.DeviceArray'>
 
     """
-
-    if backend not in _backend_dict:
+    if isinstance(backend, str) and backend not in _backend_dict:
         raise ValueError(
             "backend must be one from {}".format(list(_backend_dict.keys()))
         )
