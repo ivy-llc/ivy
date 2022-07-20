@@ -16,7 +16,7 @@ from ivy.functional.backends.numpy.device import _to_device
 # --------#
 
 
-def copy_array(x: np.ndarray, *, out: Optional[np.ndarray]) -> np.ndarray:
+def copy_array(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return x.copy()
 
 
@@ -305,11 +305,11 @@ def one_hot(
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(x: np.ndarray, as_array: bool = False) -> Union[tuple, np.ndarray]:
+def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return np.asarray(np.shape(x))
+        return ivy.array(np.shape(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):

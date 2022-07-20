@@ -67,11 +67,11 @@ def to_list(x: JaxArray) -> list:
     return _to_array(x).tolist()
 
 
-def shape(x: JaxArray, as_array: bool = False) -> Union[tuple, JaxArray]:
+def shape(x: JaxArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return jnp.asarray(jnp.shape(x))
+        return ivy.array(jnp.shape(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):
