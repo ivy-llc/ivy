@@ -157,7 +157,7 @@ def main():
             r_index = 5
         elif argv[1] == "-all":
             prs = command(
-                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"
+                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
             )
             rows = create_rows(prs)
             for row in rows:
@@ -167,7 +167,7 @@ def main():
 
         if r_index:
             prs = command(
-                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"
+                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
             )
             rows = create_rows(prs)
 
