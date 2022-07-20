@@ -91,8 +91,8 @@ def prune_nest_at_index(nest, index):
 
 
 def set_nest_at_index(
-    nest: Union[ivy.Array, ivy.NativeArray, Dict, List], 
-    index: Sequence[int], 
+    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List], 
+    index: Sequence[Union[str, int]], 
     value: Any
 ):
     """Set the value of a nested item at a specified index.
@@ -140,6 +140,17 @@ def set_nest_at_index(
     >>> ivy.set_nest_at_index(x, y, z)
     >>> print(x)
     [['a','b','c'],['d','e','f'],['g',['H','i']]]
+
+     With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
+    >>> y = ('b',)
+    >>> z = ivy.array([3., 4.])
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    {\
+    a: ivy.array([1., 2.]),\
+    b: ivy.array([3., 4.])\
+    }\
     """
     if len(index) == 1:
         nest[index[0]] = value
