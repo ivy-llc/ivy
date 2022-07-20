@@ -146,7 +146,11 @@ def split(
 
 
 def repeat(
-    x: JaxArray, repeats: Union[int, Iterable[int]], axis: int = None
+    x: JaxArray,
+    repeats: Union[int, Iterable[int]],
+    axis: int = None,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
     ret = jnp.repeat(x, repeats, axis)
