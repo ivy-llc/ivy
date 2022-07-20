@@ -267,6 +267,18 @@ class ContainerWithGeneral(ContainerBase):
         ret
             container of booleans, whether there is a nans at indices.
 
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, float('nan')]))
+        >>> y = x.static_has_nans()
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "has_nans",
