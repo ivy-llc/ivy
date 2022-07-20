@@ -19,12 +19,13 @@ RNG = jax.random.PRNGKey(0)
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
+    low: Union[float, JaxArray] = 0.0,
+    high: Union[float, JaxArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
-    dtype=None,
+    dtype: jnp.dtype,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
@@ -32,7 +33,7 @@ def random_uniform(
         jax.random.uniform(
             rng_input, shape if shape else (), minval=low, maxval=high, dtype=dtype
         ),
-        device=default_device(device),
+        device=device,
     )
 
 
@@ -42,6 +43,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
@@ -63,6 +65,7 @@ def multinomial(
     replace: bool = True,
     *,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
 
     global RNG
@@ -99,6 +102,7 @@ def randint(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
@@ -113,7 +117,7 @@ def seed(seed_value: int = 0) -> None:
     return
 
 
-def shuffle(x: JaxArray) -> JaxArray:
+def shuffle(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return jax.random.shuffle(rng_input, x)
