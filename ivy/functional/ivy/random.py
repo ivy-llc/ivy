@@ -312,7 +312,7 @@ def randint(
     --------
     >>> y = ivy.randint(0, 9, (1,1))
     >>> print(y)
-    ivy.array([5])
+    ivy.array([[5]])
 
     >>> y = ivy.randint(2, 20, (2, 2), device='cpu')
     >>> print(y)
