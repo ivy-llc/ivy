@@ -4,6 +4,7 @@ signature.
 
 # global
 import tensorflow as tf
+from tensorflow.python.framework.dtypes import DType
 from typing import Optional, Union, Sequence
 
 # local
@@ -18,8 +19,8 @@ def random_uniform(
     low: Union[float, tf.Tensor, tf.Variable] = 0.0,
     high: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dtype=None,
     *,
+    dtype: DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
