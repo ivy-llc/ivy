@@ -18,7 +18,7 @@ In this section of the deep dive we are going to jump into Ivy Frontend Tests!
 
 **Writing Ivy Tests**
 
-The Ivy tests in this section make use of hypothesis for performing property based testing which is documented in detail in the Ivy Tests Section of the Deep Dive.
+The Ivy tests in this section make use of hypothesis for performing property based testing which is documented in detail in the Ivy Tests section of the Deep Dive.
 We assume knowledge of hypothesis data generation strategies and how to implement them into tests.
 
 **Important Helper Functions**
@@ -36,7 +36,7 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 To get a better understanding for writing frontend tests lets run through some examples!
 
 Examples
-^^^^^^^^
+--------------------
 
 **ivy.tan**
 
