@@ -1669,9 +1669,11 @@ def einops_repeat(
     ret = ivy.array(ret)
 
     if ivy.exists(out):
-        # out = ivy.to_ivy(out)
         return ivy.inplace_update(out, ret)
     return ret
+
+
+einops_repeat.unsupported_dtypes = {"tensorflow": ("uint16",)}
 
 
 def get_min_denominator() -> float:

@@ -4,6 +4,7 @@
 import time
 import einops
 import jax.numpy as jnp
+from matplotlib.pyplot import axes
 import pytest
 from hypothesis import given, strategies as st
 import numpy as np
@@ -318,6 +319,8 @@ def test_shape(x0_n_x1_n_res, as_array, as_variable, num_positional_args, native
     )
 
 # get_num_dims
+
+
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes),
     as_tensor=st.booleans(),
@@ -1180,19 +1183,6 @@ def test_einops_reduce(x_n_pattern_n_red_n_newx, dtype, tensor_fn, device, call)
 
 
 # einops_repeat
-# @pytest.mark.parametrize(
-#     "x_n_pattern_n_al_n_newx",
-#     [
-#         (
-#             [[0.0, 1.0, 2.0, 3.0]],
-#             "b n -> b n c",
-#             {"c": 2},
-#             [[[0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [3.0, 3.0]]],
-#         )
-#     ],
-# )
-# @pytest.mark.parametrize("dtype", ["float32"])
-# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 @given(
     x=helpers.dtype_and_values(
         ivy_np.valid_numeric_dtypes,
@@ -1201,25 +1191,24 @@ def test_einops_reduce(x_n_pattern_n_red_n_newx, dtype, tensor_fn, device, call)
         max_num_dims=1,
         min_dim_size=2,
     ), 
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
-    pattern=st.sampled_from(["b n -> b n c"]),
-    axes_lengths=st.integers(min_value=1, max_value=5),
+    pattern_and_axes_lengths=st.sampled_from([
+        ('h w -> h w repeat', {'repeat': 2}),
+        ('h w -> (repeat h) w', {'repeat': 2}),
+        ('h w -> h (repeat w)', {'repeat': 2}),
+        ('h w -> (h h2) (w w2)', {'h2': 2, 'w2': 2}),    
+        ('h w  -> w h', {}),
+    ]),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(min_value=0, max_value=2),
+    num_positional_args=helpers.num_positional_args(fn_name='einops_repeat'),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-def test_einops_repeat(x, pattern, axes_lengths, tensor_fn, with_out, as_variable, num_positional_args, native_array, container, instance_method, fw, device):
-    # smoke test
+def test_einops_repeat(x, pattern_and_axes_lengths, with_out, as_variable, num_positional_args, native_array, container, instance_method, fw, device):
+    pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = x
     x = [x]
-    # r = ivy.einops_repeat(ivy.array(x, dtype=dtype, device=device), pattern, c=3)
-    # o = r
-    # r = ivy.einops_repeat(ivy.array(x, dtype=dtype, device=device), pattern, c=3, out=o)
-    # d = 0
-    # x = tensor_fn(x, dtype="float32", device=device)
     helpers.test_function(
         dtype,
         as_variable,
@@ -1232,16 +1221,8 @@ def test_einops_repeat(x, pattern, axes_lengths, tensor_fn, with_out, as_variabl
         "einops_repeat",
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
-        c=3
+        **axes_lengths
     )
-    # ret = ivy.einops_repeat(x, pattern, **axes_lengths)
-    # true_ret = einops.repeat(ivy.to_native(x), pattern, **axes_lengths)
-    # # type test
-    # assert ivy.is_ivy_array(ret)
-    # # cardinality test
-    # assert list(ret.shape) == list(true_ret.shape)
-    # # value test
-    # assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(true_ret))
 
 
 # container types
