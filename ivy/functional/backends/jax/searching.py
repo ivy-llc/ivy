@@ -14,6 +14,9 @@ def argmax(
     return jnp.argmax(x, axis=axis, out=out, keepdims=keepdims)
 
 
+argmax.support_native_out = True
+
+
 def argmin(
     x: JaxArray,
     axis: Optional[int] = None,
@@ -24,9 +27,14 @@ def argmin(
     return jnp.argmin(x, axis=axis, out=out, keepdims=keepdims)
 
 
-def nonzero(x: JaxArray) -> JaxArray:
+argmin.support_native_out = True
+
+
+def nonzero(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.nonzero(x)
 
 
-def where(condition: JaxArray, x1: JaxArray, x2: JaxArray) -> JaxArray:
+def where(
+    condition: JaxArray, x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.where(condition, x1, x2)
