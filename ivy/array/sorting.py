@@ -19,12 +19,12 @@ class ArrayWithSorting(abc.ABC):
         return ivy.argsort(self._data, axis, descending, stable, out=out)
         
     def sort(
-        self:ivy.Array,
+        self: ivy.Array,
         axis: int = -1,
         descending: bool = False,
         stable: bool = True,
         *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sort. This method simply wraps the
@@ -34,36 +34,14 @@ class ArrayWithSorting(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([7, 8, 6])
-        >>> y = ivy.sort(x)
+        >>> y = x.sort(x, -1, True, False)
         >>> print(y)
         ivy.array([6, 7, 8])
 
         >>> x = ivy.array([8.5, 8.2, 7.6])
-        >>> y = ivy.sort(x)
+        >>> y = x.sort(x, -1, True, False)
         >>> print(y)
         ivy.array([7.6, 8.2, 8.5])
-
-        With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
-
-        >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
-                            b=ivy.array([[9, 0.7], [0.4, 0]]))
-        >>> y = ivy.sort(x)
-        >>> print(y)
-        {
-            a: ivy.array([0.5, 6., 8.]),
-            b: ivy.array([[0.7, 9.], \
-                          [0., 0.4]])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([1, 0.3, 7]),\
-                                b=ivy.array([[2, 0.2], [6, 5]]))
-        >>> y = ivy.sort(x)
-        >>> print(y)
-        {
-            a: ivy.array([0.3, 1., 7.]),
-            b: ivy.array([[0.2, 2.], \
-                          [5., 6.]])
-        }
 
         """
         return ivy.sort(self._data, axis, descending, stable, out=out)

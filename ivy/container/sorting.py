@@ -73,6 +73,34 @@ class ContainerWithSorting(ContainerBase):
         *,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
+        """
+                ivy.Container static method variant of ivy.add. This method simply wraps the
+                function, and so the docstring for ivy.add also applies to this method
+                with minimal changes.
+
+                Examples
+                --------
+                With one :code:`ivy.Container` input:
+
+                >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),\
+                              b=ivy.array([[8, 1], [5, 0.8]]))
+                >>> y = ivy.Container.static_sort(x)
+                >>> print(y)
+                {
+                    a: ivy.array([0.2, 5., 9.]),
+                    b: ivy.array([[1., 8.], [0.8, 5.]])
+                }
+
+                >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
+                              b=ivy.array([[9, 0.7], [0.4, 0]]))
+                >>> y = ivy.Container.static_sort(x)
+                >>> print(y)
+                {
+                    a: ivy.array([0.5, 6., 8.]),
+                    b: ivy.array([[0.7, 9.], [0., 0.4]])
+                }
+
+                """
         return ContainerBase.multi_map_in_static_method(
             "sort",
             x,
@@ -98,32 +126,12 @@ class ContainerWithSorting(ContainerBase):
         *,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
-        return self.static_sort(
-            self,
-            axis,
-            descending,
-            stable,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-    def sort(
-            self: ivy.Container,
-            axis: int = -1,
-            descending: bool = False,
-            stable: bool = True, map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
+
         """
         ivy.Container instance method variant of ivy.sort. This method simply wraps the
         function, and so the docstring for ivy.sort also applies to this method
         with minimal changes.
 
-        Instance Method Examples
-        ------------------------
         With：code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]), b=ivy.array([8, 1]))
@@ -140,9 +148,6 @@ class ContainerWithSorting(ContainerBase):
         { a: ivy.array([0.2, 5., 9.]), \
           b: ivy.array([[1., 8.],[0.8, 5.]])
         }
-
-        Static Method Examples
-        ----------------------
 
         With：code:`ivy.Container` inputs:
 
@@ -166,50 +171,13 @@ class ContainerWithSorting(ContainerBase):
 
         """
         return self.static_sort(
-            self, axis, descending, stable, out=out)
-
-    @staticmethod
-    def static_sort(
-            x: Union[ivy.Array, ivy.NativeArray],
-            axis: int = -1,
-            descending: bool = False,
-            stable: bool = True, map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.add. This method simply wraps the
-        function, and so the docstring for ivy.add also applies to this method
-        with minimal changes.
-
-        Examples
-        --------
-        With one :code:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),\
-                      b=ivy.array([[8, 1], [5, 0.8]]))
-        >>> y = ivy.Container.static_sort(x)
-        >>> print(y)
-        {
-            a: ivy.array([0.2, 5., 9.]),
-            b: ivy.array([[1., 8.], [0.8, 5.]])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
-                      b=ivy.array([[9, 0.7], [0.4, 0]]))
-        >>> y = ivy.Container.static_sort(x)
-        >>> print(y)
-        {
-            a: ivy.array([0.5, 6., 8.]),
-            b: ivy.array([[0.7, 9.], [0., 0.4]])
-        }
-
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "sort",
-            axis=axis,
-            descending=descending,
-            stable=stable,
+            self,
+            axis,
+            descending,
+            stable,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
-
