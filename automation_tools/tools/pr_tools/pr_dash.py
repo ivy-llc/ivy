@@ -174,7 +174,6 @@ def main():
             sort_prs(rows, table, argv[2], r_index)
         print(table)
     except IndexError as e:
-        print(e)
         help_menu()
 
 
