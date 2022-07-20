@@ -17,7 +17,10 @@ import ivy.functional.backends.numpy as ivy_np
 # linear
 @given(
     batch_shape=helpers.lists(
-        st.integers(1, 2), min_size="num_dims", max_size="num_dims", size_bounds=[1, 2]
+        arg=st.integers(1, 2),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 2],
     ),
     input_channels=st.integers(2, 4),
     output_channels=st.integers(1, 5),
