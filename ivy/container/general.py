@@ -233,7 +233,7 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_floormod(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: ivy.Container,
         y: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -250,9 +250,9 @@ class ContainerWithGeneral(ContainerBase):
         Parameters
         ----------
         x
-            array, input to floormod
+            container, input to floormod
         y
-            array, denominator input for floormod.
+            array or container, denominator input for floormod.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -307,7 +307,7 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def floormod(
-        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        self: ivy.Container,
         y: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -325,9 +325,9 @@ class ContainerWithGeneral(ContainerBase):
         Parameters
         ----------
         self
-            array, input to floormod
+            container, input to floormod
         y
-            array, denominator input for floormod.
+            array or container, denominator input for floormod.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
