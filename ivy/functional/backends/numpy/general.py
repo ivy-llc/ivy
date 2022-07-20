@@ -305,11 +305,11 @@ def one_hot(
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(x: np.ndarray, as_array: bool = False) -> Union[tuple, np.ndarray]:
+def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return np.asarray(np.shape(x))
+        return ivy.array(np.shape(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):
