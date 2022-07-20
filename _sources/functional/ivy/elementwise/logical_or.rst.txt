@@ -5,6 +5,8 @@ logical_or
 
 .. autofunction:: ivy.array.array_methods.logical_or
 
+.. autofunction:: ivy.container.container_methods.static_logical_or
+
 .. autofunction:: ivy.container.container_methods.logical_or
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ logical_or
    logical_or/logical_or_functional.rst
    logical_or/logical_or_array.rst
    logical_or/logical_or_container.rst
+   logical_or/static_logical_or_container.rst
 

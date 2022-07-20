@@ -541,6 +541,16 @@
 <span class="sd">    ret</span>
 <span class="sd">        The total memory on the device in GB.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.total_mem_on_dev(&quot;cpu&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    53.66700032</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.total_mem_on_dev(&quot;gpu:0&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    8.589934592</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;gpu&quot;</span> <span class="ow">in</span> <span class="n">device</span><span class="p">:</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -648,6 +658,20 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The device utilization (%)</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_util(&#39;cpu&#39;)</span>
+<span class="sd">    13.4</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_util(&#39;gpu:0&#39;)</span>
+<span class="sd">    7.8</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_util(&#39;cpu&#39;)</span>
+<span class="sd">    93.4</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_util(&#39;gpu:2&#39;)</span>
+<span class="sd">    57.4</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dev_util(&#39;cpu)</span>
+<span class="sd">    84.2</span>
+
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
@@ -941,7 +965,8 @@
     <span class="k">return</span> <span class="n">split_factors</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="set_split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/set_split_factor.html#ivy.functional.ivy.device.set_split_factor">[docs]</a><span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="set_split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/set_split_factor.html#ivy.functional.ivy.device.set_split_factor">[docs]</a><span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span><span class="n">factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> 
+                     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Set the global split factor for a given device, which can be used to scale batch</span>
 <span class="sd">    splitting chunk sizes for the device across the codebase.</span>
 
@@ -951,7 +976,33 @@
 <span class="sd">        The factor to set the device-specific split factor to.</span>
 <span class="sd">    device</span>
 <span class="sd">        The device to set the split factor for. Sets the default device by default.</span>
-
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_device()</span>
+<span class="sd">    &#39;cpu&#39;</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.5)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.split_factors</span>
+<span class="sd">    {&#39;cpu&#39;: 0.5}</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;torch&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; device = torch.device(&quot;cuda&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.3,device)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.split_factors</span>
+<span class="sd">    {device(type=&#39;cuda&#39;): 0.3}</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.4,&quot;tpu&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.split_factors</span>
+<span class="sd">    {&#39;tpu&#39;: 0.4}</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;torch&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; device = torch.device(&quot;cuda&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.2)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.3,&#39;gpu&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.4,device)</span>
+<span class="sd">    {&#39;cpu&#39;: 0.2, &#39;gpu&#39;: 0.3, device(type=&#39;cuda&#39;): 0.4}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">factor</span>
     <span class="k">global</span> <span class="n">split_factors</span>

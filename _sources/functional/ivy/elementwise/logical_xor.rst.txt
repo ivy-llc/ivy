@@ -5,6 +5,8 @@ logical_xor
 
 .. autofunction:: ivy.array.array_methods.logical_xor
 
+.. autofunction:: ivy.container.container_methods.static_logical_xor
+
 .. autofunction:: ivy.container.container_methods.logical_xor
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ logical_xor
    logical_xor/logical_xor_functional.rst
    logical_xor/logical_xor_array.rst
    logical_xor/logical_xor_container.rst
+   logical_xor/static_logical_xor_container.rst
 

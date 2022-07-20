@@ -27,20 +27,25 @@ Data type
    data_type/default_float_dtype.rst
    data_type/default_dtype.rst
    data_type/default_int_dtype.rst
+   data_type/default_uint_dtype.rst
    data_type/dtype.rst
    data_type/function_supported_dtypes.rst
    data_type/function_unsupported_dtypes.rst
    data_type/invalid_dtype.rst
+   data_type/is_bool_dtype.rst
    data_type/is_int_dtype.rst
    data_type/is_float_dtype.rst
+   data_type/is_uint_dtype.rst
    data_type/promote_types.rst
    data_type/set_default_dtype.rst
    data_type/set_default_float_dtype.rst
    data_type/set_default_int_dtype.rst
+   data_type/set_default_uint_dtype.rst
    data_type/type_promote_arrays.rst
    data_type/unset_default_dtype.rst
    data_type/unset_default_float_dtype.rst
    data_type/unset_default_int_dtype.rst
+   data_type/unset_default_uint_dtype.rst
    data_type/valid_dtype.rst
    data_type/DefaultDtype:
     """"""
@@ -56,5 +61,9 @@ Data type
     """"""
 
     # noinspection PyShadowingNames
+    def __init__.rst
+   data_type/DefaultUintDtype:
+    """"""
+
     def __init__.rst
 

@@ -5,6 +5,8 @@ less
 
 .. autofunction:: ivy.array.array_methods.less
 
+.. autofunction:: ivy.container.container_methods.static_less
+
 .. autofunction:: ivy.container.container_methods.less
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ less
    less/less_functional.rst
    less/less_array.rst
    less/less_container.rst
+   less/static_less_container.rst
 

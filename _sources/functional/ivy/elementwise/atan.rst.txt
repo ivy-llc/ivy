@@ -5,6 +5,8 @@ atan
 
 .. autofunction:: ivy.array.array_methods.atan
 
+.. autofunction:: ivy.container.container_methods.static_atan
+
 .. autofunction:: ivy.container.container_methods.atan
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ atan
    atan/atan_functional.rst
    atan/atan_array.rst
    atan/atan_container.rst
+   atan/static_atan_container.rst
 

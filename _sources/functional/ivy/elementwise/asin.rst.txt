@@ -5,6 +5,8 @@ asin
 
 .. autofunction:: ivy.array.array_methods.asin
 
+.. autofunction:: ivy.container.container_methods.static_asin
+
 .. autofunction:: ivy.container.container_methods.asin
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ asin
    asin/asin_functional.rst
    asin/asin_array.rst
    asin/asin_container.rst
+   asin/static_asin_container.rst
 
