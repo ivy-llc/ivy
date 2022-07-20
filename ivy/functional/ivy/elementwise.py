@@ -555,6 +555,49 @@ def atan(
         an array containing the inverse tangent of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.atan(x)
+    >>> print(y)
+    ivy.array([0.   , 0.785, 1.11 ])
+
+    >>> x = ivy.array([4., 0., -6.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.atan(x, out=y)
+    >>> print(y)
+    ivy.array([ 1.33,  0.  , -1.41])
+
+    >>> nan = float("nan")
+    >>> x = ivy.array([nan, 1.0, -1.0])
+    >>> x.atan()
+    ivy.array([   nan,  0.785, -0.785])
+
+    >>> inf = float("infinity")
+    >>> x = ivy.array([inf,-inf])
+    >>> y = x.atan()
+    >>> print(y)
+    ivy.array([ 1.57, -1.57])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([1., 0., 2.])
+    >>> y = ivy.atan(x)
+    >>> print(y)
+    ivy.array([0.785, 0.   , 1.11 ])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+    >>> y = ivy.atan(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., -0.785, 0.785]),
+        b: ivy.array([0.785, 0., -1.41])
+    }
+    
     """
     return ivy.current_backend(x).atan(x, out=out)
 
