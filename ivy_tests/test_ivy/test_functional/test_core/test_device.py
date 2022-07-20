@@ -3,7 +3,6 @@
 # global
 import os
 import math
-
 import psutil
 import nvidia_smi
 import pytest
@@ -703,25 +702,4 @@ def test_num_cpu_cores():
 # unset_default_device
 # split_factor
 # set_split_factor
-# Class MultiDev
-# class MultiDevItem
-# class MultiDevIter
-# class MultiDevNest
-# class DevDistItem
-# class DevDistIter
-# class DevDistNest
-# class DevClonedItem
-# class DevClonedIter
-# class DevClonedNest
-# dev_clone
-# dev_clone_iter
-# _concat_unify_array
-# _sum_unify_array
-# _mean_unify_array
-# dev_unify_array
-# dev_unify
-# dev_unify_iter
-# class DevMapper
-# class DevMapperMultiProc
-# class DevManager
 # class Profiler
