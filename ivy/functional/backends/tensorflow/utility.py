@@ -7,6 +7,8 @@ def all(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         num_dims = len(x.shape)
@@ -20,6 +22,8 @@ def any(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
         num_dims = len(x.shape)
