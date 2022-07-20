@@ -249,11 +249,13 @@ def one_hot(indices, depth, device=None):
     return mx.nd.one_hot(indices, depth)
 
 
-def shape(x: mx.nd.NDArray, as_array: bool = False) -> Union[tuple, mx.nd.NDArray]:
+def shape(
+    x: mx.nd.NDArray, as_array: bool = False
+) -> Union[mx.nd.NDArray, ivy.Shape, ivy.Array]:
     if as_array:
-        return mx.nd.shape_array(x)
+        return ivy.array(mx.nd.shape_array(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):
