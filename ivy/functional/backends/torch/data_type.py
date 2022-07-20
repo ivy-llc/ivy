@@ -10,6 +10,9 @@ class Finfo:
     def __init__(self, torch_finfo: torch.finfo):
         self._torch_finfo = torch_finfo
 
+    def __repr__(self):
+        return repr(self._torch_finfo)
+
     @property
     def bits(self):
         return self._torch_finfo.bits
