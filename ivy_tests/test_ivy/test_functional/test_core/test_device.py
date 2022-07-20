@@ -435,6 +435,37 @@ def test_total_mem_on_dev(device):
         assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
 
 
+def test_used_mem_on_dev():
+    # Test memory is being used by making array of floats
+
+    devices = ["cpu"]
+    if ivy.gpu_is_available():
+        devices.append("gpu:0")
+    devices = list(map(ivy.Device, devices))
+
+    # Check that there not all memory is used
+    for device in devices:
+        assert ivy.used_mem_on_dev(device) > 0
+        assert ivy.used_mem_on_dev(device) < ivy.total_mem_on_dev(device)
+
+    # Testing if it's detects changes in RAM usage, cannot apply this to GPU, as we can
+    # only get the total memory usage of a GPU, not the usage by the program.
+    device = "cpu"
+    # Measure the memory usage before the array is created
+    before = ivy.used_mem_on_dev(device, True)
+    # Create an array of floats with 10 million elements (40 MB)
+    arr = ivy.ones((10000000,), dtype="float32", device=device)
+    during = ivy.used_mem_on_dev(device, True)
+    # Check that the memory usage has increased
+    assert before < during
+    # Delete the array
+    del arr
+    # Measure the memory usage after the array is deleted
+    after = ivy.used_mem_on_dev(device, True)
+    # Check that the memory usage has decreased
+    assert during > after
+
+
 def test_gpu_is_available(fw):
     # If gpu is available but cannot be initialised it will fail the test
     if ivy.gpu_is_available():
