@@ -16,9 +16,6 @@ class ContainerWithDevice(ContainerBase):
         wraps the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
 
-        Examples
-        --------
-
         """
         return ContainerBase.multi_map_in_static_method("dev", x)
 
@@ -27,9 +24,6 @@ class ContainerWithDevice(ContainerBase):
         ivy.Container instance method variant of ivy.dev. This method simply
         wraps the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
-
-        Examples
-        --------
 
         """
         return self.static_dev(self)
@@ -47,9 +41,6 @@ class ContainerWithDevice(ContainerBase):
         simply wraps the function, and so the docstring for ivy.to_device also
         applies to this method with minimal changes.
 
-        Examples
-        --------
-
         """
         return ContainerBase.multi_map_in_static_method(
             "to_device", x, device, stream=stream, out=out
@@ -66,9 +57,6 @@ class ContainerWithDevice(ContainerBase):
         ivy.Container instance method variant of ivy.to_device. This method
         simply wraps the function, and so the docstring for ivy.to_device also
         applies to this method with minimal changes.
-
-        Examples
-        --------
 
         """
         return self.static_to_device(self, device, stream=stream, out=out)
