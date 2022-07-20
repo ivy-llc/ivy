@@ -20,6 +20,39 @@ import ivy
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 
+# Helpers #
+# ------- #
+
+
+def ram_array_and_clear_test(metric_fn, size=10000000):
+    # This function checks if the memory usage changes before, during and after
+
+    # Measure usage before creating array
+    before = metric_fn()
+    # Create an array of floats, by default with 10 million elements (40 MB)
+    arr = ivy.ones((size,), dtype="float32", device="cpu")
+    during = metric_fn()
+    # Check that the memory usage has increased
+    assert before < during
+
+    # Delete the array
+    del arr
+    # Measure the memory usage after the array is deleted
+    after = metric_fn()
+    # Check that the memory usage has decreased
+    assert during > after
+
+
+def get_possible_devices():
+    # Return all the possible usable devices
+    devices = ["cpu"]
+    if ivy.gpu_is_available():
+        for i in range(ivy.num_gpus()):
+            devices.append("gpu:" + str(i))
+
+    # Return a list of ivy devices
+    return list(map(ivy.Device, devices))
+
 
 # Tests #
 # ------#
@@ -435,30 +468,8 @@ def test_total_mem_on_dev(device):
         assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
 
 
-def ram_array_and_clear_test(metric_fn, size=10000000):
-    # This function checks if the memory usage changes before, during and after
-
-    # Measure usage before creating array
-    before = metric_fn()
-    # Create an array of floats, by default with 10 million elements (40 MB)
-    arr = ivy.ones((size,), dtype="float32", device="cpu")
-    during = metric_fn()
-    # Check that the memory usage has increased
-    assert before < during
-
-    # Delete the array
-    del arr
-    # Measure the memory usage after the array is deleted
-    after = metric_fn()
-    # Check that the memory usage has decreased
-    assert during > after
-
-
 def test_used_mem_on_dev():
-    devices = ["cpu"]
-    if ivy.gpu_is_available():
-        devices.append("gpu:0")
-    devices = list(map(ivy.Device, devices))
+    devices = get_possible_devices()
 
     # Check that there not all memory is used
     for device in devices:
@@ -471,10 +482,7 @@ def test_used_mem_on_dev():
 
 
 def test_percent_used_mem_on_dev():
-    devices = ["cpu"]
-    if ivy.gpu_is_available():
-        devices.append("gpu:0")
-    devices = list(map(ivy.Device, devices))
+    devices = get_possible_devices()
 
     for device in devices:
         used = ivy.percent_used_mem_on_dev(ivy.Device(device))
