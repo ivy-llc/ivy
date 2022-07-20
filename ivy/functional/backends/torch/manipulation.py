@@ -3,7 +3,7 @@ import ivy
 import torch
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence
+from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
 
 # Array API Standard #
@@ -164,10 +164,11 @@ def split(
 
 
 def repeat(
-    x: torch.Tensor, repeats: Union[int, List[int]], axis: int = None
+    x: torch.Tensor, repeats: Union[int, Iterable[int]], axis: int = None
 ) -> torch.Tensor:
     if len(x.shape) == 0 and axis in [0, -1]:
         axis = None
+    repeats=torch.tensor(repeats)
     ret = torch.repeat_interleave(x, repeats, axis)
     return ret
 
