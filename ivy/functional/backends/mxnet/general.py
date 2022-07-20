@@ -250,7 +250,7 @@ def shape(
     x: mx.nd.NDArray, as_array: bool = False
 ) -> Union[mx.nd.NDArray, ivy.Shape, ivy.Array]:
     if as_array:
-        return mx.nd.shape_array(x)
+        return ivy.array(mx.nd.shape_array(x))
     else:
         return ivy.Shape(x.shape)
 
