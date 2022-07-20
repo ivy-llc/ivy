@@ -1,7 +1,7 @@
 # global
 import math
 import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import Union, Tuple, Optional, List, Sequence, Iterable
 from numbers import Number
 
 # local
@@ -126,7 +126,8 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return jnp.split(x, num_or_size_splits, axis)
 
 
-def repeat(x: JaxArray, repeats: Union[int, List[int]], axis: int = None) -> JaxArray:
+def repeat(x: JaxArray, repeats: Union[int, Iterable[int]], axis: int = None) -> JaxArray:
+    repeats=jnp.array(repeats)
     ret = jnp.repeat(x, repeats, axis)
     return ret
 
