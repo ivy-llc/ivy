@@ -11,8 +11,8 @@ import ivy
 class ArrayWithDevice(abc.ABC):
     def dev(self: ivy.Array) -> Union[ivy.Device, ivy.NativeDevice]:
         """
-        ivy.Array instance method variant of ivy.device.dev. This method simply wraps
-        the function, and so the docstring for ivy.device.dev also applies to this
+        ivy.Array instance method variant of ivy.dev. This method simply wraps
+        the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
 
         Examples
@@ -29,8 +29,8 @@ class ArrayWithDevice(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.device.to_device. This method simply
-        wraps the function, and so the docstring for ivy.device.to_device also applies
+        ivy.Array instance method variant of ivy.to_device. This method simply
+        wraps the function, and so the docstring for ivy.to_device also applies
         to this method with minimal changes.
 
         Examples
@@ -41,8 +41,8 @@ class ArrayWithDevice(abc.ABC):
 
     def dev_clone_array(self: ivy.Array, devices: Iterable[ivy.Device]):
         """
-        ivy.Array instance method variant of ivy.device.dev_clone_array. This method
-        simply wraps the function, and so the docstring for ivy.device.dev_clone_array
+        ivy.Array instance method variant of ivy.dev_clone_array. This method
+        simply wraps the function, and so the docstring for ivy.dev_clone_array
         also applies to this method with minimal changes.
 
         Examples

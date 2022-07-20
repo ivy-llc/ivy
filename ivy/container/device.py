@@ -12,8 +12,8 @@ class ContainerWithDevice(ContainerBase):
     @staticmethod
     def static_dev(x: ivy.Container) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.device.dev. This method simply
-        wraps the function, and so the docstring for ivy.device.dev also applies to this
+        ivy.Container static method variant of ivy.dev. This method simply
+        wraps the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
 
         Examples
@@ -24,8 +24,8 @@ class ContainerWithDevice(ContainerBase):
 
     def dev(self: ivy.Container) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.device.dev. This method simply
-        wraps the function, and so the docstring for ivy.device.dev also applies to this
+        ivy.Container instance method variant of ivy.dev. This method simply
+        wraps the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
 
         Examples
@@ -43,8 +43,8 @@ class ContainerWithDevice(ContainerBase):
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.device.to_device. This method
-        simply wraps the function, and so the docstring for ivy.device.to_device also
+        ivy.Container instance method variant of ivy.to_device. This method
+        simply wraps the function, and so the docstring for ivy.to_device also
         applies to this method with minimal changes.
 
         Examples
@@ -63,8 +63,8 @@ class ContainerWithDevice(ContainerBase):
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.device.to_device. This method
-        simply wraps the function, and so the docstring for ivy.device.to_device also
+        ivy.Container instance method variant of ivy.to_device. This method
+        simply wraps the function, and so the docstring for ivy.to_device also
         applies to this method with minimal changes.
 
         Examples
@@ -78,8 +78,8 @@ class ContainerWithDevice(ContainerBase):
         x: ivy.Container, devices: Iterable[ivy.Device]
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.device.dev_clone_array. This method
-        simply wraps the function, and so the docstring for ivy.device.dev_clone_array
+        ivy.Container instance method variant of ivy.dev_clone_array. This method
+        simply wraps the function, and so the docstring for ivy.dev_clone_array
         also applies to this method with minimal changes.
 
         Examples
@@ -92,8 +92,8 @@ class ContainerWithDevice(ContainerBase):
         self: ivy.Container, devices: Iterable[ivy.Device]
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.device.dev_clone_array. This method
-        simply wraps the function, and so the docstring for ivy.device.dev_clone_array
+        ivy.Container instance method variant of ivy.dev_clone_array. This method
+        simply wraps the function, and so the docstring for ivy.dev_clone_array
         also applies to this method with minimal changes.
 
         Examples
@@ -110,8 +110,8 @@ class ContainerWithDevice(ContainerBase):
         max_depth=1,
     ):
         """
-        ivy.Container instance method variant of ivy.device.dev_clone_nest. This method
-        simply wraps the function, and so the docstring for ivy.device.dev_clone_nest
+        ivy.Container instance method variant of ivy.dev_clone_nest. This method
+        simply wraps the function, and so the docstring for ivy.dev_clone_nest
         also applies to this method with minimal changes.
 
         Examples
