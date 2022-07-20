@@ -4,6 +4,7 @@
 import ivy
 import torch
 import warnings
+from typing import Optional
 
 
 def variable(x):
@@ -47,7 +48,12 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, grads, *rest)
 
 
-def stop_gradient(x, preserve_type=True):
+def stop_gradient(
+    x: Optional[torch.Tensor], 
+    preserve_type: bool = True,
+    *,
+    out: Optional[torch.Tensor] = None
+):
     if is_variable(x) and preserve_type:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
