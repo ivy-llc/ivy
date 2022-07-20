@@ -455,8 +455,6 @@ def ram_array_and_clear_test(metric_fn, size=10000000):
 
 
 def test_used_mem_on_dev():
-    # Test memory is being used by making array of floats
-
     devices = ["cpu"]
     if ivy.gpu_is_available():
         devices.append("gpu:0")
@@ -473,6 +471,15 @@ def test_used_mem_on_dev():
 
 
 def test_percent_used_mem_on_dev():
+    devices = ["cpu"]
+    if ivy.gpu_is_available():
+        devices.append("gpu:0")
+    devices = list(map(ivy.Device, devices))
+
+    for device in devices:
+        used = ivy.percent_used_mem_on_dev(ivy.Device(device))
+        assert 0 <= used <= 100
+
     # Same as test_used_mem_on_dev, but using percent of total memory as metric function
     ram_array_and_clear_test(
         lambda: ivy.percent_used_mem_on_dev(ivy.Device("cpu"), True)
