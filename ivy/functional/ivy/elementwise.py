@@ -215,7 +215,39 @@ def acosh(
         an array containing the inverse hyperbolic cosine of each element in x. The
         returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
+        
+    Examples
+    --------
+    With :code:`ivy.Array` input:
 
+    >>> x = ivy.array([0, 2.5, 10, -1])
+    >>> y = ivy.acosh(x)
+    >>> print(y)
+    ivy.array([ nan, 1.57, 2.99,  nan])
+
+    >>> x = ivy.array([1., 2., -6.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.acosh(x, out=y)
+    >>> print(y)
+    ivy.array([0.  , 1.32,  nan])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([1., 0., 2.,10.])
+    >>> y = ivy.acosh(x)
+    >>> print(y)
+    ivy.array([0.  ,  nan, 1.32, 2.99])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1, 2, 1]), b=ivy.array([1., 0., 10, -6]))
+    >>> y = ivy.acosh(x)
+    >>> print(y)
+    {
+        a: ivy.array([nan, nan, 1.32, 0.]),
+        b: ivy.array([0., nan, 2.99, nan])
+    }
+    
     """
     return ivy.current_backend(x).acosh(x, out=out)
 
