@@ -290,6 +290,22 @@ class ContainerWithGeneral(ContainerBase):
             map_sequences=map_sequences,
         )
 
+    def has_nans(
+        self: ivy.Container,
+        include_infs=True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ):
+        return self.static_has_nans(
+            self,
+            include_infs,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences
+        )
 
     @staticmethod
     def static_gather_nd(
