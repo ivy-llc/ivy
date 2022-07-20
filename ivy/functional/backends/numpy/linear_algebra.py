@@ -40,7 +40,7 @@ def diagonal(
     axis1: int = -2,
     axis2: int = -1,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
     return ret
@@ -78,7 +78,7 @@ def matrix_norm(
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
     return ret
@@ -94,7 +94,7 @@ def matrix_rank(
     x: np.ndarray,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if rtol is None:
         ret = np.linalg.matrix_rank(x)
@@ -120,7 +120,7 @@ def pinv(
     x: np.ndarray,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if rtol is None:
         ret = np.linalg.pinv(x)
@@ -137,7 +137,9 @@ def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
 
 
 def slogdet(
-    x: np.ndarray, *, out: Optional[np.ndarray]
+    x: np.ndarray,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = np.linalg.slogdet(x)
@@ -180,7 +182,7 @@ def tensordot(
     x2: np.ndarray,
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.tensordot(x1, x2, axes=axes)
     return ret
@@ -208,7 +210,7 @@ def vector_norm(
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
         np_normalized_vector = np.linalg.norm(x.flatten(), ord, axis, keepdims)
