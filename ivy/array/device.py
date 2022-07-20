@@ -15,9 +15,6 @@ class ArrayWithDevice(abc.ABC):
         the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
 
-        Examples
-        --------
-
         """
         return ivy.dev(self)
 
@@ -32,9 +29,6 @@ class ArrayWithDevice(abc.ABC):
         ivy.Array instance method variant of ivy.to_device. This method simply
         wraps the function, and so the docstring for ivy.to_device also applies
         to this method with minimal changes.
-
-        Examples
-        --------
 
         """
         return ivy.to_device(self, device, stream=stream, out=out)
