@@ -2,7 +2,7 @@
 # global
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 
 # local
 import ivy
@@ -244,6 +244,7 @@ def ones(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@infer_dtype
 @infer_device
 @infer_dtype
 @handle_nestable
@@ -653,6 +654,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -694,7 +696,9 @@ def eye(
     instances in place of any of the arguments.
 
     """
-    return current_backend().eye(n_rows, n_cols, k, dtype=dtype, device=device, out=out)
+    return current_backend().eye(
+        n_rows, n_cols, k, batch_shape, dtype=dtype, device=device, out=out
+    )
 
 
 @to_native_arrays_and_back
