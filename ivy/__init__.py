@@ -118,7 +118,6 @@ from .array.conversions import *
 from .container import (
     ContainerBase,
     Container,
-    MultiDevContainer,
     add_ivy_container_instance_methods,
 )
 from .backend_handler import (
