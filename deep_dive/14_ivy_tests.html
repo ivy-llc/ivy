@@ -578,15 +578,6 @@ helpful when we are testing a function with varied number of arguments.</p>
 helper function and add this to the submodule.</p></li>
 <li><p>If the logic is general enough, this can instead be added to the <code class="code docutils literal notranslate"><span class="pre">helpers.py</span></code> file, enabling it to be used for tests
 in other submodules</p></li>
-<li><p>Sometimes, the use of
-<a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/details.html?highlight=assume#hypothesis.assume">assume</a>
-is justified in the unit test body, particularly for cases where writing the
-generation code would be unduly laborious. It’s very straightforward to avoid
-<code class="code docutils literal notranslate"><span class="pre">nan</span></code>, <code class="code docutils literal notranslate"><span class="pre">inf</span></code> and values close to the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> bounds, but also
-avoiding zeros would require extra implementational effort in the data generation
-helpers. Using <code class="code docutils literal notranslate"><span class="pre">assume</span></code> is an
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/2ddaff94ad9e20a1a0511d272a0501fa3b904edc/ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py#L695">acceptable solution</a>
-in such cases, and other similar scenarios you may encounter.</p></li>
 </ol>
 </section>
 <section id="bonus-hypothesis-extended-features">
