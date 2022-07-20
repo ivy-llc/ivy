@@ -276,6 +276,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic tangent of each element
             in ``self``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.array([0.0, 0.5, 1.0, -3.0])
+        >>> y = x.atanh()
+        >>> print(y)
+        ivy.array([0.   , 0.549,   inf,   nan])
+        
         """
         return ivy.atanh(self._data, out=out)
 
