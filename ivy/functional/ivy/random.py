@@ -357,7 +357,7 @@ def seed(seed_value: int = 0) -> None:
 @handle_out_argument
 @handle_nestable
 def shuffle(
-    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
