@@ -85,6 +85,7 @@ invalid_uint_dtypes = ()
 
 native_inplace_support = False
 
+
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()
