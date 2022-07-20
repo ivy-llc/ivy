@@ -169,6 +169,11 @@ def set_backend(backend: str):
     <class 'jaxlib.xla_extension.DeviceArray'>
 
     """
+
+    if backend not in _backend_dict:
+        raise ValueError(
+            "backend must be one from {}".format(list(_backend_dict.keys()))
+        )
     ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
     if not backend_stack:
