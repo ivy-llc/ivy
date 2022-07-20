@@ -449,10 +449,10 @@ def _dtype(draw):
 @st.composite
 def _fill_value(draw):
     dtype = draw(_dtype())[0]
-    if ivy.is_int_dtype(dtype):
-        # ToDo: set min to -5 for int and add an explicitl uint check, once
-        #  ivy.is_uint_dtype is implemented
+    if ivy.is_uint_dtype(dtype):
         return draw(st.integers(0, 5))
+    if ivy.is_int_dtype(dtype):
+        return draw(st.integers(-5, 5))
     return draw(st.floats(-5, 5))
 
 
