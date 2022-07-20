@@ -52,6 +52,7 @@ def concat(
                [3, 4],
                [5, 6]])
     """
+    
     return current_backend(xs[0]).concat(xs, axis, out=out)
 
 
