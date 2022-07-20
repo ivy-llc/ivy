@@ -326,6 +326,17 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, true if container has a nans, false otherwise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, float('nan')]))
+        >>> y = x.has_nans()
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
         """
         return self.static_has_nans(
             self,
