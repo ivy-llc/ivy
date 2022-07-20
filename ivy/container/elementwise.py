@@ -4233,7 +4233,7 @@ class ContainerWithElementwise(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-        
+
     def negative(
         self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -4247,6 +4247,7 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.negative.
         This method simply wraps the function, and so the docstring for
         ivy.negative also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -4264,6 +4265,7 @@ class ContainerWithElementwise(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
