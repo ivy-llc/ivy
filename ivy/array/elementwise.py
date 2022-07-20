@@ -195,6 +195,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse tangent of each element in ``self``. The
             returned array must have the same data type as ``self``.
+            
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 0.5, -0.5])
+        >>> y = x.atan()
+        >>> print(y)
+        ivy.array([ 0.785,  0.464, -0.464])
+        
         """
         return ivy.atan(self._data, out=out)
 
