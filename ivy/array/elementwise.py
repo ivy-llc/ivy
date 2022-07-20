@@ -39,7 +39,7 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.abs(self, out=out)
 
-    def a(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def acosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.acosh. This method simply wraps the
         function, and so the docstring for ivy.acosh also applies to this method
