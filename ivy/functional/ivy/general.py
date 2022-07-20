@@ -188,6 +188,11 @@ def copy_array(
 ) -> ivy.Array:
     """Copy an array.
 
+    Parameters
+    -------
+    x
+        Input array.
+
     Returns
     -------
     ret

@@ -16,7 +16,7 @@ from ivy.functional.backends.numpy.device import _to_device
 # --------#
 
 
-def copy_array(x: np.ndarray) -> np.ndarray:
+def copy_array(x: np.ndarray) -> ivy.Array:
     return x.copy()
 
 

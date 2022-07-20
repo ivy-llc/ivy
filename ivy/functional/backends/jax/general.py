@@ -44,7 +44,7 @@ def is_native_array(x, exclusive=False):
     )
 
 
-def copy_array(x: JaxArray) -> JaxArray:
+def copy_array(x: JaxArray) -> ivy.Array:
     return jnp.array(x)
 
 

@@ -25,7 +25,7 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def copy_array(x: mx.nd.NDArray) -> mx.nd.NDArray:
+def copy_array(x: mx.nd.NDArray) -> ivy.Array:
     return x.copy()
 
 
