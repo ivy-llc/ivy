@@ -6,7 +6,6 @@ from typing import Optional, List, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.device import default_device
 
 
 # Extra #
@@ -17,7 +16,7 @@ def random_uniform(
     low: Union[float, torch.Tensor] = 0.0,
     high: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dtype=None,
+    dtype: Optional[ivy.Dtype, torch.dtype] = None,
     *,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
@@ -25,11 +24,7 @@ def random_uniform(
     rand_range = high - low
     if shape is None:
         shape = []
-    return (
-        torch.rand(shape, device=default_device(device), dtype=dtype, out=out)
-        * rand_range
-        + low
-    )
+    return torch.rand(shape, device=device, dtype=dtype, out=out) * rand_range + low
 
 
 random_uniform.support_native_out = True
@@ -49,7 +44,7 @@ def random_normal(
         true_shape: List[int] = shape
     mean = mean.item() if isinstance(mean, torch.Tensor) else mean
     std = std.item() if isinstance(std, torch.Tensor) else std
-    return torch.normal(mean, std, true_shape, device=default_device(device), out=out)
+    return torch.normal(mean, std, true_shape, device=device, out=out)
 
 
 random_normal.support_native_out = True
@@ -75,9 +70,7 @@ def multinomial(
             )
             / population_size
         )
-    return torch.multinomial(probs.float(), num_samples, replace, out=out).to(
-        default_device(device)
-    )
+    return torch.multinomial(probs.float(), num_samples, replace, out=out).to(device)
 
 
 multinomial.support_native_out = True
@@ -91,7 +84,7 @@ def randint(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.randint(low, high, shape, out=out, device=default_device(device))
+    return torch.randint(low, high, shape, out=out, device=device)
 
 
 randint.support_native_out = True
