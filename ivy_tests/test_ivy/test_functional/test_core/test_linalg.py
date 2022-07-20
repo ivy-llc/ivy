@@ -786,6 +786,7 @@ def test_vector_norm(
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    rtol=st.floats(1e-5, 1e-3)
 )
 def test_pinv(
     dtype_x,
@@ -796,6 +797,7 @@ def test_pinv(
     container,
     instance_method,
     fw,
+    rtol,
 ):
     dtype, x = dtype_x
     helpers.test_function(
@@ -809,12 +811,7 @@ def test_pinv(
         fw=fw,
         fn_name="pinv",
         x=np.asarray(x, dtype=dtype),
-        rtol=1e-04,
-        out=None,
-        # test_atol=1e-04,
-        # test_rtol=1e-04,
-        # test_atol=1e-04,
-
+        rtol=rtol,
     )
 
 
