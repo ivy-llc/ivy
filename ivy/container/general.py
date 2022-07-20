@@ -2,6 +2,7 @@
 from typing import Any, Union, List, Dict, Iterable, Optional
 
 # local
+from ivy import Container
 from ivy.container.base import ContainerBase
 import ivy
 
@@ -239,7 +240,7 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ):
+    ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.has_nans. This method simply wraps
         the function, and so the docstring for ivy.has_nans also applies to this method
@@ -297,7 +298,35 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ):
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.has_nans.
+        This method simply wraps the function, and so the docstring
+        for ivy.has_nans also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The container from which to check nans.
+        include_infs
+            Whether to include ``+infinity`` and ``-infinity`` in the check. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean, true if container has a nans, false otherwise.
+        """
         return self.static_has_nans(
             self,
             include_infs,
