@@ -16,14 +16,10 @@ Introduction
 Just like the backend functional API, our frontend funtional API has a collection of Ivy tests, located in subfolder `test_ivy`_.
 In this section of the deep dive we are going to jump into Ivy Frontend Tests!
 
-Writing Ivy Tests
-^^^^^^^^^^^^^^^^^
+**Writing Ivy Tests**
 
 The Ivy tests in this section make use of hypothesis for performing property based testing which is documented in detail in the Ivy Tests Section of the Deep Dive.
 We assume knowledge of hypothesis data generation strategies and how to implement them into tests.
-
-Frontend Tests
---------------------
 
 **Important Helper Functions**
 
