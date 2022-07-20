@@ -5,6 +5,8 @@ import jax
 import jax.lax as jlax
 import jaxlib
 from jaxlib.xla_extension import Buffer
+from ivy.functional.backends.jax import JaxArray
+from typing import Optional
 
 
 # local
@@ -49,5 +51,10 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, grads, *rest)
 
 
-def stop_gradient(x, preserve_type=True):
+def stop_gradient(
+    x: JaxArray, 
+    preserve_type: bool = True, 
+    *, 
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     return jlax.stop_gradient(x)
