@@ -73,6 +73,14 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean as to whether the array contains nans.
 
+        Examples
+        --------
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.has_nans()
+        >>> print(y)
+        False
+
         """
         return ivy.has_nans(self, include_infs)
 
