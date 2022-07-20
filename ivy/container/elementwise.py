@@ -258,6 +258,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse cosine of each element in ``x``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+        >>> y = ivy.Container.static_acos(x)
+        >>> print(y)
+        {
+            a: ivy.array([1.57, 3.14, 0.]),
+            b: ivy.array([0., 1.57, nan])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -308,6 +318,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse cosine of each element in ``self``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+        >>> y = x.acos()
+        >>> print(y)
+        {
+            a: ivy.array([1.57, 3.14, 0.]),
+            b: ivy.array([0., 1.57, nan])
+        }
 
         """
         return self.static_acos(
