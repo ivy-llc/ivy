@@ -5,10 +5,22 @@ on:
     types: [labeled, opened, reopened, edited]
 jobs:
   run-nightly-tests:
+    if: ${{ github.event.label.name!='Function Reformatting' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Use set up
-        uses: ./.github/workflows/set-up.yml
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+
+      - name: Cache hypothesis
+        uses: actions/cache@v3
+        with:
+          path: |
+            ivy/.hypothesis
+          key: ${{ runner.os }}-hypothesis
 
       - name: Run Activations Tests
         run: |
