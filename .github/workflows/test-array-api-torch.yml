@@ -10,7 +10,7 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
-          submodules: "recursive"
+          submodules: 'recursive'
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
@@ -19,32 +19,32 @@ jobs:
           name: hypothesis_torch_zip
           path: |
             ivy/.hypothesis/
-
+      
       - name: Unzip Hypothesis Examples
         run: |
           cd ivy/.hypothesis
           unzip examples.zip
           rm examples.zip
-
+            
       - name: Run Torch Tests
         id: tests
         run: |
           cd ivy
           ./test_array_api.sh torch
         continue-on-error: true
-
+        
       - name: Zip Hypothesis Examples
         run: |
           cd ivy/.hypothesis
-          zip -r examples.zip examples
-
+          zip -r examples.zip examples 
+      
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
           name: hypothesis_torch_zip
           path: |
             ivy/.hypothesis/examples.zip
-
+    
       - name: Check on failures
         if: steps.tests.outcome != 'success'
         run: exit 1
