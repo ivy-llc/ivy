@@ -71,9 +71,7 @@ def asinh(
 
 
 def atan(
-    x: JaxArray,
-    *,
-    out: Optional[JaxArray] = None
+    x: JaxArray
 ) -> JaxArray:
     return jnp.arctan(x)
 
