@@ -841,9 +841,35 @@ def atanh(
 
     Examples
     --------
-    >>> x = ivy.atanh(ivy.array([0, -0.5]))
-    >>> print(x)
-    ivy.array([0., -0.549])
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([0, -0.5, 1, -2])
+    >>> y = ivy.atanh(x)
+    >>> print(y)
+    ivy.array([ 0.   , -0.549,    inf,    nan])
+
+    >>> x = ivy.array([0.5, -0.5, -6.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.atanh(x, out=y)
+    >>> print(y)
+    ivy.array([ 0.549, -0.549,    nan])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([1., 0., 2.])
+    >>> y = ivy.atanh(x)
+    >>> print(y)
+    ivy.array([inf,  0., nan])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+    >>> y = ivy.atanh(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., -inf, inf]),
+        b: ivy.array([inf, 0., nan])
+    }
 
     """
     return ivy.current_backend(x).atanh(x, out=out)
