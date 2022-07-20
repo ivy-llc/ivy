@@ -8,7 +8,6 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.device import default_device
 
 
 # Extra #
@@ -26,7 +25,7 @@ def random_uniform(
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
-    with tf.device(default_device(device)):
+    with tf.device(device):
         return tf.random.uniform(shape if shape else (), low, high, dtype=dtype)
 
 
@@ -40,7 +39,7 @@ def random_normal(
 ) -> Union[tf.Tensor, tf.Variable]:
     mean = tf.cast(mean, "float32")
     std = tf.cast(std, "float32")
-    with tf.device(default_device(device)):
+    with tf.device(device):
         return tf.random.normal(shape if shape else (), mean, std)
 
 
@@ -56,8 +55,7 @@ def multinomial(
 ) -> Union[tf.Tensor, tf.Variable]:
     if not replace:
         raise Exception("TensorFlow does not support multinomial without replacement")
-    device = default_device(device)
-    with tf.device("/" + device.upper()):
+    with tf.device(device):
         if probs is None:
             probs = (
                 tf.ones(
@@ -79,10 +77,9 @@ def randint(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    device = default_device(device)
     low = tf.cast(low, "int64")
     high = tf.cast(high, "int64")
-    with tf.device("/" + device.upper()):
+    with tf.device(device):
         return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int64)
 
 
