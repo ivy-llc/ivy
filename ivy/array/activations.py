@@ -68,25 +68,6 @@ class ArrayWithActivations(abc.ABC):
         """
         return ivy.gelu(self._data, approximate, out=out)
 
-    def tanh(
-        self: ivy.Array,
-        *,
-        out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.tanh. This method simply wraps the
-        function, and so the docstring for ivy.tanh also applies to this method
-        with minimal changes.
-
-        Examples
-        --------
-        >>> x = ivy.array([0.55 , -0.55])
-        >>> y = x.tanh()
-        >>> print(y)
-        ivy.array([ 0.501, -0.501])
-        """
-        return ivy.tanh(self._data, out=out)
-
     def sigmoid(
         self: ivy.Array,
         *,
