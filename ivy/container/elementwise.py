@@ -163,7 +163,17 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse hyperbolic cosine of each element
             in ``x``. The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
-
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 2., -1, 1]), b=ivy.array([1., 0., 10.0, -6]))
+        >>> y = ivy.Container.static_acosh(x)
+        >>> print(y)
+        {
+            a: ivy.array([nan, 1.32, nan, 0.]),
+            b: ivy.array([0., nan, 2.99, nan])
+        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "acosh",
@@ -214,6 +224,17 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse hyperbolic cosine of each element in
             ``self``. The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 2., -1, 1]), b=ivy.array([1., 0., 10.0, -6]))
+        >>> y = x.acosh()
+        >>> print(y)
+        {
+            a: ivy.array([nan, 1.32, nan, 0.]),
+            b: ivy.array([0., nan, 2.99, nan])
+        }
+        
         """
         return self.static_acosh(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
