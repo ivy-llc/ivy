@@ -942,6 +942,28 @@
 <span class="sd">            a container containing the inverse tangent of the quotient ``x1/x2``.</span>
 <span class="sd">            The returned array must have a real-valued floating-point data type</span>
 <span class="sd">            determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\</span>
+<span class="sd">                            b=ivy.array([4.5, -5.3, -0]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([3.0, 2.0, 1.0])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_atan2(x, y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0., 0.915, -1.29]),</span>
+<span class="sd">            b: ivy.array([0.983, -1.21, 0.])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\</span>
+<span class="sd">                              b=ivy.array([4.5, -5.3, -0, -2.3]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\</span>
+<span class="sd">                              b=ivy.array([2.45, 6.35, 0, 1.5]))</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_atan2(x, y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([3.14, 0.978, -0.785]),</span>
+<span class="sd">            b: ivy.array([1.07, -0.696, 0., -0.993])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;atan2&quot;</span><span class="p">,</span>
@@ -998,6 +1020,28 @@
 <span class="sd">            a container containing the inverse tangent of the quotient ``self/x2``.</span>
 <span class="sd">            The returned array must have a real-valued floating-point data</span>
 <span class="sd">            type determined by :ref:`type-promotion`.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\</span>
+<span class="sd">                            b=ivy.array([4.5, -5.3, -0]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([3.0, 2.0, 1.0])</span>
+<span class="sd">        &gt;&gt;&gt; x.atan2(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0., 0.915, -1.29]),</span>
+<span class="sd">            b: ivy.array([0.983, -1.21, 0.])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\</span>
+<span class="sd">                              b=ivy.array([4.5, -5.3, -0, -2.3]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\</span>
+<span class="sd">                              b=ivy.array([2.45, 6.35, 0, 1.5]))</span>
+<span class="sd">        &gt;&gt;&gt; z = x.atan2(y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([3.14, 0.978, -0.785]),</span>
+<span class="sd">            b: ivy.array([1.07, -0.696, 0., -0.993])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_atan2</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
