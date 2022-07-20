@@ -522,6 +522,7 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
     # check for unsupported dtypes
     test_unsupported = False
     unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
+    unsupported_dtypes_fn += ivy.invalid_dtypes
     supported_dtypes_fn = ivy.function_supported_dtypes(fn)
     if unsupported_dtypes_fn:
         for d in input_dtypes:
@@ -727,11 +728,6 @@ def test_method(
     # run
     ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
     ret = ins(*calling_args, **calling_kwargs)
-
-    # assert idx of return if the idx of the out array provided
-
-    if "bfloat16" in input_dtypes and ground_truth_backend == "numpy":
-        return  # bfloat16 is not supported by numpy
 
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
@@ -969,7 +965,7 @@ def test_function(
             return
         ret = ivy.__dict__[fn_name](*args, **kwargs)
     # assert idx of return if the idx of the out array provided
-    out = ret
+    out = ivy.zeros_like(ret)
     if with_out:
         assert not isinstance(ret, tuple)
         if max(container_flags):
@@ -980,13 +976,10 @@ def test_function(
             ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
-        if max(container_flags):
-            assert ret is out
-        if not max(container_flags) and fw not in ["tensorflow", "jax", "numpy"]:
+        assert ret is out
+        if not max(container_flags) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
-    if "bfloat16" in input_dtypes and ground_truth_backend == "numpy":
-        return
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     try:
