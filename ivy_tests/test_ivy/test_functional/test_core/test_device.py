@@ -18,6 +18,7 @@ import ivy
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 
+
 # Helpers #
 # ------- #
 
@@ -383,7 +384,6 @@ def test_profiler(device, call):
     # log dir
     this_dir = os.path.dirname(os.path.realpath(__file__))
     log_dir = os.path.join(this_dir, "../log")
-
     # with statement
     with ivy.Profiler(log_dir):
         a = ivy.ones([10])
