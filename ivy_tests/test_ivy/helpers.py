@@ -1163,7 +1163,7 @@ def test_frontend_function(
             args[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
         ret = frontend_fn(*args, **kwargs)
 
-        if fw not in ["tensorflow", "jax", "numpy"]:
+        if ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
 
