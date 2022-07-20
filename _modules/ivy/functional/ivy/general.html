@@ -2725,12 +2725,11 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;torch&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[-1, 0, 1],[1, 0, -1]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.shape(x)</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.shape(x, as_array = True)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    torch.Size([2, 3])</span>
+<span class="sd">    (2, 3)</span>
 
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([2, 3])</span>
