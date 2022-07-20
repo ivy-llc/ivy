@@ -231,7 +231,9 @@ def test_copy_nest(device, call):
 
 
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
+    x0_n_x1_n_res=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="nested_multi_map"),
 )
 def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
@@ -242,15 +244,15 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
     if nest0.shape == ():
         return
     helpers.test_function(
-        dtype,
-        False,
-        False,
-        num_positional_args,
-        False,
-        False,
-        False,
-        fw,
-        "nested_multi_map",
+        input_dtypes=dtype,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        container_flags=False,
+        instance_method=False,
+        fw=fw,
+        fn_name="nested_multi_map",
         func=lambda x, _: x[0] + x[1],
         nests=[nest0, nest1],
     )
