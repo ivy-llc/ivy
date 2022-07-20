@@ -399,6 +399,8 @@ locks = {"backend_setter": threading.Lock()}
 
 backend = "none"
 
+native_inplace_support = None
+
 if "IVY_BACKEND" in os.environ:
     ivy.set_backend(os.environ["IVY_BACKEND"])
 
