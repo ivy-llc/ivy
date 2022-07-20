@@ -814,6 +814,28 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of the quotient ``x1/x2``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                            b=ivy.array([4.5, -5.3, -0]))
+        >>> y = ivy.array([3.0, 2.0, 1.0])
+        >>> ivy.Container.static_atan2(x, y)
+        {
+            a: ivy.array([0., 0.915, -1.29]),
+            b: ivy.array([0.983, -1.21, 0.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                              b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
+                              b=ivy.array([2.45, 6.35, 0, 1.5]))
+        >>> z = ivy.Container.static_atan2(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([3.14, 0.978, -0.785]),
+            b: ivy.array([1.07, -0.696, 0., -0.993])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "atan2",
@@ -870,6 +892,28 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of the quotient ``self/x2``.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                            b=ivy.array([4.5, -5.3, -0]))
+        >>> y = ivy.array([3.0, 2.0, 1.0])
+        >>> x.atan2(y)
+        {
+            a: ivy.array([0., 0.915, -1.29]),
+            b: ivy.array([0.983, -1.21, 0.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                              b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
+                              b=ivy.array([2.45, 6.35, 0, 1.5]))
+        >>> z = x.atan2(y)
+        >>> print(z)
+        {
+            a: ivy.array([3.14, 0.978, -0.785]),
+            b: ivy.array([1.07, -0.696, 0., -0.993])
+        }
         """
         return self.static_atan2(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
