@@ -374,16 +374,20 @@ def result_type(
     >>> print(ivy.result_type(x))
     int32
 
+    >>> print(ivy.result_type(x, 'int64'))
+    int64
+
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3., 4, 7.5])
-    >>> print(ivy.result_type(x))
-    float32
+    >>> y = ivy.native_array([3, 4, 7])
+    >>> print(ivy.result_type(x, y))
+    float64
 
     With :code:`ivy.Dtype` input:
 
-    >>> print(ivy.result_type(ivy.uint8))
-    uint8
+    >>> print(ivy.result_type(ivy.uint8, ivy.uint64))
+    uint64
 
     """
     return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
