@@ -384,7 +384,7 @@ def result_type(
 
     >>> print(ivy.result_type(ivy.uint8))
     uint8
-    
+
     """
     return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 
