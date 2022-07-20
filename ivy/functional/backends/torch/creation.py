@@ -138,6 +138,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -147,27 +148,46 @@ def eye(
     device = as_native_dev(default_device(device))
     if n_cols is None:
         n_cols = n_rows
+    if batch_shape is None:
+        batch_shape = []
     i = torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
-    if k == 0:
-        return i
+    reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+    tile_dims = list(batch_shape) + [1, 1]
+    return_mat = torch.reshape(i, reshape_dims).repeat(tile_dims)
+
+    # k=index of the diagonal. A positive value refers to an upper diagonal,
+    # a negative value to a lower diagonal, and 0 to the main diagonal.
+    # Default: 0.
+    # value of k ranges from -n_rows < k < n_cols
+
+    if k == 0:  # refers to the main diagonal
+        return return_mat
+
+    # when k is negative
     elif -n_rows < k < 0:
-        return torch.concat(
+        mat = torch.concat(
             [
                 torch.zeros([-k, n_cols], dtype=dtype, device=device, out=out),
                 i[: n_rows + k],
             ],
             0,
         )
+        return torch.reshape(mat, reshape_dims).repeat(tile_dims)
+
+    # when k is positive
     elif 0 < k < n_cols:
-        return torch.concat(
+        mat = torch.concat(
             [
                 torch.zeros([n_rows, k], dtype=dtype, device=device, out=out),
                 i[:, : n_cols - k],
             ],
             1,
         )
+        return torch.reshape(mat, reshape_dims).repeat(tile_dims)
     else:
-        return torch.zeros([n_rows, n_cols], dtype=dtype, device=device, out=out)
+        return torch.zeros(
+            batch_shape + [n_rows, n_cols], dtype=dtype, device=device, out=out
+        )
 
 
 eye.support_native_out = True
