@@ -24,6 +24,7 @@ def arange(
     *,
     dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ):
     if dtype:
         dtype = as_native_dtype(dtype)
@@ -42,6 +43,7 @@ def asarray(
     copy: Optional[bool] = None,
     dtype: jnp.dtype = None,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ):
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
@@ -71,6 +73,7 @@ def empty(
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     return _to_device(
         jnp.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
@@ -78,7 +81,11 @@ def empty(
 
 
 def empty_like(
-    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    x: JaxArray,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -95,6 +102,7 @@ def eye(
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     dtype = as_native_dtype(default_dtype(dtype))
     device = default_device(device)
@@ -102,7 +110,11 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def from_dlpack(x):
+def from_dlpack(
+    x,
+    *,
+    out: Optional[JaxArray] = None
+):
     return jax_from_dlpack(x)
 
 
@@ -120,6 +132,7 @@ def full(
     *,
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
@@ -135,6 +148,7 @@ def full_like(
     *,
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
@@ -158,6 +172,7 @@ def linspace(
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ):
     if axis is None:
         axis = -1
@@ -176,6 +191,7 @@ def ones(
     *,
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
     device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     return _to_device(
         jnp.ones(shape, as_native_dtype(default_dtype(dtype))), device=device
@@ -183,7 +199,11 @@ def ones(
 
 
 def ones_like(
-    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    x: JaxArray,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     if dtype and str:
         dtype = jnp.dtype(dtype)
@@ -192,11 +212,21 @@ def ones_like(
     return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
 
 
-def tril(x: JaxArray, k: int = 0) -> JaxArray:
+def tril(
+    x: JaxArray,
+    k: int = 0,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.tril(x, k)
 
 
-def triu(x: JaxArray, k: int = 0) -> JaxArray:
+def triu(
+    x: JaxArray,
+    k: int = 0,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.triu(x, k)
 
 
@@ -205,6 +235,7 @@ def zeros(
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     return _to_device(
         jnp.zeros(shape, dtype),
@@ -213,7 +244,11 @@ def zeros(
 
 
 def zeros_like(
-    x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
+    x: JaxArray,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not dtype:
         dtype = x.dtype
@@ -228,7 +263,14 @@ array = asarray
 
 
 def logspace(
-    start, stop, num, base=10.0, axis=None, *, device: jaxlib.xla_extension.Device
+    start,
+    stop,
+    num,
+    base=10.0,
+    axis=None,
+    *,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ):
     if axis is None:
         axis = -1
