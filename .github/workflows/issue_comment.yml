@@ -17,7 +17,7 @@ jobs:
           persist-credentials: false
       - name: Issue Comment Check
         run: |
-            echo Bot Offline
+          echo Bot Offline
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
