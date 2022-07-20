@@ -712,6 +712,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of each element in ``x``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+        >>> y = ivy.Container.static_atan(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., -0.785, 0.785]),
+            b: ivy.array([0.785, 0., -1.41])
+        }
+
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -762,7 +774,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of each element in ``x``.
             The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
 
+        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+        >>> y = x.atan()
+        >>> print(y)
+        {
+            a: ivy.array([0., -0.785, 0.785]),
+            b: ivy.array([0.785, 0., -1.41])
+        }
+        
         """
         return self.static_atan(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
