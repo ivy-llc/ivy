@@ -1000,7 +1000,17 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse hyperbolic tangent of each
             element in ``x``. The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
-
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.,0.5, -1, 1]), b=ivy.array([1., 0., 6, -6]))
+        >>> y = ivy.Container.static_atanh(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.549, -inf, inf]),
+            b: ivy.array([inf, 0., nan, nan])
+        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "atanh",
@@ -1051,6 +1061,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse hyperbolic tangent of each element
             in ``self``. The returned container must have a floating-point
             data type determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.,0.5, -1, 1]), b=ivy.array([1., 0., 6, -6]))
+        >>> y = x.atanh()
+        >>> print(y)
+        {
+             a: ivy.array([0., 0.549, -inf, inf]),
+             b: ivy.array([inf, 0., nan, nan])
+        }
 
         """
         return self.static_atanh(
