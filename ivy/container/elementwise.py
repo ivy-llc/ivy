@@ -814,6 +814,28 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of the quotient ``x1/x2``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                            b=ivy.array([4.5, -5.3, -0]))
+        >>> y = ivy.array([3.0, 2.0, 1.0])
+        >>> ivy.Container.static_atan2(x, y)
+        {
+            a: ivy.array([0., 0.915, -1.29]),
+            b: ivy.array([0.983, -1.21, 0.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                              b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
+                              b=ivy.array([2.45, 6.35, 0, 1.5]))
+        >>> z = ivy.Container.static_atan2(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([3.14, 0.978, -0.785]),
+            b: ivy.array([1.07, -0.696, 0., -0.993])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "atan2",
@@ -870,6 +892,28 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of the quotient ``self/x2``.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                            b=ivy.array([4.5, -5.3, -0]))
+        >>> y = ivy.array([3.0, 2.0, 1.0])
+        >>> x.atan2(y)
+        {
+            a: ivy.array([0., 0.915, -1.29]),
+            b: ivy.array([0.983, -1.21, 0.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                              b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
+                              b=ivy.array([2.45, 6.35, 0, 1.5]))
+        >>> z = x.atan2(y)
+        >>> print(z)
+        {
+            a: ivy.array([3.14, 0.978, -0.785]),
+            b: ivy.array([1.07, -0.696, 0., -0.993])
+        }
         """
         return self.static_atan2(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -4667,7 +4711,42 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the element-wise results. The returned container
-            must have must have the same sign as the respective element ``x2_i``.
+            must have the same sign as the respective element ``x2_i``.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 3., 4.]), b=ivy.array([1., 3., 3.]))
+        >>> y = ivy.Container.static_remainder(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0., 1.]),
+            b: ivy.array([0., 2., 1.])
+        }
+
+        With mixed :code:`ivy.Container` and `ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
+        >>> x2 = ivy.array([1., 2., 3.])
+        >>> y = ivy.Container.static_remainder(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([0., 0., 1.])
+        }
+
+        With mixed :code:`ivy.Container` and `ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
+        >>> x2 = ivy.native_array([1., 2., 3.])
+        >>> y = ivy.Container.static_remainder(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([0., 0., 1.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "remainder",
@@ -4721,7 +4800,42 @@ class ContainerWithElementwise(ContainerBase):
         -------
         ret
             a container containing the element-wise results. The returned container
-            must have must have the same sign as the respective element ``x2_i``.
+            must have the same sign as the respective element ``x2_i``.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 3., 4.]), b=ivy.array([1., 3., 3.]))
+        >>> y = x1.remainder(x2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0., 1.]),
+            b: ivy.array([0., 2., 1.])
+        }
+
+        With mixed :code:`ivy.Container` and `ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
+        >>> x2 = ivy.array([1., 2., 3.])
+        >>> y = x1.remainder(x2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([0., 0., 1.])
+        }
+
+        With mixed :code:`ivy.Container` and `ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
+        >>> x2 = ivy.native_array([1., 2., 3.])
+        >>> y = x1.remainder(x2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([0., 0., 1.])
+        }
         """
         return self.static_remainder(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -4766,6 +4880,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the rounded result for each element in ``x``.
             The returned container must have the same data type as ``x``.
 
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
+                    b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> y = ivy.Container.static_round(x)
+        >>> print(y)
+        {
+            a: ivy.array([4., 9., 7., 0.]),
+            b: ivy.array([-301., -527., 4.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "round",
@@ -4815,6 +4941,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the rounded result for each element in ``self``.
             The returned container must have the same data type as ``self``.
 
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
+                    b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> y = x.round()
+        >>> print(y)
+        {
+            a: ivy.array([4., 9., 7., 0.]),
+            b: ivy.array([-301., -527., 4.])
+        }
         """
         return self.static_round(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out

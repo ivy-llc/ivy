@@ -5,11 +5,12 @@ import jax
 import jax.lax as jlax
 import jaxlib
 from jaxlib.xla_extension import Buffer
+from ivy.functional.backends.jax import JaxArray
+from typing import Optional
 
 
 # local
 import ivy
-from ivy.container import Container
 
 
 # ToDo: modify these functions to track whether variable() has been called
@@ -30,7 +31,6 @@ def variable_data(x):
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
-    xs = xs.to_native()
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
@@ -42,12 +42,12 @@ def execute_with_gradients(func, xs, retain_grads=False):
         grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(x_in), []))
     grad_func = jax.grad(grad_fn)
     grads = grad_func(xs)
-    grads = Container(grads)
-    grads = grads.to_ivy()
     if not retain_grads:
         y = ivy.stop_gradient(y)
     return (y, grads, *rest)
 
 
-def stop_gradient(x, preserve_type=True):
+def stop_gradient(
+    x: JaxArray, preserve_type: bool = True, *, out: Optional[JaxArray] = None
+) -> JaxArray:
     return jlax.stop_gradient(x)
