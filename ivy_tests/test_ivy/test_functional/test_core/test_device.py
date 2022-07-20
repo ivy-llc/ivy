@@ -7,7 +7,6 @@ import os
 import re
 import sys
 import time
-from numbers import Number
 
 import numpy as np
 import nvidia_smi
@@ -139,34 +138,32 @@ def test_as_ivy_dev(array_shape, dtype, as_variable, fw):
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
 )
-def test_as_native_dev(array_shape, dtype, as_variable, device, fw, call):
+def test_as_native_dev(array_shape, dtype, as_variable, fw, call):
     if fw == "torch" and "int" in dtype:
         return
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
-    x = ivy.asarray(x)
-    if as_variable:
-        x = ivy.variable(x)
 
-    if (isinstance(x, Number) or x.size == 0) and as_variable and fw == "mxnet":
-        # mxnet does not support 0-dimensional variables
-        return
+    for device in get_possible_devices():
+        x = ivy.asarray(x, device=device)
+        if as_variable:
+            x = ivy.variable(x)
 
-    device = ivy.as_native_dev(device)
-    ret = ivy.as_native_dev(ivy.dev(x))
-    # value test
-    if call in [helpers.tf_call, helpers.tf_graph_call]:
-        assert "/" + ":".join(ret[1:].split(":")[-2:]) == "/" + ":".join(
-            device[1:].split(":")[-2:]
-        )
-    elif call is helpers.torch_call:
-        assert ret.type == device.type
-    else:
-        assert ret == device
-    # compilation test
-    if call is helpers.torch_call:
-        # pytorch scripting does not handle converting string to device
-        return
+        device = ivy.as_native_dev(device)
+        ret = ivy.as_native_dev(ivy.dev(x))
+        # value test
+        if call in [helpers.tf_call, helpers.tf_graph_call]:
+            assert "/" + ":".join(ret[1:].split(":")[-2:]) == "/" + ":".join(
+                device[1:].split(":")[-2:]
+            )
+        elif call is helpers.torch_call:
+            assert ret.type == device.type
+        else:
+            assert ret == device
+        # compilation test
+        if call is helpers.torch_call:
+            # pytorch scripting does not handle converting string to device
+            return
 
 
 # memory_on_dev
