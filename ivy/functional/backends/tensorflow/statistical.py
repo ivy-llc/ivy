@@ -35,8 +35,10 @@ def mean(
 def min(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int]]] = None,
+    *,
     keepdims: Optional[bool] = False,
 ) -> Union[tf.Tensor, tf.Variable]:
+
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 

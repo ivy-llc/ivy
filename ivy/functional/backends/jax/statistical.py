@@ -36,8 +36,10 @@ def min(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims, out=out)
 
 
 def prod(
