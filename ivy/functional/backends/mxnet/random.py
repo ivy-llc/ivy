@@ -6,12 +6,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.device import default_device
-
-# noinspection PyProtectedMember
 from ivy.functional.backends.mxnet import _mxnet_init_context
-
-# noinspection PyProtectedMember
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
@@ -30,7 +25,7 @@ def random_uniform(
         low = low.asscalar()
     if isinstance(high, mx.nd.NDArray):
         high = high.asscalar()
-    ctx = _mxnet_init_context(default_device(device))
+    ctx = _mxnet_init_context(device)
     if shape is None or len(shape) == 0:
         return _1_dim_array_to_flat_array(
             mx.nd.random.uniform(low, high, (1,), ctx=ctx, dtype=dtype)
@@ -48,7 +43,7 @@ def random_normal(
         mean = mean.asscalar()
     if isinstance(std, mx.nd.NDArray):
         std = std.asscalar()
-    ctx = _mxnet_init_context(default_device(device))
+    ctx = _mxnet_init_context(device)
     if shape is None or len(shape) == 0:
         return _1_dim_array_to_flat_array(mx.nd.random.normal(mean, std, (1,), ctx=ctx))
     return mx.nd.random.uniform(mean, std, shape, ctx=ctx)
@@ -64,7 +59,7 @@ def multinomial(
 ) -> mx.nd.NDArray:
     if not replace:
         raise Exception("MXNet does not support multinomial without replacement")
-    ctx = _mxnet_init_context(default_device(device))
+    ctx = _mxnet_init_context(device)
     if probs is None:
         probs = (
             mx.nd.ones(
@@ -92,7 +87,7 @@ def randint(
         low = int(low.asscalar())
     if isinstance(high, mx.nd.NDArray):
         high = int(high.asscalar())
-    ctx = _mxnet_init_context(default_device(device))
+    ctx = _mxnet_init_context(device)
     if len(shape) == 0:
         return _1_dim_array_to_flat_array(
             mx.nd.random.randint(low, high, (1,), ctx=ctx)
