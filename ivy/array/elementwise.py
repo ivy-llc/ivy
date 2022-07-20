@@ -60,6 +60,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic cosine
             of each element in ``self``.
             The returned array must have the same data type as ``self``.
+            
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 2.0, -3.0])
+        >>> y = x.acos()
+        >>> print(y)
+        ivy.array([ 0., nan, nan])
+
         """
         return ivy.acosh(self._data, out=out)
 
