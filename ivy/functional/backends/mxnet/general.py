@@ -97,8 +97,8 @@ def inplace_update(
 
 def inplace_arrays_supported():
     return True
-    
-    
+
+
 inplace_variables_supported = lambda: True
 
 
@@ -245,7 +245,7 @@ def multiprocessing(context=None):
     )
 
 
-def one_hot(indices, depth, device=None):
+def one_hot(indices, depth, *, device):
     return mx.nd.one_hot(indices, depth)
 
 
