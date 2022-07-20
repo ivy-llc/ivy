@@ -715,7 +715,6 @@ class ContainerWithElementwise(ContainerBase):
         
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
         >>> y = ivy.Container.static_atan(x)
         >>> print(y)
@@ -777,7 +776,6 @@ class ContainerWithElementwise(ContainerBase):
         
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
         >>> y = x.atan()
         >>> print(y)
