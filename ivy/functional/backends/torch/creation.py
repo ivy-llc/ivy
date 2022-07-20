@@ -20,7 +20,7 @@ from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 # -------------------#
 
 
-def _differentiable_linspace(start, stop, num, device, dtype=None):
+def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     if num == 1:
         return torch.unsqueeze(start, 0)
     n_m_1 = num - 1
@@ -68,12 +68,16 @@ def arange(
         return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
 
 
+arange.support_native_out = True
+
+
 def asarray(
     object_in,
     *,
     copy: Optional[bool] = None,
     dtype: torch.dtype = None,
     device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ):
     if isinstance(object_in, torch.Tensor) and dtype is None:
         dtype = object_in.dtype
@@ -114,8 +118,15 @@ def empty(
     )
 
 
+empty.support_native_out = True
+
+
 def empty_like(
-    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
+    x: torch.Tensor,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -159,7 +170,10 @@ def eye(
         return torch.zeros([n_rows, n_cols], dtype=dtype, device=device, out=out)
 
 
-def from_dlpack(x):
+eye.support_native_out = True
+
+
+def from_dlpack(x, *, out: Optional[torch.Tensor] = None):
     x = x.detach() if x.requires_grad else x
     return torch.utils.dlpack.from_dlpack(x)
 
@@ -193,12 +207,16 @@ def full(
     )
 
 
+full.support_native_out = True
+
+
 def full_like(
     x: torch.Tensor,
     fill_value: Union[int, float],
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
@@ -217,6 +235,7 @@ def linspace(
     *,
     dtype: torch.dtype,
     device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ):
     if not endpoint:
         ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
@@ -242,6 +261,9 @@ def linspace(
     ):
         ans[0] = start
     return ans
+
+
+linspace.support_native_out = True
 
 
 def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
@@ -356,8 +378,15 @@ def ones(
     return torch.ones(shape, dtype=dtype_val, device=as_native_dev(device))
 
 
+ones.support_native_out = True
+
+
 def ones_like(
-    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
+    x: torch.Tensor,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -366,15 +395,21 @@ def ones_like(
 
 
 def tril(
-    x: torch.Tensor, k: int = 0, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, k: int = 0, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.tril(x, diagonal=k, out=out)
 
 
+tril.support_native_out = True
+
+
 def triu(
-    x: torch.Tensor, k: int = 0, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, k: int = 0, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.triu(x, diagonal=k, out=out)
+
+
+triu.support_native_out = True
 
 
 def zeros(
@@ -387,8 +422,15 @@ def zeros(
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
 
 
+zeros.support_native_out = True
+
+
 def zeros_like(
-    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
+    x: torch.Tensor,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -404,8 +446,20 @@ def zeros_like(
 array = asarray
 
 
-def logspace(start, stop, num, base=10.0, axis=None, *, device: torch.device):
+def logspace(
+    start,
+    stop,
+    num,
+    base=10.0,
+    axis=None,
+    *,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+):
     power_seq = linspace(
         start, stop, num, axis, dtype=None, device=default_device(device)
     )
     return base**power_seq
+
+
+logspace.support_native_out = True
