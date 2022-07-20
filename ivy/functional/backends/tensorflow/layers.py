@@ -107,3 +107,18 @@ def conv3d_transpose(
     return tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
     )
+
+
+def max_pool2D(
+    x: tf.Tensor,
+    ksize: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    data_format: str = 'NHWC',
+) -> Tensor: 
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    res = tf.nn.max_pool2d(x, ksize, strides, padding, 'NHWC')
+    if data_format == "NCHW":
+        return tf.transpose(res, (0, 3, 1, 2))
+    return res
