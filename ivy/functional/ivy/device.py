@@ -625,6 +625,7 @@ def default_device(
     If the device is not provided, the last default device is returned.
     If a default device has not been set, the first gpu is returned if available,
     otherwise the cpu is returned.
+    
 
 
     Parameters
