@@ -346,13 +346,11 @@ def one_hot(
     indices: Union[tf.Tensor, tf.Variable],
     depth: int,
     *,
-    device,
+    device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    if device is not None:
-        with tf.device(device):
-            return tf.one_hot(indices, depth)
-    return tf.one_hot(indices, depth)
+    with tf.device(device):
+        return tf.one_hot(indices, depth)
 
 
 def current_backend_str():
