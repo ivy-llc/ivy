@@ -21,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ivy.dev" href="dev/dev_functional.html" />
+    <link rel="next" title="as_ivy_dev" href="as_ivy_dev.html" />
     <link rel="prev" title="print_all_ivy_arrays_on_dev" href="print_all_ivy_arrays_on_dev.html" /> 
 </head>
 
@@ -61,13 +61,7 @@
 <li class="toctree-l2"><a class="reference internal" href="get_all_ivy_arrays_on_dev.html">get_all_ivy_arrays_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_ivy_arrays_on_dev.html">num_ivy_arrays_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="print_all_ivy_arrays_on_dev.html">print_all_ivy_arrays_on_dev</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dev</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dev/dev_functional.html">ivy.dev</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/dev_array.html">ivy.Array.dev</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/dev_container.html">ivy.Container.dev</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/static_dev_container.html">ivy.Container.static_dev</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="as_ivy_dev.html">as_ivy_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="as_native_dev.html">as_native_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clear_mem_on_dev.html">clear_mem_on_dev</a></li>
@@ -86,6 +80,29 @@
 <li class="toctree-l2"><a class="reference internal" href="split_factor.html">split_factor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_split_factor.html">set_split_factor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_dist_array.html">dev_dist_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_dist.html">dev_dist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_dist_iter.html">dev_dist_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_dist_nest.html">dev_dist_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_clone_array.html">dev_clone_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_clone.html">dev_clone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_clone_iter.html">dev_clone_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_clone_nest.html">dev_clone_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_unify_array.html">dev_unify_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_unify.html">dev_unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_unify_iter.html">dev_unify_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_unify_nest.html">dev_unify_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevItem.html">MultiDevItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevIter.html">MultiDevIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevNest.html">MultiDevNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevDistItem.html">DevDistItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevDistIter.html">DevDistIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevDistNest.html">DevDistNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevClonedItem.html">DevClonedItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevClonedIter.html">DevClonedIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevClonedNest.html">DevClonedNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevMapper.html">DevMapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevMapperMultiProc.html">DevMapperMultiProc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
 </li>
@@ -174,7 +191,7 @@
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]</p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – Device handle for the array, in native framework format.</p>
@@ -189,51 +206,11 @@
 </div>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.array.array_methods.dev">
-<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/device.html#ArrayWithDevice.dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.dev" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of <a href="../dev/dev_functional.html">ivy.dev</a>. This method simply for <a href="../dev/dev_functional.html">ivy.dev</a> and so the docstring for ivy.dev also applies to this
-method with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.dev">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/device.html#ContainerWithDevice.dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.dev" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container instance method variant of ivy.dev. This method simply
-wraps the function, and so the docstring for ivy.dev also applies to this
-method with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.static_dev">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/device.html#ContainerWithDevice.static_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_dev" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container static method variant of ivy.dev. This method simply
-wraps the function, and so the docstring for ivy.dev also applies to this
-method with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 
 
@@ -241,7 +218,7 @@ method with minimal changes.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="print_all_ivy_arrays_on_dev.html" class="btn btn-neutral float-left" title="print_all_ivy_arrays_on_dev" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="dev/dev_functional.html" class="btn btn-neutral float-right" title="ivy.dev" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="as_ivy_dev.html" class="btn btn-neutral float-right" title="as_ivy_dev" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

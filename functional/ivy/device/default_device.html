@@ -80,6 +80,29 @@
 <li class="toctree-l2"><a class="reference internal" href="split_factor.html">split_factor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_split_factor.html">set_split_factor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_dist_array.html">dev_dist_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_dist.html">dev_dist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_dist_iter.html">dev_dist_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_dist_nest.html">dev_dist_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_clone_array.html">dev_clone_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_clone.html">dev_clone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_clone_iter.html">dev_clone_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_clone_nest.html">dev_clone_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_unify_array.html">dev_unify_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_unify.html">dev_unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_unify_iter.html">dev_unify_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_unify_nest.html">dev_unify_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevItem.html">MultiDevItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevIter.html">MultiDevIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevNest.html">MultiDevNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevDistItem.html">DevDistItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevDistIter.html">DevDistIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevDistNest.html">DevDistNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevClonedItem.html">DevClonedItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevClonedIter.html">DevClonedIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevClonedNest.html">DevClonedNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevMapper.html">DevMapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DevMapperMultiProc.html">DevMapperMultiProc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
 </li>
@@ -168,13 +191,13 @@ otherwise the cpu is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – The device to be returned or converted. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – The device to be returned or converted. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>item</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – The item to get the device from. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>as_native</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – Whether to convert the device to a native device. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]</p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – Device handle or string.</p>
