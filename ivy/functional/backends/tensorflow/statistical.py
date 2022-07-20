@@ -91,7 +91,7 @@ def sum(
 
 def var(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
 ) -> Union[tf.Tensor, tf.Variable]:

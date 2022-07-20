@@ -178,7 +178,7 @@ def sum(
 
 def var(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
     *,

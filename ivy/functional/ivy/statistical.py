@@ -437,7 +437,7 @@ def sum(
 @handle_nestable
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
     *,
@@ -489,8 +489,8 @@ def var(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
-    in the standard.
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.elementwise_functions.tan.html>`_ in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
@@ -506,18 +506,27 @@ def var(
     >>> print(y)
     ivy.array(6.66666667)
 
-    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
-    >>> y = ivy.var(x)
+    >>> x = ivy.array([0, 1, 2, 3, 4, 5, 6, 7, 8])
+    >>> y = ivy.array(0)
+    >>> ivy.var(x, out=y)
     >>> print(y)
     ivy.array(6.66666667)
 
     >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
-    >>> y = ivy.var(x, axis=1)
+    >>> y = ivy.array(0)
+    >>> ivy.var(x, out=y)
+    >>> print(y)
+    ivy.array(6.66666667)
+
+    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
+    >>> y = ivy.zeros(3)
+    >>> ivy.var(x, axis=1, out=y)
     >>> print(y)
     ivy.array([0.667, 0.667, 0.667])
 
     >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
-    >>> y = ivy.var(x, axis=0)
+    >>> y = ivy.zeros(3)
+    >>> ivy.var(x, axis=0, out=y)
     >>> print(y)
     ivy.array([6., 6., 6.])
 
@@ -528,10 +537,24 @@ def var(
     >>> print(y)
     ivy.array(0.5)
 
+    >>> x = ivy.native_array([1,2,2,3])
+    >>> y = ivy.array(0)
+    >>> ivy.var(x, out=y)
+    >>> print(y)
+    ivy.array(0.5)
+
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = ivy.var(x)
+    >>> print(y)
+    {
+        a: ivy.array(0.66666667),
+        b: ivy.array(0.66666667)
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.Container.static_var(x)
     >>> print(y)
     {
         a: ivy.array(0.66666667),
