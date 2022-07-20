@@ -313,6 +313,7 @@ def test_empty_like(
     n_rows=st.integers(min_value=0, max_value=5),
     n_cols=st.none() | st.integers(min_value=0, max_value=5),
     k=st.integers(min_value=-5, max_value=5),
+    batch_shape=helpers.lists(st.integers(1, 5), min_size=1, max_size=2),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -322,6 +323,7 @@ def test_eye(
     n_rows,
     n_cols,
     k,
+    batch_shape,
     dtype,
     device,
     as_variable,
@@ -343,6 +345,7 @@ def test_eye(
         n_rows=n_rows,
         n_cols=n_cols,
         k=k,
+        batch_shape=batch_shape,
         dtype=dtype,
         device=device,
     )
