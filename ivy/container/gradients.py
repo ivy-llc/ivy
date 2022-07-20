@@ -1,4 +1,4 @@
-from typing import Optional, Union, List, Dict
+from typing import Callable, Optional, Union, List, Dict
 
 # local
 import ivy
@@ -142,6 +142,27 @@ class ContainerWithGradients(ContainerBase):
         """
         return self.static_is_variable(
             self, exclusive, key_chains, to_apply, prune_unapplied, map_sequences
+        )
+
+    @staticmethod
+    def static_execute_with_gradients(
+        func: Callable,
+        xs: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        retain_grads: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ):
+        return ContainerBase.multi_map_in_static_method(
+            "execute_with_gradients",
+            func,
+            xs,
+            retain_grads=retain_grads,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod

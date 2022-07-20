@@ -689,8 +689,6 @@ def test_divide(
     input_dtype, x = dtype_and_x
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    # np.divide converts to signed int so values can't be too large
-    assume(np.all(x1 <= 9223372036854775807))
     # prevent division by 0
     assume(np.all(x2 != 0))
     helpers.test_function(

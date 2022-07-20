@@ -431,6 +431,57 @@ def test_result_type(
 # ------------------------ #
 
 
+# as_ivy_dtype
+@given(
+    input_dtype=st.sampled_from(ivy.valid_dtypes),
+)
+def test_as_ivy_dtype(
+    input_dtype,
+):
+    res = ivy.as_ivy_dtype(input_dtype)
+    if isinstance(input_dtype, str):
+        assert isinstance(res, str)
+        return
+    assert isinstance(input_dtype, ivy.Dtype) or isinstance(
+        input_dtype, str
+    ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
+    assert isinstance(res, str), f"result={res!r}, but should be str"
+
+
+# as_native_dtype
+@given(
+    input_dtype=st.sampled_from(ivy.valid_dtypes),
+)
+def test_as_native_dtype(
+    input_dtype,
+):
+    res = ivy.as_native_dtype(input_dtype)
+    if isinstance(input_dtype, ivy.NativeDtype):
+        assert isinstance(res, ivy.NativeDtype)
+        return
+    assert isinstance(input_dtype, ivy.Dtype) or isinstance(
+        input_dtype, str
+    ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
+    assert isinstance(
+        res, ivy.NativeDtype
+    ), f"result={res!r}, but should be ivy.NativeDtype"
+
+
+# closest_valid_dtypes
+@given(
+    input_dtype=st.sampled_from(ivy.valid_dtypes),
+)
+def test_closest_valid_dtype(
+    input_dtype,
+):
+    res = ivy.closest_valid_dtype(input_dtype)
+    print("res: ", res)
+    assert isinstance(input_dtype, ivy.Dtype) or isinstance(input_dtype, str)
+    assert isinstance(res, ivy.Dtype) or isinstance(
+        res, str
+    ), f"result={res!r}, but should be str or ivy.Dtype"
+
+
 # dtype_bits
 @given(
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
@@ -665,9 +716,7 @@ def test_type_promote_arrays(
 
 # Still to Add #
 # ------------ #
-# as_ivy_dtype
-# as_native_dtype
-# closest_valid_dtype
+
 # default_float_dtype
 # default_dtype
 # default_int_dtype
