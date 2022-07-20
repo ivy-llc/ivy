@@ -232,6 +232,54 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
+    def static_has_nans(
+        x: Iterable[Any],
+        include_infs: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ):
+        """
+        ivy.Container static method variant of ivy.has_nans. This method simply wraps
+        the function, and so the docstring for ivy.has_nans also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container.
+        include_infs
+            Whether to include ``+infinity`` and ``-infinity`` in the check. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            container of booleans, whether there is a nans at indices.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "has_nans",
+            x,
+            include_infs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+
+    @staticmethod
     def static_gather_nd(
         params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
