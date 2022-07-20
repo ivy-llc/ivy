@@ -1,5 +1,4 @@
 import ivy
-import inspect
 import functools
 from types import FunctionType
 from typing import Callable
@@ -235,7 +234,7 @@ def infer_device(fn: Callable) -> Callable:
 
 
 def handle_out_argument(fn: Callable) -> Callable:
-    handle_out_in_backend = "out" in inspect.signature(fn).parameters.keys()
+    handle_out_in_backend = hasattr(fn, "support_native_out")
 
     @functools.wraps(fn)
     def new_fn(*args, out=None, **kwargs):
