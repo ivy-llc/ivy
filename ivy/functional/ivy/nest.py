@@ -249,7 +249,11 @@ def insert_into_nest_at_indices(nest, indices, values):
     ]
 
 
-def map_nest_at_indices(nest, indices, fn):
+def map_nest_at_indices(
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray], 
+    indices: Union[List[int], Tuple[int], Iterable[int]], 
+    fn: Callable,
+) -> Any:
     """Map a function to the values of a nested item at the specified indices.
 
     Parameters
@@ -260,7 +264,44 @@ def map_nest_at_indices(nest, indices, fn):
         A tuple of tuples of indices for the indices at which to update.
     fn
         The function to perform on the nest at the given index.
+    
+    Examples
+    --------
+    With :code:`List` inputs:
 
+    >>> nest = [[1, 2, 3, 4, 25, 6], [9, 24, 79, 82, 35, 64]]
+    >>> indices = [[0, 4], [1, 5]]
+    >>> fn = math.sqrt(x)
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    [[1, 2, 3, 4, 5, 6], [9, 24, 79, 82, 35, 8]]
+
+    With :code:`Tuple` inputs:
+
+    >>> nest = ([-9, 8, -27],[9, -4, -5, 7])
+    >>> indices = ((0, 2),(1, 0),(1, 2))
+    >>> fn = math.abs(x)
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    ([-9, 8, 27], [9, -4, 5, 7])
+
+    With :code:`Dict` input:
+
+    >>> nest = {'a': [8., 16., 22.], 'b': [10., 44., 81.], 'c': [9.]}
+    >>> indices = (('a', 1), ('b', 2), ('c', 0))
+    >>> fn = math.sqrt(x)
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    {'a': [8.0, 4.0, 22.0], 'b': [10.0, 44.0, 9.0], 'c': [3.0]}
+
+    With :code:`ivy.Array` inputs:
+
+    >>> nest = ivy.array([[-9., 8., -17.],[22., -57., -37.]])
+    >>> indices = ((0, 1),(1, 1),(1, 2))
+    >>> values = math.abs(x)
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    ivy.array([[-9., 8., -17.], [22., 57., 37.]])
     """
     [map_nest_at_index(nest, index, fn) for index in indices]
 
