@@ -455,6 +455,10 @@ def zeros_like(
     if device is None:
         device = dev(x)
     if dtype is not None:
+        if isinstance(x, bool):
+            x = int(x)
+        if not isinstance(x, torch.Tensor):
+            x = torch.Tensor(x)
         return torch.zeros_like(x, dtype=dtype, device=as_native_dev(device))
     return torch.zeros_like(x, device=as_native_dev(device))
 
