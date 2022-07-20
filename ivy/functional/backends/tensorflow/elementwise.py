@@ -78,7 +78,7 @@ def asinh(
 def atan(
     x: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.atan(x)
+    return tf.math.atan(x)
 
 
 def atan2(
