@@ -18,7 +18,6 @@ from typing import Union, Callable, Iterable, Any
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
@@ -110,7 +109,7 @@ class DefaultDevice:
 # Helpers #
 
 # noinspection PyShadowingNames
-def _get_nvml_gpu_handle(device):
+def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice]) -> int:
     global dev_handles
     if device in dev_handles:
         return dev_handles[device]
@@ -125,7 +124,9 @@ def _get_nvml_gpu_handle(device):
 # Array Printing
 
 
-def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
+def get_all_ivy_arrays_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice]
+) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
     Parameters
@@ -158,7 +159,7 @@ def get_all_ivy_arrays_on_dev(device: ivy.Device) -> ivy.Container:
     return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 
-def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
+def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> int:
     """Returns the number of arrays which are currently alive on the specified device.
 
     Parameters
@@ -291,7 +292,9 @@ def num_ivy_arrays_on_dev(device: ivy.Device) -> int:
 
 
 @handle_nestable
-def print_all_ivy_arrays_on_dev(device, attr_only=True):
+def print_all_ivy_arrays_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice], attr_only: bool = True
+) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
     specified device.
@@ -316,7 +319,7 @@ def print_all_ivy_arrays_on_dev(device, attr_only=True):
 
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
-) -> Union[ivy.Device, str]:
+) -> Union[ivy.Device, ivy.NativeDevice]:
     """
     Get the native device handle for input array x.
 
@@ -340,13 +343,13 @@ def dev(
     >>> print(y)
     cpu
     """
-    return current_backend(x).dev(x, as_native)
+    return ivy.current_backend(x).dev(x, as_native)
 
 
 # Conversions
 
 
-def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
+def as_ivy_dev(device: Union[ivy.Device, str]) -> ivy.Device:
     """Convert native data type to string representation.
 
     Parameters
@@ -360,7 +363,7 @@ def as_ivy_dev(device: Union[ivy.Device, str]) -> str:
         Device string e.g. 'cuda:0'.
 
     """
-    return current_backend().as_ivy_dev(device)
+    return ivy.current_backend().as_ivy_dev(device)
 
 
 def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevice:
@@ -377,7 +380,7 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevi
         Native device handle.
 
     """
-    return current_backend().as_native_dev(device)
+    return ivy.current_backend().as_native_dev(device)
 
 
 # Memory
@@ -392,7 +395,7 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
         The device string to convert to native device handle.
 
     """
-    return current_backend(None).clear_mem_on_dev(device)
+    ivy.current_backend(None).clear_mem_on_dev(device)
 
 
 def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
@@ -434,7 +437,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
 
 
 def used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
+    device: Union[ivy.Device, ivy.NativeDevice], process_specific: bool = False
 ) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
@@ -473,7 +476,7 @@ def used_mem_on_dev(
 
 
 def percent_used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], process_specific=False
+    device: Union[ivy.Device, ivy.NativeDevice], process_specific: bool = False
 ) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
     used RAM is returned.
@@ -537,7 +540,7 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     93.4
     >>> ivy.dev_util('gpu:2')
     57.4
-    >>> ivy.dev_util('cpu)
+    >>> ivy.dev_util('cpu')
     84.2
 
 
@@ -570,10 +573,10 @@ def gpu_is_available() -> bool:
     >>> print(ivy.gpu_is_available())
     False
     """
-    return current_backend().gpu_is_available()
+    return ivy.current_backend().gpu_is_available()
 
 
-def num_cpu_cores(logical=True) -> int:
+def num_cpu_cores(logical: bool = True) -> int:
     """Determine the number of cores available in the cpu.
 
     Parameters
@@ -612,7 +615,7 @@ def num_gpus() -> int:
     1
 
     """
-    return current_backend().num_gpus()
+    return ivy.current_backend().num_gpus()
 
 
 def tpu_is_available() -> bool:
@@ -628,17 +631,17 @@ def tpu_is_available() -> bool:
     >>> print(ivy.tpu_is_available())
     False
     """
-    return current_backend().tpu_is_available()
+    return ivy.current_backend().tpu_is_available()
 
 
 # Default Device #
 
 # noinspection PyShadowingNames
 def default_device(
-    device: Union[str, ivy.Device, ivy.NativeDevice] = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
     item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
     as_native: bool = None,
-) -> Union[str, ivy.Device, ivy.NativeDevice]:
+) -> Union[ivy.Device, ivy.NativeDevice]:
     """Returns the input device or the default device.
     If the as native flag is set, the device will be converted to a native device.
     If the item is provided, the item's device is returned.
@@ -701,7 +704,7 @@ def default_device(
     return ivy.as_ivy_dev(ret)
 
 
-def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]):
+def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     """Set the default device to given device instance
 
     Parameters
@@ -791,7 +794,7 @@ def to_device(
     >>> x = ivy.to_device(x, 'cpu')
 
     """
-    return current_backend(x).to_device(x, device, out=out)
+    return ivy.current_backend(x).to_device(x, device, out=out)
 
 
 # Function Splitting #
@@ -888,7 +891,7 @@ def split_func_call(
     input_axes: Union[int, Iterable[int]] = 0,
     output_axes: Union[int, Iterable[int]] = None,
     stop_gradients: bool = False,
-    device=None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Call a function by splitting its inputs along a given axis, and calling the
     function in chunks, rather than feeding the entire input array at once. This can be
