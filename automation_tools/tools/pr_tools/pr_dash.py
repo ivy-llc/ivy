@@ -31,21 +31,26 @@ def diff_between_2_dates(d1, d2=datetime.datetime.now().date(), dformat="%Y-%m-%
     return abs((d2 - d1).days)
 
 
+def get_interns():
+    with open("automation_tools/tools/pr_tools/assets/interns.txt", "r") as file:
+        return [intern_.replace("\n", "") for intern_ in file.readlines()]
+
+
 def create_rows(prs):
     tmp = []
+    interns = get_interns()
+    nr = 1
     for pr in prs:
         try:
-            latestReviews = pr["latestReviews"][0]["submittedAt"][:-10]
-            updatedAt = pr["updatedAt"][:-10]
-            if diff_between_2_dates(latestReviews) > diff_between_2_dates(updatedAt):
-                diff = diff_between_2_dates(updatedAt)
-            else:
-                diff = diff_between_2_dates(latestReviews)
-        except IndexError:
+            last_comment = pr["comments"][-1]
+            last_comment_author = last_comment["author"]["login"]
+            if last_comment_author not in interns:
+                diff = diff_between_2_dates(last_comment["createdAt"][:-10])
+        except (IndexError, KeyError):
             diff = diff_between_2_dates(pr["updatedAt"][:-10])
 
-        if diff >= 3:
-            row = [pr["title"].strip(), diff, pr["url"]]
+        if diff > 3 and pr["author"]["login"] not in interns:
+            row = [pr["title"].strip(), diff, pr["url"], pr["author"]["login"]]
             if pr["latestReviews"] and pr["assignees"]:
                 row += [
                     pr["assignees"][0]["login"],
@@ -59,6 +64,11 @@ def create_rows(prs):
                 row += ["-", "-"]
             tmp.append(truncate_pr_title(row))
     tmp.sort(reverse=True, key=lambda diff: diff[1])
+
+    nr = 1
+    for row in tmp:
+        row.insert(0, nr)
+        nr += 1
     return tmp
 
 
@@ -69,9 +79,12 @@ def truncate_pr_title(row):
 
 
 def sort_prs(rows, table, criteria=None, r_index=None):
+    nr = 1
     for row in rows:
         if criteria == row[r_index]:
+            row[0] = nr
             table.add_row(row)
+            nr += 1
 
 
 def command(cmd, save_output=True):
@@ -95,7 +108,8 @@ def help_menu():
     help_table.field_names = ["Command", "Description"]
     cmds_description = [
         ["-h", "This help menu"],
-        ["-a", "Sorts PRs by assigners by providing a name"],
+        ["-au", "Sorts PRs by author by providing a name"],
+        ["-as", "Sorts PRs by assigners by providing a name"],
         ["-lr", "Sorts PRs by last reviewers by providing a name"],
         [" -all", "Provides a table of all PRs that are inactive for more than 3 days"],
     ]
@@ -110,21 +124,25 @@ def main():
     try:
         table = PrettyTable()
         table.field_names = [
+            "Nr",
             "Title",
             "Inactivity Days",
             "URL",
+            "Author",
             "Assignee",
             "Last Reviewer",
         ]
 
         r_index = None
-        if argv[1] == "-a":
-            r_index = 3
+        if argv[1] == "-au":
+            r_index = 4
+        elif argv[1] == "-as":
+            r_index = 5
         elif argv[1] == "-lr":
             r_index = -1
         elif argv[1] == "-all":
             prs = command(
-                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews"
+                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
             )
             rows = create_rows(prs)
             for row in rows:
@@ -134,7 +152,7 @@ def main():
 
         if r_index:
             prs = command(
-                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews"
+                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
             )
             rows = create_rows(prs)
 
