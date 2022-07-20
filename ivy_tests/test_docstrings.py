@@ -37,6 +37,8 @@ def test_docstrings(backend):
         "num_cpu_cores",
         "get_all_ivy_arrays_on_dev",
         "num_ivy_arrays_on_dev",
+        "total_mem_on_dev",
+        "used_mem_on_dev",
         "function_unsupported_dtypes",
         "randint",
         "unique_counts",
