@@ -801,7 +801,7 @@ def matrix_rank(
         data type determined by :ref:`type-promotion` and must have shape ``(...)``
         (i.e., must have a shape equal to ``shape(x)[:-2]``).
 
-    Functional Examples
+    Examples
     --------
 
     With :code: 'ivy.Array' inputs:
