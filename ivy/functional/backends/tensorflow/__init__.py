@@ -83,6 +83,8 @@ invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
 
+native_inplace_support = False
+
 
 def closest_valid_dtype(type):
     if type is None:
