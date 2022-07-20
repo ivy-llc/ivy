@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 from collections import namedtuple
 from packaging import version
 
@@ -62,7 +62,7 @@ def unique_inverse(x: np.ndarray) -> NamedTuple:
     return out(values, inverse_indices)
 
 
-def unique_values(x: np.ndarray) -> np.ndarray:
+def unique_values(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     nan_count = np.count_nonzero(np.isnan(x))
     if version.parse(np.__version__) >= version.parse("1.21.0") and nan_count > 1:
         unique = np.append(
