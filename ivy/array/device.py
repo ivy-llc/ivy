@@ -9,7 +9,9 @@ import ivy
 
 
 class ArrayWithDevice(abc.ABC):
-    def dev(self: ivy.Array) -> Union[ivy.Device, ivy.NativeDevice]:
+    def dev(
+        self: ivy.Array, as_native: bool = False
+    ) -> Union[ivy.Device, ivy.NativeDevice]:
         """
         ivy.Array instance method variant of ivy.dev. This method simply wraps
         the function, and so the docstring for ivy.dev also applies to this
@@ -19,7 +21,7 @@ class ArrayWithDevice(abc.ABC):
         --------
 
         """
-        return ivy.dev(self)
+        return ivy.dev(self, as_native)
 
     def to_device(
         self: ivy.Array,
