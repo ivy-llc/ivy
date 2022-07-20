@@ -9,10 +9,10 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.jax
-import ivy.functional.backends.tensorflow
-import ivy.functional.backends.torch
-import ivy.functional.backends.mxnet
+import ivy.functional.backends.jax as ivy_jax
+import ivy.functional.backends.tensorflow as ivy_tf
+import ivy.functional.backends.torch as ivy_torch
+import ivy.functional.backends.mxnet as ivy_mxn
 from functools import reduce  # for making strategy
 from operator import mul  # for making strategy
 from typing import Tuple
@@ -714,6 +714,96 @@ def test_type_promote_arrays(
     )
 
 
+# invalid_dtype
+@given(
+    dtype_in=st.sampled_from(ivy.valid_dtypes),
+)
+def test_invalid_dtype(dtype_in, fw):
+    res = ivy.invalid_dtype(dtype_in)
+    fw_invalid_dtypes = {
+        "torch": ivy_torch.invalid_dtypes,
+        "tensorflow": ivy_tf.invalid_dtypes,
+        "jax": ivy_jax.invalid_dtypes,
+        "mxnet": ivy_mxn.invalid_dtypes,
+        "numpy": ivy_np.invalid_dtypes,
+    }
+    if dtype_in in fw_invalid_dtypes[fw]:
+        assert res is True, (
+            f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
+        )
+    else:
+        assert res is False, (
+            f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, but"
+            f"result = {res}"
+        )
+
+
+# unset_default_dtype()
+@given(
+    dtype=st.sampled_from(ivy.valid_dtypes),
+)
+def test_unset_default_dtype(dtype):
+    stack_size_before = len(ivy.default_dtype_stack)
+    ivy.set_default_dtype(dtype)
+    ivy.unset_default_dtype()
+    stack_size_after = len(ivy.default_dtype_stack)
+    assert (
+        stack_size_before == stack_size_after
+    ), f"Default dtype not unset. Stack size= {stack_size_after!r}"
+
+
+# unset_default_float_dtype()
+@given(
+    dtype=st.sampled_from(ivy.valid_float_dtypes),
+)
+def test_unset_default_float_dtype(dtype):
+    stack_size_before = len(ivy.default_float_dtype_stack)
+    ivy.set_default_float_dtype(dtype)
+    ivy.unset_default_float_dtype()
+    stack_size_after = len(ivy.default_float_dtype_stack)
+    assert (
+        stack_size_before == stack_size_after
+    ), f"Default float dtype not unset. Stack size= {stack_size_after!r}"
+
+
+# unset_default_int_dtype()
+@given(
+    dtype=st.sampled_from(ivy.valid_int_dtypes),
+)
+def test_unset_default_int_dtype(dtype):
+    stack_size_before = len(ivy.default_int_dtype_stack)
+    ivy.set_default_int_dtype(dtype)
+    ivy.unset_default_int_dtype()
+    stack_size_after = len(ivy.default_int_dtype_stack)
+    assert (
+        stack_size_before == stack_size_after
+    ), f"Default int dtype not unset. Stack size= {stack_size_after!r}"
+
+
+# valid_dtype
+@given(
+    dtype_in=st.sampled_from(ivy.valid_dtypes),
+)
+def test_valid_dtype(dtype_in, fw):
+    res = ivy.valid_dtype(dtype_in)
+    fw_valid_dtypes = {
+        "torch": ivy_torch.valid_dtypes,
+        "tensorflow": ivy_tf.valid_dtypes,
+        "jax": ivy_jax.valid_dtypes,
+        "mxnet": ivy_mxn.valid_dtypes,
+        "numpy": ivy_np.valid_dtypes,
+    }
+    if dtype_in in fw_valid_dtypes[fw]:
+        assert res is True, (
+            f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, but"
+            f"result = {res}"
+        )
+    else:
+        assert res is False, (
+            f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
+        )
+
+
 # Still to Add #
 # ------------ #
 
@@ -723,8 +813,3 @@ def test_type_promote_arrays(
 # test_dtype
 # function_supported_dtypes
 # function_unsupported_dtypes
-# invalid_dtype
-# unset_default_dtype()
-# unset_default_float_dtype()
-# unset_default_int_dtype()
-# valid_dtype
