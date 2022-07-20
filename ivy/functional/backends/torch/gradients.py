@@ -37,7 +37,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         xs,
         retain_graph=retain_grads,
         create_graph=retain_grads,
-    )
+    )[0]
     y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)
