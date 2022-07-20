@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from typing import Optional, Union, Sequence, Tuple
+from typing import Optional, Union, Sequence
 
 # local
 import ivy
@@ -12,9 +12,9 @@ import ivy
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    low: Union[float, np.ndarray] = 0.0,
+    high: Union[float, np.ndarray] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
     dtype = None,
@@ -40,7 +40,6 @@ def multinomial(
     replace=True,
     *,
     device: str,
-    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if probs is None:
         probs = (
@@ -67,8 +66,15 @@ def multinomial(
     return np.asarray(np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
 
 
+multinomial.support_native_out = True
+
+
 def randint(
-    low: int, high: int, shape: Union[ivy.NativeShape, Sequence[int]], *, device: str
+    low: int,
+    high: int,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    device: str,
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
 
@@ -77,5 +83,5 @@ def seed(seed_value: int = 0) -> None:
     np.random.seed(seed_value)
 
 
-def shuffle(x: np.ndarray) -> np.ndarray:
+def shuffle(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.random.permutation(x)

@@ -18,12 +18,9 @@ import ivy_tests.test_ivy.helpers as helpers
     as_variable_flags=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(2, 3),
-    #num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
     native_array_flags=st.booleans(),
-    #native_array=st.just(True),
     container_flags=st.booleans(),
     instance_method=st.booleans(),
-    #instance_method=st.just(False),
     shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
 )
 def test_random_uniform(

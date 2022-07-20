@@ -28,11 +28,12 @@ import ivy
 def random_uniform(
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     high: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    #shape: Optional[Union[int, Tuple[int, ...]], ivy.Shape, ivy.NativeShape] = None,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    #out: Optional[ivy.Array] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
@@ -99,8 +100,7 @@ def random_uniform(
 
     """
     return current_backend().random_uniform(
-        low, high, shape, device=device, dtype=dtype
-        #low, high, shape, device=device, dtype=dtype, out=out
+        low, high, shape, device=device, dtype=dtype, out=out
     )
 
 
@@ -273,7 +273,7 @@ def multinomial(
     )
 
 
-@to_native_arrays_and_back
+@outputs_to_ivy_arrays
 @handle_out_argument
 @infer_device
 @handle_nestable
@@ -311,22 +311,21 @@ def randint(
 
     Examples
     --------
-    >>> y = ivy.randint(0, 9, 1)
+    >>> y = ivy.randint(0, 9, (1,1))
     >>> print(y)
-    ivy.array([3])
+    ivy.array([5])
 
-    >>> y = ivy.randint(2, 20, (2, z2), 'cpu')
+    >>> y = ivy.randint(2, 20, (2, 2), device='cpu')
     >>> print(y)
-    ivy.array([[ 7,  5],
-               [15, 15]])
+    ivy.array([[5,8],[9,3]])
 
-    >>> x = ivy.Array([1, 2, 3])
+    >>> x = ivy.array([1, 2, 3])
     >>> ivy.randint(0, 10, (3,), out=x)
     >>> print(x)
     ivy.array([2, 6, 7])
 
-    >>> y = ivy.zeros(3, 3)
-    >>> ivy.randint(3, 15, (3, 3), 'gpu:1', out=y)
+    >>> y = ivy.zeros((3, 3))
+    >>> ivy.randint(3, 15, (3, 3), device='cpu', out=y)
     >>> print(y)
     ivy.array([[ 7,  7,  5],
                [12,  8,  8],
@@ -364,6 +363,7 @@ def seed(
 @handle_nestable
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.

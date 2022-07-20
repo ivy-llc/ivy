@@ -958,7 +958,6 @@ def test_function(
         if not test_unsupported:
             #check if instance method is available for the function
             try:
-                #ret = instance.__getattribute__(fn_name)(*args, **kwargs)
                 instance.__getattribute__(fn_name)(*args, **kwargs)
             except TypeError:
                 test_unsupported = True

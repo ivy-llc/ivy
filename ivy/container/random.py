@@ -56,7 +56,6 @@ class ContainerWithRandom(ContainerBase):
             low,
             high,
             shape,
-            #self,
             device,
             dtype,
             key_chains,

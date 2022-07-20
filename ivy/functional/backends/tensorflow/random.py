@@ -4,7 +4,7 @@ signature.
 
 # global
 import tensorflow as tf
-from typing import Optional, Union, Sequence, Tuple
+from typing import Optional, Union, Sequence
 
 # local
 import ivy
@@ -75,7 +75,11 @@ def multinomial(
 
 
 def randint(
-    low: int, high: int, shape: Union[ivy.NativeShape, Sequence[int]], *, device: str
+    low: int,
+    high: int,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    device: str,
 ) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     low = tf.cast(low, "int64")
@@ -88,5 +92,7 @@ def seed(seed_value: int = 0) -> None:
     tf.random.set_seed(seed_value)
 
 
-def shuffle(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def shuffle(
+    x: Union[tf.Tensor, tf.Variable],
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.random.shuffle(x)
