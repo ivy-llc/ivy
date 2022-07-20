@@ -965,8 +965,8 @@ def test_function(
             return
         ret = ivy.__dict__[fn_name](*args, **kwargs)
     # assert idx of return if the idx of the out array provided
-    out = ivy.zeros_like(ret)
     if with_out:
+        out = ivy.zeros_like(ret)
         assert not isinstance(ret, tuple)
         if max(container_flags):
             assert ivy.is_ivy_container(ret)
