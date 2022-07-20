@@ -108,23 +108,24 @@ def test_dev(array_shape, dtype, as_variable, fw):
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
 )
-def test_as_ivy_dev(array_shape, dtype, as_variable, fw, device):
+def test_as_ivy_dev(array_shape, dtype, as_variable, fw):
     if fw == "torch" and "int" in dtype:
         return
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
-    x = ivy.asarray(x)
-    if as_variable:
-        x = ivy.variable(x)
 
-    if (isinstance(x, Number) or x.size == 0) and as_variable and fw == "mxnet":
-        # mxnet does not support 0-dimensional variables
-        return
+    for device in get_possible_devices():
+        x = ivy.array(x, device=device)
+        if as_variable:
+            x = ivy.variable(x)
 
-    device = ivy.dev(x)
-    ret = ivy.as_ivy_dev(device)
-    # type test
-    assert isinstance(ret, str)
+        native_device = ivy.dev(x, True)
+        ret = ivy.as_ivy_dev(native_device)
+
+        # Type test
+        assert isinstance(ret, str)
+        # Value test
+        assert ret == device
 
 
 # as_native_dev
