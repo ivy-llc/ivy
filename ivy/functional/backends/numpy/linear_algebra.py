@@ -120,7 +120,7 @@ def pinv(
     x: np.ndarray,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     *,
-    out: Optional[np.ndarray]
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if rtol is None:
         ret = np.linalg.pinv(x)
