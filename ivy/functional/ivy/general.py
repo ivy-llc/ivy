@@ -2597,12 +2597,11 @@ def shape(
 
     Examples
     --------
-    >>> ivy.set_backend('torch')
     >>> x = ivy.array([[-1, 0, 1],[1, 0, -1]])
     >>> y = ivy.shape(x)
     >>> z = ivy.shape(x, as_array = True)
     >>> print(y)
-    torch.Size([2, 3])
+    (2, 3)
 
     >>> print(z)
     ivy.array([2, 3])
