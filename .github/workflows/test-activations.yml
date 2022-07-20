@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Use set up
-        uses: ./.github/workflows/set-up
+        uses: ./.github/workflows/set-up.yml
 
       - name: Run Activations Tests
         run: |
