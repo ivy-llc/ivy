@@ -965,7 +965,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([8., float('+inf')])
         >>> y = x.log2()
         >>> print(y)
-        ivy.array([3.,inf])
+        ivy.array([3., inf])
 
         >>> x = ivy.array([[-4., 1.],\
                            [-0., 4.]])
