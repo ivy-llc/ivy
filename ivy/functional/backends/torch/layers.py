@@ -73,6 +73,9 @@ def conv1d_transpose(
     return res.permute(0, 2, 1)
 
 
+conv1d.unsupported_dtypes = ('float16',)
+
+
 # noinspection PyUnresolvedReferences
 def conv2d(
     x: torch.Tensor,
@@ -215,6 +218,9 @@ def conv3d(
         )
     res = torch.nn.functional.conv3d(x, filters, None, strides, padding_list, dilations)
     return res.permute(0, 2, 3, 4, 1)
+
+
+conv3d.unsupported_dtypes = ('float16',)
 
 
 # noinspection PyUnresolvedReferences

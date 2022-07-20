@@ -313,6 +313,7 @@ def test_empty_like(
     n_rows=st.integers(min_value=0, max_value=5),
     n_cols=st.none() | st.integers(min_value=0, max_value=5),
     k=st.integers(min_value=-5, max_value=5),
+    batch_shape=st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=2),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -322,6 +323,7 @@ def test_eye(
     n_rows,
     n_cols,
     k,
+    batch_shape,
     dtype,
     device,
     as_variable,
@@ -343,6 +345,7 @@ def test_eye(
         n_rows=n_rows,
         n_cols=n_cols,
         k=k,
+        batch_shape=batch_shape,
         dtype=dtype,
         device=device,
     )
@@ -449,10 +452,10 @@ def _dtype(draw):
 @st.composite
 def _fill_value(draw):
     dtype = draw(_dtype())[0]
-    if ivy.is_int_dtype(dtype):
-        # ToDo: set min to -5 for int and add an explicitl uint check, once
-        #  ivy.is_uint_dtype is implemented
+    if ivy.is_uint_dtype(dtype):
         return draw(st.integers(0, 5))
+    if ivy.is_int_dtype(dtype):
+        return draw(st.integers(-5, 5))
     return draw(st.floats(-5, 5))
 
 
