@@ -167,20 +167,17 @@ def test_as_native_dev(array_shape, dtype, as_variable, fw, call):
 
 
 # memory_on_dev
-@pytest.mark.parametrize("dev_to_check", ["cpu", "gpu:0"])
-def test_memory_on_dev(dev_to_check, device, call):
-    if "gpu" in dev_to_check and ivy.num_gpus() == 0:
-        # cannot get amount of memory for gpu which is not present
-        pytest.skip()
-    ret = ivy.total_mem_on_dev(dev_to_check)
-    # type test
-    assert isinstance(ret, float)
-    # value test
-    assert 0 < ret < 64
-    # compilation test
-    if call is helpers.torch_call:
-        # global variables aren't supported for pytorch scripting
-        pytest.skip()
+def test_memory_on_dev(call):
+    for device in get_possible_devices():
+        ret = ivy.total_mem_on_dev(device)
+        # type test
+        assert isinstance(ret, float)
+        # value test
+        assert 0 < ret < 64
+        # compilation test
+        if call is helpers.torch_call:
+            # global variables aren't supported for pytorch scripting
+            pytest.skip()
 
 
 # Device Allocation #
