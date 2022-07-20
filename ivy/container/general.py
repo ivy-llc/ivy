@@ -274,7 +274,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         With one :code:`ivy.Container` instances:
 
         >>> a = ivy.Container(a = ivy.array([7, 6, 4]))
@@ -346,11 +345,11 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            New container of same shape and type as self, with the elements floor modded.
+            New container of same shape and type as self, with the elements floor
+            modded.
 
         Examples
         --------
-
         With one :code:`ivy.Container` instances:
 
         >>> a = ivy.Container(a = ivy.array([7, 6, 4]))

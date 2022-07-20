@@ -70,8 +70,8 @@ class ArrayWithGeneral(abc.ABC):
         y
             array, denominator input for floormod.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
@@ -80,7 +80,6 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([9, 8, 7])
         >>> y = ivy.array([2, 3, 4])
         >>> print(x.floormod(y))
