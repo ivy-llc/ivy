@@ -240,6 +240,7 @@ def exp(x: mx.nd.NDArray) -> mx.nd.NDArray:
 tan = lambda x: math.tan(x) if isinstance(x, float) else mx.nd.tan(x)
 asin = lambda x: math.asin(x) if isinstance(x, float) else mx.nd.arcsin(x)
 
+
 @_handle_flat_arrays_in_out
 def atan(x: mx.nd.NDArray) -> mx.nd.NDArray:
     if isinstance(x, float):
@@ -247,6 +248,7 @@ def atan(x: mx.nd.NDArray) -> mx.nd.NDArray:
     else:
         return mx.nd.arctan(x)
 
+    
 @_handle_flat_arrays_in_out
 def atan2(x: mx.nd.NDArray, y: mx.nd.NDArray) -> mx.nd.NDArray:
     if isinstance(x, float):
