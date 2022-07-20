@@ -38,7 +38,8 @@ To get a better understanding for writing frontend tests lets run through some e
 Examples
 --------------------
 
-**ivy.tan**
+ivy.tan
+^^^^^^^^
 
 **Jax**
 
