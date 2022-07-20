@@ -2,6 +2,8 @@ execute_with_gradients
 ======================
 
 .. autofunction:: ivy.functional.ivy.gradients.execute_with_gradients
+
+.. autofunction:: ivy.container.container_methods.static_execute_with_gradients
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ execute_with_gradients
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: execute_with_gradients
+
+   execute_with_gradients/execute_with_gradients_functional.rst
+   execute_with_gradients/static_execute_with_gradients_container.rst
+

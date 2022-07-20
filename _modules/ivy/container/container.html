@@ -450,55 +450,6 @@
                     <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">])</span>
             <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="MultiDevContainer"><a class="viewcode-back" href="../../../data_classes/container/container/MultiDevContainer.html#ivy.container.container.MultiDevContainer">[docs]</a><span class="k">class</span> <span class="nc">MultiDevContainer</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
-<div class="viewcode-block" id="MultiDevContainer.__init__"><a class="viewcode-back" href="../../../data_classes/container/container/MultiDevContainer.html#ivy.container.container.MultiDevContainer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">dict_in</span><span class="p">,</span>
-        <span class="n">devs</span><span class="p">,</span>
-        <span class="n">queues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">queue_load_sizes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">container_combine_method</span><span class="o">=</span><span class="s2">&quot;list_join&quot;</span><span class="p">,</span>
-        <span class="n">queue_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">print_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">key_length_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">print_indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-        <span class="n">print_line_spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">default_key_color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span>
-        <span class="n">keyword_color_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">dict_in</span><span class="p">,</span>
-            <span class="n">queues</span><span class="p">,</span>
-            <span class="n">queue_load_sizes</span><span class="p">,</span>
-            <span class="n">container_combine_method</span><span class="p">,</span>
-            <span class="n">queue_timeout</span><span class="p">,</span>
-            <span class="n">print_limit</span><span class="p">,</span>
-            <span class="n">key_length_limit</span><span class="p">,</span>
-            <span class="n">print_indent</span><span class="p">,</span>
-            <span class="n">print_line_spacing</span><span class="p">,</span>
-            <span class="n">ivyh</span><span class="p">,</span>
-            <span class="n">default_key_color</span><span class="p">,</span>
-            <span class="n">keyword_color_dict</span><span class="p">,</span>
-            <span class="n">rebuild_child_containers</span><span class="p">,</span>
-            <span class="n">types_to_iteratively_nest</span><span class="p">,</span>
-            <span class="n">alphabetical_keys</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_devs</span> <span class="o">=</span> <span class="n">devs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">devs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="MultiDevContainer.at_dev"><a class="viewcode-back" href="../../../data_classes/container/container/MultiDevContainer.html#ivy.container.container.MultiDevContainer.at_dev">[docs]</a>    <span class="k">def</span> <span class="nf">at_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">dev</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">MultiDevItem</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="MultiDevContainer.at_devs"><a class="viewcode-back" href="../../../data_classes/container/container/MultiDevContainer.html#ivy.container.container.MultiDevContainer.at_devs">[docs]</a>    <span class="k">def</span> <span class="nf">at_devs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">ds</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_dev</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devs</span><span class="p">}</span></div></div>
 </pre></div>
 
            </div>

@@ -2,6 +2,12 @@ to_device
 =========
 
 .. autofunction:: ivy.functional.ivy.device.to_device
+
+.. autofunction:: ivy.array.array_methods.to_device
+
+.. autofunction:: ivy.container.container_methods.to_device
+
+.. autofunction:: ivy.container.container_methods.static_to_device
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ to_device
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: to_device
+
+   to_device/to_device_functional.rst
+   to_device/static_to_device_container.rst
+   to_device/to_device_array.rst
+   to_device/to_device_container.rst
+
