@@ -1,9 +1,11 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Dict
 
 # local
 from ivy.container.base import ContainerBase
 import ivy
+
+inf = float("inf")
 
 # ToDo: implement all methods here as public instance methods
 
@@ -197,5 +199,498 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
+            out=out,
+        )
+
+    def cross(
+            self: ivy.Container,
+            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            axis: int = -1,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_nests: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.cross(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_nests=map_nests,
+            ),
+            out=out,
+        )
+
+    def det(
+            self: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.det(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def diagonal(
+            self: ivy.Container,
+            offset: int = 0,
+            axis1: int = -2,
+            axis2: int = -1,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.diagonal(x_, offset, axis1, axis2)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def eigh(
+            self: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+    ) -> NamedTuple:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.eigh(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=None
+        )
+
+    def eigvalsh(
+            self: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.eigvalsh(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def inv(
+            self: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.inv(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def matrix_norm(
+            self: ivy.Container,
+            ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+            keepdims: bool = False,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.matrix_norm(x_, ord, keepdims)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def matrix_power(
+            self: ivy.Container,
+            n: int,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.matrix_power(x_, n) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def matrix_rank(
+            self: ivy.Container,
+            rtol: Optional[Union[float, Tuple[float]]] = None,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.matrix_rank(x_, rtol) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def matrix_transpose(
+            self: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.matrix_rank(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def outer(
+            self: ivy.Container,
+            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_nests: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.outer(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_nests=map_nests,
+            ),
+            out=out,
+        )
+
+    def qr(
+            self: ivy.Container,
+            mode: str = "reduced",
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> NamedTuple:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.qr(x_, mode) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def slogdet(
+            self: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.slogdet(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def solve(
+            self: ivy.Container,
+            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_nests: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.solve(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_nests=map_nests,
+            ),
+            out=out,
+        )
+
+    # Unsure
+    def svd(
+            self: ivy.Container,
+            full_matrices: bool = True,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.svd(x_, full_matrices) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def svdvals(
+            self: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.svdvals(x_) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def tensordot(
+            self: ivy.Container,
+            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            axes: Union[int, Tuple[List[int], List[int]]] = 2,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_nests: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.tensordot(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_nests=map_nests,
+            ),
+            out=out,
+        )
+
+    def trace(
+            self: ivy.Container,
+            offset: int = 0,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.trace(x_, offset) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def vecdot(
+            self: ivy.Container,
+            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            axis: int = -1,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_nests: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        kw = {}
+        conts = {"x1": self}
+        if ivy.is_array(x2):
+            kw["x2"] = x2
+        else:
+            conts["x2"] = x2
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs, _: ivy.vecdot(**dict(zip(conts.keys(), xs)), **kw)
+                if ivy.is_array(xs[0])
+                else xs,
+                list(conts.values()),
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_nests=map_nests,
+            ),
+            out=out,
+        )
+
+    def vector_norm(
+            self: ivy.Container,
+            axis: Optional[Union[int, Tuple[int]]] = None,
+            keepdims: bool = False,
+            ord: Union[int, float, Literal[inf, -inf]] = 2,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.vector_norm(x_, axis, keepdims, ord)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
+
+    def vector_to_skew_symmetric_matrix(
+            self: ivy.Container,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.vector_to_skew_symmetric_matrix(x_)
+                if ivy.is_array(x_)
+                else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
             out=out,
         )
