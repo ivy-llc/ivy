@@ -190,7 +190,7 @@ def test_broadcast_arrays(
 ):
     kw = {}
     for i, array in enumerate(zip(arrays)):
-        kw["x{}".format(i)] = ivy.asarray(array)
+        kw["x{}".format(i)] = ivy.asarray(array, dtype=input_dtype)
     num_positional_args = len(kw)
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -483,6 +483,26 @@ def test_closest_valid_dtype(
     ), f"result={res!r}, but should be str or ivy.Dtype"
 
 
+# default_dtype
+@given(
+    input_dtype=st.sampled_from(ivy.valid_dtypes),
+    as_native=st.booleans(),
+)
+def test_default_dtype(
+    input_dtype,
+    as_native,
+):
+    res = ivy.default_dtype(input_dtype, as_native)
+    assert (
+        isinstance(input_dtype, ivy.Dtype)
+        or isinstance(input_dtype, str)
+        or isinstance(input_dtype, ivy.NativeDtype)
+    )
+    assert isinstance(res, ivy.Dtype) or isinstance(
+        input_dtype, str
+    ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
+
+
 # dtype_bits
 @given(
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
@@ -551,6 +571,7 @@ def test_is_bool_dtype(
         fw=fw,
         fn_name="is_bool_dtype",
         dtype_in=array,
+        test_values=False,
     )
 
 
