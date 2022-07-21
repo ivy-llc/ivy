@@ -59,3 +59,45 @@ class ArrayWithLayers(abc.ABC):
         return ivy.depthwise_conv2d(
             self._data, filters, strides, padding, data_format, dilations, out=out
         )
+
+
+    def lstm_update(
+        self: ivy.Array,
+        hidden_state: Union[ivy.Array, ivy.NativeArray],
+        cell_state: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.lstm_update. This method simply wraps
+        the function, and so the docstring for ivy.lstm_update also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input image *[batch_size,h,w,d]*.
+        hidden_state
+            Hidden state *[batch_size,h,w,d]*.
+        cell_state
+            Cell state *[batch_size,h,w,d]*.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
+
+        Examples
+        --------
+        >>> x = ivy.randint(0, 255, (1, 128, 128, 3)).astype(ivy.float32) / 255.0
+        >>> hidden_state = ivy.random_normal(0, 1, [1, 128, 128, 64])
+        >>> cell_state = ivy.random_normal(0, 1, [1, 128, 128, 64])
+        >>> y = x.lstm_update(hidden_state, cell_state)
+        >>> print(y.shape)
+        (1, 128, 128, 64)
+        """
+        return ivy.lstm_update(self._data, hidden_state, cell_state, out=out)
+    

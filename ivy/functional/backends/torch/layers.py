@@ -244,3 +244,24 @@ def conv3d_transpose(
         x, filters, None, strides, padding_list, dilation=dilations
     )
     return res.permute(0, 2, 3, 4, 1)
+
+
+def lstm_update(
+    x: torch.Tensor,
+    h: torch.Tensor,
+    c: torch.Tensor,
+    w: torch.Tensor,
+    b: torch.Tensor,
+    forget_bias: float,
+    activation: str,
+    data_format: str = "NDHWC",
+):
+    if data_format == "NDHWC":
+        x = x.permute(0, 3, 1, 2)
+        h = h.permute(0, 3, 1, 2)
+        c = c.permute(0, 3, 1, 2)
+        w = w.permute(0, 3, 1, 2)
+        b = b.permute(0, 3, 1, 2)
+    res = torch.nn.functional.lstm_cell(x, h, c, w, b, forget_bias, activation)
+    return res[0].permute(0, 2, 3, 1), res[1].permute(0, 2, 3, 1)
+    

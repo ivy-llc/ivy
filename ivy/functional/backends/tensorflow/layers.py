@@ -107,3 +107,14 @@ def conv3d_transpose(
     return tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
     )
+
+def lstm_update(
+    x: Union[tf.Tensor, tf.Variable],
+    h: Union[tf.Tensor, tf.Variable],
+    c: Union[tf.Tensor, tf.Variable],
+    W: Union[tf.Tensor, tf.Variable],
+    b: Union[tf.Tensor, tf.Variable],
+    name: str = "lstm_update",
+):
+    return tf.nn.rnn_cell.LSTMBlockCell(x, h, c, W, b, name
+    )
