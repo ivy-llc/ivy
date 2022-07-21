@@ -245,7 +245,7 @@ def multiprocessing(context=None):
     )
 
 
-def one_hot(indices, depth, *, device):
+def one_hot(indices: mx.nd.NDArray, depth: int, *, device: mx.context.Context):
     return mx.nd.one_hot(indices, depth)
 
 
