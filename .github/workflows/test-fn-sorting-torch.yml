@@ -1,4 +1,4 @@
-name: test-fn-set-torch
+name: test-fn-sorting-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

@@ -1,4 +1,4 @@
-name: test-fn-set-jax
+name: test-fn-sorting-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
