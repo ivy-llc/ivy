@@ -42,6 +42,7 @@ NativeVariable = jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
 NativeDevice = jaxlib.xla_extension.Device
 NativeDtype = jnp.dtype
+NativeShape = tuple
 
 # native data types
 native_int8 = jnp.dtype("int8")
@@ -100,12 +101,16 @@ valid_int_dtypes = (
     ivy.uint64,
 )
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 
 # invalid data types
 invalid_dtypes = ()
 invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
+invalid_uint_dtypes = ()
+
+native_inplace_support = False
 
 
 def closest_valid_dtype(type):

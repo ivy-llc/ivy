@@ -2,9 +2,10 @@
 
 # global
 import torch
-from typing import Optional, List, Union, Tuple, Sequence
+from typing import Optional, List, Union, Sequence
 
 # local
+import ivy
 from ivy.functional.ivy.device import default_device
 
 
@@ -13,9 +14,9 @@ from ivy.functional.ivy.device import default_device
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    low: Union[float, torch.Tensor] = 0.0,
+    high: Union[float, torch.Tensor] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype=None,
     *,
     device: torch.device,
@@ -31,10 +32,13 @@ def random_uniform(
     )
 
 
+random_uniform.support_native_out = True
+
+
 def random_normal(
     mean: float = 0.0,
     std: float = 1.0,
-    shape: Optional[List[int]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
@@ -46,6 +50,9 @@ def random_normal(
     mean = mean.item() if isinstance(mean, torch.Tensor) else mean
     std = std.item() if isinstance(std, torch.Tensor) else std
     return torch.normal(mean, std, true_shape, device=default_device(device), out=out)
+
+
+random_normal.support_native_out = True
 
 
 def multinomial(
@@ -73,15 +80,21 @@ def multinomial(
     )
 
 
+multinomial.support_native_out = True
+
+
 def randint(
     low: int,
     high: int,
-    shape: Union[int, Sequence[int]],
+    shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.randint(low, high, shape, out=out, device=default_device(device))
+
+
+randint.support_native_out = True
 
 
 def seed(seed_value: int = 0) -> None:
@@ -90,6 +103,9 @@ def seed(seed_value: int = 0) -> None:
     return
 
 
-def shuffle(x: torch.Tensor, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def shuffle(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     batch_size = x.shape[0]
     return torch.index_select(x, 0, torch.randperm(batch_size, out=out), out=out)
+
+
+shuffle.support_native_out = True
