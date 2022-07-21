@@ -123,15 +123,15 @@ def full_like(
     x: JaxArray,
     fill_value: Union[int, float],
     *,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    # dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
-    if dtype and str:
-        dtype = jnp.dtype(dtype)
-    else:
-        dtype = x.dtype
+    # if dtype and str:
+    #     dtype = jnp.dtype(dtype)
+    # else:
+    #     dtype = x.dtype
 
     return _to_device(
         jnp.full_like(x, fill_value, dtype=dtype),
