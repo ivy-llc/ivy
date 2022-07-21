@@ -432,6 +432,7 @@ def vecdot(
     return ret
 
 
+vecdot.unsupported_dtypes = ("int8",)
 def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
     axis: Optional[Union[int, Tuple[int]]] = None,

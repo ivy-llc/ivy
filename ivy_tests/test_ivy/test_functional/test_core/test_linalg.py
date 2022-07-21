@@ -68,6 +68,60 @@ def dtype_value1_value2_axis(
 
 
 @st.composite
+def _get_dtype_value1_value2_axis_for_tensordot(
+    draw,
+    available_dtypes,
+    min_value=None,
+    max_value=None,
+    allow_inf=True,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    axis = draw(
+        st.integers(0, len(shape))
+        | st.lists(st.integers(0, len(shape)-1), min_size=1, max_size=len(shape), unique=True)
+        .map(lambda x: [x.copy(), x.reverse()])
+    )
+
+    dtype = draw(
+        st.sampled_from(available_dtypes)
+    )
+
+    values = []
+    for i in range(2):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
+        )
+
+    value1, value2 = values[0], values[1]
+    return dtype, value1, value2, axis
+
+
+@st.composite
 def _get_dtype_and_matrix(draw):
     # batch_shape, shared, random_size
     input_dtype = draw(st.shared(st.sampled_from(ivy_np.valid_float_dtypes)))
@@ -615,9 +669,9 @@ def test_svdvals(
 
 # tensordot
 @given(
-    dtype_x1_x2_axis=dtype_value1_value2_axis(
+    dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
         available_dtypes=ivy_np.valid_numeric_dtypes,
-        min_num_dims=2,
+        min_num_dims=3,
         max_num_dims=10,
         min_dim_size=1,
         max_dim_size=50,
@@ -651,7 +705,7 @@ def test_tensordot(
         fw=fw,
         fn_name="tensordot",
         x1=np.asarray(x1, dtype=dtype),
-        x2=np.asarray(x2, dtype=dtype).swapaxes(-1, -2),
+        x2=np.asarray(x2, dtype=dtype).transpose(),
         axes=axis,
     )
 
@@ -695,8 +749,9 @@ def test_trace(
         instance_method=instance_method,
         fw=fw,
         fn_name="trace",
-        offset=offset,
         x=np.asarray(x, dtype=dtype),
+        offset=offset,
+
     )
 
 
@@ -1039,7 +1094,7 @@ def test_matrix_rank(
         min_value=0,
         max_value=1000,
         shape=st.integers(2, 5).map(lambda x: tuple([x, x]))
-    ).filter(lambda dtype_x: np.linalg.det(np.asarray(dtype_x[1])) != 0),
+    ).filter(lambda x: np.linalg.cond(x[1]) < 1/sys.float_info.epsilon and np.linalg.det(np.asarray(x[1])) != 0),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cholesky"),
     native_array=st.booleans(),
@@ -1059,7 +1114,7 @@ def test_cholesky(
 ):
     dtype, x = dtype_x
     x = np.asarray(x, dtype=dtype)
-    x = np.matmul(x, x.T) + np.identity(x.shape[0]) * 1e-3  # make symmetric positive-definite
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3  # make symmetric positive-definite
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -1084,8 +1139,8 @@ def test_cholesky(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         min_num_dims=1,
         max_num_dims=10,
-        min_dim_size=1,
-        max_dim_size=50,
+        min_dim_size=3,
+        max_dim_size=3,
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
