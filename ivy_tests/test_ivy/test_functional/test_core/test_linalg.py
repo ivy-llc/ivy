@@ -742,7 +742,7 @@ def test_trace(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -760,9 +760,9 @@ def test_trace(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         min_num_dims=1,
-        max_num_dims=10,
+        max_num_dims=6,
         min_dim_size=1,
-        max_dim_size=50,
+        max_dim_size=10,
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),

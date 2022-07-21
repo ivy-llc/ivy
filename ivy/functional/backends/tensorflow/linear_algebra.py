@@ -259,7 +259,7 @@ def matrix_transpose(
     ret = tf.experimental.numpy.swapaxes(x, -1, -2)
     return ret
 
-matrix_transpose.unsupported_dtypes = ("float16", "int8")
+matrix_transpose.unsupported_dtypes = ("float16", "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64")
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins

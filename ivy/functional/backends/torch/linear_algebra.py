@@ -48,7 +48,7 @@ def cross(
     x2 = x2.type(promote_type)
     return torch.linalg.cross(input=x1, other=x2, dim=axis, out=out)
 
-
+cross.unsupported_dtypes = ("float16",)
 cross.support_native_out = True
 
 
@@ -150,7 +150,7 @@ def matrix_transpose(x: torch.Tensor) -> torch.Tensor:
     ret = torch.swapaxes(x, -1, -2)
     return ret
 
-matrix_transpose.unsupported_dtypes = ("float16", "int8")
+matrix_transpose.unsupported_dtypes = ("float16", "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64")
 
 def outer(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
