@@ -38,6 +38,7 @@ def det(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.linalg.det(x)
     return ret
 
+det.unsupported_dtypes = ("float16",)
 
 def diagonal(
     x: JaxArray,
@@ -63,11 +64,13 @@ def eigh(x: JaxArray) -> JaxArray:
     ret = jnp.linalg.eigh(x)
     return ret
 
+eigh.unsupported_dtypes = ("float16",)
 
 def eigvalsh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.linalg.eigvalsh(x)
     return ret
 
+eigvalsh.unsupported_dtypes = ("float16",)
 
 def inv(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
@@ -76,6 +79,7 @@ def inv(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
         ret = jnp.linalg.inv(x)
     return ret
 
+inv.unsupported_dtypes = ("float16",)
 
 def matmul(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.matmul(x1, x2)
@@ -127,6 +131,7 @@ def matrix_transpose(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray
     ret = jnp.swapaxes(x, -1, -2)
     return ret
 
+matrix_transpose.unsupported_dtypes = ("float16", "int8")
 
 def outer(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.outer(x1, x2)
@@ -166,6 +171,7 @@ def slogdet(
     ret = results(sign, logabsdet)
     return ret
 
+slogdet.unsupported_dtypes = ("float16",)
 
 def solve(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     expanded_last = False
@@ -194,6 +200,7 @@ def solve(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxA
         ret = jnp.squeeze(ret, axis=-1)
     return ret
 
+solve.unsupported_dtypes = ("float16",)
 
 def svd(
     x: JaxArray, full_matrices: bool = True
@@ -211,6 +218,7 @@ def svdvals(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.linalg.svd(x, compute_uv=False)
     return ret
 
+svdvals.unsupported_dtypes = ("float16",)
 
 def tensordot(
     x1: JaxArray,

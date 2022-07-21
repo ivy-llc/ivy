@@ -58,6 +58,7 @@ def det(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
 
 det.support_native_out = True
 
+det.unsupported_dtypes = ("float16",)
 
 def diagonal(
     x: torch.Tensor,
@@ -73,6 +74,7 @@ def diagonal(
 def eigh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.eigh(x, out=out)
 
+eigh.unsupported_dtypes = ("float16",)
 
 eigh.support_native_out = True
 
@@ -80,6 +82,7 @@ eigh.support_native_out = True
 def eigvalsh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.eigvalsh(x, out=out)
 
+eigvalsh.unsupported_dtypes = ("float16",)
 
 eigvalsh.support_native_out = True
 
@@ -87,6 +90,7 @@ eigvalsh.support_native_out = True
 def inv(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.inverse(x, out=out)
 
+inv.unsupported_dtypes = ("float16",)
 
 inv.support_native_out = True
 
@@ -124,7 +128,7 @@ def matrix_power(
 ) -> torch.Tensor:
     return torch.linalg.matrix_power(x, n, out=out)
 
-
+matrix_power.unsupported_dtypes = ("float16", )
 matrix_power.support_native_out = True
 
 
@@ -146,6 +150,7 @@ def matrix_transpose(x: torch.Tensor) -> torch.Tensor:
     ret = torch.swapaxes(x, -1, -2)
     return ret
 
+matrix_transpose.unsupported_dtypes = ("float16", "int8")
 
 def outer(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
@@ -200,12 +205,13 @@ def slogdet(
     sign, logabsdet = torch.linalg.slogdet(x, out=out)
     return results(sign, logabsdet)
 
+slogdet.unsupported_dtypes = ("float16",)
 
 slogdet.support_native_out = True
 
 
 def solve(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor]
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor]=None
 ) -> torch.Tensor:
     if x1.dtype != torch.float:
         x1 = x1.type(torch.float)
@@ -235,6 +241,7 @@ def solve(
         ret = torch.squeeze(ret, dim=-1)
     return ret
 
+solve.unsupported_dtypes = ("float16",)
 
 def svd(
     x: torch.Tensor, full_matrices: bool = True
@@ -252,6 +259,7 @@ svd.unsupported_dtypes = ("float16",)
 def svdvals(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.svdvals(x, out=out)
 
+svdvals.unsupported_dtypes = ("float16",)
 
 svdvals.support_native_out = True
 
@@ -350,3 +358,4 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
+vector_to_skew_symmetric_matrix.unsupported_dtypes = ("float16", "int8")

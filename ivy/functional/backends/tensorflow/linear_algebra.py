@@ -48,6 +48,7 @@ def det(
     ret = tf.linalg.det(x)
     return ret
 
+det.unsupported_dtypes = ("float16",)
 
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
@@ -65,6 +66,7 @@ def eigh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.linalg.eigh(x)
     return ret
 
+eigh.unsupported_dtypes = ("float16",)
 
 def eigvalsh(
     x: Union[tf.Tensor, tf.Variable],
@@ -74,6 +76,7 @@ def eigvalsh(
     ret = tf.linalg.eigvalsh(x)
     return ret
 
+eigvalsh.unsupported_dtypes = ("float16",)
 
 def inv(
     x: Union[tf.Tensor, tf.Variable],
@@ -86,6 +89,7 @@ def inv(
         ret = tf.linalg.inv(x)
     return ret
 
+inv.unsupported_dtypes = ("float16",)
 
 def matmul(
     x1: Union[tf.Tensor, tf.Variable],
@@ -218,6 +222,7 @@ def matrix_power(
     result = tf.where(tf.equal(result, -0), tf.zeros_like(result), result)
     return result
 
+matrix_power.unsupported_dtypes = ("int8", "float16" )
 
 # noinspection PyPep8Naming
 def matrix_rank(
@@ -253,6 +258,8 @@ def matrix_transpose(
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.swapaxes(x, -1, -2)
     return ret
+
+matrix_transpose.unsupported_dtypes = ("float16", "int8")
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -310,6 +317,7 @@ def slogdet(
     ret = results(sign, logabsdet)
     return ret
 
+slogdet.unsupported_dtypes = ("float16",)
 
 def solve(
     x1: Union[tf.Tensor, tf.Variable],
@@ -349,6 +357,7 @@ def solve(
         ret = tf.squeeze(ret, axis=-1)
     return ret
 
+solve.unsupported_dtypes = ("float16",)
 
 def svd(
     x: Union[tf.Tensor, tf.Variable],
@@ -376,6 +385,7 @@ def svdvals(
     ret = tf.linalg.svd(x, compute_uv=False)
     return ret
 
+svdvals.unsupported_dtypes = ("float16",)
 
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
@@ -480,3 +490,6 @@ def vector_to_skew_symmetric_matrix(
     # BS x 3 x 3
     ret = tf.concat((row1, row2, row3), -2)
     return ret
+
+vector_to_skew_symmetric_matrix.unsupported_dtypes = ("int8", "int16", "int32", "int64", "uint8","uint16", "uint32","uint64", "float16", "float64")
+# vector_to_skew_symmetric_matrix.unsupported_dtypes = ("float16", "float64")
