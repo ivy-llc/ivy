@@ -138,7 +138,7 @@ ivy.tan
             test_values=False,
         )
 
-* Here we use :code:'ivy_np.valid_float_dtypes' to generate :code:`available_dtypes`, these are valid data types specifically for Numpy.
+* Here we use :code:`ivy_np.valid_float_dtypes` to generate :code:`available_dtypes`, these are valid data types specifically for Numpy.
 * Numpy has an optional argument :code:`where` which is generated using :code:`np_frontend_helpers.where()`.
 * :code:`numpy.tan` does support :code:`out` arguments so we set generate values for :code:`with_out`.
 * Using :code:`np_frontend_helpers.handle_where_and_array_bools()` we do some processing on the generated :code:`where` value.
