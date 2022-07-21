@@ -206,6 +206,13 @@ class ContainerBase(dict, abc.ABC):
         if ivy.exists(out):
             out.inplace_update(ret)
             ret = out
+
+        # Multiple containers for functions returning multiple arrays
+        for values in ret.values():
+            if isinstance(values, list):
+                for v in values:
+                    if ivy.is_ivy_array(v):
+                        return ret.unstack(0)
         return ret
 
     @staticmethod
@@ -1358,7 +1365,7 @@ class ContainerBase(dict, abc.ABC):
             for k, v in self.map(
                 lambda x, kc: list(x.shape)
                 if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else ([len(x)] if isinstance(x, (list, tuple, ivy.MultiDev)) else None)
+                else ([len(x)] if isinstance(x, (list, tuple)) else None)
             ).to_iterator()
             if v
         ]
@@ -2260,31 +2267,6 @@ class ContainerBase(dict, abc.ABC):
                     self.split(split_arg, axis, with_remainder=True), devices
                 )
             }
-        )
-
-    def to_multi_dev(self, devices, axis=0):
-        """Return a single MultiDevContainer, which shares the same structure as the
-        current container, but replaces arrays at the leaves with DistributedArray
-        instances.
-
-        Parameters
-        ----------
-        devs
-            The devices along which to distribute each array in the container.
-        axis
-            The axis along which to split the arrays at the container leaves.
-            Default is 0.
-
-        Returns
-        -------
-            a MultiDevContainer instance, with all leafs arrays replaced by
-            DistributedArray instances.
-
-        """
-        return ivy.MultiDevContainer(
-            self.map(lambda x, kc: self._ivy.dev_dist_array(x, devices, axis)),
-            devices,
-            **self._config,
         )
 
     def unstack(self, axis, keepdims=False, dim_size=None):

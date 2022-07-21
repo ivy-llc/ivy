@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import tensorflow as tf
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 from tensorflow.python.framework.dtypes import DType
 
 # local
@@ -41,8 +41,11 @@ native_dtype_dict = {
 
 
 class Finfo:
-    def __init__(self, tf_finfo):
+    def __init__(self, tf_finfo: tf.experimental.numpy.finfo):
         self._tf_finfo = tf_finfo
+
+    def __repr__(self):
+        return repr(self._tf_finfo)
 
     @property
     def bits(self):
@@ -111,7 +114,7 @@ def broadcast_arrays(
 
 def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
-    shape: Tuple[int, ...],
+    shape: Union[ivy.NativeShape, Sequence[int]],
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.broadcast_to(x, shape)
 
@@ -140,10 +143,14 @@ def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bo
 
 
 def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
+    if isinstance(type, tf.Tensor):
+        type = type.dtype
     return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
 
 
 def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
+    if isinstance(type, tf.Tensor):
+        type = type.dtype
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
@@ -165,7 +172,25 @@ def result_type(
 # ------#
 
 
-def dtype_bits(dtype_in):
+def as_ivy_dtype(dtype_in: Union[tf.DType, str]) -> ivy.Dtype:
+    if isinstance(dtype_in, str):
+        return ivy.Dtype(dtype_in)
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
+
+
+def as_native_dtype(dtype_in: Union[tf.DType, str]) -> tf.DType:
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return native_dtype_dict[ivy.Dtype(dtype_in)]
+
+
+def dtype(x: Union[tf.Tensor, tf.Variable], as_native: bool = False) -> ivy.Dtype:
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
+
+
+def dtype_bits(dtype_in: Union[tf.DType, str]) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
@@ -176,21 +201,3 @@ def dtype_bits(dtype_in):
         .replace("bfloat", "")
         .replace("float", "")
     )
-
-
-def dtype(x, as_native=False):
-    if as_native:
-        return ivy.to_native(x).dtype
-    return as_ivy_dtype(x.dtype)
-
-
-def as_ivy_dtype(dtype_in):
-    if isinstance(dtype_in, str):
-        return ivy.Dtype(dtype_in)
-    return ivy.Dtype(ivy_dtype_dict[dtype_in])
-
-
-def as_native_dtype(dtype_in):
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return native_dtype_dict[ivy.Dtype(dtype_in)]
