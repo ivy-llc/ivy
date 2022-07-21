@@ -59,6 +59,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#small-commits-often">Small Commits Often</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#interactive-ivy-docker-container">Interactive Ivy Docker Container</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#running-tests-locally">Running Tests Locally</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#with-docker">With Docker</a></li>
 </ul>
@@ -283,7 +284,7 @@ or on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord
 <h2>Who To Ask<a class="headerlink" href="#who-to-ask" title="Permalink to this heading"></a></h2>
 <p>When raising issues or starting discussions on the Ivy repo,
 it can be useful to know who in the team wrote which piece of code.
-Armed with this information, you can then for example directly tag (usuing &#64;)
+Armed with this information, you can then for example directly tag (using &#64;)
 the member of the team who worked on a particular piece of code,
 which you are trying to understand, or you would like to ask questions about.</p>
 <p>Here we describe a workflow to help navigate this question of “who to ask”.</p>
@@ -393,6 +394,35 @@ If a mistake is commited into the history, it’s generally not too difficult to
 so don’t stress about this too much 🙂</p>
 <p>For questions, please reach out on the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1309">contributing discussion</a>
 or on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982728822317256712">commit frequency channel</a>!</p>
+</section>
+<section id="interactive-ivy-docker-container">
+<h2>Interactive Ivy Docker Container<a class="headerlink" href="#interactive-ivy-docker-container" title="Permalink to this heading"></a></h2>
+<p>The advantage of Docker interactive mode is that it allows us to execute commands at the time
+of running the container. It’s quite a nifty tool which can be used to reassure that the functions are
+working as expected in an isolated environment.</p>
+<p>An interactive bash shell in ivy’s docker container can be created by using the following command,</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker run --rm -it unifyai/ivy bash
+</pre></div>
+</div>
+<p>The project structure and file-system can be explored. This can be very useful when you want to test out the bash
+scripts in ivy, run the tests from the command line etc,. In fact, if you only want to quickly test things in an
+interactive python shell run the following command,</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker run --rm -it unifyai/ivy python3
+</pre></div>
+</div>
+<p>In both cases, the ivy version at the time when the container was built will be used.
+If you want to try out your local version of ivy, with all of the local changes you have made, you should add
+the following mount:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker run --rm -it -v /local_path_to_ivy/ivy/ivy:/ivy/ivy unifyai/ivy bash
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>This will overwrite the <em>ivy</em> subfolder inside the ivy repo in the container with the <em>ivy</em> subfolder inside your local ivy repo.</p></li>
+<li><p>Ivy is installed system-wide inside the container via the command <code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">setup.py</span> <span class="pre">develop</span> <span class="pre">--no-deps</span></code></p></li>
+<li><p>The <code class="code docutils literal notranslate"><span class="pre">develop</span></code> command means that the system-wide installation will still depend on the original source files, rather than creating a fresh copy of these.</p></li>
+<li><p>Therefore, ivy can be imported into an interactive python shell from any directory inside the container, and it will still use the latest updates made to the source code.</p></li>
+</ul>
+<p>Clearly, running a container in interactive mode can be a useful tool in the arsenal of a developer.</p>
 </section>
 <section id="running-tests-locally">
 <h2>Running Tests Locally<a class="headerlink" href="#running-tests-locally" title="Permalink to this heading"></a></h2>
