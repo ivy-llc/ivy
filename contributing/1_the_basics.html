@@ -419,10 +419,10 @@ the following mount:</p>
 <ul class="simple">
 <li><p>This will overwrite the <em>ivy</em> subfolder inside the ivy repo in the container with the <em>ivy</em> subfolder inside your local ivy repo.</p></li>
 <li><p>Ivy is installed system-wide inside the container via the command <code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">setup.py</span> <span class="pre">develop</span> <span class="pre">--no-deps</span></code></p></li>
-<li><p>The <code class="code docutils literal notranslate"><span class="pre">develop</span></code> command means that the system-wide installation will still depend on the original source files, rather than creating a fresh copy of these.</p></li>
+<li><p>The <code class="code docutils literal notranslate"><span class="pre">develop</span></code> command means that the system-wide installation will still depend on the original source files, rather than creating a fresh copy.</p></li>
 <li><p>Therefore, ivy can be imported into an interactive python shell from any directory inside the container, and it will still use the latest updates made to the source code.</p></li>
 </ul>
-<p>Clearly, running a container in interactive mode can be a useful tool in the arsenal of a developer.</p>
+<p>Clearly, running a container in interactive mode can be a helpful tool in a developer’s arsenal.</p>
 </section>
 <section id="running-tests-locally">
 <h2>Running Tests Locally<a class="headerlink" href="#running-tests-locally" title="Permalink to this heading"></a></h2>
