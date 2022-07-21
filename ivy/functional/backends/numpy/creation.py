@@ -115,7 +115,7 @@ def eye(
 # noinspection PyShadowingNames
 def from_dlpack(x, *, out: Optional[np.ndarray] = None):
     # noinspection PyProtectedMember
-    return np._from_dlpack(x)
+    return np.from_dlpack(x)
 
 
 def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
