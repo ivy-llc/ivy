@@ -68,7 +68,7 @@ def reshape(
     x: torch.Tensor,
     shape: Union[ivy.NativeShape, Sequence[int], Tuple[int]],
     copy: Optional[bool] = None,
-    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:
         newarr = torch.clone(x)
