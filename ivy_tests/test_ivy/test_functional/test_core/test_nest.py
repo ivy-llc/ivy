@@ -36,6 +36,23 @@ def _pnai(n, idx):
         _pnai(n[idx[0]], idx[1:])
 
 
+# only checking for dicts but can test other nested functions using
+# collections.abc.Sequences/Mapping/Iterable
+def apply_fn_to_list(item, fun):
+    if isinstance(item, list):
+        return [apply_fn_to_list(x, fun) for x in item]
+    else:
+        return fun(item)
+
+
+def map_nested_dicts(ob, func):
+    for k, v in ob.items():
+        if isinstance(v, dict):
+            map_nested_dicts(v, func)
+        else:
+            ob[k] = apply_fn_to_list(v, func)
+
+
 # Tests #
 # ------#
 
@@ -269,7 +286,6 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
 # Still to Add #
 # ---------------#
 
-# map
 # nested_map
 # nested_any
 
@@ -343,3 +359,14 @@ def test_insert_into_nest_at_indices(nest, indices, values, device, call):
         return ret
 
     assert indices_nest(nest, indices) == values
+
+
+# nested_map
+@pytest.mark.parametrize("x", [{"a": [[0, 1], [2, 3]], "b": {"c": [[0], [1]]}}])
+@pytest.mark.parametrize("fn", [lambda x: x**2])
+def test_nested_map(x, fn):
+    x_copy = copy.deepcopy(x)
+    x = ivy.nested_map(x, lambda x: x**2)
+    map_nested_dicts(x_copy, lambda x: x**2)
+
+    assert x_copy == x
