@@ -1,4 +1,4 @@
-name: test-elementwise-numpy
+name: test-fn-elementwise-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

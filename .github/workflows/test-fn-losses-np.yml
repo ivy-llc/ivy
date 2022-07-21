@@ -1,4 +1,4 @@
-name: test-losses-numpy
+name: test-fn-losses-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

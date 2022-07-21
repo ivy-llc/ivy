@@ -1,4 +1,4 @@
-name: test-dtype-torch
+name: test-fn-dtype-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

@@ -1,4 +1,4 @@
-name: test-set-jax
+name: test-fn-set-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

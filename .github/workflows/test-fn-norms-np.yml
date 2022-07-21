@@ -1,4 +1,4 @@
-name: test-norms-numpy
+name: test-fn-norms-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

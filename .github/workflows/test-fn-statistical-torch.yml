@@ -1,4 +1,4 @@
-name: test-statistical-torch
+name: test-fn-statistical-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

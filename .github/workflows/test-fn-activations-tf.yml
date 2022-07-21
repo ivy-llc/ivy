@@ -1,4 +1,4 @@
-name: test-activations-tensorflow
+name: test-fn-activations-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

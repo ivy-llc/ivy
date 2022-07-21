@@ -1,4 +1,4 @@
-name: test-meta-jax
+name: test-fn-meta-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

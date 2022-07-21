@@ -1,4 +1,4 @@
-name: test-layers-torch
+name: test-fn-layers-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

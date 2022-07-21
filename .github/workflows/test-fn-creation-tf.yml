@@ -1,4 +1,4 @@
-name: test-creation-tensorflow
+name: test-fn-creation-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

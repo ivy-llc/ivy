@@ -1,4 +1,4 @@
-name: test-device-tensorflow
+name: test-fn-device-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

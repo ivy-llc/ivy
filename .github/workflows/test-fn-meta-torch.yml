@@ -1,4 +1,4 @@
-name: test-meta-torch
+name: test-fn-meta-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

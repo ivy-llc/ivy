@@ -1,4 +1,4 @@
-name: test-layers-jax
+name: test-fn-layers-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

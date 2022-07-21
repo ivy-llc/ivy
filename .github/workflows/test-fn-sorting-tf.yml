@@ -1,4 +1,4 @@
-name: test-set-tensorflow
+name: test-fn-set-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

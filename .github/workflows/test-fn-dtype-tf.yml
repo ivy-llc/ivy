@@ -1,4 +1,4 @@
-name: test-dtype-tensorflow
+name: test-fn-dtype-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

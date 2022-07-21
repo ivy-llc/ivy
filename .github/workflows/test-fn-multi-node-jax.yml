@@ -1,4 +1,4 @@
-name: test-multi-node-jax
+name: test-fn-multi-node-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

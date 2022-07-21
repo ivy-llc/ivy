@@ -1,4 +1,4 @@
-name: test-losses-jax
+name: test-fn-losses-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

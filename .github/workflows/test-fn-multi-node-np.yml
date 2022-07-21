@@ -1,4 +1,4 @@
-name: test-multi-node-numpy
+name: test-fn-multi-node-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

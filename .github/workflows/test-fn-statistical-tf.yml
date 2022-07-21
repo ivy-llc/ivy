@@ -1,4 +1,4 @@
-name: test-statistical-tensorflow
+name: test-fn-statistical-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

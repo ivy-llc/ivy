@@ -1,4 +1,4 @@
-name: test-activations-torch
+name: test-fn-activations-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

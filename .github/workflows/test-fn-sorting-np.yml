@@ -1,4 +1,4 @@
-name: test-set-numpy
+name: test-fn-set-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

@@ -1,4 +1,4 @@
-name: test-norms-jax
+name: test-fn-norms-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

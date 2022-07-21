@@ -1,4 +1,4 @@
-name: test-statistical-jax
+name: test-fn-statistical-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

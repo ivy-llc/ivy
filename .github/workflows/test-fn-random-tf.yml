@@ -1,4 +1,4 @@
-name: test-random-tensorflow
+name: test-fn-random-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

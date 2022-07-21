@@ -1,4 +1,4 @@
-name: test-multi-node-torch
+name: test-fn-multi-node-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

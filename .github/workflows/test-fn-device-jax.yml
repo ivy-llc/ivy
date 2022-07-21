@@ -1,4 +1,4 @@
-name: test-device-jax
+name: test-fn-device-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

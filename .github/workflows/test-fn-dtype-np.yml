@@ -1,4 +1,4 @@
-name: test-dtype-numpy
+name: test-fn-dtype-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

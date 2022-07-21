@@ -1,4 +1,4 @@
-name: test-device-torch
+name: test-fn-device-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

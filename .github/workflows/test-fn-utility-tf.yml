@@ -1,4 +1,4 @@
-name: test-utility-tensorflow
+name: test-fn-utility-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

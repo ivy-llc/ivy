@@ -1,4 +1,4 @@
-name: test-linalg-tensorflow
+name: test-fn-linalg-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

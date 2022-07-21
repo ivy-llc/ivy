@@ -1,4 +1,4 @@
-name: test-layers-tensorflow
+name: test-fn-layers-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

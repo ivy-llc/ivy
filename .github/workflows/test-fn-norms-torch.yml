@@ -1,4 +1,4 @@
-name: test-norms-torch
+name: test-fn-norms-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

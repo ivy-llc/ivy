@@ -1,4 +1,4 @@
-name: test-random-numpy
+name: test-fn-random-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

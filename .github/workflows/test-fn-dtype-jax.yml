@@ -1,4 +1,4 @@
-name: test-dtype-jax
+name: test-fn-dtype-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

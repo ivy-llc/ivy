@@ -1,4 +1,4 @@
-name: test-gradients-tensorflow
+name: test-fn-gradients-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

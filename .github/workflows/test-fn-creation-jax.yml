@@ -1,4 +1,4 @@
-name: test-creation-jax
+name: test-fn-creation-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

@@ -1,4 +1,4 @@
-name: test-creation-numpy
+name: test-fn-creation-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

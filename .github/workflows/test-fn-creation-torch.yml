@@ -1,4 +1,4 @@
-name: test-creation-torch
+name: test-fn-creation-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

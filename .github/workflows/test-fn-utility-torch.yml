@@ -1,4 +1,4 @@
-name: test-utility-torch
+name: test-fn-utility-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

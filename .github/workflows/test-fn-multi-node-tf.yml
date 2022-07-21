@@ -1,4 +1,4 @@
-name: test-multi-node-tensorflow
+name: test-fn-multi-node-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

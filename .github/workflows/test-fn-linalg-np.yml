@@ -1,4 +1,4 @@
-name: test-linalg-numpy
+name: test-fn-linalg-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

@@ -1,4 +1,4 @@
-name: test-meta-numpy
+name: test-fn-meta-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

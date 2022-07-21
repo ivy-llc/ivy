@@ -1,4 +1,4 @@
-name: test-norms-tensorflow
+name: test-fn-norms-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

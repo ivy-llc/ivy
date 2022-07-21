@@ -1,4 +1,4 @@
-name: test-layers-numpy
+name: test-fn-layers-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

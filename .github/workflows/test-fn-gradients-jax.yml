@@ -1,4 +1,4 @@
-name: test-gradients-jax
+name: test-fn-gradients-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

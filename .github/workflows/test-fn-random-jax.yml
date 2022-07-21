@@ -1,4 +1,4 @@
-name: test-random-jax
+name: test-fn-random-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

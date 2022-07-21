@@ -1,4 +1,4 @@
-name: test-statistical-numpy
+name: test-fn-statistical-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

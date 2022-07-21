@@ -1,4 +1,4 @@
-name: test-gradients-torch
+name: test-fn-gradients-torch
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

@@ -1,4 +1,4 @@
-name: test-elementwise-tensorflow
+name: test-fn-elementwise-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

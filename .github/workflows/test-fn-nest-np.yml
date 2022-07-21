@@ -1,4 +1,4 @@
-name: test-nest-numpy
+name: test-fn-nest-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:

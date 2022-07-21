@@ -1,4 +1,4 @@
-name: test-losses-tensorflow
+name: test-fn-losses-tensorflow
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
