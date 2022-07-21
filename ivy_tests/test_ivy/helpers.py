@@ -1328,6 +1328,7 @@ def dtype_and_values(
     shape=None,
     shared_dtype=False,
     ret_shape=False,
+    safety_factor=0.95,
     dtype=None,
 ):
     if not isinstance(num_arrays, int):
@@ -1367,6 +1368,7 @@ def dtype_and_values(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    safety_factor=safety_factor,
                 )
             )
         )
