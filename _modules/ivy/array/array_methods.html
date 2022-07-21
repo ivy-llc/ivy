@@ -741,6 +741,9 @@
 <div class="viewcode-block" id="is_int_dtype"><a class="viewcode-back" href="../../../functional/ivy/data_type/is_int_dtype/is_int_dtype_array.html#ivy.array.array_methods.is_int_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_int_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="is_uint_dtype"><a class="viewcode-back" href="../../../functional/ivy/data_type/is_uint_dtype/is_uint_dtype_array.html#ivy.array.array_methods.is_uint_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_uint_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_uint_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="result_type"><a class="viewcode-back" href="../../../functional/ivy/data_type/result_type/result_type_array.html#ivy.array.array_methods.result_type">[docs]</a><span class="k">def</span> <span class="nf">result_type</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">]</span>
@@ -3758,6 +3761,8 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
 
+<span class="n">TO_IGNORE</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">]</span>
+
 
 <span class="k">def</span> <span class="nf">_wrap_function</span><span class="p">(</span><span class="n">function_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Wraps the function called `function_name`.</span>
@@ -3836,6 +3841,7 @@
 <span class="sd">    True True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">to_ignore</span> <span class="o">=</span> <span class="n">TO_IGNORE</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_ignore</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="c1"># we skip the cases where the function is protected, the instance</span>

@@ -4,8 +4,6 @@ tensordot
 .. autofunction:: ivy.functional.ivy.linear_algebra.tensordot
 
 .. autofunction:: ivy.array.array_methods.tensordot
-
-.. autofunction:: ivy.container.container_methods.tensordot
 |
 | **Supported Frameworks:**
 
@@ -34,5 +32,4 @@ tensordot
 
    tensordot/tensordot_functional.rst
    tensordot/tensordot_array.rst
-   tensordot/tensordot_container.rst
 
