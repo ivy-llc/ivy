@@ -46,7 +46,7 @@ def acosh(
 
 
 def add(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -79,7 +79,7 @@ def atan(
 
 
 def atan2(
-    x1: JaxArray, 
+    x1: JaxArray,
     x2: JaxArray,
     *,
     out: Optional[JaxArray] = None
@@ -97,7 +97,7 @@ def atanh(
 
 
 def bitwise_and(
-    x1: Union[int, JaxArray], 
+    x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -115,7 +115,7 @@ def bitwise_invert(
 
 
 def bitwise_left_shift(
-    x1: Union[int, JaxArray], 
+    x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -125,7 +125,7 @@ def bitwise_left_shift(
 
 
 def bitwise_or(
-    x1: Union[int, JaxArray], 
+    x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -135,7 +135,7 @@ def bitwise_or(
 
 
 def bitwise_right_shift(
-    x1: Union[int, JaxArray], 
+    x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -145,7 +145,7 @@ def bitwise_right_shift(
 
 
 def bitwise_xor(
-    x1: Union[int, JaxArray], 
+    x1: Union[int, JaxArray],
     x2: Union[int, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -182,7 +182,7 @@ def cosh(
 
 
 def divide(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -191,7 +191,7 @@ def divide(
 
 
 def equal(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -228,7 +228,7 @@ def floor(
 
 
 def floor_divide(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -238,7 +238,7 @@ def floor_divide(
 
 
 def greater(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -247,7 +247,7 @@ def greater(
 
 
 def greater_equal(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -280,7 +280,7 @@ def isnan(
 
 
 def less(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -289,7 +289,7 @@ def less(
 
 
 def less_equal(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -330,7 +330,7 @@ def log2(
 
 
 def logaddexp(
-    x1: JaxArray, 
+    x1: JaxArray,
     x2: JaxArray,
     *,
     out: Optional[JaxArray] = None
@@ -339,7 +339,7 @@ def logaddexp(
 
 
 def logical_and(
-    x1: JaxArray, 
+    x1: JaxArray,
     x2: JaxArray,
     *,
     out: Optional[JaxArray] = None
@@ -356,7 +356,7 @@ def logical_not(
 
 
 def logical_or(
-    x1: JaxArray, 
+    x1: JaxArray,
     x2: JaxArray,
     *,
     out: Optional[JaxArray] = None
@@ -365,7 +365,7 @@ def logical_or(
 
 
 def logical_xor(
-    x1: JaxArray, 
+    x1: JaxArray,
     x2: JaxArray,
     *,
     out: Optional[JaxArray] = None
@@ -374,7 +374,7 @@ def logical_xor(
 
 
 def multiply(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -392,7 +392,7 @@ def negative(
 
 
 def not_equal(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -410,7 +410,7 @@ def positive(
 
 
 def pow(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -420,7 +420,7 @@ def pow(
 
 
 def remainder(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -430,7 +430,7 @@ def remainder(
 
 
 def round(
-    x: JaxArray, 
+    x: JaxArray,
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -481,7 +481,7 @@ def square(
 
 
 def subtract(
-    x1: Union[float, JaxArray], 
+    x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     *,
     out: Optional[JaxArray] = None
@@ -530,7 +530,7 @@ def erf(
 
 
 def maximum(
-    x1: JaxArray, 
+    x1: JaxArray,
     x2: JaxArray,
     *,
     out: Optional[JaxArray] = None

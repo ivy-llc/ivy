@@ -54,10 +54,9 @@ def abs(
         array must have the same data type as ``x``.
 
     This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
     in the standard.
-    
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
@@ -81,7 +80,7 @@ def abs(
     >>> print(x)
     ivy.array([[ 1.1,  2.2,  3.3],
                [4.4, 5.5, 6.6]])
-               
+
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
@@ -151,6 +150,7 @@ def acosh(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+
     """Calculates an implementation-dependent approximation to the inverse hyperbolic
     cosine, having domain ``[+1, +infinity]`` and codomain ``[+0, +infinity]``, for each
     element ``x_i`` of the input array ``x``.
@@ -179,6 +179,57 @@ def acosh(
         an array containing the inverse hyperbolic cosine of each element in x. The
         returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+        signatures.elementwise_functions.tan.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code: `ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :code: `ivy.Array` input :
+
+    >>> x = ivy.array([-3.5, -0, +0, 1.3, float('nan')])
+    >>> y = ivy.acosh(x)
+    >>> print(y)
+    ivy.array([nan, nan, nan, 0.756, nan])
+
+    >>> x = ivy.array([-2, -0.75, 0.9, 1])
+    >>> y = ivy.zeros(4)
+    >>> ivy.acosh(x, out =y)
+    >>> print(y)
+    ivy.array([nan, nan, nan, 0.])
+
+    >>> x = ivy.array([[0.2, 0.4, 0.6], \
+                    [0.8, -1, -2]])
+    >>> ivy.acosh(x, out=x)
+    >>> print(x)
+    >>> ivy.array([[nan, nan, nan],
+                [nan, nan, nan]])
+
+    With :code: `ivy.NativeArray` input:
+
+    >>> x = ivy.native_array ([-0, -2.6, -1, 3.6])
+    >>> y = ivy.acosh(x)
+    >>> print(y)
+    ivy.array([nan, nan, 0. , 1.95])
+
+    With :code: `ivy.Container`input:
+
+    >>> x = ivy.Container(a=ivy.array([0. ,1, 2]), \
+                          b= ivy.array([4. -5.3, -0, -2.3]))
+    >>> y = ivy.acosh(x)
+    >>> print(y)
+    {
+        a:ivy.array([nan, 0., 1.32]) ,
+        b:ivy.array([2.11, nan, nan, nan])
+    }
 
     """
     return ivy.current_backend(x).acosh(x, out=out)
@@ -499,6 +550,7 @@ def asinh(
     >>> x = ivy.native_array([-0, -2.6, 1, 3.6])
     >>> y = ivy.asinh(x)
     >>> print(y)
+
     ivy.array([ 0. , -1.68 , 0.881, 1.99 ])
 
     With :code:`ivy.Container` input:
@@ -646,8 +698,8 @@ def atan2(
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan2.html>`_ # noqa
-    in the standard. 
-    
+    in the standard.
+
     The descriptions above assume an array input for simplicity, but
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
@@ -669,7 +721,7 @@ def atan2(
     >>> x.atan2(y, out=z)
     >>> print(z)
     ivy.array([2.68 , 0.588])
-    
+
     >>> nan = float("nan")
     >>> x = ivy.array([nan, 1.0, 1.0, -1.0, -1.0])
     >>> y = ivy.array([1.0, +0, -0, +0, -0])
@@ -701,7 +753,7 @@ def atan2(
     >>> print(y)
     ivy.array([[ 0.785,  0.785,  0.785],
         [-2.36 , -2.36 , -2.36 ]])
-               
+
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
@@ -783,7 +835,7 @@ def bitwise_and(
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
 
-    Parameters
+    (Parameters
     ----------
     x1
         first input array. Should have an integer or boolean data type.
@@ -873,7 +925,7 @@ def bitwise_and(
         b: ivy.array([0, 1, 2])
     }
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs: 
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([True, True])
     >>> y = ivy.Container(a=ivy.array([True, False]), b=ivy.array([False, True]))
@@ -1705,30 +1757,30 @@ def expm1(
     Examples
     --------
     With :code:`ivy.Array` inputs:
-    
+
     >>> x = ivy.array([[0, 5, float('-0'), ivy.nan]])
     >>> ivy.expm1(x)
     ivy.array([[  0., 147.,  -0.,  nan]])
-    
+
     >>> x = ivy.array([ivy.inf, 1, float('-inf')])
     >>> y = ivy.zeros(3)
     >>> ivy.expm1(x, out=y)
     ivy.array([  inf,  1.72, -1.  ])
-    
+
     With :code:`ivy.NativeArray` inputs:
-    
+
     >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
     >>> ivy.expm1(x)
     ivy.array([[  1.72],
        [147.  ],
        [ -1.  ]])
-    
+
     With :code:`ivy.Array` instance method:
-    
+
     >>> x = ivy.array([20])
     >>> x.expm1()
     ivy.array([4.85e+08])
-    
+
     With :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([-1, 0,]), \
@@ -1738,9 +1790,9 @@ def expm1(
         a: ivy.array([-0.632, 0.]),
         b: ivy.array([2.20e+04, 1.72e+00])
     }
-    
+
     With :code:`ivy.Container` instance method:
-    
+
     >>> x = ivy.Container(a=ivy.array([10, 13]))
     >>> x.expm1(x)
     {
@@ -1748,13 +1800,13 @@ def expm1(
     }
 
     With :code:`ivy.Container` static method:
-    
+
     >>> x = ivy.Container(a=ivy.array([1]))
     >>> ivy.Container.static_expm1(x)
     {
         a: ivy.array([1.72])
     }
-    
+
     """
     return ivy.current_backend(x).expm1(x, out=out)
 
@@ -2097,12 +2149,12 @@ def less_equal(
      ret
         an array containing the element-wise results. The returned array must have a
         data type of bool.
-    
+
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
     in the standard.
-    
+
      Functional Examples
     -------------------
 
@@ -2128,7 +2180,7 @@ def less_equal(
     >>> ivy.less_equal(x, y, out=x)
     >>> print(x)
     ivy.array([[[1.],[0.],[1.]]])
-    
+
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1, 2])

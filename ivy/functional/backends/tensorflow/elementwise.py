@@ -586,17 +586,17 @@ def trunc(
 
 
 def erf(
-    x: Union[tf.Tensor, tf.Variable], 
-    *, 
+    x: Union[tf.Tensor, tf.Variable],
+    *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.erf(x)
 
 
 def maximum(
-    x1: Union[tf.Tensor, tf.Variable], 
-    x2: Union[tf.Tensor, tf.Variable], 
-    *, 
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
@@ -604,9 +604,9 @@ def maximum(
 
 
 def minimum(
-    x1: Union[tf.Tensor, tf.Variable], 
-    x2: Union[tf.Tensor, tf.Variable], 
-    *, 
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
