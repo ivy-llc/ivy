@@ -649,7 +649,7 @@
 
 
 <span class="c1"># noinspection PyShadowingNames,PyShadowingBuiltins</span>
-<div class="viewcode-block" id="default_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_float_dtype/default_float_dtype_functional.html#ivy.functional.ivy.data_type.default_float_dtype">[docs]</a><span class="nd">@handle_nestable</span>
+<div class="viewcode-block" id="default_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_float_dtype.html#ivy.functional.ivy.data_type.default_float_dtype">[docs]</a><span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">default_float_dtype</span><span class="p">(</span>
     <span class="nb">input</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">float_dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">FloatDtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1015,7 +1015,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_native</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="function_supported_dtypes"><a class="viewcode-back" href="../../../../functional/ivy/data_type/function_supported_dtypes/function_supported_dtypes_functional.html#ivy.functional.ivy.data_type.function_supported_dtypes">[docs]</a><span class="nd">@handle_nestable</span>
+<div class="viewcode-block" id="function_supported_dtypes"><a class="viewcode-back" href="../../../../functional/ivy/data_type/function_supported_dtypes.html#ivy.functional.ivy.data_type.function_supported_dtypes">[docs]</a><span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">function_supported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the supported data types of the current backend&#39;s function.</span>
 
@@ -1054,7 +1054,7 @@
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">supported_dtypes</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="function_unsupported_dtypes"><a class="viewcode-back" href="../../../../functional/ivy/data_type/function_unsupported_dtypes/function_unsupported_dtypes_functional.html#ivy.functional.ivy.data_type.function_unsupported_dtypes">[docs]</a><span class="nd">@handle_nestable</span>
+<div class="viewcode-block" id="function_unsupported_dtypes"><a class="viewcode-back" href="../../../../functional/ivy/data_type/function_unsupported_dtypes.html#ivy.functional.ivy.data_type.function_unsupported_dtypes">[docs]</a><span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">function_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the unsupported data types of the current backend&#39;s function.</span>
 
@@ -1299,7 +1299,7 @@
     <span class="k">return</span> <span class="s2">&quot;float&quot;</span> <span class="ow">in</span> <span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_uint_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/is_uint_dtype/is_uint_dtype_functional.html#ivy.functional.ivy.data_type.is_uint_dtype">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<div class="viewcode-block" id="is_uint_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/is_uint_dtype.html#ivy.functional.ivy.data_type.is_uint_dtype">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">is_uint_dtype</span><span class="p">(</span>
     <span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">]</span>
