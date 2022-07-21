@@ -157,8 +157,8 @@ def ones(
 def ones_like(
     x: mx.nd.NDArray,
     *,
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    dtype: type,
+    device: mx.context.Context,
 ) -> mx.nd.NDArray:
     if x.shape == ():
         return mx.nd.array(1.0, ctx=device)
