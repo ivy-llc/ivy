@@ -75,11 +75,11 @@ ivy.tan
             x=np.asarray(x, dtype=input_dtype),
         )
 
-As you can see we generate everything we need to test a frontend function within the :code:`@given` decorator. 
-Note how we pass the :code:`fn_name` to :code:`helpers.num_positional_args` which is used to determine the number of positional arguments for :code:`ivy.functional.frontends.jax.lax.tan`.
-See how we seperate the :code:`input_dtype` and :code:`x` from :code:`dtype_and_x` using :code:`input_dtype, x = dtype_and_x`.
-We then pass the generated values to :code:`helpers.test_frontend_function` which does the heavy lifting.
-We also pass :code:`x` as a numpy array with :code:`np.asarray(x, dtype=input_dtype)` to ensure that the input is always an array.
+|As you can see we generate everything we need to test a frontend function within the :code:`@given` decorator. 
+|Note how we pass the :code:`fn_name` to :code:`helpers.num_positional_args` which is used to determine the number of positional arguments for :code:`ivy.functional.frontends.jax.lax.tan`.
+|See how we seperate the :code:`input_dtype` and :code:`x` from :code:`dtype_and_x` using :code:`input_dtype, x = dtype_and_x`.
+|We then pass the generated values to :code:`helpers.test_frontend_function` which does the heavy lifting.
+|We also pass :code:`x` as a numpy array with :code:`np.asarray(x, dtype=input_dtype)` to ensure that the input is always an array.
 
 
 **NumPy**
