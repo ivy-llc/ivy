@@ -34,17 +34,13 @@ def abs(
 
 
 def acos(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.acos(x)
 
 
 def acosh(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.acosh(x)
 
@@ -92,9 +88,7 @@ def atan2(
 
 
 def atanh(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.atanh(x)
 
