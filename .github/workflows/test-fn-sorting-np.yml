@@ -1,4 +1,4 @@
-name: test-fn-set-numpy
+name: test-fn-sorting-numpy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
