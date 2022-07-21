@@ -64,6 +64,7 @@ def test_native_array(
         max_num_dims=1,
         min_dim_size=2,
         max_dim_size=2,
+        safety_factor=0.5,
     ),
     num=st.integers(1, 5),
     axis=st.none(),
