@@ -1493,7 +1493,7 @@
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
-                <span class="k">else</span> <span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">MultiDev</span><span class="p">))</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
             <span class="p">)</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">v</span>
         <span class="p">]</span>
@@ -2395,31 +2395,6 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_arg</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">devices</span>
                 <span class="p">)</span>
             <span class="p">}</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="ContainerBase.to_multi_dev"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.to_multi_dev">[docs]</a>    <span class="k">def</span> <span class="nf">to_multi_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a single MultiDevContainer, which shares the same structure as the</span>
-<span class="sd">        current container, but replaces arrays at the leaves with DistributedArray</span>
-<span class="sd">        instances.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        devs</span>
-<span class="sd">            The devices along which to distribute each array in the container.</span>
-<span class="sd">        axis</span>
-<span class="sd">            The axis along which to split the arrays at the container leaves.</span>
-<span class="sd">            Default is 0.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            a MultiDevContainer instance, with all leafs arrays replaced by</span>
-<span class="sd">            DistributedArray instances.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">MultiDevContainer</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">dev_dist_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">axis</span><span class="p">)),</span>
-            <span class="n">devices</span><span class="p">,</span>
-            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerBase.unstack"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.unstack">[docs]</a>    <span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dim_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
