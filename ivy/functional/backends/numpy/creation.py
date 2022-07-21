@@ -22,7 +22,7 @@ def arange(
     step: Number = 1,
     *,
     dtype: Optional[np.dtype] = None,
-    device: str
+    device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if dtype:
@@ -41,7 +41,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[np.dtype] = None,
-    device: str
+    device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     # If copy=none then try using existing memory buffer
@@ -169,7 +169,7 @@ def linspace(
     endpoint: bool = True,
     *,
     dtype: np.dtype,
-    device: str
+    device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if axis is None:
@@ -256,7 +256,7 @@ def logspace(
     base: float = 10.0,
     axis: Optional[int] = None,
     *,
-    device: str
+    device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if axis is None:

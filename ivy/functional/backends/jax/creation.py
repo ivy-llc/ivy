@@ -25,7 +25,7 @@ def arange(
     step: Number = 1,
     *,
     dtype: Optional[jnp.dtype] = None,
-    device: jaxlib.xla_extension.Device
+    device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     if dtype:
@@ -44,7 +44,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[jnp.dtype] = None,
-    device: jaxlib.xla_extension.Device
+    device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
@@ -74,7 +74,7 @@ def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device
+    device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     return _to_device(
@@ -122,11 +122,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def from_dlpack(
-    x,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def from_dlpack(x, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax_from_dlpack(x)
 
 
@@ -183,7 +179,7 @@ def linspace(
     endpoint: bool = True,
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device
+    device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     if axis is None:
@@ -202,7 +198,7 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None
+    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     return _to_device(
@@ -224,21 +220,11 @@ def ones_like(
     return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
 
 
-def tril(
-    x: JaxArray,
-    k: int = 0,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def tril(x: JaxArray, k: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tril(x, k)
 
 
-def triu(
-    x: JaxArray,
-    k: int = 0,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def triu(x: JaxArray, k: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.triu(x, k)
 
 
@@ -281,7 +267,7 @@ def logspace(
     base: float = 10.0,
     axis: int = None,
     *,
-    device: jaxlib.xla_extension.Device
+    device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     if axis is None:

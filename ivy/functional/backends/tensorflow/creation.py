@@ -25,7 +25,7 @@ def arange(
     step: Number = 1,
     *,
     dtype: Optional[tf.DType] = None,
-    device: str
+    device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if stop is None:
@@ -64,7 +64,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: tf.DType = None,
-    device: str
+    device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
@@ -195,9 +195,7 @@ def eye(
 
 # noinspection PyShadowingNames
 def from_dlpack(
-    x: Union[tf.Tensor, tf.Variable]
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.dlpack.from_dlpack(x)
 
@@ -250,7 +248,7 @@ def linspace(
     endpoint: bool = True,
     *,
     dtype: tf.DType,
-    device: str
+    device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ):
     if axis is None:
@@ -301,7 +299,7 @@ def ones_like(
 
 
 def tril(
-    x: Union[tf.Tensor, tf.Variable], 
+    x: Union[tf.Tensor, tf.Variable],
     k: int = 0,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
@@ -310,7 +308,7 @@ def tril(
 
 
 def triu(
-    x: Union[tf.Tensor, tf.Variable], 
+    x: Union[tf.Tensor, tf.Variable],
     k: int = 0,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
@@ -355,7 +353,7 @@ def logspace(
     base: float = 10.0,
     axis: Optional[int] = None,
     *,
-    device: str
+    device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     power_seq = linspace(

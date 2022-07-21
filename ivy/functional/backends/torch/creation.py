@@ -45,7 +45,7 @@ def arange(
     *,
     dtype: Optional[torch.dtype] = None,
     device: torch.device,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if stop is None:
         stop = start
@@ -78,7 +78,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[torch.dtype] = None,
-    device: torch.device
+    device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(object_in, torch.Tensor) and dtype is None:
@@ -110,7 +110,7 @@ def empty(
     *,
     dtype: torch.dtype,
     device: torch.device,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.empty(
         shape,
@@ -144,7 +144,7 @@ def eye(
     *,
     dtype: torch.dtype,
     device: torch.device,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = as_native_dtype(default_dtype(dtype))
     device = as_native_dev(default_device(device))
@@ -214,7 +214,7 @@ def full(
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
@@ -237,7 +237,7 @@ def full_like(
     fill_value: Union[int, float],
     *,
     dtype: torch.dtype,
-    device: torch.device
+    device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
@@ -393,7 +393,7 @@ def ones(
     *,
     dtype: torch.dtype,
     device: torch.device,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype_val: torch.dtype = as_native_dtype(dtype)
     device = default_device(device)
@@ -439,7 +439,7 @@ def zeros(
     *,
     dtype: torch.dtype,
     device: torch.device,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
 
@@ -479,7 +479,7 @@ def logspace(
     base: float = 10.0,
     axis: Optional[int] = None,
     *,
-    device: torch.device
+    device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     power_seq = linspace(
