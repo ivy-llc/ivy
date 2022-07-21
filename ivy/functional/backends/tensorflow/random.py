@@ -16,12 +16,13 @@ from ivy.functional.ivy.device import default_device
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
+    low: Union[float, tf.Tensor, tf.Variable] = 0.0,
+    high: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype=None,
     *,
     device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
@@ -35,6 +36,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     mean = tf.cast(mean, "float32")
     std = tf.cast(std, "float32")
@@ -50,6 +52,7 @@ def multinomial(
     replace: bool = True,
     *,
     device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if not replace:
         raise Exception("TensorFlow does not support multinomial without replacement")
@@ -69,7 +72,12 @@ def multinomial(
 
 
 def randint(
-    low: int, high: int, shape: Union[ivy.NativeShape, Sequence[int]], *, device: str
+    low: int,
+    high: int,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     low = tf.cast(low, "int64")
@@ -82,5 +90,9 @@ def seed(seed_value: int = 0) -> None:
     tf.random.set_seed(seed_value)
 
 
-def shuffle(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def shuffle(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.random.shuffle(x)
