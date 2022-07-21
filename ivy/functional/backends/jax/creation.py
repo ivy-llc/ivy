@@ -9,7 +9,6 @@ import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
-from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
 
 
@@ -72,19 +71,12 @@ def empty(
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
-    return _to_device(
-        jnp.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
-    )
+    return _to_device(jnp.empty(shape, dtype), device=device)
 
 
 def empty_like(
     x: JaxArray, *, dtype: jnp.dtype, device: jaxlib.xla_extension.Device
 ) -> JaxArray:
-    if dtype and str:
-        dtype = jnp.dtype(dtype)
-    else:
-        dtype = x.dtype
-
     return _to_device(jnp.empty_like(x, dtype=dtype), device=device)
 
 
@@ -96,8 +88,6 @@ def eye(
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
 ) -> JaxArray:
-    dtype = as_native_dtype(default_dtype(dtype))
-    device = default_device(device)
     return _to_device(jnp.eye(n_rows, n_cols, k, dtype), device=device)
 
 
