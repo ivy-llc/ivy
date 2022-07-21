@@ -144,6 +144,21 @@
 <span class="p">)</span>
 
 
+<span class="c1"># Helpers #</span>
+<span class="c1"># --------#</span>
+
+
+<span class="k">def</span> <span class="nf">_assert_fill_value_and_dtype_are_compatible</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_uint_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">))</span>
+    <span class="p">),</span> <span class="s2">&quot;the fill_value and data type are not compatible&quot;</span>
+
+
 <span class="c1"># Array API Standard #</span>
 <span class="c1"># -------------------#</span>
 
