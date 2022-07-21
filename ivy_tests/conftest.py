@@ -2,7 +2,7 @@ from hypothesis import settings, HealthCheck
 from pytest import mark
 from pathlib import Path
 
-settings.register_profile("ci", suppress_health_check=(HealthCheck(3),), max_examples=200)
+settings.register_profile("ci", suppress_health_check=(HealthCheck(3),))
 settings.load_profile("ci")
 
 skip_ids = []
