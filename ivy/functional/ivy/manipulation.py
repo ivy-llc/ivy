@@ -365,6 +365,14 @@ def reshape(
     ret
         Reshaped array.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
     Examples
     --------
     >>> x = ivy.array([[1,2,3], [4,5,6]])
@@ -373,6 +381,23 @@ def reshape(
     ivy.array([[1, 2],
                [3, 4],
                [5, 6]])
+
+    Instance Method Examples
+    ------------------------
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), b=ivy.array([[6., 7., 8.], [9., 10., 11.]]))
+    >>> y = x.reshape((-1, 2))
+    >>> print(y)
+    {
+        a: ivy.array([[0., 1.],
+                    [2., 3.],
+                    [4., 5.]]),
+        b: ivy.array([[6., 7.],
+                    [8., 9.],
+                    [10., 11.]])
+    }
+
 
     """
     return current_backend(x).reshape(x, shape, copy, out=out)

@@ -74,7 +74,9 @@ def permute_dims(
 
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
-    shape: Union[ivy.NativeShape, Sequence[int]],
+    shape: Union[ivy.NativeShape, Sequence[int], Tuple[int]],
+    copy: Optional[bool] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.reshape(x, shape)
     return ret
