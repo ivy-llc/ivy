@@ -92,6 +92,7 @@ class ContainerWithStatistical(ContainerBase):
         ivy.Container instance method variant of ivy.var. This method simply wraps the
         function, and so the docstring for ivy.var also applies to this method
         with minimal changes.
+        
         Parameters
         ----------
         self
@@ -109,12 +110,14 @@ class ContainerWithStatistical(ContainerBase):
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
+        
         Returns
         -------
         ret
            if the variance was computed over the entire array, a zero-dimensional array
             containing the variance; otherwise, a non-zero-dimensional array containing the
             variances. The returned array must have the same data type as x.
+       
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9])\

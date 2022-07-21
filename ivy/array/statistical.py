@@ -92,9 +92,7 @@ class ArrayWithStatistical(abc.ABC):
     
         Examples
         --------
-
         With :code:`ivy.Array` input:
-
          >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
          >>> y = x.var()
          >>> print(y)
