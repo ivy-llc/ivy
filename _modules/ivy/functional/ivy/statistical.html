@@ -315,15 +315,20 @@
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Calculates the minimum value of the input array x.</span>
+
 <span class="sd">    .. note::</span>
 <span class="sd">    When the number of elements over which to compute the minimum value is zero, the</span>
 <span class="sd">    minimum value is implementation-defined. Specification-compliant libraries may</span>
 <span class="sd">    choose to raise an error, return a sentinel value (e.g., if x is a floating-point</span>
 <span class="sd">    input array, return NaN), or return the maximum possible value for the input array x</span>
 <span class="sd">    data type (e.g., if x is a floating-point array, return +infinity).</span>
+
 <span class="sd">    **Special Cases**</span>
+
 <span class="sd">    For floating-point operands,</span>
+
 <span class="sd">    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
@@ -339,6 +344,7 @@
 <span class="sd">        (dimensions) must not be included in the result. Default: False.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
@@ -346,6 +352,7 @@
 <span class="sd">        array containing the minimum value; otherwise, a non-zero-dimensional array</span>
 <span class="sd">        containing the minimum values. The returned array must have the same data type</span>
 <span class="sd">        as x.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -400,18 +407,8 @@
 <span class="sd">        the products. The returned array must have a data type as described by the dtype</span>
 <span class="sd">        parameter above.</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.prod(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array(6)</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 0, 3])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.prod(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array(0)</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../../functional/ivy/statistical/std/std_functional.html#ivy.functional.ivy.statistical.std">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -575,10 +572,15 @@
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Calculates the variance of the input array x.</span>
+
 <span class="sd">    **Special Cases**</span>
+
 <span class="sd">    Let N equal the number of elements over which to compute the variance.</span>
+
 <span class="sd">    If N - correction is less than or equal to 0, the variance is NaN.</span>
+
 <span class="sd">    If x_i is NaN, the variance is NaN (i.e., NaN values propagate).</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
@@ -605,12 +607,14 @@
 <span class="sd">        (dimensions) must not be included in the result. Default: False.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        if the variance was computed over the entire array, a zero-dimensional array</span>
 <span class="sd">        containing the variance; otherwise, a non-zero-dimensional array containing the</span>
 <span class="sd">        variances. The returned array must have the same data type as x.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
