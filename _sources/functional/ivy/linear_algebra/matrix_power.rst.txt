@@ -2,6 +2,8 @@ matrix_power
 ============
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.matrix_power
+
+.. autofunction:: ivy.container.container_methods.matrix_power
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ matrix_power
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: matrix_power
+
+   matrix_power/matrix_power_functional.rst
+   matrix_power/matrix_power_container.rst
+

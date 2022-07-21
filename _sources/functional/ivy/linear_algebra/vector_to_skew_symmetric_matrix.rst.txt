@@ -4,6 +4,8 @@ vector_to_skew_symmetric_matrix
 .. autofunction:: ivy.functional.ivy.linear_algebra.vector_to_skew_symmetric_matrix
 
 .. autofunction:: ivy.array.array_methods.vector_to_skew_symmetric_matrix
+
+.. autofunction:: ivy.container.container_methods.vector_to_skew_symmetric_matrix
 |
 | **Supported Frameworks:**
 
@@ -32,4 +34,5 @@ vector_to_skew_symmetric_matrix
 
    vector_to_skew_symmetric_matrix/vector_to_skew_symmetric_matrix_functional.rst
    vector_to_skew_symmetric_matrix/vector_to_skew_symmetric_matrix_array.rst
+   vector_to_skew_symmetric_matrix/vector_to_skew_symmetric_matrix_container.rst
 
