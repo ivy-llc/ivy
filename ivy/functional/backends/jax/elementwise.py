@@ -30,17 +30,13 @@ def abs(
 
 
 def acos(
-    x: JaxArray,
-    *,
-    out: Optional[JaxArray] = None
+    x: JaxArray
 ) -> JaxArray:
     return jnp.arccos(x)
 
 
 def acosh(
-    x: JaxArray,
-    *,
-    out: Optional[JaxArray] = None
+    x: JaxArray
 ) -> JaxArray:
     return jnp.arccosh(x)
 
@@ -87,9 +83,7 @@ def atan2(
 
 
 def atanh(
-    x: JaxArray,
-    *,
-    out: Optional[JaxArray] = None
+    x: JaxArray
 ) -> JaxArray:
     return jnp.arctanh(x)
 
