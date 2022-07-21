@@ -27,6 +27,8 @@ def dev(
     dv = x.device
     if dv == "":
         dv = ivy.default_device()
+        with tf.device(dv):
+            x = tf.identity(x)
     if as_native:
         return dv
     return as_ivy_dev(dv)

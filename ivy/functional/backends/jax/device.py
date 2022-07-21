@@ -33,6 +33,7 @@ def dev(
 ) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         dv = ivy.default_device()
+        x = jax.device_put(x, as_native_dev(dv))
     try:
         dv = _to_array(x).device_buffer.device
         dv = dv()
