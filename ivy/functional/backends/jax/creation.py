@@ -12,6 +12,9 @@ from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
 
 # Array API Standard #
 # -------------------#
@@ -120,20 +123,8 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def from_dlpack(
-    x,
-    *,
-    out: Optional[JaxArray] = None
-):
+def from_dlpack(x, *, out: Optional[JaxArray] = None):
     return jax_from_dlpack(x)
-
-
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
-        ivy.is_float_dtype(dtype)
-        and isinstance(fill_value, float)
-        or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not same"
 
 
 def full(
@@ -222,21 +213,11 @@ def ones_like(
     return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
 
 
-def tril(
-    x: JaxArray,
-    k: int = 0,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def tril(x: JaxArray, k: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tril(x, k)
 
 
-def triu(
-    x: JaxArray,
-    k: int = 0,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def triu(x: JaxArray, k: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.triu(x, k)
 
 

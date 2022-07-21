@@ -60,8 +60,10 @@ def inplace_update(
     if not val_native.flags.c_contiguous:
         val_native = np.ascontiguousarray(val_native)
 
-    x_native.data = val_native
-
+    if val_native.shape == x_native.shape:
+        np.copyto(x_native, val_native)
+    else:
+        x_native = val_native
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
