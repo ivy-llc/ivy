@@ -81,7 +81,7 @@ def floormod(
     x: np.ndarray, 
     y: np.ndarray, 
     *, 
-    out: Optional[np.ndarray]
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.asarray(x % y)
     return ret
