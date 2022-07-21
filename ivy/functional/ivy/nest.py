@@ -10,6 +10,21 @@ import ivy
 
 # Extra #
 # ------#
+def apply_function(
+    fn:Callable,
+    constant: Dict[str, Any] = None,
+    unique: Dict[str, Iterable[Any]] = None,
+    )->Callable:
+
+    c = ivy.default(constant, {})
+    u = ivy.default(unique, {})
+
+    def function(*input:Any):
+        return fn(**dict(**c, **dict(zip(u.keys(),input))))
+
+    outputs = _map(function, *u.values())
+
+    return outputs
 
 
 def index_nest(
@@ -498,16 +513,13 @@ def map(
         x following the applicable of fn to each of it's iterated items.
 
     """
-    c = ivy.default(constant, {})
-    u = ivy.default(unique, {})
-    rets = [
-        r
-        for r in _map(
-            lambda *uv: fn(**dict(**c, **dict(zip(u.keys(), uv)))), *u.values()
-        )
-    ]
+    outputs  = apply_function(fn,constant,unique )
+
+    rets = list(outputs)
+
     if mean:
-        return sum(rets) / len(rets)
+        rets = sum(rets) / len(rets)
+
     return rets
 
 
