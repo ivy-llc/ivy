@@ -2,6 +2,8 @@ function_supported_dtypes
 =========================
 
 .. autofunction:: ivy.functional.ivy.data_type.function_supported_dtypes
+
+.. autofunction:: ivy.container.container_methods.static_function_supported_dtypes
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ function_supported_dtypes
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: function_supported_dtypes
+
+   function_supported_dtypes/function_supported_dtypes_functional.rst
+   function_supported_dtypes/static_function_supported_dtypes_container.rst
+
