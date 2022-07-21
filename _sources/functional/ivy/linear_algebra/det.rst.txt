@@ -4,8 +4,6 @@ det
 .. autofunction:: ivy.functional.ivy.linear_algebra.det
 
 .. autofunction:: ivy.array.array_methods.det
-
-.. autofunction:: ivy.container.container_methods.det
 |
 | **Supported Frameworks:**
 
@@ -34,5 +32,4 @@ det
 
    det/det_functional.rst
    det/det_array.rst
-   det/det_container.rst
 
