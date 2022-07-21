@@ -5,7 +5,7 @@ import time
 import einops
 import jax.numpy as jnp
 import pytest
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 import numpy as np
 from numbers import Number
 from collections.abc import Sequence
@@ -274,6 +274,7 @@ def test_to_scalar(object_in, dtype, device, call, fw):
 @given(x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
 def test_to_list(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
+    assume(dtype in ivy.valid_dtypes)
     if call in [helpers.tf_graph_call]:
         # to_list() requires eager execution
         return
