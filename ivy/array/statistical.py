@@ -62,14 +62,14 @@ class ArrayWithStatistical(abc.ABC):
             input array. Should have a floating-point data type.
         axis
          axis or axes along which variances must be computed. By default, the variance
-            must be computed over the entire array. If a tuple of integers, variances must
-            be computed over multiple axes. Default: None.
+         must be computed over the entire array. If a tuple of integers, variances must
+         be computed over multiple axes. Default: None.
         correction
             degrees of freedom adjustment. Setting this parameter to a value other than 0
             has the effect of adjusting the divisor during the calculation of the variance
             according to N-c where N corresponds to the total number of elements over which
             the variance is computed and c corresponds to the provided degrees of freedom
-         adjustment. When computing the variance of a population, setting this parameter
+            adjustment. When computing the variance of a population, setting this parameter
             to 0 is the standard choice (i.e., the provided array contains data constituting
             an entire population). When computing the unbiased sample variance, setting this
             parameter to 1 is the standard choice (i.e., the provided array contains data

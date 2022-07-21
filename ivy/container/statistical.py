@@ -115,8 +115,8 @@ class ContainerWithStatistical(ContainerBase):
         -------
         ret
            if the variance was computed over the entire array, a zero-dimensional array
-            containing the variance; otherwise, a non-zero-dimensional array containing the
-            variances. The returned array must have the same data type as x.
+           containing the variance; otherwise, a non-zero-dimensional array containing the
+           variances. The returned array must have the same data type as x.
        
         Examples
         --------
