@@ -28,7 +28,14 @@ def _linspace(start, stop, num, cont):
     return ret
 
 
-def arange(stop, start=0, step=1, *, dtype=None, device: mx.context.Context):
+def arange(
+    stop,
+    start=0,
+    step=1,
+    *,
+    dtype: Optional[Union[ivy.Dtype, type]] = None,
+    device: mx.context.Context,
+):
     stop = stop if isinstance(stop, Number) else stop.asscalar()
     start = start if isinstance(start, Number) else start.asscalar()
     step = step if isinstance(step, Number) else step.asscalar()
@@ -90,9 +97,9 @@ def from_dlpack(x):
 
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]],
-    fill_value,
+    fill_value: Union[int, float],
     *,
-    dtype=None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: mx.context.Context,
 ):
     shape = ivy.to_ivy_shape(shape)
