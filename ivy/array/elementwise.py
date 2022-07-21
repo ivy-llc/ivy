@@ -86,6 +86,39 @@ class ArrayWithElementwise(abc.ABC):
         return ivy.add(self._data, x2, out=out)
 
     def asin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.asin. This method simply wraps the
+        function, and so the docstring for ivy.asin also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a floating-point data type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the inverse sine of each element in ``self``. The returned
+            array must have a floating-point data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([-1., 1., 4., 0.8])
+        >>> y = x.asin()
+        >>> print(y)
+        ivy.array([-1.57, 1.57, nan, 0.927])
+
+        >>> x = ivy.array([-3., -0.9, 1.5, 2.8])
+        >>> y = ivy.zeros(4)
+        >>> print(x.asin(out=y))
+        ivy.array([nan, -1.12, nan, nan])
+        """
         return ivy.asin(self._data, out=out)
 
     def asinh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
