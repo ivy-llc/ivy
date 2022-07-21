@@ -158,3 +158,14 @@ def conv3d_transpose(
         (data_format, "DHWIO", data_format),
         True,
     )
+
+def lstm_update(
+    x: JaxArray,
+    h: JaxArray,
+    c: JaxArray,
+    W: JaxArray,
+    b: JaxArray,
+    *,
+    out: Optional[JaxArray] = None
+) -> Tuple[JaxArray, JaxArray]:
+    return jlax.lstm_cell_update(x, h, c, W, b)

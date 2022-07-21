@@ -151,3 +151,8 @@ def conv3d(*_):
 
 def conv3d_transpose(*_):
     raise Exception("Convolutions not yet implemented for numpy library")
+
+def lstm_update(*_):
+    raise Exception("Convolutions not yet implemented for numpy library")
+
+
