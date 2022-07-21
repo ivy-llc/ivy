@@ -109,11 +109,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def from_dlpack(
-    x,
-    *,
-    out: Optional[JaxArray] = None
-):
+def from_dlpack(x, *, out: Optional[JaxArray] = None):
     return jax_from_dlpack(x)
 
 
@@ -149,13 +145,7 @@ def full_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    # dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
-    # if dtype and str:
-    #     dtype = jnp.dtype(dtype)
-    # else:
-    #     dtype = x.dtype
-
     return _to_device(
         jnp.full_like(x, fill_value, dtype=dtype),
         device=device,
@@ -188,13 +178,11 @@ def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:
 def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return _to_device(
-        jnp.ones(shape, as_native_dtype(default_dtype(dtype))), device=device
-    )
+    return _to_device(jnp.ones(shape, dtype), device=device)
 
 
 def ones_like(
@@ -204,28 +192,14 @@ def ones_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if dtype and str:
-        dtype = jnp.dtype(dtype)
-    else:
-        dtype = x.dtype
     return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
 
 
-def tril(
-    x: JaxArray,
-    k: int = 0,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def tril(x: JaxArray, k: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tril(x, k)
 
 
-def triu(
-    x: JaxArray,
-    k: int = 0,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def triu(x: JaxArray, k: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.triu(x, k)
 
 
@@ -249,8 +223,6 @@ def zeros_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if not dtype:
-        dtype = x.dtype
     return _to_device(jnp.zeros_like(x, dtype=dtype), device=device)
 
 
