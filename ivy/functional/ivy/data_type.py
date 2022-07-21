@@ -326,12 +326,23 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
     -------
     ret
         a class with that encapsules the following attributes:
+
         - **bits**: *int*
+
           number of bits occupied by the type.
+
         - **max**: *int*
+
           largest representable number.
+
         - **min**: *int*
+
           smallest representable number.
+    
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.iinfo.html>`_ # noqa
+    in the standard.
 
     """
     return current_backend(None).iinfo(type)
