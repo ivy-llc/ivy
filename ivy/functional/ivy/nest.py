@@ -11,16 +11,16 @@ import ivy
 # Extra #
 # ------#
 def apply_function(
-    fn:Callable,
+    fn: Callable,
     constant: Dict[str, Any] = None,
     unique: Dict[str, Iterable[Any]] = None,
-    )->Callable:
+    ) -> Callable:
 
     c = ivy.default(constant, {})
     u = ivy.default(unique, {})
 
-    def function(*input:Any):
-        return fn(**dict(**c, **dict(zip(u.keys(),input))))
+    def function(*input: Any): 
+        return fn(**dict(**c, **dict(zip(u.keys(), input))))
 
     outputs = _map(function, *u.values())
 
@@ -513,7 +513,7 @@ def map(
         x following the applicable of fn to each of it's iterated items.
 
     """
-    outputs  = apply_function(fn,constant,unique )
+    outputs = apply_function(fn, constant, unique)
 
     rets = list(outputs)
 
