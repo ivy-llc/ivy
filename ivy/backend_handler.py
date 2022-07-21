@@ -169,6 +169,10 @@ def set_backend(backend: str):
     <class 'jaxlib.xla_extension.DeviceArray'>
 
     """
+    if isinstance(backend, str) and backend not in _backend_dict:
+        raise ValueError(
+            "backend must be one from {}".format(list(_backend_dict.keys()))
+        )
     ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
     if not backend_stack:
@@ -177,11 +181,7 @@ def set_backend(backend: str):
         temp_stack = list()
         while backend_stack:
             temp_stack.append(unset_backend())
-        try:
-            backend = importlib.import_module(_backend_dict[backend])
-        except KeyError:
-            backend_stack.extend(reversed(temp_stack))
-            raise KeyError("Backend {} is not found.".format(backend))
+        backend = importlib.import_module(_backend_dict[backend])
         for fw in reversed(temp_stack):
             backend_stack.append(fw)
     if backend.current_backend_str() == "numpy":
