@@ -66,8 +66,10 @@ def reshape(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.reshape(x, shape)
-    return ret
+    if copy:
+        newarr = x.copy()
+        return np.reshape(newarr, shape)
+    return np.reshape(x, shape)
 
 
 def roll(

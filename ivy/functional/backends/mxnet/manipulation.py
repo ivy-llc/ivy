@@ -87,7 +87,9 @@ def reshape(
     copy: Optional[bool] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
-
+    if copy:
+        newarr = x.copy()
+        return newarr.reshape(shape)
     return x.reshape(shape)
 
 

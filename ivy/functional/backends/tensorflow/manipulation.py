@@ -78,8 +78,10 @@ def reshape(
     copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.reshape(x, shape)
-    return ret
+    if copy:
+        newarr = tf.experimental.numpy.copy(x)
+        return tf.reshape(newarr, shape)
+    return tf.reshape(x, shape)
 
 
 def roll(
