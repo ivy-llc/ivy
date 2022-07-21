@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, List, Iterable
+from typing import Union, Optional, Tuple, List, Iterable, Sequence
 from numbers import Number
 
 # local
@@ -382,12 +382,12 @@ def reshape(
 @handle_out_argument
 @handle_nestable
 def roll(
-    x: Union[ivy.Array, ivy.NativeArray],
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
     *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.Container]:
     """Rolls array elements along a specified axis. Array elements that roll beyond the
     last position are re-introduced at the first position. Array elements that roll
     beyond the first position are re-introduced at the last position.
@@ -456,6 +456,14 @@ def roll(
                 [ 3., 1.],
                 [ 6., 2.]]])
 
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.roll(x, 1)
+    >>> print(y)
+    ivy.array([2., 0., 1.])
+
+
     With one :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
@@ -477,6 +485,24 @@ def roll(
     {
         a: ivy.array([2., 0., 1.]),
         b: ivy.array([4., 5., 3.])
+    }
+
+    Instance Method Examples
+    ------------------------
+    >>> x = ivy.array([[0., 1., 2.], \
+                       [3., 4., 5.]])
+    >>> y = x.roll(2, -1)
+    >>> print(y)
+    ivy.array([[1., 2., 0.],
+                [4., 5., 3.]])
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = x.roll(1)
+    >>> print(y)
+    {
+        a: ivy.array([2., 0., 1.]),
+        b: ivy.array([5., 3., 4.])
     }
     """
     return current_backend(x).roll(x, shift, axis, out=out)
@@ -826,8 +852,8 @@ def repeat(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([3, 4, 5])
-    >>> ivy.repeat(x, 2)
-    >>> print(x)
+    >>> y= ivy.repeat(x, 2)
+    >>> print(y)
     ivy.array([3, 3, 4, 4, 5, 5])
 
     With :code:`ivy.NativeArray` input:
@@ -842,12 +868,12 @@ def repeat(
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([[0., 1., 2.], [3., 4., 5.]]))
-    >>> ivy.repeat(x, 2, axis=1)
-    >>> print(x)
+                          b=ivy.array([0., 1., 2.]))
+    >>> y = ivy.repeat(x, 2, axis=0)
+    >>> print(y)
     {
         a: ivy.array([0., 0., 1., 1., 2., 2.]),
-        b: ivy.array([[0., 0., 1., 1., 2., 2.], [3., 3., 4., 4., 5., 5.]])
+        b: ivy.array([0., 0., 1., 1., 2., 2.])
     }
     """
     return current_backend(x).repeat(x, repeats, axis, out=out)
@@ -861,6 +887,8 @@ def split(
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Splits an array into multiple sub-arrays.
 
