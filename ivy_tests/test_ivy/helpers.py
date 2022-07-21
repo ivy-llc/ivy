@@ -1318,6 +1318,7 @@ def dtype_and_values(
     num_arrays=1,
     min_value=None,
     max_value=None,
+    safety_factor=0.95,
     allow_inf=False,
     exclude_min=False,
     exclude_max=False,
@@ -1367,6 +1368,7 @@ def dtype_and_values(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    safety_factor=safety_factor,
                 )
             )
         )
