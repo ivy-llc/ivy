@@ -174,7 +174,7 @@ ivy.tan
             x=np.asarray(x, dtype=input_dtype),
         )
 
-* We use :code:'ivy_tf.valid_float_dtypes' to generate :code:`available_dtypes`, these are valid data types specifically for TensorFlow.
+* We use :code:`ivy_tf.valid_float_dtypes` to generate :code:`available_dtypes`, these are valid data types specifically for TensorFlow.
 
 **PyTorch**
 
@@ -218,9 +218,12 @@ ivy.tan
             out=None,
         )
 
+* We use :code:`ivy_tf.valid_float_dtypes` to generate :code:`available_dtypes`, these are valid data types specifically for TensorFlow.
+* Torch accepts both Torch and Numpy datatypes so we create a :code:`tuple` of the two as :code:`available_dtypes`.
+
 **Round Up**
 
-This should have hopefully given you a good idea about implementing Ivy Frontend tests.
+These examples have hopefully given you a good understanding of Ivy Frontend Tests!
 
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `ivy frontends discussion`_,
