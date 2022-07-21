@@ -92,9 +92,9 @@ def _get_dtype_value1_value2_axis_for_tensordot(
         )
     )
     axis = draw(
-        st.integers(0, len(shape))
+        st.integers(1, len(shape))
         | st.lists(st.integers(0, len(shape)-1), min_size=1, max_size=len(shape), unique=True)
-        .map(lambda x: [x.copy(), x.reverse()])
+        .map(lambda x: [x, x])
     )
 
     dtype = draw(
@@ -118,6 +118,10 @@ def _get_dtype_value1_value2_axis_for_tensordot(
         )
 
     value1, value2 = values[0], values[1]
+    value1 = np.asarray(value1, dtype=dtype)
+    value2 = np.asarray(value2, dtype=dtype)
+    if not isinstance(axis, list):
+        value2 = value2.transpose([k for k in range(len(shape)-axis, len(shape))] + [k for k in range(0, len(shape)-axis)])
     return dtype, value1, value2, axis
 
 
@@ -704,8 +708,8 @@ def test_tensordot(
         instance_method=instance_method,
         fw=fw,
         fn_name="tensordot",
-        x1=np.asarray(x1, dtype=dtype),
-        x2=np.asarray(x2, dtype=dtype).transpose(),
+        x1=x1,
+        x2=x2,
         axes=axis,
     )
 
@@ -1092,7 +1096,7 @@ def test_matrix_rank(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
         min_value=0,
-        max_value=1000,
+        max_value=10,
         shape=st.integers(2, 5).map(lambda x: tuple([x, x]))
     ).filter(lambda x: np.linalg.cond(x[1]) < 1/sys.float_info.epsilon and np.linalg.det(np.asarray(x[1])) != 0),
     as_variable=st.booleans(),
