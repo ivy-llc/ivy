@@ -370,6 +370,7 @@ This is the creation function :code:`ones`, which takes an array shape as an arg
             max_dim_size=10,
         ),
         dtype=st.sampled_from(ivy_torch.valid_numeric_dtypes),
+        with_out = st.booleans(),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.torch.ones"
         ),
@@ -383,16 +384,18 @@ This is the creation function :code:`ones`, which takes an array shape as an arg
         helpers.test_frontend_function(
             input_dtypes=dtype,
             as_variable_flags=False,
-            with_out=False,
+            with_out=with_out,
             num_positional_args=num_positional_args,
             native_array_flags=False,
             fw=fw,
             frontend="torch",
             fn_name="ones",
             size=size,
+            dtype=dtype,
         )
 
 * We use :code:`ivy_torch.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
+* :code:`torch.ones()` supports :code:`out` so we generate :code:`with_out`.
 
 
 **Round Up**

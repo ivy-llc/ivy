@@ -16,6 +16,7 @@ import ivy.functional.backends.torch as ivy_torch
         max_dim_size=10,
     ),
     dtype=st.sampled_from(ivy_torch.valid_numeric_dtypes),
+    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.ones"
     ),
@@ -23,13 +24,14 @@ import ivy.functional.backends.torch as ivy_torch
 def test_torch_ones(
     size,
     dtype,
+    with_out,
     num_positional_args,
     fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=False,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=False,
         fw=fw,
