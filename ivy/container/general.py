@@ -1,4 +1,5 @@
 # global
+from numbers import Number
 from typing import Any, Union, List, Dict, Iterable, Optional
 
 # local
@@ -502,6 +503,79 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "to_numpy",
             x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_stable_divide(
+        numerator: Union[Number, ivy.Array, ivy.Container],
+        denominator: Union[Number, ivy.Array, ivy.Container],
+        min_denominator: Number = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stable_divide. This method simply
+        wraps the function, and so the docstring for ivy.stable_divide also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        numerator
+            Container of the numerators of the division.
+        denominator
+            Container of the denominators of the division.
+        min_denominator
+            Container of the minimum denominator to use,
+            use global ivy._MIN_DENOMINATOR by default.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container of elements containing the new items following the numerically
+            stable division.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
+        >>> y = ivy.Container.stable_divide(x, 0.5)
+        >>> print(y)
+        {
+            a: ivy.array([20., 30.]),
+            b: ivy.array([40., 50.])
+        }
+
+
+        >>> x = ivy.Container(a=ivy.asarray([1., 2.]), b=ivy.asarray([3., 4.]))
+        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 0.4]))
+        >>> z = ivy.Container.stable_divide(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([2., 0.8]),
+            b: ivy.array([0.857, 10.])
+        }
+        """
+
+        return ContainerBase.multi_map_in_static_method(
+            "stable_divide",
+            numerator,
+            denominator,
+            min_denominator,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
