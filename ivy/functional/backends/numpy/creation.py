@@ -9,6 +9,9 @@ from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_device
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
 
 # Array API Standard #
 # -------------------#
@@ -115,15 +118,7 @@ def eye(
 # noinspection PyShadowingNames
 def from_dlpack(x, *, out: Optional[np.ndarray] = None):
     # noinspection PyProtectedMember
-    return np._from_dlpack(x)
-
-
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (
-        (ivy.is_int_dtype(dtype) and isinstance(fill_value, int))
-        or (ivy.is_float_dtype(dtype) and isinstance(fill_value, float))
-        or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not same"
+    return np.from_dlpack(x)
 
 
 def full(
