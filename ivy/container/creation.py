@@ -171,23 +171,23 @@ class ContainerWithCreation(ContainerBase):
 
         Examples
         --------
-       With ivy.Container input
-            >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
-            >>> fill_value = 10
-            >>> y = ivy.Container.full_like(fill_value)
-            {
-                a: ivy.array([10, 10, 10]),
-                b: ivy.array([10, 10, 10])
-            }
+        With ivy.Container input
+        >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
+        >>> fill_value = 10
+        >>> y = ivy.Container.full_like(fill_value)
+        {
+            a: ivy.array([10, 10, 10]),
+            b: ivy.array([10, 10, 10])
+        }
 
-            >>> x = ivy.Container(a = ivy.array([1.2,2.2324,3.234]) ,b = ivy.array([4.123,5.23,6.23]))
-            >>> fill_value = 15.0
-            >>> y = ivy.Container.full_like(fill_value)
-            >>> print(y)
-            {
-                a: ivy.array([15., 15., 15.]),
-                b: ivy.array([15., 15., 15.])
-            }
+        >>> x = ivy.Container(a = ivy.array([1.2,2.2324,3.234]) ,b = ivy.array([4.123,5.23,6.23]))
+        >>> fill_value = 15.0
+        >>> y = ivy.Container.full_like(fill_value)
+        >>> print(y)
+        {
+            a: ivy.array([15., 15., 15.]),
+            b: ivy.array([15., 15., 15.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "full_like",
@@ -215,7 +215,7 @@ class ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.full_like. This method simply wraps the
+        ivy.Container instance method variant of ivy.full_like. This method simply wraps the
         function, and so the docstring for ivy.full_like also applies to this method
         with minimal changes.
 
@@ -254,22 +254,22 @@ class ContainerWithCreation(ContainerBase):
         Examples
         --------
         With ivy.Container input
-            >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
-            >>> fill_value = 10
-            >>> y = x.full_like(fill_value)
-            {
-                a: ivy.array([10, 10, 10]),
-                b: ivy.array([10, 10, 10])
-            }
+        >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
+        >>> fill_value = 10
+        >>> y = x.full_like(fill_value)
+        {
+            a: ivy.array([10, 10, 10]),
+            b: ivy.array([10, 10, 10])
+        }
 
-            >>> x = ivy.Container(a = ivy.array([1.2,2.2324,3.234]) ,b = ivy.array([4.123,5.23,6.23]))
-            >>> fill_value = 15.0
-            >>> y = x.full_like(fill_value)
-            >>> print(y)
-            {
-                a: ivy.array([15., 15., 15.]),
-                b: ivy.array([15., 15., 15.])
-            }
+        >>> x = ivy.Container(a = ivy.array([1.2,2.2324,3.234]) ,b = ivy.array([4.123,5.23,6.23]))
+        >>> fill_value = 15.0
+        >>> y = x.full_like(fill_value)
+        >>> print(y)
+        {
+            a: ivy.array([15., 15., 15.]),
+            b: ivy.array([15., 15., 15.])
+        }
         """
         return self.static_full_like(
             self,
