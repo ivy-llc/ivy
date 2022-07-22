@@ -7,7 +7,6 @@ from typing import Optional
 
 # local
 import ivy
-from ivy.functional.ivy.gradients import to_container_and_back
 
 
 def variable(x):
@@ -25,8 +24,9 @@ def variable_data(x):
 
 
 # noinspection PyShadowingNames
-@to_container_and_back
+# @to_container_and_back
 def execute_with_gradients(func, xs, retain_grads=False):
+    # print('xs', xs)
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
@@ -34,18 +34,26 @@ def execute_with_gradients(func, xs, retain_grads=False):
     else:
         y = func_ret
         rest = tuple()
-    print("func_ret", func_ret)
     y = ivy.to_native(y)
-    x_grads_flat = list(
-        torch.autograd.grad(
-            [y],
-            [v for k, v in xs.to_iterator()],
+    if isinstance(xs, ivy.Container):
+        x_grads_flat = [
+            torch.autograd.grad(
+                y[key],
+                xs[key],
+                retain_graph=retain_grads,
+                create_graph=retain_grads,
+            )[0]
+            for key in xs.keys()
+        ]
+        grads = xs.from_flat_list(x_grads_flat)
+        grads = grads.to_ivy()
+    else:
+        grads = torch.autograd.grad(
+            y,
+            xs,
             retain_graph=retain_grads,
             create_graph=retain_grads,
-        )
-    )
-    grads = xs.from_flat_list(x_grads_flat)
-    # grads = grads.to_ivy()
+        )[0]
     y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)
