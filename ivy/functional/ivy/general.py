@@ -92,8 +92,7 @@ def get_referrers_recursive(
 
 
 def is_native_array(
-    x: Union[ivy.Array, ivy.NativeArray],
-    exclusive: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False
 ) -> bool:
     """
     Determines whether the input x is a Native Array.
@@ -1806,8 +1805,8 @@ def set_min_base(val: float) -> None:
 
 
 def stable_divide(
-    numerator: Any, denominator: Any, min_denominator: float = None
-) -> Any:
+    numerator: Number, denominator: Number, min_denominator: Number = None
+) -> Number:
     """Divide the numerator by the denominator, with min denominator added to the
     denominator for numerical stability.
 
@@ -1824,6 +1823,7 @@ def stable_divide(
     -------
     ret
         The new item following the numerically stable division.
+
 
     """
     # noinspection PyProtectedMember
@@ -1847,6 +1847,7 @@ def stable_pow(base: Any, exponent: Any, min_base: float = None) -> Any:
     -------
     ret
         The new item following the numerically stable division.
+
 
     """
     # noinspection PyProtectedMember
@@ -2545,7 +2546,7 @@ def multiprocessing(context: str = None):
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns indices or true elements in an input boolean array.
 
