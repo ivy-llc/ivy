@@ -967,8 +967,9 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
 
 
 def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
-    """Determines whether the provided data type is not support by the current
-    framework.
+    """
+    Determines whether the provided data type is not support by
+    the current framework.
 
     Parameters
     ----------
@@ -979,7 +980,6 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     -------
     ret
         Boolean, whether the data-type string is un-supported.
-
     """
     if dtype_in is None:
         return False
