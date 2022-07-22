@@ -12,17 +12,20 @@ from ivy import (
     as_ivy_dtype,
 )
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
 
 # Array API Standard #
 # -------------------#
 
 
 def arange(
-    start, 
-    stop=None, 
-    step=1, 
-    *, 
-    dtype: tf.DType = None, 
+    start,
+    stop=None,
+    step=1,
+    *,
+    dtype: tf.DType = None,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ):
@@ -58,10 +61,10 @@ def arange(
 
 
 def asarray(
-    object_in, 
-    *, 
-    copy=None, 
-    dtype: tf.DType = None, 
+    object_in,
+    *,
+    copy=None,
+    dtype: tf.DType = None,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ):
@@ -192,20 +195,8 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def from_dlpack(
-    x,
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
-):
+def from_dlpack(x, *, out: Union[tf.Tensor, tf.Variable] = None):
     return tf.experimental.dlpack.from_dlpack(x)
-
-
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
-        ivy.is_float_dtype(dtype)
-        and isinstance(fill_value, float)
-        or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not same"
 
 
 def full(
@@ -241,13 +232,13 @@ def full_like(
 
 
 def linspace(
-    start, 
-    stop, 
-    num, 
-    axis=None, 
-    endpoint=True, 
-    *, 
-    dtype: tf.DType, 
+    start,
+    stop,
+    num,
+    axis=None,
+    endpoint=True,
+    *,
+    dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ):
@@ -267,8 +258,7 @@ def linspace(
 
 
 def meshgrid(
-    *arrays: Union[tf.Tensor, tf.Variable],
-    indexing: str = "xy"
+    *arrays: Union[tf.Tensor, tf.Variable], indexing: str = "xy"
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.meshgrid(*arrays, indexing=indexing)
 
@@ -300,7 +290,7 @@ def ones_like(
 
 
 def tril(
-    x: Union[tf.Tensor, tf.Variable], 
+    x: Union[tf.Tensor, tf.Variable],
     k: int = 0,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
@@ -309,7 +299,7 @@ def tril(
 
 
 def triu(
-    x: Union[tf.Tensor, tf.Variable], 
+    x: Union[tf.Tensor, tf.Variable],
     k: int = 0,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
@@ -348,11 +338,11 @@ array = asarray
 
 
 def logspace(
-    start, 
-    stop, 
-    num, 
-    base=10.0, 
-    axis=None, 
+    start,
+    stop,
+    num,
+    base=10.0,
+    axis=None,
     *,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
