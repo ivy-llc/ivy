@@ -11,6 +11,9 @@ from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_device
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
 
 # Array API Standard #
 # -------------------#
@@ -74,20 +77,12 @@ def empty(
     device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return _to_device(
-        np.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
-    )
+    return _to_device(np.empty(shape, dtype), device=device)
 
 
 def empty_like(
     x: np.ndarray, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if dtype:
-        dtype = "bool_" if dtype == "bool" else dtype
-        dtype = np.dtype(dtype)
-    else:
-        dtype = x.dtype
-
     return _to_device(np.empty_like(x, dtype=dtype), device=device)
 
 
@@ -101,7 +96,6 @@ def eye(
     device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    dtype = as_native_dtype(default_dtype(dtype))
     if n_cols is None:
         n_cols = n_rows
     i = np.eye(n_rows, n_cols, k, dtype)
@@ -118,14 +112,6 @@ def eye(
 def from_dlpack(x, *, out: Optional[np.ndarray] = None):
     # noinspection PyProtectedMember
     return np.from_dlpack(x)
-
-
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (
-        (ivy.is_int_dtype(dtype) and isinstance(fill_value, int))
-        or (ivy.is_float_dtype(dtype) and isinstance(fill_value, float))
-        or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not same"
 
 
 def full(
@@ -148,16 +134,11 @@ def full_like(
     x: np.ndarray,
     fill_value: float,
     *,
-    dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
+    dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
-    if dtype:
-        dtype = "bool_" if dtype == "bool" else dtype
-    else:
-        dtype = x.dtype
     return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
 
 
@@ -175,8 +156,6 @@ def linspace(
     if axis is None:
         axis = -1
     ans = np.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
-    if dtype is None:
-        ans = np.float32(ans)
     # Waiting for fix when start is -0.0: https://github.com/numpy/numpy/issues/21513
     if (
         ans.shape[0] >= 1
@@ -198,19 +177,12 @@ def ones(
     device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    dtype = as_native_dtype(default_dtype(dtype))
     return _to_device(np.ones(shape, dtype), device=device)
 
 
 def ones_like(
     x: np.ndarray, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if dtype:
-        dtype = "bool_" if dtype == "bool" else dtype
-        dtype = np.dtype(dtype)
-    else:
-        dtype = x.dtype
-
     return _to_device(np.ones_like(x, dtype=dtype), device=device)
 
 
@@ -235,10 +207,6 @@ def zeros(
 def zeros_like(
     x: np.ndarray, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if dtype:
-        dtype = "bool_" if dtype == "bool" else dtype
-    else:
-        dtype = x.dtype
     return _to_device(np.zeros_like(x, dtype=dtype), device=device)
 
 

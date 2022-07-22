@@ -64,9 +64,9 @@ def test_native_array(
         max_value=None,
         min_num_dims=1,
         max_num_dims=1,
-        min_dim_size=1,
-        max_dim_size=5,
-        shared_dtype=True,
+        min_dim_size=2,
+        max_dim_size=2,
+        safety_factor=0.5,
     ),
     num=st.integers(1, 5),
     axis=st.none(),
@@ -396,50 +396,8 @@ def test_from_dlpack(
     )
 
 
-# full
-@given(
-    shape=helpers.get_shape(
-        allow_none=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
-    dtype_and_fill=helpers.dtype_and_values(shape=(1,)),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="full"),
-)
-def test_full(
-    shape,
-    dtype_and_fill,
-    dtype,
-    with_out,
-    device,
-    num_positional_args,
-    fw,
-):
-
-    dtype, fill = dtype_and_fill
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=False,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=False,
-        container_flags=False,
-        instance_method=False,
-        fw=fw,
-        fn_name="full",
-        shape=shape,
-        fill_value=fill[0],
-        dtype=dtype,
-        device=device,
-    )
-
-
 @st.composite
-def _dtype(draw):
+def _dtypes(draw):
     return draw(
         st.shared(
             helpers.list_of_length(
@@ -452,12 +410,52 @@ def _dtype(draw):
 
 @st.composite
 def _fill_value(draw):
-    dtype = draw(_dtype())[0]
+    dtype = draw(_dtypes())[0]
     if ivy.is_uint_dtype(dtype):
         return draw(st.integers(0, 5))
     if ivy.is_int_dtype(dtype):
         return draw(st.integers(-5, 5))
     return draw(st.floats(-5, 5))
+
+
+# full
+@given(
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    fill_value=_fill_value(),
+    dtypes=_dtypes(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="full"),
+)
+def test_full(
+    shape,
+    fill_value,
+    dtypes,
+    with_out,
+    device,
+    num_positional_args,
+    fw,
+):
+    helpers.test_function(
+        input_dtypes=dtypes[0],
+        as_variable_flags=False,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        container_flags=False,
+        instance_method=False,
+        fw=fw,
+        fn_name="full",
+        shape=shape,
+        fill_value=fill_value,
+        dtype=dtypes[0],
+        device=device,
+    )
 
 
 @st.composite
@@ -470,12 +468,12 @@ def _dtype_and_values(draw):
             max_num_dims=5,
             min_dim_size=1,
             max_dim_size=5,
-            dtype=draw(_dtype()),
+            dtype=draw(_dtypes()),
         )
     )
 
 
-# full_like()
+# full_like
 @given(
     dtype_and_x=_dtype_and_values(),
     fill_value=_fill_value(),
