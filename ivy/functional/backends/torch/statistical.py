@@ -191,9 +191,6 @@ def sum(
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
-sum.support_native_out = True
-
-
 def var(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int]]] = None,
