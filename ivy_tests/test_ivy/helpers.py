@@ -522,7 +522,6 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
     # check for unsupported dtypes
     test_unsupported = False
     unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
-    unsupported_dtypes_fn += ivy.invalid_dtypes
     supported_dtypes_fn = ivy.function_supported_dtypes(fn)
     if unsupported_dtypes_fn:
         for d in input_dtypes:
@@ -542,6 +541,30 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
         if (
             "dtype" in all_as_kwargs_np
             and all_as_kwargs_np["dtype"] not in supported_dtypes_fn
+        ):
+            test_unsupported = True
+    return test_unsupported
+
+
+def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
+    # check for unsupported dtypes
+    test_unsupported = False
+    unsupported_devices_fn = ivy.function_unsupported_devices(fn)
+    supported_devices_fn = ivy.function_supported_devices(fn)
+    if unsupported_devices_fn:
+        if input_device in unsupported_devices_fn:
+            test_unsupported = True
+        if (
+            "device" in all_as_kwargs_np
+            and all_as_kwargs_np["device"] in unsupported_devices_fn
+        ):
+            test_unsupported = True
+    if supported_devices_fn and not test_unsupported:
+        if input_device not in supported_devices_fn:
+            test_unsupported = True
+        if (
+            "device" in all_as_kwargs_np
+            and all_as_kwargs_np["device"] not in supported_devices_fn
         ):
             test_unsupported = True
     return test_unsupported
@@ -781,6 +804,7 @@ def test_function(
     test_atol: float = 1e-06,
     test_values: bool = True,
     ground_truth_backend: str = "numpy",
+    device: str = 'cpu',
     **all_as_kwargs_np,
 ):
     """Tests a function that consumes (or returns) arrays for the current backend
@@ -903,6 +927,10 @@ def test_function(
     test_unsupported = check_unsupported_dtype(
         fn=fn, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
+    if not test_unsupported:
+        test_unsupported = check_unsupported_device(
+            fn=fn, input_device=device, all_as_kwargs_np=all_as_kwargs_np
+        )
     if test_unsupported:
         try:
             args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(

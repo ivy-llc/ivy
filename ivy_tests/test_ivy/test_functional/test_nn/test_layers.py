@@ -540,6 +540,7 @@ def test_conv2d_transpose(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv2d_transpose",
+        device=device,
         x=x,
         filters=filters,
         strides=stride,
