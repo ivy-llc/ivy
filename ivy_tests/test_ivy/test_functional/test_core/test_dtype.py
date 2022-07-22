@@ -553,7 +553,6 @@ def test_dtype(
     instance_method,
     fw,
 ):
-    print("array: {}, input_dtype: {}".format(array, input_dtype))
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
