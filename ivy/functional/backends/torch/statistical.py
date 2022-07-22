@@ -76,8 +76,8 @@ def prod(
     x: torch.Tensor,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: torch.dtype = None,
-    keepdims: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
@@ -189,9 +189,6 @@ def sum(
                 dtype=dtype,
             )
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
-
-
-sum.support_native_out = True
 
 
 def var(
