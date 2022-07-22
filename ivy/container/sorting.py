@@ -145,7 +145,7 @@ class ContainerWithSorting(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]), \
-                             b=ivy.array([[8, 1], [5, 0.8]]))
+                              b=ivy.array([[8, 1], [5, 0.8]]))
         >>> y = x.sort()
         >>> print(y)
         { a: ivy.array([0.2, 5., 9.]), \
@@ -155,7 +155,7 @@ class ContainerWithSorting(ContainerBase):
         With：code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
-                                 b=ivy.array([[9, 0.7], [0.4, 0]]))
+                              b=ivy.array([[9, 0.7], [0.4, 0]]))
         >>> y = ivy.sort(x)
         >>> print(y)
         {
