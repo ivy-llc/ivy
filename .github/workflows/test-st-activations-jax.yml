@@ -1,4 +1,4 @@
-name: test-activations-jax
+name: test-st-activations-jax
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
