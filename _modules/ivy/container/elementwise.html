@@ -2149,6 +2149,19 @@
 <span class="sd">            a container containing the element-wise results.</span>
 <span class="sd">            The returned container must have a data type determined</span>
 <span class="sd">            by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Container` inputs:</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1., 2.3, 3]), b=ivy.array([2.4, 3., 2.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_divide(x1, x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([12., 1.52, 2.1]),</span>
+<span class="sd">            b: ivy.array([1.25, 0.333, 0.45])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;divide&quot;</span><span class="p">,</span>
@@ -2205,6 +2218,19 @@
 <span class="sd">            a container containing the element-wise results.</span>
 <span class="sd">            The returned container must have a data type determined</span>
 <span class="sd">            by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Container` inputs:</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1., 2.3, 3]), b=ivy.array([2.4, 3., 2.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x1.divide(x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([12., 1.52, 2.1]),</span>
+<span class="sd">            b: ivy.array([1.25, 0.333, 0.45])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_divide</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
