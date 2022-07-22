@@ -369,12 +369,10 @@ def result_type(
     --------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([1,2,3])
-    >>> print(ivy.result_type(x))
-    <dtype:'int32'>
-
-    >>> print(ivy.result_type(x, 'int64'))
-    <dtype:'int64'>
+    >>> x = ivy.array([3, 4, 5])
+    >>> y = ivy.array([3., 4., 5.])
+    >>> print(ivy.result_type(x, y))
+    <dtype:'float64'>
 
     With :code:`ivy.NativeArray` input:
 

@@ -96,8 +96,11 @@ class ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([3., 4., 5.])
-        >>> print(x.result_type())
-        <dtype:'float32'>
+        >>> x = ivy.array([0, 1, 2])
+        >>> print(x.dtype)
+        int32
+
+        >>> x.result_type(ivy.float64)
+        <dtype:'float64'>
         """
         return ivy.result_type(self._data, *arrays_and_dtypes)
