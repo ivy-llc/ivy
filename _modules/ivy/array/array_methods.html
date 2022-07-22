@@ -1516,6 +1516,24 @@
 <span class="sd">        an array containing the element-wise results.</span>
 <span class="sd">        The returned array must have a data type determined</span>
 <span class="sd">        by :ref:`type-promotion`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([13., 7., 8.])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([3., 2., 7.])</span>
+<span class="sd">    &gt;&gt;&gt; y = x1.floor_divide(x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([4., 3., 1.])</span>
+
+<span class="sd">    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([13., 7., 8.])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([3., 2., 7.])</span>
+<span class="sd">    &gt;&gt;&gt; y = x1.floor_divide(x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([4., 3., 1.])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
