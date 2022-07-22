@@ -157,6 +157,26 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        With ivy.Container input
+            >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
+            >>> fill_value = 10
+            >>> y = x.full_like(fill_value)
+            {
+                a: ivy.array([10, 10, 10]),
+                b: ivy.array([10, 10, 10])
+            }
+
+            >>> x = ivy.Container(a = ivy.array([1.2,2.2324,3.234]) ,b = ivy.array([4.123,5.23,6.23]))
+            >>> fill_value = 15.0
+            >>> y = x.full_like(fill_value)
+            >>> print(y)
+            {
+                a: ivy.array([15., 15., 15.]),
+                b: ivy.array([15., 15., 15.])
+            }
+
+        """
         return self.static_full_like(
             self,
             fill_value,

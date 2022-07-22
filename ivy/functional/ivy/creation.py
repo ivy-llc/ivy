@@ -316,7 +316,7 @@ def full_like(
         >>> print(y)
         ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    with float datatype:
+    With float datatype:
 
         >>> import ivy
         >>> x = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0]) # for filling values with floating datatype the array is required to be of same dtype (float in this case)
@@ -325,7 +325,7 @@ def full_like(
         >>> print(y)
         ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    with torch.Tensor input:
+    With torch.Tensor input:
 
         # ivy.full_like will give you output as ivy array
         >>> import ivy
@@ -350,16 +350,38 @@ def full_like(
         ivy.array([[0.000123, 0.000123, 0.000123],
        [0.000123, 0.000123, 0.000123]])
 
+    With ivy.Container input
+
+        >>> x = ivy.Container(a = ivy.array([1.2,2.2324,3.234]) ,b = ivy.array([4.123,5.23,6.23]))
+        >>> fill_value = 15.0
+        >>> y = ivy.full_like(x ,fill_value)
+        >>> print(y)
+        {
+            a: ivy.array([15., 15., 15.]),
+            b: ivy.array([15., 15., 15.])
+        }
+
+
     Instance Method Examples:
     ----------
 
     With ivy.Array input:
+
         >>> x = ivy.array([1, 2, 3, 4, 5, 6])
         >>> fill_value = 1
         >>> y = x.full_like(fill_value)
         >>> print(y)
         ivy.array([1, 1, 1, 1, 1, 1])
 
+    With ivy.Container input:
+
+            >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
+            >>> fill_value = 10
+            >>> y = x.full_like(fill_value)
+            {
+                a: ivy.array([10, 10, 10]),
+                b: ivy.array([10, 10, 10])
+            }
 
     """
     return current_backend(x).full_like(

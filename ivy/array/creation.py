@@ -80,56 +80,23 @@ class ArrayWithCreation(abc.ABC):
             to ``fill_value``.
 
         Functional Examples
-    -------------------
+        -------------------
+
         With int datatype:
-            >>> x = ivy.Array(ivy.native_array([1,2,3]))
+            >>> x = ivy.array([1,2,3])
             >>> fill_value = 0
             >>> ivy.full_like(x , fill_value)
             >>> ivy.array([0, 0, 0])
 
+        Instance Method Examples:
+        -------------------
             ivy.array([1, 1, 1, 1, 1, 1])
             >>> fill_value = 0.000123
             >>> x = ivy.array(ivy.ones(5))
-            >>> y = ivy.full_like(x , fill_value)
+            >>> y = x.full_like(fill_value)
             >>> print(y)
             ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-        with float datatype:
-
-            >>> import ivy
-            >>> x = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0]) # for filling values with floating datatype the array is required to be of same dtype (float in this case)
-            >>> fill_value = 0.000123
-            >>> y = ivy.full_like(x, fill_value)
-            >>> print(y)
-            ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
-
-        with torch.Tensor input:
-
-            # ivy.full_like will give you output as ivy array
-            >>> import ivy
-            >>> import torch
-            >>> x = torch.Tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
-            >>> fill_value = 0.001
-            >>> y = ivy.full_like(x, fill_value)
-            >>> print(y)
-            ivy.array([0.001, 0.001, 0.001, 0.001, 0.001, 0.001])
-
-        With ivy.NativeArray input:
-
-            >>> x = ivy.native_array([3.0, 8.0])
-            >>> fill_value = 0.000123
-            >>> y = ivy.full_like(x,fill_value)
-            >>> print(y)
-            ivy.array([0.000123, 0.000123])
-            >>> x2 = ivy.native_array([[3., 8., 2.],
-                                        [2., 8., 3.]])
-            >>> y = ivy.full_like(x2 , fill_value)
-            >>> print(y)
-            ivy.array([[0.000123, 0.000123, 0.000123],
-           [0.000123, 0.000123, 0.000123]])
-
-        Instance Method Examples:
-        ----------
 
         With ivy.Array input:
             >>> x = ivy.array([1, 2, 3, 4, 5, 6])
@@ -138,7 +105,23 @@ class ArrayWithCreation(abc.ABC):
             >>> print(y)
             ivy.array([1, 1, 1, 1, 1, 1])
 
+        With ivy.Container input
+            >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
+            >>> fill_value = 10
+            >>> y = x.full_like(fill_value)
+            {
+                a: ivy.array([10, 10, 10]),
+                b: ivy.array([10, 10, 10])
+            }
 
+            >>> x = ivy.Container(a = ivy.array([1.2,2.2324,3.234]) ,b = ivy.array([4.123,5.23,6.23]))
+            >>> fill_value = 15.0
+            >>> y = x.full_like(fill_value)
+            >>> print(y)
+            {
+                a: ivy.array([15., 15., 15.]),
+                b: ivy.array([15., 15., 15.])
+            }
 
         """
         return ivy.full_like(
