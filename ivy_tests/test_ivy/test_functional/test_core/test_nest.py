@@ -283,13 +283,6 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
     )
 
 
-# Still to Add #
-# ---------------#
-
-# nested_map
-# nested_any
-
-
 # prune_nest_at_index
 @pytest.mark.parametrize(
     "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
@@ -366,7 +359,28 @@ def test_insert_into_nest_at_indices(nest, indices, values, device, call):
 @pytest.mark.parametrize("fn", [lambda x: x**2])
 def test_nested_map(x, fn):
     x_copy = copy.deepcopy(x)
-    x = ivy.nested_map(x, lambda x: x**2)
-    map_nested_dicts(x_copy, lambda x: x**2)
+    x = ivy.nested_map(x, fn)
+    map_nested_dicts(x_copy, fn)
 
     assert x_copy == x
+
+
+# nested_any
+@pytest.mark.parametrize("x", [{"a": [[0, 1], [2, 3]], "b": {"c": [[0], [1]]}}])
+@pytest.mark.parametrize("fn", [lambda x: True if x % 2 == 0 else False])
+def test_nested_any(x, fn):
+    x_copy = copy.deepcopy(x)
+    x_bool = ivy.nested_any(x, fn)
+    map_nested_dicts(x_copy, fn)
+
+    def is_true_any(ob):
+        for k, v in ob.items():
+            if isinstance(v, dict):
+                is_true_any(v)
+            if isinstance(v, list):
+                for i, item in enumerate(v):
+                    return item.count(True) == 1
+
+    x_copy_bool = is_true_any(x_copy)
+
+    assert x_copy_bool == x_bool
