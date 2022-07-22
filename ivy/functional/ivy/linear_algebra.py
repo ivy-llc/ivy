@@ -181,6 +181,10 @@ def cross(
          an array containing the cross products. The returned array must have a data
          type determined by Type Promotion Rules.
 
+    
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_.
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.

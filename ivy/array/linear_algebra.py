@@ -75,10 +75,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Computes the cross product of 3-element vectors. If the array calling the function
-        and x2 are multi- dimensional arrays (i.e., both have a rank greater than 1), then 
-        the cross- product of each pair of corresponding 3-element vectors is independently 
-        computed. This is just a wrapper of the cross function for the ivy Array object.
+        """ivy.Array instance method variant of ivy.cross. This method simply wraps the
+            function, and so the docstring for ivy.cross also applies to this method
+            with minimal changes.
 
         Parameters
         ----------
@@ -101,6 +100,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
             an array containing the cross products. The returned array must have a data
             type determined by Type Promotion Rules.
 
+        This function conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_.
+
         Both the description and the type hints above assumes an array input for simplicity,
         but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
         instances in place of any of the non-self arguments.
@@ -114,7 +116,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         >>> x = ivy.array([1., 0., 0.])
         >>> y = ivy.array([0., 1., 0.])
-        >>> z = ivy.cross(x, y)
+        >>> z = x.cross(x, y)
         >>> print(z)
         ivy.array([0., 0., 1.])
 
@@ -123,40 +125,12 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         >>> x = ivy.array([9., 0., 3.])
         >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
-        >>> z = ivy.cross(x,y)
+        >>> z = x.cross(x,y)
         >>> print(z)
         {
         a: ivy.array([-3., 3., 9.]),
         b: ivy.array([0., -6., 0.])
         }
-
-        With a combination of :code:`ivy.NativeArray`
-        and :code:`ivy.Array` inputs:
-
-        2. Axis = 0: changing vector definition
-
-        >>> x = ivy.native_array([[1., 2.], \
-                                  [4., 5.], \
-                                  [7., 8.]])
-        >>> y = ivy.array([[1.],\
-                           [0.],\
-                           [0.]])
-        >>> z = ivy.cross(x,y, axis = 0)
-        >>> print(z)
-        ivy.array([[ 0.,  0.],
-                   [7.,  8.],
-                   [ -4., -5.]])
-
-        Instance Method Examples
-        ------------------------
-
-        With :code:`ivy.Array` instance inputs:
-
-        >>> x = ivy.array([1., 0., 0.])
-        >>> y = ivy.array([0., 1., 0.])
-        >>> z = x.cross(y)
-        >>> print(z)
-        ivy.array([0., 0., 1.])
 
         """
         return ivy.cross(self._data, x2, axis, out=out)

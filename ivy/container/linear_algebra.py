@@ -212,10 +212,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
-        """Computes the cross product of 3-element vectors. If self and x2 are multi- dimensional
-        arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
-        of corresponding 3-element vectors is independently computed. This is just a wrapper of
-        the cross function for the ivy Container object.
+        """ivy.Container static method variant of ivy.cross. This method simply wraps the
+            function, and so the docstring for ivy.cross also applies to this method
+            with minimal changes.
 
         Parameters
         ----------
@@ -248,14 +247,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a container containing the cross products. The returned array must have a data
             type determined by Type Promotion Rules.
 
-        Functional Examples
+        Container Static Method Examples
         --------
 
         With :code:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
-        >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
-        >>> z = ivy.cross(x,y)
+        >>> x = ivy.Container.static_cross(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+        >>> y = ivy.Container.static_cross(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+        >>> z = x.cross(x,y)
         >>> print(z)
         {
         a: ivy.array([0., 0., 35.]),
@@ -266,26 +265,12 @@ class ContainerWithLinearAlgebra(ContainerBase):
         and :code:`ivy.Container` inputs:
 
         >>> x = ivy.array([9., 0., 3.])
-        >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
-        >>> z = ivy.cross(x,y)
+        >>> y = ivy.Container.static_cross(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
+        >>> z = x.cross(x,y)
         >>> print(z)
         {
         a: ivy.array([-3., 3., 9.]),
         b: ivy.array([0., -6., 0.])
-        }
-
-        Instance Method Examples
-        ------------------------
-
-        With :code:`ivy.Container` inputs:
-
-        >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
-        >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
-        >>> z = x.cross(y)
-        >>> print(z)
-        {
-        a: ivy.array([0., 0., 35.]),
-        b: ivy.array([0., 6., 0.])
         }
 
         """
@@ -312,10 +297,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
-        """Computes the cross product of 3-element vectors. If self and x2 are multi- dimensional
-        arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
-        of corresponding 3-element vectors is independently computed. This is just a wrapper of
-        the cross function for the ivy Container object.
+        """ivy.Container instance method variant of ivy.cross. This method simply wraps the
+            function, and so the docstring for ivy.cross also applies to this method
+            with minimal changes.
 
         Parameters
         ----------
@@ -348,6 +332,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a container containing the cross products. The returned array must have a data
             type determined by Type Promotion Rules.
 
+        This function conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_.
+
         Functional Examples
         --------
 
@@ -355,7 +342,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
         >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
-        >>> z = ivy.cross(x,y)
+        >>> z = x.cross(x,y)
         >>> print(z)
         {
         a: ivy.array([0., 0., 35.]),
@@ -367,7 +354,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         >>> x = ivy.array([9., 0., 3.])
         >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
-        >>> z = ivy.cross(x,y)
+        >>> z = x.cross(x,y)
         >>> print(z)
         {
         a: ivy.array([-3., 3., 9.]),
