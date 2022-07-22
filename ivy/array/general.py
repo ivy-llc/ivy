@@ -1,5 +1,6 @@
 # global
 import abc
+from numbers import Number
 from typing import Any, Iterable, Union, Optional
 
 # ToDo: implement all methods here as public instance methods
@@ -123,3 +124,51 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.to_numpy(self)
+
+    def stable_divide(
+        self,
+        denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+        min_denominator: Number = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.stable_divide. This method simply wraps
+        the function, and so the docstring for ivy.stable_divide also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array, used as the numerator for division.
+        denominator
+            denominator for division.
+        min_denominator
+            the minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.
+
+        Returns
+        -------
+        ret
+            a numpy array containing the elements of numerator divided by
+            the corresponding element of denominator
+
+        Examples
+        --------
+
+        >>> x = ivy.asarray([4, 5, 6])
+        >>> y = x.stable_divide(2)
+        >>> print(y)
+        ivy.array([2. , 2.5, 3. ])
+
+        >>> x = ivy.asarray([4, 5, 6])
+        >>> y = x.stable_divide(4, min_denominator=1)
+        >>> print(y)
+        ivy.array([0.8, 1. , 1.2])
+
+        >>> x = ivy.asarray([[4, 5, 6], [7, 8, 9]])
+        >>> y = ivy.asarray([[1, 2,3], [2, 3, 4]])
+        >>> z = x.stable_divide(y)
+        >>> print(z)
+        ivy.array([[4.  , 2.5 , 2.  ],
+               [3.5 , 2.67, 2.25]])
+
+        """
+        return ivy.stable_divide(self, denominator, min_denominator=min_denominator)
