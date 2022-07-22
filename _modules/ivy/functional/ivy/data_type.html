@@ -359,26 +359,26 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an object having the followng attributes:</span>
-
+<span class="sd">    </span>
 <span class="sd">        - **bits**: *int*</span>
-
+<span class="sd">    </span>
 <span class="sd">          number of bits occupied by the floating-point data type.</span>
-
+<span class="sd">    </span>
 <span class="sd">        - **eps**: *float*</span>
-
+<span class="sd">    </span>
 <span class="sd">          difference between 1.0 and the next smallest representable floating-point</span>
 <span class="sd">          number larger than 1.0 according to the IEEE-754 standard.</span>
-
+<span class="sd">    </span>
 <span class="sd">        - **max**: *float*</span>
-
+<span class="sd">    </span>
 <span class="sd">          largest representable number.</span>
-
+<span class="sd">    </span>
 <span class="sd">        - **min**: *float*</span>
-
+<span class="sd">    </span>
 <span class="sd">          smallest representable number.</span>
-
+<span class="sd">    </span>
 <span class="sd">        - **smallest_normal**: *float*</span>
-
+<span class="sd">    </span>
 <span class="sd">          smallest positive floating-point number with full precision.</span>
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
@@ -932,8 +932,7 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">UintDtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype/dtype_functional.html#ivy.functional.ivy.data_type.dtype">[docs]</a><span class="nd">@handle_nestable</span>
-<span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span>
+<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype/dtype_functional.html#ivy.functional.ivy.data_type.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">as_native</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get the data type for input array x.</span>
