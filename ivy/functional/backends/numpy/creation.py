@@ -9,6 +9,9 @@ from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_device
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
 
 # Array API Standard #
 # -------------------#
@@ -93,27 +96,29 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     *,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     dtype = as_native_dtype(default_dtype(dtype))
-    return _to_device(np.eye(n_rows, n_cols, k, dtype), device=device)
+    if n_cols is None:
+        n_cols = n_rows
+    i = np.eye(n_rows, n_cols, k, dtype)
+    if batch_shape is None:
+        return _to_device(i, device=device)
+    else:
+        reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+        tile_dims = list(batch_shape) + [1, 1]
+        return_mat = np.tile(np.reshape(i, reshape_dims), tile_dims)
+        return _to_device(return_mat, device=device)
 
 
 # noinspection PyShadowingNames
 def from_dlpack(x, *, out: Optional[np.ndarray] = None):
     # noinspection PyProtectedMember
-    return np._from_dlpack(x)
-
-
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (
-        (ivy.is_int_dtype(dtype) and isinstance(fill_value, int))
-        or (ivy.is_float_dtype(dtype) and isinstance(fill_value, float))
-        or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not same"
+    return np.from_dlpack(x)
 
 
 def full(
