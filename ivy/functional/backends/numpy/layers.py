@@ -12,6 +12,8 @@ def conv1d(
     padding: str,
     data_format: str = "NWC",
     dilations: int = 1,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if isinstance(strides, tuple):
         strides = strides[0]
@@ -49,6 +51,8 @@ def conv2d(
     padding: str,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if isinstance(strides, int):
         strides = (strides, strides)
