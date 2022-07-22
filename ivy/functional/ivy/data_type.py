@@ -231,26 +231,26 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
     -------
     ret
         an object having the followng attributes:
-    
+
         - **bits**: *int*
-    
+
           number of bits occupied by the floating-point data type.
-    
+
         - **eps**: *float*
-    
+
           difference between 1.0 and the next smallest representable floating-point
           number larger than 1.0 according to the IEEE-754 standard.
-    
+
         - **max**: *float*
-    
+
           largest representable number.
-    
+
         - **min**: *float*
-    
+
           smallest representable number.
-    
+
         - **smallest_normal**: *float*
-    
+
           smallest positive floating-point number with full precision.
 
     This function conforms to the `Array API Standard
@@ -804,6 +804,7 @@ def default_uint_dtype(
     return ivy.UintDtype(ivy.as_ivy_dtype(ret))
 
 
+@handle_nestable
 def dtype(
     x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
