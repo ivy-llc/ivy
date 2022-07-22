@@ -765,79 +765,56 @@ def test_scatter_flat(
 
 
 # scatter_nd
-@pytest.mark.parametrize(
-    "inds_n_upd_n_shape_tnsr_n_wdup",
-    [
-        ([[4], [3], [1], [7]], [9, 10, 11, 12], [8], None, False),
-        ([[0, 1, 2]], [1], [3, 3, 3], None, False),
-        (
-            [[0], [2]],
-            [
-                [[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]],
-                [[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]],
-            ],
-            [4, 4, 4],
-            None,
-            False,
-        ),
-        (
-            [[0, 1, 2]],
-            [1],
-            None,
-            [
-                [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
-                [[4, 5, 6], [7, 8, 9], [1, 2, 3]],
-                [[7, 8, 9], [1, 2, 3], [4, 5, 6]],
-            ],
-            False,
-        ),
-    ],
+@given(
+    x=st.tuples(st.integers(min_value=2, max_value=5),st.integers(min_value=2, max_value=10)).flatmap(lambda n: st.tuples(helpers.dtype_and_values(ivy_np.valid_numeric_dtypes,min_num_dims=n[1], max_num_dims=n[1], min_dim_size=n[1], max_dim_size=n[1]),
+    helpers.dtype_and_values(['int32','int64'], min_value=0, max_value=max(n[1]-1,0), min_num_dims=1, max_num_dims=1, min_dim_size=n[0]+n[1], max_dim_size=n[0]+n[1], shape=st.shared(
+                helpers.get_shape(
+                    min_num_dims=1,
+                    max_num_dims=1,
+                    min_dim_size=n[1],
+                    max_dim_size=n[1],
+                ),
+                key="shape2",
+            )))),
+    reduction=st.sampled_from(["sum", "min", "max", "replace"]),
+    with_out=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args('scatter_nd'),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("red", ["sum", "min", "max", "replace"])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, call):
-    # smoke test
-    if red in ("sum", "min", "max") and call is helpers.mx_call:
-        # mxnet does not support sum, min or max reduction for scattering
-        pytest.skip()
-    inds, upd, shape, tensor, with_duplicates = inds_n_upd_n_shape_tnsr_n_wdup
-    if ivy.exists(tensor) and call is helpers.mx_call:
-        # mxnet does not support scattering into pre-existing tensors
-        pytest.skip()
-    inds = ivy.array(inds, dtype="int32")
-    upd = tensor_fn(upd, dtype=dtype)
-    if tensor:
-        # pytorch variables do not support in-place updates
-        tensor = (
-            ivy.array(tensor, dtype=dtype)
-            if ivy.current_backend_str() == "torch"
-            else tensor_fn(tensor, dtype=dtype)
-        )
-    ret = ivy.scatter_nd(inds, upd, shape, tensor, red)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if shape:
-        assert tuple(ret.shape) == tuple(shape)
-    else:
-        assert tuple(ret.shape) == tuple(tensor.shape)
-    # value test
-    if red == "replace" and with_duplicates:
-        # replace with duplicates give non-deterministic outputs
-        return
-    ret = call(ivy.scatter_nd, inds, upd, shape, tensor, red)
-    true = np.asarray(
-        ivy.functional.backends.numpy.scatter_nd(
-            ivy.to_numpy(inds),
-            ivy.to_numpy(upd),
-            shape,
-            ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor,
-            red,
-        )
+def test_scatter_nd(
+    x,
+    reduction,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw,
+):
+    (val_dtype, vals), (ind_dtype, ind) = x
+    shape = ivy.array(vals).shape
+    k=2
+    helpers.test_function(
+        [ind_dtype, val_dtype],
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "scatter_nd",
+        indices=np.asarray(ind, dtype=ind_dtype).reshape([len(vals),1]),
+        updates=np.asarray(vals, dtype=val_dtype),
+        shape=shape,
+        reduction=reduction,
     )
-    assert np.allclose(ret, true)
-
 
 # gather
 @pytest.mark.parametrize(

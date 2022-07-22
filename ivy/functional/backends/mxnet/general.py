@@ -174,11 +174,12 @@ def scatter_nd(
     indices,
     updates,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor=None,
     reduction="sum",
+    *,
+    out=None,
     device=None,
 ):
-    if ivy.exists(tensor):
+    if ivy.exists(out):
         raise Exception(
             "MXNet scatter_flat does not support scattering into "
             "an pre-existing tensor."

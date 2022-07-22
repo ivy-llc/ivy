@@ -167,14 +167,15 @@ def scatter_nd(
     indices,
     updates,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor=None,
     reduction="sum",
+    *,
+    out=None
 ):
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
-    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
+        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+    shape = list(shape) if ivy.exists(shape) else list(out.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if reduction == "sum":

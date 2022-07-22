@@ -173,8 +173,9 @@ def scatter_nd(
     indices,
     updates,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor=None,
     reduction="sum",
+    *,
+    out=None,
 ):
 
     # parse numeric inputs
@@ -191,8 +192,8 @@ def scatter_nd(
 
     updates = jnp.array(
         updates,
-        dtype=ivy.dtype(tensor, as_native=True)
-        if ivy.exists(tensor)
+        dtype=ivy.dtype(out, as_native=True)
+        if ivy.exists(out)
         else ivy.default_dtype(item=updates),
     )
 
@@ -204,11 +205,11 @@ def scatter_nd(
         indices_tuple = tuple(indices_flat) + (Ellipsis,)
 
     # implementation
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
-    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
+        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+    shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if reduction == "sum":
         if not target_given:
             target = jnp.zeros(shape, dtype=updates.dtype)

@@ -217,15 +217,16 @@ def scatter_nd(
     indices,
     updates,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor=None,
     reduction="sum",
+    *,
+    out=None
 ):
 
     # handle numeric updates
     updates = torch.tensor(
         [updates] if isinstance(updates, (float, int, bool)) else updates,
-        dtype=ivy.dtype(tensor, as_native=True)
-        if ivy.exists(tensor)
+        dtype=ivy.dtype(out, as_native=True)
+        if ivy.exists(out)
         else ivy.default_dtype(item=updates, as_native=True),
     )
 
@@ -233,9 +234,9 @@ def scatter_nd(
     if indices == ():
         return updates
     elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
-        if updates.shape == () and ivy.exists(tensor) and tensor.shape == ():
+        if updates.shape == () and ivy.exists(out) and out.shape == ():
             return updates
-        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        shape = out.shape if ivy.exists(out) else updates.shape
         indices = torch.concat(
             [
                 torch.unsqueeze(g, -1)
@@ -246,7 +247,7 @@ def scatter_nd(
     elif isinstance(indices, (float, int, bool)):
         indices = (indices,)
     if isinstance(indices, tuple):
-        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        shape = out.shape if ivy.exists(out) else updates.shape
         indices = _parse_ellipsis(indices, len(shape))
         indices = torch.concat(
             [
@@ -268,11 +269,11 @@ def scatter_nd(
         updates = torch.broadcast_to(updates, indices.shape[:-1])
 
     # implementation
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
-    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
+        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+    shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
@@ -295,7 +296,7 @@ def scatter_nd(
             )
         )
     if target_given:
-        flat_output = torch.reshape(tensor, (flat_result_size,))
+        flat_output = torch.reshape(out, (flat_result_size,))
     else:
         flat_output = torch.ones(flat_result_size, dtype=dtype) * initial_val
     flat_updates = torch.reshape(updates, (-1,))

@@ -2178,7 +2178,6 @@ def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -2214,7 +2213,7 @@ def scatter_nd(
 
     """
     return current_backend(indices).scatter_nd(
-        indices, updates, shape, tensor, reduction, out=out
+        indices, updates, shape, reduction, out=out
     )
 
 

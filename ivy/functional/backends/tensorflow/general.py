@@ -215,23 +215,24 @@ def scatter_nd(
     indices,
     updates,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor=None,
     reduction="sum",
+    *,
+    out=None
 ):
 
-    if ivy.exists(tensor) and not isinstance(updates, Number):
-        tensor = (
-            tf.cast(tensor, dtype=updates.dtype)
-            if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(tensor.dtype)
-            else tensor
+    if ivy.exists(out) and not isinstance(updates, Number):
+        out = (
+            tf.cast(out, dtype=updates.dtype)
+            if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(out.dtype)
+            else out
         )
     # handle numeric updates
     updates = tf.constant(
         # keep below commented out, asarray API tests working without it
         # [updates] if isinstance(updates, Number) else
         updates,
-        dtype=ivy.dtype(tensor, as_native=True)
-        if ivy.exists(tensor)
+        dtype=ivy.dtype(out, as_native=True)
+        if ivy.exists(out)
         else ivy.default_dtype(item=updates),
     )
 
@@ -239,9 +240,9 @@ def scatter_nd(
     if indices == ():
         return updates
     elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
-        if updates.shape == () and ivy.exists(tensor) and tensor.shape == ():
+        if updates.shape == () and ivy.exists(out) and out.shape == ():
             return updates
-        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        shape = out.shape if ivy.exists(out) else updates.shape
         indices = tf.concat(
             [tf.expand_dims(g, -1) for g in tf.meshgrid(*[tf.range(s) for s in shape])],
             -1,
@@ -249,7 +250,7 @@ def scatter_nd(
     elif isinstance(indices, Number):
         indices = (indices,)
     if isinstance(indices, tuple):
-        shape = tensor.shape if ivy.exists(tensor) else updates.shape
+        shape = out.shape if ivy.exists(out) else updates.shape
         indices = _parse_ellipsis(indices, len(shape))
         indices = tf.concat(
             [
@@ -269,15 +270,15 @@ def scatter_nd(
         updates = tf.broadcast_to(updates, indices.shape[:-1])
 
     # implementation
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
-    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
+        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+    shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     if reduction == "sum":
         if target_given:
-            return tf.tensor_scatter_nd_add(tensor, indices, updates)
+            return tf.tensor_scatter_nd_add(out, indices, updates)
         return tf.scatter_nd(indices, updates, shape)
     elif reduction == "min":
         if not target_given:
@@ -293,7 +294,7 @@ def scatter_nd(
             res = tf.where(res == -1e12, 0.0, res)
     elif reduction == "replace":
         if target_given:
-            res = tf.tensor_scatter_nd_update(tensor, indices, updates)
+            res = tf.tensor_scatter_nd_update(out, indices, updates)
         else:
             res = tf.tensor_scatter_nd_update(tf.zeros(shape), indices, updates)
     else:
