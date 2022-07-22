@@ -15,7 +15,7 @@ import ivy.functional.backends.jax as ivy_jax
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=st.sampled_from(ivy_jax.valid_float_dtypes),
+    dtype=st.sampled_from(ivy_jax.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.ones"
     ),
@@ -36,4 +36,5 @@ def test_jax_numpy_ones(
         frontend="jax",
         fn_name="numpy.ones",
         shape=shape,
+        dtype=dtype,
     )

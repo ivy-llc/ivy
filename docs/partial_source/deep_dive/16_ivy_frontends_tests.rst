@@ -224,6 +224,10 @@ ivy.tan()
 ivy.ones()
 ^^^^^^^^^^
 
+Here we are going to look at an example of a function that does not consume :code:`array`s. 
+This is the creation function :code:`ones`, which takes an array shape as an argument to create an array of ones.
+
+
 **Jax**
 
 .. code-block:: python
@@ -238,7 +242,7 @@ ivy.ones()
             min_dim_size=1,
             max_dim_size=10,
         ),
-        dtype=st.sampled_from(ivy_jax.valid_float_dtypes),
+        dtype=st.sampled_from(ivy_jax.valid_numeric_dtypes),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.jax.numpy.ones"
         ),
@@ -259,7 +263,12 @@ ivy.ones()
             frontend="jax",
             fn_name="numpy.ones",
             shape=shape,
+            dtype=dtype,
         )
+
+* Here we use the helper function :code:`helpers.get_shape()` to generate :code:`shape`.
+* We use :code:`ivy_jax.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Jax. This is used to specify the data type of the output array.
+* Because :code:`ones()` does not consume :code:`array`s we set the :code:`as_variable_flags`, :code:`with_out` and :code:`native_array_flags` to :code:`False`.
 
 
 **NumPy**
@@ -300,6 +309,8 @@ ivy.ones()
             dtype=dtype,
         )
 
+* We use :code:`ivy_np.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Numpy.
+* :code:`numpy.ones()` does not have a :code:`where` argument so we can use :code:`helpers.test_frontend_function()`
 
 **TensorFlow**
 
@@ -339,6 +350,8 @@ ivy.ones()
             dtype=dtype,
         )
 
+* We use :code:`ivy_tf.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for TensorFlow.
+
 
 **PyTorch**
 
@@ -376,6 +389,9 @@ ivy.ones()
             fn_name="ones",
             size=size,
         )
+
+* We use :code:`ivy_torch.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
+
 
 **Round Up**
 
