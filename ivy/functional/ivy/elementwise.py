@@ -2444,7 +2444,7 @@ def isinf(
     >>> z = ivy.isinf(x)
     >>> print(x)
     ivy.array([[[False],
-            [ True],
+            [True],
             [False]]])
 
     >>> x = ivy.array([[-math.inf, np.inf, 0.0]])
@@ -2466,7 +2466,7 @@ def isinf(
     >>> print(z)
     ivy.array([[False],
         [False],
-        [ True]])
+        [True]])
 
 
     With :code:`ivy.Container` input:
@@ -2495,12 +2495,12 @@ def isinf(
     >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
     >>> x.isinf()
     ivy.array([[[False],
-            [ True],
+            [True],
             [False]]])
 
     >>> x = ivy.array([[-math.inf, np.inf, 0.0]])
     >>> x.isinf()
-    ivy.array([[ True,  True, False]])
+    ivy.array([[ True, True, False]])
 
     >>> x = ivy.zeros((3, 3))
     >>> x.isinf()
@@ -2514,7 +2514,7 @@ def isinf(
     >>> x.isinf()
     ivy.array([[False],
         [False],
-        [ True]])
+        [True]])
 
     With :code:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([-1, -np.inf, 1.23]), \
