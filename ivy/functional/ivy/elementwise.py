@@ -2511,7 +2511,7 @@ def isinf(
     With :code:`ivy.NativeArray` inputs:
     
     >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
-    >>> x.isinf(x)
+    >>> x.isinf()
     ivy.array([[False],
         [False],
         [ True]])
