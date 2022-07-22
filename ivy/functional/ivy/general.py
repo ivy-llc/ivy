@@ -191,7 +191,7 @@ def copy_array(
     Parameters
     -------
     x
-        Input array.
+        input array.
 
     out
         optional output array, for writing the result to. It must have a shape that the
