@@ -971,8 +971,8 @@ def test_function(
             return
         ret = ivy.__dict__[fn_name](*args, **kwargs)
     # assert idx of return if the idx of the out array provided
-    out = ivy.zeros_like(ret)
     if with_out:
+        out = ivy.zeros_like(ret)
         assert not isinstance(ret, tuple)
         if max(container_flags):
             assert ivy.is_ivy_container(ret)
@@ -1324,6 +1324,7 @@ def dtype_and_values(
     num_arrays=1,
     min_value=None,
     max_value=None,
+    safety_factor=0.95,
     allow_inf=False,
     exclude_min=False,
     exclude_max=False,
@@ -1373,6 +1374,7 @@ def dtype_and_values(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    safety_factor=safety_factor,
                 )
             )
         )

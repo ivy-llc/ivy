@@ -16,6 +16,7 @@ def random_uniform(
     high: Union[float, np.ndarray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
+    dtype: np.dtype,
     device: str,
     dtype = np.dtype,
 ) -> np.ndarray:
