@@ -102,7 +102,7 @@ class ArrayWithGradients(abc.ABC):
         stop_gradients=True,
     ) -> ivy.Array:
         """
-        ivy.Container instance method variant of ivy.gradient_descent_update.
+        ivy.Array instance method variant of ivy.gradient_descent_update.
         This method simply wraps the function, and so the docstring for
         ivy.gradient_descent_update also applies to this method
         with minimal changes.

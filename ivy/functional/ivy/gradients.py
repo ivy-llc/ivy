@@ -531,7 +531,7 @@ def gradient_descent_update(
     Returns
     -------
     ret
-        The new function weights ws_new, following the gradient descent updates.
+        The new weights, following the gradient descent updates.
 
     Functional Examples
     -------------------
