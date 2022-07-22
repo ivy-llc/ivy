@@ -362,7 +362,7 @@ def result_type(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html>`_ # noqa
     in the standard.
 
     Examples
@@ -371,22 +371,22 @@ def result_type(
 
     >>> x = ivy.array([1,2,3])
     >>> print(ivy.result_type(x))
-    int32
+    <dtype:int32>
 
     >>> print(ivy.result_type(x, 'int64'))
-    int64
+    <dtype:int64>
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3., 4, 7.5])
     >>> y = ivy.native_array([3, 4, 7])
     >>> print(ivy.result_type(x, y))
-    float64
+    <dtype:float64>
 
     With :code:`ivy.Dtype` input:
 
     >>> print(ivy.result_type(ivy.uint8, ivy.uint64))
-    uint64
+    <dtype:uint64>
     """
     return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 
