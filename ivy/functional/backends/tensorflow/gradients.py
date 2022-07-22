@@ -8,7 +8,6 @@ from typing import Union, Optional
 
 # local
 import ivy
-from ivy.container import Container
 
 
 def variable(x):
@@ -25,7 +24,6 @@ def variable_data(x):
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
-    xs = xs.to_native()
     with tf.GradientTape(
         persistent=retain_grads, watch_accessed_variables=False
     ) as tape:
@@ -38,8 +36,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     y = ivy.to_native(y)
-    grads = Container(tape.gradient(y, xs))
-    grads = grads.to_ivy()
+    grads = tape.gradient(y, xs)
     y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)
@@ -47,7 +44,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
 
 
 def stop_gradient(
-    x: Union[tf.Tensor, tf.Variable], 
+    x: Union[tf.Tensor, tf.Variable],
     preserve_type: bool = True,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None

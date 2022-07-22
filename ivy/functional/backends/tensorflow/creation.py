@@ -12,17 +12,20 @@ from ivy import (
     as_ivy_dtype,
 )
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
 
 # Array API Standard #
 # -------------------#
 
 
 def arange(
-    start, 
-    stop=None, 
-    step=1, 
-    *, 
-    dtype: tf.DType = None, 
+    start,
+    stop=None,
+    step=1,
+    *,
+    dtype: tf.DType = None,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ):
@@ -58,10 +61,10 @@ def arange(
 
 
 def asarray(
-    object_in, 
-    *, 
-    copy=None, 
-    dtype: tf.DType = None, 
+    object_in,
+    *,
+    copy=None,
+    dtype: tf.DType = None,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ):
@@ -144,6 +147,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     *,
     dtype: tf.DType,
     device: str,
@@ -154,34 +158,45 @@ def eye(
     with tf.device(device):
         if n_cols is None:
             n_cols = n_rows
+        if batch_shape is None:
+            batch_shape = []
         i = tf.eye(n_rows, n_cols, dtype=dtype)
+        reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+        tile_dims = list(batch_shape) + [1, 1]
+
+        # k=index of the diagonal. A positive value refers to an upper diagonal,
+        # a negative value to a lower diagonal, and 0 to the main diagonal.
+        # Default: 0.
+        # value of k ranges from -n_rows < k < n_cols
+
+        # k=0 refers to the main diagonal
         if k == 0:
-            return i
+            return tf.eye(n_rows, n_cols, batch_shape=batch_shape, dtype=dtype)
+
+        # when k is negative
         elif -n_rows < k < 0:
-            return tf.concat([tf.zeros([-k, n_cols], dtype=dtype), i[: n_rows + k]], 0)
-        elif 0 < k < n_cols:
-            return tf.concat(
-                [tf.zeros([n_rows, k], dtype=dtype), i[:, : n_cols - k]], 1
+            mat = tf.concat(
+                [tf.zeros([-k, n_cols], dtype=dtype), i[: n_rows + k]],
+                0,
             )
+            return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
+
+        elif 0 < k < n_cols:
+            mat = tf.concat(
+                [
+                    tf.zeros([n_rows, k], dtype=dtype),
+                    i[:, : n_cols - k],
+                ],
+                1,
+            )
+            return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
         else:
-            return tf.zeros([n_rows, n_cols], dtype=dtype)
+            return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
 # noinspection PyShadowingNames
-def from_dlpack(
-    x,
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
-):
+def from_dlpack(x, *, out: Union[tf.Tensor, tf.Variable] = None):
     return tf.experimental.dlpack.from_dlpack(x)
-
-
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
-        ivy.is_float_dtype(dtype)
-        and isinstance(fill_value, float)
-        or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not same"
 
 
 def full(
@@ -217,13 +232,13 @@ def full_like(
 
 
 def linspace(
-    start, 
-    stop, 
-    num, 
-    axis=None, 
-    endpoint=True, 
-    *, 
-    dtype: tf.DType, 
+    start,
+    stop,
+    num,
+    axis=None,
+    endpoint=True,
+    *,
+    dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ):
@@ -243,8 +258,7 @@ def linspace(
 
 
 def meshgrid(
-    *arrays: Union[tf.Tensor, tf.Variable],
-    indexing: str = "xy"
+    *arrays: Union[tf.Tensor, tf.Variable], indexing: str = "xy"
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.meshgrid(*arrays, indexing=indexing)
 
@@ -276,7 +290,7 @@ def ones_like(
 
 
 def tril(
-    x: Union[tf.Tensor, tf.Variable], 
+    x: Union[tf.Tensor, tf.Variable],
     k: int = 0,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
@@ -285,7 +299,7 @@ def tril(
 
 
 def triu(
-    x: Union[tf.Tensor, tf.Variable], 
+    x: Union[tf.Tensor, tf.Variable],
     k: int = 0,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
@@ -324,11 +338,11 @@ array = asarray
 
 
 def logspace(
-    start, 
-    stop, 
-    num, 
-    base=10.0, 
-    axis=None, 
+    start,
+    stop,
+    num,
+    base=10.0,
+    axis=None,
     *,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
