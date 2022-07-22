@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, List, Iterable
+from typing import Union, Optional, Tuple, List, Iterable, Sequence
 from numbers import Number
 
 # local
@@ -382,12 +382,12 @@ def reshape(
 @handle_out_argument
 @handle_nestable
 def roll(
-    x: Union[ivy.Array, ivy.NativeArray],
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
     *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.Container]:
     """Rolls array elements along a specified axis. Array elements that roll beyond the
     last position are re-introduced at the first position. Array elements that roll
     beyond the first position are re-introduced at the last position.
@@ -456,6 +456,14 @@ def roll(
                 [ 3., 1.],
                 [ 6., 2.]]])
 
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.roll(x, 1)
+    >>> print(y)
+    ivy.array([2., 0., 1.])
+
+
     With one :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
@@ -478,6 +486,24 @@ def roll(
         a: ivy.array([2., 0., 1.]),
         b: ivy.array([4., 5., 3.])
     }
+
+    Instance Method Examples
+    ------------------------
+    >>> x = ivy.array([[0., 1., 2.], \
+                       [3., 4., 5.]])
+    >>> y = x.roll(2, -1)
+    >>> print(y)
+    ivy.array([[1., 2., 0.],
+                [4., 5., 3.]])
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = x.roll(1)
+    >>> print(y)
+    {
+        a: ivy.array([2., 0., 1.]),
+        b: ivy.array([5., 3., 4.])
+    }
     """
     return current_backend(x).roll(x, shift, axis, out=out)
 
@@ -487,7 +513,7 @@ def roll(
 @handle_nestable
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Union[int, Tuple[int, ...]],
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -510,8 +536,11 @@ def squeeze(
         an output array having the same data type and elements as ``x``.
 
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([[[0, 1], [2, 3]]])
     >>> print(x.shape)
     (1, 2, 2)
@@ -519,6 +548,62 @@ def squeeze(
     >>> print(ivy.squeeze(x, axis=0).shape)
     (2, 2)
 
+    >>> print(ivy.squeeze(x).shape)
+    (2, 2)
+
+    >>> x = ivy.array([[[[1, 2, 3]], [[4, 5, 6]]]])
+    >>> print(x.shape)
+    (1, 2, 1, 3)
+
+    >>> print(ivy.squeeze(x, axis=2).shape)
+    (1, 2, 3)
+
+    >>> x = ivy.array([[[0], [1], [2]]])
+    >>> print(x.shape)
+    (1, 3, 1)
+
+    >>> print(ivy.squeeze(x))
+    ivy.array([0, 1, 2])
+
+    >>> print(ivy.squeeze(x, axis=0))
+    ivy.array([[0], [1], [2]])
+
+    >>> print(ivy.squeeze(x, axis=2))
+    ivy.array([[0, 1, 2]])
+
+    >>> print(ivy.squeeze(x, axis=(0, 2)))
+    ivy.array([0, 1, 2])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0, 1, 2])
+    >>> print(ivy.squeeze(x))
+    ivy.array([0, 1, 2])
+
+    >>> x = ivy.native_array([[[3]]])
+    >>> print(x.shape)
+    torch.Size([1, 1, 1])
+
+    >>> print(ivy.squeeze(x, 2))
+    ivy.array([[3]])
+
+    >>> x = ivy.native_array(0)
+    >>> print(x.shape)
+    torch.Size([])
+
+    >>> print(ivy.squeeze(x, 0))
+    ivy.array(0)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.squeeze(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
     """
     return current_backend(x).squeeze(x, axis, out=out)
 
@@ -599,7 +684,6 @@ def clip(
         Minimum value.
     x_max
         Maximum value.
-
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -763,74 +847,34 @@ def repeat(
         The repeated output array.
 
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([3, 4, 5])
-    >>> y = ivy.flip(x)
+    >>> y= ivy.repeat(x, 2)
     >>> print(y)
-    ivy.array([5, 4, 3])
-
-    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> y = ivy.zeros((3, 3))
-    >>> ivy.flip(x, out=y)
-    >>> print(y)
-    ivy.array([[6, 5, 4],
-               [3, 2, 1]])
-
-    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> y = ivy.zeros((3, 3))
-    >>> ivy.flip(x, axis=0, out=y)
-    >>> print(y)
-    ivy.array([[4, 5, 6],
-               [1, 2, 3]])
-
-    >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
-    >>> ivy.flip(x, axis=[0, 1], out=x)
-    >>> print(x)
-    ivy.array([[[10,11,12],[7,8,9]],[[4,5,6],[1,2,3]]])
-
-    >>> x = ivy.array([[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]])
-    >>> ivy.flip(x, axis=(2, 1), out=x)
-    >>> print(x)
-    ivy.array([[[ 6,  5,  4],
-                [ 3,  2,  1]],
-               [[12, 11, 10],
-                [ 9,  8,  7]]])
+    ivy.array([3, 3, 4, 4, 5, 5])
 
     With :code:`ivy.NativeArray` input:
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.flip(x)
+
+    >>> x = ivy.native_array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.repeat(x, [1, 2], axis=0)
     >>> print(y)
-    ivy.array([2., 1., 0.])
+    ivy.array([[1, 2, 3],
+               [4, 5, 6],
+               [4, 5, 6]])
 
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                      b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.flip(x)
+                          b=ivy.array([0., 1., 2.]))
+    >>> y = ivy.repeat(x, 2, axis=0)
     >>> print(y)
     {
-        a: ivy.array([2., 1., 0.]),
-        b: ivy.array([5., 4., 3.])
+        a: ivy.array([0., 0., 1., 1., 2., 2.]),
+        b: ivy.array([0., 0., 1., 1., 2., 2.])
     }
-
-    Instance Method Examples
-    ------------------------
-    Using :code:`ivy.Array` instance method:
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.flip()
-    >>> print(y)
-    ivy.array([2., 1., 0.])
-
-    Using :code:`ivy.Container` instance method:
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.flip()
-    >>> print(y)
-    {
-        a: ivy.array([2., 1., 0.]),
-        b: ivy.array([5., 4., 3.])
-    }
-
     """
     return current_backend(x).repeat(x, repeats, axis, out=out)
 
@@ -843,6 +887,8 @@ def split(
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Splits an array into multiple sub-arrays.
 

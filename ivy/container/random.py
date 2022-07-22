@@ -38,8 +38,8 @@ class ContainerWithRandom(ContainerBase):
 
     def random_uniform(
         self: ivy.Container,
-        low: Union[float, ivy.Container] = 0.0,
         high: Union[float, ivy.Container] = 1.0,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -49,9 +49,9 @@ class ContainerWithRandom(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_random_uniform(
-            low,
-            high,
             self,
+            high,
+            shape,
             device,
             key_chains,
             to_apply,
@@ -75,6 +75,29 @@ class ContainerWithRandom(ContainerBase):
         ivy.Container static method variant of ivy.randint. This method simply wraps the
         function, and so the docstring for ivy.randint also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        low
+            Lowest integer that can be drawn from the distribution.
+        high
+            One above the highest integer that can be drawn from the distribution.
+        shape
+            a Sequence defining the shape of the output array.
+        device
+            device on which to create the array. 'cuda:0',
+            'cuda:1', 'cpu' etc. (Default value = None).
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Returns an array with the given shape filled with integers from
+            the uniform distribution in the “half-open” interval [low, high)
 
         Examples
         --------

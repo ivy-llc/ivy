@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 
 # local
 import ivy
@@ -14,6 +14,21 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
+
+
+# Helpers #
+# --------#
+
+
+def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
+    assert (
+        (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
+        and isinstance(fill_value, int)
+    ) or (
+        ivy.is_float_dtype(dtype)
+        and isinstance(fill_value, float)
+        or (isinstance(fill_value, bool))
+    ), "the fill_value and data type are not compatible"
 
 
 # Array API Standard #
@@ -649,6 +664,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -690,7 +706,9 @@ def eye(
     instances in place of any of the arguments.
 
     """
-    return current_backend().eye(n_rows, n_cols, k, dtype=dtype, device=device, out=out)
+    return current_backend().eye(
+        n_rows, n_cols, k, batch_shape, dtype=dtype, device=device, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -854,7 +872,7 @@ def meshgrid(
 @handle_nestable
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
-    fill_value: Union[int, float],
+    fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,

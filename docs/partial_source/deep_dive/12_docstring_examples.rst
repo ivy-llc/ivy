@@ -221,6 +221,11 @@ should:
 18. call the operator with a :code:`Number` on the left and an :code:`ivy.Container`
     instance on the right
 
+**Note**
+
+All docstrings must run without error for all backend frameworks. If some backends do
+not support some :code:`dtype` for a function, then we should not include this :code:`dtype` for any of the examples
+for that particular function in the docstring.
 
 **All Possible Variants**
 

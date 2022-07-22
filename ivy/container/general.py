@@ -70,6 +70,32 @@ class ContainerWithGeneral(ContainerBase):
         the function, and so the docstring for ivy.add also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x1
+            input container.
+        x2
+            array or container to be compared to ``x1``.
+        equality_matrix
+            Whether to return a matrix of equalities comparing each input with every
+            other. Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not the inputs are equal, or matrix container of
+            booleans if equality_matrix=True is set.
+
         Examples
         --------
         With one :code:`ivy.Container` input:
@@ -121,6 +147,32 @@ class ContainerWithGeneral(ContainerBase):
         ivy.Container instance method variant of ivy.all_equal.
         This method simply wraps the function, and so the docstring for
         ivy.all_equal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        x2
+            array or container to be compared to ``self``.
+        equality_matrix
+            Whether to return a matrix of equalities comparing each input with every
+            other. Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not the inputs are equal, or matrix container of
+            booleans if equality_matrix=True is set.
 
         Examples
         --------
@@ -191,10 +243,37 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.gather_nd.
-        This method simply wraps the function, and so the docstring
-        for ivy.gather_nd also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.gather_nd. This method simply wraps
+        the function, and so the docstring for ivy.gather_nd also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        params
+            The container from which to gather values.
+        indices
+            Index array or container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+            ``x`` if None.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container of given shape, with the values gathered at the indices.
 
         Examples
         --------
@@ -250,6 +329,34 @@ class ContainerWithGeneral(ContainerBase):
         for ivy.gather_nd also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            The container from which to gather values.
+        indices
+            Index array or container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+            ``x`` if None.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container of given shape, with the values gathered at the indices.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
@@ -268,16 +375,37 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def to_numpy(
-            self,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False
+        self,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.to_numpy.
-        This method simply wraps the function, and so the docstring for
-        ivy.to_numpy also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.to_numpy. This method simply wraps
+        the function, and so the docstring for ivy.to_numpy also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of numpy arrays copying all the element of the container
+            ``self``.
 
         Examples
         --------
@@ -311,25 +439,42 @@ class ContainerWithGeneral(ContainerBase):
 
         """
         return self.static_to_numpy(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences
+            self, key_chains, to_apply, prune_unapplied, map_sequences
         )
 
     @staticmethod
     def static_to_numpy(
-            x: Union[ivy.Array, ivy.NativeArray],
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False
+        x: Union[ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.to_numpy. This method simply wraps
         the function, and so the docstring for ivy.to_numpy also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of numpy arrays copying all the element of the container
+            ``self``.
 
         Examples
         --------
