@@ -9,7 +9,6 @@ import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
-from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
 
 # noinspection PyProtectedMember
@@ -78,9 +77,7 @@ def empty(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return _to_device(
-        jnp.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
-    )
+    return _to_device(jnp.empty(shape, dtype), device=device)
 
 
 def empty_like(
@@ -90,11 +87,6 @@ def empty_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if dtype and str:
-        dtype = jnp.dtype(dtype)
-    else:
-        dtype = x.dtype
-
     return _to_device(jnp.empty_like(x, dtype=dtype), device=device)
 
 
@@ -108,18 +100,15 @@ def eye(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    dtype = as_native_dtype(default_dtype(dtype))
-    device = default_device(device)
     if n_cols is None:
         n_cols = n_rows
     i = jnp.eye(n_rows, n_cols, k, dtype)
     if batch_shape is None:
         return _to_device(i, device=device)
-    else:
-        reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
-        tile_dims = list(batch_shape) + [1, 1]
-        return_mat = jnp.tile(jnp.reshape(i, reshape_dims), tile_dims)
-        return _to_device(return_mat, device=device)
+    reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+    tile_dims = list(batch_shape) + [1, 1]
+    return_mat = jnp.tile(jnp.reshape(i, reshape_dims), tile_dims)
+    return _to_device(return_mat, device=device)
 
 
 # noinspection PyShadowingNames
@@ -147,17 +136,11 @@ def full_like(
     x: JaxArray,
     fill_value: Union[int, float],
     *,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
-    if dtype and str:
-        dtype = jnp.dtype(dtype)
-    else:
-        dtype = x.dtype
-
     return _to_device(
         jnp.full_like(x, fill_value, dtype=dtype),
         device=device,
@@ -190,13 +173,11 @@ def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:
 def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return _to_device(
-        jnp.ones(shape, as_native_dtype(default_dtype(dtype))), device=device
-    )
+    return _to_device(jnp.ones(shape, dtype), device=device)
 
 
 def ones_like(
@@ -206,10 +187,6 @@ def ones_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if dtype and str:
-        dtype = jnp.dtype(dtype)
-    else:
-        dtype = x.dtype
     return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
 
 
@@ -241,8 +218,6 @@ def zeros_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if not dtype:
-        dtype = x.dtype
     return _to_device(jnp.zeros_like(x, dtype=dtype), device=device)
 
 
