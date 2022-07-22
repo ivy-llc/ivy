@@ -279,8 +279,19 @@ def prod(
         the products. The returned array must have a data type as described by the dtype
         parameter above.
 
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = ivy.prod(x)
+    >>> print(z)
+    ivy.array(6)
+
+    >>> x = ivy.array([1, 0, 3])
+    >>> z = ivy.prod(x)
+    >>> print(z)
+    ivy.array(0)
+
     """
-    return current_backend.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    return current_backend(x).prod(x, axis=axis, dtype=dtype, 
+                                   keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
