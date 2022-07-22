@@ -22,6 +22,7 @@ def random_uniform(
     *,
     device: str,
     dtype: tf.dtypes.DType,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
@@ -36,16 +37,18 @@ random_uniform.unsupported_dtypes = ("int8", "int16", "uint8",
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, tf.Tensor, tf.Variable] = 0.0,
+    std: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
+    dtype: tf.dtypes.DType,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    mean = tf.cast(mean, "float32")
-    std = tf.cast(std, "float32")
+    mean = tf.cast(mean, dtype)
+    std = tf.cast(std, dtype)
     with tf.device(default_device(device)):
-        return tf.random.normal(shape if shape else (), mean, std)
+        return tf.random.normal(shape if shape else (), mean if mean else 0.0, std if std else 1.0, dtype=dtype)
 
 
 def multinomial(
@@ -56,6 +59,7 @@ def multinomial(
     replace: bool = True,
     *,
     device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not replace:
         raise Exception("TensorFlow does not support multinomial without replacement")
@@ -80,6 +84,7 @@ def randint(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     device = default_device(device)
     low = tf.cast(low, "int64")
@@ -88,11 +93,14 @@ def randint(
         return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int64)
 
 
-def seed(seed_value: int = 0) -> None:
+def seed(
+    seed_value: int = 0,
+) -> None:
     tf.random.set_seed(seed_value)
 
 
 def shuffle(
     x: Union[tf.Tensor, tf.Variable],
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.random.shuffle(x)

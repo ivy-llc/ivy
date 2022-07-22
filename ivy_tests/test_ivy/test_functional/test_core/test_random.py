@@ -58,38 +58,46 @@ def test_random_uniform(
 # random_normal
 @given(
     data=st.data(),
-    shape=helpers.get_shape(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
+    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable_flags=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=st.integers(2, 3),
+    native_array_flags=st.booleans(),
+    container_flags=st.booleans(),
+    instance_method=st.booleans(),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
 )
-def test_random_normal(data, shape, dtype, as_variable, device, call):
-    mean, std = data.draw(helpers.get_mean_std(dtype=dtype))
-    ivy.seed(0)
-    # smoke test
-    if as_variable and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        return
-    mean_tnsr = (
-        ivy.array(mean, dtype=dtype, device=device) if mean is not None else None
-    )
-    std_tnsr = ivy.array(std, dtype=dtype, device=device) if std is not None else None
-    if as_variable and (mean is not None):
-        mean_tnsr = ivy.variable(mean_tnsr)
-    if as_variable and (std is not None):
-        std_tnsr = ivy.variable(std_tnsr)
-    kwargs = {
-        k: v for k, v in zip(["mean", "std"], [mean_tnsr, std_tnsr]) if v is not None
-    }
-    if shape is not None:
-        kwargs["shape"] = shape
-    ret = ivy.random_normal(**kwargs, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if shape is None:
-        assert ret.shape == ()
-    else:
-        assert ret.shape == shape
+def test_random_normal(
+    data,
+    input_dtype,
+    as_variable_flags,
+    with_out,
+    num_positional_args,
+    native_array_flags,
+    container_flags,
+    instance_method,
+    shape,
+    device,
+    fw,
+):
+    mean, std = data.draw(helpers.get_mean_std(dtype=input_dtype))
+
+    helpers.test_function(
+        input_dtypes = [input_dtype, input_dtype],
+        as_variable_flags = as_variable_flags,
+        with_out = with_out,
+        num_positional_args = num_positional_args,
+        native_array_flags = native_array_flags,
+        container_flags = container_flags,
+        instance_method = instance_method,
+        fw = fw,
+        fn_name = "random_normal",
+        mean = np.array(mean, dtype=input_dtype),
+        std = np.array(std, dtype=input_dtype),
+        shape = tuple(shape),
+        device = device,
+        dtype = input_dtype,
+        )
 
 
 # multinomial

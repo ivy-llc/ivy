@@ -43,15 +43,18 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: torch.device,
+    dtype = torch.dtype,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if shape is None:
         true_shape: List[int] = []
     else:
         true_shape: List[int] = shape
-    mean = mean.item() if isinstance(mean, torch.Tensor) else mean
-    std = std.item() if isinstance(std, torch.Tensor) else std
-    return torch.normal(mean, std, true_shape, device=default_device(device), out=out)
+    mean = mean.item() if isinstance(mean, (torch.Tensor, ivy.Array)) else mean
+    std = std.item() if isinstance(std, (torch.Tensor, ivy.Array)) else std
+    return torch.normal(
+        mean, std, true_shape, device=default_device(device), dtype=dtype, out=out
+    )
 
 
 random_normal.support_native_out = True
@@ -99,13 +102,19 @@ def randint(
 randint.support_native_out = True
 
 
-def seed(seed_value: int = 0) -> None:
+def seed(
+    seed_value: int = 0,
+) -> None:
     torch.manual_seed(seed_value)
     torch.cuda.manual_seed(seed_value)
     return
 
 
-def shuffle(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def shuffle(
+    x: torch.Tensor,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     batch_size = x.shape[0]
     return torch.index_select(x, 0, torch.randperm(batch_size, out=out), out=out)
 

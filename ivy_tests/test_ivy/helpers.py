@@ -951,12 +951,6 @@ def test_function(
             instance = ivy.index_nest(kwargs, instance_idx)
             kwargs = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.prune_nest_at_index(kwargs, instance_idx)
-        if not test_unsupported:
-            #check if instance method is available for the function
-            try:
-                instance.__getattribute__(fn_name)(*args, **kwargs)
-            except TypeError:
-                test_unsupported = True
         if test_unsupported:
             test_unsupported_function(
                 fn=instance.__getattribute__(fn_name), args=args, kwargs=kwargs
@@ -1600,7 +1594,6 @@ def get_shape(
         )
     if shape is None:
         return shape
-    shape = list(set(shape))
     return tuple(shape)
 
 

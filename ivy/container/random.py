@@ -40,7 +40,6 @@ class ContainerWithRandom(ContainerBase):
 
     def random_uniform(
         self: ivy.Container,
-        low: Union[float, ivy.Container] = 0.0,
         high: Union[float, ivy.Container] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
@@ -53,7 +52,7 @@ class ContainerWithRandom(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_random_uniform(
-            low,
+            self,
             high,
             shape,
             device,

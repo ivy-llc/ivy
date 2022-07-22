@@ -24,6 +24,7 @@ def random_uniform(
     *,
     device: jaxlib.xla_extension.Device,
     dtype: jnp.dtype,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
@@ -36,19 +37,21 @@ def random_uniform(
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, JaxArray] = 0.0,
+    std: Union[float, JaxArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
-    out: Optional[JaxArray] = None
+    dtype: jnp.dtype,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return (
         to_device(
-            jax.random.normal(rng_input, shape if shape else ()),
-            device=device,
+            jax.random.normal(rng_input, shape if shape else ()
+        ),
+        device=device,
         )
         * std
         + mean
@@ -107,13 +110,19 @@ def randint(
     return to_device(jax.random.randint(rng_input, shape, low, high), device=device)
 
 
-def seed(seed_value: int = 0) -> None:
+def seed(
+    seed_value: int = 0,
+) -> None:
     global RNG
     RNG = jax.random.PRNGKey(seed_value)
     return
 
 
-def shuffle(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def shuffle(
+    x: JaxArray,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return jax.random.shuffle(rng_input, x)

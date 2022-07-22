@@ -108,11 +108,12 @@ def random_uniform(
 @infer_device
 @handle_nestable
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
+    std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.array:
     """
@@ -130,6 +131,8 @@ def random_normal(
         samples are drawn. If size is ``None`` (default), a single value is returned.
     device
         (Default value = ``None``)
+    dtype
+        desired data type. (Default value = None).
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -173,7 +176,9 @@ def random_normal(
     }
 
     """
-    return current_backend().random_normal(mean, std, shape, device=device, out=out)
+    return current_backend().random_normal(
+        mean, std, shape, device=device, dtype=dtype, out=out
+    )
 
 
 @to_native_arrays_and_back

@@ -16,8 +16,9 @@ def random_uniform(
     high: Union[float, np.ndarray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
-    dtype: np.dtype,
     device: str,
+    dtype: np.dtype,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
@@ -28,8 +29,10 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
+    dtype: np.dtype,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.random.normal(mean, std, shape))
+    return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
 
 def multinomial(
@@ -40,6 +43,7 @@ def multinomial(
     replace=True,
     *,
     device: str,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if probs is None:
         probs = (
@@ -75,13 +79,20 @@ def randint(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: str,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
 
 
-def seed(seed_value: int = 0) -> None:
+def seed(
+    seed_value: int = 0,
+) -> None:
     np.random.seed(seed_value)
 
 
-def shuffle(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def shuffle(
+    x: np.ndarray,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     return np.random.permutation(x)
