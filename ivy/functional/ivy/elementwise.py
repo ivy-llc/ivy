@@ -1881,6 +1881,53 @@ def floor_divide(
         an array containing the element-wise results. The returned array must have a
         numeric data type.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([13., 7., 8.])
+    >>> x2 = ivy.array([3., 2., 7.])
+    >>> y = ivy.floor_divide(x1, x2)
+    >>> print(y)
+    ivy.array([4., 3., 1.])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([3., 4., 5.])
+    >>> x2 = ivy.native_array([5., 2., 1.])
+    >>> y = ivy.floor_divide(x1, x2)
+    >>> print(y)
+    ivy.array([0., 2., 5.])
+
+    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.array([3., 4., 5.])
+    >>> x2 = ivy.native_array([5., 2., 1.])
+    >>> y = ivy.floor_divide(x1, x2)
+    >>> print(y)
+    ivy.array([0., 2., 5.])
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
+    >>> x2 = ivy.Container(a=ivy.array([5., 4., 2.5]), b=ivy.array([2.3, 3.7, 5]))
+    >>> y = ivy.floor_divide(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 2., 1.])
+    }
+
+    With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
+    >>> x2 = ivy.array([2., 2., 2.])
+    >>> y = ivy.floor_divide(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([2., 2., 3.]),
+        b: ivy.array([3., 4., 4.])
+    }
     """
     if isinstance(x1, float) or isinstance(x1, int):
         x1 = ivy.array(x1, dtype=x1.dtype)

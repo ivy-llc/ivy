@@ -705,6 +705,24 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([13., 7., 8.])
+        >>> x2 = ivy.array([3., 2., 7.])
+        >>> y = x1.floor_divide(x2)
+        >>> print(y)
+        ivy.array([4., 3., 1.])
+
+        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.array([13., 7., 8.])
+        >>> x2 = ivy.native_array([3., 2., 7.])
+        >>> y = x1.floor_divide(x2)
+        >>> print(y)
+        ivy.array([4., 3., 1.])
         """
         return ivy.floor_divide(self._data, x2, out=out)
 
