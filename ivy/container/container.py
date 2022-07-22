@@ -7,7 +7,7 @@ import ivy
 from .activations import ContainerWithActivations
 from .base import ContainerBase
 from .creation import ContainerWithCreation
-from .data_types import ContainerWithDataTypes
+from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
 from .elementwise import ContainerWithElementwise
 from .general import ContainerWithGeneral
@@ -108,9 +108,22 @@ class Container(
         ivy.Container special method for the add operator, calling :code:`operator.add`
         for each of the corresponding leaves of the two containers.
 
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
         Examples
         --------
-
         With :code:`Number` instances at the leaves:
 
         >>> x = ivy.Container(a=1, b=2)
@@ -160,9 +173,22 @@ class Container(
         ivy.Container reverse special method for the add operator, calling
         :code:`operator.add` for each of the corresponding leaves of the two containers.
 
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
         Examples
         --------
-
         >>> x = 1
         >>> y = ivy.Container(a=3, b=4)
         >>> z = x + y
@@ -196,8 +222,9 @@ class Container(
 
     def __floordiv__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other],
-                               lambda xs: operator.floordiv(xs[0], xs[1]))
+            return self.reduce(
+                [self, other], lambda xs: operator.floordiv(xs[0], xs[1])
+            )
         return self.map(lambda x, kc: x // other)
 
     def __rfloordiv__(self, other):
@@ -295,52 +322,3 @@ class Container(
                     config["ivyh"] = ivy.get_backend(config["ivyh"])
             state_dict["_config"] = config
         self.__dict__.update(state_dict)
-
-
-class MultiDevContainer(Container):
-    def __init__(
-        self,
-        dict_in,
-        devs,
-        queues=None,
-        queue_load_sizes=None,
-        container_combine_method="list_join",
-        queue_timeout=None,
-        print_limit=10,
-        key_length_limit=None,
-        print_indent=4,
-        print_line_spacing=0,
-        ivyh=None,
-        default_key_color="green",
-        keyword_color_dict=None,
-        rebuild_child_containers=False,
-        types_to_iteratively_nest=None,
-        alphabetical_keys=True,
-        **kwargs
-    ):
-        super().__init__(
-            dict_in,
-            queues,
-            queue_load_sizes,
-            container_combine_method,
-            queue_timeout,
-            print_limit,
-            key_length_limit,
-            print_indent,
-            print_line_spacing,
-            ivyh,
-            default_key_color,
-            keyword_color_dict,
-            rebuild_child_containers,
-            types_to_iteratively_nest,
-            alphabetical_keys,
-            **kwargs
-        )
-        self._devs = devs
-        self._num_devs = len(devs)
-
-    def at_dev(self, dev):
-        return self.map(lambda x, kc: x[dev] if isinstance(x, ivy.MultiDevItem) else x)
-
-    def at_devs(self):
-        return {ds: self.at_dev(ds) for ds in self._devs}

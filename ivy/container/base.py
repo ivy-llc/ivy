@@ -197,15 +197,22 @@ class ContainerBase(dict, abc.ABC):
         # as inputs
         ret = ivy.Container.multi_map(
             map_fn,
-            conts, 
-            key_chains, 
-            to_apply, 
+            conts,
+            key_chains,
+            to_apply,
             prune_unapplied,
-            map_nests=map_sequences
+            map_nests=map_sequences,
         )
         if ivy.exists(out):
             out.inplace_update(ret)
             ret = out
+
+        # Multiple containers for functions returning multiple arrays
+        for values in ret.values():
+            if isinstance(values, list):
+                for v in values:
+                    if ivy.is_ivy_array(v):
+                        return ret.unstack(0)
         return ret
 
     @staticmethod
@@ -626,18 +633,29 @@ class ContainerBase(dict, abc.ABC):
             Whether to also map method to sequences (lists, tuples). Default is False.
         assert_identical
             Whether to assert that the input containers are identical or not.
-        
+
         Returns
         -------
             Container
 
         """
-        container0 = containers[0]
+        container0 = None
+        for cont in containers:
+            if isinstance(cont, ivy.Container):
+                container0 = cont
+                break
+        if container0 is None:
+            raise Exception(
+                "No containers found in the inputs to " "ivy.Container.multi_map"
+            )
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
         return_dict = dict()
         for key in container0.keys():
-            values = [cont[key] for cont in containers]
+            values = [
+                cont[key] if isinstance(cont, ivy.Container) and key in cont else cont
+                for cont in containers
+            ]
             value0 = values[0]
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             is_container = [ivy.is_ivy_container(x) for x in values]
@@ -1347,7 +1365,7 @@ class ContainerBase(dict, abc.ABC):
             for k, v in self.map(
                 lambda x, kc: list(x.shape)
                 if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else ([len(x)] if isinstance(x, (list, tuple, ivy.MultiDev)) else None)
+                else ([len(x)] if isinstance(x, (list, tuple)) else None)
             ).to_iterator()
             if v
         ]
@@ -2249,31 +2267,6 @@ class ContainerBase(dict, abc.ABC):
                     self.split(split_arg, axis, with_remainder=True), devices
                 )
             }
-        )
-
-    def to_multi_dev(self, devices, axis=0):
-        """Return a single MultiDevContainer, which shares the same structure as the
-        current container, but replaces arrays at the leaves with DistributedArray
-        instances.
-
-        Parameters
-        ----------
-        devs
-            The devices along which to distribute each array in the container.
-        axis
-            The axis along which to split the arrays at the container leaves.
-            Default is 0.
-
-        Returns
-        -------
-            a MultiDevContainer instance, with all leafs arrays replaced by
-            DistributedArray instances.
-
-        """
-        return ivy.MultiDevContainer(
-            self.map(lambda x, kc: self._ivy.dev_dist_array(x, devices, axis)),
-            devices,
-            **self._config,
         )
 
     def unstack(self, axis, keepdims=False, dim_size=None):
@@ -4766,6 +4759,7 @@ class ContainerBase(dict, abc.ABC):
                     .replace(")dtype=", "), dtype=")
                     .replace(", ),", ",),")
                 )
+                json_dumped_str = re.sub("}, $", "}", json_dumped_str)
             # color keys
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)

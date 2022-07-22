@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.ivy.gradients import gradient_descent_update
 
 # local
+from typing import Optional, Union, Callable, Tuple, Any
 from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
@@ -376,25 +377,25 @@ def _train_tasks(
 
 @to_native_arrays_and_back
 def fomaml_step(
-    batch,
-    inner_cost_fn,
-    outer_cost_fn,
-    variables,
-    inner_grad_steps,
-    inner_learning_rate,
-    inner_optimization_step=gradient_descent_update,
-    inner_batch_fn=None,
-    outer_batch_fn=None,
-    average_across_steps=False,
-    batched=True,
-    inner_v=None,
-    keep_inner_v=True,
-    outer_v=None,
-    keep_outer_v=True,
-    return_inner_v=False,
-    num_tasks=None,
-    stop_gradients=True,
-):
+    batch: ivy.Container,
+    inner_cost_fn: Callable,
+    outer_cost_fn: Callable,
+    variables: ivy.Container,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
+    inner_optimization_step: Callable = gradient_descent_update,
+    inner_batch_fn: Optional[Callable] = None,
+    outer_batch_fn: Optional[Callable] = None,
+    average_across_steps: bool = False,
+    batched: bool = True,
+    inner_v: Optional[ivy.Container] = None,
+    keep_inner_v: bool = True,
+    outer_v: Optional[ivy.Container] = None,
+    keep_outer_v: bool = True,
+    return_inner_v: Union[str, bool] = False,
+    num_tasks: Optional[int] = None,
+    stop_gradients: bool = True,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of first order MAML.
 
     Parameters
@@ -491,17 +492,17 @@ def fomaml_step(
 
 @to_native_arrays_and_back
 def reptile_step(
-    batch,
-    cost_fn,
-    variables,
-    inner_grad_steps,
-    inner_learning_rate,
-    inner_optimization_step=gradient_descent_update,
-    batched=True,
-    return_inner_v=False,
-    num_tasks=None,
-    stop_gradients=True,
-):
+    batch: ivy.Container,
+    cost_fn: Callable,
+    variables: ivy.Container,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
+    inner_optimization_step: Callable = gradient_descent_update,
+    batched: bool = True,
+    return_inner_v: Union[str, bool] = False,
+    num_tasks: Optional[int] = None,
+    stop_gradients: bool = True,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of Reptile.
 
     Parameters
@@ -577,25 +578,25 @@ def reptile_step(
 
 @to_native_arrays_and_back
 def maml_step(
-    batch,
-    inner_cost_fn,
-    outer_cost_fn,
-    variables,
-    inner_grad_steps,
-    inner_learning_rate,
-    inner_optimization_step=gradient_descent_update,
-    inner_batch_fn=None,
-    outer_batch_fn=None,
-    average_across_steps=False,
-    batched=True,
-    inner_v=None,
-    keep_inner_v=True,
-    outer_v=None,
-    keep_outer_v=True,
-    return_inner_v=False,
-    num_tasks=None,
-    stop_gradients=True,
-):
+    batch: ivy.Container,
+    inner_cost_fn: Callable,
+    outer_cost_fn: Callable,
+    variables: ivy.Container,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
+    inner_optimization_step: Callable = gradient_descent_update,
+    inner_batch_fn: Optional[Callable] = None,
+    outer_batch_fn: Optional[Callable] = None,
+    average_across_steps: bool = False,
+    batched: bool = True,
+    inner_v: Optional[ivy.Container] = None,
+    keep_inner_v: bool = True,
+    outer_v: Optional[ivy.Container] = None,
+    keep_outer_v: bool = True,
+    return_inner_v: Union[str, bool] = False,
+    num_tasks: Optional[int] = None,
+    stop_gradients: bool = True,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
     """Perform step of vanilla second order MAML.
 
     Parameters
@@ -689,5 +690,4 @@ def maml_step(
     )
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
-    # noinspection PyRedundantParentheses
     return (cost, grads.sum(0), *rets)

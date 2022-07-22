@@ -15,8 +15,6 @@ RUN apt-get update && \
 RUN pip3 install torch==1.11.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.11.0+cpu.html
 
-RUN pip3 install pytest
-
 # Install Ivy Upstream
 RUN git clone --recurse-submodules https://github.com/unifyai/ivy && \
     cd ivy && \

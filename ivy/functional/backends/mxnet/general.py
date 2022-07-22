@@ -1,5 +1,5 @@
 # global
-from typing import List, Optional, Union
+from typing import Optional, Union, Sequence
 import ivy
 
 _round = round
@@ -95,7 +95,10 @@ def inplace_update(
     return x
 
 
-inplace_arrays_supported = lambda: True
+def inplace_arrays_supported():
+    return True
+
+
 inplace_variables_supported = lambda: True
 
 
@@ -170,7 +173,14 @@ def scatter_flat(
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", device=None):
+def scatter_nd(
+    indices,
+    updates,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor=None,
+    reduction="sum",
+    device=None,
+):
     if ivy.exists(tensor):
         raise Exception(
             "MXNet scatter_flat does not support scattering into "
@@ -235,15 +245,17 @@ def multiprocessing(context=None):
     )
 
 
-def one_hot(indices, depth, device=None):
+def one_hot(indices: mx.nd.NDArray, depth: int, *, device: mx.context.Context):
     return mx.nd.one_hot(indices, depth)
 
 
-def shape(x: mx.nd.NDArray, as_tensor: bool = False) -> Union[mx.nd.NDArray, List[int]]:
-    if as_tensor:
-        return mx.nd.shape_array(x)
+def shape(
+    x: mx.nd.NDArray, as_array: bool = False
+) -> Union[mx.nd.NDArray, ivy.Shape, ivy.Array]:
+    if as_array:
+        return ivy.array(mx.nd.shape_array(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):
