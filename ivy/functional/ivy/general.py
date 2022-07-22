@@ -1805,7 +1805,9 @@ def set_min_base(val: float) -> None:
 
 
 def stable_divide(
-    numerator: Number, denominator: Number, min_denominator: Number = None
+    numerator: Union[Number, ivy.Array, ivy.Container],
+    denominator: Union[Number, ivy.Array, ivy.Container],
+    min_denominator: Number = None,
 ) -> Number:
     """Divide the numerator by the denominator, with min denominator added to the
     denominator for numerical stability.
@@ -1832,6 +1834,10 @@ def stable_divide(
     >>> print(x)
     0.49999999999975
 
+    >>> x = ivy.stable_divide(1, 4, min_denominator=1)
+    >>> print(x)
+    0.2
+
     With :code:`float` input:
     >>> x = ivy.stable_divide(5.0, 3.33)
     >>> print(x)
@@ -1841,6 +1847,48 @@ def stable_divide(
     >>> x = ivy.stable_divide(1+1j, 1-1j)
     >>> print(x)
     (5.000444502911705e-13+0.9999999999995j)
+
+    With :code:`ivy.Array` input:
+    >>> x = ivy.asarray([[10, 20, 30],\
+                        [40, 50, 60]])
+    >>> y = ivy.stable_divide(x, 10)
+    >>> print(y)
+    ivy.array([[1., 2., 3.],
+              [4., 5., 6.]])
+
+    >>> x = ivy.asarray([1., 2., 4.])
+    >>> y = ivy.asarray([1., 0.5, 0.25])
+    >>> z = ivy.stable_divide(x, y)
+    >>> print(z)
+    ivy.array([ 1.,  4., 16.])
+
+    >>> x = ivy.asarray([1., 2., 4.])
+    >>> y = ivy.asarray([1., 0.5, 0.25])
+    >>> z = ivy.asarray([0.01, 0.02, 0.03])
+    >>> w = ivy.stable_divide(x, y, min_denominator=z)
+    >>> print(w)
+    ivy.array([ 0.99,  3.85, 14.3 ])
+
+    With :code:`ivy.Container` input
+    >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
+    >>> y = ivy.stable_divide(x, 0.5)
+    >>> print(y)
+    {
+        a: ivy.array([20., 30.]),
+        b: ivy.array([40., 50.])
+    }
+
+
+    >>> x = ivy.Container(a=ivy.asarray([1., 2.]), b=ivy.asarray([3., 4.]))
+    >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 0.4]))
+    >>> z = ivy.stable_divide(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([2., 0.8]),
+        b: ivy.array([0.857, 10.])
+    }
+
+
 
     """
     # noinspection PyProtectedMember
