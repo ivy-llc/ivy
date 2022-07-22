@@ -1,9 +1,8 @@
 # global
-from typing import Union, Tuple, Optional
+from typing import Union, NamedTuple, Optional
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
@@ -17,9 +16,7 @@ from ivy.func_wrapper import (
 
 @to_native_arrays_and_back
 @handle_nestable
-def unique_all(
-    x: Union[ivy.Array, ivy.NativeArray]
-) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
+def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     """Returns the unique elements of an input array ``x``, the first occurring indices
     for each unique element in ``x``, the indices from the set of unique elements that
     reconstruct ``x``, and the corresponding counts for each unique element in ``x``.
@@ -248,12 +245,12 @@ def unique_all(
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 
     """
-    return current_backend(x).unique_all(x)
+    return ivy.current_backend(x).unique_all(x)
 
 
 @to_native_arrays_and_back
 @handle_nestable
-def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
+def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     """Returns a tuple of two arrays, one being the unique elements of an input array x
     and the other one the indices from the set of uniques elements that reconstruct x.
 
@@ -268,7 +265,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
         tuple of two arrays (values, inverse_indices)
 
     """
-    return current_backend(x).unique_inverse(x)
+    return ivy.current_backend(x).unique_inverse(x)
 
 
 @to_native_arrays_and_back
@@ -322,13 +319,14 @@ def unique_values(
            implementations.
 
     """
-    return current_backend(x).unique_values(x, out=out)
+    return ivy.current_backend(x).unique_values(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_nestable
-def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
-    """Returns the unique elements of an input array ``x`` and the corresponding counts for
+def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
+    """
+    Returns the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.
 
     .. admonition:: Data-dependent output shape
@@ -376,17 +374,15 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.
            implementations.
 
     This method conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+    <https://data-apis.org/array-api/latest/>`. This docstring is an extension of
     the `docstring <https://data-apis.org/array-api/latest/API_specification/
-    generated/signatures.elementwise_functions.tan.html>`_
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    generated/signatures.set_functions.unique_counts.html>` in the standard. 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :code: 'ivy.Array' input:
 
     >>> x = ivy.array([1,2,1,3,4,1,3])
@@ -406,13 +402,15 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.
     >>> print(y)
     Tuple([0.2,0.3,0.4,1.4,2.3],[3,1,1,1,1]
 
-    Instance Method Examples
-    ------------------------
+    With :code:`ivy.Container` input:
 
-    Using :code:`ivy.Array` instance method:
-    >>> x = ivy.array([0., 1., 3. , 2. , 1. , 0.])
-    >>> y = x.unique_counts()
+    >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
+                          b=ivy.array([1,2,1,3,4,1,3]))
+    >>> y = ivy.unique_counts(x)
     >>> print(y)
-    Tuple([0., 1., 2., 3.],[2,2,1,1])
+    {
+        a: (list[2],<classivy.array.array.Array>shape=[4]),
+        b: (list[2],<classivy.array.array.Array>shape=[4])
+    }
     """
-    return current_backend(x).unique_counts(x)
+    return ivy.current_backend(x).unique_counts(x)

@@ -19,7 +19,7 @@ jobs:
       - name: Generate Token
         id: generate_token
         uses: tibdex/github-app-token@v1
-        with: 
+        with:
           app_id: ${{ secrets.PR_APP_ID }}
           private_key: ${{ secrets.PR_APP_PEM }}
       - name: Get Project Data

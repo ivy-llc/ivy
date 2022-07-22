@@ -23,6 +23,7 @@ Arrays
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
+.. _`wrapped logic`: https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L95
 
 There are two types of array in Ivy, there is the :code:`ivy.NativeArray` and also the :code:`ivy.Array`.
 
@@ -137,7 +138,7 @@ If the first line of code in a compositional function performs operations on the
 then this will call the special methods on an :code:`ivy.NativeArray` and not on an :code:`ivy.Array`.
 For the reasons explained above, this would be a problem.
 
-Therefore, all compositional functions have a separate piece of wrapped logic to ensure that all :code:`ivy.NativeArray`
+Therefore, all compositional functions have a separate piece of `wrapped logic`_ to ensure that all :code:`ivy.NativeArray`
 instances are converted to :code:`ivy.Array` instances before entering into the compositional function.
 
 **Round Up**

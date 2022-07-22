@@ -177,15 +177,19 @@ For questions, please reach out on the `contributing discussion`_
 or on `discord`_ in the `fork management channel`_!
 
 Who To Ask
--------------
+----------
 
-Quite often, you would like to get a better understanding of the logic in the
-implementation of Ivy, raising issues or starting discussions with the context
-of who made what changes. Here is a common workflow to help get around the
-problem of "who to ask" by using,
+When raising issues or starting discussions on the Ivy repo,
+it can be useful to know who in the team wrote which piece of code.
+Armed with this information, you can then for example directly tag (using @)
+the member of the team who worked on a particular piece of code,
+which you are trying to understand, or you would like to ask questions about.
+
+Here we describe a workflow to help navigate this question of "who to ask".
 
 With Command Line:
 ****
+
 **git blame** - Show what revision and author last modified each line of a file
 
 **git log**   - Show commit logs
@@ -194,32 +198,33 @@ With Command Line:
 
     # Eg: From line 16 to next 5 lines since past 2 weeks
     git blame --since=2.weeks -L 16,+5 <filepath> | grep -v "^\^"
-    # Deeper look at what author changed in the files in commit retrieved from above step
+    # Deeper look at what each author changed in files retrieved from the above step
     git log <commit_id> -p
 
 With Browser:
 ****
+
 **Git Blame View** is a handy tool to view the line-by-line revision history for an entire file,
 or view the revision history of a single line within a file.
 
-.. image:: content/git_blame_1.png
-   :width: 420
+    .. image:: content/git_blame_1.png
+       :width: 420
 
-This view can be toggled from option in left vertical pane or from the "blame" icon in top-right
-as highlighted above.
+This view can be toggled from the option in left vertical pane,
+or from the "blame" icon in top-right, as highlighted above.
 
-.. image:: content/git_blame_2.png
-   :width: 420
+    .. image:: content/git_blame_2.png
+       :width: 420
 
 Each time you click the highlighted icon, the previous revision information
-for that line, including who committed the change and when is shown.
+for that line is shown, including who committed the change and when this happened.
 
-.. image:: content/git_blame_3.png
-   :width: 420
+    .. image:: content/git_blame_3.png
+       :width: 420
 
-Whenever starting a discussion or creating an issue, you are welcome to tag
-members using "@" in our team, who you think would be best suited to interact
-with based on the information gained from above steps.
+Whenever starting a discussion or creating an issue, you are very welcome to tag
+members of the Ivy team using "@", selecting the person you think would most suitable
+to interact with, based on the information gained from the above steps.
 
 Pull Requests
 -------------
@@ -316,6 +321,42 @@ so don't stress about this too much 🙂
 
 For questions, please reach out on the `contributing discussion`_
 or on `discord`_ in the `commit frequency channel`_!
+
+Interactive Ivy Docker Container
+--------------------------------
+
+The advantage of Docker interactive mode is that it allows us to execute commands at the time
+of running the container. It's quite a nifty tool which can be used to reassure that the functions are
+working as expected in an isolated environment.
+
+An interactive bash shell in ivy's docker container can be created by using the following command,
+
+.. code-block:: none
+
+    docker run --rm -it unifyai/ivy bash
+
+The project structure and file-system can be explored. This can be very useful when you want to test out the bash
+scripts in ivy, run the tests from the command line etc,. In fact, if you only want to quickly test things in an
+interactive python shell run the following command,
+
+.. code-block:: none
+
+    docker run --rm -it unifyai/ivy python3
+
+In both cases, the ivy version at the time when the container was built will be used.
+If you want to try out your local version of ivy, with all of the local changes you have made, you should add
+the following mount:
+
+.. code-block:: none
+
+    docker run --rm -it -v /local_path_to_ivy/ivy/ivy:/ivy/ivy unifyai/ivy bash
+
+* This will overwrite the *ivy* subfolder inside the ivy repo in the container with the *ivy* subfolder inside your local ivy repo.
+* Ivy is installed system-wide inside the container via the command :code:`python3 setup.py develop --no-deps`
+* The :code:`develop` command means that the system-wide installation will still depend on the original source files, rather than creating a fresh copy.
+* Therefore, ivy can be imported into an interactive python shell from any directory inside the container, and it will still use the latest updates made to the source code.
+
+Clearly, running a container in interactive mode can be a helpful tool in a developer’s arsenal.
 
 Running Tests Locally
 ---------------------
