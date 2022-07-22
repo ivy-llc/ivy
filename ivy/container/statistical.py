@@ -78,15 +78,15 @@ class ContainerWithStatistical(ContainerBase):
 
     def var(
         self: ivy.Container,
-        axis: Union[int, Tuple[int]]=None,
-        correction: Union[int, float]=0.0,
-        keepdims: bool=False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]]=None,
-        to_apply: bool=True,
-        prune_unapplied: bool=False,
-        map_sequences: bool=False,
+        axis: Union[int, Tuple[int]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         *,
-        out: Optional[ivy.Container]=None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.var. 
@@ -149,15 +149,15 @@ class ContainerWithStatistical(ContainerBase):
     @staticmethod
     def static_var(
         x: ivy.Container,
-        axis: Union[int, Tuple[int]]=None,
-        correction: Union[int, float]=0.0,
+        axis: Union[int, Tuple[int]] = None,
+        correction: Union[int, float] = 0.0,
         keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]]=None,
-        to_apply: bool=True,
-        prune_unapplied: bool=False,
-        map_sequences: bool=False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         *,
-        out: Optional[ivy.Container]=None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.var. 
