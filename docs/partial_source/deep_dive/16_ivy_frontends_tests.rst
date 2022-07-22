@@ -224,7 +224,7 @@ ivy.tan()
 ivy.ones()
 ^^^^^^^^^^
 
-Here we are going to look at an example of a function that does not consume :code:`array`s. 
+Here we are going to look at an example of a function that does not consume :code:`array`. 
 This is the creation function :code:`ones`, which takes an array shape as an argument to create an array of ones.
 
 
