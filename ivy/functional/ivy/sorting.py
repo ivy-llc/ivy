@@ -3,7 +3,6 @@ from typing import Union, Optional
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
@@ -67,7 +66,7 @@ def argsort(
     Functional Examples
     -------------------
 
-    With：code:`ivy.Array` input:
+    With: code:`ivy.Array` input:
 
     >>> x = ivy.array([3,1,2])
     >>> y = ivy.argsort(x)
@@ -94,7 +93,7 @@ def argsort(
         b: ivy.array([[0, 1], [1, 0]])
     }
     """
-    return current_backend(x).argsort(x, axis, descending, stable, out=out)
+    return ivy.current_backend(x).argsort(x, axis, descending, stable, out=out)
 
 
 @to_native_arrays_and_back
@@ -137,7 +136,7 @@ def sort(
         along the given `axis`.
 
     """
-    return current_backend(x).sort(x, axis, descending, stable, out=out)
+    return ivy.current_backend(x).sort(x, axis, descending, stable, out=out)
 
 
 # Extra #

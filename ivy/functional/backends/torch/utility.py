@@ -1,12 +1,12 @@
 # global
 import ivy
 import torch
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Sequence
 
 
 def all(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[torch.Tensor] = None,
@@ -25,9 +25,12 @@ def all(
     return x
 
 
+all.support_native_out = True
+
+
 def any(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
     out: Optional[torch.Tensor] = None,
@@ -44,3 +47,6 @@ def any(
     for i, a in enumerate(axis):
         x = torch.any(x, dim=a if keepdims else a - i, keepdim=keepdims, out=out)
     return x
+
+
+any.support_native_out = True

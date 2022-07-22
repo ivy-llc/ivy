@@ -11,53 +11,49 @@ import ivy.functional.backends.numpy as ivy_np
 
 # argsort
 @given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_axis=-1,
+        max_axis=0,
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
-    data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="argsort"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    descending=st.booleans(),
+    stable=st.booleans(),
 )
 def test_argsort(
-    array_shape,
-    input_dtype,
-    data,
+    dtype_x_axis,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     container,
     instance_method,
+    descending,
+    stable,
     fw,
 ):
-    # we do not want any nans
-    x = data.draw(
-        helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
-            lambda x: not np.any(np.isnan(x))
-        )
-    )
-
-    ndim = len(x.shape)
-    axis = data.draw(st.integers(-ndim, ndim - 1))
-    descending = data.draw(st.booleans())
-    stable = data.draw(st.booleans())
+    dtype, x, axis = dtype_x_axis
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "argsort",
-        x=x,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="argsort",
+        x=np.asarray(x, dtype=dtype),
         axis=axis,
         descending=descending,
         stable=stable,
@@ -66,53 +62,49 @@ def test_argsort(
 
 # sort
 @given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_axis=-1,
+        max_axis=0,
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
-    data=st.data(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sort"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    descending=st.booleans(),
+    stable=st.booleans(),
 )
 def test_sort(
-    array_shape,
-    input_dtype,
-    data,
+    dtype_x_axis,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     container,
     instance_method,
+    descending,
+    stable,
     fw,
 ):
-    # we do not want any nans
-    x = data.draw(
-        helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
-            lambda x: not np.any(np.isnan(x))
-        )
-    )
-
-    ndim = len(x.shape)
-    axis = data.draw(st.integers(-ndim, ndim - 1))
-    descending = data.draw(st.booleans())
-    stable = data.draw(st.booleans())
+    dtype, x, axis = dtype_x_axis
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "sort",
-        x=x,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="sort",
+        x=np.asarray(x, dtype=dtype),
         axis=axis,
         descending=descending,
         stable=stable,

@@ -21,12 +21,13 @@ from ivy.func_wrapper import (
 
 
 @handle_nestable
-def linear(x: Union[ivy.Array, ivy.NativeArray],
-           weight: Union[ivy.Array, ivy.NativeArray],
-           bias: Union[ivy.Array, ivy.NativeArray] = None,
-           *,
-           out: Optional[ivy.Array] = None
-           ) -> ivy.Array:
+def linear(
+    x: Union[ivy.Array, ivy.NativeArray],
+    weight: Union[ivy.Array, ivy.NativeArray],
+    bias: Union[ivy.Array, ivy.NativeArray] = None,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
     The operation also supports batching of the weight matrices. This is useful if a
     batch of different network parameters are to be represented.
@@ -439,7 +440,7 @@ def multi_head_attention(
         mask = ivy.einops_repeat(mask, "... q k -> ... h q k", h=num_heads)
 
     # BS x H x Q x F
-    sdpa = scaled_dot_product_attention(q, k, v, scale, mask)
+    sdpa = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
 
     # BS x Q x (HxF)
     sdpa = ivy.einops_rearrange(sdpa, "... h q f -> ... q (h f)")
@@ -515,8 +516,8 @@ def conv1d_transpose(
     filters,
     strides,
     padding,
-    output_shape=None,
-    data_format="NWC",
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    data_format: str = "NWC",
     dilations=1,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -657,8 +658,8 @@ def conv2d_transpose(
     filters,
     strides,
     padding,
-    output_shape=None,
-    data_format="NHWC",
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    data_format: str = "NHWC",
     dilations=1,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -718,7 +719,7 @@ def depthwise_conv2d(
     x
         Input image *[batch_size,h,w,d]*.
     filters
-        Convolution filters *[fh,fw,d]*.
+        Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from x)
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -737,27 +738,44 @@ def depthwise_conv2d(
     ret
         The result of the convolution operation.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.random_normal(0, 1, [1, 28, 28, 3])
-    >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
+    >>> x = ivy.random_normal(0, 1, [1, 28, 28, 3]) #NHWC
+    >>> filters = ivy.random_normal(0, 1, [3, 3, 3]) #HWI (I == d_in)
     >>> y = ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding='VALID')
     >>> print(y.shape)
     (1, 26, 26, 3)
 
+    >>> x = ivy.random_normal(0, 1, [1, 32, 32, 3]) #NHWC
+    >>> y = ivy.zeros_like(x)
+    >>> filters = ivy.random_normal(0, 1, [5, 5, 3]) #HWI (I == d_in)
+    >>> ivy.depthwise_conv2d(x, filters, strides=[2, 2], padding='SAME', out=y)
+    >>> print(y.shape)
+    (1, 16, 16, 3)
+
+    >>> x = ivy.random_normal(0, 1, [1, 64, 64, 32]) #NHWC
+    >>> filters = ivy.random_normal(0, 1, [4, 4, 32]) #HWI (I == d_in)
+    >>> ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding='VALID', out=x)
+    >>> print(x.shape)
+    (1, 61, 61, 32)
+
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array(ivy.random_normal(0, 1, [1, 7, 7, 64]))
-    >>> filters = ivy.native_array(ivy.random_normal(0, 1, [3, 3, 64]))
+    >>> x = ivy.native_array(ivy.random_normal(0, 1, [1, 7, 7, 64])) #NHWC
+    >>> filters = ivy.native_array(ivy.random_normal(0, 1, [3, 3, 64])) #HWI (I == d_in)
     >>> y = ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding='SAME')
     >>> print(y.shape)
     (1, 7, 7, 64)
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1)
+    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC
     >>> a = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
     >>> b = ivy.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]).unsqueeze(-1) / 9.0
     >>> filters = ivy.Container(a = a, b = b)
@@ -777,7 +795,7 @@ def depthwise_conv2d(
     With a mix of :code:`ivy.Array`, code:`ivy.NativeArray`
     and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1)
+    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC
     >>> y = ivy.native_array(ivy.eye(6, 6, 1).view(1, 6, 6, 1))
     >>> inp = ivy.Container(x = x, y = y)
     >>> filter = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
@@ -870,7 +888,7 @@ def conv3d_transpose(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: Union[str, List[int]],
-    output_shape: Union[ivy.Array, ivy.NativeArray] = None,
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     *,
@@ -1003,8 +1021,8 @@ def lstm_update(
     kernel: Union[ivy.Array, ivy.NativeArray],
     recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None
-) -> Tuple[Any, Union[Union[ivy.Array, ivy.NativeArray], Any]]:
+    recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
     """Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters

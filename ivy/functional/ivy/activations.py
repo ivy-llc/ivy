@@ -178,7 +178,7 @@ def gelu(
     Returns
     -------
     ret
-        The input array with leaky relu applied element-wise.
+        The input array with gelu applied element-wise.
 
     """
     return current_backend(x).gelu(x, approximate, out=out)

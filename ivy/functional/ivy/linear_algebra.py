@@ -50,37 +50,97 @@ def cholesky(
         have a floating-point data type determined by Type Promotion Rules and must have
         the same shape as x.
 
-    Functional Examples
-     -------------------
-     With :code:`ivy.Array` input:
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
-     1. Returns a lower-triangular Cholesky factor L
-     >>> x = ivy.array([[1., -2.], [2., 5.]])
-     >>> l = ivy.cholesky(x)
-     >>> print(l)
-     ivy.array([[ 1., 0.], [ 2., 1.]])
+    Examples
+    --------
+    With :code:`ivy.Array` input:
 
-     With :code:`ivy.NativeArray` input:
+    >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \
+                       [1.0, 0.5, 0.0, 0.0, 0.0], \
+                       [2.0, 0.0, 3.0, 0.0, 0.0], \
+                       [0.5, 0.0, 0.0, 0.625, 0.0], \
+                       [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> l = ivy.cholesky(x, 'false')
+    >>> print(l)
+    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
 
-     2. Returns an upper-triangular cholesky factor U
-     >>> x = ivy.array([[1., -2.], [2., 5.]])
-     >>> u = ivy.cholesky(x, upper = True)
-     >>> print(u)
-     ivy.array([[ 1., -2.], [ 0.,  1.]])
+    >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \
+                       [1.0, 0.5, 0.0, 0.0, 0.0], \
+                       [2.0, 0.0, 3.0, 0.0, 0.0], \
+                       [0.5, 0.0, 0.0, 0.625, 0.0], \
+                       [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> y = ivy.zeros([5,5])
+    >>> ivy.cholesky(x, 'false', out=y)
+    >>> print(y)
+    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
 
-     Instance Method Examples
-     ------------------------
-     With :code:`ivy.Container` input:
+    >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \
+                       [1.0, 0.5, 0.0, 0.0, 0.0], \
+                       [2.0, 0.0, 3.0, 0.0, 0.0], \
+                       [0.5, 0.0, 0.0, 0.625, 0.0], \
+                       [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> ivy.cholesky(x, 'false', out=x)
+    >>> print(x)
+    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
 
-     3. Returns a lower-triangular Cholesky factor
-     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]),\
-                           b = ivy.array([[2., 1.], [1., 1.]]))
-     >>> y = x.cholesky()
-     >>> print(y)
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([[1., -2.], [2., 5.]])
+    >>> u = ivy.cholesky(x, 'false')
+    >>> print(u)
+    ivy.array([[ 1., -2.],
+               [ 0.,  1.]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
+                          b=ivy.array([[2., 1.],[1., 1.]]))
+    >>> y = ivy.cholesky(x, 'false')
+    >>> print(y)
     {
-         a: ivy.array([[1.73, 0.], [-0.577,  1.63]]),
-         b: ivy.array([[1.41, 0.], [0.707, 0.707]])
-     }
+        a: ivy.array([[1.73, -0.577],
+                        [0., 1.63]]),
+        b: ivy.array([[1.41, 0.707],
+                        [0., 0.707]])
+    }
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
+                          b=ivy.array([[2., 1.],[1., 1.]]))
+    >>> upper = ivy.Container(a=1, b=-1)
+    >>> y = ivy.cholesky(x, 'false')
+    >>> print(y)
+    {
+        a: ivy.array([[1.73, -0.577],
+                        [0., 1.63]]),
+        b: ivy.array([[1.41, 0.707],
+                        [0., 0.707]])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[1., -2.], [2., 5.]])
+    >>> upper = ivy.Container(a=1, b=-1)
+    >>> y = ivy.cholesky(x, 'false')
+    >>> print(y)
+    ivy.array([[ 1., -2.],
+               [ 0.,  1.]])
 
     """
     return current_backend(x).cholesky(x, upper, out=out)
@@ -470,9 +530,12 @@ def diagonal(
 
 
 @to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Array] = None
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -512,7 +575,7 @@ def eigh(
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
     """
-    return current_backend(x).eigh(x)
+    return current_backend(x).eigh(x, out=out)
 
 
 @to_native_arrays_and_back

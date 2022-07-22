@@ -3,7 +3,7 @@ import numpy as np
 import jax
 import jaxlib
 import jax.numpy as jnp
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 
 # local
 import ivy
@@ -56,8 +56,11 @@ native_dtype_dict = {
 
 
 class Finfo:
-    def __init__(self, jnp_finfo):
+    def __init__(self, jnp_finfo: jnp.finfo):
         self._jnp_finfo = jnp_finfo
+
+    def __repr__(self):
+        return repr(self._jnp_finfo)
 
     @property
     def bits(self):
@@ -103,7 +106,7 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
     return jnp.broadcast_arrays(*arrays)
 
 
-def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
+def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> JaxArray:
     return jnp.broadcast_to(x, shape)
 
 
@@ -144,7 +147,25 @@ def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
 # ------#
 
 
-def dtype_bits(dtype_in):
+def as_ivy_dtype(dtype_in: Union[jnp.dtype, str]) -> ivy.Dtype:
+    if isinstance(dtype_in, str):
+        return ivy.Dtype(dtype_in)
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
+
+
+def as_native_dtype(dtype_in: Union[jnp.dtype, str]) -> jnp.dtype:
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return native_dtype_dict[ivy.Dtype(dtype_in)]
+
+
+def dtype(x: JaxArray, as_native: bool = False) -> ivy.Dtype:
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
+
+
+def dtype_bits(dtype_in: Union[jnp.dtype, str]) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
@@ -154,21 +175,3 @@ def dtype_bits(dtype_in):
         .replace("bfloat", "")
         .replace("float", "")
     )
-
-
-def dtype(x, as_native=False):
-    if as_native:
-        return ivy.to_native(x).dtype
-    return as_ivy_dtype(x.dtype)
-
-
-def as_ivy_dtype(dtype_in):
-    if isinstance(dtype_in, str):
-        return ivy.Dtype(dtype_in)
-    return ivy.Dtype(ivy_dtype_dict[dtype_in])
-
-
-def as_native_dtype(dtype_in):
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return native_dtype_dict[ivy.Dtype(dtype_in)]

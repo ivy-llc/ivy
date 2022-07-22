@@ -5,7 +5,7 @@ import ivy
 from typing import Callable, Type, List, Iterable, Optional
 from types import ModuleType
 
-TO_IGNORE = ["is_variable", "is_ivy_array", "is_native_array", "is_array"]
+TO_IGNORE = ["is_variable", "is_ivy_array", "is_native_array", "is_array", "shape"]
 
 
 def _wrap_function(function_name: str, static: bool) -> Callable:

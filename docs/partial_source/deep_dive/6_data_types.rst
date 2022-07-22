@@ -254,6 +254,17 @@ The implementations for all other backends follow a similar pattern to this PyTo
 where the :code:`dtype` argument is optional and :code:`ivy.default_dtype` is called inside the
 backend-specific implementation.
 
+Unsupported data types
+----------------------
+
+Some backend functions have an attribute named :code:`unsupported_dtypes` which flags data types
+which this particular backend version of the function doesn't support but other backends might
+do. It should be noted that the :code:`unsupported_dtypes` is different from :code:`ivy.invalid_dtypes`
+which consists of all the :code:`dtypes` that every function of that particular backend doesn't support
+and so if a certain :code:`dtype` is already present in the :code:`ivy.invalid_dtypes` then we should
+not repeat flag it by adding it into the :code:`unsupported_dtypes`.
+
+
 **Round Up**
 
 This should have hopefully given you a good feel for data types, and how these are handled in Ivy.
