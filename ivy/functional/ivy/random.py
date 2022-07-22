@@ -329,10 +329,7 @@ def randint(
                [ 8, 11,  3]])
 
     """
-    res = current_backend().randint(low, high, shape, device=device, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, res)
-    return res
+    return current_backend().randint(low, high, shape, device=device, out=out)
 
 
 @handle_nestable
