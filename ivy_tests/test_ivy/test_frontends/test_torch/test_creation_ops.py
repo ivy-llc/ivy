@@ -8,7 +8,7 @@ import ivy.functional.backends.torch as ivy_torch
 
 # ones
 @given(
-    size=helpers.get_shape(
+    shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
         max_num_dims=5,
@@ -22,7 +22,7 @@ import ivy.functional.backends.torch as ivy_torch
     ),
 )
 def test_torch_ones(
-    size,
+    shape,
     dtype,
     with_out,
     num_positional_args,
@@ -37,5 +37,6 @@ def test_torch_ones(
         fw=fw,
         frontend="torch",
         fn_name="ones",
-        size=size,
+        size=shape,
+        dtype=dtype,
     )

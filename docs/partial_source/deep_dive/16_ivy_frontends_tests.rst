@@ -145,7 +145,7 @@ ivy.tan()
 * :code:`numpy.tan()` supports :code:`out` arguments so we set generate values for :code:`with_out`.
 * Using :code:`np_frontend_helpers.handle_where_and_array_bools()` we do some processing on the generated :code:`where` value.
 * Instead of :code:`helpers.test_frontend_function()` we use :code:`np_frontend_helpers.test_frontend_function()` which behaves the same but has some extra code to handle the :code:`where` argument.
-* TODO - address extra arguments (casting, order, subok, test_values)
+* :code:`casting`, :code:`order`, :code:`subok` and :code:`test_values` are other other optional arguments for :code:`numpy.tan()`.
 
 **TensorFlow**
 
@@ -226,7 +226,7 @@ ivy.tan()
 ivy.ones()
 ^^^^^^^^^^
 
-Here we are going to look at an example of a function that does not consume :code:`array`. 
+Here we are going to look at an example of a function that does not consume an :code:`array`. 
 This is the creation function :code:`ones`, which takes an array shape as an argument to create an array of ones.
 
 
