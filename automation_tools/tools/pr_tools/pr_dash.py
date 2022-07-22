@@ -93,7 +93,7 @@ def create_rows(prs):
             elif not last_review and not last_comment:
                 diff = diff_between_2_dates(last_update)
 
-        if diff > 3:
+        if diff >= 3:
             row = [pr["title"].strip(), diff, pr["url"], pr["author"]["login"], "-"]
             if pr["assignees"]:
                 row[-1] = pr["assignees"][0]["login"]
