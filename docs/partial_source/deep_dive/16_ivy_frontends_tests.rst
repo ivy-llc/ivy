@@ -268,7 +268,7 @@ This is the creation function :code:`ones`, which takes an array shape as an arg
 
 * Here we use the helper function :code:`helpers.get_shape()` to generate :code:`shape`.
 * We use :code:`ivy_jax.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Jax. This is used to specify the data type of the output array.
-* Because :code:`ones()` does not consume :code:`array`s we set the :code:`as_variable_flags`, :code:`with_out` and :code:`native_array_flags` to :code:`False`.
+* Because :code:`ones()` does not consume :code:`array` s we set the :code:`as_variable_flags`, :code:`with_out` and :code:`native_array_flags` to :code:`False`.
 
 
 **NumPy**
