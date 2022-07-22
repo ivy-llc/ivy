@@ -18,7 +18,7 @@ jobs:
             ivy/.hypothesis
           key: ${{ runner.os }}-hypothesis
 
-      - name: Run Activations Tests Stateful
+      - name: Run Layers Tests
         run: |
           cd ivy
           mkdir -p .hypothesis
