@@ -38,8 +38,8 @@ To get a better understanding for writing frontend tests lets run through some e
 Examples
 --------------------
 
-ivy.tan
-^^^^^^^^
+ivy.tan()
+^^^^^^^^^^
 
 **Jax**
 
@@ -221,8 +221,8 @@ ivy.tan
 * We use :code:`ivy_tf.valid_float_dtypes` to generate :code:`available_dtypes`, these are valid data types specifically for TensorFlow.
 * Torch accepts both Torch and Numpy datatypes so we create a :code:`tuple` of the two as :code:`available_dtypes`.
 
-ivy.ones
-^^^^^^^^
+ivy.ones()
+^^^^^^^^^^
 
 **Jax**
 
