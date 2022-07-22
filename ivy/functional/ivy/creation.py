@@ -325,17 +325,6 @@ def full_like(
         >>> print(y)
         ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    With torch.Tensor input:
-
-        # ivy.full_like will give you output as ivy array
-        >>> import ivy
-        >>> import torch
-        >>> x = torch.Tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
-        >>> fill_value = 0.001
-        >>> y = ivy.full_like(x, fill_value)
-        >>> print(y)
-        ivy.array([0.001, 0.001, 0.001, 0.001, 0.001, 0.001])
-
     With ivy.NativeArray input:
 
         >>> x = ivy.native_array([3.0, 8.0])

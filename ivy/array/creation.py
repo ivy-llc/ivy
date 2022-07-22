@@ -79,18 +79,16 @@ class ArrayWithCreation(abc.ABC):
             an array having the same shape as ``self`` and where every element is equal
             to ``fill_value``.
 
-        Functional Examples
+        Instance Method Examples:
         -------------------
 
         With int datatype:
             >>> x = ivy.array([1,2,3])
             >>> fill_value = 0
-            >>> ivy.full_like(x , fill_value)
-            >>> ivy.array([0, 0, 0])
+            >>> x.full_like(fill_value)
+            ivy.array([0, 0, 0])
 
-        Instance Method Examples:
-        -------------------
-            ivy.array([1, 1, 1, 1, 1, 1])
+        With float datatype:
             >>> fill_value = 0.000123
             >>> x = ivy.array(ivy.ones(5))
             >>> y = x.full_like(fill_value)
@@ -105,23 +103,6 @@ class ArrayWithCreation(abc.ABC):
             >>> print(y)
             ivy.array([1, 1, 1, 1, 1, 1])
 
-        With ivy.Container input
-            >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
-            >>> fill_value = 10
-            >>> y = x.full_like(fill_value)
-            {
-                a: ivy.array([10, 10, 10]),
-                b: ivy.array([10, 10, 10])
-            }
-
-            >>> x = ivy.Container(a = ivy.array([1.2,2.2324,3.234]) ,b = ivy.array([4.123,5.23,6.23]))
-            >>> fill_value = 15.0
-            >>> y = x.full_like(fill_value)
-            >>> print(y)
-            {
-                a: ivy.array([15., 15., 15.]),
-                b: ivy.array([15., 15., 15.])
-            }
 
         """
         return ivy.full_like(
