@@ -326,12 +326,99 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
     -------
     ret
         a class with that encapsules the following attributes:
+
         - **bits**: *int*
+
           number of bits occupied by the type.
+
         - **max**: *int*
+
           largest representable number.
+
         - **min**: *int*
+
           smallest representable number.
+    
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.iinfo.html>`_ # noqa
+    in the standard.
+
+    Examples
+    --------
+    With :code:`ivy.Dtype` input:
+
+    >>> ivy.iinfo(ivy.int32)
+    iinfo(min=-2147483648, max=2147483647, dtype=int32)
+
+    >>> ivy.iinfo(ivy.uint64)
+    iinfo(min=0, max=18446744073709551615, dtype=uint64)
+
+    With :code:`str` input:
+
+    >>> ivy.iinfo('int32')
+    iinfo(min=-2147483648, max=2147483647, dtype=int32)
+
+    >>> ivy.iinfo('int64')
+    iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([13,21,34]) 
+    >>> ivy.iinfo(x)
+    iinfo(min=-2147483648, max=2147483647, dtype=int32)
+
+    >>> x = ivy.array([13,21,34], dtype=ivy.int8)
+    >>> ivy.iinfo(x)
+    iinfo(min=-128, max=127, dtype=int8)
+    
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7,84,314], dtype=ivy.int16)
+    >>> ivy.iinfo(x)
+    iinfo(min=-32768, max=32767, dtype=int16)
+    
+    >>> x = ivy.native_array([7,84,314], dtype=ivy.int64)
+    >>> ivy.iinfo(x)
+    iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)
+
+    With :code:`ivy.Container` input:
+
+    >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16), \
+                          y=ivy.array([76,-81,16], dtype=ivy.int32))
+    >>> ivy.iinfo(c)
+    {
+        x: iinfo(min=-32768, max=32767, dtype=int16),
+        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
+    }
+
+    >>> c = ivy.Container(x=ivy.array([0,1800,89], dtype=ivy.uint16), \
+                          y=ivy.array([76,81,16], dtype=ivy.uint32))
+    >>> ivy.iinfo(c)
+    {
+        x: iinfo(min=0, max=65535, dtype=uint16),
+        y: iinfo(min=0, max=4294967295, dtype=uint32)
+    }
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([109,8400,14], dtype=ivy.int32)
+    >>> x.iinfo()
+    iinfo(min=-2147483648, max=2147483647, dtype=int32)
+
+    >>> x = ivy.array([-119,122,14], dtype=ivy.int8))
+    >>> x.iinfo()
+    iinfo(min=-128, max=127, dtype=int8)
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16), \
+                          y=ivy.array([76,-81,16], dtype=ivy.int32))
+    >>> c.iinfo()
+    {
+        x: iinfo(min=-32768, max=32767, dtype=int16),
+        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
+    }
 
     """
     return current_backend(None).iinfo(type)
