@@ -1788,3 +1788,10 @@ def num_positional_args(draw, *, fn_name: str = None):
     return draw(
         integers(min_value=num_positional_only, max_value=(total - num_keyword_only))
     )
+
+
+@st.composite
+def bool_val_flags(cl_arg: Union[bool, None]):
+    if cl_arg is not None:
+        return st.booleans().filter(lambda x: x == cl_arg)
+    return st.booleans()
