@@ -1824,6 +1824,23 @@ def stable_divide(
     ret
         The new item following the numerically stable division.
 
+    Examples
+    --------
+
+    With :code:`int` input:
+    >>> x = ivy.stable_divide(1, 2)
+    >>> print(x)
+    0.49999999999975
+
+    With :code:`float` input:
+    >>> x = ivy.stable_divide(5.0, 3.33)
+    >>> print(x)
+    1.5015015015010504
+
+    With :code:`complex` input:
+    >>> x = ivy.stable_divide(1+1j, 1-1j)
+    >>> print(x)
+    (5.000444502911705e-13+0.9999999999995j)
 
     """
     # noinspection PyProtectedMember
