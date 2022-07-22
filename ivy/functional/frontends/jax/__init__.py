@@ -1,3 +1,5 @@
 # flake8: noqa
-from .lax import operators
-from ivy.functional.frontends.jax.lax.operators import *
+from . import lax
+from .lax import *
+from . import numpy
+from .numpy import *

@@ -129,3 +129,37 @@ def test_tensorflow_concat(
         values=xs,
         axis=unique_idx,
     )
+
+
+# ones
+@given(
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype=st.sampled_from(ivy_tf.valid_numeric_dtypes),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.ones"
+    ),
+)
+def test_tensorflow_ones(
+    shape,
+    dtype,
+    num_positional_args,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        fw=fw,
+        frontend="tensorflow",
+        fn_name="ones",
+        shape=shape,
+        dtype=dtype,
+    )

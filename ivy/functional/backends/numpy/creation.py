@@ -196,7 +196,7 @@ def ones(
     device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    dtype = as_native_dtype(default_dtype(dtype))
+    dtype = default_dtype(dtype, as_native=True)
     return _to_device(np.ones(shape, dtype), device=device)
 
 
