@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional
 
 # local
 
@@ -34,16 +34,14 @@ class ArrayWithSorting(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([7, 8, 6])
-        >>> y = x.sort(x, -1, True, False)
+        >>> y = x.sort(-1, True, False)
         >>> print(y)
         ivy.array([6, 7, 8])
 
         >>> x = ivy.array([8.5, 8.2, 7.6])
-        >>> y = x.sort(x, -1, True, False)
+        >>> y = x.sort(-1, True, False)
         >>> print(y)
         ivy.array([7.6, 8.2, 8.5])
 
         """
         return ivy.sort(self._data, axis, descending, stable, out=out)
-
-

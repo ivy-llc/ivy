@@ -136,7 +136,7 @@ def sort(
         along the given `axis`.
 
     Examples
-    -------------------
+    --------
     With：code:`ivy.Array` inputs:
 
     >>> x = ivy.array([7, 8, 6])
@@ -206,7 +206,6 @@ def sort(
         b: ivy.array([[4., 0.1], [0.8, 0.4]])
     }
 
-    
     """
     return ivy.current_backend(x).sort(x, axis, descending, stable, out=out)
 

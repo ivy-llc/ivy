@@ -1,7 +1,7 @@
-#global
+# global
 from typing import Optional, Union
 
-#local
+# local
 from ivy.container.base import ContainerBase
 import ivy
 from typing import Optional, List, Union, Dict
@@ -60,6 +60,7 @@ class ContainerWithSorting(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
     @staticmethod
     def static_sort(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -79,7 +80,7 @@ class ContainerWithSorting(ContainerBase):
         with minimal changes.
 
         Examples
-        --------------
+        --------
         With one :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),\
@@ -125,14 +126,13 @@ class ContainerWithSorting(ContainerBase):
         *,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
-
         """
         ivy.Container instance method variant of ivy.sort. This method simply wraps the
         function, and so the docstring for ivy.sort also applies to this method
         with minimal changes.
 
         Examples
-        --------------
+        --------
         With：code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),\
