@@ -532,6 +532,46 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `ivy.result_type`. This method simply
+        wraps the function, and so the docstring for `ivy.result_type` also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container from which to cast.
+        arrays_and_dtypes
+            an arbitrary number of input arrays and/or dtypes.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            the dtype resulting from an operation involving the input arrays and dtypes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
+        b = ivy.array([1, 2, 3]))
+        >>> print(x.a.dtype, x.b.dtype)
+        float32 int32
+
+        >>> print(ivy.Container.static_result_type(x))
+        {
+            a: tf.float32,
+            b: tf.int32
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "result_type",
             *arrays_and_dtypes,
@@ -549,6 +589,46 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` instance method variant of `ivy.result_type`. This method simply
+        wraps the function, and so the docstring for `ivy.result_type` also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container from which to cast.
+        arrays_and_dtypes
+            an arbitrary number of input arrays and/or dtypes.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            the dtype resulting from an operation involving the input arrays and dtypes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
+        b = ivy.array([1, 2, 3]))
+        >>> print(x.a.dtype, x.b.dtype)
+        float32 int32
+
+        >>> print(x.result_type())
+        {
+            a: tf.float32,
+            b: tf.int32
+        }
+        """
         return self.static_result_type(
             self,
             *arrays_and_dtypes,

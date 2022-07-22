@@ -98,6 +98,6 @@ class ArrayWithDataTypes(abc.ABC):
         --------
         >>> x = ivy.array([3., 4., 5.])
         >>> print(x.result_type())
-        <dtyoe:'float32'>
+        <dtype:'float32'>
         """
         return ivy.result_type(self._data, *arrays_and_dtypes)
