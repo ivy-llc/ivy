@@ -92,8 +92,8 @@ Click on the sub-headings below to check out these pages!
 We use 🚧 to indicate that the feature being discussed is in development.
 We use ✅ to indicate that it is already implemented!
 
-Check out the docs_ for more info,
-and check out our Google Colabs_ for some interactive demos!
+Check out the docs_ for more info
+and our Google Colabs_ for some interactive demos!
 
 🚨 Ivy is still at a relatively early stage of development.
 Expect breaking changes and sharp edges until we release version 1.2.0 in the next few weeks!
@@ -102,8 +102,8 @@ If you would like to contribute,
 please check out our `contributor guide`_,
 and take a look at the `open tasks`_ if you'd like to dive straight in! 🧑‍💻
 
-If you'd like to ask us questions, feel free to join in on any of our weekly "Ask us Anything!" online sessions!
-To see when the next one will be, check out the Events tab at the top left our
+If you have any questions, feel free to join any of our weekly "Ask us Anything!" online sessions!
+To see when the next one will be hosted, check out the Events tab at the top left our
 `discord server <https://discord.gg/G4aR9Q7DTN>`_ 🙂
 
 Quick Start
