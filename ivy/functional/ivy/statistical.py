@@ -438,7 +438,6 @@ def sum(
     >>> y = ivy.sum(x)
     >>> print(y)
     ivy.array(1.3)
-
     """
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
