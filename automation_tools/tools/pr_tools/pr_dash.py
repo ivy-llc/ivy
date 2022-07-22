@@ -81,6 +81,11 @@ def create_rows(prs):
                     and comment_author not in ignore_authors
                 ):
                     diff = diff_between_2_dates(comment_submit_date)
+                elif (
+                    comment_submit_date < review_submit_date
+                    and comment_author not in ignore_authors  
+                ):
+                    diff = diff_between_2_dates(review_submit_date)
             # If the last update on the PR is a comment and the comment author is not a intern calculate the inactivity days
             elif not last_review and last_comment:
                 comment_author = last_comment[-1]["author"]["login"]
