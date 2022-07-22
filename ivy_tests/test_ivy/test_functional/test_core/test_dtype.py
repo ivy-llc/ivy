@@ -523,6 +523,53 @@ def test_default_dtype(
     ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
 
 
+# dtype
+@given(
+    array=helpers.nph.arrays(
+        dtype=dtype_shared,
+        shape=helpers.lists(
+            arg=st.integers(1, 5),
+            min_size="num_dims",
+            max_size="num_dims",
+            size_bounds=[1, 5],
+        ),
+    ),
+    input_dtype=dtype_shared,
+    as_native=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="dtype"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_dtype(
+    array,
+    input_dtype,
+    as_native,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    print("array: {}, input_dtype: {}".format(array, input_dtype))
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="dtype",
+        x=array,
+        as_native=as_native,
+        test_values=False,
+    )
+
+
 # dtype_bits
 @given(
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
