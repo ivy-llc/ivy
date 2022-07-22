@@ -16,12 +16,12 @@ from ivy.functional.ivy.device import default_device
 
 
 def random_uniform(
-    low: Union[float, int, tf.Tensor, tf.Variable] = 0.0,
-    high: Union[float, int, tf.Tensor, tf.Variable] = 1.0,
+    low: Union[float, tf.Tensor, tf.Variable] = 0.0,
+    high: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
-    dtype = tf.dtypes.DType,
+    dtype: tf.dtypes.DType,
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)

@@ -18,7 +18,6 @@ def random_uniform(
     *,
     dtype: np.dtype,
     device: str,
-    dtype = np.dtype,
 ) -> np.ndarray:
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 

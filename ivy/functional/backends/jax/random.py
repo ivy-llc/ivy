@@ -25,12 +25,6 @@ def random_uniform(
     device: jaxlib.xla_extension.Device,
     dtype: jnp.dtype,
 ) -> JaxArray:
-    if isinstance(low, jaxlib.xla_extension.DeviceArray):
-        low = low.tolist()
-    if isinstance(high, jaxlib.xla_extension.DeviceArray):
-        high = high.tolist()
-    if isinstance(shape, jaxlib.xla_extension.DeviceArray):
-        shape = shape.tolist()
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return to_device(

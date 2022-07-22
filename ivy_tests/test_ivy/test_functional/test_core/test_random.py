@@ -14,7 +14,6 @@ import ivy_tests.test_ivy.helpers as helpers
 @given(
     data=st.data(),
     input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    shape_dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable_flags=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=st.integers(2, 3),
@@ -26,7 +25,6 @@ import ivy_tests.test_ivy.helpers as helpers
 def test_random_uniform(
     data,
     input_dtype,
-    shape_dtype,
     as_variable_flags,
     with_out,
     num_positional_args,
@@ -38,10 +36,9 @@ def test_random_uniform(
     fw,
 ):
     low, high = data.draw(helpers.get_bounds(dtype=input_dtype))
-    input_dtypes = [input_dtype, input_dtype, shape_dtype]
 
     helpers.test_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=[input_dtype, input_dtype],
         as_variable_flags=as_variable_flags,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -50,11 +47,11 @@ def test_random_uniform(
         instance_method=instance_method,
         fw=fw,
         fn_name="random_uniform",
-        low=np.array(low, dtype=input_dtypes[0]),
-        high=np.array(high, dtype=input_dtypes[1]),
-        shape=np.array(shape, dtype=input_dtypes[2]),
+        low=np.array(low, dtype=input_dtype),
+        high=np.array(high, dtype=input_dtype),
+        shape=tuple(shape),
         device=device,
-        dtype=input_dtypes[0],
+        dtype=input_dtype,
     )
 
 
