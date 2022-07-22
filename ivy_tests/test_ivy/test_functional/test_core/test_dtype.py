@@ -553,7 +553,6 @@ def test_dtype(
     instance_method,
     fw,
 ):
-    print("array: {}, input_dtype: {}".format(array, input_dtype))
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -801,6 +800,46 @@ def test_type_promote_arrays(
         x2=np.array(x2),
         test_values=True,
     )
+
+
+@st.composite
+def dtytes_list(draw):
+    num = draw(st.one_of(st.integers(min_value=1, max_value=5)))
+    return draw(
+        st.lists(
+            st.sampled_from(ivy.valid_dtypes),
+            min_size=num,
+            max_size=num,
+        )
+    )
+
+
+# function_unsupported_dtypes
+@given(supported_dtypes=dtytes_list())
+def test_function_supported_dtypes(
+    supported_dtypes,
+):
+    def func():
+        return
+
+    func.supported_dtypes = tuple(supported_dtypes)
+    res = ivy.function_supported_dtypes(func)
+    supported_dtypes_true = tuple(set(func.supported_dtypes))
+    assert sorted(supported_dtypes_true) == sorted(res)
+
+
+# function_unsupported_dtypes
+@given(unsupported_dtypes=dtytes_list())
+def test_function_unsupported_dtypes(
+    unsupported_dtypes,
+):
+    def func():
+        return
+
+    func.unsupported_dtypes = tuple(unsupported_dtypes)
+    res = ivy.function_unsupported_dtypes(func)
+    unsupported_dtypes_true = tuple(set(ivy.invalid_dtypes + func.unsupported_dtypes))
+    assert sorted(unsupported_dtypes_true) == sorted(res)
 
 
 # invalid_dtype
