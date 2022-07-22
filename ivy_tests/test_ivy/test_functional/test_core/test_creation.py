@@ -66,7 +66,7 @@ def test_native_array(
         max_num_dims=1,
         min_dim_size=2,
         max_dim_size=2,
-        safety_factor=0.5,
+        shared_dtype=True,
     ),
     num=st.integers(1, 5),
     axis=st.none(),
@@ -91,12 +91,12 @@ def test_linspace(
         instance_method=False,
         fw=fw,
         fn_name="linspace",
-        start=np.asarray(start_stop[0]),
-        stop=np.asarray(start_stop[1]),
+        start=np.asarray(start_stop[0], dtype=dtype[0]),
+        stop=np.asarray(start_stop[1], dtype=dtype[1]),
         num=num,
         axis=axis,
         device=device,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -129,7 +129,7 @@ def test_logspace(
 ):
     dtype, start_stop = dtype_and_start_stop
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=[ivy_np.float32, ivy_np.float32],
         as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -141,8 +141,8 @@ def test_logspace(
         test_rtol=(1,),  # if its less then one it'll test for inf
         test_atol=(1e-06,),
         test_values=True,
-        start=np.asarray(start_stop[0]),
-        stop=np.asarray(start_stop[1]),
+        start=np.asarray(start_stop[0], dtype=dtype[0]),
+        stop=np.asarray(start_stop[1], dtype=dtype[1]),
         num=num,
         base=base,
         axis=axis,
