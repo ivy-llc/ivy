@@ -511,7 +511,7 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_stable_divide(
-        numerator: Union[Number, ivy.Array, ivy.Container],
+        numerator: ivy.Container,
         denominator: Union[Number, ivy.Array, ivy.Container],
         min_denominator: Number = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -560,6 +560,24 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([40., 50.])
         }
 
+        >>> x = ivy.Container(a=1, b=10)
+        >>> y = ivy.asarray([4, 5])
+        >>> z = ivy.Container.stable_divide(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([0.25, 0.2]),
+            b: ivy.array([2.5, 2.])
+        }
+
+        >>> x = ivy.Container(a=1, b=10)
+        >>> y = np.array((4.5, 9))
+        >>> z = ivy.Container.stable_divide(x, y)
+        >>> print(z)
+        {
+            a: array([0.22222222, 0.11111111]),
+            b: array([2.22222222, 1.11111111])
+        }
+
 
         >>> x = ivy.Container(a=ivy.asarray([1., 2.]), b=ivy.asarray([3., 4.]))
         >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 0.4]))
@@ -594,8 +612,10 @@ class ContainerWithGeneral(ContainerBase):
 
     def stable_divide(
         self,
-        denominator: Number,
-        min_denominator: Number = None,
+        denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+        min_denominator: Union[
+            Number, ivy.Array, ivy.NativeArray, ivy.Container
+        ] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

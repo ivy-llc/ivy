@@ -1805,10 +1805,10 @@ def set_min_base(val: float) -> None:
 
 
 def stable_divide(
-    numerator: Union[Number, ivy.Array, ivy.Container],
-    denominator: Union[Number, ivy.Array, ivy.Container],
+    numerator: Number | ivy.Array | ivy.NativeArray | ivy.Container,
+    denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
     min_denominator: Number = None,
-) -> Number:
+) -> Number | ivy.Array | ivy.NativeArray | ivy.Container:
     """Divide the numerator by the denominator, with min denominator added to the
     denominator for numerical stability.
 
@@ -1856,11 +1856,12 @@ def stable_divide(
     ivy.array([[1., 2., 3.],
               [4., 5., 6.]])
 
-    >>> x = ivy.asarray([1., 2., 4.])
-    >>> y = ivy.asarray([1., 0.5, 0.25])
+
+    >>> x = ivy.asarray([1,2,3])
+    >>> y = np.array((1., 3., 5.))
     >>> z = ivy.stable_divide(x, y)
     >>> print(z)
-    ivy.array([ 1.,  4., 16.])
+    ivy.array([1.   , 0.667, 0.6  ])
 
     >>> x = ivy.asarray([1., 2., 4.])
     >>> y = ivy.asarray([1., 0.5, 0.25])
