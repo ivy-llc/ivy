@@ -569,11 +569,106 @@ class ContainerWithGeneral(ContainerBase):
             a: ivy.array([2., 0.8]),
             b: ivy.array([0.857, 10.])
         }
+
+        >>> x = ivy.Container(a=ivy.asarray([1., 2.], [3., 4.]),\
+                              b=ivy.asarray([5., 6.], [7., 8.]))
+        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 0.4]))
+        >>> z = ivy.Container.stable_divide(x, y, min_denominator=2)
+        >>> print(z)
+        {
+            a: ivy.array([0.4, 0.444]),
+            b: ivy.array([0.909, 2.5])
+        }
         """
 
         return ContainerBase.multi_map_in_static_method(
             "stable_divide",
             numerator,
+            denominator,
+            min_denominator,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def stable_divide(
+        self,
+        denominator: Number,
+        min_denominator: Number = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+
+        """
+        ivy.Container instance method variant of ivy.stable_divide. This method
+        simply wraps the function, and so the docstring for ivy.stable_divide
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        denominator
+            Container of the denominators of the division.
+        min_denominator
+            Container of the minimum denominator to use,
+            use global ivy._MIN_DENOMINATOR by default.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of numpy arrays copying all the element of the container
+            ``self``.
+            A container of elements containing the new items following the numerically
+            stable division, using ``self`` as the numerator.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.asarray([3., 6.]), b=ivy.asarray([9., 12.]))
+        >>> y = x.stable_divide(5)
+        >>> print(y)
+        {
+            a: ivy.array([0.6, 1.2]),
+            b: ivy.array([1.8, 2.4])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([2., 4.], [6., 8.]),\
+                              b=ivy.asarray([10., 12.], [14., 16.]))
+        >>> z = x.stable_divide(2, min_denominator=2)
+        >>> print(z)
+        {
+            a: ivy.array([0.4, 0.444]),
+            b: ivy.array([0.909, 2.5])
+        }
+
+
+        >>> x = ivy.Container(a=ivy.asarray([3., 6.]), b=ivy.asarray([9., 12.]))
+        >>> y = ivy.Container(a=ivy.asarray([6., 9.]), b=ivy.asarray([12., 15.]))
+        >>> z = x.stable_divide(y)
+        >>> print(z)
+        {
+            a: ivy.array([0.5, 0.667]),
+            b: ivy.array([0.75, 0.8])
+        }
+
+        """
+
+        return self.static_stable_divide(
+            self,
             denominator,
             min_denominator,
             key_chains=key_chains,
