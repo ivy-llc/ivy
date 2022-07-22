@@ -6,10 +6,8 @@ import warnings
 import pytest
 
 # local
-from hypothesis import given
 import ivy
 from ivy_tests.test_ivy import helpers
-import ivy.functional.backends.numpy as ivy_np
 
 # Helpers #
 # --------#
@@ -255,12 +253,29 @@ def test_copy_nest(device, call):
     assert nest["b"]["c"][1] is nest_copy["b"]["c"][1]
 
 
-@given(
-    x0_n_x1_n_res=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="nested_multi_map"),
+# nested_multi_map
+@pytest.mark.parametrize(
+    "x0_n_x1_n_res",
+    [
+        (
+            "int16",
+            [
+                [-11620],
+                [26954],
+                [15454],
+                [-8221],
+                [-28553],
+                [15758],
+                [2810],
+                [29072],
+                [3003],
+                [2750],
+            ],
+        ),
+        ("int32", [-52718, -249, 1953567615, -57372, 24742, 691182098, -37707]),
+    ],
 )
+@pytest.mark.parametrize("num_positional_args", [4, 2, 1])
 def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
     # without key_chains specification
     dtype = x0_n_x1_n_res[0]
@@ -268,6 +283,7 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
     nest1 = nest0 * 2
     if nest0.shape == ():
         return
+
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
@@ -278,7 +294,7 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
         instance_method=False,
         fw=fw,
         fn_name="nested_multi_map",
-        func=lambda x, _: x[0] + x[1],
+        func=lambda x, _: x[0] - x[1],
         nests=[nest0, nest1],
     )
 
