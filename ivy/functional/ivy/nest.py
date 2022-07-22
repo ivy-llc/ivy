@@ -169,11 +169,7 @@ def insert_into_nest_at_index(nest, index, value):
         insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
-def map_nest_at_index(
-    nest: Union[ivy.Array, ivy.NativeArray, List, Dict], 
-    index: Sequence[Union[int, str]], 
-    fn: Callable[[str, int], Any]
-) -> Any:
+def map_nest_at_index(nest, index, fn):
     """Map a function to the value of a nested item at a specified index.
 
     Parameters
@@ -184,47 +180,6 @@ def map_nest_at_index(
         A tuple of indices for the index at which to update.
     fn
         The function to perform on the nest at the given index.
-
-    Examples
-    ----------
-
-    With :code:`ivy.Array` inputs:
-
-    >>> x = ivy.array([-2., 3., 8.])
-    >>> y = [1]
-    >>> z = lambda k: k + 1
-    >>> ivy.map_nest_at_index(x, y, z)
-    >>> print(x)
-    ivy.array([-2., 4., 8.])
-
-    >>> x = ivy.array([[3., 5., 0.,], \
-                        [-2., 3., 9.]])
-    >>> y = (1, 0)
-    >>> z = lambda k: k / 2
-    >>> ivy.map_nest_at_index(x, y, z)
-    >>> print(x)
-    ivy.array([[3., 5., 0.,],
-               [-1., 3., 9.]])
-
-    With :code:`List` inputs:
-
-    >>> x = [['f', 'g', 'h', 'i'], \
-             [['j', 'k'], 'l', 'm'], \
-             ['n', 'o', 'p']]
-    >>> y = (1, 0, 1)
-    >>> z = lambda k: k + 'u'
-    >>> ivy.map_nest_at_index(x, y, z)
-    >>> print(x)
-    [['f', 'g', 'h', 'i'], [['j', 'ku'], 'l', 'm'], [n', 'o', 'p']]
-
-    With :code:`Dict` inputs:
-    
-    >>> x = {'a': [9, 5], 'b': 8, 'c': [2, 3, 4]}
-    >>> y = ('c', 1)
-    >>> z = lambda k: k * 4
-    >>> ivy.map_nest_at_index(x, y, z)
-    >>> print(x)
-    {'a': [9, 5], 'b': 8, 'c': [2, 12, 4]}
 
     """
     if len(index) == 1:
