@@ -221,6 +221,162 @@ ivy.tan
 * We use :code:`ivy_tf.valid_float_dtypes` to generate :code:`available_dtypes`, these are valid data types specifically for TensorFlow.
 * Torch accepts both Torch and Numpy datatypes so we create a :code:`tuple` of the two as :code:`available_dtypes`.
 
+ivy.ones
+^^^^^^^^
+
+**Jax**
+
+.. code-block:: python
+
+    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_numpy_functions.py
+    # ones
+    @given(
+        shape=helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+        dtype=st.sampled_from(ivy_jax.valid_float_dtypes),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.jax.numpy.ones"
+        ),
+    )
+    def test_jax_numpy_ones(
+        shape,
+        dtype,
+        num_positional_args,
+        fw,
+    ):
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            as_variable_flags=False,
+            with_out=False,
+            num_positional_args=num_positional_args,
+            native_array_flags=False,
+            fw=fw,
+            frontend="jax",
+            fn_name="numpy.ones",
+            shape=shape,
+        )
+
+
+**NumPy**
+
+.. code-block:: python
+
+    # ivy_tests/test_ivy/test_frontends/test_numpy/creation_routines/test_from_shape_or_value.py
+    # ones
+    @given(
+        shape=helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+        dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.numpy.ones"
+        ),
+    )
+    def test_numpy_ones(
+        shape,
+        dtype,
+        num_positional_args,
+        fw,
+    ):
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            as_variable_flags=False,
+            with_out=False,
+            num_positional_args=num_positional_args,
+            native_array_flags=False,
+            fw=fw,
+            frontend="numpy",
+            fn_name="ones",
+            shape=shape,
+            dtype=dtype,
+        )
+
+
+**TensorFlow**
+
+.. code-block:: python
+
+    # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tf_functions.py
+    # ones
+    @given(
+        shape=helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+        dtype=st.sampled_from(ivy_tf.valid_numeric_dtypes),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.tensorflow.ones"
+        ),
+    )
+    def test_tensorflow_ones(
+        shape,
+        dtype,
+        num_positional_args,
+        fw,
+    ):
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            as_variable_flags=False,
+            with_out=False,
+            num_positional_args=num_positional_args,
+            native_array_flags=False,
+            fw=fw,
+            frontend="tensorflow",
+            fn_name="ones",
+            shape=shape,
+            dtype=dtype,
+        )
+
+
+**PyTorch**
+
+.. code-block:: python
+
+    # ivy_tests/test_ivy/test_frontends/test_torch/test_creation_ops.py
+    # ones
+    @given(
+        size=helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+        dtype=st.sampled_from(ivy_torch.valid_numeric_dtypes),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.torch.ones"
+        ),
+    )
+    def test_torch_ones(
+        size,
+        dtype,
+        num_positional_args,
+        fw,
+    ):
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            as_variable_flags=False,
+            with_out=False,
+            num_positional_args=num_positional_args,
+            native_array_flags=False,
+            fw=fw,
+            frontend="torch",
+            fn_name="ones",
+            size=size,
+        )
+
 **Round Up**
 
 These examples have hopefully given you a good understanding of Ivy Frontend Tests!
