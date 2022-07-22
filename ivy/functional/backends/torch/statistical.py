@@ -28,6 +28,9 @@ def max(
     return torch.amax(input=x, dim=axis, keepdim=keepdims, out=out)
 
 
+max.support_native_out = True
+
+
 def mean(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -44,6 +47,9 @@ def mean(
         else:
             return x
     return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
+
+
+mean.support_native_out = True
 
 
 def min(
@@ -63,12 +69,15 @@ def min(
     return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
 
 
+min.support_native_out = True
+
+
 def prod(
     x: torch.Tensor,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: torch.dtype = None,
-    keepdims: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
@@ -100,6 +109,9 @@ def prod(
                 out=out,
             )
     return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
+
+
+prod.support_native_out = True
 
 
 def std(
@@ -137,13 +149,15 @@ def std(
     return x
 
 
+std.support_native_out = True
+
+
 def sum(
     x: torch.Tensor,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: torch.dtype = None,
     keepdims: bool = False,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
         if x.dtype in [torch.int8, torch.int16]:
@@ -152,16 +166,15 @@ def sum(
             dtype = torch.uint8
         elif x.dtype in [torch.int32, torch.int64]:
             dtype = torch.int64
+        elif x.dtype == torch.float16:
+            dtype = torch.float32
 
     dtype = ivy.as_native_dtype(dtype)
 
     if axis is None:
-        if out:
-            return torch.sum(input=x, dtype=dtype, out=out)
-        else:
-            return torch.sum(input=x, dtype=dtype)
+        return torch.sum(input=x, dtype=dtype)
     elif type(axis) == list:
-        return torch.sum(input=x, dim=axis, out=out)
+        return torch.sum(input=x, dim=axis)
     elif type(axis) == tuple:
         if len(axis) == 0:
             axis = 0
@@ -174,9 +187,8 @@ def sum(
                     ]
                 ),
                 dtype=dtype,
-                out=out,
             )
-    return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
+    return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
 def var(
@@ -193,9 +205,14 @@ def var(
     return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False, out=out)
 
 
+var.support_native_out = True
+
+
 # Extra #
 # ------#
 
 
-def einsum(equation: str, *operands: torch.Tensor) -> torch.Tensor:
+def einsum(
+    equation: str, *operands: torch.Tensor, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.einsum(equation, *operands)

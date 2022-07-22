@@ -265,7 +265,7 @@ def sparse_cross_entropy(
 
     """
     true = ivy.one_hot(true, pred.shape[axis])
-    return cross_entropy(true, pred, axis, epsilon, out=out)
+    return ivy.cross_entropy(true, pred, axis, epsilon, out=out)
 
 
 sparse_cross_entropy.unsupported_dtypes = {"torch": ("float16",)}

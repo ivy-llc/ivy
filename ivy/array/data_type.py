@@ -61,11 +61,17 @@ class ArrayWithDataTypes(abc.ABC):
     def iinfo(self: ivy.Array):
         return ivy.iinfo(self._data)
 
+    def is_bool_dtype(self: ivy.Array) -> bool:
+        return ivy.is_bool_dtype(self._data)
+
     def is_float_dtype(self: ivy.Array) -> bool:
         return ivy.is_float_dtype(self._data)
 
     def is_int_dtype(self: ivy.Array) -> bool:
         return ivy.is_int_dtype(self._data)
+
+    def is_uint_dtype(self: ivy.Array) -> bool:
+        return ivy.is_uint_dtype(self._data)
 
     def result_type(
         self: ivy.Array,

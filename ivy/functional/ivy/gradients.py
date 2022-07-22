@@ -1,8 +1,9 @@
 """Collection of gradient Ivy functions."""
 
 # local
+import functools
 import ivy
-from typing import Union, Optional
+from typing import Callable, Union, Optional
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
@@ -11,6 +12,21 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
     handle_nestable,
 )
+
+
+# Helper #
+# ------ #
+def to_container_and_back(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        container_args, container_kwargs, flag = ivy.args_to_container(*args, **kwargs)
+        ret = fn(*container_args, **container_kwargs)
+        if flag:
+            return ret[0]["x"], ret[1]["x"]
+        return ret
+
+    return new_fn
+
 
 # Extra #
 # ------#
@@ -64,14 +80,14 @@ def with_grads(with_grads: bool = None) -> bool:
     >>> ivy.set_with_grads(True)
     >>> print(ivy.with_grads(with_grads=None))
     True
-    
+
     >>> ivy.set_with_grads(False)
     >>> print(ivy.with_grads(with_grads=None))
     False
-    
+
     >>> print(ivy.with_grads(with_grads=True))
     True
-    
+
     >>> print(ivy.with_grads(with_grads=False))
     False
 
@@ -494,7 +510,7 @@ def optimizer_update(
         w = w - deltas
 
     if stop_gradients:
-        return stop_gradient(w, preserve_type=True)
+        return ivy.stop_gradient(w, preserve_type=True)
     return w
 
 
@@ -534,7 +550,7 @@ def gradient_descent_update(
         The new function weights ws_new, following the gradient descent updates.
 
     """
-    return optimizer_update(w, dcdw, lr, inplace, stop_gradients)
+    return ivy.optimizer_update(w, dcdw, lr, inplace, stop_gradients)
 
 
 @to_native_arrays_and_back
@@ -581,7 +597,7 @@ def lars_update(
     lr = ivy.stable_divide(w_norm * lr, ivy.vector_norm(dcdw))
     if decay_lambda > 0:
         lr /= w_norm * decay_lambda
-    return gradient_descent_update(w, dcdw, lr, inplace, stop_gradients)
+    return ivy.gradient_descent_update(w, dcdw, lr, inplace, stop_gradients)
 
 
 @to_native_arrays_and_back
@@ -644,7 +660,7 @@ def adam_update(
     effective_grads, mw, vw = adam_step(
         dcdw, mw_tm1, vw_tm1, step, beta1, beta2, epsilon
     )
-    return optimizer_update(w, effective_grads, lr, inplace, stop_gradients), mw, vw
+    return ivy.optimizer_update(w, effective_grads, lr, inplace, stop_gradients), mw, vw
 
 
 @to_native_arrays_and_back
@@ -708,11 +724,11 @@ def lamb_update(
 
     """
     r1 = ivy.vector_norm(w)
-    eff_grads, mw, vw = adam_step(dcdw, mw_tm1, vw_tm1, step, beta1, beta2, epsilon)
+    eff_grads, mw, vw = ivy.adam_step(dcdw, mw_tm1, vw_tm1, step, beta1, beta2, epsilon)
     if decay_lambda > 0:
         r2 = ivy.vector_norm(eff_grads + decay_lambda * w)
     else:
         r2 = ivy.vector_norm(eff_grads)
     r = ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
     lr = r * lr
-    return optimizer_update(w, eff_grads, lr, inplace, stop_gradients), mw, vw
+    return ivy.optimizer_update(w, eff_grads, lr, inplace, stop_gradients), mw, vw

@@ -17,7 +17,7 @@ def _to_native(x: Any) -> Any:
     if isinstance(x, ivy.Array):
         return _to_native(x.data)
     elif isinstance(x, ivy.Container):
-        return x.to_native()
+        return x.map(lambda x_, _: _to_native(x_))
     return x
 
 
@@ -33,6 +33,13 @@ def _to_ivy(x: Any) -> Any:
         if ivy.is_native_array(x)
         else x
     )
+
+
+def _to_container(x: Any) -> Any:
+    if isinstance(x, (ivy.Array, ivy.Variable, ivy.NativeArray)):
+        return ivy.Container(x=x)
+    else:
+        return x
 
 
 # Wrapped #
@@ -165,3 +172,17 @@ def args_to_native(
     native_args = ivy.nested_map(args, _to_native, include_derived)
     native_kwargs = ivy.nested_map(kwargs, _to_native, include_derived)
     return native_args, native_kwargs
+
+
+def args_to_container(
+    *args: Iterable[Any],
+    include_derived: Dict[type, bool] = None,
+    **kwargs: Dict[str, Any],
+):
+    all_args = list(args) + list(kwargs.values())
+    all_args_types = [
+        isinstance(arg, (ivy.Array, ivy.Variable, ivy.NativeArray)) for arg in all_args
+    ]
+    container_args = ivy.nested_map(args, _to_container, include_derived)
+    container_kwargs = ivy.nested_map(kwargs, _to_container, include_derived)
+    return container_args, container_kwargs, True in all_args_types

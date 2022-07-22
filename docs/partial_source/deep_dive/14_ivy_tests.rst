@@ -30,7 +30,7 @@ Ivy Tests
 .. _`here`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L392
 .. _`this`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_sorting.py#L18
 .. _`example`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1085
-.. _`test_concat`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L38
+.. _`test_concat`: https://github.com/unifyai/ivy/blob/1281a2baa15b8e43a06df8926ceef1a3d7605ea6/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L51
 .. _`test_device`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_device.py
 .. _`test_manipulation`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py
 .. _`test_layers`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_nn/test_layers.py
@@ -532,6 +532,15 @@ f. If you find yourself using repeating some logic which is specific to a partic
    helper function and add this to the submodule.
 g. If the logic is general enough, this can instead be added to the :code:`helpers.py` file, enabling it to be used for tests
    in other submodules
+h. Sometimes, the use of
+   `assume <https://hypothesis.readthedocs.io/en/latest/details.html?highlight=assume#hypothesis.assume>`_
+   is justified in the unit test body, particularly for cases where writing the
+   generation code would be unduly laborious. It's very straightforward to avoid
+   :code:`nan`, :code:`inf` and values close to the :code:`dtype` bounds, but also
+   avoiding zeros would require extra implementational effort in the data generation
+   helpers. Using :code:`assume` is an
+   `acceptable solution <https://github.com/unifyai/ivy/blob/2ddaff94ad9e20a1a0511d272a0501fa3b904edc/ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py#L695>`_
+   in such cases, and other similar scenarios you may encounter.
 
 
 Bonus: Hypothesis' Extended Features

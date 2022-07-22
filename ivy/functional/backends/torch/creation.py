@@ -15,12 +15,15 @@ from ivy import (
 from ivy.functional.backends.torch.device import dev
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
 
 # Array API Standard #
 # -------------------#
 
 
-def _differentiable_linspace(start, stop, num, device, dtype=None):
+def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     if num == 1:
         return torch.unsqueeze(start, 0)
     n_m_1 = num - 1
@@ -68,12 +71,16 @@ def arange(
         return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
 
 
+arange.support_native_out = True
+
+
 def asarray(
     object_in,
     *,
     copy: Optional[bool] = None,
     dtype: torch.dtype = None,
     device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ):
     if isinstance(object_in, torch.Tensor) and dtype is None:
         dtype = object_in.dtype
@@ -114,8 +121,15 @@ def empty(
     )
 
 
+empty.support_native_out = True
+
+
 def empty_like(
-    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
+    x: torch.Tensor,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -127,6 +141,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -136,43 +151,62 @@ def eye(
     device = as_native_dev(default_device(device))
     if n_cols is None:
         n_cols = n_rows
-    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
-    if k == 0:
-        return i
+    if batch_shape is None:
+        return torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
+    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device)
+    reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+    tile_dims = list(batch_shape) + [1, 1]
+    return_mat = torch.reshape(i, reshape_dims).repeat(tile_dims)
+
+    # k=index of the diagonal. A positive value refers to an upper diagonal,
+    # a negative value to a lower diagonal, and 0 to the main diagonal.
+    # Default: 0.
+    # value of k ranges from -n_rows < k < n_cols
+
+    if k == 0:  # refers to the main diagonal
+        ret = return_mat
+
+    # when k is negative
     elif -n_rows < k < 0:
-        return torch.concat(
+        mat = torch.concat(
             [
                 torch.zeros([-k, n_cols], dtype=dtype, device=device, out=out),
                 i[: n_rows + k],
             ],
             0,
         )
+        ret = torch.reshape(mat, reshape_dims).repeat(tile_dims)
+
+    # when k is positive
     elif 0 < k < n_cols:
-        return torch.concat(
+        mat = torch.concat(
             [
                 torch.zeros([n_rows, k], dtype=dtype, device=device, out=out),
                 i[:, : n_cols - k],
             ],
             1,
         )
+        ret = torch.reshape(mat, reshape_dims).repeat(tile_dims)
     else:
-        return torch.zeros([n_rows, n_cols], dtype=dtype, device=device, out=out)
+        ret = torch.zeros(
+            batch_shape + [n_rows, n_cols], dtype=dtype, device=device, out=out
+        )
+    if out is not None:
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
-def from_dlpack(x):
+eye.support_native_out = True
+
+
+def from_dlpack(x, *, out: Optional[torch.Tensor] = None):
     x = x.detach() if x.requires_grad else x
     return torch.utils.dlpack.from_dlpack(x)
 
 
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
-        ivy.is_float_dtype(dtype) and isinstance(fill_value, float)
-    ), "the fill_value and data type"
-
-
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]],
-    fill_value: Union[int, float],
+    fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
@@ -191,12 +225,16 @@ def full(
     )
 
 
+full.support_native_out = True
+
+
 def full_like(
     x: torch.Tensor,
     fill_value: Union[int, float],
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
@@ -215,6 +253,7 @@ def linspace(
     *,
     dtype: torch.dtype,
     device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ):
     if not endpoint:
         ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
@@ -240,6 +279,9 @@ def linspace(
     ):
         ans[0] = start
     return ans
+
+
+linspace.support_native_out = True
 
 
 def linspace_helper(start, stop, num, axis=None, device=None, dtype=None):
@@ -354,8 +396,15 @@ def ones(
     return torch.ones(shape, dtype=dtype_val, device=as_native_dev(device))
 
 
+ones.support_native_out = True
+
+
 def ones_like(
-    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
+    x: torch.Tensor,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
@@ -364,15 +413,21 @@ def ones_like(
 
 
 def tril(
-    x: torch.Tensor, k: int = 0, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, k: int = 0, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.tril(x, diagonal=k, out=out)
 
 
+tril.support_native_out = True
+
+
 def triu(
-    x: torch.Tensor, k: int = 0, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, k: int = 0, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.triu(x, diagonal=k, out=out)
+
+
+triu.support_native_out = True
 
 
 def zeros(
@@ -385,12 +440,23 @@ def zeros(
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
 
 
+zeros.support_native_out = True
+
+
 def zeros_like(
-    x: torch.Tensor, *, dtype: torch.dtype, device: torch.device
+    x: torch.Tensor,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if device is None:
         device = dev(x)
     if dtype is not None:
+        if isinstance(x, bool):
+            x = int(x)
+        if not isinstance(x, torch.Tensor):
+            x = torch.Tensor(x)
         return torch.zeros_like(x, dtype=dtype, device=as_native_dev(device))
     return torch.zeros_like(x, device=as_native_dev(device))
 
@@ -402,8 +468,20 @@ def zeros_like(
 array = asarray
 
 
-def logspace(start, stop, num, base=10.0, axis=None, *, device: torch.device):
+def logspace(
+    start,
+    stop,
+    num,
+    base=10.0,
+    axis=None,
+    *,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+):
     power_seq = linspace(
         start, stop, num, axis, dtype=None, device=default_device(device)
     )
     return base**power_seq
+
+
+logspace.support_native_out = True
