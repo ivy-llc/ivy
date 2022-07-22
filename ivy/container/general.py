@@ -513,7 +513,9 @@ class ContainerWithGeneral(ContainerBase):
     def static_stable_divide(
         numerator: ivy.Container,
         denominator: Union[Number, ivy.Array, ivy.Container],
-        min_denominator: Number = None,
+        min_denominator: Union[
+            Number, ivy.Array, ivy.NativeArray, ivy.Container
+        ] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

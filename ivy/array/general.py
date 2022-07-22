@@ -128,7 +128,9 @@ class ArrayWithGeneral(abc.ABC):
     def stable_divide(
         self,
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
-        min_denominator: Number = None,
+        min_denominator: Union[
+            Number, ivy.Array, ivy.NativeArray, ivy.Container
+        ] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.stable_divide. This method simply wraps
