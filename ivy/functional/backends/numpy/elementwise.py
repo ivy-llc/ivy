@@ -1,4 +1,3 @@
-# for review
 # global
 import numpy as np
 from typing import Union, Optional, Callable
