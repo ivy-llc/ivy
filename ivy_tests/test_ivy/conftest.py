@@ -29,7 +29,6 @@ TEST_CALL_METHODS: Dict[str, callable] = {
     "torch": helpers.torch_call,
     "mxnet": helpers.mx_call,
 }
-global CONFIG_DICT
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
     "as-variable": None,
     "native-array": None,
