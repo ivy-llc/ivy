@@ -73,11 +73,8 @@ def reshape(
     x: np.ndarray,
     shape: Union[ivy.NativeShape, Sequence[int]],
     copy: Optional[bool] = None,
-    *,
-    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.reshape(x, shape)
-    return ret
+    return np.reshape(x, shape)
 
 
 def roll(
