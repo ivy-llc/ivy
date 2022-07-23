@@ -92,8 +92,7 @@ def get_referrers_recursive(
 
 
 def is_native_array(
-    x: Union[ivy.Array, ivy.NativeArray],
-    exclusive: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False
 ) -> bool:
     """
     Determines whether the input x is a Native Array.
@@ -1848,6 +1847,70 @@ def stable_pow(base: Any, exponent: Any, min_base: float = None) -> Any:
     ret
         The new item following the numerically stable division.
 
+    Examples
+    --------
+
+    With :code:`int` input:
+
+    >>> x = ivy.stable_pow(3, 5)
+    >>> print(x)
+    243.00405002700012
+
+    >>> x = ivy.stable_pow(3, 4, min_base = 1)
+    >>> print(x)
+    256
+
+    With :code:`float` input:
+
+    >>> x = ivy.stable_pow(3.05, 5.55)
+    >>> print(x)
+    487.38483402344497
+
+    With :code:`complex` input:
+
+    >>> x = ivy.stable_pow(1+1, 1-1j)
+    >>> print(x)
+    (1.5384791054689897-1.2779366346323036j)
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.asarray([2, 3, 4])
+    >>> y = ivy.stable_pow(x, 2)
+    >>> print(y)
+    ivy.array([ 4,  9, 16])
+
+    >>> x = ivy.asarray([2., 4., 6.])
+    >>> y = np.array((4, 3, 2))
+    >>> z = ivy.stable_pow(x, y)
+    >>> print(z)
+    ivy.array([16., 64., 36.])
+
+    >>> x = ivy.asarray([2.0, 4.0, 81.0])
+    >>> y = ivy.asarray([2, 0.5, 3])
+    >>> z = ivy.asarray([0.1, 0.2, 0.3])
+    >>> print(ivy.stable_pow(x, y, min_base = z))
+    ivy.array([4.41e+00, 2.05e+00, 5.37e+05])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.asarray([2., 4.]), b = ivy.asarray([3., 6.]))
+    >>> y = ivy.stable_pow(x, 2)
+    >>> print(y)
+    {
+        a: ivy.array([4., 16.]),
+        b: ivy.array([9., 36.])
+    }
+
+    >>> x = ivy.Container(a = ivy.asarray([3., 4.]), b = ivy.asarray([9., 6.]))
+    >>> y = ivy.Container(a = ivy.asarray([2, 3]), b = ivy.asarray([0.5, 4]))
+    >>> z = ivy.stable_pow(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([9., 64.]),
+        b: ivy.array([3., 1300.])
+    }
+
+
     """
     # noinspection PyProtectedMember
     return (base + default(min_base, ivy._MIN_BASE)) ** exponent
@@ -2545,7 +2608,7 @@ def multiprocessing(context: str = None):
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns indices or true elements in an input boolean array.
 
