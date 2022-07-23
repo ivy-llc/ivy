@@ -1,5 +1,6 @@
 # global
 import abc
+from numbers import Number
 from typing import Any, Iterable, Union, Optional
 
 # ToDo: implement all methods here as public instance methods
@@ -123,3 +124,49 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.to_numpy(self)
+
+    def stable_pow(
+        self: ivy.Array,
+        exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+        min_base: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.stable_pow. This method simply wraps
+        the function, and so the docstring for ivy.stable_pow also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array, the base of the exponentiation.
+        exponent
+            The exponent of the exponentiation.
+        min_base
+            The minimum base to use, use global ivy._MIN_BASE by default.
+
+        Returns
+        -------
+        ret
+            Numpy array containing the elements of base raised to the power of the
+            corresponding element of exponent.
+
+        Examples
+        --------
+
+        >>> x = ivy.asarray([2, 4, 5])
+        >>> y = x.stable_pow(2)
+        >>> print(y)
+        ivy.array([ 4, 16, 25])
+
+        >>> x = ivy.asarray([2, 4, 5])
+        >>> y = x.stable_pow(4, min_base=1)
+        >>> print(y)
+        ivy.array([  81,  625, 1300])
+
+        >>> x = ivy.asarray([[4, 5, 6], [7, 8, 9]])
+        >>> y = ivy.asarray([[1, 2,3], [2, 3, 4]])
+        >>> z = x.stable_pow(y)
+        >>> print(z)
+        ivy.array([[   4,   25,  216],
+               [  49,  512, 6560]])
+        """
+        return ivy.stable_pow(self, exponent, min_base=min_base)

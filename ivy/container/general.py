@@ -1,9 +1,11 @@
 # global
+from numbers import Number
 from typing import Any, Union, List, Dict, Iterable, Optional
 
 # local
 from ivy.container.base import ContainerBase
 import ivy
+
 
 # ToDo: implement all methods here as public instance methods
 
@@ -503,6 +505,204 @@ class ContainerWithGeneral(ContainerBase):
             "to_numpy",
             x,
             key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_stable_pow(
+        base: ivy.Container,
+        exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+        min_base: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stable_pow. This method simply
+        wraps the function, and so the docstring for ivy.stable_pow also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        base
+            Container of the bases of the exponentiation.
+        exponent
+            Container of the exponents of the exponentiation.
+        min_base
+            Container of the minimum base to use,
+            use global ivy._MIN_DENOMINATOR by default.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container of elements containing the new items following the numerically
+            stable exponentiation.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
+        >>> y = ivy.Container.stable_pow(x, 3)
+        >>> print(y)
+        {
+            a: ivy.array([1000., 3380.]),
+            b: ivy.array([8000., 15600.])
+        }
+
+        >>> x = ivy.Container(a=3, b=10)
+        >>> y = ivy.asarray([4, 5])
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: array([81.00108001, 243.00405003]),
+            b: array([10000.04000006, 100000.500001])
+        }
+
+        >>> x = ivy.Container(a=3, b=10)
+        >>> y = np.array((4.5, 9))
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: array([140.29821987, 19683.59049787]),
+            b: array([3.16229189e+04, 1.00000900e+09])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([7., 2.]), b=ivy.asarray([3., 4.]))
+        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 1.5]))
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([2.65, 5.66]),
+            b: ivy.array([46.8, 8.])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([1.5, 2.], [3., 4.]),\
+        ... b=ivy.asarray([5., 6.], [7., 8.]))
+        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 1.5]))
+        >>> z = ivy.Container.stable_pow(x, y, min_base=2)
+        >>> print(z)
+        {
+            a: ivy.array([1.87, 32.]),
+            b: ivy.array([907., 22.6])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "stable_pow",
+            base,
+            exponent,
+            min_base,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def stable_pow(
+        self: ivy.Container,
+        exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+        min_base: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stable_pow. This method simply
+        wraps the function, and so the docstring for ivy.stable_pow also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        base
+            Container of the bases of the exponentiation.
+        exponent
+            Container of the exponents of the exponentiation.
+        min_base
+            Container of the minimum base to use,
+            use global ivy._MIN_DENOMINATOR by default.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container of elements containing the new items following the numerically
+            stable exponentiation.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
+        >>> y = ivy.Container.stable_pow(x, 3)
+        >>> print(y)
+        {
+            a: ivy.array([1000., 3380.]),
+            b: ivy.array([8000., 15600.])
+        }
+
+        >>> x = ivy.Container(a=3, b=10)
+        >>> y = ivy.asarray([4, 5])
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: array([81.00108001, 243.00405003]),
+            b: array([10000.04000006, 100000.500001])
+        }
+
+        >>> x = ivy.Container(a=3, b=10)
+        >>> y = np.array((4.5, 9))
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: array([140.29821987, 19683.59049787]),
+            b: array([3.16229189e+04, 1.00000900e+09])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([7., 2.]), b=ivy.asarray([3., 4.]))
+        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 1.5]))
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([2.65, 5.66]),
+            b: ivy.array([46.8, 8.])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([1.5, 2.], [3., 4.]),\
+        ... b=ivy.asarray([5., 6.], [7., 8.]))
+        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 1.5]))
+        >>> z = ivy.Container.stable_pow(x, y, min_base=2)
+        >>> print(z)
+        {
+            a: ivy.array([1.87, 32.]),
+            b: ivy.array([907., 22.6])
+        }
+
+        """
+        return self.static_stable_pow(
+            self,
+            exponent,
+            min_base=min_base,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,

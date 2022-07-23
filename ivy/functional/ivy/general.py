@@ -1,6 +1,8 @@
 """Collection of general Ivy functions."""
 
 # global
+from __future__ import annotations
+
 import gc
 import math
 import einops
@@ -1829,23 +1831,27 @@ def stable_divide(
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
-def stable_pow(base: Any, exponent: Any, min_base: float = None) -> Any:
+def stable_pow(
+    base: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+    exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+    min_base: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container] = None,
+) -> Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]:
     """Raise the base by the power, with MIN_BASE added to the base when exponent > 1
     for numerical stability.
 
     Parameters
     ----------
     base
-        The numerator of the division.
+        The base of the exponentiation.
     exponent
-        The denominator of the division.
+        The exponent of the exponentiation.
     min_base
         The minimum base to use, use global ivy._MIN_BASE by default.
 
     Returns
     -------
     ret
-        The new item following the numerically stable division.
+        The new item following the numerically stable exponentiation.
 
     Examples
     --------
