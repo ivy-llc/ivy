@@ -1790,8 +1790,46 @@ def num_positional_args(draw, *, fn_name: str = None):
     )
 
 
-@st.composite
 def bool_val_flags(cl_arg: Union[bool, None]):
     if cl_arg is not None:
         return st.booleans().filter(lambda x: x == cl_arg)
     return st.booleans()
+
+
+def handle_cmd_line_args(test_fn):
+    def new_fn(data, get_command_line_flags, fw, device, *args, **kwargs):
+        # inspecting for keyword arguments in test function
+        for param in inspect.signature(test_fn).parameters.values():
+            if param.kind == param.KEYWORD_ONLY:
+                if param.name == "as_variable":
+                    as_variable = data.draw(
+                        bool_val_flags(get_command_line_flags["as-variable"])
+                    )
+                    kwargs["as_variable"] = as_variable
+                if param.name == "native_array":
+                    native_array = data.draw(
+                        bool_val_flags(get_command_line_flags["native-array"])
+                    )
+                    kwargs["native_array"] = native_array
+                if param.name == "with_out":
+                    with_out = data.draw(
+                        bool_val_flags(get_command_line_flags["with-out"])
+                    )
+                    kwargs["with_out"] = with_out
+                if param.name == "instance_method":
+                    instance_method = data.draw(
+                        bool_val_flags(get_command_line_flags["instance-method"])
+                    )
+                    kwargs["instance_method"] = instance_method
+                if param.name == "container":
+                    container = data.draw(
+                        bool_val_flags(get_command_line_flags["nestable"])
+                    )
+                    kwargs["container"] = container
+                if param.name == "fw":
+                    kwargs["fw"] = fw
+                if param.name == "device":
+                    kwargs["device"] = device
+        return test_fn(*args, **kwargs)
+
+    return new_fn
