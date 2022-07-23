@@ -202,7 +202,7 @@ def multinomial(
         Number of tensors to generate. Default is 1.
     probs
         The unnormalized probabilities for all elements in population,
-        default is uniform *[batch_shape, num_classes]*
+        default is uniform *[batch_shape, population_size]*
     replace
         Whether to replace samples once they've been drawn. Default is True.
     device
