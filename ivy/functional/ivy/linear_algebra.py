@@ -605,6 +605,76 @@ def eigvalsh(
     This function conforms to the `Array API Standard
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+    
+        
+    Exampels
+    --------
+    With :code:`ivy.Array` inputs:
+    
+    >>> x = ivy.array([[1, 2, -1],\
+                       [2, 1, 3],\
+                       [-1, 3, 0]])
+    >>> e = ivy.eigvalsh(x)
+    >>> print(e)
+    ivy.array([-3.50330763,  1.61507163,  3.88823601])
+    
+    >>> x = ivy.array([[1, 2, -1, 3],\
+                       [2, 1, 3, 7],\
+                       [-1, 3, 0, 8],\
+                       [3, 5, 1, 6]])
+    >>> ivy.eigvalsh(x, out = x)
+    >>> print(x)
+    ivy.array([-3.77873333, -0.95821512,  1.91380981, 10.82313865])
+    
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1, 2, -1],\
+                              [2, 1, 3],\
+                              [-1, 3, 0]])
+    >>> y = ivy.zeros([3,]) 
+    >>> ivy.eigvalsh(x, out = y)
+    >>> print(y)
+    ivy.array([-3.50330763,  1.61507163,  3.88823601])
+    
+    With :code:`ivy.Container` inputs:
+    
+    >>> x = ivy.Container(a = ivy.array[[2, 4],\
+                                        [6, 8]])
+    >>> y = ivy.eigvalsh(x)
+    >>> print(y)
+    {   
+      a: ivy.array([-1.70820393, 11.70820393])
+    }
+    
+    With multiple :code:`ivy.Container` inputs:
+    
+    >>> x = ivy.Container(a = ivy.native_array[[2, 4],\
+                                               [6, 8]],\
+                          b = ivy.native_array([[1, 2],\
+                                               [3, 4]]))
+    >>> y = ivy.eigvalsh(x)
+    >>> print(y)
+    {
+        
+      a: ivy.array([-1.70820393, 11.70820393]),\
+      b: ivy.array([-0.85410197,  5.85410197])
+    
+    }
+    
+    With multiple :code:`ivy.Array` inputs:   
+    
+    >>> x = ivy.array([[2, 4],\
+                       [6, 8]])
+                                   
+    >>> y = ivy.array([[2, 5, 9],\
+                       [2, 5 ,7],\
+                       [1, 7, 8]])
+    >>> e, e_1 = ivy.eigvalsh(x, y)
+    >>> print(e, e_1)
+    ivy.array([-1.70820393, 11.70820393]), 
+    ivy.array([-0.97757691,  1.97202598, 14.00555093])                           
+                         
 
     """
     return current_backend(x).eigvalsh(x, out=out)
