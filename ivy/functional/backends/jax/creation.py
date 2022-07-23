@@ -161,8 +161,6 @@ def linspace(
     if axis is None:
         axis = -1
     ans = jnp.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
-    if dtype is None:
-        ans = jnp.float32(ans)
     return _to_device(ans, device=device)
 
 
@@ -235,11 +233,12 @@ def logspace(
     base=10.0,
     axis=None,
     *,
+    dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ):
     if axis is None:
         axis = -1
     return _to_device(
-        jnp.logspace(start, stop, num, base=base, axis=axis), device=device
+        jnp.logspace(start, stop, num, base=base, dtype=dtype, axis=axis), device=device
     )
