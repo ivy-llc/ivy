@@ -44,6 +44,9 @@ class Finfo:
     def __init__(self, tf_finfo: tf.experimental.numpy.finfo):
         self._tf_finfo = tf_finfo
 
+    def __repr__(self):
+        return repr(self._tf_finfo)
+
     @property
     def bits(self):
         return self._tf_finfo.bits

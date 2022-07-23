@@ -814,6 +814,28 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of the quotient ``x1/x2``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                            b=ivy.array([4.5, -5.3, -0]))
+        >>> y = ivy.array([3.0, 2.0, 1.0])
+        >>> ivy.Container.static_atan2(x, y)
+        {
+            a: ivy.array([0., 0.915, -1.29]),
+            b: ivy.array([0.983, -1.21, 0.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                              b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
+                              b=ivy.array([2.45, 6.35, 0, 1.5]))
+        >>> z = ivy.Container.static_atan2(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([3.14, 0.978, -0.785]),
+            b: ivy.array([1.07, -0.696, 0., -0.993])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "atan2",
@@ -870,6 +892,28 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of the quotient ``self/x2``.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                            b=ivy.array([4.5, -5.3, -0]))
+        >>> y = ivy.array([3.0, 2.0, 1.0])
+        >>> x.atan2(y)
+        {
+            a: ivy.array([0., 0.915, -1.29]),
+            b: ivy.array([0.983, -1.21, 0.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                              b=ivy.array([4.5, -5.3, -0, -2.3]))
+        >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
+                              b=ivy.array([2.45, 6.35, 0, 1.5]))
+        >>> z = x.atan2(y)
+        >>> print(z)
+        {
+            a: ivy.array([3.14, 0.978, -0.785]),
+            b: ivy.array([1.07, -0.696, 0., -0.993])
+        }
         """
         return self.static_atan2(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -1977,6 +2021,19 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
+        >>> y = ivy.Container.static_divide(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([12., 1.52, 2.1]),
+            b: ivy.array([1.25, 0.333, 0.45])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "divide",
@@ -2033,6 +2090,19 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
+        >>> y = x1.divide(x2)
+        >>> print(y)
+        {
+            a: ivy.array([12., 1.52, 2.1]),
+            b: ivy.array([1.25, 0.333, 0.45])
+        }
         """
         return self.static_divide(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -2496,6 +2566,30 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
+        >>> x2 = ivy.Container(a=ivy.array([5., 4., 2.5]), b=ivy.array([2.3, 3.7, 5]))
+        >>> y = ivy.Container.static_floor_divide(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 2., 1.])
+        }
+
+        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
+        >>> x2 = ivy.array([2, 3, 4])
+        >>> y = ivy.Container.static_floor_divide(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([2., 1., 1.]),
+            b: ivy.array([3., 2., 2.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "floor_divide",
@@ -2552,6 +2646,30 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
+        >>> x2 = ivy.Container(a=ivy.array([5., 4., 2.5]), b=ivy.array([2.3, 3.7, 5]))
+        >>> y = x1.floor_divide(x2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 2., 1.])
+        }
+
+        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
+        >>> x2 = ivy.array([2, 3, 4])
+        >>> y = x1.floor_divide(x2)
+        >>> print(y)
+        {
+            a: ivy.array([2., 1., 1.]),
+            b: ivy.array([3., 2., 2.])
+        }
         """
         return self.static_floor_divide(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -4856,6 +4974,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the rounded result for each element in ``x``.
             The returned container must have the same data type as ``x``.
 
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
+                    b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> y = ivy.Container.static_round(x)
+        >>> print(y)
+        {
+            a: ivy.array([4., 9., 7., 0.]),
+            b: ivy.array([-301., -527., 4.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "round",
@@ -4905,6 +5035,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the rounded result for each element in ``self``.
             The returned container must have the same data type as ``self``.
 
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
+                    b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> y = x.round()
+        >>> print(y)
+        {
+            a: ivy.array([4., 9., 7., 0.]),
+            b: ivy.array([-301., -527., 4.])
+        }
         """
         return self.static_round(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
