@@ -500,7 +500,54 @@ def conv1d(
     >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
     >>> result = ivy.conv1d(x, filters, (1,), 'SAME', 'NWC', (1,))
     >>> print(result)
+    
     ivy.array([[[0.], [3.], [0.]]])
+    
+    With :code:`ivy.Array` input:
+    
+ >>> x = ivy.array(ivy.random_normal(0, 1, [2, 4, 8])) #NWC
+ >>> result = ivy.zeros_like(x)
+ >>> filters = ivy.array(ivy.random_normal(0, 1, [2, 8, 4])) #WIO (I == C)
+ >>> result = ivy.conv1d(x, filters, strides=(2,), padding='VALID')
+ >>> print(result)
+ 
+ ivy.array([[[ 0.499, -4.91 ,  3.03 ,  1.73 ],
+        [ 1.65 ,  1.23 , -0.614, -2.45 ]],
+
+       [[ 1.05 ,  7.71 ,  2.03 ,  5.63 ],
+        [-8.18 , -0.611, -1.3  , -1.72 ]]])
+
+With :code:`ivy.NativeArray` input:
+
+>>> ivy.set_backend('torch')
+>>> x = ivy.native_array(ivy.random_normal(0, 1,[1, 5, 3])) #NWC
+>>> result = ivy.to_native(ivy.zeros_like(x))
+>>> filters = ivy.native_array(ivy.random_normal(0, 1,  [3, 3, 1])) #WIO
+>>> ivy.conv1d(x, filters, strides = (1,), padding = 'SAME', out=result) #using inplace update
+>>> print(result)
+
+tensor([[[ 2.5210],
+         [-1.5417],
+         [ 1.3615],
+         [-5.2475],
+         [-1.6664]]])
+
+
+With a mix of :code:`ivy.Array` ivy.NativeArray and :code:`ivy.Container` inputs:
+
+ >>> x = ivy.Container(a = ivy.array(ivy.random_normal(0,1, [1, 10, 3])) , b = ivy.array(ivy.random_normal(0,1,[1,20, 3 ])))
+ >>> filters = ivy.array(ivy.random_normal(0,1,[5, 3, 2]))
+ >>> result = ivy.zeros_like(x)
+ >>> ivy.conv1d(x, filters, strides= 4, padding='VALID', dilations=2, out= result)
+ >>> print(result)
+   
+ {
+    a: ivy.array([[[-0.105, 3.17]]]),
+    b: ivy.array([[[2.79, 3.34], 
+                   [-2.57, 1.51], 
+                   [-0.152, 0.824]]])
+}
+
 
     """
     return current_backend(x).conv1d(
