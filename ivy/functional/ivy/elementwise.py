@@ -2137,8 +2137,6 @@ def greater(
         Input array.
     x2
         Input array.
-    f
-        Machine learning framework. Inferred from inputs if None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2151,9 +2149,63 @@ def greater(
 
     Examples
     --------
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.greater(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)
     ivy.array([False, False,  True])
+
+
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.greater(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[0.],[1.],[0.]]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 2])
+    >>> y = ivy.native_array([4, 5])
+    >>> z = ivy.greater(x, y)
+    >>> print(z)
+    ivy.array([False,False])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.native_array([4, 5, 0])
+    >>> z = ivy.greater(x, y)
+    >>> print(z)
+    ivy.array([False,False,True])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[5.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                          b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = ivy.greater(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([[True, False, False],
+                      [True, False, False],
+                      [False, False, False]]),
+        b: ivy.array([[True, False, False],
+                      [False, False, False],
+                      [False, False, False]])
+    }
+    
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                          b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([5, 6, 7]))
+    >>> z = ivy.greater(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([True, True, True]),
+        b: ivy.array([False, False, False])
+    }
 
     """
     return ivy.current_backend(x1, x2).greater(x1, x2, out=out)
