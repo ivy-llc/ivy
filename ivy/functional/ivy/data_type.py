@@ -89,10 +89,45 @@ def astype(
 
     Examples
     --------
+
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([1, 2])
     >>> y = ivy.astype(x, dtype = ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([3.141, 2.718, 1.618])
+    >>> y = ivy.astype(x, ivy.int32)
+    >>> y
+    ivy.array([3, 2, 1])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0,2,1]), b=ivy.array([1,0,0]))
+    >>> ivy.astype(x, ivy.bool)
+    {
+        a: ivy.array([False, True, True]),
+        b: ivy.array([True, False, False])
+    }
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[-1, -2, 0, 2]])
+    >>> x.astype(ivy.float64)
+    ivy.array([[-1., -2.,  0.,  2.]])
+
+    Using :code:`ivy.Container` instance method:
+    
+    >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([True,False,True]))
+    >>> x.astype(ivy.int32)
+    {
+        a: ivy.array([0, 1, 1]),
+        b: ivy.array([1, 0, 1])
+    }
+
     """
     return current_backend(x).astype(x, dtype, copy=copy, out=out)
 
