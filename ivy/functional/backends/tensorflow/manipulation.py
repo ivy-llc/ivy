@@ -85,11 +85,8 @@ def permute_dims(
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
     shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.reshape(x, shape)
-    return ret
+    return tf.reshape(x, shape)
 
 
 def roll(
