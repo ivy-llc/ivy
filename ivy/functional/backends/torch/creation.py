@@ -15,6 +15,9 @@ from ivy import (
 from ivy.functional.backends.torch.device import dev
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
 
 # Array API Standard #
 # -------------------#
@@ -138,6 +141,7 @@ def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
+    batch_shape: Optional[Union[int, Sequence[int]]] = None,
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -147,27 +151,49 @@ def eye(
     device = as_native_dev(default_device(device))
     if n_cols is None:
         n_cols = n_rows
-    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
-    if k == 0:
-        return i
+    if batch_shape is None:
+        return torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
+    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device)
+    reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+    tile_dims = list(batch_shape) + [1, 1]
+    return_mat = torch.reshape(i, reshape_dims).repeat(tile_dims)
+
+    # k=index of the diagonal. A positive value refers to an upper diagonal,
+    # a negative value to a lower diagonal, and 0 to the main diagonal.
+    # Default: 0.
+    # value of k ranges from -n_rows < k < n_cols
+
+    if k == 0:  # refers to the main diagonal
+        ret = return_mat
+
+    # when k is negative
     elif -n_rows < k < 0:
-        return torch.concat(
+        mat = torch.concat(
             [
                 torch.zeros([-k, n_cols], dtype=dtype, device=device, out=out),
                 i[: n_rows + k],
             ],
             0,
         )
+        ret = torch.reshape(mat, reshape_dims).repeat(tile_dims)
+
+    # when k is positive
     elif 0 < k < n_cols:
-        return torch.concat(
+        mat = torch.concat(
             [
                 torch.zeros([n_rows, k], dtype=dtype, device=device, out=out),
                 i[:, : n_cols - k],
             ],
             1,
         )
+        ret = torch.reshape(mat, reshape_dims).repeat(tile_dims)
     else:
-        return torch.zeros([n_rows, n_cols], dtype=dtype, device=device, out=out)
+        ret = torch.zeros(
+            batch_shape + [n_rows, n_cols], dtype=dtype, device=device, out=out
+        )
+    if out is not None:
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 eye.support_native_out = True
@@ -176,14 +202,6 @@ eye.support_native_out = True
 def from_dlpack(x, *, out: Optional[torch.Tensor] = None):
     x = x.detach() if x.requires_grad else x
     return torch.utils.dlpack.from_dlpack(x)
-
-
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
-        ivy.is_float_dtype(dtype)
-        and isinstance(fill_value, float)
-        or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not same"
 
 
 def full(
@@ -435,6 +453,10 @@ def zeros_like(
     if device is None:
         device = dev(x)
     if dtype is not None:
+        if isinstance(x, bool):
+            x = int(x)
+        if not isinstance(x, torch.Tensor):
+            x = torch.Tensor(x)
         return torch.zeros_like(x, dtype=dtype, device=as_native_dev(device))
     return torch.zeros_like(x, device=as_native_dev(device))
 
@@ -453,11 +475,12 @@ def logspace(
     base=10.0,
     axis=None,
     *,
+    dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ):
-    power_seq = linspace(
-        start, stop, num, axis, dtype=None, device=default_device(device)
+    power_seq = ivy.linspace(
+        start, stop, num, axis, dtype=dtype, device=ivy.default_device(device)
     )
     return base**power_seq
 

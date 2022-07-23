@@ -1,8 +1,9 @@
 """Collection of gradient Ivy functions."""
 
 # local
+import functools
 import ivy
-from typing import Union, Optional
+from typing import Callable, Union, Optional
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
@@ -11,6 +12,21 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
     handle_nestable,
 )
+
+
+# Helper #
+# ------ #
+def to_container_and_back(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        container_args, container_kwargs, flag = ivy.args_to_container(*args, **kwargs)
+        ret = fn(*container_args, **container_kwargs)
+        if flag:
+            return ret[0]["x"], ret[1]["x"]
+        return ret
+
+    return new_fn
+
 
 # Extra #
 # ------#
