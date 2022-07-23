@@ -422,7 +422,10 @@ logaddexp.support_native_out = True
 
 @_handle_0_dim_output
 def logical_and(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.logical_and(x1, x2, out=out)
 
