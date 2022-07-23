@@ -68,11 +68,8 @@ def reshape(
     x: torch.Tensor,
     shape: Union[ivy.NativeShape, Sequence[int]],
     copy: Optional[bool] = None,
-    *,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.reshape(x, shape)
-    return ret
+    return torch.reshape(x, shape)
 
 
 def roll(
