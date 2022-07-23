@@ -290,7 +290,7 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.finfo.html>`_ # noqa
     in the standard.
 
     Examples
