@@ -917,37 +917,65 @@ def test_gather_nd(prms_n_inds, dtype, tensor_fn, call):
 
 
 # exists
-@pytest.mark.parametrize("x", [[1.0], None, [[10.0, 9.0, 8.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_exists(x, dtype, tensor_fn, device, call):
-    # smoke test
-    x = tensor_fn(x, dtype=dtype, device=device) if x is not None else None
+@given(
+    x=st.one_of(
+        st.none(), 
+        helpers.dtype_and_values(
+            ivy_np.valid_numeric_dtypes,
+            allow_inf=False,
+            min_num_dims=0,
+            min_dim_size=2), 
+        st.sampled_from([ivy.array])
+    )
+)
+def test_exists(x):
+    if x is not None:
+        if not hasattr(x, '__call__'):
+            dtype, x = x
     ret = ivy.exists(x)
-    # type test
     assert isinstance(ret, bool)
-    # value test
     y_true = x is not None
     assert ret == y_true
 
 
 # default
-@pytest.mark.parametrize(
-    "x_n_dv", [([1.0], [2.0]), (None, [2.0]), ([[10.0, 9.0, 8.0]], [2.0])]
+@given(
+    x=st.one_of(
+        st.none(), 
+        helpers.dtype_and_values(
+            ivy_np.valid_numeric_dtypes,
+            allow_inf=False,
+            min_num_dims=0,
+            min_dim_size=2), 
+        st.sampled_from([ivy.array])
+    ), 
+    default_val=st.one_of(
+        helpers.dtype_and_values(
+            ivy_np.valid_numeric_dtypes,
+            allow_inf=False,
+            min_num_dims=0,
+            min_dim_size=2,
+        ), 
+        st.sampled_from([ivy.array])),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_default(x_n_dv, dtype, tensor_fn, device, call):
-    x, dv = x_n_dv
-    # smoke test
-    x = tensor_fn(x, dtype=dtype, device=device) if x is not None else None
-    dv = tensor_fn(dv, dtype=dtype, device=device)
-    ret = ivy.default(x, dv)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # value test
-    y_true = ivy.to_numpy(x if x is not None else dv)
-    assert np.allclose(call(ivy.default, x, dv), y_true)
+def test_default(x, default_val, call):
+    with_callable = False
+    if (x is not None):
+        if hasattr(x, '__call__'):
+            with_callable = True
+        else:
+            x_dtype, x = x
+    else:
+        if hasattr(default_val, '__call__'):
+            with_callable = True
+        else:
+            dv_dtype, default_val = default_val
+
+    truth_val = ivy.to_native(x if x is not None else default_val)
+    if(with_callable):
+        assert call(ivy.default, x, default_val) == truth_val
+    else:
+        assert np.allclose(call(ivy.default, x, default_val), truth_val)
 
 
 def test_cache_fn(device, call):
