@@ -15,6 +15,9 @@ from ivy import (
 from ivy.functional.backends.torch.device import dev
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
 
 # Array API Standard #
 # -------------------#
@@ -149,8 +152,8 @@ def eye(
     if n_cols is None:
         n_cols = n_rows
     if batch_shape is None:
-        batch_shape = []
-    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
+        return torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
+    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device)
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
     return_mat = torch.reshape(i, reshape_dims).repeat(tile_dims)
@@ -161,7 +164,7 @@ def eye(
     # value of k ranges from -n_rows < k < n_cols
 
     if k == 0:  # refers to the main diagonal
-        return return_mat
+        ret = return_mat
 
     # when k is negative
     elif -n_rows < k < 0:
@@ -172,7 +175,7 @@ def eye(
             ],
             0,
         )
-        return torch.reshape(mat, reshape_dims).repeat(tile_dims)
+        ret = torch.reshape(mat, reshape_dims).repeat(tile_dims)
 
     # when k is positive
     elif 0 < k < n_cols:
@@ -183,11 +186,14 @@ def eye(
             ],
             1,
         )
-        return torch.reshape(mat, reshape_dims).repeat(tile_dims)
+        ret = torch.reshape(mat, reshape_dims).repeat(tile_dims)
     else:
-        return torch.zeros(
+        ret = torch.zeros(
             batch_shape + [n_rows, n_cols], dtype=dtype, device=device, out=out
         )
+    if out is not None:
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 eye.support_native_out = True
@@ -196,14 +202,6 @@ eye.support_native_out = True
 def from_dlpack(x, *, out: Optional[torch.Tensor] = None):
     x = x.detach() if x.requires_grad else x
     return torch.utils.dlpack.from_dlpack(x)
-
-
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (ivy.is_int_dtype(dtype) and isinstance(fill_value, int)) or (
-        ivy.is_float_dtype(dtype)
-        and isinstance(fill_value, float)
-        or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not same"
 
 
 def full(

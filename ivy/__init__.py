@@ -66,7 +66,10 @@ class Dtype(str):
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
-        assert isinstance(shape_tup, (int, list, tuple, ivy.NativeShape))
+        valid_types = (int, list, tuple)
+        if len(backend_stack) != 0:
+            valid_types += (ivy.NativeShape,)
+        assert isinstance(shape_tup, valid_types)
         if isinstance(shape_tup, int):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
