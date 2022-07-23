@@ -41,11 +41,50 @@ class ArrayWithManipulation(abc.ABC):
     def reshape(
         self: ivy.Array,
         shape: Union[ivy.Shape, ivy.NativeShape],
+        copy: Optional[bool] = None,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.reshape(self._data, shape, out=out)
+        """
+        ivy.Array instance method variant of ivy.roll. This method simply wraps the
+        function, and so the docstring for ivy.roll also applies to this method
+        with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array.
+        shape
+            The new shape should be compatible with the original shape. One shape dimension
+            can be -1. In this case, the value is inferred from the length of the array and
+            remaining dimensions.
+        copy
+             boolean indicating whether or not to copy the input array.
+             If True, the function must always copy.
+             If False, the function must never copy and must
+             raise a ValueError in case a copy would be necessary.
+             If None, the function must reuse existing memory buffer if possible
+             and copy otherwise. Default: None.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output array having the same data type as ``self`` and  elements as ``self``.
+
+        Examples
+        --------
+        >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
+        >>> y = x.reshape((2,3))
+        >>> print(y)
+        ivy.array([[0., 1., 2.],
+                   [3., 4., 5.]])
+
+        """
+        return ivy.reshape(self._data, shape, out=out)
+    
     def permute_dims(
         self: ivy.Array,
         axes: Tuple[int, ...],
