@@ -1562,7 +1562,7 @@ def current_backend_str() -> Union[str, None]:
     return fw.current_backend_str()
 
 
-@to_native_arrays_and_back
+# @to_native_arrays_and_back
 @handle_nestable
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1591,13 +1591,15 @@ def einops_rearrange(
         New array with einops.rearrange having been applied.
 
     """
+    x = ivy.to_native(x)
     ret = einops.rearrange(x, pattern, **axes_lengths)
+    ret = ivy.array(ret)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-@to_native_arrays_and_back
+# @to_native_arrays_and_back
 @handle_nestable
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1629,7 +1631,9 @@ def einops_reduce(
         New array with einops.reduce having been applied.
 
     """
+    x = ivy.to_native(x)
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
+    ret = ivy.array(ret)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

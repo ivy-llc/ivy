@@ -1141,44 +1141,93 @@ def test_explicit_ivy_framework_handles(device, call):
 
 
 # einops_rearrange
-@pytest.mark.parametrize(
-    "x_n_pattern_n_newx",
-    [([[0.0, 1.0, 2.0, 3.0]], "b n -> n b", [[0.0], [1.0], [2.0], [3.0]])],
+@given(
+    x=helpers.dtype_and_values(
+        ivy_np.valid_numeric_dtypes,
+        allow_inf=False,
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=2,
+    ).filter(lambda x : ivy.array([x[1]], dtype=x[0]).shape[2] % 2 == 0 and ivy.array([x[1]], dtype=x[0]).shape[3] % 2 == 0), 
+    pattern_and_axes_lengths=st.sampled_from([
+        ('b h w c -> b h w c', {}),
+        ('b h w c -> (b h) w c', {}),
+        ('b h w c -> b c h w', {}),
+        ('b h w c -> h (b w) c', {}),
+        ('b h w c -> b (c h w)', {}),
+        ('b (h1 h) (w1 w) c -> (b h1 w1) h w c', {'h1': 2, 'w1': 2}),
+        ('b (h h1) (w w1) c -> b h w (c h1 w1)', {'h1': 2, 'w1': 2}),
+    ]),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name='einops_rearrange'),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans()
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_einops_rearrange(x_n_pattern_n_newx, dtype, tensor_fn, device, call):
-    # smoke test
-    x, pattern, new_x = x_n_pattern_n_newx
-    x = tensor_fn(x, dtype=dtype, device=device)
-    ret = ivy.einops_rearrange(x, pattern)
-    true_ret = einops.rearrange(ivy.to_native(x), pattern)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert list(ret.shape) == list(true_ret.shape)
-    # value test
-    assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(true_ret))
+def test_einops_rearrange(x, pattern_and_axes_lengths, with_out, as_variable, num_positional_args, native_array, container, instance_method, fw, device):
+    pattern, axes_lengths = pattern_and_axes_lengths
+    dtype, x = x
+    x = [x]
+    helpers.test_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "einops_rearrange",
+        x=np.asarray(x, dtype=dtype),
+        pattern=pattern,
+        **axes_lengths
+    )
 
 
-# einops_reduce
-@pytest.mark.parametrize(
-    "x_n_pattern_n_red_n_newx", [([[0.0, 1.0, 2.0, 3.0]], "b n -> b", "mean", [1.5])]
+@given(
+    x=helpers.dtype_and_values(
+        ivy_np.valid_numeric_dtypes,
+        allow_inf=False,
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=2,
+    ).filter(lambda x : ivy.array([x[1]], dtype=x[0]).shape[2] % 2 == 0 and ivy.array([x[1]], dtype=x[0]).shape[3] % 2 == 0), 
+    pattern_and_axes_lengths=st.sampled_from([
+        # ('t b  -> b', {}),
+        ('b c (h1 h2) (w1 w2) -> b c h1 w1', {'h2': 2, 'w2': 2}),
+    ]),
+    reduction=st.sampled_from(['min', 'max', 'sum', 'mean', 'prod']),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name='einops_reduce'),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_einops_reduce(x_n_pattern_n_red_n_newx, dtype, tensor_fn, device, call):
-    # smoke test
-    x, pattern, reduction, new_x = x_n_pattern_n_red_n_newx
-    x = tensor_fn(x, dtype=dtype, device=device)
-    ret = ivy.einops_reduce(x, pattern, reduction)
-    true_ret = einops.reduce(ivy.to_native(x), pattern, reduction)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert list(ret.shape) == list(true_ret.shape)
-    # value test
-    assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(true_ret))
+def test_einops_reduce(x, pattern_and_axes_lengths, reduction, with_out, as_variable, num_positional_args, native_array, container, instance_method, fw):
+    pattern, axes_lengths = pattern_and_axes_lengths
+    dtype, x = x
+    x = [x]
+    if (reduction in ['mean', 'prod']) and (dtype not in ivy_np.valid_float_dtypes):
+        dtype = 'float32'
+    helpers.test_function(
+        dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "einops_reduce",
+        x=np.asarray(x, dtype=dtype),
+        pattern=pattern,
+        reduction=reduction,
+        **axes_lengths
+    )
 
 
 # einops_repeat
@@ -1204,7 +1253,7 @@ def test_einops_reduce(x_n_pattern_n_red_n_newx, dtype, tensor_fn, device, call)
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-def test_einops_repeat(x, pattern_and_axes_lengths, with_out, as_variable, num_positional_args, native_array, container, instance_method, fw, device):
+def test_einops_repeat(x, pattern_and_axes_lengths, with_out, as_variable, num_positional_args, native_array, container, instance_method, fw):
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = x
     x = [x]
@@ -1271,6 +1320,7 @@ def test_inplace_update(
     tensor_fn, 
     device
 ):
+    # ToDo: Ask Daniel about tensor_fn, we use it here since we don't use helpers.test_function
     dtypes = x_val_and_dtypes[0]
     x, val = x_val_and_dtypes[1]
     x = tensor_fn(x, dtype="float32", device=device)
