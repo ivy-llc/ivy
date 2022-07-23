@@ -133,9 +133,9 @@ class ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.full_like. This method simply wraps the
-        function, and so the docstring for ivy.full_like also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.full_like. This method simply wraps 
+        the function, and so the docstring for ivy.full_like also applies to this 
+        method with minimal changes.
 
         Parameters
         ----------
@@ -180,7 +180,8 @@ class ContainerWithCreation(ContainerBase):
             b: ivy.array([10, 10, 10])
         }
 
-        >>> x = ivy.Container(a = ivy.array([1.2,2.2324,3.234]) ,b = ivy.array([4.123,5.23,6.23]))
+        >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
+                               b=ivy.array([4.123,5.23,6.23]))
         >>> fill_value = 15.0
         >>> y = ivy.Container.full_like(fill_value)
         >>> print(y)
@@ -215,8 +216,8 @@ class ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.full_like. This method simply wraps the
-        function, and so the docstring for ivy.full_like also applies to this method
+        ivy.Container instance method variant of ivy.full_like. This method simply wraps 
+        the function, and so the docstring for ivy.full_like also applies to this method
         with minimal changes.
 
         Parameters
@@ -262,7 +263,8 @@ class ContainerWithCreation(ContainerBase):
             b: ivy.array([10, 10, 10])
         }
 
-        >>> x = ivy.Container(a = ivy.array([1.2,2.2324,3.234]) ,b = ivy.array([4.123,5.23,6.23]))
+        >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
+                               b=ivy.array([4.123,5.23,6.23]))
         >>> fill_value = 15.0
         >>> y = x.full_like(fill_value)
         >>> print(y)
