@@ -276,6 +276,42 @@ def stop_gradient(
     -------
     ret
         The same array x, but with no gradient information.
+    
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.stop_gradient(x, preserve_type=True)
+    >>> print(y)
+    ivy.array([[ 1., 2., 3., 4.],
+               [ 5., 8., 78., 96.]])
+
+    >>> x = ivy.zeros((2, 3))
+    >>> ivy.stop_gradient(x, preserve_type=False, out=x)
+    >>> print(x)
+    ivy.array([[0., 0., 0.],
+               [0., 0., 0.]])
+
+    with :code: `ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                        b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.stop_gradient(x, preserve_type=False)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                        b=ivy.array([3., 4., 5.]))
+    >>> ivy.stop_gradient(x, preserve_type=True, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
 
     """
     return current_backend(x).stop_gradient(x, preserve_type, out=out)
