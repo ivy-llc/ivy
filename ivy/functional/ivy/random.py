@@ -8,7 +8,6 @@ import ivy
 from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
-    outputs_to_ivy_arrays,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
@@ -269,7 +268,7 @@ def multinomial(
     )
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
 @handle_nestable

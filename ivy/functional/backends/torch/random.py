@@ -17,8 +17,8 @@ def random_uniform(
     low: Union[float, torch.Tensor] = 0.0,
     high: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dtype=None,
     *,
+    dtype=None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -87,14 +87,24 @@ multinomial.support_native_out = True
 
 
 def randint(
-    low: int,
-    high: int,
+    low: Union[int, torch.Tensor],
+    high: Union[int, torch.Tensor],
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.randint(low, high, shape, out=out, device=default_device(device))
+    zero_dim = len(shape) == 0
+    if zero_dim:
+        shape = [1]
+    ret = torch.rand(*shape, out=out, dtype=torch.float64, device=device)
+    ret = torch.mul(ret, high - low, out=out)
+    ret = torch.add(ret, low, out=out)
+    ret = ret.to(ivy.default_int_dtype(as_native=True))
+    ret = torch.clamp(ret, low, high - 1)
+    if zero_dim:
+        return ret.reshape(())
+    return ret
 
 
 randint.support_native_out = True
