@@ -3668,30 +3668,20 @@ class ContainerWithElementwise(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.log10 also applies to this method with minimal changes.
 
-        Parameters
-        ----------
-        x
-            input container. Should have a real-valued floating-point data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+        Examples
+        --------
+        Using :code:`ivy.Container` input:
 
-        Returns
-        -------
-        ret
-            a container containing the evaluated base ``10`` logarithm for each
-            element in ``x``. The returned array must have a real-valued
-            floating-point data type determined by :ref:`type-promotion`.
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
+                              b=ivy.array([-0., -3.9, float('+inf')]),\
+                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> y = ivy.Container.static_log10(x)
+        >>> print(y)
+        {
+            a: ivy.array([-inf, nan]),
+            b: ivy.array([-inf, nan, inf]),
+            c: ivy.array([0.898, 0.0414, 0.])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -3718,31 +3708,20 @@ class ContainerWithElementwise(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.log10 also applies to this method with minimal changes.
 
-        Parameters
-        ----------
-        self
-            input container. Should have a real-valued floating-point data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
 
-        Returns
-        -------
-        ret
-            a container containing the evaluated base ``10`` logarithm for
-            each element in ``self``. The returned array must have a real-valued
-            floating-point data type determined by :ref:`type-promotion`.
-
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
+                              b=ivy.array([-0., -3.9, float('+inf')]), \
+                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> y = x.log10(x)
+        >>> print(y)
+        {
+            a: ivy.array([-inf, nan]),
+            b: ivy.array([-inf, nan, inf]),
+            c: ivy.array([0.898, 0.0414, 0.])
+        }
         """
         return self.static_log10(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
