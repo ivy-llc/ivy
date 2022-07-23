@@ -732,3 +732,75 @@ def lamb_update(
     r = ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
     lr = r * lr
     return ivy.optimizer_update(w, eff_grads, lr, inplace, stop_gradients), mw, vw
+
+
+@to_native_arrays_and_back
+def lars_update(
+    w: Union[ivy.Array, ivy.NativeArray],
+    dcdw: Union[ivy.Array, ivy.NativeArray],
+    lr: Union[float, ivy.Array, ivy.NativeArray],
+    mw_tm1: Union[ivy.Array, ivy.NativeArray],
+    vw_tm1: Union[ivy.Array, ivy.NativeArray],
+    step: int,
+    beta1=0.9,
+    beta2=0.999,
+    epsilon=1e-7,
+    max_trust_ratio=10,
+    decay_lambda=0,
+    inplace=None,
+    stop_gradients=True,
+) -> ivy.Array:
+    """
+    Update weights ws of some function, given the derivatives of some cost c with
+    respect to ws, [dc/dw for w in ws], by applying LARS method.
+
+    Parameters
+    ----------
+    w
+        Weights of the function to be updated.
+    dcdw
+        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
+    lr
+        Learning rate(s), the rate(s) at which the weights should be updated relative to
+        the gradient.
+    mw_tm1
+        running average of the gradients, from the previous time-step.
+    vw_tm1
+        running average of second moments of the gradients, from the previous time-step.
+    step
+        training step
+    beta1
+        gradient forgetting factor (Default value = 0.9)
+    beta2
+        second moment of gradient forgetting factor (Default value = 0.999)
+    epsilon
+        divisor during adam update, preventing division by zero (Default value = 1e-7)
+    max_trust_ratio
+        The maximum value for the trust ratio. Default is 10.
+    decay_lambda
+        The factor used for weight decay. Default is zero.
+    inplace
+        Whether to perform the operation inplace, for backends which support inplace
+        variable updates, and handle gradients behind the scenes such as PyTorch
+         . If the update step should form part of a computation graph (i.e. higher order
+          optimization), then this should be set to False. Default is True, provided the
+          backend framework supports it.
+     stop_gradients
+          Whether to stop the gradients of the variables after each gradient step.
+          Default is True.
+    
+     Returns
+     -------
+     ret
+          The new function weights ws_new, following the LARS updates.
+    
+     """
+    r1 = ivy.vector_norm(w)
+    eff_grads, mw, vw = ivy.adam_step(dcdw, mw_tm1, vw_tm1, step, beta1, beta2, epsilon)
+    if decay_lambda > 0:
+          r2 = ivy.vector_norm(eff_grads + decay_lambda * w)
+    else:
+          r2 = ivy.vector_norm(eff_grads)
+    r = ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
+    lr = r * lr
+    return ivy.optimizer_update(w, eff_grads, lr, inplace, stop_gradients), mw, vw

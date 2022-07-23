@@ -93,3 +93,31 @@ class ArrayWithGradients(abc.ABC):
             ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))
         """
         return ivy.adam_step(self, mw, vw, step, beta1, beta2, epsilon)
+
+    def lars_update( 
+    self: ivy.Array,
+    w: Union[ivy.Array, ivy.NativeArray], 
+    dcdw: Union[ivy.Array, ivy.NativeArray],
+    lr: Union[int, float],
+    lamda: Union[int, float],
+    ) -> ivy.Array:
+     """
+        ivy.Array instance method variant of ivy.lars_update. This method simply wraps the
+        function, and so the docstring for ivy.lars_update also applies to this method
+        with minimal changes.
+
+       
+        Examples
+        --------
+        With :code:`ivy.Array` inputs:
+
+        >>> w = ivy.array([[0.], [0.], [0.]])
+        >>> dcdw = ivy.array([[[1.1], [3.2], [-6.3]]])
+        >>> lr = ivy.array(3)
+        >>> lambda = ivy.array(0.1)
+        >>> lars_update_delta = w.lars_update(dcdw, lr, lamda)
+        >>> print(lars_update_delta)
+            (ivy.array([[[ 0.639], [ 0.639], [-0.639]]]),
+            ivy.array([[[ 0.11], [ 0.32], [-0.63]]]))
+        """
+     return ivy.lars_update(self, w, dcdw, lr, lamda)

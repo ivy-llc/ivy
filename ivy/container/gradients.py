@@ -390,57 +390,7 @@ class ContainerWithGradients(ContainerBase):
             map_sequences,
         )
 
-    @staticmethod
-    def static_lars_update(
-        w,
-        dcdw,
-        lr,
-        decay_lambda=0,
-        inplace=None,
-        stop_gradients=True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
-            "lars_update",
-            w,
-            dcdw,
-            lr,
-            decay_lambda=decay_lambda,
-            inplace=inplace,
-            stop_gradients=stop_gradients,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    def lars_update(
-        self,
-        dcdw,
-        lr,
-        decay_lambda=0,
-        inplace=None,
-        stop_gradients=True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ):
-        return self.static_lars_update(
-            self,
-            dcdw,
-            lr,
-            decay_lambda,
-            inplace,
-            stop_gradients,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
+   
 
     @staticmethod
     def static_adam_update(
@@ -593,3 +543,81 @@ class ContainerWithGradients(ContainerBase):
             prune_unapplied,
             map_sequences,
         )
+    @staticmethod
+    def static_lars_update(
+        self,
+        dcdw,
+        lr,
+        decay_lambda=0,
+        inplace=None,
+        stop_gradients=True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    )-> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "lars_update",
+            self,
+            dcdw,
+            lr,
+            decay_lambda=decay_lambda,
+            inplace=inplace,
+            stop_gradients=stop_gradients,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+    
+    def lars_update(
+        self,
+        dcdw,
+        lr,
+        decay_lambda=0,
+        inplace=None,
+        stop_gradients=True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    )-> ivy.Container:
+     """
+        ivy.Container instance method variant of ivy.lars_update. This method simply wraps
+        the function, and so the docstring for ivy.adam_step also applies to this method
+        with minimal changes.
+        Implements the LARS algorithm with LARSUpdate Operator.
+        LARS is an optimization algorithm employing a large batch optimization technique. Refer to paper LARGE BATCH TRAINING OF CONVOLUTIONAL NETWORKS.
+        https://arxiv.org/abs/1708.03888
+
+
+        Args:
+            dcdw: Gradient of the loss with respect to the weights.
+            lr: Learning rate.
+            decay_lambda: Decay rate for the LARS update.
+            inplace: If True, the update will be done in-place.
+            stop_gradients: If True, the gradient will be stopped.
+            key_chains: If not None, the key chains will be used to identify the variables to update.
+            to_apply: If True, the update will be applied.
+            prune_unapplied: If True, the unapplied variables will be pruned.
+            map_sequences: If True, the sequences will be mapped.
+        Returns:
+            A Container with the updated variables.
+        """
+     return self.static_lars_update(
+            self,
+            dcdw,
+            lr,
+            decay_lambda=decay_lambda,
+            inplace=inplace,
+            stop_gradients=stop_gradients,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+     
+        
+
+      
