@@ -601,6 +601,10 @@ def eigvalsh(
     ret
         an array containing the computed eigenvalues. The returned array must have shape
         (..., M) and have the same data type as x.
+    
+    This function conforms to the `Array API Standard
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
 
     """
     return current_backend(x).eigvalsh(x, out=out)
