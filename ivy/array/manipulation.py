@@ -227,8 +227,8 @@ class ArrayWithManipulation(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([0., 1., 2.])
-        >>> x.repeat(2)
-        >>> print(x)
+        >>> y= x.repeat(2)
+        >>> print(y)
         ivy.array([0., 0., 1., 1., 2., 2.])
         """
         return ivy.repeat(self._data, repeats=repeats, axis=axis, out=out)
