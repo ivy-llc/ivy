@@ -2595,17 +2595,55 @@ def shape(
     ret
         Shape of the array ``x``.
 
-    Examples
+    Functional Examples
     --------
-    >>> ivy.set_backend('torch')
-    >>> x = ivy.array([[-1, 0, 1],[1, 0, -1]])
-    >>> y = ivy.shape(x)
-    >>> z = ivy.shape(x, as_array = True)
-    >>> print(y)
-    torch.Size([2, 3])
 
-    >>> print(z)
-    ivy.array([2, 3])
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3, 4, 5])
+    >>> print(x.shape)
+    (5, )
+
+    >>> x = ivy.array([[1, 2, 3, 4], [5, 6, 7, 8]])
+    >>> print(x.shape)
+    (2, 4)
+
+    >>> x = ivy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], as_array=True)
+    >>> print(x.shape)
+    ivy.array([3, 4])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 2, 3, 4, 5])
+    >>> print(x.shape)
+    (5, )
+
+    >>> x = ivy.native_array([[1, 2, 3, 4], [5, 6, 7, 8]])
+    >>> print(x.shape)
+    (2, 4)
+
+    >>> x = ivy.native_array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], as_array=True)
+    >>> print(x.shape)
+    ivy.array([3, 4])
+
+
+    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3, 4]))
+    >>> print(x.shape)
+    {
+        a: (4, )
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3, 4]) \
+                          b=ivy.array([[1, 2, 3, 4], [5, 6, 7, 8]]), \
+                          as_array=True
+                         )
+    >>> print(x)
+    {
+        a: ivy.array([4]),
+        b: ivy.array([2, 4])
+    }
 
     """
     return current_backend(x).shape(x, as_array)
