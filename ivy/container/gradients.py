@@ -390,8 +390,6 @@ class ContainerWithGradients(ContainerBase):
             map_sequences,
         )
 
-   
-
     @staticmethod
     def static_adam_update(
         w,
@@ -545,6 +543,8 @@ class ContainerWithGradients(ContainerBase):
         )
     @staticmethod
     def static_lars_update(
+
+        w,
         self,
         dcdw,
         lr,
@@ -555,7 +555,8 @@ class ContainerWithGradients(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    )-> ivy.Container:
+    )-> ivy.Container: 
+
         return ContainerBase.multi_map_in_static_method(
             "lars_update",
             self,
@@ -617,7 +618,5 @@ class ContainerWithGradients(ContainerBase):
             map_sequences=map_sequences,
         )
 
-     
-        
-
+ 
       
