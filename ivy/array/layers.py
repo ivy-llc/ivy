@@ -59,3 +59,64 @@ class ArrayWithLayers(abc.ABC):
         return ivy.depthwise_conv2d(
             self._data, filters, strides, padding, data_format, dilations, out=out
         )
+
+    def conv1d(
+        self: ivy.Array,
+            filters: Union[ivy.Array, ivy.NativeArray],
+            strides: int,
+            padding: str,
+            data_format: str = "NWC",
+            dilations: int = 1,
+            *,
+            out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.conv1d. This method simply
+        wraps the function, and so the docstring for ivy.conv1d also applies
+        to this method with minimal changes.
+
+       Parameters
+    ----------
+    x
+        Input image *[batch_size,w,d_in]*.
+    filters
+        Convolution filters *[fw,d_in,d_out]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+    dilations
+        The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the convolution operation.
+
+        Examples
+        --------
+        >>> x = ivy.array(ivy.random_normal(0, 1, [2, 12, 4]))  # NWC
+        >>> filters = ivy.array(ivy.random_normal(0, 1, [6, 4, 2]))  # WIO (I == C)
+        >>> result = x.conv1d(filters, strides=(2,), padding='VALID')
+        >>> print(result)
+
+ivy.array([[[ 7.61 ,  1.83 ],
+        [-3.08 , -3.   ],
+        [ 3.52 , -8.2  ],
+        [ 3.72 ,  1.88 ]],
+
+       [[-0.976, -0.267],
+        [-2.54 ,  2.99 ],
+        [-7.69 ,  8.59 ],
+        [ 6.06 ,  1.28 ]]])
+
+        """
+        return ivy.conv1d(
+            self._data, filters, strides, padding, data_format, dilations, out=out
+        )
