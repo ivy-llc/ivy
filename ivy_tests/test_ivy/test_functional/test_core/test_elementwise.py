@@ -372,7 +372,9 @@ def test_bitwise_and(
 
 # bitwise_left_shift
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.all_int_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy.all_int_dtypes, num_arrays=2, shared_dtype=True
+    ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
@@ -391,12 +393,8 @@ def test_bitwise_left_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(x)
-    x1 = np.asarray(x, dtype=input_dtype)
-    n_bits = ivy.dtype_bits(input_dtype)
-    x2 = np.random.randint(n_bits, size=x1.shape, dtype=input_dtype)
     helpers.test_function(
-        input_dtypes=[input_dtype, input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -405,8 +403,8 @@ def test_bitwise_left_shift(
         instance_method=instance_method,
         fw=fw,
         fn_name="bitwise_left_shift",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -487,7 +485,9 @@ def test_bitwise_or(
 
 # bitwise_right_shift
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.all_int_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy.all_int_dtypes, num_arrays=2, shared_dtype=True
+    ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
@@ -506,12 +506,8 @@ def test_bitwise_right_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(x)
-    x1 = np.asarray(x, dtype=input_dtype)
-    n_bits = ivy.dtype_bits(input_dtype)
-    x2 = np.random.randint(n_bits, size=x1.shape, dtype=input_dtype)
     helpers.test_function(
-        input_dtypes=[input_dtype, input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -520,8 +516,8 @@ def test_bitwise_right_shift(
         instance_method=instance_method,
         fw=fw,
         fn_name="bitwise_right_shift",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -693,12 +689,9 @@ def test_divide(
     input_dtype, x = dtype_and_x
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    # ToDo: remove the checks below, and instead handle this during the
-    #  hypothesis data generation
-    if np.any(x2 == 0):
-        return  # don't divide by 0
-    elif np.any(x1 > 9223372036854775807):
-        return  # np.divide converts to signed int so values can't be too large
+    # prevent division by 0
+    assume(np.all(x2 != 0))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -857,11 +850,12 @@ def test_floor(
     )
 
 
-# floor_divide - don't allow inf as array API spec allows varying behaviour
-# for special cases
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, allow_inf=False
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        num_arrays=2,
+        allow_inf=False,
+        safety_factor=0.5,
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -884,18 +878,7 @@ def test_floor_divide(
     x1 = (np.asarray(x[0], dtype=input_dtype[0]),)
     x2 = (np.asarray(x[1], dtype=input_dtype[1]),)
     assume(np.all(x2[0] != 0))
-    # we assume values aren't too close to the boundaries as tf and torch have issues:
-    # https://github.com/pytorch/pytorch/issues/77742#issuecomment-1146026178
-    # https://github.com/tensorflow/tensorflow/issues/56130
-    if fw in ["tensorflow", "torch"]:
-        if ivy.is_float_dtype(input_dtype[0]):
-            low1 = 2 * ivy.finfo(input_dtype[0]).smallest_normal
-            high1 = 0.5 * ivy.finfo(input_dtype[0]).max
-            assume(np.all(x1[0] > low1) and np.all(x1[0] < high1))
-        if ivy.is_float_dtype(input_dtype[1]):
-            low2 = 2 * ivy.finfo(input_dtype[0]).smallest_normal
-            high2 = 0.5 * ivy.finfo(input_dtype[1]).max
-            assume(np.all(x2[0] > low2) and np.all(x2[0] < high2))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1661,14 +1644,14 @@ def test_pow(
     input_dtype, x = dtype_and_x
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    if fw in ["jax", "tensorflow"]:
-        return
-    if (
-        np.any(x2 < 0)
-        and ivy.is_int_dtype(input_dtype[1])
-        and ivy.is_int_dtype(input_dtype[0])
-    ):
-        return  # ints to negative int powers not allowed
+    assume(
+        not (
+            np.any(x2 < 0)
+            and ivy.is_int_dtype(input_dtype[1])
+            and ivy.is_int_dtype(input_dtype[0])
+        )
+    )
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1710,6 +1693,7 @@ def test_remainder(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
     assume(not np.any(x2 == 0))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=[as_variable, False],
@@ -2121,7 +2105,7 @@ def test_erf(
 
 # minimum
 @given(
-    xy=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
@@ -2132,7 +2116,7 @@ def test_erf(
     instance_method=st.booleans(),
 )
 def test_minimum(
-    xy,
+    dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -2141,17 +2125,17 @@ def test_minimum(
     instance_method,
     fw,
 ):
-    # smoke test
-    input_dtype = xy[0]
-    x = xy[1][0]
-    y = xy[1][1]
-    if (
-        (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
-        and as_variable is True
-        and fw == "mxnet"
-    ):
-        # mxnet does not support 0-dimensional variables
-        return
+    input_dtype, x = dtype_and_x
+    assume(
+        not (
+            (
+                (isinstance(x[0], Number) or isinstance(x[1], Number))
+                and as_variable is True
+                and fw == "mxnet"
+            )
+        )
+    )
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2162,14 +2146,14 @@ def test_minimum(
         instance_method=instance_method,
         fw=fw,
         fn_name="minimum",
-        x1=np.array(x, dtype=input_dtype[0]),
-        x2=np.array(y, dtype=input_dtype[1]),
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
 # maximum
 @given(
-    xy=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
@@ -2180,7 +2164,7 @@ def test_minimum(
     instance_method=st.booleans(),
 )
 def test_maximum(
-    xy,
+    dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -2189,17 +2173,15 @@ def test_maximum(
     instance_method,
     fw,
 ):
-    # smoke test
-    input_dtype = xy[0]
-    x = xy[1][0]
-    y = xy[1][1]
-    if (
-        (isinstance(xy[1][0], Number) or isinstance(xy[1], Number))
-        and as_variable is True
-        and fw == "mxnet"
-    ):
-        # mxnet does not support 0-dimensional variables
-        return
+    input_dtype, x = dtype_and_x
+    assume(
+        not (
+            (isinstance(x[0], Number) or isinstance(x[1], Number))
+            and as_variable is True
+            and fw == "mxnet"
+        )
+    )
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2210,6 +2192,6 @@ def test_maximum(
         instance_method=instance_method,
         fw=fw,
         fn_name="maximum",
-        x1=np.array(x, dtype=input_dtype[0]),
-        x2=np.array(y, dtype=input_dtype[1]),
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
