@@ -43,7 +43,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(x_in), []))
     grad_func = jax.grad(grad_fn)
     if isinstance(xs, ivy.Container):
-        grads = {k: grad_func(x) for k, x in xs.items()}
+        grads = grad_func(xs)
         grads = ivy.to_ivy(grads, nested=True)
         grads = Container(grads)
     else:
