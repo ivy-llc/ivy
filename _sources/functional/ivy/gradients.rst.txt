@@ -13,7 +13,6 @@ Gradients
    :maxdepth: -1
    :caption: Gradients
 
-   gradients/to_container_and_back.rst
    gradients/with_grads.rst
    gradients/set_with_grads.rst
    gradients/unset_with_grads.rst
