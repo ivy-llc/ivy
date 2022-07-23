@@ -324,8 +324,9 @@ def logspace(
     base=10.0,
     axis=None,
     *,
+    dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ):
-    power_seq = linspace(start, stop, num, axis, dtype=None, device=device)
+    power_seq = ivy.linspace(start, stop, num, axis, dtype=dtype, device=device)
     return base**power_seq
