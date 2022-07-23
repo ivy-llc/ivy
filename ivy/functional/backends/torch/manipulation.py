@@ -4,6 +4,7 @@ import torch
 import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence
+from numpy.core.numeric import normalize_axis_tuple
 
 
 # Array API Standard #
@@ -27,9 +28,19 @@ def concat(
 
 def expand_dims(
     x: torch.Tensor,
-    axis: int = 0,
+    axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> torch.Tensor:
-    ret = torch.unsqueeze(x, axis)
+    if type(axis) not in (tuple, list):
+        axis = (axis,)
+
+    out_dims = len(axis) + len(x.shape)
+    norm_axis = normalize_axis_tuple(axis, out_dims)
+    shape_iter = iter(x.shape)
+    out_shape = [1 if current_ax in norm_axis else next(shape_iter) for current_ax in
+                 range(out_dims)]
+
+    # torch.reshape since it can operate on contiguous and non_contiguous tensors
+    ret = x.reshape(out_shape)
     return ret
 
 

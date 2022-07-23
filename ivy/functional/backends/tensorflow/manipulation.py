@@ -4,6 +4,7 @@ import math
 import tensorflow as tf
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
+from numpy.core.numeric import normalize_axis_tuple
 
 
 # Array API Standard #
@@ -33,10 +34,19 @@ def concat(xs: List[tf.Tensor], axis: int = 0) -> Union[tf.Tensor, tf.Variable]:
 
 def expand_dims(
     x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
+    axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
-        ret = tf.expand_dims(x, axis)
+        if type(axis) not in (tuple, list):
+            axis = (axis,)
+
+        out_dims = len(axis) + len(x.shape)
+        norm_axis = normalize_axis_tuple(axis, out_dims)
+        shape_iter = iter(x.shape)
+        out_shape = [1 if current_ax in norm_axis else next(shape_iter) for current_ax in
+                     range(out_dims)]
+
+        ret = tf.reshape(x, shape=out_shape)
         return ret
     except tf.errors.InvalidArgumentError as error:
         raise IndexError(error)
