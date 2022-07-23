@@ -100,13 +100,13 @@ def random_uniform(
     )
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
 @handle_nestable
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
+    std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
