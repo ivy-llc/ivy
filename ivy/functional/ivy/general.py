@@ -2601,45 +2601,44 @@ def shape(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5])
-    >>> print(x.shape)
+    >>> print(ivy.shape(x))
     (5, )
 
     >>> x = ivy.array([[1, 2, 3, 4], [5, 6, 7, 8]])
-    >>> print(x.shape)
+    >>> print(ivy.shape(x))
     (2, 4)
 
-    >>> x = ivy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], as_array=True)
-    >>> print(x.shape)
+    >>> x = ivy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
+    >>> print(ivy.shape(x, as_array=True))
     ivy.array([3, 4])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1, 2, 3, 4, 5])
-    >>> print(x.shape)
+    >>> print(ivy.shape(x))
     (5, )
 
     >>> x = ivy.native_array([[1, 2, 3, 4], [5, 6, 7, 8]])
-    >>> print(x.shape)
+    >>> print(ivy.shape(x))
     (2, 4)
 
-    >>> x = ivy.native_array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], as_array=True)
-    >>> print(x.shape)
+    >>> x = ivy.native_array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
+    >>> print(ivy.shape(x, as_array=True))
     ivy.array([3, 4])
 
 
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3, 4]))
-    >>> print(x.shape)
+    >>> print(ivy.shape(x))
     {
         a: (4, )
     }
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3, 4]) \
-                          b=ivy.array([[1, 2, 3, 4], [5, 6, 7, 8]]), \
-                          as_array=True
+                          b=ivy.array([[1, 2, 3, 4], [5, 6, 7, 8]]) \
                          )
-    >>> print(x)
+    >>> print(ivy.shape(x, as_array=True))
     {
         a: ivy.array([4]),
         b: ivy.array([2, 4])
