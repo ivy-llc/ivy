@@ -33,7 +33,7 @@ global CONFIG_DICT
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
     "as-variable": None,
     "native-array": None,
-    "out": None,
+    "with-out": None,
     "nestable": None,
     "instance-method": None,
 }
@@ -128,7 +128,7 @@ def get_command_line_flags(request) -> Dict[str, bool]:
     # the --skip flag, and the second is the --with flag
     CONFIG_DICT["as-variable"] = (MAP_BOOL_FLAGS[a_v_f_s], MAP_BOOL_FLAGS[a_v_f_w])
     CONFIG_DICT["native-array"] = (MAP_BOOL_FLAGS[n_f_s], MAP_BOOL_FLAGS[n_f_w])
-    CONFIG_DICT["out"] = (MAP_BOOL_FLAGS[o_f_s], MAP_BOOL_FLAGS[o_f_w])
+    CONFIG_DICT["with-out"] = (MAP_BOOL_FLAGS[o_f_s], MAP_BOOL_FLAGS[o_f_w])
     CONFIG_DICT["nestable"] = (MAP_BOOL_FLAGS[n_s], MAP_BOOL_FLAGS[n_w])
     CONFIG_DICT["instance-method"] = (MAP_BOOL_FLAGS[i_m_f_s], MAP_BOOL_FLAGS[i_m_f_w])
 
@@ -158,14 +158,14 @@ def pytest_addoption(parser):
     parser.addoption("--compile_graph", action="store", default="true")
     parser.addoption("--with_implicit", action="store", default="false")
 
-    parser.addoption("--skip-variable-testing", action="store", default="false")
+    parser.addoption("--skip-variable-testing", action="store", default="true")
     parser.addoption("--skip-native-array-testing", action="store", default="false")
-    parser.addoption("--skip-out-testing", action="store", default="false")
+    parser.addoption("--skip-out-testing", action="store", default="true")
     parser.addoption("--skip-nestable-testing", action="store", default="false")
-    parser.addoption("--skip-instance-method-testing", action="store", default="false")
+    parser.addoption("--skip-instance-method-testing", action="store", default="true")
 
     parser.addoption("--with-variable-testing", action="store", default="false")
-    parser.addoption("--with-native-array-testing", action="store", default="false")
+    parser.addoption("--with-native-array-testing", action="store", default="true")
     parser.addoption("--with-out-testing", action="store", default="false")
-    parser.addoption("--with-nestable-testing", action="store", default="false")
+    parser.addoption("--with-nestable-testing", action="store", default="true")
     parser.addoption("--with-instance-method-testing", action="store", default="false")
