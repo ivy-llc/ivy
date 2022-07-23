@@ -59,11 +59,10 @@ def test_random_uniform(data, shape, dtype, as_variable, device, call):
 # random_normal
 @given(
     data=st.data(),
-    shape=helpers.get_shape(),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
 )
-def test_random_normal(data, shape, dtype, as_variable, device, call):
+def test_random_normal(data, dtype, as_variable, device, call):
     mean, std = data.draw(helpers.get_mean_std(dtype=dtype))
     ivy.seed(0)
     # smoke test
@@ -81,16 +80,9 @@ def test_random_normal(data, shape, dtype, as_variable, device, call):
     kwargs = {
         k: v for k, v in zip(["mean", "std"], [mean_tnsr, std_tnsr]) if v is not None
     }
-    if shape is not None:
-        kwargs["shape"] = shape
     ret = ivy.random_normal(**kwargs, device=device)
     # type test
     assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if shape is None:
-        assert ret.shape == ()
-    else:
-        assert ret.shape == shape
 
 
 # multinomial
