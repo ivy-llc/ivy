@@ -131,10 +131,10 @@ def test_multinomial(everything, device, call):
 @given(
     data=st.data(),
     shape=helpers.get_shape(allow_none=False),
-    dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
 )
-def test_randint(data, shape, dtype, as_variable, device, call):
+def test_randint(data, shape, as_variable, device, call):
+    dtype = ivy.default_int_dtype()
     # smoke test
     low, high = data.draw(helpers.get_bounds(dtype=dtype))
     if (
