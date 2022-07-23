@@ -2419,6 +2419,127 @@ def isinf(
         positive or negative infinity and False otherwise. The returned array must have
         a data type of bool.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isinf.html>`_ # noqa
+    in the standard.
+    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    ivy.array([False, False, False])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    ivy.array([[False, False, False]])
+
+    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+    >>> z = ivy.isinf(x)
+    >>> print(x)
+    ivy.array([[[False],
+            [True],
+            [False]]])
+
+    >>> x = ivy.array([[-math.inf, np.inf, 0.0]])
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    ivy.array([[ True,  True, False]])
+
+    >>> x = ivy.zeros((3, 3))
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    ivy.array([[False, False, False],
+       [False, False, False],
+       [False, False, False]])
+
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    ivy.array([[False],
+        [False],
+        [True]])
+
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, -np.inf, 1.23]), \
+                          b=ivy.array([math.inf, 3.3, -4.2]))
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+
+
+    Instance Method Examples
+    ------------------------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1, 2, 3])
+    >>> x.isinf()
+    ivy.array([False, False, False])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> x.isinf()
+    ivy.array([[False, False, False]])
+
+    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+    >>> x.isinf()
+    ivy.array([[[False],
+            [True],
+            [False]]])
+
+    >>> x = ivy.array([[-math.inf, np.inf, 0.0]])
+    >>> x.isinf()
+    ivy.array([[ True, True, False]])
+
+    >>> x = ivy.zeros((3, 3))
+    >>> x.isinf()
+    ivy.array([[False, False, False],
+        [False, False, False],
+        [False, False, False]])
+
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
+    >>> x.isinf()
+    ivy.array([[False],
+        [False],
+        [True]])
+
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([-1, -np.inf, 1.23]), \
+        b=ivy.array([math.inf, 3.3, -4.2]))
+    >>> x.isinf()
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+
+
+    Container Static Method Examples
+    ------------------------
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, -np.inf, 1.23]), \
+                          b=ivy.array([math.inf, 3.3, -4.2]))
+    >>> z = ivy.Container.static_isinf(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+
     """
     return ivy.current_backend(x).isinf(x, out=out)
 
