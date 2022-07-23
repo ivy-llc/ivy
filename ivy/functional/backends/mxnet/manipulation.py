@@ -85,7 +85,11 @@ def squeeze(
     return ret
 
 
-reshape = lambda x, new_shape: x.reshape(new_shape)
+def reshape(    
+    x: Union[ivy.Array, ivy.NativeArray],
+    shape: Union[int, Tuple[int,int], List[int]],
+):
+    return mx.nd.reshape(x, shape)
 
 
 @_handle_flat_arrays_in_out
