@@ -307,9 +307,10 @@ def handle_nestable(fn: Callable) -> Callable:
         # a container, get the container's version of the function and call it using
         # the passed arguments.
         cont_fn = getattr(ivy.Container, "static_" + fn_name)
-        if ivy.nested_any(
-            args, ivy.is_ivy_container, check_nests=True
-        ) or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True):
+        if ivy.get_nestable_mode() and (
+            ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
+            or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
+        ):
             return cont_fn(*args, **kwargs)
 
         # if the passed arguments does not contain a container, the function using

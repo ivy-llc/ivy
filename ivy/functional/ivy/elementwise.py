@@ -3206,6 +3206,42 @@ def remainder(
         the same sign as the respective element ``x2_i``. The returned array must have a
         data type determined by :ref:`Type Promotion Rules`.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([2., 5., 15.])
+    >>> x2 = ivy.array([3., 2., 4.])
+    >>> y = ivy.remainder(x1, x2)
+    >>> print(y)
+    ivy.array([2., 1., 3.])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([2., 4., 7.])
+    >>> x2 = ivy.native_array([3., 2., 5.])
+    >>> y = ivy.remainder(x1, x2)
+    >>> print(y)
+    ivy.array([2., 0., 2.])
+
+    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.array([23., 1., 6.])
+    >>> x2 = ivy.native_array([11., 2., 4.])
+    >>> y = ivy.remainder(x1, x2)
+    >>> print(y)
+    ivy.array([1., 1., 2.])
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
+    >>> x2 = ivy.Container(a=ivy.array([1., 3., 4.]), b=ivy.array([1., 3., 3.]))
+    >>> y = ivy.remainder(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0., 1.]),
+        b: ivy.array([0., 2., 1.])
+    }
     """
     return ivy.current_backend(x1, x2).remainder(x1, x2, out=out)
 
