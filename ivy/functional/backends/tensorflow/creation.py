@@ -183,6 +183,9 @@ def eye(
             return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+eye.unsupported_dtypes = ("uint16",)
+
+
 # noinspection PyShadowingNames
 def from_dlpack(x, *, out: Union[tf.Tensor, tf.Variable] = None):
     return tf.experimental.dlpack.from_dlpack(x)
