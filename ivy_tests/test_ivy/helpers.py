@@ -1726,15 +1726,6 @@ def get_bounds(draw, *, dtype):
 
 
 @st.composite
-def get_probs(draw, *, dtype):
-    shape = draw(
-        get_shape(min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10)
-    )
-    probs = draw(array_values(dtype=dtype, shape=shape, min_value=0, exclude_min=True))
-    return probs, shape[1]
-
-
-@st.composite
 def get_axis(draw, *, shape, allow_none=False):
     axes = len(shape)
     if allow_none:
