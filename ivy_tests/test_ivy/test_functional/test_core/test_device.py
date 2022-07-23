@@ -17,6 +17,7 @@ from hypothesis import strategies as st, given
 import ivy
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # Helpers #
@@ -69,9 +70,10 @@ def _get_possible_devices():
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
+    data=st.data(),
 )
-def test_dev(array_shape, dtype, as_variable, fw):
+@handle_cmd_line_args
+def test_dev(*, array_shape, dtype, as_variable, fw):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -105,9 +107,10 @@ def test_dev(array_shape, dtype, as_variable, fw):
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
+    data=st.data(),
 )
-def test_as_ivy_dev(array_shape, dtype, as_variable, fw):
+@handle_cmd_line_args
+def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -136,9 +139,10 @@ def test_as_ivy_dev(array_shape, dtype, as_variable, fw):
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
+    data=st.data(),
 )
-def test_as_native_dev(array_shape, dtype, as_variable, fw, call):
+@handle_cmd_line_args
+def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -214,11 +218,13 @@ def test_default_device(device):
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     stream=st.integers(0, 50),
+    data=st.data(),
 )
-def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, stream):
+@handle_cmd_line_args
+def test_to_device(
+    *, array_shape, dtype, as_variable, with_out, fw, device, call, stream
+):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -284,12 +290,13 @@ def _axis(draw):
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
     chunk_size=st.integers(1, 3),
     axis=_axis(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_split_func_call(
-    array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
+    *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
     if fw == "torch" and "int" in dtype:
         return
@@ -330,12 +337,13 @@ def test_split_func_call(
         size_bounds=[2, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
     chunk_size=st.integers(1, 3),
     axis=st.integers(0, 1),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_split_func_call_with_cont_input(
-    array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
+    *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
     # Skipping some dtype for certain frameworks
     if (

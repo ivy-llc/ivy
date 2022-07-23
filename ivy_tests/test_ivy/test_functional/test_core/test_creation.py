@@ -438,7 +438,6 @@ def _fill_value(draw):
     ),
     fill_value=_fill_value(),
     dtypes=_dtypes(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="full"),
     data=st.data(),
 )
