@@ -475,11 +475,12 @@ def logspace(
     base=10.0,
     axis=None,
     *,
+    dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ):
-    power_seq = linspace(
-        start, stop, num, axis, dtype=None, device=default_device(device)
+    power_seq = ivy.linspace(
+        start, stop, num, axis, dtype=dtype, device=ivy.default_device(device)
     )
     return base**power_seq
 
