@@ -3321,6 +3321,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                              b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                              b=ivy.array([5, 6, 7]))
+        >>> z = ivy.Container.static_less(y,x)
+        >>> print(z)
+        {
+            a: ivy.array([True, True, True]),
+            b: ivy.array([False, False, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "less",
@@ -3375,6 +3388,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+                Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                              b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                              b=ivy.array([5, 6, 7]))
+        >>> z = x.less(y)
+        >>> print(z)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([True, True, True])
+        }
+
         """
         return self.static_less(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
