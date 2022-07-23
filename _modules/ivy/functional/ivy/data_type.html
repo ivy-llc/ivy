@@ -359,26 +359,26 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an object having the followng attributes:</span>
-<span class="sd">    </span>
+
 <span class="sd">        - **bits**: *int*</span>
-<span class="sd">    </span>
+
 <span class="sd">          number of bits occupied by the floating-point data type.</span>
-<span class="sd">    </span>
+
 <span class="sd">        - **eps**: *float*</span>
-<span class="sd">    </span>
+
 <span class="sd">          difference between 1.0 and the next smallest representable floating-point</span>
 <span class="sd">          number larger than 1.0 according to the IEEE-754 standard.</span>
-<span class="sd">    </span>
+
 <span class="sd">        - **max**: *float*</span>
-<span class="sd">    </span>
+
 <span class="sd">          largest representable number.</span>
-<span class="sd">    </span>
+
 <span class="sd">        - **min**: *float*</span>
-<span class="sd">    </span>
+
 <span class="sd">          smallest representable number.</span>
-<span class="sd">    </span>
+
 <span class="sd">        - **smallest_normal**: *float*</span>
-<span class="sd">    </span>
+
 <span class="sd">          smallest positive floating-point number with full precision.</span>
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
@@ -454,12 +454,99 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        a class with that encapsules the following attributes:</span>
+
 <span class="sd">        - **bits**: *int*</span>
+
 <span class="sd">          number of bits occupied by the type.</span>
+
 <span class="sd">        - **max**: *int*</span>
+
 <span class="sd">          largest representable number.</span>
+
 <span class="sd">        - **min**: *int*</span>
+
 <span class="sd">          smallest representable number.</span>
+<span class="sd">    </span>
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.iinfo.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Dtype` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.iinfo(ivy.int32)</span>
+<span class="sd">    iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.iinfo(ivy.uint64)</span>
+<span class="sd">    iinfo(min=0, max=18446744073709551615, dtype=uint64)</span>
+
+<span class="sd">    With :code:`str` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.iinfo(&#39;int32&#39;)</span>
+<span class="sd">    iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.iinfo(&#39;int64&#39;)</span>
+<span class="sd">    iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)</span>
+
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([13,21,34]) </span>
+<span class="sd">    &gt;&gt;&gt; ivy.iinfo(x)</span>
+<span class="sd">    iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([13,21,34], dtype=ivy.int8)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.iinfo(x)</span>
+<span class="sd">    iinfo(min=-128, max=127, dtype=int8)</span>
+<span class="sd">    </span>
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([7,84,314], dtype=ivy.int16)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.iinfo(x)</span>
+<span class="sd">    iinfo(min=-32768, max=32767, dtype=int16)</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([7,84,314], dtype=ivy.int64)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.iinfo(x)</span>
+<span class="sd">    iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16), \</span>
+<span class="sd">                          y=ivy.array([76,-81,16], dtype=ivy.int32))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.iinfo(c)</span>
+<span class="sd">    {</span>
+<span class="sd">        x: iinfo(min=-32768, max=32767, dtype=int16),</span>
+<span class="sd">        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([0,1800,89], dtype=ivy.uint16), \</span>
+<span class="sd">                          y=ivy.array([76,81,16], dtype=ivy.uint32))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.iinfo(c)</span>
+<span class="sd">    {</span>
+<span class="sd">        x: iinfo(min=0, max=65535, dtype=uint16),</span>
+<span class="sd">        y: iinfo(min=0, max=4294967295, dtype=uint32)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([109,8400,14], dtype=ivy.int32)</span>
+<span class="sd">    &gt;&gt;&gt; x.iinfo()</span>
+<span class="sd">    iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([-119,122,14], dtype=ivy.int8))</span>
+<span class="sd">    &gt;&gt;&gt; x.iinfo()</span>
+<span class="sd">    iinfo(min=-128, max=127, dtype=int8)</span>
+
+<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16), \</span>
+<span class="sd">                          y=ivy.array([76,-81,16], dtype=ivy.int32))</span>
+<span class="sd">    &gt;&gt;&gt; c.iinfo()</span>
+<span class="sd">    {</span>
+<span class="sd">        x: iinfo(min=-32768, max=32767, dtype=int16),</span>
+<span class="sd">        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
@@ -932,7 +1019,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">UintDtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype/dtype_functional.html#ivy.functional.ivy.data_type.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span>
+<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype/dtype_functional.html#ivy.functional.ivy.data_type.dtype">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">as_native</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get the data type for input array x.</span>
