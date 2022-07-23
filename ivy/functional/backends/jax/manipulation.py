@@ -64,8 +64,6 @@ def reshape(
     x: JaxArray,
     shape: Union[ivy.NativeShape, Sequence[int]],
     copy: Optional[bool] = None,
-    *,
-    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.reshape(x, shape)
     return ret
