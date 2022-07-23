@@ -2,7 +2,7 @@
 
 # global
 import torch
-from typing import Optional, List, Union, Sequence
+from typing import Optional, Union, Sequence
 
 # local
 import ivy
@@ -36,20 +36,23 @@ random_uniform.support_native_out = True
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, torch.Tensor] = 0.0,
+    std: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if shape is None:
-        true_shape: List[int] = []
+    if isinstance(mean, float) and isinstance(std, float):
+        ret = torch.normal(mean, std, ivy.default(shape, ()), out=out)
     else:
-        true_shape: List[int] = shape
-    mean = mean.item() if isinstance(mean, torch.Tensor) else mean
-    std = std.item() if isinstance(std, torch.Tensor) else std
-    return torch.normal(mean, std, true_shape, device=default_device(device), out=out)
+        assert shape is None, (
+            "can only provide explicit shape if mean and std are " "both scalar values"
+        )
+        ret = torch.normal(mean, std, out=out)
+    if ret.device == device:
+        return ret
+    return ret.to(device)
 
 
 random_normal.support_native_out = True
