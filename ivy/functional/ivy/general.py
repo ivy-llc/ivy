@@ -1131,6 +1131,75 @@ def clip_vector_norm(
     ret
         An array with the vector norm downscaled to the max norm if needed.
 
+    Functional Examples
+    ------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = ivy.clip_vector_norm(x, 2.0)
+    >>> print(y)
+    ivy.array([0.   , 0.894, 1.79 ])
+
+    >>> x = ivy.array([0.5, -0.7, 2.4])
+    >>> y = ivy.clip_vector_norm(x, 3.0, 1.0)
+    >>> print(y)
+    ivy.array([ 0.417, -0.583,  2.   ])
+
+    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
+                       [[3., 9.], [4., 12.], [5., 15.]]])
+    >>> y = ivy.zeros(((2, 3, 2)))
+    >>> ivy.clip_vector_norm(x, 4.0, 1.0, out=y)
+    >>> print(y)
+    ivy.array([[[0.    , 0.    ],
+                [0.0667, 0.2   ],
+                [0.133 , 0.4   ]],
+               [[0.2   , 0.6   ],
+                [0.267 , 0.8   ],
+                [0.333 , 1.    ]]])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], \
+                       [-4.4, -5.5, -6.6]])
+    >>> ivy.clip_vector_norm(x, 1.0, 3.0, out=x)
+    >>> print(x)
+    ivy.array([[ 0.131,  0.263,  0.394],
+               [-0.526, -0.657, -0.788]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0, 1, 2])
+    >>> y = ivy.clip_vector_norm(x, 2.0)
+    >>> print(y)
+    ivy.array([0.   , 0.894, 1.79 ])
+
+    >>> x = ivy.native_array([0.5, -0.7, 2.4])
+    >>> y = ivy.clip_vector_norm(x, 3.0, 1.0)
+    >>> print(y)
+    ivy.array([ 0.417, -0.583,  2.   ])
+
+    >>> x = ivy.native_array([[[0., 0.], [1., 3.], [2., 6.]], \
+                              [[3., 9.], [4., 12.], [5., 15.]]])
+    >>> y = ivy.zeros(((2, 3, 2)))
+    >>> ivy.clip_vector_norm(x, 4.0, 1.0, out=y)
+    >>> print(y)
+    ivy.array([[[0.    , 0.    ],
+                [0.0667, 0.2   ],
+                [0.133 , 0.4   ]],
+               [[0.2   , 0.6   ],
+                [0.267 , 0.8   ],
+                [0.333 , 1.    ]]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.clip_vector_norm(x, 2.0)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.894, 1.79]),
+        b: ivy.array([0.849, 1.13, 1.41])
+    }
+
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
