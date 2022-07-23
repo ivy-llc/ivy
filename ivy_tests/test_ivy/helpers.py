@@ -1797,6 +1797,7 @@ def bool_val_flags(cl_arg: Union[bool, None]):
 
 
 def handle_cmd_line_args(test_fn):
+    # first four arguments are all fixtures
     def new_fn(data, get_command_line_flags, fw, device, *args, **kwargs):
         # inspecting for keyword arguments in test function
         for param in inspect.signature(test_fn).parameters.values():
