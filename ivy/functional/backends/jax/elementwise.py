@@ -271,9 +271,7 @@ def isnan(
 
 def less(
     x1: Union[float, JaxArray], 
-    x2: Union[float, JaxArray],
-    *,
-    out: Optional[JaxArray] = None
+    x2: Union[float, JaxArray]
 ) -> JaxArray:
     return jnp.less(x1, x2)
 
