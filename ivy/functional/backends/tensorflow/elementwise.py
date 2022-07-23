@@ -256,9 +256,7 @@ def floor_divide(
 
 def greater(
     x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x2: Union[float, tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.greater(x1, x2)
