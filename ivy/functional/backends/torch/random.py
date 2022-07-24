@@ -3,6 +3,7 @@
 # global
 import torch
 from typing import Optional, Union, Sequence
+import numbers
 
 # local
 import ivy
@@ -43,7 +44,7 @@ def random_normal(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(mean, float) and isinstance(std, float):
+    if isinstance(mean, numbers.Number) and isinstance(std, numbers.Number):
         ret = torch.normal(mean, std, ivy.default(shape, ()), out=out)
     else:
         assert shape is None, (
