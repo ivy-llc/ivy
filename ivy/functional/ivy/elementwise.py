@@ -643,6 +643,93 @@ def atan2(
         an array containing the inverse tangent of the quotient ``x1/x2``. The returned
         array must have a floating-point data type.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan2.html>`_ # noqa
+    in the standard. 
+    
+    The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1.0, -1.0, -2.0])
+    >>> y = ivy.array([2.0, 0.0, 3.0])
+    >>> z = ivy.atan2(x, y)
+    >>> print(z)
+    ivy.array([ 0.464, -1.57 , -0.588])
+
+    >>> x = ivy.array([1.0, 2.0])
+    >>> y = ivy.array([-2.0, 3.0])
+    >>> z = ivy.zeros(2)
+    >>> x.atan2(y, out=z)
+    >>> print(z)
+    ivy.array([2.68 , 0.588])
+    
+    >>> nan = float("nan")
+    >>> x = ivy.array([nan, 1.0, 1.0, -1.0, -1.0])
+    >>> y = ivy.array([1.0, +0, -0, +0, -0])
+    >>> x.atan2(y)
+    ivy.array([  nan,  1.57,  1.57, -1.57, -1.57])
+
+    >>> x = ivy.array([+0, +0, +0, +0, -0, -0, -0, -0])
+    >>> y = ivy.array([1.0, +0, -0, -1.0, 1.0, +0, -0, -1.0])
+    >>> x.atan2(y)
+    ivy.array([0.  , 0.  , 0.  , 3.14, 0.  , 0.  , 0.  , 3.14])
+    >>> y.atan2(x)
+    ivy.array([ 1.57,  0.  ,  0.  , -1.57,  1.57,  0.  ,  0.  , -1.57])
+
+    >>> inf = float("infinity")
+    >>> x = ivy.array([inf, -inf, inf, inf, -inf, -inf])
+    >>> y = ivy.array([1.0, 1.0, inf, -inf, inf, -inf])
+    >>> z = x.atan2(y)
+    >>> print(z)
+    ivy.array([ 1.57 , -1.57 ,  0.785,  2.36 , -0.785, -2.36 ])
+
+    >>> x = ivy.array([2.5, -1.75, 3.2, 0, -1.0])
+    >>> y = ivy.array([-3.5, 2, 0, 0, 5])
+    >>> z = x.atan2(y)
+    >>> print(z)
+    ivy.array([ 2.52 , -0.719,  1.57 ,  0.   , -0.197])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
+    >>> y = x.atan2(x)
+    >>> print(y)
+    ivy.array([[ 0.785,  0.785,  0.785],
+        [-2.36 , -2.36 , -2.36 ]])
+               
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
+    >>> y = ivy.native_array([-1.1, 2.5, -2.0, 1.0, 5.0, -2.5])
+    >>> z = ivy.atan2(x, y)
+    >>> print(z)
+    ivy.array([ 3.14 ,  0.   , -2.23 , -0.785,  0.197,  2.18 ])
+
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                          b=ivy.array([4.5, -5.3, -0]))
+    >>> y = ivy.array([3.0, 2.0, 1.0])
+    >>> x.atan2(y)
+    {
+        a: ivy.array([0., 0.915, -1.29]),
+        b: ivy.array([0.983, -1.21, 0.])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
+                          b=ivy.array([4.5, -5.3, -0, -2.3]))
+    >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),\
+                          b=ivy.array([2.45, 6.35, 0, 1.5]))
+    >>> z = x.atan2(y)
+    >>> print(z)
+    {
+        a: ivy.array([3.14, 0.978, -0.785]),
+        b: ivy.array([1.07, -0.696, 0., -0.993])
+    }
     """
     return ivy.current_backend(x1).atan2(x1, x2, out=out)
 
@@ -1477,6 +1564,52 @@ def divide(
         an array containing the element-wise results. The returned array must have a
         floating-point data type determined by Type Promotion Rules.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([2., 7., 9.])
+    >>> x2 = ivy.array([3., 4., 0.6])
+    >>> y = ivy.divide(x1, x2)
+    >>> print(y)
+    ivy.array([0.667, 1.75, 15.])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([2., 7., 9.])
+    >>> x2 = ivy.native_array([2., 2., 2.])
+    >>> y = ivy.divide(x1, x2)
+    >>> print(y)
+    ivy.array([1., 3.5, 4.5])
+
+    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.array([5., 6., 9.])
+    >>> x2 = ivy.native_array([2., 2., 2.])
+    >>> y = ivy.divide(x1, x2)
+    >>> print(y)
+    ivy.array([2.5, 3., 4.5])
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+    >>> x2 = ivy.Container(a=ivy.array([1., 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
+    >>> y = ivy.divide(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([12., 1.52, 2.1]),
+        b: ivy.array([1.25, 0.333, 0.45])
+    }
+
+    With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+    >>> x2 = ivy.array([4.3, 3., 5.])
+    >>> y = ivy.divide(x1, x2)
+    {
+        a: ivy.array([2.79, 1.17, 1.26]),
+        b: ivy.array([0.698, 0.333, 0.18])
+    }
     """
     return ivy.current_backend(x1, x2).divide(x1, x2, out=out)
 
@@ -1794,6 +1927,53 @@ def floor_divide(
         an array containing the element-wise results. The returned array must have a
         numeric data type.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([13., 7., 8.])
+    >>> x2 = ivy.array([3., 2., 7.])
+    >>> y = ivy.floor_divide(x1, x2)
+    >>> print(y)
+    ivy.array([4., 3., 1.])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([3., 4., 5.])
+    >>> x2 = ivy.native_array([5., 2., 1.])
+    >>> y = ivy.floor_divide(x1, x2)
+    >>> print(y)
+    ivy.array([0., 2., 5.])
+
+    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.array([3., 4., 5.])
+    >>> x2 = ivy.native_array([5., 2., 1.])
+    >>> y = ivy.floor_divide(x1, x2)
+    >>> print(y)
+    ivy.array([0., 2., 5.])
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
+    >>> x2 = ivy.Container(a=ivy.array([5., 4., 2.5]), b=ivy.array([2.3, 3.7, 5]))
+    >>> y = ivy.floor_divide(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 2., 1.])
+    }
+
+    With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
+    >>> x2 = ivy.array([2., 2., 2.])
+    >>> y = ivy.floor_divide(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([2., 2., 3.]),
+        b: ivy.array([3., 4., 4.])
+    }
     """
     if isinstance(x1, float) or isinstance(x1, int):
         x1 = ivy.array(x1, dtype=x1.dtype)
@@ -2237,6 +2417,127 @@ def isinf(
         an array containing test results. An element out_i is True if x_i is either
         positive or negative infinity and False otherwise. The returned array must have
         a data type of bool.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isinf.html>`_ # noqa
+    in the standard.
+    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    ivy.array([False, False, False])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    ivy.array([[False, False, False]])
+
+    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+    >>> z = ivy.isinf(x)
+    >>> print(x)
+    ivy.array([[[False],
+            [True],
+            [False]]])
+
+    >>> x = ivy.array([[-math.inf, np.inf, 0.0]])
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    ivy.array([[ True,  True, False]])
+
+    >>> x = ivy.zeros((3, 3))
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    ivy.array([[False, False, False],
+       [False, False, False],
+       [False, False, False]])
+
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    ivy.array([[False],
+        [False],
+        [True]])
+
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, -np.inf, 1.23]), \
+                          b=ivy.array([math.inf, 3.3, -4.2]))
+    >>> z = ivy.isinf(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+
+
+    Instance Method Examples
+    ------------------------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1, 2, 3])
+    >>> x.isinf()
+    ivy.array([False, False, False])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> x.isinf()
+    ivy.array([[False, False, False]])
+
+    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+    >>> x.isinf()
+    ivy.array([[[False],
+            [True],
+            [False]]])
+
+    >>> x = ivy.array([[-math.inf, np.inf, 0.0]])
+    >>> x.isinf()
+    ivy.array([[ True, True, False]])
+
+    >>> x = ivy.zeros((3, 3))
+    >>> x.isinf()
+    ivy.array([[False, False, False],
+        [False, False, False],
+        [False, False, False]])
+
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
+    >>> x.isinf()
+    ivy.array([[False],
+        [False],
+        [True]])
+
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([-1, -np.inf, 1.23]), \
+        b=ivy.array([math.inf, 3.3, -4.2]))
+    >>> x.isinf()
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+
+
+    Container Static Method Examples
+    ------------------------
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, -np.inf, 1.23]), \
+                          b=ivy.array([math.inf, 3.3, -4.2]))
+    >>> z = ivy.Container.static_isinf(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
 
     """
     return ivy.current_backend(x).isinf(x, out=out)
