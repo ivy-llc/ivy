@@ -2586,6 +2586,16 @@ def isinf(
         b: ivy.array([True, False, False])
     }
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    >>> ivy.log1p(ivy.array([1e-99]))
+    [1e-99]
+    >>> ivy.log(1+ ivy.array([1e-99]))
+    0.0
     """
     return ivy.current_backend(x).isinf(x, out=out)
 
@@ -2749,8 +2759,22 @@ def log1p(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates an implementation-dependent approximation to log(1+x), where log
+    """
+    Calculates an implementation-dependent approximation to log(1+x), where log
     refers to the natural (base e) logarithm.
+    .. note::
+       The purpose of this function is to calculate ``log(1+x)`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``log(1+x)``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is less than ``-1``, the result is ``NaN``.
+    - If ``x_i`` is ``-1``, the result is ``-infinity``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
 
     Parameters
     ----------
@@ -2763,9 +2787,17 @@ def log1p(
     Returns
     -------
     ret
-        a new array containing the evaluated result for each element in x.
+        an array containing the evaluated Natural logarithm of 1 + x for each element in
+        ``x``. The returned array must have a floating-point data type determined by
+        :ref:`type-promotion`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
 
     """
+
     return ivy.current_backend(x).log1p(x, out=out)
 
 
@@ -2777,6 +2809,7 @@ def log2(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+
     """Calculates an implementation-dependent approximation to the base ``2`` logarithm,
     having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each
     element ``x_i`` of the input array ``x``.
