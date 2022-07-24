@@ -3864,37 +3864,45 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.logical_and.
+        ivy.Container instance method variant of ivy.logical_and.
         This method simply wraps the function, and so the docstring for
         ivy.logical_and also applies to this method with minimal changes.
 
-        Parameters
-        ----------
-        x1
-            input array or container. Should have a boolean data type.
-        x2
-            input array or container. Must be compatible with ``x1``
-            (see :ref:`broadcasting`).
-            Should have a boolean data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+        Examples
+        --------
+        Using 'ivy.Container' instance
 
-        Returns
-        -------
-        ret
-            a container containing the element-wise results. The returned container
-            must have a data type of ``bool``.
+        >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
+        >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> k = ivy.Container(a=ivy.array([True, False, True]), \
+            b=ivy.array([True, False, False]))
+        >>> l = ivy.Container(a=ivy.array([True, True, True]), \
+            b=ivy.array([False, False, False]))
+        >>> m = ivy.array([False, True, False, True])
+        >>> n = ivy.array([True, False, True, False])
+
+        >>> w = ivy.Container.static_logical_and(i, j)
+        >>> x = ivy.Container.static_logical_and(j, m)
+        >>> y = ivy.Container.static_logical_and(m, n)
+        >>> z = ivy.Container.static_logical_and(k, l)
+
+        >>> print(w)
+        {
+            a: ivy.array([True, False, False, False])
+        }
+        >>> print(x)
+        {
+            a: ivy.array([False, True, False, False])
+        }
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False, False])
+        }
+        >>> print(z)
+        {
+            a: ivy.array([True, False, True]),
+            b: ivy.array([False, False, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "logical_and",
@@ -3922,33 +3930,41 @@ class ContainerWithElementwise(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.logical_and also applies to this method with minimal changes.
 
-        Parameters
-        ----------
-        self
-            input array or container. Should have a boolean data type.
-        x2
-            input array or container. Must be compatible with ``self``
-            (see :ref:`broadcasting`).
-            Should have a boolean data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+        Examples
+        --------
+        Using 'ivy.Container' instance
 
-        Returns
-        -------
-        ret
-            a container containing the element-wise results. The returned container
-            must have a data type of ``bool``.
+        >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
+        >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> k = ivy.Container(a=ivy.array([True, False, True]), \
+            b=ivy.array([True, False, False]))
+        >>> l = ivy.Container(a=ivy.array([True, True, True]), \
+            b=ivy.array([False, False, False]))
+        >>> m = ivy.array([False, True, False, True])
+        >>> n = ivy.array([True, False, True, False])
+
+        >>> w = i.logical_and(j)
+        >>> x = j.logical_and(m)
+        >>> y = m.logical_and(n)
+        >>> z = k.logical_and(l)
+
+        >>> print(w)
+        {
+            a: ivy.array([True, False, False, False])
+        }
+        >>> print(x)
+        {
+            a: ivy.array([False, True, False, False])
+        }
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False, False])
+        }
+        >>> print(z)
+        {
+            a: ivy.array([True, False, True]),
+            b: ivy.array([False, False, False])
+        }
         """
         return self.static_logical_and(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
