@@ -924,7 +924,7 @@ def test_gather_nd(prms_n_inds, dtype, tensor_fn, call):
             ivy_np.valid_numeric_dtypes,
             allow_inf=False,
             min_num_dims=0,
-            min_dim_size=2), 
+            min_dim_size=1), 
         st.sampled_from([ivy.array])
     )
 )
@@ -1177,7 +1177,7 @@ def test_explicit_ivy_framework_handles(device, call):
         max_num_dims=3,
         min_dim_size=2,
         max_dim_size=2,
-    ).filter(lambda x : ivy.array([x[1]], dtype=x[0]).shape[2] % 2 == 0 and ivy.array([x[1]], dtype=x[0]).shape[3] % 2 == 0), 
+    ).filter(lambda x : (ivy.array([x[1]], dtype='float32').shape[2] % 2 == 0) and (ivy.array([x[1]], dtype='float32').shape[3] % 2 == 0)), 
     pattern_and_axes_lengths=st.sampled_from([
         ('b h w c -> b h w c', {}),
         ('b h w c -> (b h) w c', {}),
@@ -1222,7 +1222,7 @@ def test_einops_rearrange(x, pattern_and_axes_lengths, with_out, as_variable, nu
         max_num_dims=3,
         min_dim_size=2,
         max_dim_size=2,
-    ).filter(lambda x : ivy.array([x[1]], dtype=x[0]).shape[2] % 2 == 0 and ivy.array([x[1]], dtype=x[0]).shape[3] % 2 == 0), 
+    ).filter(lambda x : ivy.array([x[1]], dtype='float32').shape[2] % 2 == 0 and ivy.array([x[1]], dtype='float32').shape[3] % 2 == 0), 
     pattern_and_axes_lengths=st.sampled_from([
         # ('t b  -> b', {}),
         ('b c (h1 h2) (w1 w2) -> b c h1 w1', {'h2': 2, 'w2': 2}),

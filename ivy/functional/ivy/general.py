@@ -1562,7 +1562,6 @@ def current_backend_str() -> Union[str, None]:
     return fw.current_backend_str()
 
 
-# @to_native_arrays_and_back
 @handle_nestable
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1575,7 +1574,7 @@ def einops_rearrange(
 
     Parameters
     ----------
-    x
+    x 
         Input array to be re-arranged.
     pattern
         Rearrangement pattern.
@@ -1599,7 +1598,9 @@ def einops_rearrange(
     return ret
 
 
-# @to_native_arrays_and_back
+einops_rearrange.unsupported_dtypes = {"torch": ("uint16",)}
+
+
 @handle_nestable
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1639,7 +1640,9 @@ def einops_reduce(
     return ret
 
 
-# @inputs_to_native_arrays
+einops_reduce.unsupported_dtypes = {"torch": ("uint16",)}
+
+
 @handle_nestable
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
