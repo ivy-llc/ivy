@@ -532,7 +532,8 @@ ivy.array([[[ 2.5210],
 
 With a mix of :code:`ivy.Array` ivy.NativeArray and :code:`ivy.Container` inputs:
 
- >>> x = ivy.Container(a = ivy.array(ivy.random_normal(0,1, [1, 10, 3])) , b = ivy.array(ivy.random_normal(0,1,[1,20, 3 ])))
+ >>> x = ivy.Container(a = ivy.array(ivy.random_normal(0,1, [1, 10, 3])) ,\
+                       b = ivy.array(ivy.random_normal(0,1,[1,20, 3 ])))
  >>> filters = ivy.array(ivy.random_normal(0,1,[5, 3, 2]))
  >>> result  = ivy.conv1d(x, filters, strides= 4, padding='VALID', dilations=2)
  >>> print(result)
