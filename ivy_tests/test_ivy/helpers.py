@@ -1724,11 +1724,14 @@ def none_or_list_of_floats(
 
 @st.composite
 def get_mean_std(draw, *, dtype):
-    """Draws two integers representing the mean and standard deviation for a given data type.
+    """Draws two integers representing the mean and standard deviation for a given data
+    type.
+
     Parameters
     ----------
     draw
-        special function that draws data randomly (but is reproducible) from a given data-set (ex. list).
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
     dtype
         data type.
 
@@ -1744,10 +1747,12 @@ def get_mean_std(draw, *, dtype):
 @st.composite
 def get_bounds(draw, *, dtype):
     """Draws two integers low, high for a given data type such that low < high.
+
     Parameters
     ----------
     draw
-        special function that draws data randomly (but is reproducible) from a given data-set (ex. list).
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
     dtype
         data type.
 
@@ -1779,7 +1784,8 @@ def get_axis(draw, *, shape, allow_none=False):
     Parameters
     ----------
     draw
-        special function that draws data randomly (but is reproducible) from a given data-set (ex. list).
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
     shape
         shape of the array.
     allow_none
@@ -1825,13 +1831,14 @@ def get_axis(draw, *, shape, allow_none=False):
 
 @st.composite
 def num_positional_args(draw, *, fn_name: str = None):
-    """Draws an integers randomly from the minimum and maximum number of positional arguments
-    a given function can take.
+    """Draws an integers randomly from the minimum and maximum number of positional
+    arguments a given function can take.
 
     Parameters
     ----------
     draw
-        special function that draws data randomly (but is reproducible) from a given data-set (ex. list).
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
     fn_name
         name of the function.
 
