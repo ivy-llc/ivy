@@ -32,10 +32,42 @@ class ArrayWithManipulation(abc.ABC):
 
     def expand_dims(
         self: ivy.Array,
-        axis: Optional[int] = 0,
+        axis: Union[int, Tuple[int], List[int]] = 0,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.expand_dims. This method simply wraps
+        the function, and so the docstring for ivy.expand_dims also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            position in the expanded array where a new axis (dimension) of size one
+            will be added. If array ``self`` has the rank of ``N``, the ``axis`` needs
+            to be between ``[-N-1, N]``. Default: ``0``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the elements of ``self``, but with its dimension added
+            by one in a given ``axis``.
+
+        Examples
+        --------
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.expand_dims()
+        >>> print(x.shape, y.shape)
+        (3,) (1, 3)
+        >>> print(y)
+        ivy.array([[0., 1., 2.]])
+        """
         return ivy.expand_dims(self._data, axis, out=out)
 
     def reshape(

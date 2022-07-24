@@ -76,7 +76,7 @@ def expand_dims(
         input array.
     axis
         position in the expanded array where a new axis (dimension) of size one will be
-        added. If array ``x`` has the rank of ``N``, the ``axis`` need to be between
+        added. If array ``x`` has the rank of ``N``, the ``axis`` needs to be between
         ``[-N-1, N]``. Default: ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -96,9 +96,10 @@ def expand_dims(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([0, 1, 2])
     >>> print(x.shape)
     (3,)
@@ -108,7 +109,7 @@ def expand_dims(
     >>> print(y)
     ivy.array([[0, 1, 2]])
 
-    >>> x = ivy.array([[0.5, -0.7, 2.4],
+    >>> x = ivy.array([[0.5, -0.7, 2.4], \
                        [  1,    2,   3]])
     >>> print(x.shape)
     (2, 3)
@@ -117,18 +118,22 @@ def expand_dims(
     ivy.array([[[0., 0., 0.]],
                [[0., 0., 0.]]])
     >>> ivy.expand_dims(x, axis=1, out=y)
+    >>> print(Y.shape)
+    (2, 1, 3)
     >>> print(y)
     ivy.array([[[0.5, -0.7, 2.4]],
                [[ 1.,   2.,  3.]]])
 
-    >>> x = ivy.array([[-1, -2],
+    >>> x = ivy.array([[-1, -2], \
                        [ 3,  4]])
     >>> ivy.expand_dims(x, out=x)
+    >>> print(x.shape)
+    (1, 2, 2)
     >>> print(x)
     ivy.array([[[-1, -2],
                 [3,  4]]])
 
-    >>> x = ivy.array([[-1.7, -3.2, 2.3],
+    >>> x = ivy.array([[-1.7, -3.2, 2.3], \
                        [ 6.3,  1.4, 5.7]])
     >>> print(x.shape)
     (2, 3)
@@ -136,7 +141,7 @@ def expand_dims(
     >>> print(y.shape)
     (1, 2, 3, 1)
 
-    >>> x = ivy.array([[-1.7, -3.2, 2.3],
+    >>> x = ivy.array([[-1.7, -3.2, 2.3], \
                        [ 6.3,  1.4, 5.7]])
     >>> print(x.shape)
     (2, 3)
@@ -145,6 +150,7 @@ def expand_dims(
     (2, 1, 1, 1, 3)
 
     With :code:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([0, 1, 2])
     >>> print(x)
     tensor([0, 1, 2], dtype=torch.int32)
@@ -153,7 +159,8 @@ def expand_dims(
     ivy.array([[0, 1, 2]])
 
     With :code:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
     >>> y = ivy.expand_dims(x, axis=-1)
     >>> print(y)
@@ -165,31 +172,6 @@ def expand_dims(
                       [4.],
                       [5.]])
     }
-
-    Instance Method Examples
-    ------------------------
-    Using :code:`ivy.Array` instance method:
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.expand_dims()
-    >>> print(x.shape, y.shape)
-    (3,) (1, 3)
-    >>> print(y)
-    ivy.array([[0., 1., 2.]])
-
-    Using :code:`ivy.Container` instance method:
-    >>> x = ivy.Container(a=ivy.array([[0., 1.],
-                                       [2., 3.]]),
-                          b=ivy.array([[4., 5.],
-                                       [6., 7.]]))
-    >>> y = x.expand_dims(axis=1)
-    >>> print(y)
-    {
-        a: ivy.array([[[0., 1.]],
-                      [[2., 3.]]]),
-        b: ivy.array([[[4., 5.]],
-                      [[6., 7.]]])
-    }
-
     """
     return current_backend(x).expand_dims(x, axis)
 

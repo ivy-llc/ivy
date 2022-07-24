@@ -51,7 +51,7 @@ class ContainerWithManipulation(ContainerBase):
 
     def expand_dims(
         self: ivy.Container,
-        axis: Optional[int] = 0,
+        axis: Union[int, Tuple[int], List[int]] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -59,6 +59,44 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.expand_dims. This method simply
+        wraps the function, and so the docstring for ivy.expand_dims also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container.
+        axis
+            position where a new axis (dimension) of size one will be added. If an
+            element of the container has the rank of ``N``, the ``axis`` needs to
+            be between ``[-N-1, N]``. Default: ``0``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container with the elements of ``self``, but with the dimensions of
+            its elements added by one in a given ``axis``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0., 1.], \
+                                           [2., 3.]]), \
+                              b=ivy.array([[4., 5.], \
+                                           [6., 7.]]))
+        >>> y = x.expand_dims(axis=1)
+        >>> print(y)
+        {
+            a: ivy.array([[[0., 1.]],
+                          [[2., 3.]]]),
+            b: ivy.array([[[4., 5.]],
+                          [[6., 7.]]])
+        }
+        """
         return ContainerBase.handle_inplace(
             self.map(
                 lambda x_, _: ivy.expand_dims(x_, axis=axis)
