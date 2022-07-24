@@ -55,9 +55,9 @@ class ArrayWithManipulation(abc.ABC):
         self
             input array.
         shape
-            The new shape should be compatible with the original shape. One shape dimension
-            can be -1. In this case, the value is inferred from the length of the array and
-            remaining dimensions.
+            The new shape should be compatible with the original shape.
+            One shape dimension can be -1. In this case, the value is 
+            inferred from the length of the array and remaining dimensions.
         copy
              boolean indicating whether or not to copy the input array.
              If True, the function must always copy.
@@ -72,7 +72,8 @@ class ArrayWithManipulation(abc.ABC):
         Returns
         -------
         ret
-            an output array having the same data type as ``self`` and  elements as ``self``.
+            an output array having the same data type as ``self``
+            and  elements as ``self``.
 
         Examples
         --------
