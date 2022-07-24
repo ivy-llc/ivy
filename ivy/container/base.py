@@ -2387,48 +2387,6 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         ).unstack(0, dim_size=dim_size)
 
-    def gather(
-        self,
-        indices,
-        axis=-1,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Gather slices from all container params at axis according to indices.
-
-        Parameters
-        ----------
-        indices
-            Index array.
-        axis
-            The axis from which to gather from. Default is -1.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-array dimensions gathered along the axis.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.gather(x, indices, axis)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
 
     def gather_nd(
         self,

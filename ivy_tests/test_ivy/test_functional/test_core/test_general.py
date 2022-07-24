@@ -840,65 +840,85 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, call)
 
 
 # gather
-@pytest.mark.parametrize(
-    "prms_n_inds_n_axis",
-    [
+@given(
+    params_n_inds_n_axis=st.sampled_from([
         ([9, 8, 7, 6, 5, 4, 3, 2, 1, 0], [0, 4, 7], 0),
         ([[1, 2], [3, 4]], [[0, 0], [1, 0]], 1),
-    ],
+    ]),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name='gather'),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_gather(prms_n_inds_n_axis, dtype, with_out, tensor_fn, call):
-    # smoke test
-    prms, inds, axis = prms_n_inds_n_axis
-    prms = tensor_fn(prms, dtype=dtype)
-    inds = ivy.array(inds, dtype="int32")
-    if with_out:
-        out = ivy.zeros(inds.shape)
-        ret = ivy.gather(prms, inds, axis, out=out)
-    else:
-        ret = ivy.gather(prms, inds, axis)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == inds.shape
-    # value test
-    assert np.allclose(
-        call(ivy.gather, prms, inds, axis),
-        np.asarray(
-            ivy.functional.backends.numpy.gather(
-                ivy.to_numpy(prms), ivy.to_numpy(inds), axis
-            )
-        ),
+def test_gather(params_n_inds_n_axis, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw, call):
+    # ToDo: add better params and indices generation (and axis)
+    params, inds, axis = params_n_inds_n_axis 
+    helpers.test_function(
+        ["float32", "int32"],
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "gather",
+        params=np.asarray(params, dtype="float32"),
+        indices=np.asarray(inds, dtype="int32"),
+        axis=axis
     )
-    # out test
-    if with_out:
-        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            assert ret is out
-            assert ret.data is out.data
+
+    # params = ivy.array(params, dtype="float32")
+    # inds = ivy.array(inds, dtype="int32")
+    # if with_out:
+    #     out = ivy.zeros(inds.shape)
+    #     ret = ivy.gather(params, inds, axis, out=out)
+    # else:
+    #     ret = ivy.gather(params, inds, axis)
+    # # type test
+    # assert ivy.is_ivy_array(ret)
+    # # cardinality test
+    # assert ret.shape == inds.shape
+    # # value test
+    # assert np.allclose(
+    #     call(ivy.gather, params, inds, axis),
+    #     np.asarray(
+    #         ivy.functional.backends.numpy.gather(
+    #             ivy.to_numpy(params), ivy.to_numpy(inds), axis
+    #         )
+    #     ),
+    # )
+    # # out test
+    # if with_out:
+    #     if not ivy.current_backend_str() in ["tensorflow", "jax"]:
+    #         # these backends do not support native inplace updates
+    #         assert ret is out
+    #         assert ret.data is out.data
 
 
 # gather_nd
-@pytest.mark.parametrize(
-    "prms_n_inds",
-    [
+@given(
+    prms_n_inds_n_axis=st.sampled_from([
         ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[0, 1], [1, 0]]),
         ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[[0, 1]], [[1, 0]]]),
         (
             [[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]],
             [[[0, 1, 0]], [[1, 0, 1]]],
         ),
-    ],
+    ]),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name='gather_nd'),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_gather_nd(prms_n_inds, dtype, tensor_fn, call):
+def test_gather_nd(prms_n_inds, as_variable, with_out, num_positional_args, native_array, container, instance_method , call):
     # smoke test
     prms, inds = prms_n_inds
-    prms = tensor_fn(prms, dtype=dtype)
+    prms = ivy.array(prms, dtype="float32")
     inds = ivy.array(inds, dtype="int32")
     ret = ivy.gather_nd(prms, inds)
     # type test
@@ -1436,7 +1456,6 @@ def test_inplace_increment(
 # unstack
 # value_is_nan
 # has_nans
-# exists
 # shape_to_tuple
 # try_else_none
 # arg_names

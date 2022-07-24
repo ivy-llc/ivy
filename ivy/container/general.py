@@ -786,3 +786,135 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_einops_rearrange(
             self, pattern, key_chains, to_apply, prune_unapplied, map_sequences, out=out, **axes_lengths
         )
+
+
+# def gather(
+#         self,
+#         indices,
+#         axis=-1,
+#         key_chains=None,
+#         to_apply=True,
+#         prune_unapplied=False,
+#         map_sequences=False,
+#     ):
+#         """Gather slices from all container params at axis according to indices.
+
+#         Parameters
+#         ----------
+#         indices
+#             Index array.
+#         axis
+#             The axis from which to gather from. Default is -1.
+#         key_chains
+#             The key-chains to apply or not apply the method to. Default is None.
+#         to_apply
+#             If True, the method will be applied to key_chains, otherwise key_chains will
+#             be skipped. Default is True.
+#         prune_unapplied
+#             Whether to prune key_chains for which the function was not applied. Default
+#             is False.
+#         map_sequences
+#             Whether to also map method to sequences (lists, tuples). Default is False.
+
+#         Returns
+#         -------
+#             Container object with all sub-array dimensions gathered along the axis.
+
+#         """
+#         return self.map(
+#             lambda x, kc: self._ivy.gather(x, indices, axis)
+#             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+#             else x,
+#             key_chains,
+#             to_apply,
+#             prune_unapplied,
+#             map_sequences,
+#         )
+
+    @staticmethod
+    def static_gather(
+        params : ivy.Container,
+        indices: ivy.Container,
+        axis: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """Perform einops rearrange operation on each sub array in the container.
+
+        Parameters
+        ----------
+        pattern
+            Rearrangement pattern.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        axes_lengths
+            Any additional specifications for dimensions.
+        **axes_lengths
+
+
+        Returns
+        -------
+            ivy.Container with each array having einops.rearrange applied.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "gather",
+            params,
+            indices,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out
+        )
+
+    def gather(
+        self,
+        indices,
+        axis=-1,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=False,
+        out=None
+    ):
+        """Gather slices from all container params at axis according to indices.
+
+        Parameters
+        ----------
+        indices
+            Index array.
+        axis
+            The axis from which to gather from. Default is -1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+            Container object with all sub-array dimensions gathered along the axis.
+
+        """
+        return self.static_gather(
+            self, indices, axis, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )
