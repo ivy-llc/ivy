@@ -1074,6 +1074,7 @@ def native_array(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@infer_dtype
 @infer_device
 @handle_nestable
 def logspace(
@@ -1083,6 +1084,7 @@ def logspace(
     base: float = 10.0,
     axis: int = None,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -1121,5 +1123,5 @@ def logspace(
 
     """
     return current_backend(start).logspace(
-        start, stop, num, base, axis, device=device, out=out
+        start, stop, num, base, axis, dtype=dtype, device=device, out=out
     )
