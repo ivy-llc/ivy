@@ -376,11 +376,6 @@ def reshape(
     --------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([[0, 1, 2],[3, 4, 6]])
-    >>> y = ivy.reshape(x, 6)
-    >>> print(y)
-    ivy.array([0, 1, 2, 3, 4, 6])
-
     >>> x = ivy.array([[0., 1., 2.], \
                        [3., 4., 5.]])
     >>> y = ivy.reshape(x,(3,2))
