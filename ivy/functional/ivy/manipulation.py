@@ -402,7 +402,7 @@ def reshape(
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
                           b=ivy.array([0, 1, 2, 3, 4, 5]))
-    >>> y = ivy.reshape((2,3))
+    >>> y = ivy.Container.reshape((2,3))
     >>> print(y)
     {
         a: ivy.array([[0, 1, 2],
