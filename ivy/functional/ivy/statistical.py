@@ -238,7 +238,7 @@ def min(
     >>> z = ivy.array([0, 1, 2])
     >>> y = ivy.min(x, out=z)
     >>> print(z)
-    ivy.array(0)
+    ivy.array(3)
 
     >>> x = ivy.array([[0, 1, 2], [3, 7, 15]])
     >>> y = ivy.min(x, 0, True)
