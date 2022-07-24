@@ -3864,7 +3864,7 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.logical_and.
+        ivy.Container static method variant of ivy.logical_and.
         This method simply wraps the function, and so the docstring for
         ivy.logical_and also applies to this method with minimal changes.
 
