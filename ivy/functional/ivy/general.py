@@ -1232,19 +1232,6 @@ def floormod(
     >>> print(ivy.floormod(x, y))
     ivy.array([1, 2, 3])
 
-    >>> a = ivy.native_array([3, 5, 8])
-    >>> b = ivy.native_array([1, 2, 3])
-    >>> c = ivy.native_array([0, 0, 0])
-    >>> ivy.floormod(a, b, out=c)
-    >>> print(c)
-    ivy.array([0, 1, 2])
-
-    >>> i = ivy.native_array([7, 6, 4])
-    >>> j = ivy.native_array([4, 5, 4])
-    >>> ivy.floormod(i, j, out=i)
-    >>> print(i)
-    ivy.array([3, 1, 0])
-
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([9, 8, 7]), b = ivy.array([3, 5, 8]))

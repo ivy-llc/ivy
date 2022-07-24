@@ -278,8 +278,8 @@ class ContainerWithGeneral(ContainerBase):
 
         >>> a = ivy.Container(a = ivy.array([7, 6, 4]))
         >>> b = ivy.array([4, 5, 4])
-        >>> ivy.Container.static_floormod(a, b, out=b)
-        >>> print(b)
+        >>> ivy.Container.static_floormod(a, b, out=a)
+        >>> print(a)
         {
             a: ivy.array([3, 1, 0])
         }
@@ -354,8 +354,8 @@ class ContainerWithGeneral(ContainerBase):
 
         >>> a = ivy.Container(a = ivy.array([7, 6, 4]))
         >>> b = ivy.array([4, 5, 4])
-        >>> a.floormod(b, out=b)
-        >>> print(b)
+        >>> a.floormod(b, out=a)
+        >>> print(a)
         {
             a: ivy.array([3, 1, 0])
         }

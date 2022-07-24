@@ -88,7 +88,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> a = ivy.array([3, 5, 8])
         >>> b = ivy.array([1, 2, 3])
         >>> c = ivy.array([0, 0, 0])
-        >>> a.floormod(b, c)
+        >>> a.floormod(b, out=c)
         >>> print(c)
         ivy.array([0, 1, 2])
 
