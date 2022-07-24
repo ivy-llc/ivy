@@ -108,6 +108,7 @@ def test_linspace(
         max_num_dims=1,
         min_dim_size=2,
         max_dim_size=2,
+        safety_factor=0.5,
     ),
     num=st.integers(1, 5),
     base=st.floats(min_value=0.1, max_value=10.0),
