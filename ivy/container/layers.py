@@ -210,7 +210,7 @@ class ContainerWithLayers(ContainerBase):
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.conv1d. This method simply
+        ivy.Container method variant of ivy.conv1d. This method simply
         wraps the function, and so the docstring for ivy.conv1d also applies
         to this method with minimal changes.
 
