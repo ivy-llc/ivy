@@ -8,7 +8,6 @@ import ivy
 from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
-    outputs_to_ivy_arrays,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
@@ -202,7 +201,7 @@ def multinomial(
         Number of tensors to generate. Default is 1.
     probs
         The unnormalized probabilities for all elements in population,
-        default is uniform *[batch_shape, num_classes]*
+        default is uniform *[batch_shape, population_size]*
     replace
         Whether to replace samples once they've been drawn. Default is True.
     device
@@ -269,7 +268,7 @@ def multinomial(
     )
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
 @handle_nestable
