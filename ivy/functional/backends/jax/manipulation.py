@@ -68,7 +68,6 @@ def reshape(
     return jnp.reshape(x, shape)
 
 
-
 def roll(
     x: JaxArray,
     shift: Union[int, Sequence[int]],
