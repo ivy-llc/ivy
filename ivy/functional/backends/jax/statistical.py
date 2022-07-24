@@ -39,7 +39,7 @@ def mean(
 def min(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:

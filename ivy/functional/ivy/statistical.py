@@ -181,8 +181,8 @@ def mean(
 @handle_nestable
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -225,6 +225,48 @@ def min(
         containing the minimum values. The returned array must have the same data type
         as x.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = x.min()
+    >>> print(z)
+    ivy.array(0)
+
+    >>> x = ivy.array([3, 4, 5])
+    >>> z = ivy.array([0, 1, 2])
+    >>> y = ivy.min(x, out=z)
+    >>> print(z)
+    ivy.array(0)
+
+    >>> x = ivy.array([[0, 1, 2], [3, 7, 15]])
+    >>> y = ivy.min(x, 0, True)
+    >>> print(y)
+    ivy.array([[0, 1, 2]])
+
+    >>> x = ivy.native_array([[0, 1, 2], [3, 7, 15]])
+    >>> y = ivy.min(x)
+    >>> print(y)
+    ivy.array(0)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([7., 77., 777.]), b=ivy.array([8., 88., 888.]))
+    >>> y = ivy.min(x)
+    >>> print(y)
+    {
+        a: ivy.array(7.),
+        b: ivy.array(8.)
+    }
+
+    >>> x = ivy.Container(a=ivy.array([8, 9, 10]),\
+                          b=ivy.array([30, 19, 3]))
+    >>> z = x.min()
+    >>> print(z)  
+    {
+        a: ivy.array(8),
+        b: ivy.array(3)
+    }
     """
     return current_backend.min(x, axis, keepdims, out=out)
 

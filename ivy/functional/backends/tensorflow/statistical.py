@@ -38,8 +38,8 @@ def mean(
 
 def min(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
