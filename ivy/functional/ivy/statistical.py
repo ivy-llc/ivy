@@ -228,6 +228,7 @@ def min(
     Examples
     --------
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([0, 1, 2])
     >>> z = x.min()
     >>> print(z)
