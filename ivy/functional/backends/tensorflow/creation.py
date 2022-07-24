@@ -183,6 +183,9 @@ def eye(
             return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+eye.unsupported_dtypes = ("uint16",)
+
+
 # noinspection PyShadowingNames
 def from_dlpack(x, *, out: Union[tf.Tensor, tf.Variable] = None):
     return tf.experimental.dlpack.from_dlpack(x)
@@ -324,8 +327,9 @@ def logspace(
     base=10.0,
     axis=None,
     *,
+    dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ):
-    power_seq = linspace(start, stop, num, axis, dtype=None, device=device)
+    power_seq = ivy.linspace(start, stop, num, axis, dtype=dtype, device=device)
     return base**power_seq
