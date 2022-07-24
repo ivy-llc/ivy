@@ -119,7 +119,7 @@ class ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_reshape(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        shape: Union[int, Tuple[int,int], List[int]],
+        shape: Union[int, Tuple[int, int], List[int]],
         copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -139,9 +139,9 @@ class ContainerWithManipulation(ContainerBase):
             input container.
 
         shape
-            The new shape should be compatible with the original shape. One shape dimension
-            can be -1. In this case, the value is inferred from the length of the array and
-            remaining dimensions.
+            The new shape should be compatible with the original shape. 
+            One shape dimension can be -1. In this case, the value is 
+            inferred from the length of the array and remaining dimensions.
         copy
              boolean indicating whether or not to copy the input array.
              If True, the function must always copy.
@@ -166,8 +166,8 @@ class ContainerWithManipulation(ContainerBase):
         Returns
         -------
         ret
-        optional output container, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output container, for writing the result to.
+        It must have a shape that the inputs broadcast to.
 
         Examples
         --------
