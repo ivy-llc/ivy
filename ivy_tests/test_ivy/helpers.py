@@ -1608,6 +1608,7 @@ def none_or_list_of_floats(
     no_none=False,
 ):
     """Draws a List containing Nones or Floats.
+
     Parameters
     ----------
     dtype
@@ -1754,7 +1755,6 @@ def get_bounds(draw, *, dtype):
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
-
     if "int" in dtype:
         values = draw(array_values(dtype=dtype, shape=2))
         values[0], values[1] = abs(values[0]), abs(values[1])
@@ -1840,7 +1840,7 @@ def num_positional_args(draw, *, fn_name: str = None):
     A strategy that can be used in the @given hypothesis decorator.
 
     Examples
-    -------
+    --------
     @given(
         num_positional_args=num_positional_args(fn_name="floor_divide")
     )
