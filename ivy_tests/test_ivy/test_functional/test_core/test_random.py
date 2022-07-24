@@ -18,7 +18,7 @@ import ivy_tests.test_ivy.helpers as helpers
     as_variable=st.booleans(),
 )
 def test_random_uniform(data, shape, dtype, as_variable, device, call):
-    low, high = data.draw(helpers.get_bounds(dtype))
+    low, high = data.draw(helpers.get_bounds(dtype=dtype))
     # smoke test
     if as_variable and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
@@ -46,19 +46,24 @@ def test_random_uniform(data, shape, dtype, as_variable, device, call):
         assert ret.shape == shape
     # value test
     ret_np = call(ivy.random_uniform, **kwargs, device=device)
-    assert np.min((ret_np < (high if high else 1.0)).astype(np.int32)) == 1
-    assert np.min((ret_np >= (low if low else 0.0)).astype(np.int32)) == 1
+    assert (
+        np.min((ret_np <= (high + abs(high) * 0.01 if high else 1.01)).astype(np.int32))
+        == 1
+    )
+    assert (
+        np.min((ret_np >= (low - abs(low) * 0.01 if low else -0.01)).astype(np.int32))
+        == 1
+    )
 
 
 # random_normal
 @given(
     data=st.data(),
-    shape=helpers.get_shape(),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
 )
-def test_random_normal(data, shape, dtype, as_variable, device, call):
-    mean, std = data.draw(helpers.get_mean_std(dtype))
+def test_random_normal(data, dtype, as_variable, device, call):
+    mean, std = data.draw(helpers.get_mean_std(dtype=dtype))
     ivy.seed(0)
     # smoke test
     if as_variable and call is helpers.mx_call:
@@ -75,55 +80,63 @@ def test_random_normal(data, shape, dtype, as_variable, device, call):
     kwargs = {
         k: v for k, v in zip(["mean", "std"], [mean_tnsr, std_tnsr]) if v is not None
     }
-    if shape is not None:
-        kwargs["shape"] = shape
     ret = ivy.random_normal(**kwargs, device=device)
     # type test
     assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if shape is None:
-        assert ret.shape == ()
+
+
+@st.composite
+def _pop_size_num_samples_replace_n_probs(draw):
+    prob_dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
+    batch_size = draw(st.integers(1, 5))
+    population_size = draw(st.integers(1, 20))
+    replace = draw(st.booleans())
+    if replace:
+        num_samples = draw(st.integers(1, 20))
     else:
-        assert ret.shape == shape
+        num_samples = draw(st.integers(1, population_size))
+    probs = draw(
+        helpers.array_values(
+            dtype=prob_dtype,
+            shape=[batch_size, num_samples],
+            min_value=0.0,
+            max_value=1.0,
+        )
+        | st.just(None)
+    )
+    return prob_dtype, batch_size, population_size, num_samples, replace, probs
 
 
 # multinomial
-@given(
-    data=st.data(),
-    num_samples=st.integers(1, 2),
-    replace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    tensor_fn=st.sampled_from([ivy.array]),
-)
-def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call):
-    probs, population_size = data.draw(helpers.get_probs(dtype))
-    if (
-        call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
-        and not replace
-        or dtype == "float64"
-    ):
-        # mxnet and tenosorflow do not support multinomial without replacement
+@given(everything=_pop_size_num_samples_replace_n_probs())
+def test_multinomial(everything, device, call):
+    prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
+    if call is helpers.tf_call and not replace or prob_dtype == "float64":
+        # tenosorflow does not support multinomial without replacement
         return
     # smoke test
-    probs = tensor_fn(probs, dtype=dtype, device=device) if probs is not None else probs
-    batch_size = probs.shape[0] if probs is not None else 2
+    probs = (
+        ivy.array(probs, dtype=prob_dtype, device=device)
+        if probs is not None
+        else probs
+    )
     ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
-    assert ret.shape == tuple([batch_size] + [num_samples])
+    assert ret.shape == tuple([batch_size, num_samples])
 
 
 # randint
 @given(
     data=st.data(),
     shape=helpers.get_shape(allow_none=False),
-    dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
 )
-def test_randint(data, shape, dtype, as_variable, device, call):
+def test_randint(data, shape, as_variable, device, call):
+    dtype = ivy.default_int_dtype()
     # smoke test
-    low, high = data.draw(helpers.get_bounds(dtype))
+    low, high = data.draw(helpers.get_bounds(dtype=dtype))
     if (
         call in [helpers.mx_call, helpers.torch_call]
         and as_variable
@@ -163,14 +176,14 @@ def test_seed(seed_val):
 
 # shuffle
 @given(
-    data=st.data(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+    ),
     as_variable=st.booleans(),
 )
-def test_shuffle(data, dtype, as_variable, device, call):
+def test_shuffle(dtype_and_x, as_variable, device, call):
     # smoke test
-    shape = data.draw(helpers.get_shape(min_num_dims=1))
-    x = data.draw(helpers.array_values(dtype, shape))
+    dtype, x = dtype_and_x
     x = ivy.array(x, dtype=dtype, device=device)
     if as_variable:
         x = ivy.variable(x)

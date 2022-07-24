@@ -1,17 +1,10 @@
 # global
 import tensorflow as tf
-from typing import Tuple, Union
+from typing import NamedTuple, Union, Optional
 from collections import namedtuple
 
 
-def unique_all(
-    x: Union[tf.Tensor, tf.Variable]
-) -> Tuple[
-    Union[tf.Tensor, tf.Variable],
-    Union[tf.Tensor, tf.Variable],
-    Union[tf.Tensor, tf.Variable],
-    Union[tf.Tensor, tf.Variable],
-]:
+def unique_all(x: Union[tf.Tensor, tf.Variable]) -> NamedTuple:
     UniqueAll = namedtuple(
         typename="unique_all",
         field_names=["values", "indices", "inverse_indices", "counts"],
@@ -54,7 +47,7 @@ def unique_all(
 
 def unique_counts(
     x: Union[tf.Tensor, tf.Variable],
-) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
+) -> NamedTuple:
     uc = namedtuple("uc", ["values", "counts"])
     v, _, c = tf.unique_with_counts(tf.reshape(x, [-1]))
     return uc(v, c)
@@ -62,13 +55,17 @@ def unique_counts(
 
 def unique_inverse(
     x: Union[tf.Tensor, tf.Variable],
-) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
+) -> NamedTuple:
     out = namedtuple("unique_inverse", ["values", "inverse_indices"])
     values, inverse_indices = tf.unique(tf.reshape(x, -1))
     inverse_indices = tf.reshape(inverse_indices, x.shape)
     return out(values, inverse_indices)
 
 
-def unique_values(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def unique_values(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.unique(tf.reshape(x, [-1]))[0]
     return ret

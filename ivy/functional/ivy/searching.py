@@ -268,8 +268,8 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> y = ivy.nonzero(x)
     >>> print(y)
     {
-    a: (list[1], <class ivy.array.Array> shape=[3]),
-    b: (list[2], <class ivy.array.Array> shape=[2])
+        a: (list[1], <class ivy.array.array.Array> shape=[3]),
+        b: (list[2], <class ivy.array.array.Array> shape=[2])
     }
 
     >>> print(y.a)
@@ -301,8 +301,8 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> y = x.nonzero()
     >>> print(y)
     {
-    a: (list[1], <class ivy.array.Array> shape=[3]),
-    b: (list[1], <class ivy.array.Array> shape=[0])
+        a: (list[1], <class ivy.array.array.Array> shape=[3]),
+        b: (list[1], <class ivy.array.array.Array> shape=[0])
     }
 
     >>> print(y.a)

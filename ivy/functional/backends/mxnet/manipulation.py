@@ -64,8 +64,12 @@ def stack(
     return ret
 
 
-def squeeze(x, axis=None, out: Optional[mx.nd.NDArray] = None):
-    if x.shape == ():
+def squeeze(
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    out: Optional[mx.nd.NDArray] = None,
+):
+    if type(x) == ivy.Array and x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             if ivy.exists(out):
                 return ivy.inplace_update(out, x)
@@ -205,7 +209,6 @@ def clip(
     x_max: float,
     out: Optional[mx.ndarray.ndarray.NDArray] = None,
 ) -> mx.ndarray.ndarray.NDArray:
-
     ret = mx.nd.clip(mx.nd.array(x), x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)

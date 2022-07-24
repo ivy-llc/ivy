@@ -1,34 +1,32 @@
 """Collection of random Ivy functions."""
 
 # global
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Union
 
 # local
-from ivy.backend_handler import current_backend
+import ivy
 from ivy.func_wrapper import (
     infer_device,
     infer_dtype,
-    outputs_to_ivy_arrays,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
 )
-import ivy
 
 
 # Extra #
 # ------#
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
 @infer_dtype
 @handle_nestable
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
+    high: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype=None,
@@ -64,7 +62,7 @@ def random_uniform(
 
     Functional Examples
     -------------------
-    
+
     >>> y = ivy.random_uniform()
     >>> print(y)
     ivy.array(0.26431865)
@@ -76,7 +74,7 @@ def random_uniform(
     >>> y = ivy.random_uniform(0.0, 2.0, device="cpu")
     >>> print(y)
     ivy.array(1.89150229)
-    
+
     >>> y = ivy.random_uniform(0.7, 1.0, device="cpu", shape=(2, 2))
     >>> print(y)
     ivy.array([[0.89629126, 0.94198485],
@@ -84,9 +82,9 @@ def random_uniform(
 
     Instance Method Examples
     ------------------------
-    
+
     With :code:`ivy.Container` input:
-    
+
     >>> y = ivy.Container(a=ivy.random_uniform(), \
                           b=ivy.random_uniform(shape=2))
     >>> print(y)
@@ -94,21 +92,21 @@ def random_uniform(
     a: ivy.array(0.7550739),
     b: ivy.array([0.624, 0.00109])
     }
-    
+
     """
-    return current_backend().random_uniform(
+    return ivy.current_backend().random_uniform(
         low, high, shape, device=device, dtype=dtype, out=out
     )
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
 @handle_nestable
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
-    shape: Optional[Union[int, Tuple[int, ...]]] = None,
+    mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
+    std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -147,11 +145,11 @@ def random_normal(
     >>> y = ivy.random_normal(shape=3)
     >>> print(y)
     ivy.array([ 0.811, -0.508, -0.564])
-    
+
     >>> y = ivy.random_normal(0.0,2.0,device='cpu')
     >>> print(y)
     ivy.array(-0.7268672)
-    
+
     >>> y = ivy.random_normal(0.7, 1.0, device="cpu", shape=(2, 2))
     >>> print(y)
     ivy.array([[1.17 , 0.968],
@@ -161,7 +159,7 @@ def random_normal(
     ------------------------
 
     With :code:`ivy.Container` input:
-    
+
     >>> y = ivy.Container(a=ivy.random_normal(), \
                           b=ivy.random_normal(shape=2))
     >>> print(y)
@@ -171,7 +169,7 @@ def random_normal(
     }
 
     """
-    return current_backend().random_normal(mean, std, shape, device=device, out=out)
+    return ivy.current_backend().random_normal(mean, std, shape, device=device, out=out)
 
 
 @to_native_arrays_and_back
@@ -203,7 +201,7 @@ def multinomial(
         Number of tensors to generate. Default is 1.
     probs
         The unnormalized probabilities for all elements in population,
-        default is uniform *[batch_shape, num_classes]*
+        default is uniform *[batch_shape, population_size]*
     replace
         Whether to replace samples once they've been drawn. Default is True.
     device
@@ -265,19 +263,19 @@ def multinomial(
     ivy.array([[0, 2, 6, 9, 1], [6, 7, 2, 4, 3]])
 
     """
-    return current_backend().multinomial(
+    return ivy.current_backend().multinomial(
         population_size, num_samples, batch_size, probs, replace, device=device, out=out
     )
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
 @handle_nestable
 def randint(
     low: int,
     high: int,
-    shape: Union[int, Sequence[int]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -329,10 +327,7 @@ def randint(
                [ 8, 11,  3]])
 
     """
-    res = current_backend().randint(low, high, shape, device=device, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, res)
-    return res
+    return ivy.current_backend().randint(low, high, shape, device=device, out=out)
 
 
 @handle_nestable
@@ -350,14 +345,14 @@ def seed(seed_value: int = 0) -> None:
     >>> ivy.seed(42)
 
     """
-    return current_backend().seed(seed_value)
+    return ivy.current_backend().seed(seed_value)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def shuffle(
-    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
@@ -382,4 +377,4 @@ def shuffle(
     ivy.array([2, 1, 4, 3, 5])
 
     """
-    return current_backend(x).shuffle(x, out=out)
+    return ivy.current_backend(x).shuffle(x, out=out)
