@@ -1893,7 +1893,7 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.cosh. This method simply wraps the
+        ivy.Container static method variant of ivy.cosh. This method simply wraps the
         function, and so the docstring for ivy.cosh also applies to this method
         with minimal changes.
 
@@ -2000,7 +2000,7 @@ class ContainerWithElementwise(ContainerBase):
         With :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([-1, 0.23, 1.12]), b=ivy.array([1, -2, 0.76]))
-        >>> y = x.sinh()
+        >>> y = x.cosh()
         >>> print(y)
         {
             a: ivy.array([1.54, 1.03, 1.7]),
@@ -2010,7 +2010,7 @@ class ContainerWithElementwise(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
                     b=ivy.array([0.67, -0.98, -3]))
         >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
-        >>> ivy.Container.static_cosh(x, out=y)
+        >>> ivy.Container.cosh(x, out=y)        
         >>> print(y)
         {
             a: ivy.array([10.1, 1.06, 3.76]),
