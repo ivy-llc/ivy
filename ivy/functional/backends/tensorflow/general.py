@@ -13,8 +13,6 @@ import tensorflow as tf
 
 # local
 import ivy
-from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.tensorflow.device import as_native_dev
 
 
 def is_native_array(x, exclusive=False):
@@ -102,8 +100,8 @@ def inplace_update(
 
 def inplace_arrays_supported():
     return False
-    
-    
+
+
 inplace_variables_supported = lambda: True
 
 
@@ -149,8 +147,8 @@ def cumsum(
 
 
 def cumprod(
-    x: Union[tf.Tensor, tf.Variable], 
-    axis: int = 0, 
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
@@ -160,10 +158,10 @@ def cumprod(
 
 # noinspection PyShadowingNames
 def scatter_flat(
-    indices: Union[tf.Tensor, tf.Variable], 
-    updates: Union[tf.Tensor, tf.Variable], 
-    size: Optional[int] = None, 
-    tensor: Optional[Union[tf.Tensor, tf.Variable]] = None, 
+    indices: Union[tf.Tensor, tf.Variable],
+    updates: Union[tf.Tensor, tf.Variable],
+    size: Optional[int] = None,
+    tensor: Optional[Union[tf.Tensor, tf.Variable]] = None,
     reduction: str = "sum",
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
@@ -229,15 +227,15 @@ def _parse_ellipsis(so, ndims):
 
 # noinspection PyShadowingNames
 def scatter_nd(
-    indices: Union[tf.Tensor, tf.Variable], 
-    updates: Union[tf.Tensor, tf.Variable], 
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
-    tensor: Optional[Union[tf.Tensor, tf.Variable]] = None, 
+    indices: Union[tf.Tensor, tf.Variable],
+    updates: Union[tf.Tensor, tf.Variable],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor: Optional[Union[tf.Tensor, tf.Variable]] = None,
     reduction: str = "sum",
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    
+
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
             tf.cast(tensor, dtype=updates.dtype)
@@ -336,7 +334,7 @@ def gather(
 
 
 def gather_nd(
-    params: Union[tf.Tensor, tf.Variable], 
+    params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
@@ -345,17 +343,14 @@ def gather_nd(
 
 
 def one_hot(
-    indices: Union[tf.Tensor, tf.Variable], 
-    depth: int, 
-    *, 
-    device,
+    indices: Union[tf.Tensor, tf.Variable],
+    depth: int,
+    *,
+    device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    device = default_device(device)
-    if device is not None:
-        with tf.device(as_native_dev(device)):
-            return tf.one_hot(indices, depth)
-    return tf.one_hot(indices, depth)
+    with tf.device(device):
+        return tf.one_hot(indices, depth)
 
 
 def current_backend_str():
