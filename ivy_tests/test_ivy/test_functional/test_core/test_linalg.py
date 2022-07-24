@@ -22,6 +22,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 def test_vector_to_skew_symmetric_matrix(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -61,6 +62,7 @@ def test_vector_to_skew_symmetric_matrix(
 @handle_cmd_line_args
 def test_matrix_power(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -107,6 +109,7 @@ def test_matrix_power(
 @handle_cmd_line_args
 def test_matmul(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -154,6 +157,7 @@ def test_matmul(
 @handle_cmd_line_args
 def test_det(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -194,6 +198,7 @@ def test_det(
 @handle_cmd_line_args
 def test_eigh(
     *,
+    data,
     input_dtype,
     as_variable,
     num_positional_args,
@@ -246,6 +251,7 @@ def test_eigh(
 @handle_cmd_line_args
 def test_eigvalsh(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -288,6 +294,7 @@ def test_eigvalsh(
 @handle_cmd_line_args
 def test_inv(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -330,6 +337,7 @@ def test_inv(
 @handle_cmd_line_args
 def test_matrix_transpose(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -370,6 +378,7 @@ def test_matrix_transpose(
 @handle_cmd_line_args
 def test_outer(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -413,6 +422,7 @@ def test_outer(
 @handle_cmd_line_args
 def test_slogdet(
     *,
+    data,
     input_dtype,
     as_variable,
     num_positional_args,
@@ -452,6 +462,7 @@ def test_slogdet(
 @handle_cmd_line_args
 def test_solve(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -497,6 +508,7 @@ def test_solve(
 @handle_cmd_line_args
 def test_svdvals(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -539,6 +551,7 @@ def test_svdvals(
 @handle_cmd_line_args
 def test_tensordot(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -588,6 +601,7 @@ def test_tensordot(
 @handle_cmd_line_args
 def test_trace(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -632,6 +646,7 @@ def test_trace(
 @handle_cmd_line_args
 def test_vecdot(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -683,6 +698,7 @@ def test_vecdot(
 @handle_cmd_line_args
 def test_vector_norm(
     *,
+    data,
     array_shape,
     input_dtype,
     as_variable,
@@ -730,6 +746,7 @@ def test_vector_norm(
 @handle_cmd_line_args
 def test_pinv(
     *,
+    data,
     array_shape,
     input_dtype,
     as_variable,
@@ -772,6 +789,7 @@ def test_pinv(
 @handle_cmd_line_args
 def test_qr(
     *,
+    data,
     input_dtype,
     as_variable,
     num_positional_args,
@@ -817,6 +835,7 @@ def test_qr(
 @handle_cmd_line_args
 def test_svd(
     *,
+    data,
     array_shape,
     input_dtype,
     as_variable,
@@ -880,6 +899,7 @@ def test_svd(
 @handle_cmd_line_args
 def test_matrix_norm(
     *,
+    data,
     array_shape,
     input_dtype,
     as_variable,
@@ -926,6 +946,7 @@ def test_matrix_norm(
 @handle_cmd_line_args
 def test_matrix_rank(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -968,6 +989,7 @@ def test_matrix_rank(
 @handle_cmd_line_args
 def test_cholesky(
     *,
+    data,
     input_dtype,
     as_variable,
     num_positional_args,
@@ -1013,6 +1035,7 @@ def test_cholesky(
 @handle_cmd_line_args
 def test_cross(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,
@@ -1061,6 +1084,7 @@ def test_cross(
 @handle_cmd_line_args
 def test_diagonal(
     *,
+    data,
     input_dtype,
     as_variable,
     with_out,

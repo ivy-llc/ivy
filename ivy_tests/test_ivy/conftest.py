@@ -175,4 +175,4 @@ def pytest_addoption(parser):
     parser.addoption("--with-nestable-testing", action="store", default="false")
     parser.addoption("--with-instance-method-testing", action="store", default="false")
 
-    parser.addoption("--no-extra-testing", action="store", default="true")
+    parser.addoption("--no-extra-testing", action="store", default="false")
