@@ -87,7 +87,7 @@ def squeeze(
 
 def reshape(    
     x: Union[ivy.Array, ivy.NativeArray],
-    shape: Union[int, Tuple[int,int], List[int]],
+    shape: Union[int, Tuple[int, int], List[int]]
 ):
     return mx.nd.reshape(x, shape)
 
