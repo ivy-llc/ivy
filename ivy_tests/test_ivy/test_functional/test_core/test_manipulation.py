@@ -679,7 +679,7 @@ def test_constant_pad(
         (data.draw(st.integers(0, 3)), data.draw(st.integers(0, 3)))
         for _ in range(len(x.shape))
     ]
-    constant = data.draw(st.integers(0, 10))
+    constant = data.draw(helpers.array_values(dtype=input_dtype, shape=()))
 
     # Torch does not support unsigned integers of more than 8 bits (>uint8)
     if (
