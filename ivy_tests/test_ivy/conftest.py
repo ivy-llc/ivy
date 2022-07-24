@@ -123,6 +123,8 @@ def get_command_line_flags(request) -> Dict[str, bool]:
     n_w = request.config.getoption("--with-nestable-testing")
     i_m_f_w = request.config.getoption("--with-instance-method-testing")
 
+    no_extra_testing = request.config.getoption("--no-extra-testing")
+
     # mapping command line arguments, first element of the tuple is
     # the --skip flag, and the second is the --with flag
     CONFIG_DICT["as-variable"] = (MAP_BOOL_FLAGS[a_v_f_s], MAP_BOOL_FLAGS[a_v_f_w])
@@ -136,10 +138,14 @@ def get_command_line_flags(request) -> Dict[str, bool]:
         # when both flags are true
         if v[0] and v[1]:
             raise Exception(
-                f"--skip-{k}--testing and --with-{k}--testing flags cannot be tested together"
+                f"--skip-{k}--testing and --with-{k}--testing flags cannot be used together"
+            )
+        if v[1] and no_extra_testing:
+            raise Exception(
+                f"--with-{k}--testing and --no-extra-testing flags cannot be used together "
             )
         # skipping a test
-        if v[0]:
+        if v[0] or no_extra_testing:
             CONFIG_DICT[k] = False
         # extra testing
         if v[1]:
@@ -168,3 +174,5 @@ def pytest_addoption(parser):
     parser.addoption("--with-out-testing", action="store", default="false")
     parser.addoption("--with-nestable-testing", action="store", default="false")
     parser.addoption("--with-instance-method-testing", action="store", default="false")
+
+    parser.addoption("--no-extra-testing", action="store", default="true")
