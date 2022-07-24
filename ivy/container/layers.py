@@ -128,7 +128,6 @@ class ContainerWithLayers(ContainerBase):
             self, filters, strides, padding, data_format, dilations, out=out
         )
     
-    
     @staticmethod
     def static_conv1d(
             x: ivy.Container,
@@ -197,8 +196,7 @@ class ContainerWithLayers(ContainerBase):
             dilations=dilations,
             out=out,
         )
-
-    
+ 
     def conv1d(
             self: ivy.Container,
             filters: Union[ivy.Array, ivy.NativeArray],
