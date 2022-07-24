@@ -5,6 +5,7 @@ from typing import Any, Union, List, Dict, Iterable, Optional
 from ivy.container.base import ContainerBase
 import ivy
 
+
 # ToDo: implement all methods here as public instance methods
 
 
@@ -501,6 +502,82 @@ class ContainerWithGeneral(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "to_numpy",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def exists(
+            self,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.exists.
+        This method simply wraps the function, and so the docstring for
+        ivy.exists also applies to this method with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
+                    b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
+        >>> y = x.exists()
+        >>> print(y)
+        True
+
+        >>> x = ivy.Container(a=None,\
+                            b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
+        >>> y = x.exists()
+        >>> print(y)
+        True
+
+        """
+        return self.static_exists(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences
+        )
+
+    @staticmethod
+    def static_exists(
+            x: Any,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.exists. This method simply wraps
+        the function, and so the docstring for ivy.exists also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
+                            b=ivy.array([1, -1, 0, 0]))
+        >>> y = ivy.Container.static_exists(x)
+        >>> print(y)
+        True
+
+        >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> y = ivy.Container.static_exists(x)
+        >>> print(y)
+        True
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "exists",
             x,
             key_chains=key_chains,
             to_apply=to_apply,

@@ -123,3 +123,26 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.to_numpy(self)
+
+    def exists(self: ivy.Array):
+        """
+        ivy.Container instance method variant of ivy.exists.
+        This method simply wraps the function, and so the docstring for
+        ivy.exists also applies to this method with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance methods:
+
+        >>> x = ivy.array([1, 0, 1, 1])
+        >>> y = x.exists()
+        >>> print(y)
+        True
+
+        >>> x = ivy.array([])
+        >>> y = x.to_numpy()
+        >>> print(y)
+        True
+
+        """
+        return ivy.exists(self)
