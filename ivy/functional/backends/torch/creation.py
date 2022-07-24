@@ -141,8 +141,8 @@ def eye(
     if n_cols is None:
         n_cols = n_rows
     if batch_shape is None:
-        batch_shape = []
-    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
+        return torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
+    i = torch.eye(n_rows, n_cols, dtype=dtype, device=device)
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
     return_mat = torch.reshape(i, reshape_dims).repeat(tile_dims)
@@ -153,7 +153,7 @@ def eye(
     # value of k ranges from -n_rows < k < n_cols
 
     if k == 0:  # refers to the main diagonal
-        return return_mat
+        ret = return_mat
 
     # when k is negative
     elif -n_rows < k < 0:
@@ -164,7 +164,7 @@ def eye(
             ],
             0,
         )
-        return torch.reshape(mat, reshape_dims).repeat(tile_dims)
+        ret = torch.reshape(mat, reshape_dims).repeat(tile_dims)
 
     # when k is positive
     elif 0 < k < n_cols:
@@ -175,11 +175,14 @@ def eye(
             ],
             1,
         )
-        return torch.reshape(mat, reshape_dims).repeat(tile_dims)
+        ret = torch.reshape(mat, reshape_dims).repeat(tile_dims)
     else:
-        return torch.zeros(
+        ret = torch.zeros(
             batch_shape + [n_rows, n_cols], dtype=dtype, device=device, out=out
         )
+    if out is not None:
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 eye.support_native_out = True
@@ -428,10 +431,13 @@ def logspace(
     base=10.0,
     axis=None,
     *,
+    dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ):
-    power_seq = linspace(start, stop, num, axis, dtype=None, device=device)
+    power_seq = ivy.linspace(
+        start, stop, num, axis, dtype=dtype, device=device
+    )
     return base**power_seq
 
 
