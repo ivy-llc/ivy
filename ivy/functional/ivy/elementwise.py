@@ -1618,8 +1618,8 @@ def divide(
 @handle_out_argument
 @handle_nestable
 def equal(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
+    x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1643,6 +1643,53 @@ def equal(
         an array containing the element-wise results. The returned array must have a
         data type of bool.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([2., 7., 9.])
+    >>> x2 = ivy.array([1., 7., 9.])
+    >>> y = ivy.equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, True, True])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([2.5, 7.3, 9.375])
+    >>> x2 = ivy.native_array([2.5, 2.9, 9.375])
+    >>> y = ivy.equal(x1, x2)
+    >>> print(y)
+    ivy.array([True, False,  True])
+
+    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.array([5, 6, 9])
+    >>> x2 = ivy.native_array([2, 6, 2])
+    >>> y = ivy.equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, True, False])
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+    >>> x2 = ivy.Container(a=ivy.array([12, 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
+    >>> y = ivy.equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([True, False, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+    >>> x2 = ivy.array([3., 1., 0.9])
+    >>> y = ivy.equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([True, True, True])
+    }
     """
     return ivy.current_backend(x1, x2).equal(x1, x2, out=out)
 
