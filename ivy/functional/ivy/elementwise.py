@@ -2906,6 +2906,15 @@ def logical_not(
        accept input arrays having numeric data types. If non-boolean data types are
        supported, zeros must be considered the equivalent of ``False``, while non-zeros
        must be considered the equivalent of ``True``.
+       
+       **Special cases**
+       
+       For this particular case,
+       
+       - If ``x_i`` is ``NaN``, the result is ``False``.
+       - If ``x_i`` is ``-0``, the result is ``True``.
+       - If ``x_i`` is ``-infinity``, the result is ``False``.
+       - If ``x_i`` is ``+infinity``, the result is ``False``.
 
     Parameters
     ----------
@@ -2920,6 +2929,30 @@ def logical_not(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of ``bool``.
+        
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+    >>> x=ivy.array([1,0,1,1,0])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False,  True])
+    
+    >>> x=ivy.array([2,0,3,5])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False])
+    
+    With :code:`ivy.NativeArray` input:
+    >>> x=ivy.native_array([1,0,1,1,0])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False,  True])
+    
+    >>> x=ivy.native_array([1,0,6,5])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False])
 
     """
     return ivy.current_backend(x).logical_not(x, out=out)
