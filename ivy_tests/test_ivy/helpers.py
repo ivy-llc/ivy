@@ -1723,11 +1723,13 @@ def none_or_list_of_floats(
 
 @st.composite
 def get_mean_std(draw, *, dtype):
-    """Draws two integers representing the mean and standard deviation for a given data type.
+    """Draws two integers representing the mean and
+    standard deviation for a given data type.
     Parameters
     ----------
     draw
-        special function that draws data randomly (but is reproducible) from a given data-set (ex. list).
+        special function that draws data randomly
+        (but is reproducible) from a given data-set (ex. list).
     dtype
         data type.
 
@@ -1746,7 +1748,8 @@ def get_bounds(draw, *, dtype):
     Parameters
     ----------
     draw
-        special function that draws data randomly (but is reproducible) from a given data-set (ex. list).
+        special function that draws data randomly (but is reproducible)
+        from a given data-set (ex. list).
     dtype
         data type.
 
@@ -1779,7 +1782,8 @@ def get_axis(draw, *, shape, allow_none=False):
     Parameters
     ----------
     draw
-        special function that draws data randomly (but is reproducible) from a given data-set (ex. list).
+        special function that draws data randomly (but is reproducible)
+         from a given data-set (ex. list).
     shape
         shape of the array.
     allow_none
@@ -1825,13 +1829,15 @@ def get_axis(draw, *, shape, allow_none=False):
 
 @st.composite
 def num_positional_args(draw, *, fn_name: str = None):
-    """Draws an integers randomly from the minimum and maximum number of positional arguments
+    """Draws an integers randomly from the minimum and maximum number
+    of positional arguments
     a given function can take.
 
     Parameters
     ----------
     draw
-        special function that draws data randomly (but is reproducible) from a given data-set (ex. list).
+        special function that draws data randomly (but is reproducible)
+        from a given data-set (ex. list).
     fn_name
         name of the function.
 
@@ -1876,10 +1882,12 @@ def bool_val_flags(cl_arg: Union[bool, None]):
 
 def handle_cmd_line_args(test_fn):
     # first four arguments are all fixtures
-    def new_fn(data, get_command_line_flags, fw, device, call, *args, **kwargs):
+    def new_fn(get_command_line_flags, fw, device, call, *args, **kwargs):
         # inspecting for keyword arguments in test function
         for param in inspect.signature(test_fn).parameters.values():
             if param.kind == param.KEYWORD_ONLY:
+                if param.name == "data":
+                    data = kwargs["data"]
                 if param.name == "as_variable":
                     as_variable = data.draw(
                         bool_val_flags(get_command_line_flags["as-variable"])

@@ -21,6 +21,7 @@ import ivy.functional.backends.numpy as ivy_np
 @handle_cmd_line_args
 def test_abs(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -54,6 +55,7 @@ def test_abs(
 @handle_cmd_line_args
 def test_acosh(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -87,6 +89,7 @@ def test_acosh(
 @handle_cmd_line_args
 def test_acos(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -122,6 +125,7 @@ def test_acos(
 @handle_cmd_line_args
 def test_add(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -159,6 +163,7 @@ def test_add(
 @handle_cmd_line_args
 def test_asin(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -192,6 +197,7 @@ def test_asin(
 @handle_cmd_line_args
 def test_asinh(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -225,6 +231,7 @@ def test_asinh(
 @handle_cmd_line_args
 def test_atan(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -260,6 +267,7 @@ def test_atan(
 @handle_cmd_line_args
 def test_atan2(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -297,6 +305,7 @@ def test_atan2(
 @handle_cmd_line_args
 def test_atanh(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -332,6 +341,7 @@ def test_atanh(
 @handle_cmd_line_args
 def test_bitwise_and(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -371,6 +381,7 @@ def test_bitwise_and(
 @handle_cmd_line_args
 def test_bitwise_left_shift(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -410,6 +421,7 @@ def test_bitwise_left_shift(
 @handle_cmd_line_args
 def test_bitwise_invert(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -445,6 +457,7 @@ def test_bitwise_invert(
 @handle_cmd_line_args
 def test_bitwise_or(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -484,6 +497,7 @@ def test_bitwise_or(
 @handle_cmd_line_args
 def test_bitwise_right_shift(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -523,6 +537,7 @@ def test_bitwise_right_shift(
 @handle_cmd_line_args
 def test_bitwise_xor(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -560,6 +575,7 @@ def test_bitwise_xor(
 @handle_cmd_line_args
 def test_ceil(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -593,6 +609,7 @@ def test_ceil(
 @handle_cmd_line_args
 def test_cos(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -626,6 +643,7 @@ def test_cos(
 @handle_cmd_line_args
 def test_cosh(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -661,6 +679,7 @@ def test_cosh(
 @handle_cmd_line_args
 def test_divide(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -705,6 +724,7 @@ def test_divide(
 @handle_cmd_line_args
 def test_equal(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -742,6 +762,7 @@ def test_equal(
 @handle_cmd_line_args
 def test_exp(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -775,6 +796,7 @@ def test_exp(
 @handle_cmd_line_args
 def test_expm1(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -808,6 +830,7 @@ def test_expm1(
 @handle_cmd_line_args
 def test_floor(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -845,6 +868,7 @@ def test_floor(
 @handle_cmd_line_args
 def test_floor_divide(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -888,6 +912,7 @@ def test_floor_divide(
 @handle_cmd_line_args
 def test_greater(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -927,6 +952,7 @@ def test_greater(
 @handle_cmd_line_args
 def test_greater_equal(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -964,6 +990,7 @@ def test_greater_equal(
 @handle_cmd_line_args
 def test_isfinite(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -997,6 +1024,7 @@ def test_isfinite(
 @handle_cmd_line_args
 def test_isinf(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1030,6 +1058,7 @@ def test_isinf(
 @handle_cmd_line_args
 def test_isnan(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1065,6 +1094,7 @@ def test_isnan(
 @handle_cmd_line_args
 def test_less(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1104,6 +1134,7 @@ def test_less(
 @handle_cmd_line_args
 def test_less_equal(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1141,6 +1172,7 @@ def test_less_equal(
 @handle_cmd_line_args
 def test_log(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1174,6 +1206,7 @@ def test_log(
 @handle_cmd_line_args
 def test_log1p(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1207,6 +1240,7 @@ def test_log1p(
 @handle_cmd_line_args
 def test_log2(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1240,6 +1274,7 @@ def test_log2(
 @handle_cmd_line_args
 def test_log10(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1275,6 +1310,7 @@ def test_log10(
 @handle_cmd_line_args
 def test_logaddexp(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1313,6 +1349,7 @@ def test_logaddexp(
 @handle_cmd_line_args
 def test_logical_and(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1350,6 +1387,7 @@ def test_logical_and(
 @handle_cmd_line_args
 def test_logical_not(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1383,6 +1421,7 @@ def test_logical_not(
 @handle_cmd_line_args
 def test_logical_or(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1420,6 +1459,7 @@ def test_logical_or(
 @handle_cmd_line_args
 def test_logical_xor(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1459,6 +1499,7 @@ def test_logical_xor(
 @handle_cmd_line_args
 def test_multiply(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1496,6 +1537,7 @@ def test_multiply(
 @handle_cmd_line_args
 def test_negative(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1531,6 +1573,7 @@ def test_negative(
 @handle_cmd_line_args
 def test_not_equal(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1568,6 +1611,7 @@ def test_not_equal(
 @handle_cmd_line_args
 def test_positive(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1603,6 +1647,7 @@ def test_positive(
 @handle_cmd_line_args
 def test_pow(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1652,6 +1697,7 @@ def test_pow(
 @handle_cmd_line_args
 def test_remainder(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1693,6 +1739,7 @@ def test_remainder(
 @handle_cmd_line_args
 def test_round(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1726,6 +1773,7 @@ def test_round(
 @handle_cmd_line_args
 def test_sign(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1759,6 +1807,7 @@ def test_sign(
 @handle_cmd_line_args
 def test_sin(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1792,6 +1841,7 @@ def test_sin(
 @handle_cmd_line_args
 def test_sinh(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1825,6 +1875,7 @@ def test_sinh(
 @handle_cmd_line_args
 def test_square(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1860,6 +1911,7 @@ def test_square(
 @handle_cmd_line_args
 def test_sqrt(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1895,6 +1947,7 @@ def test_sqrt(
 @handle_cmd_line_args
 def test_subtract(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1932,6 +1985,7 @@ def test_subtract(
 @handle_cmd_line_args
 def test_tan(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1965,6 +2019,7 @@ def test_tan(
 @handle_cmd_line_args
 def test_tanh(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1998,6 +2053,7 @@ def test_tanh(
 @handle_cmd_line_args
 def test_trunc(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -2035,6 +2091,7 @@ def test_trunc(
 @handle_cmd_line_args
 def test_erf(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -2070,6 +2127,7 @@ def test_erf(
 @handle_cmd_line_args
 def test_minimum(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -2118,6 +2176,7 @@ def test_minimum(
 @handle_cmd_line_args
 def test_maximum(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
