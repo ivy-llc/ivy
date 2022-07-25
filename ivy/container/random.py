@@ -12,8 +12,8 @@ from ivy.container.base import ContainerBase
 class ContainerWithRandom(ContainerBase):
     @staticmethod
     def static_random_uniform(
-        low: Union[float, ivy.Container] = 0.0,
-        high: Union[float, ivy.Container] = 1.0,
+        low: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 0.0,
+        high: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -40,7 +40,7 @@ class ContainerWithRandom(ContainerBase):
 
     def random_uniform(
         self: ivy.Container,
-        high: Union[float, ivy.Container] = 1.0,
+        high: Union[ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
