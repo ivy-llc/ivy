@@ -93,8 +93,6 @@ def _get_dtype_value1_value2_axis_for_tensordot(
     )
     axis = draw(
         st.integers(1, len(shape))
-        | st.lists(st.integers(0, len(shape)-1), min_size=1, max_size=len(shape), unique=True)
-        .map(lambda x: [x, x])
     )
 
     dtype = draw(
