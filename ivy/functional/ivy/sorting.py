@@ -162,8 +162,8 @@ def sort(
                               [[6, 0.3], [19, 0.5]]])
     >>> y = ivy.sort(x, -1, True, False)
     >>> print(y)
-    ivy.array([[[ 8.9,  0.3],[19. ,  5. ]],\
-               [[ 6. ,  0. ],[19. ,  0.5]]])
+    ivy.array([[[ 8.9,  0.],[19. ,  5. ]],\
+               [[ 6. ,  0.3 ],[19. ,  0.5]]])
 
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
 
