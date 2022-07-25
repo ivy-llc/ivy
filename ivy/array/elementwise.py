@@ -1070,6 +1070,24 @@ class ArrayWithElementwise(abc.ABC):
         This method simply wraps the function, and so the docstring for
         ivy.logical_and also applies to this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            first input array. Should have a boolean data type.
+        x2
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
+            Should have a boolean data type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results. The returned array
+            must have a data type of ``bool``.
+
         Examples
         --------
         Using 'ivy.Array' instance:

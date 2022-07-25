@@ -3868,6 +3868,33 @@ class ContainerWithElementwise(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.logical_and also applies to this method with minimal changes.
 
+        Parameters
+        ----------
+        x1
+            input array or container. Should have a boolean data type.
+        x2
+            input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
+            Should have a boolean data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type of ``bool``.
+        
         Examples
         --------
         Using 'ivy.Container' instance
@@ -3929,6 +3956,33 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.logical_and.
         This method simply wraps the function, and so the docstring for
         ivy.logical_and also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a boolean data type.
+        x2
+            input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
+            Should have a boolean data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned container
+            must have a data type of ``bool``.
 
         Examples
         --------
