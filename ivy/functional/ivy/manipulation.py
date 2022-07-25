@@ -358,9 +358,9 @@ def reshape(
         remaining dimensions.
     copy
         boolean indicating whether or not to copy the input array. If True, the function
-        must always copy. If False, the function must never copy and must raise a ValueError
-        in case a copy would be necessary. If None, the function must reuse existing memory
-        buffer if possible and copy otherwise. Default: None.
+        must always copy. If False, the function must never copy and must raise a
+        ValueError in case a copy would be necessary. If None, the function must reuse
+        existing memory buffer if possible and copy otherwise. Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -369,14 +369,6 @@ def reshape(
     -------
     ret
         Reshaped array.
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
 
     Functional Examples
     -------------------
@@ -426,7 +418,8 @@ def reshape(
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), b=ivy.array([[6., 7., 8.], [9., 10., 11.]]))
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
+                        b=ivy.array([[6., 7., 8.], [9., 10., 11.]]))
     >>> y = x.reshape((-1, 2))
     >>> print(y)
     {
@@ -437,7 +430,6 @@ def reshape(
                     [8., 9.],
                     [10., 11.]])
     }
-
 
     """
     return current_backend(x).reshape(x, shape, copy, out=out)
@@ -953,7 +945,7 @@ def split(
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
     *,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Splits an array into multiple sub-arrays.
 
