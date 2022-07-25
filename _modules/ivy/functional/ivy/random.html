@@ -136,7 +136,6 @@
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">infer_device</span><span class="p">,</span>
     <span class="n">infer_dtype</span><span class="p">,</span>
-    <span class="n">outputs_to_ivy_arrays</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
@@ -228,13 +227,13 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="random_normal"><a class="viewcode-back" href="../../../../functional/ivy/random/random_normal.html#ivy.functional.ivy.random.random_normal">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="random_normal"><a class="viewcode-back" href="../../../../functional/ivy/random/random_normal.html#ivy.functional.ivy.random.random_normal">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">random_normal</span><span class="p">(</span>
-    <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-    <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">mean</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">std</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -330,7 +329,7 @@
 <span class="sd">        Number of tensors to generate. Default is 1.</span>
 <span class="sd">    probs</span>
 <span class="sd">        The unnormalized probabilities for all elements in population,</span>
-<span class="sd">        default is uniform *[batch_shape, num_classes]*</span>
+<span class="sd">        default is uniform *[batch_shape, population_size]*</span>
 <span class="sd">    replace</span>
 <span class="sd">        Whether to replace samples once they&#39;ve been drawn. Default is True.</span>
 <span class="sd">    device</span>
@@ -397,7 +396,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="randint"><a class="viewcode-back" href="../../../../functional/ivy/random/randint/randint_functional.html#ivy.functional.ivy.random.randint">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="randint"><a class="viewcode-back" href="../../../../functional/ivy/random/randint/randint_functional.html#ivy.functional.ivy.random.randint">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
