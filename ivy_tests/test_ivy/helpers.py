@@ -1701,9 +1701,13 @@ def none_or_list_of_floats(
 
 @st.composite
 def get_mean_std(draw, *, dtype):
-    values = draw(none_or_list_of_floats(dtype=dtype, size=2))
-    values[1] = abs(values[1]) if values[1] else None
-    return values[0], values[1]
+    values = draw(none_or_list_of_floats(
+        dtype=dtype, size=2, min_value=0, no_none=True)
+    )
+    if values[0] is not None and values[1] is not None:
+        mean, std = abs(values[0]), abs(values[1])
+    #values[1] = abs(values[1]) if values[1] else None
+    return mean, std
 
 
 @st.composite

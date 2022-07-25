@@ -26,14 +26,8 @@ def random_uniform(
 ) -> Union[tf.Tensor, tf.Variable]:
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
-    if isinstance(shape, tf.Tensor):
-        shape = list(shape)
     with tf.device(default_device(device)):
         return tf.random.uniform(shape if shape else (), low, high, dtype=dtype)
-
-
-random_uniform.unsupported_dtypes = ("int8", "int16", "uint8",
-                                        "uint16", "uint32", "uint64",)
 
 
 def random_normal(
@@ -45,10 +39,10 @@ def random_normal(
     dtype: tf.dtypes.DType,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    mean = tf.cast(mean, dtype)
-    std = tf.cast(std, dtype)
+    mean = float(mean) if isinstance(mean, ivy.Array) else mean
+    std = float(std) if isinstance(std, ivy.Array) else std
     with tf.device(default_device(device)):
-        return tf.random.normal(shape if shape else (), mean if mean else 0.0, std if std else 1.0, dtype=dtype)
+        return tf.random.normal(shape if shape else (), mean, std, dtype=dtype)
 
 
 def multinomial(

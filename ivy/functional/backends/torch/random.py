@@ -7,7 +7,7 @@ from typing import Optional, List, Union, Sequence
 # local
 import ivy
 from ivy.functional.ivy.device import default_device
-
+from ivy.functional.backends.torch.data_type import as_native_dtype
 
 # Extra #
 # ------#
@@ -24,8 +24,6 @@ def random_uniform(
 ) -> torch.Tensor:
     if shape is None:
         shape = []
-    if not isinstance(shape, int):
-        shape = list(shape)
     rand_range = high - low
     return (
         torch.rand(shape, device=default_device(device), dtype=dtype, out=out)
@@ -43,17 +41,18 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: torch.device,
-    dtype = torch.dtype,
+    dtype: torch.dtype,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if shape is None:
         true_shape: List[int] = []
     else:
         true_shape: List[int] = shape
-    mean = mean.item() if isinstance(mean, (torch.Tensor, ivy.Array)) else mean
-    std = std.item() if isinstance(std, (torch.Tensor, ivy.Array)) else std
+    mean = float(mean) if isinstance(mean, (torch.Tensor, ivy.Array)) else mean
+    std = float(std) if isinstance(std, (torch.Tensor, ivy.Array)) else std
     return torch.normal(
-        mean, std, true_shape, device=default_device(device), dtype=dtype, out=out
+        mean, std, true_shape, device=default_device(device),
+        dtype=as_native_dtype(dtype), out=out
     )
 
 

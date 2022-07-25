@@ -7,12 +7,12 @@ from typing import Union, List, Optional, Sequence
 # local
 import ivy
 from ivy import (
-    as_native_dtype,
     default_dtype,
     as_native_dev,
     default_device,
 )
 from ivy.functional.backends.torch.device import dev
+from ivy.functional.backends.torch.data_type import as_native_dtype
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 
 # noinspection PyProtectedMember
