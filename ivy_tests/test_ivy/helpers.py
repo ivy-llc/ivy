@@ -1795,6 +1795,8 @@ def get_axis(draw, *, shape, allow_none=False):
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
+    if isinstance(shape, st._internal.SearchStrategy):
+        shape = draw(shape)
     axes = len(shape)
     if allow_none:
         axis = draw(
