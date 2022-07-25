@@ -523,6 +523,52 @@ def test_default_dtype(
     ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
 
 
+# dtype
+@given(
+    array=helpers.nph.arrays(
+        dtype=dtype_shared,
+        shape=helpers.lists(
+            arg=st.integers(1, 5),
+            min_size="num_dims",
+            max_size="num_dims",
+            size_bounds=[1, 5],
+        ),
+    ),
+    input_dtype=dtype_shared,
+    as_native=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="dtype"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_dtype(
+    array,
+    input_dtype,
+    as_native,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="dtype",
+        x=array,
+        as_native=as_native,
+        test_values=False,
+    )
+
+
 # dtype_bits
 @given(
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
@@ -754,6 +800,46 @@ def test_type_promote_arrays(
         x2=np.array(x2),
         test_values=True,
     )
+
+
+@st.composite
+def dtytes_list(draw):
+    num = draw(st.one_of(st.integers(min_value=1, max_value=5)))
+    return draw(
+        st.lists(
+            st.sampled_from(ivy.valid_dtypes),
+            min_size=num,
+            max_size=num,
+        )
+    )
+
+
+# function_unsupported_dtypes
+@given(supported_dtypes=dtytes_list())
+def test_function_supported_dtypes(
+    supported_dtypes,
+):
+    def func():
+        return
+
+    func.supported_dtypes = tuple(supported_dtypes)
+    res = ivy.function_supported_dtypes(func)
+    supported_dtypes_true = tuple(set(func.supported_dtypes))
+    assert sorted(supported_dtypes_true) == sorted(res)
+
+
+# function_unsupported_dtypes
+@given(unsupported_dtypes=dtytes_list())
+def test_function_unsupported_dtypes(
+    unsupported_dtypes,
+):
+    def func():
+        return
+
+    func.unsupported_dtypes = tuple(unsupported_dtypes)
+    res = ivy.function_unsupported_dtypes(func)
+    unsupported_dtypes_true = tuple(set(ivy.invalid_dtypes + func.unsupported_dtypes))
+    assert sorted(unsupported_dtypes_true) == sorted(res)
 
 
 # invalid_dtype
