@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
+from ivy.backend_handler import backend_stack
 
 
 # Helpers #
@@ -25,12 +26,15 @@ def _check_bounds_and_get_shape(low, high, shape):
                               and `high` arguments are numerics (not arrays)"
             )
         return shape
-    if isinstance(low, (ivy.Array, ivy.NativeArray)):
-        if isinstance(high, (ivy.Array, ivy.NativeArray)):
+    valid_types = (ivy.Array, ivy.NativeArray)
+    if len(backend_stack) == 0:
+        valid_types += (ivy.current_backend().NativeArray,)
+    if isinstance(low, valid_types):
+        if isinstance(high, valid_types):
             if ivy.shape(low) != ivy.shape(high):
                 raise Exception("shape of bounds have to be the same")
         return ivy.shape(low)
-    if isinstance(high, (ivy.Array, ivy.NativeArray)):
+    if isinstance(high, valid_types):
         return ivy.shape(high)
     return ()
 
@@ -73,6 +77,9 @@ def random_uniform(
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
+    dtype
+         output array data type. If ``dtype`` is ``None``, the output array data
+         type will be the default floating-point data type. Default ``None``
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -85,22 +92,57 @@ def random_uniform(
     Functional Examples
     -------------------
 
-    >>> y = ivy.random_uniform()
-    >>> print(y)
+    >>> ivy.random_uniform()
     ivy.array(0.26431865)
 
-    >>> y = ivy.random_uniform(shape=3)
-    >>> print(y)
+    >>> ivy.random_uniform(shape=3)
     ivy.array([0.475, 0.878, 0.861])
 
-    >>> y = ivy.random_uniform(0.0, 2.0, device="cpu")
-    >>> print(y)
-    ivy.array(1.89150229)
+    >>> ivy.random_uniform(shape=(2,3))
+    ivy.array([[0.929 , 0.545 , 0.789 ],
+               [0.519 , 0.0435, 0.381 ]])
 
-    >>> y = ivy.random_uniform(0.7, 1.0, device="cpu", shape=(2, 2))
-    >>> print(y)
-    ivy.array([[0.89629126, 0.94198485],
-               [0.91405606, 0.72848724]])
+    >>> ivy.random_uniform(3.0, 6.0)
+    ivy.array(3.4608004)
+
+    >>> ivy.random_uniform(1.0, 2.0, (2,1))
+    ivy.array([[1.85],
+               [1.81]])
+
+    >>> z = ivy.zeros(())
+    >>> ivy.random_uniform(1.0, 2.0, out=z)
+    ivy.array(1.8458502)
+
+    >>> ivy.random_uniform(1.0, 2.0, (2,2), device='cpu')
+    ivy.array([[1.81, 1.8 ],
+               [1.32, 1.43]])
+
+    >>> ivy.random_uniform(1.0, 2.0, (2,2), device='cpu', dtype='int32')
+    ivy.array([[1, 1],
+               [1, 1]])
+
+    >>> z = ivy.zeros((1,2))
+    >>> ivy.random_uniform(1.0, 2.0, (1,2), device='cpu', dtype='float64', out=z)
+    ivy.array([[1.34, 1.02]])
+
+    >>> x = ivy.array([4.8, 5.6])
+    >>> y = ivy.array([9.8, 7.4])
+    >>> ivy.random_uniform(x, y)
+    ivy.array([0.475, 0.878])
+
+    >>> z = ivy.zeros((2,))
+    >>> ivy.random_uniform(x, y, out=z)
+    ivy.array([9.41, 7.17])
+
+    >>> ivy.random_uniform(x, y, device='cpu')
+    ivy.array([6.88, 6.75])
+
+    >>> ivy.random_uniform(x, y, device='cpu', dtype='float64')
+    ivy.array([8.62, 6.47])
+
+    >>> z = ivy.zeros((2,))
+    >>> ivy.random_uniform(x, y, device='cpu', dtype='float64', out=z)
+    ivy.array([5. , 7.3])
 
     Instance Method Examples
     ------------------------
