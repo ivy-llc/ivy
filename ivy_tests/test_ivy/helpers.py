@@ -1878,7 +1878,7 @@ def num_positional_args(draw, *, fn_name: str = None):
 def bool_val_flags(cl_arg: Union[bool, None]):
     if cl_arg is not None:
         return st.booleans().filter(lambda x: x == cl_arg)
-    return array_bools()
+    return array_bools(num_arrays=1)
 
 
 def handle_cmd_line_args(test_fn):
