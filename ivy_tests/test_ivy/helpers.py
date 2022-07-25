@@ -522,6 +522,7 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
     # check for unsupported dtypes
     test_unsupported = False
     unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
+    unsupported_dtypes_fn += ivy.invalid_dtypes
     supported_dtypes_fn = ivy.function_supported_dtypes(fn)
     if unsupported_dtypes_fn:
         for d in input_dtypes:
@@ -727,11 +728,6 @@ def test_method(
     # run
     ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
     ret = ins(*calling_args, **calling_kwargs)
-
-    # assert idx of return if the idx of the out array provided
-
-    if "bfloat16" in input_dtypes and ground_truth_backend == "numpy":
-        return  # bfloat16 is not supported by numpy
 
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
@@ -969,8 +965,8 @@ def test_function(
             return
         ret = ivy.__dict__[fn_name](*args, **kwargs)
     # assert idx of return if the idx of the out array provided
-    out = ret
     if with_out:
+        out = ivy.zeros_like(ret)
         assert not isinstance(ret, tuple)
         if max(container_flags):
             assert ivy.is_ivy_container(ret)
@@ -980,13 +976,10 @@ def test_function(
             ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
         else:
             ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
-        if max(container_flags):
-            assert ret is out
-        if not max(container_flags) and fw not in ["tensorflow", "jax", "numpy"]:
+        assert ret is out
+        if not max(container_flags) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
-    if "bfloat16" in input_dtypes and ground_truth_backend == "numpy":
-        return
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     try:
@@ -1170,7 +1163,7 @@ def test_frontend_function(
             args[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
         ret = frontend_fn(*args, **kwargs)
 
-        if fw not in ["tensorflow", "jax", "numpy"]:
+        if ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
 
@@ -1325,6 +1318,7 @@ def dtype_and_values(
     num_arrays=1,
     min_value=None,
     max_value=None,
+    safety_factor=0.95,
     allow_inf=False,
     exclude_min=False,
     exclude_max=False,
@@ -1374,6 +1368,7 @@ def dtype_and_values(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    safety_factor=safety_factor,
                 )
             )
         )
@@ -1612,6 +1607,29 @@ def none_or_list_of_floats(
     exclude_max=False,
     no_none=False,
 ):
+    """Draws a List containing Nones or Floats.
+
+    Parameters
+    ----------
+    dtype
+        float data type ('float16', 'float32', or 'float64').
+    size
+        size of the list required.
+    min_value
+        lower bound for values in the list
+    max_value
+        upper bound for values in the list
+    exclude_min
+        if True, exclude the min_value
+    exclude_max
+        if True, exclude the max_value
+    no_none
+        if True, List does not contains None
+
+    Returns
+    -------
+    A strategy that draws a List containing Nones or Floats.
+    """
     if no_none:
         if dtype == "float16":
             values = list_of_length(
@@ -1706,6 +1724,21 @@ def none_or_list_of_floats(
 
 @st.composite
 def get_mean_std(draw, *, dtype):
+    """Draws two integers representing the mean and standard deviation for a given data
+    type.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    dtype
+        data type.
+
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator.
+    """
     values = draw(none_or_list_of_floats(dtype=dtype, size=2))
     values[1] = abs(values[1]) if values[1] else None
     return values[0], values[1]
@@ -1713,6 +1746,20 @@ def get_mean_std(draw, *, dtype):
 
 @st.composite
 def get_bounds(draw, *, dtype):
+    """Draws two integers low, high for a given data type such that low < high.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    dtype
+        data type.
+
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator.
+    """
     if "int" in dtype:
         values = draw(array_values(dtype=dtype, shape=2))
         values[0], values[1] = abs(values[0]), abs(values[1])
@@ -1731,16 +1778,23 @@ def get_bounds(draw, *, dtype):
 
 
 @st.composite
-def get_probs(draw, *, dtype):
-    shape = draw(
-        get_shape(min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10)
-    )
-    probs = draw(array_values(dtype=dtype, shape=shape, min_value=0, exclude_min=True))
-    return probs, shape[1]
-
-
-@st.composite
 def get_axis(draw, *, shape, allow_none=False):
+    """Draws one or more axis for the given shape.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    shape
+        shape of the array.
+    allow_none
+        if True, allow None to be drawn
+
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator.
+    """
     axes = len(shape)
     if allow_none:
         axis = draw(
@@ -1777,6 +1831,30 @@ def get_axis(draw, *, shape, allow_none=False):
 
 @st.composite
 def num_positional_args(draw, *, fn_name: str = None):
+    """Draws an integers randomly from the minimum and maximum number of positional
+    arguments a given function can take.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    fn_name
+        name of the function.
+
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator.
+
+    Examples
+    --------
+    @given(
+        num_positional_args=num_positional_args(fn_name="floor_divide")
+    )
+    @given(
+        num_positional_args=num_positional_args(fn_name="add")
+    )
+    """
     num_positional_only = 0
     num_keyword_only = 0
     total = 0

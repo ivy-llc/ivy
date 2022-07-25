@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 from collections import namedtuple
 
 
@@ -73,7 +73,9 @@ def unique_inverse(x: torch.Tensor) -> NamedTuple:
 unique_inverse.unsupported_dtypes = ("float16",)
 
 
-def unique_values(x: torch.Tensor) -> torch.Tensor:
+def unique_values(
+    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     ret = torch.unique(x)
     return ret
 
