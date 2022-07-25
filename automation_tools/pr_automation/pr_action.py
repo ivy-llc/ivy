@@ -12,7 +12,7 @@ def import_file(file_path):
 def main():
     pr = Process_pr(int(sys.argv[1]), sys.argv[2])
     interns_assigned_volunteers = import_file("volunteer_go_to_intern.json")
-    intern_points_of_contact = import_file("interns_poc.json")
+    intern_points_of_contact = import_file("intern_poc.json")
 
     # If a volunteer has opened a PR then assign it's coresponding Ivy Team Member
     for ivy_intern, assigned_volunteers in interns_assigned_volunteers.items():
