@@ -56,6 +56,8 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+        With :code:`ivy.Container` instance method:
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_clip_vector_norm(x, 2.0)
@@ -123,6 +125,8 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+        With :code:`ivy.Container` instance method:
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
         >>> y = x.clip_vector_norm(2.0, 1.0)

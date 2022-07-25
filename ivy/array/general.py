@@ -155,6 +155,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+        With :code:`ivy.Array` instance method:
 
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.clip_vector_norm(2.0)
