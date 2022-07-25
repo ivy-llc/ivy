@@ -613,7 +613,7 @@ def default_float_dtype(
     input=None,
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
     as_native: Optional[bool] = None,
-) -> Union[ivy.Dtype, str]:
+) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
     """Summary.
 
     Parameters
@@ -642,7 +642,7 @@ def default_float_dtype(
         if ivy.is_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
-            ret = input.dtype
+            ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_indices_where(input, lambda x: _check_float64(x)):
                 ret = ivy.float64
