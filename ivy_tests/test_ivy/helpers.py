@@ -508,10 +508,6 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
     return ret, flatten(ret=ret)
 
 
-def get_flattened_array_returns(*, ret, ret_from_gt):
-    return flatten(ret=ret), flatten(ret=ret_from_gt)
-
-
 def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
     # value tests, iterating through each array in the flattened returns
     if not rtol:
