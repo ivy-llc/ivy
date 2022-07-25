@@ -284,8 +284,7 @@ def stop_gradient(
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.stop_gradient(x, preserve_type=True)
     >>> print(y)
-    ivy.array([[ 1., 2., 3., 4.],
-               [ 5., 8., 78., 96.]])
+    ivy.array([1., 2., 3.])
 
     >>> x = ivy.zeros((2, 3))
     >>> ivy.stop_gradient(x, preserve_type=False, out=x)
