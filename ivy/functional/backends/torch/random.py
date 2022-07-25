@@ -2,7 +2,8 @@
 
 # global
 import torch
-from typing import Optional, List, Union, Sequence
+from typing import Optional, Union, List, Sequence
+import numbers
 
 # local
 import ivy
@@ -36,24 +37,23 @@ random_uniform.support_native_out = True
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, torch.Tensor] = 0.0,
+    std: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: torch.device,
     dtype: torch.dtype,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if shape is None:
-        true_shape: List[int] = []
+    if isinstance(mean, numbers.Number) and isinstance(std, numbers.Number):
+        ret = torch.normal(mean, std, ivy.default(shape, ()), out=out)
+    if isinstance(mean, ivy.Array) and isinstance(std, ivy.Array):
+        ret = torch.normal(float(mean), float(std), ivy.default(shape, ()), out=out)
     else:
-        true_shape: List[int] = shape
-    mean = float(mean) if isinstance(mean, (torch.Tensor, ivy.Array)) else mean
-    std = float(std) if isinstance(std, (torch.Tensor, ivy.Array)) else std
-    return torch.normal(
-        mean, std, true_shape, device=default_device(device),
-        dtype=as_native_dtype(dtype), out=out
-    )
+        ret = torch.normal(mean, std, out=out)
+    if ret.device == device:
+        return ret
+    return ret.to(device)
 
 
 random_normal.support_native_out = True
@@ -79,23 +79,31 @@ def multinomial(
             )
             / population_size
         )
-    return torch.multinomial(probs.float(), num_samples, replace, out=out).to(
-        default_device(device)
-    )
+    return torch.multinomial(probs.float(), num_samples, replace, out=out).to(device)
 
 
 multinomial.support_native_out = True
 
 
 def randint(
-    low: int,
-    high: int,
+    low: Union[int, torch.Tensor],
+    high: Union[int, torch.Tensor],
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.randint(low, high, shape, out=out, device=default_device(device))
+    zero_dim = len(shape) == 0
+    if zero_dim:
+        shape = [1]
+    ret = torch.rand(*shape, out=out, dtype=torch.float64, device=device)
+    ret = torch.mul(ret, high - low, out=out)
+    ret = torch.add(ret, low, out=out)
+    ret = ret.to(ivy.default_int_dtype(as_native=True))
+    ret = torch.clamp(ret, low, high - 1)
+    if zero_dim:
+        return ret.reshape(())
+    return ret
 
 
 randint.support_native_out = True

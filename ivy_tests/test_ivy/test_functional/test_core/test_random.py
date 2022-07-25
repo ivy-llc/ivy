@@ -100,31 +100,46 @@ def test_random_normal(
         )
 
 
+@st.composite
+def _pop_size_num_samples_replace_n_probs(draw):
+    prob_dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
+    batch_size = draw(st.integers(1, 5))
+    population_size = draw(st.integers(1, 20))
+    replace = draw(st.booleans())
+    if replace:
+        num_samples = draw(st.integers(1, 20))
+    else:
+        num_samples = draw(st.integers(1, population_size))
+    probs = draw(
+        helpers.array_values(
+            dtype=prob_dtype,
+            shape=[batch_size, num_samples],
+            min_value=0.0,
+            max_value=1.0,
+        )
+        | st.just(None)
+    )
+    return prob_dtype, batch_size, population_size, num_samples, replace, probs
+
+
 # multinomial
-@given(
-    data=st.data(),
-    num_samples=st.integers(1, 2),
-    replace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    tensor_fn=st.sampled_from([ivy.array]),
-)
-def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call):
-    probs, population_size = data.draw(helpers.get_probs(dtype=dtype))
-    if (
-        call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
-        and not replace
-        or dtype == "float64"
-    ):
-        # mxnet and tenosorflow do not support multinomial without replacement
+@given(everything=_pop_size_num_samples_replace_n_probs())
+def test_multinomial(everything, device, call):
+    prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
+    if call is helpers.tf_call and not replace or prob_dtype == "float64":
+        # tenosorflow does not support multinomial without replacement
         return
     # smoke test
-    probs = tensor_fn(probs, dtype=dtype, device=device) if probs is not None else probs
-    batch_size = probs.shape[0] if probs is not None else 2
+    probs = (
+        ivy.array(probs, dtype=prob_dtype, device=device)
+        if probs is not None
+        else probs
+    )
     ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace)
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
-    assert ret.shape == tuple([batch_size] + [num_samples])
+    assert ret.shape == tuple([batch_size, num_samples])
 
 
 # randint
@@ -153,7 +168,8 @@ def test_randint(
     fw,
     call,
 ):
-
+    dtype = ivy.default_int_dtype()
+    # smoke test
     low, high = data.draw(helpers.get_bounds(dtype=dtype))
     if (
         call in [helpers.mx_call, helpers.torch_call]
