@@ -505,47 +505,43 @@ def conv1d(
     
     With :code:`ivy.Array` input:
     
- >>> x = ivy.array(ivy.random_normal(0, 1, [2, 4, 8])) #NWC
- >>> filters = ivy.array(ivy.random_normal(0, 1, [2, 8, 4])) #WIO (I == C)
+ >>> x = ivy.array(ivy.random_normal(0, 1, [1, 8, 4])) #NWC
+ >>> filters = ivy.array(ivy.random_normal(0, 1, [4, 4, 4])) #WIO (I == C)
  >>> result = ivy.conv1d(x, filters, strides=(2,), padding='VALID')
  >>> print(result)
  
- ivy.array([[[ 0.499, -4.91 ,  3.03 ,  1.73 ],
-        [ 1.65 ,  1.23 , -0.614, -2.45 ]],
-
-       [[ 1.05 ,  7.71 ,  2.03 ,  5.63 ],
-        [-8.18 , -0.611, -1.3  , -1.72 ]]])
+ ivy.array([[[-7.15 , -5.04 ,  5.05 ,  3.87 ],
+             [ 2.94 ,  4.51 , -1.23 ,  1.75 ],
+             [-2.43 ,  4.47 ,  0.211,  6.15 ]]])
 
 With :code:`ivy.NativeArray` input:
 
 >>> x = ivy.native_array(ivy.random_normal(0, 1,[1, 5, 3])) #NWC
->>> filters = ivy.native_array(ivy.random_normal(0, 1,  [3, 3, 1])) #WIO
+>>> filters = ivy.native_array(ivy.random_normal(0, 1,  [3, 3, 3])) #WIO
 >>> result = ivy.conv1d(x, filters, strides = (1,), padding = 'SAME')
 >>> print(result)
 
-ivy.array([[[ 2.5210],
-         [-1.5417],
-         [ 1.3615],
-         [-5.2475],
-         [-1.6664]]])
+ivy.array([[[ 0.346, -0.706, -0.775],
+            [-1.9  , -1.92 , -1.86 ],
+            [ 0.441, -0.242, -2.44 ],
+            [-2.25 , -1.31 ,  3.14 ],
+            [ 0.362,  0.447,  1.86 ]]])
 
 
 With a mix of :code:`ivy.Array` ivy.NativeArray and :code:`ivy.Container` inputs:
 
- >>> x = ivy.Container(a = ivy.array(ivy.random_normal(0,1, [1, 10, 3])) , \
-                       b = ivy.array(ivy.random_normal(0,1,[1,20, 3 ])))
- >>> filters = ivy.array(ivy.random_normal(0,1,[5, 3, 2]))
+ >>> x = ivy.Container(a = ivy.array(ivy.random_normal(0,1, [1, 10, 2])) , \
+                       b = ivy.array(ivy.random_normal(0,1,[1,20, 2])))
+ >>> filters = ivy.array(ivy.random_normal(0,1,[5, 2, 2]))
  >>> result  = ivy.conv1d(x, filters, strides= 4, padding='VALID', dilations=2)
  >>> print(result)
    
  {
-    a: ivy.array([[[-0.105, 3.17]]]),
-    b: ivy.array([[[2.79, 3.34], 
-                   [-2.57, 1.51], 
-                   [-0.152, 0.824]]])
-}
-
-
+    a: ivy.array([[[0.98, -0.555]]]),
+    b: ivy.array([[[-3.43, -1.42], 
+                   [0.45, -1.94], 
+                   [-1.89, -3.06]]])
+ } 
     """
     return current_backend(x).conv1d(
         x, filters, strides, padding, data_format, dilations, out=out
