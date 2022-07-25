@@ -16,6 +16,7 @@ import ivy.functional.backends.mxnet as ivy_mxn
 from functools import reduce  # for making strategy
 from operator import mul  # for making strategy
 from typing import Tuple
+import pytest
 
 
 # dtype objects
@@ -802,6 +803,30 @@ def test_type_promote_arrays(
     )
 
 
+# default_float_dtype
+@pytest.mark.parametrize("float_dtype", [ivy.float16, ivy.float32, ivy.float64, None])
+@pytest.mark.parametrize(
+    "input",
+    [
+        [(5.0, 25.0), (6.0, 36.0), (7.0, 49.0)],
+        np.array([10.0, 0.0, -3.0]),
+        10,
+        None,
+    ],
+)
+@pytest.mark.parametrize("as_native", [True, False])
+def test_default_float_dtype(input, float_dtype, as_native):
+    res = ivy.default_float_dtype(input, float_dtype, as_native)
+    assert (
+        isinstance(res, ivy.Dtype)
+        or isinstance(res, ivy.NativeDtype)
+        or isinstance(res, str)
+    )
+    assert ivy.default_float_dtype(None, None, False) == ivy.float32
+    assert ivy.default_float_dtype(float_dtype=ivy.float16) == ivy.float16
+    assert ivy.default_float_dtype() == ivy.float32
+
+
 @st.composite
 def dtytes_list(draw):
     num = draw(st.one_of(st.integers(min_value=1, max_value=5)))
@@ -935,9 +960,7 @@ def test_valid_dtype(dtype_in, fw):
 # Still to Add #
 # ------------ #
 
-# default_float_dtype
+
 # default_dtype
 # default_int_dtype
 # test_dtype
-# function_supported_dtypes
-# function_unsupported_dtypes
