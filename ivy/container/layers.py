@@ -169,8 +169,7 @@ class ContainerWithLayers(ContainerBase):
             The result of the convolution operation.
 
         Examples
-        --------
-        
+        --------   
         >>> a = ivy.random_normal(0,1,[1, 12, 4])
         >>> b = ivy.random_normal(0,1, [1, 15, 4])
         >>> inp = ivy.Container(a=a, b=b)
@@ -178,13 +177,13 @@ class ContainerWithLayers(ContainerBase):
         >>> result = ivy.Container.static_conv1d(inp,filters,strides=3,padding='VALID')
         >>> print(result)
   
-  {
-    a: ivy.array([[[6.26, 5.63], 
-                   [-11.4, -0.231]]]),
-    b: ivy.array([[[-9.07, -9.17], 
-                   [20., 11.4], 
-                   [-1.31, -4.49]]])
-  }
+        {
+            a: ivy.array([[[6.26, 5.63], 
+                           [-11.4, -0.231]]]),
+            b: ivy.array([[[-9.07, -9.17], 
+                           [20., 11.4], 
+                           [-1.31, -4.49]]])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "conv1d",
@@ -237,8 +236,7 @@ class ContainerWithLayers(ContainerBase):
             The result of the convolution operation.
 
         Examples
-        --------
-        
+        -------- 
         >>> a = ivy.random_normal(0,1,[1, 12, 4])
         >>> b = ivy.random_normal(0,1, [1, 15, 4])
         >>> inp = ivy.Container(a=a, b=b)
@@ -246,13 +244,13 @@ class ContainerWithLayers(ContainerBase):
         >>> result = inp.conv1d(filters,strides=3,padding='VALID')
         >>> print(result)
   
-  {
-    a: ivy.array([[[6.26, 5.63], 
-                   [-11.4, -0.231]]]),
-    b: ivy.array([[[-9.07, -9.17], 
-                   [20., 11.4], 
-                   [-1.31, -4.49]]])
-  }
+        {
+            a: ivy.array([[[6.26, 5.63], 
+                           [-11.4, -0.231]]]),
+            b: ivy.array([[[-9.07, -9.17], 
+                           [20., 11.4], 
+                           [-1.31, -4.49]]])
+        }
         """
         return self.static_conv1d(
             self, filters, strides, padding, data_format, dilations, out=out
