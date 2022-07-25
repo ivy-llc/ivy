@@ -193,9 +193,8 @@ Specifically, you <strong>do not</strong> need to address the following:</p>
 <p>However, everything else covered in the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> must be addressed.
 Some common important tasks are:</p>
 <ol class="arabic simple">
-<li><p>remove all <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> and direct bindings for the backend functions
-(in <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends</span></code>), with each function instead defined using
-<code class="code docutils literal notranslate"><span class="pre">def</span></code>.</p></li>
+<li><p>remove all <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> and direct bindings for the backend functions,
+with each function instead defined using <code class="code docutils literal notranslate"><span class="pre">def</span></code>.</p></li>
 <li><p>implement the following if they don’t exist but should do: <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance
 method, <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method, <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method,
 <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method, <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method,
