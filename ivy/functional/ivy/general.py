@@ -1805,10 +1805,10 @@ def set_min_base(val: float) -> None:
 
 
 def stable_divide(
-    numerator: Number | ivy.Array | ivy.NativeArray | ivy.Container,
+    numerator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
     denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
     min_denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container] = None,
-) -> Number | ivy.Array | ivy.NativeArray | ivy.Container:
+) -> Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]:
     """Divide the numerator by the denominator, with min denominator added to the
     denominator for numerical stability.
 
