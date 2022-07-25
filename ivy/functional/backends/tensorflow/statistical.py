@@ -50,8 +50,8 @@ def prod(
     x: Union[tf.Tensor, tf.Variable],
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: tf.DType = None,
-    keepdims: bool = False,
+    dtype: Optional[tf.DType] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is None:
