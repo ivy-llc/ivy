@@ -600,7 +600,6 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([0.909, 2.5])
         }
         """
-
         return ContainerBase.multi_map_in_static_method(
             "stable_divide",
             numerator,
@@ -623,7 +622,6 @@ class ContainerWithGeneral(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-
         """
         ivy.Container instance method variant of ivy.stable_divide. This method
         simply wraps the function, and so the docstring for ivy.stable_divide
@@ -689,7 +687,6 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-
         return self.static_stable_divide(
             self,
             denominator,
