@@ -8,8 +8,9 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.backends.jax.device import to_device
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax.device import to_device
 
 # Extra #
 # ------#
@@ -23,15 +24,17 @@ def random_uniform(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
-    dtype: jnp.dtype,
+    dtype: Union[jnp.dtype, ivy.Dtype] = None,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    if not dtype:
+        dtype = ivy.default_float_dtype()
+    dtype = ivy.as_native_dtype(dtype)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return to_device(
-        jax.random.uniform(
-            rng_input, shape if shape else (), minval=low, maxval=high, dtype=dtype
-        ),
+        jax.random.uniform(rng_input, shape, minval=low, maxval=high, dtype=dtype),
         device=device,
     )
 
