@@ -2,7 +2,7 @@
 
 # global
 import torch
-from typing import Optional, Union, List, Sequence
+from typing import Optional, Union, Sequence
 import numbers
 
 # local
@@ -23,14 +23,10 @@ def random_uniform(
     dtype = torch.dtype,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    rand_range = high - low
     if shape is None:
         shape = []
-    rand_range = high - low
-    return (
-        torch.rand(shape, device=default_device(device), dtype=dtype, out=out)
-        * rand_range
-        + low
-    )
+    return torch.rand(shape, device=device, dtype=dtype, out=out) * rand_range + low
 
 
 random_uniform.support_native_out = True

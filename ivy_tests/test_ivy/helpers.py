@@ -1744,7 +1744,6 @@ def get_mean_std(draw, *, dtype):
     )
     if values[0] is not None and values[1] is not None:
         mean, std = abs(values[0]), abs(values[1])
-    #values[1] = abs(values[1]) if values[1] else None
     return mean, std
 
 
