@@ -4,6 +4,10 @@ vecdot
 .. autofunction:: ivy.functional.ivy.linear_algebra.vecdot
 
 .. autofunction:: ivy.array.array_methods.vecdot
+
+.. autofunction:: ivy.container.container_methods.vecdot
+
+.. autofunction:: ivy.container.container_methods.static_vecdot
 |
 | **Supported Frameworks:**
 
@@ -31,5 +35,7 @@ vecdot
    :caption: vecdot
 
    vecdot/vecdot_functional.rst
+   vecdot/static_vecdot_container.rst
    vecdot/vecdot_array.rst
+   vecdot/vecdot_container.rst
 
