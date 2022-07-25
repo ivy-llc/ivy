@@ -1911,9 +1911,9 @@ def stable_divide(
     (5.000444502911705e-13+0.9999999999995j)
 
     With :code:`ivy.Array` input:
-    >>> x = ivy.asarray([[10, 20, 30],\
-                        [40, 50, 60]])
-    >>> y = ivy.stable_divide(x, 10)
+    >>> x = ivy.asarray([[10., 20., 30.],\
+                        [40., 50., 60.]])
+    >>> y = ivy.stable_divide(x, 10.)
     >>> print(y)
     ivy.array([[1., 2., 3.],
               [4., 5., 6.]])
