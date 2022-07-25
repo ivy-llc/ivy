@@ -36,12 +36,12 @@ class ArrayWithSorting(abc.ABC):
         >>> x = ivy.array([7, 8, 6])
         >>> y = x.sort(-1, True, False)
         >>> print(y)
-        ivy.array([6, 7, 8])
+        ivy.array([8, 7, 6])
 
         >>> x = ivy.array([8.5, 8.2, 7.6])
         >>> y = x.sort(-1, True, False)
         >>> print(y)
-        ivy.array([7.6, 8.2, 8.5])
+        ivy.array([8.5, 8.2, 7.6])
 
         """
         return ivy.sort(self._data, axis, descending, stable, out=out)

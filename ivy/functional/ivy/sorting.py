@@ -142,7 +142,7 @@ def sort(
     >>> x = ivy.array([7, 8, 6])
     >>> y = ivy.sort(x)
     >>> print(y)
-    ivy.array([8, 7, 6])
+    ivy.array([6, 7, 8])
 
     >>> x = ivy.array([[[8.9,0], [19,5]],\
                       [[6,0.3], [19,0.5]]])
