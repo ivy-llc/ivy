@@ -102,7 +102,7 @@ class ArrayWithStatistical(abc.ABC):
          >>> print(y)
          ivy.array(0.075)
 
-     """
+        """
         return ivy.var(self._data, axis, correction, keepdims, out=out)
 
     def prod(
