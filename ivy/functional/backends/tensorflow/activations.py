@@ -15,7 +15,7 @@ def relu(
     x: Tensor,
 ) -> Tensor:
     return tf.nn.relu(x)
-   
+
 
 def leaky_relu(
     x: Tensor,

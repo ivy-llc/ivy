@@ -77,6 +77,9 @@ def conv2d_transpose(
     )
 
 
+conv2d_transpose.unsupported_devices = ('cpu',)
+
+
 def depthwise_conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
