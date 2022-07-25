@@ -6,6 +6,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
@@ -19,13 +20,17 @@ def random_uniform(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: mx.context.Context,
-    dtype: type,
+    dtype: Optional[Union[type, ivy.Dtype]] = None,
 ) -> mx.nd.NDArray:
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    if not dtype:
+        dtype = ivy.default_float_dtype()
+    dtype = ivy.as_native_dtype(dtype)
     if isinstance(low, mx.nd.NDArray):
         low = low.asscalar()
     if isinstance(high, mx.nd.NDArray):
         high = high.asscalar()
-    if shape is None or len(shape) == 0:
+    if shape == ():
         return _1_dim_array_to_flat_array(
             mx.nd.random.uniform(low, high, (1,), ctx=device, dtype=dtype)
         )
