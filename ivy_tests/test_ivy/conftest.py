@@ -4,7 +4,7 @@ import pytest
 from typing import Dict
 from hypothesis import settings
 
-settings.register_profile("default", max_examples=10, deadline=None)
+settings.register_profile("default", max_examples=5, deadline=None)
 settings.load_profile("default")
 
 # local
@@ -12,7 +12,7 @@ from ivy_tests.test_ivy import helpers
 from ivy import clear_backend_stack, DefaultDevice
 
 
-FW_STRS = ["numpy", "jax", "tensorflow", "torch"]
+FW_STRS = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
 
 
 TEST_BACKENDS: Dict[str, callable] = {
@@ -20,14 +20,14 @@ TEST_BACKENDS: Dict[str, callable] = {
     "jax": lambda: helpers.get_ivy_jax(),
     "tensorflow": lambda: helpers.get_ivy_tensorflow(),
     "torch": lambda: helpers.get_ivy_torch(),
-    # "mxnet": lambda: helpers.get_ivy_mxnet(),
+    "mxnet": lambda: helpers.get_ivy_mxnet(),
 }
 TEST_CALL_METHODS: Dict[str, callable] = {
     "numpy": helpers.np_call,
     "jax": helpers.jnp_call,
     "tensorflow": helpers.tf_call,
     "torch": helpers.torch_call,
-    # "mxnet": helpers.mx_call,
+    "mxnet": helpers.mx_call,
 }
 
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
