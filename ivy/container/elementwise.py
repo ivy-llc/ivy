@@ -3889,6 +3889,7 @@ class ContainerWithElementwise(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret
@@ -3978,6 +3979,7 @@ class ContainerWithElementwise(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
