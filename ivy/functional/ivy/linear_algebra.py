@@ -710,6 +710,44 @@ def matmul(
     -   if x1 is an array having shape (..., M, K), x2 is an array having shape
         (..., L, N), and K != L.
 
+    Examples
+    --------
+    # both x1 and x2 are one-dimensional arrays
+    >>> x1 = ivy.array([1,2,3,4])
+    >>> x2 = ivy.array([1,2,3,4])
+    >>> y = ivy.matmul(x1,x2)
+    >>> print(y)
+    30
+
+    # x1 is a two-dimensional array having shape (M, K) and x2 is a two-dimensional array having shape (K, N)
+    >>> x1 = ivy.array([[1,1,2],\
+                        [0,1,1]])
+    >>> x2 = ivy.array([[1,1],\
+                        [1,0],\
+                        [1,1]])
+    >>> y = ivy.matmul(x1,x2)
+    >>> print(y)
+    ivy.array([[4, 3],
+            [2, 1]])
+
+    # x1 is a one-dimensional array having shape (K,) and x2 is an array having shape (..., K, N),
+    # an array having shape (..., N)
+    >>> x1 = ivy.array([0, 2, 1])
+    >>> x2 = ivy.array([[2,1],[1,1],[1,1]])
+    >>> out = ivy.zeros(2, dtype=ivy.int32)
+    >>> ivy.matmul(x1,x2, out=out)
+    >>> print(out)
+    ivy.array([3, 3])
+
+    # x1 is an array having shape (..., M, K) and x2 is a one-dimensional array having shape (K,),
+    # an array having shape (..., M)
+    >>> x1 = np.array([[-1],[0],[1]])
+    >>> x2 = np.array([2])
+    >>> y = ivy.matmul(x1,x2)
+    >>> print(y)
+    ivy.array([-2,  0,  2])
+
+
     """
     return current_backend(x1).matmul(x1, x2, out=out)
 
@@ -760,6 +798,37 @@ def matrix_power(
 ) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power
     n.
+
+    Parameters
+    ----------
+    x
+        input union of Array and NativeArray having shape ``(..., M, M)`` and whose innermost two dimensions form
+        ``MxN`` matrices. Should have a Numerical data type.
+    n
+        The exponent can be any integer or long integer, positive, negative, or zero.
+    out
+        optional output Array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The return Optional Array is the same shape as input x. if the exponent is positive or zero
+        then the type of the elements is the same as those of x. If the exponent is negative
+        the elements are floating-point.
+
+    Examples
+    --------
+
+    >>> x = ivy.array([[1, 1], [-1, 0]])
+    >>> ivy.matrix_power(x)
+    ivy.array([[-1,  0],
+            [ 0, -1]])
+
+    >>> x = ivy.array([[3]])
+    >>> ivy.matrix_power(x)
+    ivy.array([[27]])
+
     """
     return current_backend(x).matrix_power(x, n, out=out)
 
