@@ -33,7 +33,9 @@ class Process_pr:
         )
 
     def assign_random_intern(self, intern_list):
-        random_intern = rn.choice(intern_list)
+        gh_ids = list(intern_list.keys())
+        weights = tuple(intern_list.values())
+        random_intern = rn.choices(gh_ids, weights=weights, k=1)[0]
         # --add-reviewer "{random_intern}"
         # Need to find a way how to overcome the permissions for GH Actions
         self.command(
