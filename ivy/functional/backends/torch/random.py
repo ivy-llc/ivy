@@ -7,7 +7,7 @@ import numbers
 
 # local
 import ivy
-
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 
 # Extra #
 # ------#
@@ -18,17 +18,16 @@ def random_uniform(
     high: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
-    dtype: torch.dtype,
+    dtype: Optional[Union[torch.dtype, ivy.Dtype]] = None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    if not dtype:
+        dtype = ivy.default_float_dtype()
+    dtype = ivy.as_native_dtype(dtype)
     rand_range = high - low
-    if shape is None:
-        shape = []
     return torch.rand(shape, device=device, dtype=dtype, out=out) * rand_range + low
-
-
-random_uniform.support_native_out = True
 
 
 def random_normal(
