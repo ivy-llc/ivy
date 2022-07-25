@@ -4379,6 +4379,46 @@ def trunc(
         an array containing the values before the decimal point for each element ``x``.
         The returned array must have the same data type as ``x``.
 
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0.4, 1.7, 2.3])
+    >>> y = ivy.trunc(x)
+    >>> print(y)
+    ivy.array([0., 1., 2.)
+
+    >>> x = ivy.array([[1.9, 5.7, 4.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.trunc(x, out=y)
+    >>> print(y)
+    ivy.array([1., 5., 4.])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],\
+                      [-4.4, -5.5, -6.6]])
+    >>> ivy.trunc(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.,  2.,  3.],
+       [-4., -5., -6.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0.93, 3.65, 2.77])
+    >>> y = ivy.trunc(x)
+    >>> print(y)
+    ivy.array([0., 3., 2.])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.03, 1.57, 2.33]),\
+                          b=ivy.array([3.05, 4.76, 5.99]))
+    >>> y = ivy.trunc(x)
+    >>> print(y)
+    {
+    a: ivy.array([0., 1., 2.]),
+    b: ivy.array([3., 4., 5.])
+}
     """
     return ivy.current_backend(x).trunc(x, out=out)
 
