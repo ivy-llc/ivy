@@ -262,7 +262,6 @@ def any(
                           b=ivy.array([3, 4, 5]))
     >>> y = x.any()
     >>> print(y)
-
     {
         a: ivy.array(True),
         b: ivy.array(True)
