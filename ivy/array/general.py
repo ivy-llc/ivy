@@ -53,10 +53,10 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
     def gather_nd(
-        self: ivy.Array,
-        indices: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[ivy.Array] = None,
+            self: ivy.Array,
+            indices: Union[ivy.Array, ivy.NativeArray],
+            *,
+            out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
@@ -132,9 +132,9 @@ class ArrayWithGeneral(abc.ABC):
             out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.clip_vector_norm. This method simply wraps the
-        function, and so the docstring for ivy.clip_vector_norm also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.clip_vector_norm. This method simply
+        wraps the function, and so the docstring for ivy.clip_vector_norm also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -145,8 +145,8 @@ class ArrayWithGeneral(abc.ABC):
         p
             optional float, the p-value for computing the p-norm. Default is 2.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -163,4 +163,3 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.clip_vector_norm(self, max_norm, p, out=out)
-

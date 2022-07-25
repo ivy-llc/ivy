@@ -23,9 +23,9 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.clip_vector_norm. This method simply wraps the
-        function, and so the docstring for ivy.clip_vector_norm also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.clip_vector_norm. This method
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -46,8 +46,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -90,9 +90,9 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.clip_vector_norm. This method simply wraps the
-        function, and so the docstring for ivy.clip_vector_norm also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.clip_vector_norm. This method
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -113,8 +113,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
 
         Returns
         -------
