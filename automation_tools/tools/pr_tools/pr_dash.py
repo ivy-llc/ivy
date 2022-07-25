@@ -6,6 +6,8 @@ import subprocess
 from sys import argv, platform
 from prettytable import PrettyTable
 
+# flake8: noqa
+
 
 def set_platform():
     if "linux" in platform:
@@ -21,47 +23,85 @@ def set_path():
         os.chdir("../../../")
         sys.path.insert(0, os.getcwd())
     elif not cwd.endswith("ivy"):
-        print("[-] You have to run the script form within ivy home directory.")
+        print("[-] You have to run the script from within ivy home directory.")
 
 
 def diff_between_2_dates(d1, d2=datetime.datetime.now().date(), dformat="%Y-%m-%d"):
-    d1 = datetime.datetime.strptime(d1, dformat).date()
+    if not isinstance(d1, datetime.date):
+        d1 = datetime.datetime.strptime(d1, dformat).date()
     if type(d2) == str:
         d2 = datetime.datetime.strptime(d2, dformat).date()
     return abs((d2 - d1).days)
 
 
-def get_interns():
-    with open("automation_tools/tools/pr_tools/assets/interns.txt", "r") as file:
-        return [intern_.replace("\n", "") for intern_ in file.readlines()]
+def get_file_contents(path, mode="r", read_type=None):
+    with open(path, mode) as file:
+        if read_type == "readlines":
+            return file.readlines()
+        elif read_type == "read":
+            return file.read()
+        elif not read_type:
+            print("[-] 'read_type' can not be None.")
+        else:
+            print(f"[-] Invalid read_type: '{read_type}'")
 
 
 def create_rows(prs):
     tmp = []
-    interns = get_interns()
+    ignore_authors = [
+        auth.replace("\n", "")
+        for auth in get_file_contents(
+            "automation_tools/tools/pr_tools/assets/exclude.txt", read_type="readlines"
+        )
+    ]
     nr = 1
     for pr in prs:
-        try:
-            last_comment = pr["comments"][-1]
-            last_comment_author = last_comment["author"]["login"]
-            if last_comment_author not in interns:
-                diff = diff_between_2_dates(last_comment["createdAt"][:-10])
-        except (IndexError, KeyError):
-            diff = diff_between_2_dates(pr["updatedAt"][:-10])
+        # Check for last comment or reviews.
+        diff = 0
+        last_review = pr["latestReviews"]
+        last_comment = pr["comments"]
+        last_update = pr["updatedAt"][:-10]
+        pr_author = pr["author"]["login"]
 
-        if diff > 3 and pr["author"]["login"] not in interns:
-            row = [pr["title"].strip(), diff, pr["url"], pr["author"]["login"]]
-            if pr["latestReviews"] and pr["assignees"]:
-                row += [
-                    pr["assignees"][0]["login"],
-                    pr["latestReviews"][0]["author"]["login"],
-                ]
-            elif not pr["latestReviews"] and pr["assignees"]:
-                row += [pr["assignees"][0]["login"], "-"]
-            elif pr["latestReviews"] and not pr["assignees"]:
-                row += ["-", pr["latestReviews"][0]["author"]["login"]]
-            elif not pr["latestReviews"] and not pr["assignees"]:
-                row += ["-", "-"]
+        if pr_author not in ignore_authors:
+            # Check if the PR has both a review and comments and check which was the last one.
+            if last_review and last_comment:
+                review_submit_date = datetime.datetime.strptime(
+                    last_review[-1]["submittedAt"][:-10], "%Y-%m-%d"
+                ).date()
+                comment_submit_date = datetime.datetime.strptime(
+                    last_comment[-1]["createdAt"][:-10], "%Y-%m-%d"
+                ).date()
+                comment_author = last_comment[-1]["author"]["login"]
+
+                # If the comment was the last update on the PR and the comment author is not one of Ivy
+                # team members then calculate the inactivity days
+                if (
+                    comment_submit_date > review_submit_date
+                    and comment_author not in ignore_authors
+                ):
+                    diff = diff_between_2_dates(comment_submit_date)
+                elif (
+                    comment_submit_date < review_submit_date
+                    and comment_author not in ignore_authors  
+                ):
+                    diff = diff_between_2_dates(review_submit_date)
+            # If the last update on the PR is a comment and the comment author is not a intern calculate the inactivity days
+            elif not last_review and last_comment:
+                comment_author = last_comment[-1]["author"]["login"]
+                if comment_author not in ignore_authors:
+                    comment_submit_date = datetime.datetime.strptime(
+                        last_comment[-1]["createdAt"][:-10], "%Y-%m-%d"
+                    ).date()
+                    diff = diff_between_2_dates(comment_submit_date)
+            # If there are no comments or reviews on the PR, calculate the inactivity days based on the last PR update.
+            elif not last_review and not last_comment:
+                diff = diff_between_2_dates(last_update)
+
+        if diff >= 3:
+            row = [pr["title"].strip(), diff, pr["url"], pr["author"]["login"], "-"]
+            if pr["assignees"]:
+                row[-1] = pr["assignees"][0]["login"]
             tmp.append(truncate_pr_title(row))
     tmp.sort(reverse=True, key=lambda diff: diff[1])
 
@@ -110,7 +150,6 @@ def help_menu():
         ["-h", "This help menu"],
         ["-au", "Sorts PRs by author by providing a name"],
         ["-as", "Sorts PRs by assigners by providing a name"],
-        ["-lr", "Sorts PRs by last reviewers by providing a name"],
         [" -all", "Provides a table of all PRs that are inactive for more than 3 days"],
     ]
 
@@ -130,7 +169,6 @@ def main():
             "URL",
             "Author",
             "Assignee",
-            "Last Reviewer",
         ]
 
         r_index = None
@@ -138,11 +176,9 @@ def main():
             r_index = 4
         elif argv[1] == "-as":
             r_index = 5
-        elif argv[1] == "-lr":
-            r_index = -1
         elif argv[1] == "-all":
             prs = command(
-                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
+                "gh pr list -L 200 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
             )
             rows = create_rows(prs)
             for row in rows:
@@ -152,13 +188,13 @@ def main():
 
         if r_index:
             prs = command(
-                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
+                "gh pr list -L 200 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
             )
             rows = create_rows(prs)
 
             sort_prs(rows, table, argv[2], r_index)
         print(table)
-    except IndexError:
+    except IndexError as e:
         help_menu()
 
 

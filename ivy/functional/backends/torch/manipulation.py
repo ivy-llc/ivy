@@ -3,7 +3,7 @@ import ivy
 import torch
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence
+from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
 
 # Array API Standard #
@@ -99,8 +99,8 @@ def squeeze(
         dim = x.dim()
         if dim > 0 and (axis < -dim or dim <= axis):
             raise ValueError(
-                "Expected dimension of size [{}, {}], but found dimension size {}"
-                .format(-dim, dim, axis)
+                "Expected dimension of size [{}, {}], but found "
+                "dimension size {}".format(-dim, dim, axis)
             )
         return torch.squeeze(x, axis)
     if axis is None:
@@ -117,8 +117,8 @@ def squeeze(
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
             raise ValueError(
-                "Expected dimension of size [{}, {}], but found dimension size {}"
-                .format(-dim, dim, shape)
+                "Expected dimension of size [{}, {}], "
+                "but found dimension size {}".format(-dim, dim, shape)
             )
         else:
             x = torch.squeeze(x, i)
@@ -190,13 +190,14 @@ split.support_native_out = True
 
 def repeat(
     x: torch.Tensor,
-    repeats: Union[int, List[int]],
+    repeats: Union[int, Iterable[int]],
     axis: int = None,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if len(x.shape) == 0 and axis in [0, -1]:
         axis = None
+    repeats = torch.tensor(repeats)
     ret = torch.repeat_interleave(x, repeats, axis)
     return ret
 
