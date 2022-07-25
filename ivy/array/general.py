@@ -154,18 +154,18 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.asarray([4, 5, 6])
+        >>> x = ivy.asarray([4., 5., 6.])
         >>> y = x.stable_divide(2)
         >>> print(y)
-        ivy.array([2. , 2.5, 3. ])
+        ivy.array([2., 2.5, 3.])
 
         >>> x = ivy.asarray([4, 5, 6])
         >>> y = x.stable_divide(4, min_denominator=1)
         >>> print(y)
         ivy.array([0.8, 1. , 1.2])
 
-        >>> x = ivy.asarray([[4, 5, 6], [7, 8, 9]])
-        >>> y = ivy.asarray([[1, 2,3], [2, 3, 4]])
+        >>> x = ivy.asarray([[4., 5., 6.], [7., 8., 9.]])
+        >>> y = ivy.asarray([[1., 2., 3.], [2., 3., 4.]])
         >>> z = x.stable_divide(y)
         >>> print(z)
         ivy.array([[4.  , 2.5 , 2.  ],
