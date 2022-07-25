@@ -203,17 +203,13 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
 # Convolutions #
 # -------------#
 
+
 @st.composite
-def x_and_filters(
-        draw,
-        dtypes,
-        data_format,
-        type: str = '2d'
-):
+def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
     data_format = draw(data_format)
     dtype = draw(dtypes)
     dilations = draw(st.integers(min_value=1, max_value=3))
-    if type == '1d':
+    if type == "1d":
         filter_shape = draw(
             st.tuples(
                 st.integers(3, 5),
@@ -224,7 +220,7 @@ def x_and_filters(
 
         min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         d_in = filter_shape[1]
-        if data_format == 'NWC':
+        if data_format == "NWC":
             x_shape = draw(
                 st.tuples(
                     st.integers(1, 5),
@@ -240,7 +236,7 @@ def x_and_filters(
                     st.integers(min_value=min_x_width, max_value=100),
                 )
             )
-    elif type == '2d':
+    elif type == "2d":
         filter_shape = draw(
             st.tuples(
                 st.integers(3, 5),
@@ -253,7 +249,7 @@ def x_and_filters(
         min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
         d_in = filter_shape[2]
-        if data_format == 'NHWC':
+        if data_format == "NHWC":
             x_shape = draw(
                 st.tuples(
                     st.integers(1, 5),
@@ -289,7 +285,7 @@ def x_and_filters(
         min_x_height = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
         min_x_width = filter_shape[2] + (filter_shape[2] - 1) * (dilations - 1)
         d_in = filter_shape[3]
-        if data_format == 'NDHWC':
+        if data_format == "NDHWC":
             x_shape = draw(
                 st.tuples(
                     st.integers(1, 5),
@@ -309,21 +305,9 @@ def x_and_filters(
                     st.integers(min_value=min_x_width, max_value=100),
                 )
             )
-    x = draw(
-        helpers.array_values(
-            dtype=dtype,
-            shape=x_shape,
-            min_value=0,
-            max_value=1
-        )
-    )
+    x = draw(helpers.array_values(dtype=dtype, shape=x_shape, min_value=0, max_value=1))
     filters = draw(
-        helpers.array_values(
-            dtype=dtype,
-            shape=filter_shape,
-            min_value=0,
-            max_value=1
-        )
+        helpers.array_values(dtype=dtype, shape=filter_shape, min_value=0, max_value=1)
     )
     return dtype, x, filters, dilations, data_format
 
@@ -333,7 +317,7 @@ def x_and_filters(
     x_f_d_df=x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NWC", "NCW"]),
-        type='1d'
+        type="1d",
     ),
     stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
@@ -437,7 +421,7 @@ def test_conv1d_transpose(
     x_f_d_df=x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
-        type='2d'
+        type="2d",
     ),
     stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
@@ -611,7 +595,7 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, cal
     x_f_d_df=x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NDHWC", "NCDHW"]),
-        type='3d'
+        type="3d",
     ),
     stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
