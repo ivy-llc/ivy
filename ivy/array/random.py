@@ -19,7 +19,7 @@ class ArrayWithRandom(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.random_uniform(
-            self,
+            self._data,
             high,
             shape,
             device=device,
