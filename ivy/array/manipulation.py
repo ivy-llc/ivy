@@ -75,7 +75,7 @@ class ArrayWithManipulation(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[0., 1., 2.]])
-        >>> y = x.reshape(3, 1)
+        >>> y = x.reshape((3, 1))
         >>> print(y)
         ivy.array([[0.],
                 [1.],

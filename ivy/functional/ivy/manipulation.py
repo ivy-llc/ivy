@@ -403,34 +403,6 @@ def reshape(
                       [5.]])
     }
 
-
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[0., 1., 2.]])
-    >>> y = x.reshape(3, 1)
-    >>> print(y)
-    ivy.array([[0.],
-               [1.],
-               [2.]])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
-                        b=ivy.array([[6., 7., 8.], [9., 10., 11.]]))
-    >>> y = x.reshape((-1, 2))
-    >>> print(y)
-    {
-        a: ivy.array([[0., 1.],
-                    [2., 3.],
-                    [4., 5.]]),
-        b: ivy.array([[6., 7.],
-                    [8., 9.],
-                    [10., 11.]])
-    }
-
     """
     return current_backend(x).reshape(x, shape, copy, out=out)
 
