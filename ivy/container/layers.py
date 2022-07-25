@@ -170,19 +170,20 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------   
-        >>> a = ivy.random_normal(0,1,[1, 12, 4])
-        >>> b = ivy.random_normal(0,1, [1, 15, 4])
+        >>> a = ivy.random_normal(0,1,[1, 12, 2])
+        >>> b = ivy.random_normal(0,1, [1, 15, 2])
         >>> inp = ivy.Container(a=a, b=b)
-        >>> filters = ivy.random_normal(0, 1, [9, 4, 2])
-        >>> result = ivy.Container.static_conv1d(inp,filters,strides=3,padding='VALID')
+        >>> filters = ivy.random_normal(0, 1, [9, 2, 2])
+        >>> result = ivy.Container.static_conv1d(inp,filters,strides=2,padding='VALID')
         >>> print(result)
   
         {
-            a: ivy.array([[[6.26, 5.63], 
-                           [-11.4, -0.231]]]),
-            b: ivy.array([[[-9.07, -9.17], 
-                           [20., 11.4], 
-                           [-1.31, -4.49]]])
+            a: ivy.array([[[7.34, -4.], 
+                           [-2.58, -8.1]]]),
+            b: ivy.array([[[-4.62, -1.76], 
+                           [0.499, 5.56], 
+                           [-1.29, -2.84], 
+                           [0.329, -3.05]]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -237,19 +238,20 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         -------- 
-        >>> a = ivy.random_normal(0,1,[1, 12, 4])
-        >>> b = ivy.random_normal(0,1, [1, 15, 4])
+        >>> a = ivy.random_normal(0,1,[1, 12, 2])
+        >>> b = ivy.random_normal(0,1, [1, 15, 2])
         >>> inp = ivy.Container(a=a, b=b)
-        >>> filters = ivy.random_normal(0, 1, [9, 4, 2])
-        >>> result = inp.conv1d(filters,strides=3,padding='VALID')
+        >>> filters = ivy.random_normal(0, 1, [9, 2, 2])
+        >>> result = inp.conv1d(filters,strides=2,padding='VALID')
         >>> print(result)
   
         {
-            a: ivy.array([[[6.26, 5.63], 
-                           [-11.4, -0.231]]]),
-            b: ivy.array([[[-9.07, -9.17], 
-                           [20., 11.4], 
-                           [-1.31, -4.49]]])
+            a: ivy.array([[[7.34, -4.], 
+                           [-2.58, -8.1]]]),
+            b: ivy.array([[[-4.62, -1.76], 
+                           [0.499, 5.56], 
+                           [-1.29, -2.84], 
+                           [0.329, -3.05]]])
         }
         """
         return self.static_conv1d(
