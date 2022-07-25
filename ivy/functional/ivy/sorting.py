@@ -149,7 +149,7 @@ def sort(
     >>> y = ivy.sort(x, -1, True, False)
     >>> print(y)
     ivy.array([[[ 8.9,  0. ], [19. ,  5. ]],
-       [[ 6. ,  0.3], [19. ,  0.5]]])
+               [[ 6. ,  0.3], [19. ,  0.5]]])
 
     With：code:`ivy.NativeArray` inputs:
 
