@@ -67,6 +67,32 @@ def test_tensorflow_tan(
     )
 
 
+# cos
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.cos"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_cos(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_name="cos",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
 # noinspection DuplicatedCode
 @st.composite
 def _arrays_idx_n_dtypes(draw):
@@ -128,4 +154,37 @@ def test_tensorflow_concat(
         fn_name="concat",
         values=xs,
         axis=unique_idx,
+    )
+
+
+# bitwise_or
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_int_dtypes).intersection(set(ivy_tf.valid_int_dtypes))
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.bitwise_or"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_bitwise_or(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_name="bitwise_or",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
     )

@@ -1200,7 +1200,13 @@ def test_frontend_function(
         )
 
         # compute the return via the frontend framework
-        frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
+        if frontend == "tensorflow":
+            if fn_name == "bitwise_or":
+                frontend += ".bitwise"
+                frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
+        else:
+            frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
+
         if test_unsupported:
             test_unsupported_function(
                 fn=frontend_fw.__dict__[fn_name],
@@ -1208,6 +1214,7 @@ def test_frontend_function(
                 kwargs=kwargs_frontend,
             )
             return
+
         frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
         # tuplify the frontend return
