@@ -552,37 +552,31 @@ def gradient_descent_update(
     Functional Examples
     -------------------
     With :code:`ivy.Array` inputs:
-    >>> w = ivy.array([[1., 2, 3],
-                        [4, 6, 1],
+    >>> w = ivy.array([[1., 2, 3],\
+                        [4, 6, 1],\
                         [1, 0, 7]])
-    >>> dcdw = ivy.array([
-                            [0.5, 0.2, 0.1],
-                            [0.3, 0.6, 0.4],
-                            [0.4, 0.7, 0.2]
-                        ])
+    >>> dcdw = ivy.array([[0.5, 0.2, 0.1],\
+                        [0.3, 0.6, 0.4],\
+                        [0.4, 0.7, 0.2]])
     >>> lr = ivy.array(0.1)
     >>> inplace = False
     >>> stop_gradients = True
-    >>> NewWeights = ivy.gradient_descent_update(w,
-                                                dcdw,
-                                                lr,
-                                                inplace,
+    >>> NewWeights = ivy.gradient_descent_update(w,\
+                                                dcdw,\
+                                                lr,\
+                                                inplace,\
                                                 stop_gradients)
-    >>> print(w)
-            ivy.array([[1., 2., 3.],
-                        [4., 6., 1.],
-                        [1., 0., 7.]])
     >>> print(NewWeights)
-            ivy.array([[ 0.95,  1.98,  2.99],
-                        [ 3.97,  5.94,  0.96],
-                        [ 0.96, -0.07,  6.98]])
+    ivy.array([[ 0.95,  1.98,  2.99],
+                [ 3.97,  5.94,  0.96],
+                [ 0.96, -0.07,  6.98]])
 
     >>> w = ivy.array([1., 2., 3.])
     >>> dcdw = ivy.array([0.5, 0.2, 0.1])
     >>> lr = ivy.array(0.3)
     >>> ivy.gradient_descent_update(w, dcdw, lr)
     >>> print(w)
-            ivy.array([0.85, 1.94, 2.97])
+    ivy.array([0.85, 1.94, 2.97])
 
     With :code:`ivy.NativeArray` inputs:
 
@@ -591,9 +585,9 @@ def gradient_descent_update(
     >>> lr = ivy.native_array(0.3)
     >>> ivy.gradient_descent_update(w, dcdw, lr)
     >>> print(w)
-            [0.85, 1.94, 2.97]
+    [0.85, 1.94, 2.97]
 
-    With mixture of both :code:`ivy.NativeArray`  and :code:'ivy.Array' inputs:
+    With mixture of both :code:`ivy.NativeArray` and :code:'ivy.Array' inputs:
 
     >>> w = ivy.native_array([1., 2., 3.])
     >>> dcdw = ivy.array([0.5, 0.2, 0.1])
@@ -601,9 +595,9 @@ def gradient_descent_update(
     >>> inplace = True
     >>> ivy.gradient_descent_update(w, dcdw, lr, inplace)
     >>> print(w)
-            ivy.array([0.85, 1.94, 2.97])
+    ivy.array([0.85, 1.94, 2.97])
 
-    with :code: `ivy.container` inputs:
+    With :code: `ivy.container` inputs:
 
     >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
                           b=ivy.array([3.48, 5.72, 1.98]))
@@ -612,10 +606,10 @@ def gradient_descent_update(
     >>> lr = ivy.array(0.3)
     >>> ivy.gradient_descent_update(w, dcdw, lr)
     >>> print(w)
-            {
-                a: ivy.array([0.85, 1.94, 2.97]),
-                b: ivy.array([2.88, 4.69, 1.47])
-            }
+    {
+        a: ivy.array([0.85, 1.94, 2.97]),
+        b: ivy.array([2.88, 4.69, 1.47])
+    }
     """
     return ivy.optimizer_update(w, dcdw, lr, inplace, stop_gradients)
 

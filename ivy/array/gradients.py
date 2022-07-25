@@ -133,15 +133,15 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        with :code: `ivy.Array` inputs:
+        With :code: `ivy.Array` inputs:
 
         >>> w = ivy.array([[[5., 3., 2.], [0., 4., 1.], [-2., 3., -1.]]])
         >>> dcdw = ivy.array([[[0.5, 0.92, 0.1], [0.2, 0.7, 0.3], [0.3, 0.8, 0.01]]])
         >>> lr = ivy.array(0.3)
         >>> w.gradient_descent_update(dcdw, lr)
         >>> print(w)
-            ivy.array([[[ 4.85,  2.72,  1.97],
-                        [-0.06,  3.79,  0.91],
-                        [-2.09,  2.76, -1.  ]]])
+        ivy.array([[[ 4.85,  2.72,  1.97],
+                    [-0.06,  3.79,  0.91],
+                    [-2.09,  2.76, -1.  ]]])
         """
         return ivy.gradient_descent_update(self, dcdw, lr, inplace, stop_gradients)
