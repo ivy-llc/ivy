@@ -23,7 +23,7 @@ def set_path():
         os.chdir("../../../")
         sys.path.insert(0, os.getcwd())
     elif not cwd.endswith("ivy"):
-        print("[-] You have to run the script form within ivy home directory.")
+        print("[-] You have to run the script from within ivy home directory.")
 
 
 def diff_between_2_dates(d1, d2=datetime.datetime.now().date(), dformat="%Y-%m-%d"):
@@ -173,7 +173,7 @@ def main():
             r_index = 5
         elif argv[1] == "-all":
             prs = command(
-                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
+                "gh pr list -L 200 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
             )
             rows = create_rows(prs)
             for row in rows:
@@ -183,7 +183,7 @@ def main():
 
         if r_index:
             prs = command(
-                "gh pr list -L 100 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
+                "gh pr list -L 200 --json title,url,updatedAt,assignees,latestReviews,comments,author"  # noqa
             )
             rows = create_rows(prs)
 

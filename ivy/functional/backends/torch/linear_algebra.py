@@ -211,7 +211,10 @@ slogdet.support_native_out = True
 
 
 def solve(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor]=None
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if x1.dtype != torch.float:
         x1 = x1.type(torch.float)

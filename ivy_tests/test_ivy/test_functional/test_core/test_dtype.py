@@ -120,6 +120,22 @@ def mutually_broadcastable_shapes(
 dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
 
 
+@st.composite
+def dtypes_shared(draw, num_dtypes):
+    if isinstance(num_dtypes, str):
+        num_dtypes = draw(st.shared(st.integers(), key=num_dtypes))
+    return draw(
+        st.shared(
+            st.lists(
+                st.sampled_from(ivy_np.valid_dtypes),
+                min_size=num_dtypes,
+                max_size=num_dtypes,
+            ),
+            key="dtypes",
+        )
+    )
+
+
 # Array API Standard Function Tests #
 # --------------------------------- #
 
@@ -164,42 +180,46 @@ def test_astype(
 
 # broadcast arrays
 @st.composite
-def broadcastable_arrays(draw, dtype):
-    shapes = draw(st.integers(2, 5).flatmap(mutually_broadcastable_shapes))
+def broadcastable_arrays(draw, dtypes):
+    num_arrays = st.shared(st.integers(2, 5), key="num_arrays")
+    shapes = draw(num_arrays.flatmap(mutually_broadcastable_shapes))
+    dtypes = draw(dtypes)
     arrays = []
-    for c, shape in enumerate(shapes, 1):
-        x = draw(helpers.nph.arrays(dtype=dtype, shape=shape), label=f"x{c}")
+    for c, (shape, dtype) in enumerate(zip(shapes, dtypes), 1):
+        x = draw(helpers.nph.arrays(dtype=dtype, shape=shape), label=f"x{c}").tolist()
         arrays.append(x)
-    return helpers.as_lists(*arrays)
+    return arrays
 
 
 @given(
-    arrays=broadcastable_arrays(dtype_shared),
-    input_dtype=dtype_shared,
-    as_variable=st.booleans(),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    arrays=broadcastable_arrays(dtypes_shared("num_arrays")),
+    input_dtypes=dtypes_shared("num_arrays"),
+    as_variable=helpers.array_bools(),
+    native_array=helpers.array_bools(),
+    container=helpers.array_bools(),
+    instance_method=helpers.array_bools(),
 )
 def test_broadcast_arrays(
     arrays,
-    input_dtype,
+    input_dtypes,
     as_variable,
     native_array,
     container,
+    instance_method,
     fw,
 ):
     kw = {}
-    for i, array in enumerate(zip(arrays)):
-        kw["x{}".format(i)] = ivy.asarray(array)
+    for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
+        kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
     num_positional_args = len(kw)
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=False,
+        instance_method=instance_method,
         fw=fw,
         fn_name="broadcast_arrays",
         **kw,
@@ -483,6 +503,26 @@ def test_closest_valid_dtype(
     ), f"result={res!r}, but should be str or ivy.Dtype"
 
 
+# default_dtype
+@given(
+    input_dtype=st.sampled_from(ivy.valid_dtypes),
+    as_native=st.booleans(),
+)
+def test_default_dtype(
+    input_dtype,
+    as_native,
+):
+    res = ivy.default_dtype(input_dtype, as_native)
+    assert (
+        isinstance(input_dtype, ivy.Dtype)
+        or isinstance(input_dtype, str)
+        or isinstance(input_dtype, ivy.NativeDtype)
+    )
+    assert isinstance(res, ivy.Dtype) or isinstance(
+        input_dtype, str
+    ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
+
+
 # dtype_bits
 @given(
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
@@ -551,6 +591,7 @@ def test_is_bool_dtype(
         fw=fw,
         fn_name="is_bool_dtype",
         dtype_in=array,
+        test_values=False,
     )
 
 
