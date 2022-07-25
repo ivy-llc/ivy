@@ -2,7 +2,7 @@
 
 # global
 import torch
-from typing import Optional, List, Union, Sequence
+from typing import Optional, Union, Sequence
 
 # local
 import ivy
@@ -17,8 +17,8 @@ def random_uniform(
     low: Union[float, torch.Tensor] = 0.0,
     high: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dtype=None,
     *,
+    dtype=None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -36,20 +36,23 @@ random_uniform.support_native_out = True
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, torch.Tensor] = 0.0,
+    std: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if shape is None:
-        true_shape: List[int] = []
+    if isinstance(mean, float) and isinstance(std, float):
+        ret = torch.normal(mean, std, ivy.default(shape, ()), out=out)
     else:
-        true_shape: List[int] = shape
-    mean = mean.item() if isinstance(mean, torch.Tensor) else mean
-    std = std.item() if isinstance(std, torch.Tensor) else std
-    return torch.normal(mean, std, true_shape, device=default_device(device), out=out)
+        assert shape is None, (
+            "can only provide explicit shape if mean and std are " "both scalar values"
+        )
+        ret = torch.normal(mean, std, out=out)
+    if ret.device == device:
+        return ret
+    return ret.to(device)
 
 
 random_normal.support_native_out = True
@@ -84,14 +87,24 @@ multinomial.support_native_out = True
 
 
 def randint(
-    low: int,
-    high: int,
+    low: Union[int, torch.Tensor],
+    high: Union[int, torch.Tensor],
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.randint(low, high, shape, out=out, device=default_device(device))
+    zero_dim = len(shape) == 0
+    if zero_dim:
+        shape = [1]
+    ret = torch.rand(*shape, out=out, dtype=torch.float64, device=device)
+    ret = torch.mul(ret, high - low, out=out)
+    ret = torch.add(ret, low, out=out)
+    ret = ret.to(ivy.default_int_dtype(as_native=True))
+    ret = torch.clamp(ret, low, high - 1)
+    if zero_dim:
+        return ret.reshape(())
+    return ret
 
 
 randint.support_native_out = True

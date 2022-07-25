@@ -148,7 +148,7 @@ def qr(x: JaxArray, mode: str = "reduced") -> NamedTuple:
 
 
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[JaxArray]
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[JaxArray] = None
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
