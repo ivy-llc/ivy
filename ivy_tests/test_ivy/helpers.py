@@ -980,6 +980,7 @@ def test_function(
         if not max(container_flags) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
+    ivy.unset_backend()
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     try:
@@ -1016,7 +1017,7 @@ def test_function(
             )
             ivy.unset_backend()
             return
-        ret_from_gt = ivy.to_native(ivy.__dict__[fn_name](*args, **kwargs), nested=True)
+        ret_from_gt = ivy.__dict__[fn_name](*args, **kwargs)
     except Exception as e:
         ivy.unset_backend()
         raise e
