@@ -58,12 +58,72 @@ class ContainerWithDataTypes(ContainerBase):
 
     @staticmethod
     def static_broadcast_arrays(
-        *arrays: ivy.Container,
+        *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `ivy.broadcast_arrays`.
+        This method simply wraps the function,
+        and so the docstring for `ivy.broadcast_arrays`
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        arrays
+            an arbitrary number of arrays to-be broadcasted.
+            Each array must have the same shape.
+            And Each array must have the same dtype as its
+            corresponding input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
+
+        Returns
+        -------
+        ret
+            A list of containers containing broadcasted arrays
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
+        >>> x2 = ivy.Container(a=ivy.array([-1.2, 0.4]), b=ivy.array([0, 1]))
+        >>> y = ivy.Container.static_broadcast_arrays(x1, x2)
+        >>> print(y)
+        [{
+            a: ivy.array([1, 2]),
+            b: ivy.array([3, 4])
+        }, {
+            a: ivy.array([-1.2, 0.4]),
+            b: ivy.array([0, 1])
+        }]
+
+        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
+        >>> x2 = ivy.array([0.2, 3.])
+        >>> y = ivy.Container.static_broadcast_arrays(x1, x2)
+        >>> print(y)
+        [{
+            a: ivy.array([4, 5]),
+            b: ivy.array([2, -1])
+        }, {
+            a: ivy.array([0.2, 3.]),
+            b: ivy.array([0.2, 3.])
+        }]
+        """
         return ContainerBase.multi_map_in_static_method(
             "broadcast_arrays",
             *arrays,
@@ -75,12 +135,67 @@ class ContainerWithDataTypes(ContainerBase):
 
     def broadcast_arrays(
         self: ivy.Container,
-        *arrays: ivy.Container,
+        *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` instance method variant of `ivy.broadcast_arrays`.
+        This method simply wraps the function,
+        and so the docstring for `ivy.broadcast_arrays`
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            A container to be broadcatsed against other input arrays.
+        arrays
+            an arbitrary number of containers having arrays to-be broadcasted.
+            Each array must have the same shape.
+            Each array must have the same dtype as its corresponding input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
+        >>> x2 = ivy.Container(a=ivy.array([-1.2, 0.4]), b=ivy.array([0, 1]))
+        >>> y = x1.broadcast_arrays(x2)
+        >>> print(y)
+        [{
+            a: ivy.array([1, 2]),
+            b: ivy.array([3, 4])
+        }, {
+            a: ivy.array([-1.2, 0.4]),
+            b: ivy.array([0, 1])
+        }]
+
+        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
+        >>> x2 = ivy.zeros(2)
+        >>> y = x1.broadcast_arrays(x2)
+        >>> print(y)
+        [{
+            a: ivy.array([4, 5]),
+            b: ivy.array([2, -1])
+        }, {
+            a: ivy.array([0., 0.]),
+            b: ivy.array([0., 0.])
+        }]
+        """
         return self.static_broadcast_arrays(
             self,
             *arrays,

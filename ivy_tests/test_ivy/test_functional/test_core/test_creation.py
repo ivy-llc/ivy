@@ -140,8 +140,8 @@ def test_logspace(
         instance_method=False,
         fw=fw,
         fn_name="logspace",
-        test_rtol=(1,),  # if its less then one it'll test for inf
-        test_atol=(1e-06,),
+        rtol_=(1,),  # if its less then one it'll test for inf
+        atol_=(1e-06,),
         test_values=True,
         start=np.asarray(start_stop[0], dtype=dtype[0]),
         stop=np.asarray(start_stop[1], dtype=dtype[1]),
