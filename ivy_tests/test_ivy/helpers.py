@@ -800,11 +800,11 @@ def test_function(
     instance_method: bool,
     fw: str,
     fn_name: str,
-    test_rtol: float = None,
-    test_atol: float = 1e-06,
+    rtol_: float = None,
+    atol_: float = 1e-06,
     test_values: bool = True,
     ground_truth_backend: str = "numpy",
-    device: str = 'cpu',
+    device_: str = 'cpu',
     **all_as_kwargs_np,
 ):
     """Tests a function that consumes (or returns) arrays for the current backend
@@ -835,9 +835,9 @@ def test_function(
         current backend (framework).
     fn_name
         name of the function to test.
-    test_rtol
+    rtol_
         relative tolerance value.
-    test_atol
+    atol_
         absolute tolerance value.
     test_values
         if True, test for the correctness of the resulting values.
@@ -929,7 +929,7 @@ def test_function(
     )
     if not test_unsupported:
         test_unsupported = check_unsupported_device(
-            fn=fn, input_device=device, all_as_kwargs_np=all_as_kwargs_np
+            fn=fn, input_device=device_, all_as_kwargs_np=all_as_kwargs_np
         )
     if test_unsupported:
         try:
@@ -1060,8 +1060,8 @@ def test_function(
     value_test(
         ret_np_flat=ret_np_flat,
         ret_from_np_flat=ret_np_from_gt_flat,
-        rtol=test_rtol,
-        atol=test_atol,
+        rtol=rtol_,
+        atol=atol_,
     )
 
 
