@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -35,6 +35,7 @@ def test_vector_to_skew_symmetric_matrix(
 ):
     if "float16" or "int8" in input_dtype:
         return
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -75,8 +76,8 @@ def test_matrix_power(
     a,
     n,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -127,6 +128,7 @@ def test_matmul(
     np.random.seed(seed)
     if "float16" or "int8" in input_dtype:
         return
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -168,8 +170,8 @@ def test_det(
     a,
     b,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     x = np.random.uniform(size=(b, a, a)).astype(input_dtype)
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -207,8 +209,8 @@ def test_eigh(
     fw,
     a,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     x = np.random.uniform(size=(a, a)).astype(input_dtype)
     x = (x + x.T) / 2
     ret, ret_from_np = helpers.test_function(
@@ -263,8 +265,8 @@ def test_eigvalsh(
     a,
     b,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -307,8 +309,8 @@ def test_inv(
     a,
     b,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -353,6 +355,7 @@ def test_matrix_transpose(
 ):
     if "float16" or "int8" in input_dtype:
         return
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -395,6 +398,7 @@ def test_outer(
 ):
     if "float16" or "int8" in input_dtype:
         return
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -432,8 +436,8 @@ def test_slogdet(
     fw,
     a,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -474,8 +478,8 @@ def test_solve(
     fw,
     a,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -521,6 +525,7 @@ def test_svdvals(
 ):
     if "float16" or "int8" in input_dtype:
         return
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -567,6 +572,7 @@ def test_tensordot(
 ):
     if "float16" or "int8" in input_dtype:
         return
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -615,6 +621,7 @@ def test_trace(
 ):
     if "float16" or "int8" in input_dtype:
         return
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -660,6 +667,7 @@ def test_vecdot(
 ):
     if "float16" or "int8" in input_dtype:
         return
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -708,6 +716,7 @@ def test_vector_norm(
 ):
     if "float16" in input_dtype:
         return
+
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
     helpers.test_function(
@@ -754,8 +763,8 @@ def test_pinv(
     instance_method,
     fw,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
     helpers.test_function(
@@ -798,8 +807,8 @@ def test_qr(
     b,
     mode,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     x = np.random.uniform(size=(a, b)).astype(input_dtype)
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -845,6 +854,7 @@ def test_svd(
 ):
     if "float16" in input_dtype:
         return
+
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
     ret, ret_from_np = helpers.test_function(
@@ -908,8 +918,8 @@ def test_matrix_norm(
     kd,
     ord,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     shape = tuple(array_shape)
     x = np.random.uniform(size=shape).astype(input_dtype)
     helpers.test_function(
@@ -998,8 +1008,8 @@ def test_cholesky(
     a,
     upper,
 ):
-    if "float16" in input_dtype:
-        return
+    assume(not ("float16" in input_dtype))
+
     x = np.random.uniform(size=(a, a)).astype(input_dtype)
     x = np.matmul(x, x.T + 1e-3)  # make symmetric positive-definite
     helpers.test_function(
@@ -1049,6 +1059,7 @@ def test_cross(
 ):
     if "float16" or "int8" in input_dtype:
         return
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1097,6 +1108,7 @@ def test_diagonal(
 ):
     if "float16" or "int8" in input_dtype:
         return
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
