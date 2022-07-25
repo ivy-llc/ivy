@@ -66,7 +66,7 @@ def argsort(
     Functional Examples
     -------------------
 
-    With：code:`ivy.Array` input:
+    With: code:`ivy.Array` input:
 
     >>> x = ivy.array([3,1,2])
     >>> y = ivy.argsort(x)

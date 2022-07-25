@@ -57,6 +57,9 @@ class Finfo:
     def __init__(self, mx_finfo: np.finfo):
         self._mx_finfo = mx_finfo
 
+    def __repr__(self):
+        return repr(self._mx_finfo)
+
     @property
     def bits(self):
         return self._mx_finfo.bits
