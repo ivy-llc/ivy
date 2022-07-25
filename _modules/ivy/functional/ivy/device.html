@@ -135,7 +135,7 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="kn">import</span> <span class="nn">nvidia_smi</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="c1"># noinspection PyUnresolvedReferences</span>
 <span class="k">try</span><span class="p">:</span>
@@ -1125,90 +1125,6 @@
         <span class="n">output_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">output_axes</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_outputs</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">],</span> <span class="n">output_axes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_outputs</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">ret</span></div>
-
-
-<span class="k">def</span> <span class="nf">_is_valid_devices_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;supported_devices&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;unsupported_devices&quot;</span><span class="p">):</span>
-        <span class="n">fn_supported_devices</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">supported_devices</span>
-        <span class="n">fn_unsupported_devices</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">unsupported_devices</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn_supported_devices</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn_unsupported_devices</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">backend_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
-                <span class="k">if</span> <span class="p">(</span>
-                    <span class="n">backend_str</span> <span class="ow">in</span> <span class="n">fn_supported_devices</span>
-                    <span class="ow">and</span> <span class="n">backend_str</span> <span class="ow">in</span> <span class="n">fn_unsupported_devices</span>
-                <span class="p">):</span>
-                    <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn_unsupported_devices</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-                <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="kc">True</span>
-
-
-<div class="viewcode-block" id="function_unsupported_devices"><a class="viewcode-back" href="../../../../functional/ivy/device/function_unsupported_devices.html#ivy.functional.ivy.device.function_unsupported_devices">[docs]</a><span class="nd">@handle_nestable</span>
-<span class="k">def</span> <span class="nf">function_unsupported_devices</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the unsupported devices of the current backend&#39;s function.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    fn</span>
-<span class="sd">        The function to check for the unsupported device attribute</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The unsupported devices of the function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_devices_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;supported_devices and unsupported_devices attributes cannot both </span><span class="se">\</span>
-<span class="s2">             exist in a particular backend&quot;</span>
-        <span class="p">)</span>
-    <span class="n">unsupported_devices</span> <span class="o">=</span> <span class="p">()</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;unsupported_devices&quot;</span><span class="p">):</span>
-        <span class="n">fn_unsupported_devices</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">unsupported_devices</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn_unsupported_devices</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">backend_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">backend_str</span> <span class="ow">in</span> <span class="n">fn_unsupported_devices</span><span class="p">:</span>
-                <span class="n">unsupported_devices</span> <span class="o">+=</span> <span class="n">fn_unsupported_devices</span><span class="p">[</span><span class="n">backend_str</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">&quot;all&quot;</span> <span class="ow">in</span> <span class="n">fn_unsupported_devices</span><span class="p">:</span>
-                <span class="n">unsupported_devices</span> <span class="o">+=</span> <span class="n">fn_unsupported_devices</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">unsupported_devices</span> <span class="o">+=</span> <span class="n">fn_unsupported_devices</span>
-    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">unsupported_devices</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="function_supported_devices"><a class="viewcode-back" href="../../../../functional/ivy/device/function_supported_devices.html#ivy.functional.ivy.device.function_supported_devices">[docs]</a><span class="nd">@handle_nestable</span>
-<span class="k">def</span> <span class="nf">function_supported_devices</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the supported devices of the current backend&#39;s function.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    fn</span>
-<span class="sd">        The function to check for the supported device attribute</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The supported devices of the function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_devices_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;supported_devices and unsupported_devices attributes cannot both </span><span class="se">\</span>
-<span class="s2">             exist in a particular backend&quot;</span>
-        <span class="p">)</span>
-    <span class="n">supported_devices</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;supported_devices&quot;</span><span class="p">):</span>
-        <span class="n">fn_supported_devices</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">supported_devices</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn_supported_devices</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">backend_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">backend_str</span> <span class="ow">in</span> <span class="n">fn_supported_devices</span><span class="p">:</span>
-                <span class="n">supported_devices</span> <span class="o">+=</span> <span class="n">fn_supported_devices</span><span class="p">[</span><span class="n">backend_str</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">&quot;all&quot;</span> <span class="ow">in</span> <span class="n">fn_supported_devices</span><span class="p">:</span>
-                <span class="n">supported_devices</span> <span class="o">+=</span> <span class="n">fn_supported_devices</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">supported_devices</span> <span class="o">+=</span> <span class="n">fn_supported_devices</span>
-    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">supported_devices</span><span class="p">))</span></div>
 
 
 <span class="c1"># Profiler #</span>

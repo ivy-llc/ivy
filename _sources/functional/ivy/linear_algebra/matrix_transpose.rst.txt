@@ -4,6 +4,10 @@ matrix_transpose
 .. autofunction:: ivy.functional.ivy.linear_algebra.matrix_transpose
 
 .. autofunction:: ivy.array.array_methods.matrix_transpose
+
+.. autofunction:: ivy.container.container_methods.matrix_transpose
+
+.. autofunction:: ivy.container.container_methods.static_matrix_transpose
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ matrix_transpose
 
    matrix_transpose/matrix_transpose_functional.rst
    matrix_transpose/matrix_transpose_array.rst
+   matrix_transpose/matrix_transpose_container.rst
+   matrix_transpose/static_matrix_transpose_container.rst
 
