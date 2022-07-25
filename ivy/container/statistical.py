@@ -124,7 +124,7 @@ class ContainerWithStatistical(ContainerBase):
        
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),\
+        >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \ 
                               b=ivy.array([0.7, 0.1, 0.9]))
         >>> y = x.var()
         >>> print(y)
@@ -195,7 +195,7 @@ class ContainerWithStatistical(ContainerBase):
        
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),\
+        >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \ 
                               b=ivy.array([0.7, 0.1, 0.9]))
         >>> y = x.var()
         >>> print(y)
