@@ -21,6 +21,8 @@ torch_scatter = None
 def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.device]:
     dv = x.device
     if as_native:
+        if isinstance(dv, torch.device):
+            dv = dv.type
         return torch.device(dv.replace("gpu", "cuda"))
     return as_ivy_dev(dv)
 
