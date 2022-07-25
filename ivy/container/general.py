@@ -667,8 +667,8 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([1.8, 2.4])
         }
 
-        >>> x = ivy.Container(a=ivy.asarray([2., 4.], [6., 8.]),\
-                              b=ivy.asarray([10., 12.], [14., 16.]))
+        >>> x = ivy.Container(a=ivy.asarray([[2., 4.], [6., 8.]]),\
+                              b=ivy.asarray([[10., 12.], [14., 16.]]))
         >>> z = x.stable_divide(2, min_denominator=2)
         >>> print(z)
         {
