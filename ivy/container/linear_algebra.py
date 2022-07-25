@@ -673,6 +673,27 @@ class ContainerWithLinearAlgebra(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_vector_to_skew_symmetric_matrix(
+            vector: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "vector_to_skew_symmetric_matrix",
+            vector,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+
     def vector_to_skew_symmetric_matrix(
             self: ivy.Container,
             key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -682,15 +703,11 @@ class ContainerWithLinearAlgebra(ContainerBase):
             *,
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.vector_to_skew_symmetric_matrix(x_)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        return self.static_vector_to_skew_symmetric_matrix(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out=out,
         )
