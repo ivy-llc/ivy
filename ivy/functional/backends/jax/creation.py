@@ -1,6 +1,7 @@
+# For Review
 # global
 import jax.numpy as jnp
-from typing import Union, Optional, List, Sequence
+from typing import Union, Optional, Tuple, List, Sequence
 import jaxlib.xla_extension
 from jax.dlpack import from_dlpack as jax_from_dlpack
 
@@ -9,7 +10,6 @@ import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
-from ivy.functional.ivy.device import default_device
 from ivy.functional.ivy import default_dtype
 
 # noinspection PyProtectedMember
@@ -21,14 +21,14 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 
 def arange(
-    start,
-    stop=None,
-    step=1,
+    start: float,
+    stop: Optional[float] = None,
+    step: float = 1,
     *,
-    dtype: jnp.dtype = None,
+    dtype: Optional[jnp.dtype] = None,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
-):
+) -> JaxArray:
     if dtype:
         dtype = as_native_dtype(dtype)
     res = _to_device(jnp.arange(start, stop, step=step, dtype=dtype), device=device)
@@ -41,13 +41,13 @@ def arange(
 
 
 def asarray(
-    object_in,
+    object_in: Union[JaxArray, jnp.ndarray, List[float], Tuple[float]],
     *,
     copy: Optional[bool] = None,
-    dtype: jnp.dtype = None,
+    dtype: Optional[jnp.dtype] = None,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
-):
+) -> JaxArray:
     if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
         dtype = object_in.dtype
     elif (
@@ -78,9 +78,7 @@ def empty(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return _to_device(
-        jnp.empty(shape, as_native_dtype(default_dtype(dtype))), device=device
-    )
+    return _to_device(jnp.empty(shape, dtype), device=device)
 
 
 def empty_like(
@@ -90,11 +88,6 @@ def empty_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if dtype and str:
-        dtype = jnp.dtype(dtype)
-    else:
-        dtype = x.dtype
-
     return _to_device(jnp.empty_like(x, dtype=dtype), device=device)
 
 
@@ -108,22 +101,19 @@ def eye(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    dtype = as_native_dtype(default_dtype(dtype))
-    device = default_device(device)
     if n_cols is None:
         n_cols = n_rows
     i = jnp.eye(n_rows, n_cols, k, dtype)
     if batch_shape is None:
         return _to_device(i, device=device)
-    else:
-        reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
-        tile_dims = list(batch_shape) + [1, 1]
-        return_mat = jnp.tile(jnp.reshape(i, reshape_dims), tile_dims)
-        return _to_device(return_mat, device=device)
+    reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+    tile_dims = list(batch_shape) + [1, 1]
+    return_mat = jnp.tile(jnp.reshape(i, reshape_dims), tile_dims)
+    return _to_device(return_mat, device=device)
 
 
 # noinspection PyShadowingNames
-def from_dlpack(x, *, out: Optional[JaxArray] = None):
+def from_dlpack(x, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax_from_dlpack(x)
 
 
@@ -145,19 +135,13 @@ def full(
 
 def full_like(
     x: JaxArray,
-    fill_value: Union[int, float],
+    fill_value: float,
     *,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
+    dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
-    if dtype and str:
-        dtype = jnp.dtype(dtype)
-    else:
-        dtype = x.dtype
-
     return _to_device(
         jnp.full_like(x, fill_value, dtype=dtype),
         device=device,
@@ -165,21 +149,19 @@ def full_like(
 
 
 def linspace(
-    start,
-    stop,
-    num,
-    axis=None,
-    endpoint=True,
+    start: Union[JaxArray, float],
+    stop: float,
+    num: int,
+    axis: Optional[int] = None,
+    endpoint: bool = True,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
-):
+) -> JaxArray:
     if axis is None:
         axis = -1
     ans = jnp.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
-    if dtype is None:
-        ans = jnp.float32(ans)
     return _to_device(ans, device=device)
 
 
@@ -190,13 +172,11 @@ def meshgrid(*arrays: JaxArray, indexing: str = "xy") -> List[JaxArray]:
 def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
-    dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: Optional[Union[ivy.Device, jaxlib.xla_extension.Device]] = None,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return _to_device(
-        jnp.ones(shape, as_native_dtype(default_dtype(dtype))), device=device
-    )
+    return _to_device(jnp.ones(shape, dtype), device=device)
 
 
 def ones_like(
@@ -206,10 +186,6 @@ def ones_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if dtype and str:
-        dtype = jnp.dtype(dtype)
-    else:
-        dtype = x.dtype
     return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
 
 
@@ -241,8 +217,6 @@ def zeros_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if not dtype:
-        dtype = x.dtype
     return _to_device(jnp.zeros_like(x, dtype=dtype), device=device)
 
 
@@ -254,17 +228,18 @@ array = asarray
 
 
 def logspace(
-    start,
-    stop,
-    num,
-    base=10.0,
-    axis=None,
+    start: Union[JaxArray, int],
+    stop: Union[JaxArray, int],
+    num: int,
+    base: float = 10.0,
+    axis: int = None,
     *,
+    dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
-):
+) -> JaxArray:
     if axis is None:
         axis = -1
     return _to_device(
-        jnp.logspace(start, stop, num, base=base, axis=axis), device=device
+        jnp.logspace(start, stop, num, base=base, dtype=dtype, axis=axis), device=device
     )

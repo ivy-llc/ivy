@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 
+
 # Extra #
 # ------#
 
@@ -269,7 +270,6 @@ def stop_gradient(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def execute_with_gradients(func, xs, retain_grads=False):
     """Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned
