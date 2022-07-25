@@ -1334,7 +1334,7 @@ def test_logaddexp(
         instance_method=instance_method,
         fw=fw,
         fn_name="logaddexp",
-        test_rtol=1e-2,
+        rtol_=1e-2,
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
     )

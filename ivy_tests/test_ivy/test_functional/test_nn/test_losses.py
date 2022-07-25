@@ -71,7 +71,7 @@ def test_cross_entropy(
         pred=np.asarray(pred, dtype=pred_dtype),
         axis=axis,
         epsilon=epsilon,
-        test_rtol=1e-03,
+        rtol_=1e-03,
     )
 
 

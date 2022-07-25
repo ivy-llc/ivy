@@ -1,7 +1,8 @@
+# For Review
 # global
 import numpy
 import numpy as np
-from typing import Union, Optional, List, Sequence
+from typing import Union, Tuple, Optional, List, Sequence
 
 # local
 import ivy
@@ -18,14 +19,14 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 
 def arange(
-    start,
-    stop=None,
-    step=1,
+    start: float,
+    stop: Optional[float] = None,
+    step: float = 1,
     *,
-    dtype: np.dtype = None,
+    dtype: Optional[np.dtype] = None,
     device: str,
     out: Optional[np.ndarray] = None
-):
+) -> np.ndarray:
     if dtype:
         dtype = as_native_dtype(dtype)
     res = _to_device(np.arange(start, stop, step=step, dtype=dtype), device=device)
@@ -38,13 +39,13 @@ def arange(
 
 
 def asarray(
-    object_in,
+    object_in: Union[np.ndarray, List[float], Tuple[float]],
     *,
-    copy=None,
-    dtype: np.dtype = None,
+    copy: Optional[bool] = None,
+    dtype: Optional[np.dtype] = None,
     device: str,
     out: Optional[np.ndarray] = None
-):
+) -> np.ndarray:
     # If copy=none then try using existing memory buffer
     if isinstance(object_in, np.ndarray) and dtype is None:
         dtype = object_in.dtype
@@ -130,7 +131,7 @@ def full(
 
 def full_like(
     x: np.ndarray,
-    fill_value: Union[int, float],
+    fill_value: float,
     *,
     dtype: np.dtype,
     device: str,
@@ -141,16 +142,16 @@ def full_like(
 
 
 def linspace(
-    start,
-    stop,
-    num,
-    axis=None,
-    endpoint=True,
+    start: Union[np.ndarray, float],
+    stop: Union[np.ndarray, float],
+    num: int,
+    axis: Optional[int] = None,
+    endpoint: bool = True,
     *,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None
-):
+) -> np.ndarray:
     if axis is None:
         axis = -1
     ans = np.linspace(start, stop, num, endpoint, dtype=dtype, axis=axis)
@@ -216,16 +217,16 @@ array = asarray
 
 
 def logspace(
-    start,
-    stop,
-    num,
-    base=10.0,
-    axis=None,
+    start: Union[np.ndarray, int],
+    stop: Union[np.ndarray, int],
+    num: int,
+    base: float = 10.0,
+    axis: Optional[int] = None,
     *,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None
-):
+) -> np.ndarray:
     if axis is None:
         axis = -1
     return _to_device(

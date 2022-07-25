@@ -76,7 +76,7 @@ def test_leaky_relu(
         container_flags=container,
         instance_method=instance_method,
         fn_name="leaky_relu",
-        test_rtol=1e-4,
+        rtol_=1e-4,
         x=np.asarray(x, dtype=dtype),
         alpha=alpha,
     )
@@ -114,8 +114,8 @@ def test_gelu(
         container_flags=container,
         instance_method=instance_method,
         fn_name="gelu",
-        test_atol=1e-4,
-        test_rtol=1e-4,
+        atol_=1e-4,
+        rtol_=1e-4,
         x=np.asarray(x, dtype=dtype),
         approximate=approximate,
     )
