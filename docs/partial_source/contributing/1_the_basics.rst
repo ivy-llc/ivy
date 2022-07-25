@@ -353,10 +353,10 @@ the following mount:
 
 * This will overwrite the *ivy* subfolder inside the ivy repo in the container with the *ivy* subfolder inside your local ivy repo.
 * Ivy is installed system-wide inside the container via the command :code:`python3 setup.py develop --no-deps`
-* The :code:`develop` command means that the system-wide installation will still depend on the original source files, rather than creating a fresh copy of these.
+* The :code:`develop` command means that the system-wide installation will still depend on the original source files, rather than creating a fresh copy.
 * Therefore, ivy can be imported into an interactive python shell from any directory inside the container, and it will still use the latest updates made to the source code.
 
-Clearly, running a container in interactive mode can be a useful tool in the arsenal of a developer.
+Clearly, running a container in interactive mode can be a helpful tool in a developer’s arsenal.
 
 Running Tests Locally
 ---------------------

@@ -5,8 +5,6 @@ from typing import Optional, Union
 # local
 import ivy
 
-# ToDo: implement all methods here as public instance methods
-
 
 # noinspection PyUnresolvedReferences
 class ArrayWithElementwise(abc.ABC):
@@ -569,12 +567,30 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([2., 7., 9.])
+        >>> x2 = ivy.array([2., 2., 2.])
+        >>> y = x1.divide(x2)
+        >>> print(y)
+        ivy.array([1., 3.5, 4.5])
+
+        With mixed :code:`ivy.Array` and `ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.array([2., 7., 9.])
+        >>> x2 = ivy.native_array([2., 2., 2.])
+        >>> y = x1.divide(x2)
+        >>> print(y)
+        ivy.array([1., 3.5, 4.5])
         """
         return ivy.divide(self._data, x2, out=out)
 
     def equal(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[float, ivy.Array, ivy.NativeArray],
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -600,6 +616,43 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([2., 7., 9.])
+        >>> x2 = ivy.array([1., 7., 9.])
+        >>> y = x1.equal(x2)
+        >>> print(y)
+        ivy.array([False, True, True])
+
+        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.array([2.5, 7.3, 9.375])
+        >>> x2 = ivy.native_array([2.5, 2.9, 9.375])
+        >>> y = x1.equal(x2)
+        >>> print(y)
+        ivy.array([True, False,  True])
+
+        With mixed :code:`ivy.Array` and `float` inputs:
+
+        >>> x1 = ivy.array([2.5, 7.3, 9.375])
+        >>> x2 = 7.3
+        >>> y = x1.equal(x2)
+        >>> print(y)
+        ivy.array([False, True, False])
+
+        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([3., 1., 0.9])
+        >>> x2 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> y = x1.equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([True, True, True])
+        }
         """
         return ivy.equal(self._data, x2, out=out)
 
@@ -705,6 +758,24 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([13., 7., 8.])
+        >>> x2 = ivy.array([3., 2., 7.])
+        >>> y = x1.floor_divide(x2)
+        >>> print(y)
+        ivy.array([4., 3., 1.])
+
+        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.array([13., 7., 8.])
+        >>> x2 = ivy.native_array([3., 2., 7.])
+        >>> y = x1.floor_divide(x2)
+        >>> print(y)
+        ivy.array([4., 3., 1.])
         """
         return ivy.floor_divide(self._data, x2, out=out)
 
