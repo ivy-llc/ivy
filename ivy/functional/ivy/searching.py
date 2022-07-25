@@ -34,7 +34,7 @@ def argmax(
     x
         input array. Should have a numeric data type.
     axis
-        axis along which to search. If None, the function must return the index of the
+        along which to search. If None, the function must return the index of the
         maximum value of the flattened array. Default  None.
     keepdims
         If this is set to True, the axes which are reduced are left in the result as
@@ -49,7 +49,7 @@ def argmax(
     ret
         if axis is None, a zero-dimensional array containing the index of the first
         occurrence of the maximum value; otherwise, a non-zero-dimensional array
-        containing the indices of the maximum values. The returned array must have be
+        containing the indices of the maximum values. The returned array must have been
         the default array index data type.
 
     Functional Examples
@@ -67,27 +67,27 @@ def argmax(
     >>> print(x)
     ivy.array([1])
 
-    >>> x=ivy.array([[1., -0., -1.], \
+    >>> x = ivy.array([[1., -0., -1.], \
                      [-2., 3., 2.]])
     >>> y = ivy.argmax(x, axis= 1)
     >>> print(y)
     ivy.array([0, 1])
 
-    >>> x=ivy.array([[4., 0., -1.], \
+    >>> x = ivy.array([[4., 0., -1.], \
                      [2., -3., 6]])
     >>> y = ivy.argmax(x, axis= 1, keepdims= True)
     >>> print(y)
-    ivy.array([[0], \
+    ivy.array([[0],
               [2]])
 
-    >>> x=ivy.array([[4., 0., -1.], \
+    >>> x = ivy.array([[4., 0., -1.], \
                      [2., -3., 6], \
                      [2., -3., 6]])
-    >>> z= ivy.zeros((1,3), dtype=ivy.int64)
+    >>> z = ivy.zeros((1,3), dtype=ivy.int64)
     >>> y = ivy.argmax(x, axis= 1, keepdims= True, out= z)
     >>> print(z)
-    ivy.array([[0], \
-               [2], \
+    ivy.array([[0],
+               [2],
                [2]])
 
     With :code:`ivy.NativeArray` input:
@@ -130,7 +130,7 @@ def argmin(
     x
         input array. Should have a numeric data type.
     axis
-        axis along which to search. If None, the function must return the index of the
+        along which to search. If None, the function must return the index of the
         minimum value of the flattened array. Default = None.
     keepdims
         if True, the reduced axes (dimensions) must be included in the result as
@@ -159,19 +159,19 @@ def argmin(
     ivy.array(2)
 
 
-    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.]])
+    >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.]])
     >>> y = ivy.argmin(x, axis= 1)
     >>> print(y)
     ivy.array([2, 0])
 
-    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.]])
+    >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.]])
     >>> y = ivy.argmin(x, axis= 1, keepdims= True)
     >>> print(y)
     ivy.array([[2],
               [0]])
 
-    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
-    >>> y= ivy.zeros((1,3), dtype=ivy.int64)
+    >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
+    >>> y = ivy.zeros((1,3), dtype=ivy.int64)
     >>> ivy.argmin(x, axis= 1, keepdims= True, out= y)
     >>> print(y)
     ivy.array([[2],
@@ -210,7 +210,7 @@ def argmin(
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.argmin()
     >>> print(y)
-    {a:ivy.array(1),b:ivy.array(0)}
+    {a:ivy.array(1), b:ivy.array(0)}
     """
     return current_backend(x).argmin(x, axis, keepdims, out=out)
 
@@ -243,7 +243,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> x = ivy.array([0, 10, 15, 20, -50, 0])
     >>> y = ivy.nonzero(x)
     >>> print(y)
-    (ivy.array([1, 2, 3, 4]),)
+    (ivy.array([1, 2, 3, 4]))
 
     >>> x = ivy.array([[1, 2], [-1, -2]])
     >>> y = ivy.nonzero(x)
@@ -273,7 +273,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     }
 
     >>> print(y.a)
-    (ivy.array([1, 2, 3]),)
+    (ivy.array([1, 2, 3]))
 
     >>> print(y.b)
     (ivy.array([0, 0]), ivy.array([0, 1]))
@@ -286,7 +286,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     >>> x = ivy.array([0,0,0,1,1,1])
     >>> y = x.nonzero()
     >>> print(y)
-    (ivy.array([3, 4, 5]),)
+    (ivy.array([3, 4, 5]))
 
     Using :code:`ivy.NativeArray` instance method:
 
@@ -306,10 +306,10 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
     }
 
     >>> print(y.a)
-    (ivy.array([0, 1, 2]),)
+    (ivy.array([0, 1, 2]))
 
     >>> print(y.b)
-    (ivy.array([]),)
+    (ivy.array([]))
     """
     return current_backend(x).nonzero(x)
 
