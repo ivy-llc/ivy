@@ -119,11 +119,11 @@ def test_get_referrers_recursive(device, call):
 @given(dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
 def test_copy_array(dtype_and_x, device, call, fw):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        return
+    assume(not (fw == "torch" and dtype in ["uint16", "uint32", "uint64"]))
+
+    # mxnet does not support int16
+    assume(not (call in [helpers.mx_call] and dtype == "int16"))
+
     # smoke test
     x = ivy.array(x, dtype=dtype, device=device)
     ret = ivy.copy_array(x)
@@ -149,18 +149,27 @@ def test_copy_array(dtype_and_x, device, call, fw):
 def test_array_equal(x0_n_x1_n_res, device, call, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
-    if fw == "torch" and (
-        dtype0 in ["uint16", "uint32", "uint64"]
-        or dtype1 in ["uint16", "uint32", "uint64"]
-    ):
-        # torch does not support those dtypes
-        return
-    if call in [helpers.mx_call] and (
-        dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"]
-    ):
-        # mxnet does not support int16, and does not support
-        # bool for broadcast_equal method used
-        return
+
+    # torch does not support those dtypes
+    assume(
+        not (
+            fw == "torch"
+            and (
+                dtype0 in ["uint16", "uint32", "uint64"]
+                or dtype1 in ["uint16", "uint32", "uint64"]
+            )
+        )
+    )
+
+    # mxnet does not support int16, and does not support
+    # bool for broadcast_equal method used
+    assume(
+        not (
+            call in [helpers.mx_call]
+            and (dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"])
+        )
+    )
+
     # smoke test
     x0 = ivy.array(x0, dtype=dtype0, device=device)
     x1 = ivy.array(x1, dtype=dtype1, device=device)
@@ -183,19 +192,25 @@ def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
     dtype2, x2 = x0_n_x1_n_res[0][2], x0_n_x1_n_res[1][2]
-    if fw == "torch" and (
-        dtype0 in ["uint16", "uint32", "uint64"]
-        or dtype1 in ["uint16", "uint32", "uint64"]
-        or dtype2 in ["uint16", "uint32", "uint64"]
-    ):
-        # torch does not support those dtypes
-        return
-    if call in [helpers.mx_call] and (
-        dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"]
-    ):
-        # mxnet does not support int16, and does not support bool
-        # for broadcast_equal method used
-        return
+    assume(
+        not (
+            fw == "torch"
+            and (
+                dtype0 in ["uint16", "uint32", "uint64"]
+                or dtype1 in ["uint16", "uint32", "uint64"]
+                or dtype2 in ["uint16", "uint32", "uint64"]
+            )
+        )
+    )
+    # torch does not support those dtypes
+    assume(
+        not (
+            call in [helpers.mx_call]
+            and (dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"])
+        )
+    )
+    # mxnet does not support int16, and does not support bool
+    # for broadcast_equal method used
     # smoke test
     x0 = ivy.array(x0, dtype=dtype0, device=device)
     x1 = ivy.array(x1, dtype=dtype1, device=device)
@@ -219,15 +234,12 @@ def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
 @given(x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
 def test_to_numpy(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
-    if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
-        # torch does not support those dtypes
-        return
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        return
-    if call in [helpers.tf_graph_call]:
-        # to_numpy() requires eager execution
-        return
+    assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
+    # torch does not support those dtypes
+    assume(not (call in [helpers.mx_call] and dtype == "int16"))
+    # mxnet does not support int16
+    assume(not (call in [helpers.tf_graph_call]))
+    # to_numpy() requires eager execution
     # smoke test
     ret = ivy.to_numpy(ivy.array(object_in, dtype=dtype, device=device))
     # type test
@@ -248,15 +260,12 @@ def test_to_numpy(x0_n_x1_n_res, device, call, fw):
     dtype=st.sampled_from(ivy_np.valid_dtypes),
 )
 def test_to_scalar(object_in, dtype, device, call, fw):
-    if fw == "torch" and (dtype in ["uint16", "uint32", "uint64"]):
-        # torch does not support those dtypes
-        return
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        return
-    if call in [helpers.tf_graph_call]:
-        # to_scalar() requires eager execution
-        return
+    assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
+    # torch does not support those dtypes
+    assume(not (call in [helpers.mx_call] and dtype == "int16"))
+    # mxnet does not support int16
+    assume(not (call in [helpers.tf_graph_call]))
+    # to_scalar() requires eager execution
     # smoke test
     ret = ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device))
     true_val = ivy.to_numpy(ivy.array(object_in, dtype=dtype)).item()
@@ -275,9 +284,8 @@ def test_to_scalar(object_in, dtype, device, call, fw):
 def test_to_list(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
     assume(dtype in ivy.valid_dtypes)
-    if call in [helpers.tf_graph_call]:
-        # to_list() requires eager execution
-        return
+    assume(not (call in [helpers.tf_graph_call]))
+    # to_list() requires eager execution
     # smoke test
     arr = ivy.array(object_in, dtype=dtype, device=device)
     ret = ivy.to_list(arr)
@@ -309,12 +317,19 @@ def test_to_list(x0_n_x1_n_res, device, call, fw):
 )
 def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
-    if fw == "torch" and (
-        dtype in ["uint16", "uint32", "uint64"]
-        or (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn)
-    ):
-        # torch does not support those dtypes
-        return
+    assume(
+        not (
+            fw == "torch"
+            and (
+                dtype in ["uint16", "uint32", "uint64"]
+                or (
+                    dtype not in ivy_np.valid_float_dtypes
+                    and tensor_fn == helpers.var_fn
+                )
+            )
+        )
+    )
+    # torch does not support those dtypes
     ret = ivy.shape(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
     # type test
     if as_tensor:
@@ -343,12 +358,19 @@ def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
 )
 def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
-    if fw == "torch" and (
-        dtype in ["uint16", "uint32", "uint64"]
-        or (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn)
-    ):
-        # torch does not support those dtypes
-        return
+    assume(
+        not (
+            fw == "torch"
+            and (
+                dtype in ["uint16", "uint32", "uint64"]
+                or (
+                    dtype not in ivy_np.valid_float_dtypes
+                    and tensor_fn == helpers.var_fn
+                )
+            )
+        )
+    )
+    # torch does not support those dtypes
     ret = ivy.get_num_dims(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
     # type test
     if as_tensor:
