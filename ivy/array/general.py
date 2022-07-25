@@ -156,7 +156,7 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
 
-        >>> x = ivy.array([0, 1, 2])
+        >>> x = ivy.array([0., 1., 2.])
         >>> y = x.clip_vector_norm(2.0)
         >>> print(y)
         ivy.array([0.   , 0.894, 1.79 ])
