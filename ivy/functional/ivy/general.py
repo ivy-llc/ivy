@@ -1136,7 +1136,7 @@ def clip_vector_norm(
 
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([0, 1, 2])
+    >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.clip_vector_norm(x, 2.0)
     >>> print(y)
     ivy.array([0.   , 0.894, 1.79 ])
@@ -1167,7 +1167,7 @@ def clip_vector_norm(
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([0, 1, 2])
+    >>> x = ivy.native_array([0., 1., 2.])
     >>> y = ivy.clip_vector_norm(x, 2.0)
     >>> print(y)
     ivy.array([0.   , 0.894, 1.79 ])
