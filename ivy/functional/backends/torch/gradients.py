@@ -1,10 +1,12 @@
 """Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-import ivy
 import torch
 import warnings
 from typing import Optional
+
+# local
+import ivy
 
 
 def variable(x):
@@ -31,15 +33,24 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     y = ivy.to_native(y)
-    x_grads_flat = list(
-        torch.autograd.grad(
-            [y],
-            [v for k, v in xs.to_iterator()],
+    if isinstance(xs, ivy.Container):
+        x_grads_flat = list(
+            torch.autograd.grad(
+                [y],
+                [v for k, v in xs.to_iterator()],
+                retain_graph=retain_grads,
+                create_graph=retain_grads,
+            )
+        )
+        grads = xs.from_flat_list(x_grads_flat)
+        grads = grads.to_ivy()
+    else:
+        grads = torch.autograd.grad(
+            y,
+            xs,
             retain_graph=retain_grads,
             create_graph=retain_grads,
-        )
-    )
-    grads = xs.from_flat_list(x_grads_flat)
+        )[0]
     y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)
