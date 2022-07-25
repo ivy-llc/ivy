@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -19,10 +19,10 @@ import ivy_tests.test_ivy.helpers as helpers
 )
 def test_random_uniform(data, shape, dtype, as_variable, device, call):
     low, high = data.draw(helpers.get_bounds(dtype=dtype))
-    # smoke test
-    if as_variable and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        return
+
+    # mxnet does not support 0-dimensional variables
+    assume(not (as_variable and call is helpers.mx_call))
+
     low_tnsr = ivy.array(low, dtype=dtype, device=device) if low is not None else None
     high_tnsr = (
         ivy.array(high, dtype=dtype, device=device) if high is not None else None
@@ -66,9 +66,8 @@ def test_random_normal(data, dtype, as_variable, device, call):
     mean, std = data.draw(helpers.get_mean_std(dtype=dtype))
     ivy.seed(0)
     # smoke test
-    if as_variable and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        return
+    assume(not (as_variable and call is helpers.mx_call))
+
     mean_tnsr = (
         ivy.array(mean, dtype=dtype, device=device) if mean is not None else None
     )
@@ -111,9 +110,10 @@ def _pop_size_num_samples_replace_n_probs(draw):
 @given(everything=_pop_size_num_samples_replace_n_probs())
 def test_multinomial(everything, device, call):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
-    if call is helpers.tf_call and not replace or prob_dtype == "float64":
-        # tenosorflow does not support multinomial without replacement
-        return
+
+    # tensorflow does not support multinomial without replacement
+    assume(not (call is helpers.tf_call and not replace or prob_dtype == "float64"))
+
     # smoke test
     probs = (
         ivy.array(probs, dtype=prob_dtype, device=device)
@@ -137,15 +137,18 @@ def test_randint(data, shape, as_variable, device, call):
     dtype = ivy.default_int_dtype()
     # smoke test
     low, high = data.draw(helpers.get_bounds(dtype=dtype))
-    if (
-        call in [helpers.mx_call, helpers.torch_call]
-        and as_variable
-        or dtype == "uint64"
-        or call == helpers.torch_call
-        and dtype[0] == "u"
-    ):
-        # PyTorch and MXNet do not support non-float variables
-        return
+
+    # PyTorch and MXNet do not support non-float variables
+    assume(
+        not (
+            call in [helpers.mx_call, helpers.torch_call]
+            and as_variable
+            or dtype == "uint64"
+            or call == helpers.torch_call
+            and dtype[0] == "u"
+        )
+    )
+
     low_tnsr = ivy.array(low, dtype=dtype, device=device)
     high_tnsr = ivy.array(high, dtype=dtype, device=device)
     if as_variable:

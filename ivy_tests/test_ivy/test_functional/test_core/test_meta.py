@@ -3,7 +3,7 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -39,10 +39,9 @@ def test_fomaml_step_unique_vars(
     return_inner_v,
 ):
 
-    if call is helpers.np_call:
-        # Numpy does not support gradients, and jax does not support gradients on
-        # custom nested classes
-        pytest.skip()
+    # Numpy does not support gradients, and jax does not support gradients on
+    # custom nested classes
+    assume(not (call is helpers.np_call))
 
     # config
     inner_learning_rate = 1e-2
@@ -186,11 +185,10 @@ def test_fomaml_step_shared_vars(
     num_tasks,
     return_inner_v,
 ):
-    if call in [helpers.np_call, helpers.mx_call]:
-        # Numpy does not support gradients, jax does not support gradients on custom
-        # nested classes, and mxnet does not support only_inputs argument to
-        # mx.autograd.grad
-        pytest.skip()
+    # Numpy does not support gradients, jax does not support gradients on custom
+    # nested classes, and mxnet does not support only_inputs argument to
+    # mx.autograd.grad
+    assume(not (call in [helpers.np_call, helpers.mx_call]))
 
     # config
     inner_learning_rate = 1e-2
@@ -353,11 +351,10 @@ def test_fomaml_step_overlapping_vars(
     num_tasks,
     return_inner_v,
 ):
-    if call in [helpers.np_call, helpers.mx_call]:
-        # Numpy does not support gradients, jax does not support gradients on custom
-        # nested classes, and mxnet does not support only_inputs argument to
-        # mx.autograd.grad
-        pytest.skip()
+    # Numpy does not support gradients, jax does not support gradients on custom
+    # nested classes, and mxnet does not support only_inputs argument to
+    # mx.autograd.grad
+    assume(not (call in [helpers.np_call, helpers.mx_call]))
 
     # config
     inner_learning_rate = 1e-2

@@ -205,8 +205,15 @@ def test_prod(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype)):
-        return  # torch implementation exhibits strange behaviour
+
+    # torch implementation exhibits strange behaviour
+    assume(
+        not (
+            fw == "torch"
+            and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype))
+        )
+    )
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -331,7 +338,8 @@ def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
     # out test
     if with_out:
         assert ret is out
-        if ivy.current_backend_str() in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            return
+
+        # these backends do not support native inplace updates
+        assume(not (ivy.current_backend_str() in ["tensorflow", "jax"]))
+
         assert ret.data is out.data
