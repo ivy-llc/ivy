@@ -4,8 +4,6 @@ outer
 .. autofunction:: ivy.functional.ivy.linear_algebra.outer
 
 .. autofunction:: ivy.array.array_methods.outer
-
-.. autofunction:: ivy.container.container_methods.outer
 |
 | **Supported Frameworks:**
 
@@ -34,5 +32,4 @@ outer
 
    outer/outer_functional.rst
    outer/outer_array.rst
-   outer/outer_container.rst
 
