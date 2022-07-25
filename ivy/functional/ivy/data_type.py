@@ -762,7 +762,7 @@ def default_int_dtype(
         if ivy.is_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
-            ret = input.dtype
+            ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_indices_where(
                 input, lambda x: x > 9223372036854775807 and x != ivy.inf
