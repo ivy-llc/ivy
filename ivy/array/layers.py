@@ -101,20 +101,18 @@ class ArrayWithLayers(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array(ivy.random_normal(0, 1, [2, 12, 4]))  # NWC
-        >>> filters = ivy.array(ivy.random_normal(0, 1, [6, 4, 2]))  # WIO (I == C)
-        >>> result = x.conv1d(filters, strides=(2,), padding='VALID')
+        >>> x = ivy.array(ivy.random_normal(0, 1, [2, 12, 2]))  # NWC
+        >>> filters = ivy.array(ivy.random_normal(0, 1, [6,2, 2]))  # WIO (I == C)
+        >>> result = x.conv1d(filters, strides=(3,), padding='VALID')
         >>> print(result)
 
-ivy.array([[[ 7.61 ,  1.83 ],
-        [-3.08 , -3.   ],
-        [ 3.52 , -8.2  ],
-        [ 3.72 ,  1.88 ]],
+        ivy.array([[[ 0.365,  1.82 ],
+                    [-1.79 ,  1.7  ],
+                    [ 2.91 , -4.01 ]],
 
-       [[-0.976, -0.267],
-        [-2.54 ,  2.99 ],
-        [-7.69 ,  8.59 ],
-        [ 6.06 ,  1.28 ]]])
+                   [[-5.08 , -2.4  ],
+                    [ 0.387, -1.61 ],
+                    [-2.14 , -1.46 ]]])
 
         """
         return ivy.conv1d(
