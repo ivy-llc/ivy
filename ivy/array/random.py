@@ -18,7 +18,7 @@ class ArrayWithRandom(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return self.static_random_uniform(
+        return ivy.random_uniform(
             self,
             high,
             shape,
