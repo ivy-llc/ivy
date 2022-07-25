@@ -1565,49 +1565,6 @@ def value_is_nan(
         c: false
     }
 
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1])
-    >>> x.value_is_nan()
-    False
-
-    >>> x = ivy.array([1])
-    >>> x.value_is_nan(False)
-    False
-
-    >>> x = ivy.array([float('INF')])
-    >>> x.value_is_nan()
-    True
-
-    >>> x = ivy.array([float('INF')])
-    >>> x.value_is_nan(False)
-    False
-    
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([3]), \
-                          b=ivy.array([-3]), \
-                          c=ivy.array(float('INF')))
-    >>> x.value_is_nan()
-    {
-        a: false,
-        b: false,
-        c: true
-    }
-
-    >>> x = ivy.Container(a=ivy.array([3]), \
-                          b=ivy.array([-3]), \
-                          c=ivy.array(float('INF')))
-    >>> x.value_is_nan(False)
-    {
-        a: false,
-        b: false,
-        c: false
-    }
-
     """
     x_scalar = ivy.to_scalar(x) if ivy.is_native_array(x) else x
     if not x_scalar == x_scalar:
