@@ -827,6 +827,31 @@ def test_default_float_dtype(input, float_dtype, as_native):
     assert ivy.default_float_dtype() == ivy.float32
 
 
+# default_int_dtype
+@pytest.mark.parametrize("int_dtype", [ivy.int16, ivy.int32, ivy.int64, None])
+@pytest.mark.parametrize(
+    "input",
+    [
+        [(5, 25), (6, 36), (7, 49)],
+        np.array([10, 0, -3]),
+        10,
+        10.0,
+        None,
+    ],
+)
+@pytest.mark.parametrize("as_native", [True, False])
+def test_default_int_dtype(input, int_dtype, as_native):
+    res = ivy.default_int_dtype(input, int_dtype, as_native)
+    assert (
+        isinstance(res, ivy.Dtype)
+        or isinstance(res, ivy.NativeDtype)
+        or isinstance(res, str)
+    )
+    assert ivy.default_int_dtype(None, None, False) == ivy.int32
+    assert ivy.default_int_dtype(int_dtype=ivy.int16) == ivy.int16
+    assert ivy.default_int_dtype() == ivy.int32
+
+
 @st.composite
 def dtytes_list(draw):
     num = draw(st.one_of(st.integers(min_value=1, max_value=5)))
