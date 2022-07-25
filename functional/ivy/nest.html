@@ -265,8 +265,8 @@ Default is False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> – The nested object to insert into.</p></li>
-<li><p><strong>indices</strong> – A tuple of tuples of indices for the indices at which to insert
+<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nested object to insert into.</p></li>
+<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>) – A tuple of tuples of indices for the indices at which to insert
 values.</p></li>
 <li><p><strong>values</strong> – The new values for inserting.</p></li>
 </ul>
@@ -305,9 +305,9 @@ Default is False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> – The nested object to update.</p></li>
-<li><p><strong>index</strong> – A tuple of indices for the index at which to update.</p></li>
-<li><p><strong>fn</strong> – The function to perform on the nest at the given index.</p></li>
+<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nested object to update.</p></li>
+<li><p><strong>index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>) – A tuple of indices for the index at which to update.</p></li>
+<li><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to perform on the nest at the given index.</p></li>
 </ul>
 </dd>
 </dl>
@@ -320,9 +320,9 @@ Default is False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> – The nested object to update.</p></li>
-<li><p><strong>indices</strong> – A tuple of tuples of indices for the indices at which to update.</p></li>
-<li><p><strong>fn</strong> – The function to perform on the nest at the given index.</p></li>
+<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nested object to update.</p></li>
+<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>) – A tuple of tuples of indices for the indices at which to update.</p></li>
+<li><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to perform on the nest at the given index.</p></li>
 </ul>
 </dd>
 </dl>
@@ -336,8 +336,8 @@ the case of dicts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> – The nested object to slice.</p></li>
-<li><p><strong>indices</strong> – A tuple of tuples of indices to apply.</p></li>
+<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nested object to slice.</p></li>
+<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>) – A tuple of tuples of indices to apply.</p></li>
 </ul>
 </dd>
 </dl>
@@ -437,7 +437,7 @@ structured ivy arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> – Function to apply to each nest entry.</p></li>
+<li><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – Function to apply to each nest entry.</p></li>
 <li><p><strong>nest</strong> – nests to map.</p></li>
 <li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
 <li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains will
@@ -462,8 +462,8 @@ otherwise the leftmost nest value is used. Default is False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> – The nested object to prune.</p></li>
-<li><p><strong>index</strong> – A tuple of indices for the index at which to prune.</p></li>
+<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nested object to prune.</p></li>
+<li><p><strong>index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>) – A tuple of indices for the index at which to prune.</p></li>
 </ul>
 </dd>
 </dl>
@@ -476,8 +476,8 @@ otherwise the leftmost nest value is used. Default is False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> – The nested object to prune.</p></li>
-<li><p><strong>indices</strong> – A tuple of tuples of indices for the indices at which to prune.</p></li>
+<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nested object to prune.</p></li>
+<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>) – A tuple of tuples of indices for the indices at which to prune.</p></li>
 </ul>
 </dd>
 </dl>
