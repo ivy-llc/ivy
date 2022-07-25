@@ -672,8 +672,10 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = x.stable_divide(2, min_denominator=2)
         >>> print(z)
         {
-            a: ivy.array([0.4, 0.444]),
-            b: ivy.array([0.909, 2.5])
+            a: ivy.array([[0.5, 1.],
+                  [1.5, 2.]]),
+            b: ivy.array([[2.5, 3.],
+                  [3.5, 4.]])
         }
 
 
