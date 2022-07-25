@@ -15,6 +15,8 @@ import ivy_tests.test_ivy.helpers as helpers
     dtypes_and_values=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
         num_arrays=2,
+        min_value=-1000,
+        max_value=1000,
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
