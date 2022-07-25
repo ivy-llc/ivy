@@ -2,7 +2,6 @@
 # global
 import numpy
 import numpy as np
-from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
 
 # local
@@ -20,9 +19,9 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 
 def arange(
-    start: Number,
-    stop: Optional[Number] = None,
-    step: Number = 1,
+    start: float,
+    stop: Optional[float] = None,
+    step: float = 1,
     *,
     dtype: Optional[np.dtype] = None,
     device: str,
@@ -40,7 +39,7 @@ def arange(
 
 
 def asarray(
-    object_in: Union[np.ndarray, List[Number], Tuple[Number]],
+    object_in: Union[np.ndarray, List[float], Tuple[float]],
     *,
     copy: Optional[bool] = None,
     dtype: Optional[np.dtype] = None,

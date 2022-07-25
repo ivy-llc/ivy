@@ -2,7 +2,6 @@
 # global
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List, Sequence
-from numbers import Number
 import jaxlib.xla_extension
 from jax.dlpack import from_dlpack as jax_from_dlpack
 
@@ -22,9 +21,9 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 
 def arange(
-    start: Number,
-    stop: Optional[Number] = None,
-    step: Number = 1,
+    start: float,
+    stop: Optional[float] = None,
+    step: float = 1,
     *,
     dtype: Optional[jnp.dtype] = None,
     device: jaxlib.xla_extension.Device,
@@ -42,7 +41,7 @@ def arange(
 
 
 def asarray(
-    object_in: Union[JaxArray, jnp.ndarray, List[Number], Tuple[Number]],
+    object_in: Union[JaxArray, jnp.ndarray, List[float], Tuple[float]],
     *,
     copy: Optional[bool] = None,
     dtype: Optional[jnp.dtype] = None,

@@ -3,7 +3,6 @@
 import numpy as np
 import torch
 from torch import Tensor
-from numbers import Number
 from typing import Union, Tuple, List, Optional, Sequence
 
 # local
@@ -39,9 +38,9 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
 
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
-    start: Number,
-    stop: Optional[Number] = None,
-    step: Number = 1,
+    start: float,
+    stop: Optional[float] = None,
+    step: float = 1,
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
@@ -71,7 +70,7 @@ arange.support_native_out = True
 
 
 def asarray(
-    object_in: Union[torch.Tensor, np.ndarray, List[Number], Tuple[Number]],
+    object_in: Union[torch.Tensor, np.ndarray, List[float], Tuple[float]],
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
@@ -437,9 +436,7 @@ def logspace(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    power_seq = ivy.linspace(
-        start, stop, num, axis, dtype=dtype, device=device
-    )
+    power_seq = ivy.linspace(start, stop, num, axis, dtype=dtype, device=device)
     return base**power_seq
 
 

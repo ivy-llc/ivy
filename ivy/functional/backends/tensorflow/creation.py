@@ -2,7 +2,6 @@
 # global
 import tensorflow as tf
 from typing import Union, Tuple, List, Optional, Sequence
-from numbers import Number
 
 # local
 import ivy
@@ -21,9 +20,9 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 
 def arange(
-    start: Number,
-    stop: Optional[Number] = None,
-    step: Number = 1,
+    start: float,
+    stop: Optional[float] = None,
+    step: float = 1,
     *,
     dtype: Optional[tf.DType] = None,
     device: str,
@@ -58,7 +57,7 @@ def arange(
 
 
 def asarray(
-    object_in: Union[tf.Tensor, tf.Variable, List[Number], Tuple[Number]],
+    object_in: Union[tf.Tensor, tf.Variable, List[float], Tuple[float]],
     *,
     copy: Optional[bool] = None,
     dtype: tf.DType = None,

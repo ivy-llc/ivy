@@ -2,7 +2,6 @@
 # global
 import mxnet as mx
 from typing import Union, List, Optional, Iterable, Sequence, Tuple
-from numbers import Number
 
 # local
 import ivy
@@ -30,20 +29,20 @@ def _linspace(start, stop, num, cont):
 
 
 def arange(
-    stop: Optional[Number] = None,
-    start: Number = 0,
-    step: Number = 1,
+    stop: Optional[float] = None,
+    start: float = 0,
+    step: float = 1,
     dtype: Optional[type] = None,
     device: mx.context.Context = None,
 ) -> mx.nd.NDArray:
-    stop = stop if isinstance(stop, Number) else stop.asscalar()
-    start = start if isinstance(start, Number) else start.asscalar()
-    step = step if isinstance(step, Number) else step.asscalar()
+    stop = stop if isinstance(stop, float) else stop.asscalar()
+    start = start if isinstance(start, float) else start.asscalar()
+    step = step if isinstance(step, float) else step.asscalar()
     return mx.nd.arange(start, stop, ctx=device, step=step, dtype=dtype)
 
 
 def asarray(
-    object_in: Union[mx.nd.NDArray, List[Number], Tuple[Number]],
+    object_in: Union[mx.nd.NDArray, List[float], Tuple[float]],
     dtype: Optional[type] = None,
     device: mx.context.Context = None,
     copy: Optional[bool] = None,
