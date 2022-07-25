@@ -2814,8 +2814,8 @@ def logaddexp(
 @handle_out_argument
 @handle_nestable
 def logical_and(
-    x1: Union[ivy.Array, ivy.native_array],
-    x2: Union[ivy.Array, ivy.native_array],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2841,7 +2841,6 @@ def logical_and(
     
     Examples
     --------
-
     >>> x = ivy.array([True, True, False])
     >>> y = ivy.array([True, False, True])
     >>> print(ivy.logical_and(x, y))
