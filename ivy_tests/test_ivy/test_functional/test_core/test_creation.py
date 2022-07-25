@@ -64,6 +64,7 @@ def test_native_array(
         max_num_dims=1,
         min_dim_size=2,
         max_dim_size=2,
+        safety_factor=0.5,
     ),
     num=st.integers(1, 5),
     axis=st.none(),
@@ -107,6 +108,7 @@ def test_linspace(
         max_num_dims=1,
         min_dim_size=2,
         max_dim_size=2,
+        safety_factor=0.5,
     ),
     num=st.integers(1, 5),
     base=st.floats(min_value=0.1, max_value=10.0),
@@ -313,6 +315,7 @@ def test_empty_like(
     n_rows=st.integers(min_value=0, max_value=5),
     n_cols=st.none() | st.integers(min_value=0, max_value=5),
     k=st.integers(min_value=-5, max_value=5),
+    batch_shape=st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=2),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -322,6 +325,7 @@ def test_eye(
     n_rows,
     n_cols,
     k,
+    batch_shape,
     dtype,
     device,
     as_variable,
@@ -343,6 +347,7 @@ def test_eye(
         n_rows=n_rows,
         n_cols=n_cols,
         k=k,
+        batch_shape=batch_shape,
         dtype=dtype,
         device=device,
     )
@@ -390,52 +395,8 @@ def test_from_dlpack(
     )
 
 
-# full
-@given(
-    shape=helpers.get_shape(
-        allow_none=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
-    fill_value=st.integers(0, 5) | st.floats(0.0, 5.0),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="full"),
-)
-def test_full(
-    shape,
-    fill_value,
-    dtype,
-    with_out,
-    device,
-    num_positional_args,
-    fw,
-):
-
-    if type(fill_value) == float and dtype in ivy_np.valid_int_dtypes:
-        return
-
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=False,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=False,
-        container_flags=False,
-        instance_method=False,
-        fw=fw,
-        fn_name="full",
-        shape=shape,
-        fill_value=fill_value,
-        dtype=dtype,
-        device=device,
-    )
-
-
 @st.composite
-def _dtype(draw):
+def _dtypes(draw):
     return draw(
         st.shared(
             helpers.list_of_length(
@@ -448,12 +409,52 @@ def _dtype(draw):
 
 @st.composite
 def _fill_value(draw):
-    dtype = draw(_dtype())[0]
-    if ivy.is_int_dtype(dtype):
-        # ToDo: set min to -5 for int and add an explicitl uint check, once
-        #  ivy.is_uint_dtype is implemented
+    dtype = draw(_dtypes())[0]
+    if ivy.is_uint_dtype(dtype):
         return draw(st.integers(0, 5))
+    if ivy.is_int_dtype(dtype):
+        return draw(st.integers(-5, 5))
     return draw(st.floats(-5, 5))
+
+
+# full
+@given(
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    fill_value=_fill_value(),
+    dtypes=_dtypes(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="full"),
+)
+def test_full(
+    shape,
+    fill_value,
+    dtypes,
+    with_out,
+    device,
+    num_positional_args,
+    fw,
+):
+    helpers.test_function(
+        input_dtypes=dtypes[0],
+        as_variable_flags=False,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        container_flags=False,
+        instance_method=False,
+        fw=fw,
+        fn_name="full",
+        shape=shape,
+        fill_value=fill_value,
+        dtype=dtypes[0],
+        device=device,
+    )
 
 
 @st.composite
@@ -466,12 +467,12 @@ def _dtype_and_values(draw):
             max_num_dims=5,
             min_dim_size=1,
             max_dim_size=5,
-            dtype=draw(_dtype()),
+            dtype=draw(_dtypes()),
         )
     )
 
 
-# full_like()
+# full_like
 @given(
     dtype_and_x=_dtype_and_values(),
     fill_value=_fill_value(),

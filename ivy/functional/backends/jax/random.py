@@ -9,7 +9,6 @@ from typing import Optional, Union, Sequence
 # local
 import ivy
 from ivy.functional.backends.jax.device import to_device
-from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.jax import JaxArray
 
 # Extra #
@@ -25,6 +24,7 @@ def random_uniform(
     *,
     device: jaxlib.xla_extension.Device,
     dtype: jnp.dtype,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
@@ -42,13 +42,14 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return (
         to_device(
             jax.random.normal(rng_input, shape if shape else ()),
-            device=default_device(device),
+            device=device,
         )
         * std
         + mean
@@ -63,6 +64,7 @@ def multinomial(
     replace: bool = True,
     *,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
 
     global RNG
@@ -89,7 +91,7 @@ def multinomial(
     samples_flat = jnp.stack(samples_stack)
     return to_device(
         jnp.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]),
-        device=default_device(device),
+        device=device,
     )
 
 
@@ -99,12 +101,11 @@ def randint(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    return to_device(
-        jax.random.randint(rng_input, shape, low, high), device=default_device(device)
-    )
+    return to_device(jax.random.randint(rng_input, shape, low, high), device=device)
 
 
 def seed(seed_value: int = 0) -> None:
@@ -113,7 +114,7 @@ def seed(seed_value: int = 0) -> None:
     return
 
 
-def shuffle(x: JaxArray) -> JaxArray:
+def shuffle(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return jax.random.shuffle(rng_input, x)
