@@ -678,8 +678,8 @@ def default_float_dtype(
 
 # noinspection PyShadowingNames
 def default_dtype(
-    dtype: Union[ivy.Dtype, str] = None, item=None, as_native: Optional[bool] = None
-) -> Union[ivy.Dtype, str]:
+    item=None, dtype: Union[ivy.Dtype, str] = None, as_native: Optional[bool] = None
+) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
     """Summary.
 
     Parameters
