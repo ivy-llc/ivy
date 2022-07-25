@@ -7,11 +7,32 @@ from typing import Optional, Union
 import ivy
 from ivy.func_wrapper import (
     infer_device,
-    infer_dtype,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
 )
+
+
+# Helpers #
+# ------- #
+
+
+def _check_bounds_and_get_shape(low, high, shape):
+    if shape is not None:
+        if not isinstance(low, (int, float)) or not isinstance(high, (int, float)):
+            raise Exception(
+                "`shape` argument can only be specified when `low` \
+                              and `high` arguments are numerics (not arrays)"
+            )
+        return shape
+    if isinstance(low, (ivy.Array, ivy.NativeArray)):
+        if isinstance(high, (ivy.Array, ivy.NativeArray)):
+            if ivy.shape(low) != ivy.shape(high):
+                raise Exception("shape of bounds have to be the same")
+        return ivy.shape(low)
+    if isinstance(high, (ivy.Array, ivy.NativeArray)):
+        return ivy.shape(high)
+    return ()
 
 
 # Extra #
@@ -21,7 +42,6 @@ from ivy.func_wrapper import (
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
-@infer_dtype
 @handle_nestable
 def random_uniform(
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -29,7 +49,7 @@ def random_uniform(
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    dtype=None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
@@ -41,13 +61,15 @@ def random_uniform(
     ----------
     low
         Lower boundary of the output interval. All values generated will be greater than
-        or equal to ``low``.
+        or equal to ``low``. If array, must have same shape as ``high``.
     high
         Upper boundary of the output interval. All the values generated will be less
-        than ``high``.
+        than ``high``. If array, must have same shape as ``low``.
     shape
         If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn.
-        If size is ``None`` (Default), a single value is returned.
+        Can only be specified when ``low`` and ``high`` are numeric values, else
+        exception will be raised.
+        Default is ``None``, where a single value is returned.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
