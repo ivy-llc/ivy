@@ -533,9 +533,7 @@ def diagonal(
 @handle_out_argument
 @handle_nestable
 def eigh(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of

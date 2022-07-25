@@ -36,7 +36,9 @@ def det(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     ret = np.linalg.det(x)
     return ret
 
+
 det.unsupported_dtypes = ("float16",)
+
 
 def diagonal(
     x: np.ndarray,
@@ -54,19 +56,25 @@ def eigh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     ret = np.linalg.eigh(x)
     return ret
 
+
 eigh.unsupported_dtypes = ("float16",)
+
 
 def eigvalsh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     ret = np.linalg.eigvalsh(x)
     return ret
 
+
 eigvalsh.unsupported_dtypes = ("float16",)
+
 
 def inv(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     ret = np.linalg.inv(x)
     return ret
 
+
 inv.unsupported_dtypes = ("float16",)
+
 
 def matmul(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
@@ -116,12 +124,15 @@ def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.n
     ret = np.swapaxes(x, -1, -2)
     return ret
 
+
 matrix_transpose.unsupported_dtypes = ("float16", "int8")
+
 
 def outer(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.outer(x1, x2, out=out)
+
 
 outer.unsupported_dtypes = ("float16", "int8")
 
@@ -164,7 +175,9 @@ def slogdet(
     ret = results(sign, logabsdet)
     return ret
 
+
 slogdet.unsupported_dtypes = ("float16",)
+
 
 def solve(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
@@ -181,7 +194,9 @@ def solve(
         ret = np.squeeze(ret, axis=-1)
     return ret
 
+
 solve.unsupported_dtypes = ("float16",)
+
 
 def svd(
     x: np.ndarray, full_matrices: bool = True
@@ -199,7 +214,9 @@ def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     ret = np.linalg.svd(x, compute_uv=False)
     return ret
 
+
 svdvals.unsupported_dtypes = ("float16",)
+
 
 def tensordot(
     x1: np.ndarray,
