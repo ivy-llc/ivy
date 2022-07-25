@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple
+from typing import Optional, Union, List, Dict, Tuple, Callable
 
 # local
 import ivy
@@ -133,46 +133,6 @@ class ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_dtype(
-        x: ivy.Container,
-        as_native: Optional[bool] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
-            "dtype",
-            x,
-            as_native,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def dtype(
-        self: ivy.Container,
-        as_native: Optional[bool] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        return self.static_dtype(
-            self,
-            as_native,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    @staticmethod
     def static_can_cast(
         from_: ivy.Container,
         to: ivy.Dtype,
@@ -283,6 +243,101 @@ class ContainerWithDataTypes(ContainerBase):
         """
         return self.static_can_cast(
             self, to, key_chains, to_apply, prune_unapplied, map_sequences
+        )
+
+    @staticmethod
+    def static_dtype(
+        x: ivy.Container,
+        as_native: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "dtype",
+            x,
+            as_native,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def dtype(
+        self: ivy.Container,
+        as_native: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_dtype(
+            self,
+            as_native,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_default_float_dtype(
+        input=None,
+        float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
+        as_native: Optional[bool] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "default_float_dtype",
+            input,
+            float_dtype,
+            as_native,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_function_supported_dtypes(
+        fn: Callable,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "function_supported_dtypes",
+            fn,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_function_unsupported_dtypes(
+        fn: Callable,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "function_unsupported_dtypes",
+            fn,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -430,6 +485,38 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         return self.static_is_int_dtype(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_is_uint_dtype(
+        dtype_in: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "is_uint_dtype",
+            dtype_in,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def is_uint_dtype(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return self.static_is_uint_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
