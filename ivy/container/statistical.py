@@ -159,7 +159,8 @@ class ContainerWithStatistical(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ ivy.Container static method variant of ivy.var. 
+        """ 
+        ivy.Container static method variant of ivy.var. 
         This method simply wraps the function, and so 
         the docstring for ivy.var also applies to this method
         with minimal changes.

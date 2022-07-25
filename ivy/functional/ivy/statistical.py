@@ -453,7 +453,8 @@ def var(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the variance of the input array x.
+    """
+    Calculates the variance of the input array x.
 
     **Special Cases**
 
