@@ -313,7 +313,7 @@ def vecdot(
     return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).type(dtype)
 
 
-vecdot.unsupported_dtypes = ("int8", "int16", "int32", "uint8", "float16", "float64")
+vecdot.unsupported_dtypes = ("int8", "int16", "int32", "int64", "uint8", "float16", "float64")
 
 
 vecdot.support_native_out = True
