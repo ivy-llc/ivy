@@ -154,7 +154,6 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.asarray([4, 5, 6])
         >>> y = x.stable_divide(2)
         >>> print(y)

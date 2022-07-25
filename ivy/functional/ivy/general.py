@@ -1891,7 +1891,6 @@ def stable_divide(
 
     Examples
     --------
-
     With :code:`int` input:
     >>> x = ivy.stable_divide(1, 2)
     >>> print(x)

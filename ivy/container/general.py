@@ -659,7 +659,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.asarray([3., 6.]), b=ivy.asarray([9., 12.]))
         >>> y = x.stable_divide(5)
         >>> print(y)
