@@ -147,6 +147,48 @@ def random_uniform(
     Instance Method Examples
     ------------------------
 
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
+    >>> x.random_uniform(10.2)
+    ivy.array([[9.86, 4.89],
+               [7.06, 7.47]])
+
+    >>> x.random_uniform(10.2, device='cpu')
+    ivy.array([[9.86, 4.89],
+               [7.06, 7.47]])
+
+    >>> x.random_uniform(10.2, dtype='float16')
+    ivy.array([[9.86, 4.89],
+               [7.06, 7.47]])
+
+    >>> x.random_uniform(10.2, device='cpu', dtype='float64')
+    ivy.array([[9.86, 4.89],
+               [7.06, 7.47]])
+
+    >>> z = ivy.ones((2,2))
+    >>> x.random_uniform(10.2, device='cpu', dtype='float64', out=z)
+    ivy.array([[10.1 ,  6.53],
+               [ 7.94,  8.85]])
+
+    >>> x = ivy.array([8.7, 9.3])
+    >>> y = ivy.array([12.8, 14.5])
+    >>> x.random_uniform(y)
+    ivy.array([12.1, 14. ])
+
+    >>> x.random_uniform(y, device='cpu')
+    ivy.array([12.1, 14. ])
+
+    >>> x.random_uniform(y, dtype='float16')
+    ivy.array([12.1, 14. ])
+
+    >>> x.random_uniform(y, device='cpu', dtype='float64')
+    ivy.array([12.1, 14. ])
+
+    >>> z = ivy.ones((2,))
+    >>> x.random_uniform(y, device='cpu', dtype='float64', out=z)
+    ivy.array([12.1, 14. ])
+
     With :code:`ivy.Container` input:
 
     >>> y = ivy.Container(a=ivy.random_uniform(), \
