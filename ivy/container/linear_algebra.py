@@ -204,7 +204,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     @staticmethod
     def static_cross(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -216,7 +216,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "cross",
-            x,
+            x1,
             x2,
             axis,
             key_chains=key_chains,
