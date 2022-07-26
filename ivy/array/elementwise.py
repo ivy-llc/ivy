@@ -1135,6 +1135,16 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        Using 'ivy.Array' instance:
+
+        >>> x = ivy.array([True, False, True, False])
+        >>> y = ivy.array([True, True, False, False])
+        >>> z = x.logical_and(y)
+        >>> print(z)
+        ivy.array([True, False, False, False])
         """
         return ivy.logical_and(self._data, x2, out=out)
 
