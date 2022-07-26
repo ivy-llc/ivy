@@ -3,10 +3,11 @@
 # global
 import torch
 from typing import Optional, Union, Sequence
+import numbers
 
 # local
 import ivy
-
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 
 # Extra #
 # ------#
@@ -21,13 +22,9 @@ def random_uniform(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    shape = _check_bounds_and_get_shape(low, high, shape)
     rand_range = high - low
-    if shape is None:
-        shape = []
     return torch.rand(shape, device=device, dtype=dtype, out=out) * rand_range + low
-
-
-random_uniform.support_native_out = True
 
 
 def random_normal(
@@ -38,7 +35,7 @@ def random_normal(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(mean, float) and isinstance(std, float):
+    if isinstance(mean, numbers.Number) and isinstance(std, numbers.Number):
         ret = torch.normal(mean, std, ivy.default(shape, ()), out=out)
     else:
         assert shape is None, (
