@@ -64,7 +64,7 @@ class ContainerWithStatistical(ContainerBase):
         >>> print(y)
         {
             a: ivy.array(0.),
-            b: ivy.array(-7)
+            b: ivy.array(-7.)
         }
         """
         return self.handle_inplace(
