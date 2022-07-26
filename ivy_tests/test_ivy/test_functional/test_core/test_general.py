@@ -839,12 +839,39 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, call)
     assert np.allclose(ret, true)
 
 
+@st.composite
+def arrays_of_near_dims(draw):
+    dims = draw(st.integers(min_value=1, max_value=5))
+    dim_size = draw(st.integers(min_value=2, max_value=10))
+    x1 = draw(
+        helpers.dtype_and_values(
+            ivy_np.valid_numeric_dtypes,
+            allow_inf=False,
+            ret_shape=True,
+            min_num_dims=dims,
+            max_num_dims=dims,
+            min_dim_size=dim_size,
+            max_dim_size=dim_size
+        ))
+    x2 = draw(
+        helpers.dtype_and_values(
+            ['int32', 'int64'],
+            allow_inf=False,
+            min_value=0,
+            max_value=max(dim_size - 2, 0),
+            min_num_dims=dims,
+            max_num_dims=dims,
+            min_dim_size=0,
+            max_dim_size=dim_size,
+            # shape=x1[2]
+        ))
+    return (x1[0:2], x2)
+
 # gather
+
+
 @given(
-    params_n_inds_n_axis=st.sampled_from([
-        ([9, 8, 7, 6, 5, 4, 3, 2, 1, 0], [0, 4, 7], 0),
-        ([[1, 2], [3, 4]], [[0, 0], [1, 0]], 1),
-    ]),
+    params_n_indices=arrays_of_near_dims(),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name='gather'),
@@ -852,9 +879,46 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, call)
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
 )
-def test_gather(params_n_inds_n_axis, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw, call):
-    # ToDo: add better params and indices generation (and axis)
-    params, inds, axis = params_n_inds_n_axis 
+def test_gather(params_n_indices, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
+    params, indices = params_n_indices
+    params_dtype, params = params
+    indices_dtype, indices = indices
+    axis = -1
+    helpers.test_function(
+        [params_dtype, indices_dtype],
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+        "gather",
+        params=np.asarray(params, dtype=params_dtype),
+        indices=np.asarray(indices, dtype=indices_dtype),
+        axis=axis
+    )
+
+
+# gather_nd
+@given(
+    params_n_indices=st.sampled_from([
+        ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[0, 1], [1, 0]]),
+        ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[[0, 1]], [[1, 0]]]),
+        (
+            [[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]],
+            [[[0, 1, 0]], [[1, 0, 1]]],
+        ),
+    ]),
+    as_variable=helpers.list_of_length(st.booleans(), 2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name='gather_nd'),
+    native_array=helpers.list_of_length(st.booleans(), 2),
+    container=helpers.list_of_length(st.booleans(), 2),
+    instance_method=st.booleans(),
+)
+def test_gather_nd(params_n_indices, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
+    params, indices = params_n_indices
     helpers.test_function(
         ["float32", "int32"],
         as_variable,
@@ -864,79 +928,14 @@ def test_gather(params_n_inds_n_axis, as_variable, with_out, num_positional_args
         container,
         instance_method,
         fw,
-        "gather",
+        "gather_nd",
         params=np.asarray(params, dtype="float32"),
-        indices=np.asarray(inds, dtype="int32"),
-        axis=axis
+        indices=np.asarray(indices, dtype="int32")
     )
-
-    # params = ivy.array(params, dtype="float32")
-    # inds = ivy.array(inds, dtype="int32")
-    # if with_out:
-    #     out = ivy.zeros(inds.shape)
-    #     ret = ivy.gather(params, inds, axis, out=out)
-    # else:
-    #     ret = ivy.gather(params, inds, axis)
-    # # type test
-    # assert ivy.is_ivy_array(ret)
-    # # cardinality test
-    # assert ret.shape == inds.shape
-    # # value test
-    # assert np.allclose(
-    #     call(ivy.gather, params, inds, axis),
-    #     np.asarray(
-    #         ivy.functional.backends.numpy.gather(
-    #             ivy.to_numpy(params), ivy.to_numpy(inds), axis
-    #         )
-    #     ),
-    # )
-    # # out test
-    # if with_out:
-    #     if not ivy.current_backend_str() in ["tensorflow", "jax"]:
-    #         # these backends do not support native inplace updates
-    #         assert ret is out
-    #         assert ret.data is out.data
-
-
-# gather_nd
-@given(
-    prms_n_inds_n_axis=st.sampled_from([
-        ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[0, 1], [1, 0]]),
-        ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[[0, 1]], [[1, 0]]]),
-        (
-            [[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]],
-            [[[0, 1, 0]], [[1, 0, 1]]],
-        ),
-    ]),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name='gather_nd'),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-)
-def test_gather_nd(prms_n_inds, as_variable, with_out, num_positional_args, native_array, container, instance_method , call):
-    # smoke test
-    prms, inds = prms_n_inds
-    prms = ivy.array(prms, dtype="float32")
-    inds = ivy.array(inds, dtype="int32")
-    ret = ivy.gather_nd(prms, inds)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1] :]
-    # value test
-    assert np.allclose(
-        call(ivy.gather_nd, prms, inds),
-        np.asarray(
-            ivy.functional.backends.numpy.gather_nd(
-                ivy.to_numpy(prms), ivy.to_numpy(inds)
-            )
-        ),
-    )
-
 
 # exists
+
+
 @given(
     x=st.one_of(
         st.none(), 
