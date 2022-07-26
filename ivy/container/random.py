@@ -622,26 +622,26 @@ class ContainerWithRandom(ContainerBase):
         --------
         With :code:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
-                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))
-        >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \
-                              b=ivy.array([[4.3,5.6],[23.4,54.3]]))
-        >>> ivy.Container.static_random_uniform(x, y, device='cpu', dtype='float64')
+        >>> x = ivy.Container(a=ivy.array([[9,7],[6,2]]), \
+                              b=ivy.array([[0,2],[10,6]]))
+        >>> y = ivy.Container(a=ivy.array([[10,32],[18,19]]), \
+                              b=ivy.array([[44,5],[23,54]]))
+        >>> ivy.Container.static_randint(x, y, device='cpu', dtype='int32')
         {
-            a: ivy.array([[10.8, 23.7],
-                          [17., 16.6]]),
-            b: ivy.array([[2.35, 3.69],
-                          [17.4, 48.]])
+            a: ivy.array([[9, 27],
+                          [16, 17]]),
+            b: ivy.array([[13, 3],
+                          [16, 19]])
         }
 
         With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-        >>> x = ivy.array([-1.0,-9.0,-3.4])
-        >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
-        >>> ivy.Container.static_random_uniform(x, y)
+        >>> x = ivy.array([-1,-9,3])
+        >>> y = ivy.Container(a=ivy.array([4,7,9]),b=ivy.array([14,17,34]))
+        >>> ivy.Container.static_randint(x, y)
         {
-            a: ivy.array([0.481, -8.03, -2.74]),
-            b: ivy.array([0.0999, -7.38, -1.29])
+            a: ivy.array([1, 6, 5]),
+            b: ivy.array([0, 10, 17])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -716,31 +716,114 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([7.5,6.7,0.9]), b=ivy.array([8.7,9.8,4.5]))
-        >>> x.random_uniform(17.4)
+        >>> x = ivy.Container(a=ivy.array([7,6,0]), \
+                              b=ivy.array([8,9,4]))
+        >>> x.randint(30)
         {
-            a: ivy.array([11.2, 10.5, 13.1]),
-            b: ivy.array([11.2, 11.9, 6.01])
+            a: ivy.array([23, 15, 20]),
+            b: ivy.array([28, 22, 18])
         }
 
-        >>> y = ivy.Container(a=10.4, b=17.4)
-        >>> x.random_uniform(y, device='cpu')
+        >>> x.randint(10, device='cpu')
         {
-            a: ivy.array([8.55, 10.1, 4.08]),
-            b: ivy.array([9.45, 9.9, 8.6])
+            a: ivy.array([9, 7, 7]),
+            b: ivy.array([8, 9, 9])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
-                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))
-        >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \
-                              b=ivy.array([[4.3,5.6],[23.4,54.3]]))
+        >>> x.randint(102, dtype='int8')
+        {
+            a: ivy.array([9, 8, 2]),
+            b: ivy.array([62, 62, 60])
+        }
+
+        >>> x.randint(54, device='cpu', dtype='int64')
+        {
+            a: ivy.array([30, 29, 26]),
+            b: ivy.array([24, 24, 21])
+        }
+
+        >>> z = ivy.Container(a=ivy.zeros((3,)), b=ivy.ones((3,)))
+        >>> x.randint(21, device='cpu', dtype='int8', out=z)
+        {
+            a: ivy.array([7, 6, 0]),
+            b: ivy.array([8, 9, 4])
+        }
+
+        >>> y = ivy.Container(a=54, b=17)
+        >>> x.randint(y)
+        {
+            a: ivy.array([7, 6, 0]),
+            b: ivy.array([8, 9, 4])
+        }
+
+        >>> x.randint(y, device='cpu')
+        {
+            a: ivy.array([7, 6, 0]),
+            b: ivy.array([8, 9, 4])
+        }
+
+        >>> x.randint(y, dtype='int64')
+        {
+            a: ivy.array([7, 6, 0]),
+            b: ivy.array([8, 9, 4])
+        }
+
+        >>> x.randint(y, device='cpu', dtype='int32')
+        {
+            a: ivy.array([7, 6, 0]),
+            b: ivy.array([8, 9, 4])
+        }
+
+        >>> z = ivy.Container(a=ivy.zeros((3,)), b=ivy.ones((3,)))
+        >>> x.randint(y, device='cpu', dtype='int16', out=z)
+        {
+            a: ivy.array([7, 6, 0]),
+            b: ivy.array([8, 9, 4])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[9,7],[6,2]]), \
+                              b=ivy.array([[0,2],[10,6]]))
+        >>> y = ivy.Container(a=ivy.array([[10,32],[18,19]]), \
+                              b=ivy.array([[44,5],[23,54]]))
+        >>> x.randint(y)
+        {
+            a: ivy.array([[9, 7],
+                          [6, 2]]),
+            b: ivy.array([[0, 2],
+                          [10, 6]])
+        }
+
+        >>> x.randint(y, device='cpu')
+        {
+            a: ivy.array([[9, 7],
+                          [6, 2]]),
+            b: ivy.array([[0, 2],
+                          [10, 6]])
+        }
+
+        >>> x.randint(y, dtype='int64')
+        {
+            a: ivy.array([[9, 7],
+                          [6, 2]]),
+            b: ivy.array([[0, 2],
+                          [10, 6]])
+        }
+
+        >>> x.randint(y, device='cpu', dtype='int32')
+        {
+            a: ivy.array([[9, 7],
+                          [6, 2]]),
+            b: ivy.array([[0, 2],
+                          [10, 6]])
+        }
+
         >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
-        >>> x.random_uniform(y, device='cpu', dtype='float64', out=z)
+        >>> x.randint(y, device='cpu', dtype='int16', out=z)
         {
-            a: ivy.array([[10.4, 29.8],
-                          [12.1, 3.9]]),
-            b: ivy.array([[3.79, 5.4],
-                          [16.2, 31.7]])
+            a: ivy.array([[9, 7],
+                          [6, 2]]),
+            b: ivy.array([[0, 2],
+                          [10, 6]])
         }
         """
         return self.static_randint(
@@ -755,4 +838,3 @@ class ContainerWithRandom(ContainerBase):
             dtype=dtype,
             out=out,
         )
-
