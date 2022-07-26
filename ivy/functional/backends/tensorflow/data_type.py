@@ -165,7 +165,7 @@ def result_type(
     )
     for i in range(2, len(arrays_and_dtypes)):
         result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
-    return result
+    return as_ivy_dtype(result)
 
 
 # Extra #
