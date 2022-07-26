@@ -496,36 +496,31 @@ def conv1d(
 
     Examples
     --------
+    With :code:`ivy.Array` input:
+    
     >>> x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC
     >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
     >>> result = ivy.conv1d(x, filters, (1,), 'SAME', 'NWC', (1,))
     >>> print(result)
     ivy.array([[[0.], [3.], [0.]]])
-    
-    With :code:`ivy.Array` input:
-    
-    >>> x = ivy.array(ivy.random_normal(0, 1, [1, 8, 4])) #NWC
-    >>> filters = ivy.array(ivy.random_normal(0, 1, [6, 4, 2])) #WIO (I == C)
-    >>> result = ivy.conv1d(x, filters, strides=(2,), padding='VALID')
-    >>> print(result)
-    ivy.array([[[-3.44,  2.38], [ 4.14,  3.1 ]]])
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array(ivy.random_normal(0, 1,[1, 5, 3])) #NWC
-    >>> filters = ivy.native_array(ivy.random_normal(0, 1,  [4, 3, 2])) #WIO
-    >>> result = ivy.conv1d(x, filters, strides = (2,), padding = 'SAME')
+    >>> x = ivy.native_array([[[1., 3.], [2., 4.], [5., 7], [6., 8.]]])  
+    >>> filters = ivy.native_array([[[0., 1.], [1., 0.]]])
+    >>> result = ivy.conv1d(x, filters, strides= (2,), padding='VALID')
     >>> print(result)
-    ivy.array([[[-1.88 , -0.208],[-0.69 ,  3.9  ],[-0.67 , -0.595]]])
+    ivy.array([[[3., 1.],[7., 5.]]])
 
-    With a mix of :code:`ivy.Array` ivy.NativeArray and :code:`ivy.Container` inputs:
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.array(ivy.random_normal(0,1, [1, 15, 2])) , \
-                          b = ivy.array(ivy.random_normal(0,1,[1,20, 2])))
-    >>> filters = ivy.array(ivy.random_normal(0,1,[8, 2, 2]))
-    >>> result  = ivy.conv1d(x, filters, strides= 4, padding='VALID', dilations=2)
-    >>> print(result)
-    {a: ivy.array([[[-6.3, 0.933]]]),b: ivy.array([[[-2.46, -5.61],[-3.63, 8.13]]])}
+    >>> a = ivy.array([[[1.2, 3.1, 4.8], [5.9, 2.2, 3.3], \ 
+                      [10.8, 7.6, 4.9], [6.1, 2.2, 9.5]]])
+    >>> b = ivy.array([[[8.8, 7.7, 6.6], [1.1, 2.2, 3.5]]])
+    >>> x = ivy.Container(a= a, b= b)
+    >>> filters = ivy.array([[[1., 0.], [0., 1], [1., 1.]]])
+    >>> result  = ivy.conv1d(x, filters, strides= 3, padding='VALID', dilations=2)
+    {a: ivy.array([[[6., 7.9],[15.6, 11.7]]]),b: ivy.array([[[15.4, 14.3]]])}
     """
     return current_backend(x).conv1d(
         x, filters, strides, padding, data_format, dilations, out=out
