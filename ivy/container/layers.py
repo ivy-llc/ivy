@@ -170,13 +170,13 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------   
-        >>> a = ivy.random_normal(0,1,[3, 12, 2])
-        >>> b = ivy.random_normal(0,1, [3, 12, 2])
+        >>> a = ivy.random_normal(0,1,[1, 12, 2])
+        >>> b = ivy.random_normal(0,1, [1, 15, 2])
         >>> inp = ivy.Container(a=a, b=b)
-        >>> filters = ivy.random_normal(0, 1, [9, 2, 4])
+        >>> filters = ivy.random_normal(0, 1, [10, 2, 1])
         >>> result = ivy.Container.static_conv1d(inp,filters,strides=2,padding='VALID')
-        >>> print(result.shape)
-        [3, 2, 4]
+        >>> print(result)
+        {a: ivy.array([[[-3.1],[-2.41]]]),b: ivy.array([[[0.414],[-0.693],[-5.07]]])}
         """
         return ContainerBase.multi_map_in_static_method(
             "conv1d",
@@ -230,13 +230,13 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         -------- 
-        >>> a = ivy.random_normal(0,1,[3, 12, 2])
-        >>> b = ivy.random_normal(0,1, [3, 12, 2])
+        >>> a = ivy.random_normal(0,1,[1, 12, 2])
+        >>> b = ivy.random_normal(0,1, [1, 15, 2])
         >>> inp = ivy.Container(a=a, b=b)
-        >>> filters = ivy.random_normal(0, 1, [9, 2, 4])
-        >>> result = ivy.Container.static_conv1d(inp,filters,strides=2,padding='VALID')
-        >>> print(result.shape)
-        [3, 2, 4]
+        >>> filters = ivy.random_normal(0, 1, [10, 2, 1])
+        >>> result = inp.conv1d(filters,strides=2,padding='VALID')
+        >>> print(result)
+        {a: ivy.array([[[-3.1],[-2.41]]]),b: ivy.array([[[0.414],[-0.693],[-5.07]]])}
         """
         return self.static_conv1d(
             self, filters, strides, padding, data_format, dilations, out=out
