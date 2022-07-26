@@ -678,10 +678,12 @@ class ContainerWithDataTypes(ContainerBase):
         --------
         >>> x = ivy.Container(a = ivy.array([0, 1, 2]), \
         b = ivy.array([3., 4., 5.]))
-        >>> print(ivy.Container.result_type(x))
+        >>>print(x.a.dtype, x.b.dtype)
+        int32 float32
+        print(ivy.Container.static_result_type(x, ivy.float64))
         {
-            a: tf.int32,
-            b: tf.float32
+            a: float64,
+            b: float32
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -737,8 +739,8 @@ class ContainerWithDataTypes(ContainerBase):
 
         >>> print(x.result_type(x))
         {
-            a:tf.float32,
-            b:tf.int32
+            a:float32,
+            b:int32
         }
         """
         return self.static_result_type(
