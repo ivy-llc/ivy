@@ -80,7 +80,7 @@ def randint(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
-    dtype: DType,
+    dtype: Optional[Union[DType, ivy.Dtype]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     _randint_check_dtype_and_bound(low, high, dtype)

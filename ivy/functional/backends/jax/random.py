@@ -104,7 +104,7 @@ def randint(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
-    dtype: jnp.dtype,
+    dtype: Optional[Union[jnp.dtype, ivy.Dtype]] = None,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     _randint_check_dtype_and_bound(low, high, dtype)

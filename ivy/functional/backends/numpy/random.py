@@ -83,7 +83,7 @@ def randint(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
-    dtype: np.dtype,
+    dtype: Optional[Union[np.dtype, ivy.Dtype]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     _randint_check_dtype_and_bound(low, high, dtype)

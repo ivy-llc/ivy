@@ -87,7 +87,7 @@ def randint(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: mx.context.Context,
-    dtype: type,
+    dtype: Optional[Union[type, ivy.Dtype]] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     _randint_check_dtype_and_bound(low, high, dtype)

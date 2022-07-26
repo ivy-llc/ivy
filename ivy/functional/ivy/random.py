@@ -489,7 +489,6 @@ def multinomial(
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
-@infer_dtype
 @handle_nestable
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
