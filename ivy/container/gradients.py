@@ -400,7 +400,7 @@ class ContainerWithGradients(ContainerBase):
         >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
                                  b=ivy.array([2., 3.42, 1.69]))
         >>> lr = ivy.array(0.3)
-        >>> ivy.Container.static_gradient_descent_update(w, dcdw, lr)
+        >>> ivy.Container.static_gradient_descent_update(w, dcdw, lr, inplace=True)
         >>> print(w)
             ({
                 a: ivy.array([0.85, 1.94, 2.97]),
@@ -496,7 +496,7 @@ class ContainerWithGradients(ContainerBase):
         >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
                                  b=ivy.array([2., 3.42, 1.69]))
         >>> lr = ivy.array(0.3)
-        >>> w.gradient_descent_update(dcdw, lr)
+        >>> w.gradient_descent_update(dcdw, lr, inplace=True)
         >>> print(w)
             ({
                 a: ivy.array([0.85, 1.94, 2.97]),
@@ -509,7 +509,7 @@ class ContainerWithGradients(ContainerBase):
                                  b=ivy.array([2., 3.42, 1.69]))
         >>> lr = ivy.Container(a=ivy.array(0.3),\
                                 b=ivy.array(0.1))
-        >>> w.gradient_descent_update(dcdw, lr)
+        >>> w.gradient_descent_update(dcdw, lr, inplace=True)
         >>> print(w)
             ({
                 a: ivy.array([0.85, 1.94, 2.97]),

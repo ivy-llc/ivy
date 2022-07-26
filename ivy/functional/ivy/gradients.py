@@ -544,13 +544,11 @@ def gradient_descent_update(
                         [0.3, 0.6, 0.4],\
                         [0.4, 0.7, 0.2]])
     >>> lr = ivy.array(0.1)
-    >>> inplace = False
-    >>> stop_gradients = True
     >>> NewWeights = ivy.gradient_descent_update(w,\
                                                 dcdw,\
                                                 lr,\
-                                                inplace,\
-                                                stop_gradients)
+                                                inplace=False,\
+                                                stop_gradients=True)
     >>> print(NewWeights)
         (ivy.array([[ 0.95,  1.98,  2.99],
                     [ 3.97,  5.94,  0.96],
@@ -559,7 +557,7 @@ def gradient_descent_update(
     >>> w = ivy.array([1., 2., 3.])
     >>> dcdw = ivy.array([0.5, 0.2, 0.1])
     >>> lr = ivy.array(0.3)
-    >>> ivy.gradient_descent_update(w, dcdw, lr)
+    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace=True)
     >>> print(w)
         (ivy.array([0.85, 1.94, 2.97]))
 
@@ -568,7 +566,7 @@ def gradient_descent_update(
     >>> w = ivy.native_array([1., 2., 3.])
     >>> dcdw = ivy.native_array([0.5, 0.2, 0.1])
     >>> lr = ivy.native_array(0.3)
-    >>> ivy.gradient_descent_update(w, dcdw, lr)
+    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace=True)
     >>> print(w)
         ([0.85, 1.94, 2.97])
 
@@ -577,8 +575,7 @@ def gradient_descent_update(
     >>> w = ivy.native_array([1., 2., 3.])
     >>> dcdw = ivy.array([0.5, 0.2, 0.1])
     >>> lr = ivy.native_array(0.3)
-    >>> inplace = True
-    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace)
+    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace=True)
     >>> print(w)
         (ivy.array([0.85, 1.94, 2.97]))
 
@@ -589,7 +586,7 @@ def gradient_descent_update(
     >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
                              b=ivy.array([2., 3.42, 1.69]))
     >>> lr = ivy.array(0.3)
-    >>> ivy.gradient_descent_update(w, dcdw, lr)
+    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace=True)
     >>> print(w)
         ({
             a: ivy.array([0.85, 1.94, 2.97]),
