@@ -272,8 +272,6 @@ def test_matrix_power(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_power",
-        rtol_=1e-02,
-        atol_=1e-02,
         x=np.asarray(x, dtype=dtype),
         n=n,
     )
@@ -314,8 +312,6 @@ def test_matmul(
         instance_method=instance_method,
         fw=fw,
         fn_name="matmul",
-        rtol_=5e-02,
-        atol_=5e-02,
         x1=np.asarray(x_1, dtype=input_dtype1),
         x2=np.asarray(y_1, dtype=input_dtype2),
     )
@@ -352,8 +348,6 @@ def test_det(
         instance_method=instance_method,
         fw=fw,
         fn_name="det",
-        rtol_=1e-03,
-        atol_=1e-03,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -390,8 +384,6 @@ def test_eigh(
         instance_method=instance_method,
         fw=fw,
         fn_name="eigh",
-        rtol_=1e-02,
-        atol_=1e-02,
         x=x,
         test_values=False,
     )
@@ -442,8 +434,6 @@ def test_eigvalsh(
         instance_method=instance_method,
         fw=fw,
         fn_name="eigvalsh",
-        rtol_=0.01,
-        atol_=0.01,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -485,8 +475,6 @@ def test_inv(
         instance_method=instance_method,
         fw=fw,
         fn_name="inv",
-        rtol_=1e-02,
-        atol_=1e-02,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -609,8 +597,6 @@ def test_slogdet(
         fw=fw,
         fn_name="slogdet",
         x=np.asarray(x, dtype=input_dtype),
-        rtol_=1e-3,
-        atol_=1e-3,
     )
 
 
@@ -685,8 +671,6 @@ def test_solve(
         instance_method=instance_method,
         fw=fw,
         fn_name="solve",
-        rtol_=1e-03,
-        atol_=1e-03,
         x1=np.asarray(x1, dtype=input_dtype1),
         x2=np.asarray(x2, dtype=input_dtype2),
     )
@@ -737,9 +721,9 @@ def test_svdvals(
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         min_num_dims=3,
-        max_num_dims=10,
+        max_num_dims=8,
         min_dim_size=1,
-        max_dim_size=50,
+        max_dim_size=15,
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
@@ -1149,10 +1133,8 @@ def test_matrix_rank(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_rank",
-        atol_=1e-04,
-        rtol_=1e-04,
         x=np.asarray(x, dtype=dtype),
-        rtol=rtol,
+        rtol=1e-04,
     )
 
 
@@ -1200,8 +1182,6 @@ def test_cholesky(
         instance_method=instance_method,
         fw=fw,
         fn_name="cholesky",
-        rtol_=1e-02,
-        atol_=1e-02,
         x=x,
         upper=upper,
     )

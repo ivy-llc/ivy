@@ -1109,8 +1109,9 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
 
 
 def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
-    """Determines whether the provided data type is not support by the current
-    framework.
+    """
+    Determines whether the provided data type is not support by
+    the current framework.
 
     Parameters
     ----------
@@ -1121,7 +1122,26 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     -------
     ret
         Boolean, whether the data-type string is un-supported.
+    
+    Examples
+    --------
+    >>> ivy.invalid_dtype(dtype_in = None)
+    False
 
+    >>> ivy.invalid_dtype(dtype_in = 'uint64')
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = ivy.float64)
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = 'float32')
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = ivy.native_int16)
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = 'native_int16')
+    True
     """
     if dtype_in is None:
         return False
