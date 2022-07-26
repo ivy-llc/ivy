@@ -44,6 +44,7 @@ def expand_dims(
 
     # torch.reshape since it can operate on contiguous and non_contiguous tensors
     ret = x.reshape(out_shape)
+    return ret
 
 
 def flip(
