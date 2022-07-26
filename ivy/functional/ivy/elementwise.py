@@ -2792,10 +2792,59 @@ def log1p(
 
     Examples
     --------
-    >>> ivy.log1p(ivy.array([1e-99]))
-    [1e-99]
-    >>> ivy.log(1+ ivy.array([1e-99]))
-    0.0
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1 , 2 ,3 ])
+    >>> y = ivy.log1p(x)
+    >>> print(y)
+    ivy.array([0.693, 1.1  , 1.39 ])
+
+    >>> x = ivy.array([0 , 1 ])
+    >>> y = ivy.zeros(2)
+    >>> ivy.log1p(x , out = y)
+    >>> print(y)
+    ivy.array([0.   , 0.693])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], \
+                   [4.4, 5.5, 6.6]])
+    >>> ivy.log1p(x , out = x)
+    >>> print(x)
+    ivy.array([[0.742, 1.16 , 1.46 ],
+               [1.69 , 1.87 , 2.03 ]])
+
+    >>> x = ivy.array([1e-99])
+    >>> y = ivy.log(1+ x)
+    >>> print(y)
+    ivy.array([0.])
+    >>> y = x.log1p( )
+    >>> print(y)
+    ivy.array([1.e-99])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([10., 20.])
+    >>> y = ivy.log1p(x)
+    >>> print(y)
+    ivy.array([2.4 , 3.04])
+
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))
+    >>> y = ivy.log1p(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.693, 1.1]),
+        b: ivy.array([1.39, 1.61, 1.81])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([ 1., 2.]), b=ivy.array([0., 1.]))
+    >>> y = ivy.Container.static_log1p(x)
+    >>> print(y)
+    {
+        a: ivy.array([0.693, 1.1]),
+        b: ivy.array([0., 0.693])
+    }
 
     """
     return ivy.current_backend(x).log1p(x, out=out)
