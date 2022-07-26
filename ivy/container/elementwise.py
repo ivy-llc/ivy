@@ -3955,12 +3955,49 @@ class ContainerWithElementwise(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
+            
         Returns
         -------
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+        
+        Examples
+        --------
+        Using 'ivy.Container' instance
+
+        >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
+        >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> k = ivy.Container(a=ivy.array([True, False, True]), \
+            b=ivy.array([True, False, False]))
+        >>> l = ivy.Container(a=ivy.array([True, True, True]), \
+            b=ivy.array([False, False, False]))
+        >>> m = ivy.array([False, True, False, True])
+        >>> n = ivy.array([True, False, True, False])
+
+        >>> w = ivy.Container.static_logical_and(i, j)
+        >>> x = ivy.Container.static_logical_and(j, m)
+        >>> y = ivy.Container.static_logical_and(m, n)
+        >>> z = ivy.Container.static_logical_and(k, l)
+
+        >>> print(w)
+        {
+            a: ivy.array([True, False, False, False])
+        }
+
+        >>> print(x)
+        {
+            a: ivy.array([False, True, False, False])
+        }
+
+        >>> print(y)
+            ivy.array([False, False, False, False])
+
+        >>> print(z)
+        {
+            a: ivy.array([True, False, True]),
+            b: ivy.array([False, False, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "logical_and",
@@ -4015,6 +4052,43 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        Using 'ivy.Container' instance
+
+        >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
+        >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> k = ivy.Container(a=ivy.array([True, False, True]), \
+            b=ivy.array([True, False, False]))
+        >>> l = ivy.Container(a=ivy.array([True, True, True]), \
+            b=ivy.array([False, False, False]))
+        >>> m = ivy.array([False, True, False, True])
+        >>> n = ivy.array([True, False, True, False])
+
+        >>> w = i.logical_and(j)
+        >>> x = j.logical_and(m)
+        >>> y = m.logical_and(n)
+        >>> z = k.logical_and(l)
+
+        >>> print(w)
+        {
+            a: ivy.array([True, False, False, False])
+        }
+
+        >>> print(x)
+        {
+            a: ivy.array([False, True, False, False])
+        }
+
+        >>> print(y)
+        ivy.array([False, False, False, False])
+
+        >>> print(z)
+        {
+            a: ivy.array([True, False, True]),
+            b: ivy.array([False, False, False])
+        }
         """
         return self.static_logical_and(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out

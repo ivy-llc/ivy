@@ -9,6 +9,7 @@ import ivy
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
+    _check_valid_scale,
 )
 
 # Extra #
@@ -29,14 +30,17 @@ def random_uniform(
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, np.ndarray] = 0.0,
+    std: Union[float, np.ndarray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
+    dtype: np.dtype,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.random.normal(mean, std, shape))
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
+    return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
 
 def multinomial(

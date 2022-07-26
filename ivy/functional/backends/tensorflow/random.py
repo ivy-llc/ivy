@@ -12,6 +12,7 @@ import ivy
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
+    _check_valid_scale,
 )
 
 # Extra #
@@ -35,17 +36,20 @@ def random_uniform(
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, tf.Tensor, tf.Variable] = 0.0,
+    std: Union[float, tf.Tensor, tf.Variable] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
+    dtype: DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    mean = tf.cast(mean, "float32")
-    std = tf.cast(std, "float32")
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
+    mean = tf.cast(mean, dtype)
+    std = tf.cast(std, dtype)
     with tf.device(device):
-        return tf.random.normal(shape if shape else (), mean, std)
+        return tf.random.normal(shape, mean, std, dtype=dtype)
 
 
 def multinomial(
