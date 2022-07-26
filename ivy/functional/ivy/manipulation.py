@@ -351,7 +351,7 @@ def reshape(
     Parameters
     ----------
     x
-        Tensor to be reshaped.
+        Input array to be reshaped.
     shape
         The new shape should be compatible with the original shape. One shape dimension
         can be -1. In this case, the value is inferred from the length of the array and
@@ -404,6 +404,28 @@ def reshape(
                       [3, 4, 5]]),
         b: ivy.array([[0, 1, 2],
                       [3, 4, 5]])
+    }
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[0, 1, 2, 3]])
+    >>> y = ivy.reshape(x, (2, 2))
+    >>> print(y)
+    ivy.array([[0, 1],
+               [2, 3]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.reshape(x, (-1, 1))
+    >>> print(y)
+    {
+        a: ivy.array([[0.],
+                      [1.],
+                      [2.]]),
+        b: ivy.array([[3.],
+                      [4.],
+                      [5.]])
     }
 
     """
@@ -920,7 +942,7 @@ def split(
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
     *,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Splits an array into multiple sub-arrays.
 

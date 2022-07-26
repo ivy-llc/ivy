@@ -56,17 +56,13 @@ def add(
 
 
 def asin(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.asin(x)
 
 
 def asinh(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.asinh(x)
 
@@ -107,9 +103,7 @@ def bitwise_and(
 
 
 def bitwise_invert(
-    x: Union[int, tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[int, tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" not in str(x.dtype):
         return tf.logical_not(x)
@@ -164,9 +158,7 @@ def bitwise_xor(
 
 
 def ceil(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
@@ -175,17 +167,13 @@ def ceil(
 
 
 def cos(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.cos(x)
 
 
 def cosh(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.cosh(x)
 
@@ -211,25 +199,19 @@ def equal(
 
 
 def exp(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.exp(x)
 
 
 def expm1(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.expm1(x)
 
 
 def floor(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
@@ -273,9 +255,7 @@ def greater_equal(
 
 
 def isfinite(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         return tf.ones_like(x, tf.bool)
@@ -284,9 +264,7 @@ def isfinite(
 
 
 def isinf(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         return tf.zeros_like(x, tf.bool)
@@ -295,9 +273,7 @@ def isinf(
 
 
 def isnan(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         return tf.zeros_like(x, tf.bool)
@@ -324,33 +300,25 @@ def less_equal(
 
 
 def log(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.log(x)
 
 
 def log10(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.log(x) / tf.math.log(tf.constant(10.0, x.dtype))
 
 
 def log1p(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.log1p(x)
 
 
 def log2(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.log(x) / tf.math.log(tf.constant(2.0, x.dtype))
 
@@ -375,9 +343,7 @@ def logical_and(
 
 
 def logical_not(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.logical_not(tf.cast(x, tf.bool))
 
@@ -469,9 +435,7 @@ def remainder(
 
 
 def round(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
@@ -480,9 +444,7 @@ def round(
 
 
 def sign(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
@@ -490,25 +452,19 @@ def sign(
 
 
 def sin(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.sin(x)
 
 
 def sinh(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.sinh(x)
 
 
 def sqrt(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if x.dtype == "float32":
         x_64 = tf.cast(x, tf.float64)
@@ -518,9 +474,7 @@ def sqrt(
 
 
 def square(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.square(x)
 
@@ -536,25 +490,19 @@ def subtract(
 
 
 def tan(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.tan(x)
 
 
 def tanh(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.tanh(x)
 
 
 def trunc(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x
     if not ivy.is_array(x):
@@ -574,17 +522,15 @@ def trunc(
 
 
 def erf(
-    x: Union[tf.Tensor, tf.Variable], 
-    *, 
-    out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.erf(x)
 
 
 def maximum(
-    x1: Union[tf.Tensor, tf.Variable], 
-    x2: Union[tf.Tensor, tf.Variable], 
-    *, 
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
@@ -592,9 +538,9 @@ def maximum(
 
 
 def minimum(
-    x1: Union[tf.Tensor, tf.Variable], 
-    x2: Union[tf.Tensor, tf.Variable], 
-    *, 
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)

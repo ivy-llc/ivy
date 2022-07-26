@@ -21,7 +21,9 @@ torch_scatter = None
 def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.device]:
     dv = x.device
     if as_native:
-        return torch.device(dv.type.replace("gpu", "cuda"))
+        if isinstance(dv, torch.device):
+            dv = dv.type
+        return torch.device(dv.replace("gpu", "cuda"))
     return as_ivy_dev(dv)
 
 
@@ -77,7 +79,7 @@ def tpu_is_available() -> bool:
 
 
 class Profiler(BaseProfiler):
-    def __init__(self, save_dir):
+    def __init__(self, save_dir: str):
         super(Profiler, self).__init__(save_dir)
         self._prof = profile(
             activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], with_stack=True
