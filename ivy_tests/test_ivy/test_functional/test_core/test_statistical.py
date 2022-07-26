@@ -42,7 +42,6 @@ def statistical_dtype_values(draw, *, function):
     axis = draw(helpers.get_axis(shape=shape,allow_none=True))
     return dtype, values, axis
 
-
 @st.composite
 def statistical_correction_values(draw, *, function):
     correction = draw(
@@ -52,10 +51,11 @@ def statistical_correction_values(draw, *, function):
     return correction
 
 
-
 # min
 @given(
-    dtype_values_axis=helpers.dtype_values_axis(available_dtypes=ivy_np.valid_numeric_dtypes,ret_shape=True),
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        ret_shape=True),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="min"),
@@ -88,14 +88,17 @@ def test_min(
         fw=fw,
         fn_name="min",
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, #axis=axis,
+        #axis=axis,
+        axis=None,
         keepdims=keep_dims,
     )
 
 
 # max
 @given(
-    dtype_values_axis=helpers.dtype_values_axis(available_dtypes=ivy_np.valid_numeric_dtypes,ret_shape=True),
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        ret_shape=True),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="max"),
@@ -128,14 +131,17 @@ def test_max(
         fw=fw,
         fn_name="max",
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, #axis=axis,
+        #axis=axis,
+        axis=None,
         keepdims=keep_dims,
     )
 
 
 # mean
 @given(
-    dtype_values_axis=helpers.dtype_values_axis(available_dtypes=ivy_np.valid_numeric_dtypes,ret_shape=True),
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        ret_shape=True),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="mean"),
@@ -170,7 +176,8 @@ def test_mean(
         fn_name="mean",
         rtol_=1e-1,
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, #axis=axis,
+        #axis=axis,
+        axis=None,
         keepdims=keep_dims
     )
 
@@ -211,7 +218,8 @@ def test_var(
         fw=fw,
         fn_name="var",
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, #axis=axis,
+        #axis=axis,
+        axis=None,
         correction=correction,
         keepdims=keep_dims,
     )
@@ -253,7 +261,8 @@ def test_prod(
         fw=fw,
         fn_name="prod",
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, #axis=axis,
+        #axis=axis,
+        axis=None,
         keepdims=keep_dims,
     )
 
@@ -294,7 +303,8 @@ def test_sum(
         fn_name="sum",
         rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, #axis=axis,
+        #axis=axis,
+        axis=None,
         keepdims=keep_dims,
     )
 
@@ -337,7 +347,8 @@ def test_std(
         rtol_=1e-2,
         atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, #axis=axis,
+        #axis=axis,
+        axis=None,
         correction=correction,
         keepdims=keep_dims,
     )
