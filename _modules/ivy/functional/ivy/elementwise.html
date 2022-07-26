@@ -185,7 +185,7 @@
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
@@ -209,7 +209,7 @@
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[ 1.1,  2.2,  3.3],</span>
 <span class="sd">               [4.4, 5.5, 6.6]])</span>
-<span class="sd">               </span>
+
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])</span>
@@ -774,8 +774,8 @@
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan2.html&gt;`_ </span>
-<span class="sd">    in the standard. </span>
-<span class="sd">    </span>
+<span class="sd">    in the standard.</span>
+
 <span class="sd">    The descriptions above assume an array input for simplicity, but</span>
 <span class="sd">    the method also accepts :code:`ivy.Container` instances in place of</span>
 <span class="sd">    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints</span>
@@ -797,7 +797,7 @@
 <span class="sd">    &gt;&gt;&gt; x.atan2(y, out=z)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([2.68 , 0.588])</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; nan = float(&quot;nan&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([nan, 1.0, 1.0, -1.0, -1.0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([1.0, +0, -0, +0, -0])</span>
@@ -829,7 +829,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[ 0.785,  0.785,  0.785],</span>
 <span class="sd">        [-2.36 , -2.36 , -2.36 ]])</span>
-<span class="sd">               </span>
+
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])</span>
@@ -1001,7 +1001,7 @@
 <span class="sd">        b: ivy.array([0, 1, 2])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs: </span>
+<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([True, True])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([True, False]), b=ivy.array([False, True]))</span>
@@ -1926,30 +1926,30 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :code:`ivy.Array` inputs:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 5, float(&#39;-0&#39;), ivy.nan]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.expm1(x)</span>
 <span class="sd">    ivy.array([[  0., 147.,  -0.,  nan]])</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([ivy.inf, 1, float(&#39;-inf&#39;)])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros(3)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.expm1(x, out=y)</span>
 <span class="sd">    ivy.array([  inf,  1.72, -1.  ])</span>
-<span class="sd">    </span>
+
 <span class="sd">    With :code:`ivy.NativeArray` inputs:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1], [5], [-ivy.inf]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.expm1(x)</span>
 <span class="sd">    ivy.array([[  1.72],</span>
 <span class="sd">       [147.  ],</span>
 <span class="sd">       [ -1.  ]])</span>
-<span class="sd">    </span>
+
 <span class="sd">    With :code:`ivy.Array` instance method:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([20])</span>
 <span class="sd">    &gt;&gt;&gt; x.expm1()</span>
 <span class="sd">    ivy.array([4.85e+08])</span>
-<span class="sd">    </span>
+
 <span class="sd">    With :code:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0,]), \</span>
@@ -1959,9 +1959,9 @@
 <span class="sd">        a: ivy.array([-0.632, 0.]),</span>
 <span class="sd">        b: ivy.array([2.20e+04, 1.72e+00])</span>
 <span class="sd">    }</span>
-<span class="sd">    </span>
+
 <span class="sd">    With :code:`ivy.Container` instance method:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([10, 13]))</span>
 <span class="sd">    &gt;&gt;&gt; x.expm1(x)</span>
 <span class="sd">    {</span>
@@ -1969,13 +1969,13 @@
 <span class="sd">    }</span>
 
 <span class="sd">    With :code:`ivy.Container` static method:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1]))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.Container.static_expm1(x)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([1.72])</span>
 <span class="sd">    }</span>
-<span class="sd">    </span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -2365,12 +2365,12 @@
 <span class="sd">     ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of bool.</span>
-<span class="sd">    </span>
+
 <span class="sd">    This method conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
-<span class="sd">    </span>
+
 <span class="sd">     Functional Examples</span>
 <span class="sd">    -------------------</span>
 
@@ -2396,7 +2396,7 @@
 <span class="sd">    &gt;&gt;&gt; ivy.less_equal(x, y, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[[1.],[0.],[1.]]])</span>
-<span class="sd">    </span>
+
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1, 2])</span>
@@ -2597,7 +2597,7 @@
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isinf.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
@@ -2635,7 +2635,7 @@
 <span class="sd">       [False, False, False]])</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` inputs:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1], [5], [-ivy.inf]])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.isinf(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
@@ -2684,7 +2684,7 @@
 <span class="sd">        [False, False, False]])</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` inputs:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1], [5], [-ivy.inf]])</span>
 <span class="sd">    &gt;&gt;&gt; x.isinf()</span>
 <span class="sd">    ivy.array([[False],</span>
@@ -3013,7 +3013,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of bool.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([True, True, False])</span>
@@ -3025,9 +3025,9 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([True, False, False])</span>
 
-<span class="sd">    x = ivy.Container(a=ivy.array([False, True, True]), \</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]), \</span>
 <span class="sd">        b=ivy.array([True, False, False]))</span>
-<span class="sd">    y = ivy.Container(a=ivy.array([True, True, False]), \</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([True, True, False]), \</span>
 <span class="sd">        b=ivy.array([False, False, True]))</span>
 <span class="sd">    print(ivy.logical_and(y, x))</span>
 <span class="sd">    {</span>
@@ -3047,10 +3047,6 @@
 <span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(x, y))</span>
 <span class="sd">    ivy.array([True, False, False])</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.logical_and(x, y, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([True, False, False])</span>
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]), \</span>
 <span class="sd">        b=ivy.array([True, False, False]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([True, False, True])</span>
@@ -3060,8 +3056,8 @@
 <span class="sd">        b: ivy.array([True, False, False])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.logical_and(y, x, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.logical_and(y, x, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([False, False, True]),</span>
 <span class="sd">        b: ivy.array([True, False, False])</span>
@@ -3087,11 +3083,11 @@
 <span class="sd">       accept input arrays having numeric data types. If non-boolean data types are</span>
 <span class="sd">       supported, zeros must be considered the equivalent of ``False``, while non-zeros</span>
 <span class="sd">       must be considered the equivalent of ``True``.</span>
-<span class="sd">       </span>
+
 <span class="sd">       **Special cases**</span>
-<span class="sd">       </span>
+
 <span class="sd">       For this particular case,</span>
-<span class="sd">       </span>
+
 <span class="sd">       - If ``x_i`` is ``NaN``, the result is ``False``.</span>
 <span class="sd">       - If ``x_i`` is ``-0``, the result is ``True``.</span>
 <span class="sd">       - If ``x_i`` is ``-infinity``, the result is ``False``.</span>
@@ -3110,7 +3106,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of ``bool``.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 <span class="sd">    With :code:`ivy.Array` input:</span>
@@ -3118,23 +3114,23 @@
 <span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([False, True, False, False,  True])</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x=ivy.array([2,0,3,5])</span>
 <span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([False, True, False, False])</span>
-<span class="sd">    </span>
+
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 <span class="sd">    &gt;&gt;&gt; x=ivy.native_array([1,0,1,1,0])</span>
 <span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([False, True, False, False,  True])</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x=ivy.native_array([1,0,6,5])</span>
 <span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([False, True, False, False])</span>
-<span class="sd">    </span>
+
 <span class="sd">    With :code:`ivy.Container` input:</span>
 <span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,1,1]), b=ivy.array([1,0,8,9]))</span>
 <span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
@@ -3143,7 +3139,7 @@
 <span class="sd">        a: ivy.array([False, True, False, False]),</span>
 <span class="sd">        b: ivy.array([False, True, False, False])</span>
 <span class="sd">    }</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))</span>
 <span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -3151,19 +3147,19 @@
 <span class="sd">        a: ivy.array([False, True, False, True]),</span>
 <span class="sd">        b: ivy.array([False, False, True, False])</span>
 <span class="sd">    }</span>
-<span class="sd">    </span>
+
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
-<span class="sd">    </span>
+
 <span class="sd">    With :code:`ivy.Array` input:</span>
 <span class="sd">    &gt;&gt;&gt; x=ivy.array([0,1,1,0])</span>
 <span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
 <span class="sd">    ivy.array([ True, False, False,  True])</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x=ivy.array([2,0,3,9])</span>
 <span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
 <span class="sd">    ivy.array([False,  True, False, False])</span>
-<span class="sd">    </span>
+
 <span class="sd">    With :code:`ivy.Container` input:</span>
 <span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))</span>
 <span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
@@ -3171,7 +3167,7 @@
 <span class="sd">        a: ivy.array([False, True, True, False]),</span>
 <span class="sd">        b: ivy.array([False, False, False, True])</span>
 <span class="sd">    }</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))</span>
 <span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
 <span class="sd">    {</span>
