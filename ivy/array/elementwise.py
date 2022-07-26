@@ -61,11 +61,11 @@ class ArrayWithElementwise(abc.ABC):
             
         Examples
         --------
-        >>> x = ivy.array([2., 10.0, 1.0, -3.0])
+        >>> x = ivy.array([2., 10.0, 1.0])
         >>> y = x.acosh()
         >>> print(y)
-        ivy.array([1.32, 2.99, 0.  ,  nan])   
-
+        ivy.array([1.32, 2.99, 0.  ])
+        
         """
         return ivy.acosh(self._data, out=out)
 
@@ -91,10 +91,11 @@ class ArrayWithElementwise(abc.ABC):
             
         Examples
         --------
-        >>> x = ivy.array([1.0, 2.0, -3.0])
+        >>> x = ivy.array([1.0, 0.0, -0.9])
         >>> y = x.acos()
         >>> print(y)
-        ivy.array([ 0., nan, nan])
+        ivy.array([0.  , 1.57, 2.69])
+        
         """
         return ivy.acos(self._data, out=out)
 
@@ -284,10 +285,10 @@ class ArrayWithElementwise(abc.ABC):
             
         Examples
         --------
-        >>> x = ivy.array([0.0, 0.5, 1.0, -3.0])
+        >>> x = ivy.array([0.0, 0.5, -0.9])
         >>> y = x.atanh()
         >>> print(y)
-        ivy.array([0.   , 0.549,   inf,   nan])
+        ivy.array([ 0.   ,  0.549, -1.47 ])
         
         """
         return ivy.atanh(self._data, out=out)
