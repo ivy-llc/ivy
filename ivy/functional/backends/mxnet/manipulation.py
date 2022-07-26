@@ -2,7 +2,7 @@
 import mxnet as mx
 import math
 import numpy as np
-from typing import Sequence, Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List
 from ivy.functional.backends.mxnet import (
     _flat_array_to_1_dim_array,
     _handle_flat_arrays_in_out,
