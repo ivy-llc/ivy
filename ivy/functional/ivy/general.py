@@ -218,15 +218,9 @@ def copy_array(
     ivy.array([1, 0, 1, 1])
 
     >>> x = ivy.array([1, 0, 1, -1])
-    >>> y = ivy.zeros((1, 4))
-    >>> ivy.copy_array(x, out=y)
-    >>> print(y)
-    ivy.array([1, 0, 1, -1])
-
-    >>> x = ivy.array([1, 0, 1, 1])
     >>> ivy.copy_array(x, out=x)
     >>>print(x)
-    ivy.array([1, 0, 1, 1])
+    ivy.array([1, 0, 1, -1])
 
     With :code:`ivy.NativeArray` input:
 
