@@ -438,31 +438,114 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([7.5,6.7,0.9]), b=ivy.array([8.7,9.8,4.5]))
+        >>> x = ivy.Container(a=ivy.array([7.5,6.7,0.9]), \
+                              b=ivy.array([8.7,9.8,4.5]))
         >>> x.random_normal(17.4)
         {
-            a: ivy.array([8.79, 27.2, 7.01]),
-            b: ivy.array([-18.6, 11.4, 15.])
+            a: ivy.array([11.9, -22.9, -24.8]),
+            b: ivy.array([44.3, -21.6, 2.03])
+        }
+
+        >>> x.random_normal(10.2, device='cpu')
+        {
+            a: ivy.array([7.82, 6.21, -0.431]),
+            b: ivy.array([13.8, 9.9, 7.64])
+        }
+
+        >>> x.random_normal(14.2, dtype='float16')
+        {
+            a: ivy.array([-18.3, -3.42, 9.55]),
+            b: ivy.array([-1.31, 7.68, -6.93])
+        }
+
+        >>> x.random_normal(10.8, device='cpu', dtype='float64')
+        {
+            a: ivy.array([13.4, -3.14, 10.7]),
+            b: ivy.array([11.7, 4.85, 5.83])
+        }
+
+        >>> z = ivy.Container(a=ivy.zeros((3,)), b=ivy.ones((3,)))
+        >>> x.random_normal(11.2, device='cpu', dtype='float64', out=z)
+        {
+            a: ivy.array([-6.84, 0.274, 14.2]),
+            b: ivy.array([29.1, 7.19, 3.])
         }
 
         >>> y = ivy.Container(a=10.4, b=17.4)
+        >>> x.random_normal(y)
+        {
+            a: ivy.array([-9.5, 8.54, -9.13]),
+            b: ivy.array([-24.5, 18.9, 11.])
+        }
+
         >>> x.random_normal(y, device='cpu')
         {
-            a: ivy.array([11.8, 7.45, 9.95]),
-            b: ivy.array([-15.1, 29., 30.2])
+            a: ivy.array([8.47, 8.23, 8.69]),
+            b: ivy.array([10.7, 16.2, 16.1])
+        }
+
+        >>> x.random_normal(y, dtype='float16')
+        {
+            a: ivy.array([8.22, -15.9, 10.4]),
+            b: ivy.array([19.9, 11.5, -2.15])
+        }
+
+        >>> x.random_normal(y, device='cpu', dtype='float64')
+        {
+            a: ivy.array([19.6, -4.08, 6.09]),
+            b: ivy.array([-23.9, 6.86, 17.6])
+        }
+
+        >>> z = ivy.Container(a=ivy.zeros((3,)), b=ivy.ones((3,)))
+        >>> x.random_normal(y, device='cpu', dtype='float64', out=z)
+        {
+            a: ivy.array([14.7, 8.99, 8.46]),
+            b: ivy.array([22.9, -5.97, -1.28])
         }
 
         >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
                               b=ivy.array([[0.9,2.4],[7.6,5.4]]))
         >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \
                               b=ivy.array([[4.3,5.6],[23.4,54.3]]))
+        >>> x.random_normal(y)
+        {
+            a: ivy.array([[10.6, 7.89],
+                          [9.39, 19.4]]),
+            b: ivy.array([[3.76, 4.68],
+                          [17.7, 24.]])
+        }
+
+        >>> x.random_normal(y, device='cpu')
+        {
+            a: ivy.array([[30.9, 24.6],
+                          [29.9, -25.3]]),
+            b: ivy.array([[8.02, 1.92],
+                          [-5.34, -54.1]])
+        }
+
+        >>> x.random_normal(y, dtype='float16')
+        {
+            a: ivy.array([[7.82, -35.],
+                          [11.7, 0.696]]),
+            b: ivy.array([[-4.07, -2.91],
+                          [19.2, 46.8]])
+        }
+
+        >>> x.random_normal(y, device='cpu', dtype='float64')
+        {
+            a: ivy.array([[25.4, 28.3],
+                          [19.6, -9.83]]),
+            b: ivy.array([[2.95, 2.48],
+                          [-30.8, -40.1]])
+        }
+
         >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
         >>> x.random_normal(y, device='cpu', dtype='float64', out=z)
         {
-            a: ivy.array([[-12.7, 72.7],
-                          [12.8, -0.0762]]),
-            b: ivy.array([[-6.56, -5.12],
-                          [12.8, 13.2]])
+            a: ivy.array([[2.8, -45.6],
+                          [-10.4, 0.65]]),
+            b: ivy.array([[3.8, 1.43],
+                          [23., 29.4]])
         }
         """
         return self.static_random_normal(
