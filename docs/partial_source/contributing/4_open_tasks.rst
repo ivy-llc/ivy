@@ -64,8 +64,9 @@ Specifically, you **do not** need to address the following:
 However, everything else covered in the :ref:`Deep Dive` must be addressed.
 Some common important tasks are:
 
-#. remove all :code:`lambda` and direct bindings for the backend functions,
-   with each function instead defined using :code:`def`.
+#. remove all :code:`lambda` and direct bindings for the backend functions
+   (in :code:`ivy.functional.backends`), with each function instead defined using
+   :code:`def`.
 #. implement the following if they don't exist but should do: :code:`ivy.Array` instance
    method, :code:`ivy.Container` static method, :code:`ivy.Container` instance method,
    :code:`ivy.Array` special method, :code:`ivy.Array` reverse special method,

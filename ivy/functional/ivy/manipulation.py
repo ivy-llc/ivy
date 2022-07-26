@@ -888,7 +888,7 @@ def split(
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
     *,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Splits an array into multiple sub-arrays.
 
