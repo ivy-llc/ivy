@@ -93,15 +93,8 @@ def randint(
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
-
-    ret = torch.rand(shape, out=out, dtype=dtype, device=device)
-    ret = torch.mul(ret, high - low, out=out)
-    ret = torch.add(ret, low, out=out)
-    ret = torch.clamp(ret, low, high - 1)
-    return ret
-
-
-randint.support_native_out = True
+    rand_range = high - low
+    return torch.rand(shape, device=device).to(dtype) * rand_range + low
 
 
 def seed(seed_value: int = 0) -> None:
