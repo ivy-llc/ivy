@@ -10,6 +10,16 @@ from collections import namedtuple
 # Array API Standard #
 # -------------------#
 
+def _cast_for_binary_op(x1, x2):
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            promoted_type = np.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
+        else:
+            x2 = np.asarray(x2, dtype=x1.dtype)
+    return x1, x2
+
 
 def cholesky(x: np.ndarray, upper: bool = False) -> np.ndarray:
     if not upper:
@@ -20,7 +30,14 @@ def cholesky(x: np.ndarray, upper: bool = False) -> np.ndarray:
     return ret
 
 
-def cross(x1: np.ndarray, x2: np.ndarray, axis: int = -1) -> np.ndarray:
+def cross(
+        x1: Union[float,np.ndarray],
+        x2: Union[float,np.ndarray],
+        axis: int = -1,
+        *,
+        out: Optional[np.ndarray] = None
+    ) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     ret = np.cross(a=x1, b=x2, axis=axis)
     return ret
 
