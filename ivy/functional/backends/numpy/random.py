@@ -86,6 +86,9 @@ def randint(
     dtype: Optional[Union[np.dtype, ivy.Dtype]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
     return np.random.randint(low, high, shape, dtype=dtype)

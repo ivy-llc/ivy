@@ -7,7 +7,10 @@ import numbers
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _randint_check_dtype_and_bound,
+)
 
 # Extra #
 # ------#
@@ -85,16 +88,16 @@ def randint(
     dtype: Optional[Union[torch.dtype, ivy.Dtype]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    zero_dim = len(shape) == 0
-    if zero_dim:
-        shape = [1]
-    ret = torch.rand(*shape, out=out, dtype=torch.float64, device=device)
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    _randint_check_dtype_and_bound(low, high, dtype)
+    shape = _check_bounds_and_get_shape(low, high, shape)
+
+    ret = torch.rand(shape, out=out, dtype=dtype, device=device)
     ret = torch.mul(ret, high - low, out=out)
     ret = torch.add(ret, low, out=out)
-    ret = ret.to(ivy.default_int_dtype(as_native=True))
     ret = torch.clamp(ret, low, high - 1)
-    if zero_dim:
-        return ret.reshape(())
     return ret
 
 

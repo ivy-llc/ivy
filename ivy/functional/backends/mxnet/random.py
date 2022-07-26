@@ -90,6 +90,9 @@ def randint(
     dtype: Optional[Union[type, ivy.Dtype]] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
     if isinstance(low, mx.nd.NDArray):
