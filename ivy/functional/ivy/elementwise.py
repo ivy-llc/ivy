@@ -2626,7 +2626,6 @@ def isnan(
 
     Examples
     --------
-    
     With :code:`ivy.Array` inputs:
     
     >>> x = ivy.array([1, 2, 3])
@@ -2663,7 +2662,6 @@ def isnan(
        [False, False, False],
        [False, False, False]])
     
-
     With :code:`ivy.NativeArray` inputs:
     
     >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
@@ -2673,7 +2671,6 @@ def isnan(
         [False],
         [True]])
 
-    
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
@@ -2688,7 +2685,6 @@ def isnan(
     
     Instance Method Examples
     ------------------------
-
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([1, 2, 3])
@@ -2719,7 +2715,6 @@ def isnan(
         [False, False, False],
         [False, False, False]])
     
-
     With :code:`ivy.NativeArray` inputs:
     
     >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
@@ -2728,7 +2723,6 @@ def isnan(
         [False],
         [True]])
 
-    
     With :code:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
         b=ivy.array([math.nan, 3.3, -4.2]))
@@ -2738,10 +2732,8 @@ def isnan(
         b: ivy.array([True, False, False])
     }
 
-
     Container Static Method Examples
     ------------------------
-
     With :code:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
                           b=ivy.array([math.nan, 3.3, -4.2]))
