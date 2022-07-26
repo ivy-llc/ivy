@@ -514,7 +514,7 @@ With Docker
         #. The values of this flag could be any possible combination of :code:`jax`, :code:`numpy`, :code:`tensorflow` and :code:`torch`.
         #. Default value is :code:`jax,numpy,tensorflow,torch`.
 
-Getting the best out of IDE
+Getting the most out of IDE
 ---------------------------
 with PyCharm
 ****
@@ -522,33 +522,38 @@ with PyCharm
         #. :code:`Ctrl+F` will prompt you to type in the text to be found, if not already selected, and then
             find all the instances of text within current file.
 
-            .. image:: content/find_file.png
-              :width: 420
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/find_file.png?raw=true
+               :align: center
+               :width: 50%
 
         #. :code:`Ctrl+Shift+F` will find all the instances of text within the project.
 
-            .. image:: content/find_project_wide.png
-              :width: 420
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/find_project_wide.png?raw=true
+               :align: center
+               :width: 50%
 
 #. Find+Replace a text:
         #. :code:`Ctrl+R` will prompt you to type in the text to be found and the text to be replaced, 
             if not already selected, within current file.
 
-            .. image:: content/find_n_replace_file.png
-               :width: 420
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/find_and_replace_file.png?raw=true
+               :align: center
+               :width: 50%
 
         #. :code:`Ctrl+Shift+R` will prompt you to type in the text to be found and the text to be replaced, 
             if not already selected, within the whole project.
 
-            .. image:: content/find_n_replace_project_wide.png
-               :width: 420
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/find_and_replace_project_wide.png?raw=true
+               :align: center
+               :width: 50%
 
 #. Find and multiply the cursor:
         #. :code:`Ctrl+Shift+Alt+J` will find all the instances of selected text and multiply 
             the cursor to all these locations.
 
-            .. image:: content/multiple_cursor.png
-               :width: 420
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/multiple_cursor.png?raw=true
+               :align: center
+               :width: 50%
 
     You can visit `Pycharm's Blog <https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html>_` 
     for more details on efficient coding!
@@ -558,15 +563,17 @@ with PyCharm
         #. Click the gutter at the executable line of code where you want to set the breakpoint. or 
            Place the caret at the line and press :code:`Ctrl+F8`
 
-        .. image:: content/adding_breakpoint.png
-           :width: 420
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/adding_breakpoint.png?raw=true
+           :aligh: center
+           :width: 50%
 
     #. Enter into the debug mode:
         #. Click on Run icon and Select **Debug test** or press :code:`Shift+F9`
         This will open up a Debug Window Toolbar:
 
-        .. image:: content/open_in_debug_mode.png
-           :width: 420
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/open_in_debug_mode.png?raw=true
+           :align: center
+           :width: 50%
 
     #. Stepping through the code:
         #. Step over: 
@@ -575,8 +582,9 @@ with PyCharm
 
             #. Click the Step Over button or press :code:`F8`
 
-            .. image:: content/step_over.png
-               :width: 420
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/step_over.png?raw=true
+               :align: center
+               :width: 50%
 
         #. Step into:
             Steps into the method to show what happens inside it. Use this option when you are not sure the 
@@ -591,8 +599,9 @@ with PyCharm
 
                 #. Press :code:`Shift+F7`. This will prompt you to select the method you want to step into:
 
-                .. image:: content/smart_step_into.png
-                   :width: 420
+                .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/smart_step_into.png?raw=true
+                   :align: center
+                   :width: 50%
 
                 #. Click the desired method.
 
@@ -604,22 +613,25 @@ with PyCharm
         #. If you want to open console at certain breakpoint:
             #. Select the breakpoint-fragment of code, press :code:`Alt+shift+E` Start debugging!
 
-            .. image:: content/console_coding.png
-               :width: 420
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/console_coding.png?raw=true
+               :aligh: center
+               :width: 50%
 
     #. Using **try-except**:
         #. PyChram is great at pointing the lines of code which are causing tests to fail. Navigating to that line, 
         you can add Try-Except block with breakpoints to get in depth understanding of the errors. 
 
-        .. image:: content/try_except.png
-               :width: 420
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/try_except.png?raw=true
+           :align: center
+           :width: 50%
 
     #. Dummy **test** file:
         #. Create a separate dummy :code:`test.py` file wherein you can evaluate a particular test failure. 
             Make sure you don't add or commit this dummy file while pushing your changes. 
 
-        .. image:: content/dummy_test.png
-           :width: 420
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/dummy_test.png?raw=true
+           :align: center
+           :width: 50%
 
     PyCharm has a detailed blog on efficient `Debugging <https://www.jetbrains.com/help/pycharm/debugging-code.html>_`
     which is quite useful.  
