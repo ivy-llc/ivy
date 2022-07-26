@@ -23,7 +23,7 @@ class ContainerWithStatistical(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.min. This method simply wraps the
-        function, and so the docstring for ivy.abs also applies to this method
+        function, and so the docstring for ivy.min also applies to this method
         with minimal changes.
 
         Parameters
