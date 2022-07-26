@@ -170,21 +170,13 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------   
-        >>> a = ivy.random_normal(0,1,[1, 12, 2])
-        >>> b = ivy.random_normal(0,1, [1, 15, 2])
+        >>> a = ivy.random_normal(0,1,[3, 12, 2])
+        >>> b = ivy.random_normal(0,1, [3, 12, 2])
         >>> inp = ivy.Container(a=a, b=b)
-        >>> filters = ivy.random_normal(0, 1, [9, 2, 2])
+        >>> filters = ivy.random_normal(0, 1, [9, 2, 4])
         >>> result = ivy.Container.static_conv1d(inp,filters,strides=2,padding='VALID')
-        >>> print(result)
-  
-        {
-            a: ivy.array([[[7.34, -4.], 
-                           [-2.58, -8.1]]]),
-            b: ivy.array([[[-4.62, -1.76], 
-                           [0.499, 5.56], 
-                           [-1.29, -2.84], 
-                           [0.329, -3.05]]])
-        }
+        >>> print(result.shape)
+        [3, 2, 4]
         """
         return ContainerBase.multi_map_in_static_method(
             "conv1d",
@@ -238,21 +230,13 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         -------- 
-        >>> a = ivy.random_normal(0,1,[1, 12, 2])
-        >>> b = ivy.random_normal(0,1, [1, 15, 2])
+        >>> a = ivy.random_normal(0,1,[3, 12, 2])
+        >>> b = ivy.random_normal(0,1, [3, 12, 2])
         >>> inp = ivy.Container(a=a, b=b)
-        >>> filters = ivy.random_normal(0, 1, [9, 2, 2])
-        >>> result = inp.conv1d(filters,strides=2,padding='VALID')
-        >>> print(result)
-  
-        {
-            a: ivy.array([[[7.34, -4.], 
-                           [-2.58, -8.1]]]),
-            b: ivy.array([[[-4.62, -1.76], 
-                           [0.499, 5.56], 
-                           [-1.29, -2.84], 
-                           [0.329, -3.05]]])
-        }
+        >>> filters = ivy.random_normal(0, 1, [9, 2, 4])
+        >>> result = ivy.Container.static_conv1d(inp,filters,strides=2,padding='VALID')
+        >>> print(result.shape)
+        [3, 2, 4]
         """
         return self.static_conv1d(
             self, filters, strides, padding, data_format, dilations, out=out
