@@ -6,7 +6,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import _check_bounds_and_get_shape, _check_valid_scale
 
 # Extra #
 # ------#
@@ -34,7 +34,9 @@ def random_normal(
     dtype: np.dtype,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.random.normal(mean, std, shape))
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
+    return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
 
 def multinomial(
