@@ -38,6 +38,8 @@ def _get_reduction(reduction, size_average=None, reduce=None, emit_warning = Tru
     else:
         return _get_reduction_func(reduction)
 
+def add(input, other, *, alpha=1, out=None): pass
+    
 def binary_cross_entropy(
     input, 
     target,
@@ -47,11 +49,11 @@ def binary_cross_entropy(
     reduction='mean'
 ):
     reduction = _get_reduction(reduction, size_average, reduce)
-
-    weight = weight.expand(target.shape)
+    result = ivy.binary_cross_entropy(target, input, epsilon=0.0)
     
-    result = reduction(weight*ivy.binary_cross_entropy(target, input, epsilon=0.0))
-    
+    if weight is not None:
+        result = ivy.multiply(weight,result)
+    result = reduction(result)
     return result
 
 binary_cross_entropy.unsupported_dtypes = ("float16",)
