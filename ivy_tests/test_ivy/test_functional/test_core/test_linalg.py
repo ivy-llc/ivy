@@ -1277,5 +1277,4 @@ def test_diagonal(
         offset=offset,
         axis1=axes[0],
         axis2=axes[1],
-        x=np.random.uniform(size=(a, b)).astype(input_dtype[0]),
     )
