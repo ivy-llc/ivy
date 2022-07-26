@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Function Wrapping &mdash; Ivy 1.0 documentation</title>
+  <title>Array API Tests &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Arrays" href="4_arrays.html" />
-    <link rel="prev" title="Backend Setting" href="2_backend_setting.html" /> 
+    <link rel="next" title="Ivy Tests" href="15_ivy_tests.html" />
+    <link rel="prev" title="Docstring Examples" href="13_docstring_examples.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,7 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_function_wrapping.html">Function Wrapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
@@ -62,7 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="11_submodule_helpers.html">Submodule Helper Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
 </ul>
 </li>
@@ -138,9 +138,9 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
           <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
-      <li>Function Wrapping</li>
+      <li>Array API Tests</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/deep_dive/3_function_wrapping.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/deep_dive/14_array_api_tests.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -148,34 +148,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="function-wrapping">
-<h1>Function Wrapping<a class="headerlink" href="#function-wrapping" title="Permalink to this heading"></a></h1>
-<p>When a backend framework is set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(backend_name)</span></code>,
-then all Ivy functions are <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">wrapped</a>. This is achieved by calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L412">_wrap_function</a>, which will apply the appropriate
-wrapping to the given function, based on what decorators it has. For example, <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/functional/ivy/elementwise.py#L2142">abs</a> has the decorators
-<code class="code docutils literal notranslate"><span class="pre">&#64;to_native_arrays_and_back</span></code> and <code class="code docutils literal notranslate"><span class="pre">&#64;handle_out_argument</span></code>, and so the backend implementations will also be
-wrapped with the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L237">to_native_arrays_and_back</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L323">handle_out_argument</a> wrappers.</p>
-<p>The new function returned by <code class="code docutils literal notranslate"><span class="pre">_wrap_function</span></code>
-is a replacement of the original function with extra code added to support requirements common to many functions
-in the API. This is the main purpose of the wrapping, to avoid code duplication which would exist if we added
-identical logic in every single function independently.</p>
-<p>Depending on the function being wrapped, the new function
-might handle <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a>, <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>, <a class="reference internal" href="6_data_types.html#data-types"><span class="std std-ref">Data Types</span></a> and/or <a class="reference internal" href="7_devices.html#devices"><span class="std std-ref">Devices</span></a>.</p>
-<p>Each of these topics and each associated piece of logic added by the various wrapper functions are covered in more
-detail in the next sections. For now, suffice it to say that they do quite a lot.</p>
+  <section id="array-api-tests">
+<h1>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading"></a></h1>
+<p>All functions which are present in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> have a corresponding unit test in the
+<a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a> for the standard.</p>
+<p>The test suite is included in the ivy repository as a submodule in the folder <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests">test_array_api</a>,
+which we keep updated with the upstream test suite.</p>
+<p>The entire test suite is run independently <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows">for each backend</a> on every push to the repo.
+Therefore, every function which exists in the standard is thoroughly tested for
+adherence to the standard on a continuous basis.</p>
+<p>You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
+functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
+‘Details’ -&gt; ‘Run [backend] Tests’.</p>
 <p><strong>Round Up</strong></p>
-<p>This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.</p>
+<p>This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,
-please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1314">function wrapping discussion</a>,
-or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982737993028755496">function wrapping channel</a>!</p>
+please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1306">array api tests discussion</a>,
+or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738404611592256">array api tests channel</a>!</p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="2_backend_setting.html" class="btn btn-neutral float-left" title="Backend Setting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="4_arrays.html" class="btn btn-neutral float-right" title="Arrays" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="13_docstring_examples.html" class="btn btn-neutral float-left" title="Docstring Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="15_ivy_tests.html" class="btn btn-neutral float-right" title="Ivy Tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
