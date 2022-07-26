@@ -2959,6 +2959,15 @@ def logical_not(
        accept input arrays having numeric data types. If non-boolean data types are
        supported, zeros must be considered the equivalent of ``False``, while non-zeros
        must be considered the equivalent of ``True``.
+       
+       **Special cases**
+       
+       For this particular case,
+       
+       - If ``x_i`` is ``NaN``, the result is ``False``.
+       - If ``x_i`` is ``-0``, the result is ``True``.
+       - If ``x_i`` is ``-infinity``, the result is ``False``.
+       - If ``x_i`` is ``+infinity``, the result is ``False``.
 
     Parameters
     ----------
@@ -2973,6 +2982,74 @@ def logical_not(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of ``bool``.
+        
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+    >>> x=ivy.array([1,0,1,1,0])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False,  True])
+    
+    >>> x=ivy.array([2,0,3,5])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False])
+    
+    With :code:`ivy.NativeArray` input:
+    >>> x=ivy.native_array([1,0,1,1,0])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False,  True])
+    
+    >>> x=ivy.native_array([1,0,6,5])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False])
+    
+    With :code:`ivy.Container` input:
+    >>> x=ivy.Container(a=ivy.array([1,0,1,1]), b=ivy.array([1,0,8,9]))
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    {
+        a: ivy.array([False, True, False, False]),
+        b: ivy.array([False, True, False, False])
+    }
+    
+    >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    {
+        a: ivy.array([False, True, False, True]),
+        b: ivy.array([False, False, True, False])
+    }
+    
+    Instance Method Examples
+    ------------------------
+    
+    With :code:`ivy.Array` input:
+    >>> x=ivy.array([0,1,1,0])
+    >>> x.logical_not()
+    ivy.array([ True, False, False,  True])
+    
+    >>> x=ivy.array([2,0,3,9])
+    >>> x.logical_not()
+    ivy.array([False,  True, False, False])
+    
+    With :code:`ivy.Container` input:
+    >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
+    >>> x.logical_not()
+    {
+        a: ivy.array([False, True, True, False]),
+        b: ivy.array([False, False, False, True])
+    }
+    
+    >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
+    >>> x.logical_not()
+    {
+        a: ivy.array([False, True, False, True]),
+        b: ivy.array([False, False, True, False])
+    }
 
     """
     return ivy.current_backend(x).logical_not(x, out=out)
