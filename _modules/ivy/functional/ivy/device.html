@@ -1215,19 +1215,26 @@
 
 
 <div class="viewcode-block" id="Profiler"><a class="viewcode-back" href="../../../../functional/ivy/device/Profiler.html#ivy.functional.ivy.device.Profiler">[docs]</a><span class="k">class</span> <span class="nc">Profiler</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The profiler class is used to profile the execution of some code.</span>
 
-<div class="viewcode-block" id="Profiler.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device/Profiler.html#ivy.functional.ivy.device.Profiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">):</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    save_dir</span>
+<span class="sd">        The directory to save the profile data to.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Profiler.__init__"><a class="viewcode-back" href="../../../../functional/ivy/device/Profiler.html#ivy.functional.ivy.device.Profiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_dir</span> <span class="o">=</span> <span class="n">save_dir</span></div>
 
 <div class="viewcode-block" id="Profiler.start"><a class="viewcode-back" href="../../../../functional/ivy/device/Profiler.html#ivy.functional.ivy.device.Profiler.start">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Start the profiler. This should be called before the code to be profiled.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="Profiler.stop"><a class="viewcode-back" href="../../../../functional/ivy/device/Profiler.html#ivy.functional.ivy.device.Profiler.stop">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Stop the profiler. This should be called after the code to be profiled.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
