@@ -2012,7 +2012,7 @@
 
 <div class="viewcode-block" id="ContainerWithElementwise.static_cosh"><a class="viewcode-back" href="../../../data_classes/container/elementwise/ContainerWithElementwise.html#ivy.container.elementwise.ContainerWithElementwise.static_cosh">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_cosh</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2021,9 +2021,9 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container static method variant of ivy.cosh. This method simply wraps the</span>
-<span class="sd">        function, and so the docstring for ivy.cosh also applies to this method</span>
-<span class="sd">        with minimal changes.</span>
+<span class="sd">        ivy.Container static method variant of ivy.cosh.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for</span>
+<span class="sd">        ivy.cosh also applies to this method with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2047,31 +2047,9 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            an container containing the hyperbolic cosine of each element in ``x``. The</span>
-<span class="sd">            returned container must have a floating-point data type determined by</span>
-<span class="sd">            :ref:`type-promotion`.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        With :code:`ivy.Container` input:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0.23, 1.12]), b=ivy.array([1, -2, 0.76]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_cosh(x)</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([1.54, 1.03, 1.7]),</span>
-<span class="sd">            b: ivy.array([1.54, 3.76, 1.3])</span>
-<span class="sd">        }</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\</span>
-<span class="sd">                    b=ivy.array([0.67, -0.98, -3]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_cosh(x, out=y)</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([10.1, 1.06, 3.76]),</span>
-<span class="sd">            b: ivy.array([1.23, 1.52, 10.1])</span>
-<span class="sd">        }</span>
+<span class="sd">            an container containing the hyperbolic cosine of each element in ``x``.</span>
+<span class="sd">            The returned container must have a floating-point data type determined</span>
+<span class="sd">            by :ref:`type-promotion`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;cosh&quot;</span><span class="p">,</span>
@@ -2093,8 +2071,8 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.cosh. This method simply wraps the</span>
-<span class="sd">        function, and so the docstring for ivy.cosh also applies to this method</span>
+<span class="sd">        ivy.Container instance method variant of ivy.cosh. This method simply wraps</span>
+<span class="sd">        the function, and so the docstring for ivy.cosh also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
@@ -2119,31 +2097,9 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            an container containing the hyperbolic cosine of each element in ``self``. </span>
+<span class="sd">            an container containing the hyperbolic cosine of each element in ``self``.</span>
 <span class="sd">            The returned container must have a floating-point data type determined by</span>
 <span class="sd">            :ref:`type-promotion`.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        With :code:`ivy.Container` input:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0.23, 1.12]), b=ivy.array([1, -2, 0.76]))</span>
-<span class="sd">        &gt;&gt;&gt; y = x.cosh()</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([1.54, 1.03, 1.7]),</span>
-<span class="sd">            b: ivy.array([1.54, 3.76, 1.3])</span>
-<span class="sd">        }</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\</span>
-<span class="sd">                    b=ivy.array([0.67, -0.98, -3]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.cosh(x, out=y)        </span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([10.1, 1.06, 3.76]),</span>
-<span class="sd">            b: ivy.array([1.23, 1.52, 10.1])</span>
-<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_cosh</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -4083,48 +4039,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-<span class="sd">            </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results. The returned container</span>
 <span class="sd">            must have a data type of ``bool``.</span>
-<span class="sd">        </span>
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        Using &#39;ivy.Container&#39; instance</span>
-
-<span class="sd">        &gt;&gt;&gt; i = ivy.Container(a=ivy.array([True, False, True, False]))</span>
-<span class="sd">        &gt;&gt;&gt; j = ivy.Container(a=ivy.array([True, True, False, False]))</span>
-<span class="sd">        &gt;&gt;&gt; k = ivy.Container(a=ivy.array([True, False, True]), \</span>
-<span class="sd">            b=ivy.array([True, False, False]))</span>
-<span class="sd">        &gt;&gt;&gt; l = ivy.Container(a=ivy.array([True, True, True]), \</span>
-<span class="sd">            b=ivy.array([False, False, False]))</span>
-<span class="sd">        &gt;&gt;&gt; m = ivy.array([False, True, False, True])</span>
-<span class="sd">        &gt;&gt;&gt; n = ivy.array([True, False, True, False])</span>
-
-<span class="sd">        &gt;&gt;&gt; w = ivy.Container.static_logical_and(i, j)</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container.static_logical_and(j, m)</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_logical_and(m, n)</span>
-<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_logical_and(k, l)</span>
-
-<span class="sd">        &gt;&gt;&gt; print(w)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, False, False])</span>
-<span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; print(x)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, True, False, False])</span>
-<span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, False, False, False])</span>
-<span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, True]),</span>
-<span class="sd">            b: ivy.array([False, False, False])</span>
-<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;logical_and&quot;</span><span class="p">,</span>
@@ -4179,42 +4099,6 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results. The returned container</span>
 <span class="sd">            must have a data type of ``bool``.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        Using &#39;ivy.Container&#39; instance</span>
-
-<span class="sd">        &gt;&gt;&gt; i = ivy.Container(a=ivy.array([True, False, True, False]))</span>
-<span class="sd">        &gt;&gt;&gt; j = ivy.Container(a=ivy.array([True, True, False, False]))</span>
-<span class="sd">        &gt;&gt;&gt; k = ivy.Container(a=ivy.array([True, False, True]), \</span>
-<span class="sd">            b=ivy.array([True, False, False]))</span>
-<span class="sd">        &gt;&gt;&gt; l = ivy.Container(a=ivy.array([True, True, True]), \</span>
-<span class="sd">            b=ivy.array([False, False, False]))</span>
-<span class="sd">        &gt;&gt;&gt; m = ivy.array([False, True, False, True])</span>
-<span class="sd">        &gt;&gt;&gt; n = ivy.array([True, False, True, False])</span>
-
-<span class="sd">        &gt;&gt;&gt; w = i.logical_and(j)</span>
-<span class="sd">        &gt;&gt;&gt; x = j.logical_and(m)</span>
-<span class="sd">        &gt;&gt;&gt; y = m.logical_and(n)</span>
-<span class="sd">        &gt;&gt;&gt; z = k.logical_and(l)</span>
-
-<span class="sd">        &gt;&gt;&gt; print(w)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, False, False])</span>
-<span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; print(x)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, True, False, False])</span>
-<span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, False, False, False])</span>
-<span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, True]),</span>
-<span class="sd">            b: ivy.array([False, False, False])</span>
-<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_logical_and</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>

@@ -2989,8 +2989,8 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">logical_and</span><span class="p">(</span>
-    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -3013,59 +3013,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of bool.</span>
-<span class="sd">    </span>
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([True, True, False])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([True, False, True])</span>
-<span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(x, y))</span>
-<span class="sd">    ivy.array([True, False, False])</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.logical_and(x, y, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([True, False, False])</span>
-
-<span class="sd">    x = ivy.Container(a=ivy.array([False, True, True]), \</span>
-<span class="sd">        b=ivy.array([True, False, False]))</span>
-<span class="sd">    y = ivy.Container(a=ivy.array([True, True, False]), \</span>
-<span class="sd">        b=ivy.array([False, False, True]))</span>
-<span class="sd">    print(ivy.logical_and(y, x))</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False]),</span>
-<span class="sd">        b: ivy.array([False, False, False])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.logical_and(y, x, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False]),</span>
-<span class="sd">        b: ivy.array([False, False, False])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([True, True, False])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([True, False, True])</span>
-<span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(x, y))</span>
-<span class="sd">    ivy.array([True, False, False])</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.logical_and(x, y, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([True, False, False])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]), \</span>
-<span class="sd">        b=ivy.array([True, False, False]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([True, False, True])</span>
-<span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(y, x))</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, False, True]),</span>
-<span class="sd">        b: ivy.array([True, False, False])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.logical_and(y, x, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, False, True]),</span>
-<span class="sd">        b: ivy.array([True, False, False])</span>
-<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -3087,15 +3034,6 @@
 <span class="sd">       accept input arrays having numeric data types. If non-boolean data types are</span>
 <span class="sd">       supported, zeros must be considered the equivalent of ``False``, while non-zeros</span>
 <span class="sd">       must be considered the equivalent of ``True``.</span>
-<span class="sd">       </span>
-<span class="sd">       **Special cases**</span>
-<span class="sd">       </span>
-<span class="sd">       For this particular case,</span>
-<span class="sd">       </span>
-<span class="sd">       - If ``x_i`` is ``NaN``, the result is ``False``.</span>
-<span class="sd">       - If ``x_i`` is ``-0``, the result is ``True``.</span>
-<span class="sd">       - If ``x_i`` is ``-infinity``, the result is ``False``.</span>
-<span class="sd">       - If ``x_i`` is ``+infinity``, the result is ``False``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -3110,74 +3048,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of ``bool``.</span>
-<span class="sd">        </span>
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.array([1,0,1,1,0])</span>
-<span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([False, True, False, False,  True])</span>
-<span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.array([2,0,3,5])</span>
-<span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([False, True, False, False])</span>
-<span class="sd">    </span>
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.native_array([1,0,1,1,0])</span>
-<span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([False, True, False, False,  True])</span>
-<span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.native_array([1,0,6,5])</span>
-<span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([False, True, False, False])</span>
-<span class="sd">    </span>
-<span class="sd">    With :code:`ivy.Container` input:</span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,1,1]), b=ivy.array([1,0,8,9]))</span>
-<span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False, False]),</span>
-<span class="sd">        b: ivy.array([False, True, False, False])</span>
-<span class="sd">    }</span>
-<span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))</span>
-<span class="sd">    &gt;&gt;&gt; y=ivy.logical_not(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False, True]),</span>
-<span class="sd">        b: ivy.array([False, False, True, False])</span>
-<span class="sd">    }</span>
-<span class="sd">    </span>
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-<span class="sd">    </span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.array([0,1,1,0])</span>
-<span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
-<span class="sd">    ivy.array([ True, False, False,  True])</span>
-<span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.array([2,0,3,9])</span>
-<span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
-<span class="sd">    ivy.array([False,  True, False, False])</span>
-<span class="sd">    </span>
-<span class="sd">    With :code:`ivy.Container` input:</span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))</span>
-<span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, True, False]),</span>
-<span class="sd">        b: ivy.array([False, False, False, True])</span>
-<span class="sd">    }</span>
-<span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))</span>
-<span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False, True]),</span>
-<span class="sd">        b: ivy.array([False, False, True, False])</span>
-<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
