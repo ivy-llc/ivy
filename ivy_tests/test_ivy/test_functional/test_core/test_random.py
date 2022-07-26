@@ -12,47 +12,48 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # random_uniform
 @given(
-    data=st.data(),
-    shape=helpers.get_shape(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtypes_and_values=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        num_arrays=2,
+        min_value=-1000,
+        max_value=1000,
+    ),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
+    instance_method=st.booleans(),
 )
-def test_random_uniform(data, shape, dtype, as_variable, device, call):
-    low, high = data.draw(helpers.get_bounds(dtype=dtype))
-    # smoke test
-    if as_variable and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        return
-    low_tnsr = ivy.array(low, dtype=dtype, device=device) if low is not None else None
-    high_tnsr = (
-        ivy.array(high, dtype=dtype, device=device) if high is not None else None
-    )
-    if as_variable and (low is not None):
-        low_tnsr = ivy.variable(low_tnsr)
-    if as_variable and (high is not None):
-        high_tnsr = ivy.variable(high_tnsr)
-    kwargs = {
-        k: v for k, v in zip(["low", "high"], [low_tnsr, high_tnsr]) if v is not None
-    }
-    if shape is not None:
-        kwargs["shape"] = shape
-    ret = ivy.random_uniform(**kwargs, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if shape is None:
-        assert ret.shape == ()
-    else:
-        assert ret.shape == shape
-    # value test
-    ret_np = call(ivy.random_uniform, **kwargs, device=device)
-    assert (
-        np.min((ret_np <= (high + abs(high) * 0.01 if high else 1.01)).astype(np.int32))
-        == 1
-    )
-    assert (
-        np.min((ret_np >= (low - abs(low) * 0.01 if low else -0.01)).astype(np.int32))
-        == 1
+def test_random_uniform(
+    dtypes_and_values,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtypes, values = dtypes_and_values
+    helpers.test_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="random_uniform",
+        low=np.asarray(values[0], dtype=dtypes[0]),
+        high=np.asarray(values[1], dtype=dtypes[1]),
+        shape=None,
+        dtype=dtype,
+        device=device,
     )
 
 
