@@ -24,7 +24,7 @@ def random_uniform(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
-    dtype: Optional[Union[jnp.dtype, ivy.Dtype]] = None,
+    dtype: jnp.dtype,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     shape = _check_bounds_and_get_shape(low, high, shape)
