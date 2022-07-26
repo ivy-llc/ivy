@@ -9,7 +9,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 
 # Extra #
 # ------#
@@ -24,10 +24,11 @@ def random_uniform(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
+    shape = _check_bounds_and_get_shape(low, high, shape)
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
     with tf.device(device):
-        return tf.random.uniform(shape if shape else (), low, high, dtype=dtype)
+        return tf.random.uniform(shape, low, high, dtype=dtype)
 
 
 def random_normal(
