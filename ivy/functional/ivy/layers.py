@@ -520,12 +520,12 @@ def conv1d(
 
     With a mix of :code:`ivy.Array` ivy.NativeArray and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.array(ivy.random_normal(0,1, [1, 10, 2])) , \
+    >>> x = ivy.Container(a = ivy.array(ivy.random_normal(0,1, [1, 15, 2])) , \
                           b = ivy.array(ivy.random_normal(0,1,[1,20, 2])))
-    >>> filters = ivy.array(ivy.random_normal(0,1,[5, 2, 2]))
+    >>> filters = ivy.array(ivy.random_normal(0,1,[8, 2, 2]))
     >>> result  = ivy.conv1d(x, filters, strides= 4, padding='VALID', dilations=2)
     >>> print(result)
-    {a: ivy.array([[[0.98, -0.555]]]),b: ivy.array([[[-3.43, -1.42],[0.45, -1.94],[-1.89, -3.06]]])} 
+    {a: ivy.array([[[-6.3, 0.933]]]),b: ivy.array([[[-2.46, -5.61],[-3.63, 8.13]]])}
     """
     return current_backend(x).conv1d(
         x, filters, strides, padding, data_format, dilations, out=out
