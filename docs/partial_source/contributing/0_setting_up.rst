@@ -289,12 +289,12 @@ This is because PyCharm by default turns off headers and summary's while running
 #. Using the search bar to search for 'Pytest'
 #. Make sure that the checkbox for 'Pytest: do not add "--no-header --no-summary -q"' is checked.
 
-    a. .. image:: content/detailed_hypothesis_setting.png
+    a. .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_setting.png
           :width: 420
 
 Now, if Hypothesis detects an error in the code it will return more detailed information on each of the failing examples:
 
-.. image:: content/detailed_hypothesis_example.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_example.png
    :width: 420
 
 GitHub Codespaces
