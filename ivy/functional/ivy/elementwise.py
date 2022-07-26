@@ -2861,8 +2861,8 @@ def logaddexp(
 @handle_out_argument
 @handle_nestable
 def logical_and(
-    x1: ivy.Array,
-    x2: ivy.Array,
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2885,6 +2885,59 @@ def logical_and(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of bool.
+    
+    Examples
+    --------
+    >>> x = ivy.array([True, True, False])
+    >>> y = ivy.array([True, False, True])
+    >>> print(ivy.logical_and(x, y))
+    ivy.array([True, False, False])
+
+    >>> ivy.logical_and(x, y, out=y)
+    >>> print(y)
+    ivy.array([True, False, False])
+
+    x = ivy.Container(a=ivy.array([False, True, True]), \
+        b=ivy.array([True, False, False]))
+    y = ivy.Container(a=ivy.array([True, True, False]), \
+        b=ivy.array([False, False, True]))
+    print(ivy.logical_and(y, x))
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    >>> ivy.logical_and(y, x, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    >>> x = ivy.native_array([True, True, False])
+    >>> y = ivy.native_array([True, False, True])
+    >>> print(ivy.logical_and(x, y))
+    ivy.array([True, False, False])
+
+    >>> ivy.logical_and(x, y, out=y)
+    >>> print(y)
+    ivy.array([True, False, False])
+
+    >>> x = ivy.Container(a=ivy.array([False, True, True]), \
+        b=ivy.array([True, False, False]))
+    >>> y = ivy.array([True, False, True])
+    >>> print(ivy.logical_and(y, x))
+    {
+        a: ivy.array([False, False, True]),
+        b: ivy.array([True, False, False])
+    }
+
+    >>> ivy.logical_and(y, x, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, True]),
+        b: ivy.array([True, False, False])
+    }
 
     """
     return ivy.current_backend(x1, x2).logical_and(x1, x2, out=out)
