@@ -480,13 +480,15 @@ def multinomial(
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
+@infer_dtype
 @handle_nestable
 def randint(
-    low: int,
-    high: int,
+    low: Union[int, ivy.NativeArray, ivy.Array],
+    high: Union[int, ivy.NativeArray, ivy.Array],
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns an array filled with random integers generated uniformly between
@@ -536,7 +538,9 @@ def randint(
                [ 8, 11,  3]])
 
     """
-    return ivy.current_backend().randint(low, high, shape, device=device, out=out)
+    return ivy.current_backend().randint(
+        low, high, shape, device=device, dtype=dtype, out=out
+    )
 
 
 @handle_nestable
