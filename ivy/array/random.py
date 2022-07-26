@@ -146,14 +146,43 @@ class ArrayWithRandom(abc.ABC):
         --------
         >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
         >>> x.random_normal(10.2)
-        ivy.array([[10.6 , 14.9 ],
-                   [22.1 , -1.64]])
+        ivy.array([[19.   , -6.44 ],
+                   [ 5.72 ,  0.235]])
+
+        >>> x.random_normal(10.2, device='cpu')
+        ivy.array([[18.7 , 25.2 ],
+                   [27.5 , -3.22]])
+
+        >>> x.random_normal(14.2, dtype='float16')
+        ivy.array([[26.6 , 12.1 ],
+                   [ 4.56,  5.49]])
+
+        >>> x.random_normal(10.8, device='cpu', dtype='float64')
+        ivy.array([[ 1.02, -1.39],
+                   [14.2 , -1.  ]])
+
+        >>> z = ivy.ones((2,2))
+        >>> x.random_normal(11.2, device='cpu', dtype='float64', out=z)
+        ivy.array([[ 7.72, -8.32],
+                   [ 4.95, 15.8 ]])
 
         >>> x = ivy.array([8.7, 9.3])
         >>> y = ivy.array([12.8, 14.5])
+        >>> x.random_normal(y)
+        ivy.array([-10.8,  12.1])
+
+        >>> x.random_normal(y, device='cpu')
+        ivy.array([ 13. , -26.9])
+
+        >>> x.random_normal(y, dtype='float16')
+        ivy.array([14.3  , -0.807])
+
+        >>> x.random_normal(y, device='cpu', dtype='float64')
+        ivy.array([21.3 ,  3.85])
+
         >>> z = ivy.ones((2,))
         >>> x.random_normal(y, device='cpu', dtype='float64', out=z)
-        ivy.array([ 4.59, 13.4 ])
+        ivy.array([ 4.32, 42.2 ])
         """
         return ivy.random_normal(
             self._data,

@@ -257,110 +257,67 @@ def random_normal(
 
     Instance Method Examples
     ------------------------
-
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
-    >>> x.random_uniform(10.2)
-    ivy.array([[9.88, 6.51],
-               [7.98, 7.55]])
-
-    >>> x.random_uniform(10.2, device='cpu')
-    ivy.array([[10.1 ,  9.22],
-               [ 7.12,  9.56]])
-
-    >>> x.random_uniform(14.2, dtype='float16')
-    ivy.array([[11.4, 13.7],
-               [ 9.1, 13.9]])
-
-    >>> x.random_uniform(10.8, device='cpu', dtype='float64')
-    ivy.array([[10.4 , 10.  ],
-               [ 8.57,  8.65]])
-
-    >>> z = ivy.ones((2,2))
-    >>> x.random_uniform(11.2, device='cpu', dtype='float64', out=z)
-    ivy.array([[9.85, 8.69],
-               [7.42, 8.88]])
-
-    >>> x = ivy.array([8.7, 9.3])
-    >>> y = ivy.array([12.8, 14.5])
-    >>> x.random_uniform(y)
-    ivy.array([11.3, 11.9])
-
-    >>> x.random_uniform(y, device='cpu')
-    ivy.array([11.1 ,  9.33])
-
-    >>> x.random_uniform(y, dtype='float16')
-    ivy.array([12.4, 12.8])
-
-    >>> x.random_uniform(y, device='cpu', dtype='float64')
-    ivy.array([11.1, 12.8])
-
-    >>> z = ivy.ones((2,))
-    >>> x.random_uniform(y, device='cpu', dtype='float64', out=z)
-    ivy.array([10.7, 12.2])
-
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([7.5,6.7,0.9]), b=ivy.array([8.7,9.8,4.5]))
-    >>> x.random_uniform(17.4)
+    >>> x.random_normal(17.4)
     {
         a: ivy.array([14.4, 10.5, 10.5]),
         b: ivy.array([8.93, 12.1, 17.3])
     }
 
-    >>> x.random_uniform(10.2, device='cpu')
+    >>> x.random_normal(10.2, device='cpu')
     {
         a: ivy.array([9.32, 7.4, 4.62]),
         b: ivy.array([8.73, 10., 9.97])
     }
 
-    >>> x.random_uniform(14.2, dtype='float16')
+    >>> x.random_normal(14.2, dtype='float16')
     {
         a: ivy.array([9.26, 8.79, 3.34]),
         b: ivy.array([11.3, 11.9, 12.2])
     }
 
-    >>> x.random_uniform(10.8, device='cpu', dtype='float64')
+    >>> x.random_normal(10.8, device='cpu', dtype='float64')
     {
         a: ivy.array([8.91, 6.99, 7.75]),
         b: ivy.array([9.35, 10.5, 8.5])
     }
 
     >>> z = ivy.Container(a=ivy.zeros((3,)), b=ivy.ones((3,)))
-    >>> x.random_uniform(11.2, device='cpu', dtype='float64', out=z)
+    >>> x.random_normal(11.2, device='cpu', dtype='float64', out=z)
     {
         a: ivy.array([10.8, 7.6, 2.48]),
         b: ivy.array([10.1, 10.1, 6.97])
     }
 
     >>> y = ivy.Container(a=10.4, b=17.4)
-    >>> x.random_uniform(y)
+    >>> x.random_normal(y)
     {
         a: ivy.array([10., 8.38, 4.64]),
         b: ivy.array([15.4, 10.3, 12.7])
     }
 
-    >>> x.random_uniform(y, device='cpu')
+    >>> x.random_normal(y, device='cpu')
     {
         a: ivy.array([8.47, 8.23, 8.69]),
         b: ivy.array([10.7, 16.2, 16.1])
     }
 
-    >>> x.random_uniform(y, dtype='float16')
+    >>> x.random_normal(y, dtype='float16')
     {
         a: ivy.array([7.55, 10.3, 1.57]),
         b: ivy.array([10.8, 14., 14.1])
     }
 
-    >>> x.random_uniform(y, device='cpu', dtype='float64')
+    >>> x.random_normal(y, device='cpu', dtype='float64')
     {
         a: ivy.array([8.97, 6.91, 6.17]),
         b: ivy.array([13.5, 14., 10.9])
     }
 
     >>> z = ivy.Container(a=ivy.zeros((3,)), b=ivy.ones((3,)))
-    >>> x.random_uniform(y, device='cpu', dtype='float64', out=z)
+    >>> x.random_normal(y, device='cpu', dtype='float64', out=z)
     {
         a: ivy.array([7.7, 9.37, 9.08]),
         b: ivy.array([17.1, 14.5, 16.7])
@@ -370,7 +327,7 @@ def random_normal(
                           b=ivy.array([[0.9,2.4],[7.6,5.4]]))
     >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \
                           b=ivy.array([[4.3,5.6],[23.4,54.3]]))
-    >>> x.random_uniform(y)
+    >>> x.random_normal(y)
     {
         a: ivy.array([[10.5, 11.7],
                       [8.59, 5.6]]),
@@ -378,7 +335,7 @@ def random_normal(
                       [9.1, 19.4]])
     }
 
-    >>> x.random_uniform(y, device='cpu')
+    >>> x.random_normal(y, device='cpu')
     {
         a: ivy.array([[10., 29.4],
                       [12.5, 11.4]]),
@@ -386,7 +343,7 @@ def random_normal(
                       [9.52, 31.8]])
     }
 
-    >>> x.random_uniform(y, dtype='float16')
+    >>> x.random_normal(y, dtype='float16')
     {
         a: ivy.array([[10.5, 31.1],
                       [8.62, 10.7]]),
@@ -394,7 +351,7 @@ def random_normal(
                       [16.8, 45.9]])
     }
 
-    >>> x.random_uniform(y, device='cpu', dtype='float64')
+    >>> x.random_normal(y, device='cpu', dtype='float64')
     {
         a: ivy.array([[10.4, 15.9],
                       [13.9, 12.5]]),
@@ -403,7 +360,7 @@ def random_normal(
     }
 
     >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
-    >>> x.random_uniform(y, device='cpu', dtype='float64', out=z)
+    >>> x.random_normal(y, device='cpu', dtype='float64', out=z)
     {
         a: ivy.array([[10.8, 21.2],
                       [7.75, 4.65]]),
