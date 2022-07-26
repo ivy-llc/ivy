@@ -158,7 +158,7 @@ def expand_dims(
     >>> print(y)
     ivy.array([[0, 1, 2]])
 
-    With :code:`ivy.Container` input:
+    With one :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
