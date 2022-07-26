@@ -82,22 +82,20 @@ class ArrayWithRandom(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.random_uniform. This method simply
-        wraps the function, and so the docstring for ivy.random_uniform also applies to
+        """ivy.Array instance method variant of ivy.random_normal. This method simply
+        wraps the function, and so the docstring for ivy.random_normal also applies to
         this method with minimal changes.
 
         Parameters
         ----------
-        self (to update)
-            Lower boundary of the output interval. All values generated will be
-            greater than or equal to ``low``. If array, must have same shape as
-            ``high``.
-        high (to update)
-            Upper boundary of the output interval. All the values generated will be
-            less than ``high``. If array, must have same shape as ``low``.
+        self
+            The mean of the normal distribution to sample from. Default is ``0.0``.
+        std
+            The standard deviation of the normal distribution to sample from.
+            Must be non-negative. Default is ``1.0``.
         shape
             If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples
-            are drawn. Can only be specified when ``low`` and ``high`` are numeric
+            are drawn. Can only be specified when ``mean`` and ``std`` are numeric
             values, else exception will be raised.
             Default is ``None``, where a single value is returned.
         device
