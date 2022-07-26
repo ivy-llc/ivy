@@ -11,6 +11,7 @@ from typing import Optional
 
 # local
 import ivy
+from ivy.container import Container
 
 
 # ToDo: modify these functions to track whether variable() has been called
@@ -41,7 +42,13 @@ def execute_with_gradients(func, xs, retain_grads=False):
         rest = tuple()
         grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(x_in), []))
     grad_func = jax.grad(grad_fn)
-    grads = grad_func(xs)
+    if isinstance(xs, ivy.Container):
+        grads = grad_func(xs)
+        grads = ivy.to_ivy(grads, nested=True)
+        grads = Container(grads)
+    else:
+        grads = grad_func(xs)
+        grads = ivy.to_ivy(grads)
     if not retain_grads:
         y = ivy.stop_gradient(y)
     return (y, grads, *rest)

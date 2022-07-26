@@ -15,7 +15,6 @@ from haiku._src.data_structures import FlatMapping
 
 # local
 import ivy
-from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.backends.jax import JaxArray
 
@@ -82,12 +81,7 @@ def container_types():
     return [FlatMapping]
 
 
-def floormod(
-    x: JaxArray, 
-    y: JaxArray, 
-    *, 
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = x % y
     return ret
 
@@ -119,18 +113,13 @@ def inplace_update(
 
 
 def inplace_arrays_supported():
-    return False 
-    
-    
+    return False
+
+
 inplace_variables_supported = lambda: False
 
 
-def cumsum(
-    x: JaxArray, 
-    axis: int = 0,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def cumsum(x: JaxArray, axis: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cumsum(x, axis)
 
 
@@ -150,12 +139,12 @@ def cumprod(
 
 
 def scatter_flat(
-    indices: JaxArray, 
-    updates: JaxArray, 
-    size: Optional[int] = None, 
-    tensor: Optional[JaxArray] = None, 
-    reduction: str = "sum", 
-    *, 
+    indices: JaxArray,
+    updates: JaxArray,
+    size: Optional[int] = None,
+    tensor: Optional[JaxArray] = None,
+    reduction: str = "sum",
+    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     target = tensor
@@ -193,10 +182,10 @@ def scatter_flat(
 
 # noinspection PyShadowingNames
 def scatter_nd(
-    indices: JaxArray, 
-    updates: JaxArray, 
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
-    tensor: Optional[JaxArray] = None, 
+    indices: JaxArray,
+    updates: JaxArray,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor: Optional[JaxArray] = None,
     reduction: str = "sum",
     *,
     out: Optional[JaxArray] = None
@@ -263,8 +252,8 @@ def scatter_nd(
 
 
 def gather(
-    params: JaxArray, 
-    indices: JaxArray, 
+    params: JaxArray,
+    indices: JaxArray,
     axis: int = -1,
     *,
     out: Optional[JaxArray] = None
@@ -273,10 +262,7 @@ def gather(
 
 
 def gather_nd(
-    params: JaxArray, 
-    indices: JaxArray,
-    *,
-    out: Optional[JaxArray] = None
+    params: JaxArray, indices: JaxArray, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     indices_shape = indices.shape
     params_shape = params.shape
@@ -313,24 +299,14 @@ def multiprocessing(context=None):
 
 # noinspection PyUnusedLocal
 def one_hot(
-    indices: JaxArray, 
-    depth: int, 
-    *, 
-    device,
-    out: Optional[JaxArray] = None
+    indices: JaxArray, depth: int, *, device, out: Optional[JaxArray] = None
 ) -> JaxArray:
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
-    return _to_device(
-        res.reshape(list(indices.shape) + [depth]), default_device(device)
-    )
+    return _to_device(res.reshape(list(indices.shape) + [depth]), device)
 
 
-def indices_where(
-    x: JaxArray, 
-    *, 
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def indices_where(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     where_x = jnp.where(x)
     ret = jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
     return ret
