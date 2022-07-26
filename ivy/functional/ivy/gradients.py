@@ -2,7 +2,7 @@
 
 # local
 import ivy
-from typing import Union, Optional
+from typing import Union, Optional,Callable
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
@@ -273,7 +273,8 @@ def stop_gradient(
 def execute_with_gradients(func: Callable,
                            xs: Union[ivy.Array, ivy.NativeArray],
                            retain_grads: bool = False): 
-    """Call function func with input of xs variables, and return func first output y,
+    """
+    Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned
     y value.
 
@@ -295,36 +296,80 @@ def execute_with_gradients(func: Callable,
 
     Examples
     --------
-    class MyModel(ivy.Module):
-        def __init__(self): 
-            self.linear = ivy.Linear(3, 1)
-            ivy.Module.__init__(self)
+    With :code:`ivy.Array` input:
 
-        def _forward(self, x): 
-            x = ivy.relu(self.linear(x))
-            return x 
+    >>> ivy.set_backend('tensorflow')
+    >>> func = lambda x :100*x
+    >>> xs = ivy.array([1.,2.,5.])
+    >>> results = ivy.execute_with_gradients(
+    >>>     func,
+    >>>     xs)
+    >>> func_output,grads = results
+    >>> print("function output: ", func_output)
+    >>> print("grads: ", grads)
+    >>> print("type results: ",type(results),type(func_output), type(grads))
+    function output:  ivy.array([100., 200., 500.])
+    grads:  ivy.array([100., 100., 100.])
 
-    ivy.set_backend('torch')  # change to any backend!
-    model = MyModel()
-    optimizer = ivy.Adam(1e-3)
-    x_in = ivy.array([
-                    [1., 0., 0.],
-                    [0.,1.,0.],
-                    [0.,0.,1.]
-                    ])
-    target = ivy.array([0.,1.,2]) 
+    >>> z  = ivy.variable(ivy.array([2.,1.,10.]))
+    >>> func = lambda x :ivy.matmul(z,x)
+    >>> xs = ivy.array([1.,2.,5.])
+    >>> results = ivy.execute_with_gradients(
+    >>>        func,
+    >>>        xs)
+    >>> func_output,grads = results
+    >>> print("function output: ", func_output)
+    >>> print("grads: ", grads)
+    function output:  ivy.array(54.)
+    grads:  ivy.array([ 2.,  1., 10.])
 
-    def loss_fn(v):
-        out = model(x_in, v=v)
-        return ivy.mean((out - target)**2)
+    >>> linear = ivy.Linear(3,1)
+    >>> func = lambda x : linear(x)
+    >>> xs = ivy.array([1.,2.,5.])
+    >>> results = ivy.execute_with_gradients(
+    >>>        func,
+    >>>        xs)
+    >>> func_output,grads = results
+    >>> print("function output: ", func_output)
+    >>> print("grads: ", grads)
+    function output:  ivy.array([-0.811])
+    grads:  ivy.array([-0.898 , -0.204 ,  0.0988])
+    
+    With :code:`ivy.NativeArray` input:
 
-    for step in range(100):
-        loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
-        model.v = optimizer.step(model.v, grads)
-        print('step {} loss {}'.format(step, ivy.to_numpy(loss).item()))
+    >>> func = lambda x :x**2
+    >>> xs = ivy.native_array([1.,2.,5.])
+    >>> results = ivy.execute_with_gradients(
+    >>>        func,
+    >>>        xs)
+    >>> func_output,grads = results
+    >>> print("function output: ", func_output)
+    >>> print("grads: ", grads)
+    function output:  ivy.array([ 1.,  4., 25.])
+    grads:  ivy.array([ 2.,  4., 10.])
 
-    print('Finished training!')
+    With :code:`ivy.Container` input:
+
+    >>> func = lambda x :2*x**2
+    >>> xs = ivy.Container(
+    >>>    a=ivy.array([1.,1.,1.]),
+    >>>    b =ivy.array([5.,5.,5.]) )
+    >>> func_outputs,grads = ivy.execute_with_gradients(
+    >>>    func,
+    >>>    xs)
+    >>> print("function outputs: ", func_outputs)
+    >>> print("gradients: ",grads)
+    function outputs:  {
+        a: ivy.array([2., 2., 2.]),
+        b: ivy.array([50., 50., 50.])
+    }
+    gradients:  {
+        a: ivy.array([4., 4., 4.]),
+        b: ivy.array([20., 20., 20.])
+    }
     """
+  
+    
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
 

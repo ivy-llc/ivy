@@ -154,6 +154,94 @@ class ContainerWithGradients(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ):
+        """
+        ivy.Container static method variant of ivy.execute_with_gradients. This method simply wraps
+        the function, and so the docstring for ivy.execute_with_gradients also applies to this
+        method with minimal changes.
+        
+        Call function func with input of xs variables, and return func first output y,
+        the gradients [dy/dx for x in xs], and any other function outputs after the returned
+        y value.
+
+        Parameters
+        ----------
+        func
+            Function for which we compute the gradients of the output with respect to xs
+            input.
+        xs
+            Variables for which to compute the function gradients with respective to.
+        retain_grads
+            Whether to retain the gradients of the returned values. (Default value = False)
+
+        Returns
+        -------
+        ret
+            the function first output y, the gradients [dy/dx for x in xs], and any other
+            extra function outputs.
+
+        Examples
+        --------
+
+        With :code:`ivy.Container` input:
+
+        >>> ivy.set_backend('tensorflow')
+        >>> z  = ivy.variable(ivy.array([2.,1.,100.]))
+        >>> func = lambda x :ivy.matmul(z,x)
+        >>> xs = ivy.Container(a = ivy.array([1.,1.,1.]))
+        >>> results = ivy.Container.static_execute_with_gradients(
+        >>>            func,
+        >>>            xs)
+        >>> func_output,grads = results['a']
+        >>> print("function output: ", func_output)
+        >>> print("grads: ", grads)
+        function output:  ivy.array(103.)
+        grads:  ivy.array([  2.,   1., 100.])
+        
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> func = lambda x: x**2
+        >>> xs = ivy.Container(
+        >>>            a=ivy.array([1.,1.,1.]),
+        >>>            b =ivy.array([5.,5.,5.]) )
+        >>> results = ivy.Container.static_execute_with_gradients(
+        >>>            func,
+        >>>            xs)
+        >>> a_func_output, a_grads = results['a']
+        >>> b_func_output, b_grads = results['b']
+        >>> print("a function output: ", a_func_output)
+        >>> print("a gradients: ", a_grads)
+        >>> print("b function output: ", b_func_output)
+        >>> print("b gradients: ", b_grads)
+        a function output:  ivy.array([1., 1., 1.])
+        a gradients:  ivy.array([2., 2., 2.])
+        b function output:  ivy.array([25., 25., 25.])
+        b gradients:  ivy.array([10., 10., 10.])
+
+        >>> linear = ivy.Linear(3,1)
+        >>> func = lambda x: linear(x)
+        >>> xs = ivy.Container(
+        >>>            a=ivy.array([1.,1.,1.]),
+        >>>            b =ivy.array([5.,5.,5.]),
+        >>>            c=ivy.array([1.,0.,1.]) )
+        >>> results = ivy.Container.static_execute_with_gradients(
+        >>>            func,
+        >>>            xs)
+        >>> a_func_output, a_grads = results['a']
+        >>> b_func_output, b_grads = results['b']
+        >>> c_func_output, c_grads = results['c']
+        >>> print("a function output: ", a_func_output)
+        >>> print("a gradients: ", a_grads)
+        >>> print("b function output: ", b_func_output)
+        >>> print("b gradients: ", b_grads)
+        >>> print("c function output: ", c_func_output)
+        >>> print("c gradients: ", c_grads)
+        a function output:  ivy.array([-0.104])
+        a gradients:  ivy.array([ 0.138,  0.971, -1.21 ])
+        b function output:  ivy.array([-0.521])
+        b gradients:  ivy.array([ 0.138,  0.971, -1.21 ])
+        c function output:  ivy.array([-1.08])
+        c gradients:  ivy.array([ 0.138,  0.971, -1.21 ])
+        """
         return ContainerBase.multi_map_in_static_method(
             "execute_with_gradients",
             func,
@@ -164,6 +252,111 @@ class ContainerWithGradients(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    def execute_with_gradients(
+        self: ivy.Container,
+        func: Callable,
+        retain_grads: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ):
+        """
+        ivy.Container instance method variant of ivy.execute_with_gradients. This method simply wraps
+        the function, and so the docstring for ivy.execute_with_gradients also applies to this
+        method with minimal changes.
+        
+        Call function func with the container, and return func first output y,
+        the gradients [dy/dx for x in xs], and any other function outputs after the returned
+        y value.
+
+        Parameters
+        ----------
+        func
+            Function for which we compute the gradients of the output with respect to xs
+            input.
+        retain_grads
+            Whether to retain the gradients of the returned values. (Default value = False)
+
+        Returns
+        -------
+        ret
+            the function first output y, the gradients [dy/dx for x in xs], and any other
+            extra function outputs.
+
+        Examples
+        --------
+
+        With :code:`ivy.Container` input:
+
+        >>> ivy.set_backend('tensorflow')
+        >>> z  = ivy.variable(ivy.array([2.,1.,100.]))
+        >>> func = lambda x :ivy.matmul(z,x)
+        >>> xs = ivy.Container(a = ivy.array([1.,1.,1.]))
+        >>> results = xs.execute_with_gradients(
+        >>>            func)
+        >>> func_output,grads = results['a']
+        >>> print("function output: ", func_output)
+        >>> print("grads: ", grads)
+        function output:  ivy.array(103.)
+        grads:  ivy.array([  2.,   1., 100.])
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> func = lambda x: x**2
+        >>> xs = ivy.Container(
+        >>>            a=ivy.array([1.,1.,1.]),
+        >>>            b =ivy.array([5.,5.,5.]) )
+        >>> results = xs.execute_with_gradients(
+        >>>            func)
+        >>> a_func_output, a_grads = results['a']
+        >>> b_func_output, b_grads = results['b']
+        >>> print("a function output: ", a_func_output)
+        >>> print("a gradients: ", a_grads)
+        >>> print("b function output: ", b_func_output)
+        >>> print("b gradients: ", b_grads)
+        a function output:  ivy.array([1., 1., 1.])
+        a gradients:  ivy.array([2., 2., 2.])
+        b function output:  ivy.array([25., 25., 25.])
+        b gradients:  ivy.array([10., 10., 10.])
+
+
+        >>> linear = ivy.Linear(3,1)
+        >>> func = lambda x: linear(x)
+        >>> xs = ivy.Container(
+        >>>    a=ivy.array([1.,1.,1.]),
+        >>>    b =ivy.array([5.,5.,5.]),
+        >>>    c=ivy.array([1.,0.,1.]) )
+        >>> results = xs.execute_with_gradients(
+        >>>    func)
+        >>> a_func_output, a_grads = results['a']
+        >>> b_func_output, b_grads = results['b']
+        >>> c_func_output, c_grads = results['c']
+        >>> print("a function output: ", a_func_output)
+        >>> print("a gradients: ", a_grads)
+        >>> print("b function output: ", b_func_output)
+        >>> print("b gradients: ", b_grads)
+        >>> print("c function output: ", c_func_output)
+        >>> print("c gradients: ", c_grads)
+        a function output:  ivy.array([2.36])
+        a gradients:  ivy.array([1.15  , 1.12  , 0.0972])
+        b function output:  ivy.array([11.8])
+        b gradients:  ivy.array([1.15  , 1.12  , 0.0972])
+        c function output:  ivy.array([1.24])
+        c gradients:  ivy.array([1.15  , 1.12  , 0.0972])
+        """
+    
+        
+        return self.static_execute_with_gradients(
+            func,
+            self,
+            retain_grads=retain_grads,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            ) 
 
     @staticmethod
     def static_adam_step(
