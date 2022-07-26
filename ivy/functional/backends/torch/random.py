@@ -23,9 +23,6 @@ def random_uniform(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     shape = _check_bounds_and_get_shape(low, high, shape)
-    # if not dtype:
-    #     dtype = ivy.default_float_dtype()
-    # dtype = ivy.as_native_dtype(dtype)
     rand_range = high - low
     return torch.rand(shape, device=device, dtype=dtype, out=out) * rand_range + low
 

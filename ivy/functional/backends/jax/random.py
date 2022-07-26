@@ -28,9 +28,6 @@ def random_uniform(
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     shape = _check_bounds_and_get_shape(low, high, shape)
-    # if not dtype:
-    #     dtype = ivy.default_float_dtype()
-    # dtype = ivy.as_native_dtype(dtype)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return to_device(
