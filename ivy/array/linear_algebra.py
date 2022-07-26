@@ -75,6 +75,42 @@ class ArrayWithLinearAlgebra(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.cross gives the cross product of 3-element vectors. If x1 and x2 are
+        multi- dimensional arrays (i.e., both have a rank greater than 1),
+        then the cross- product of each pair of corresponding 3-element vectors
+        is independently computed.
+
+        Parameters
+        -----------
+        self
+              first input array. Should have a numeric data type.
+        x2
+              second input array. Must have the same shape as self.
+              Should have a numeric data type.
+        axis
+              the axis (dimension) of x1 and x2 containing the vectors
+              for which to compute (default: -1) the cross product.vIf set to -1,
+              the function computes the cross product for
+              vectors defined by the last axis (dimension). Default: -1.
+        out
+              Optional output array, for writing the result to.It must have a shape
+              that the inputs broadcast to.
+
+        Returns
+        --------
+        ret
+               an array containing the cross products. The returned array must have
+               a data type determined by Type Promotion Rules.
+
+        Examples
+        --------
+        >>> x = ivy.array([1., 0., 0.])
+        >>> y = ivy.array([0., 1., 0.])
+        >>> z = ivy.cross(x, y)
+        >>> print(z)
+        ivy.array([0., 0., 1.])
+        """
         return ivy.cross(self._data, x2, axis, out=out)
 
     def det(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
