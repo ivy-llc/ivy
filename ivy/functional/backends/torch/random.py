@@ -82,6 +82,7 @@ def randint(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: torch.device,
+    dtype: torch.dtype,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     zero_dim = len(shape) == 0

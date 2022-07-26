@@ -79,11 +79,12 @@ def multinomial(
 
 
 def randint(
-    low: int,
-    high: int,
+    low: Union[float, mx.nd.NDArray],
+    high: Union[float, mx.nd.NDArray],
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: mx.context.Context,
+    dtype: type,
     out: Optional[mx.nd.NDArray],
 ) -> mx.nd.NDArray:
     if isinstance(low, mx.nd.NDArray):

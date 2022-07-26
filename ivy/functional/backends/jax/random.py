@@ -96,11 +96,12 @@ def multinomial(
 
 
 def randint(
-    low: int,
-    high: int,
+    low: Union[int, JaxArray],
+    high: Union[int, JaxArray],
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: jaxlib.xla_extension.Device,
+    dtype: jnp.dtype,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     global RNG

@@ -75,11 +75,12 @@ multinomial.support_native_out = True
 
 
 def randint(
-    low: int,
-    high: int,
+    low: Union[float, np.ndarray],
+    high: Union[float, np.ndarray],
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: str,
+    dtype: np.dtype,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
