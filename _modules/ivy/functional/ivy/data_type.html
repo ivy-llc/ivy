@@ -704,7 +704,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="dtype_bits"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype_bits.html#ivy.functional.ivy.data_type.dtype_bits">[docs]</a><span class="k">def</span> <span class="nf">dtype_bits</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="dtype_bits"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype_bits.html#ivy.functional.ivy.data_type.dtype_bits">[docs]</a><span class="k">def</span> <span class="nf">dtype_bits</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the number of bits used for representing the input data type.</span>
 
 <span class="sd">    Parameters</span>
@@ -717,6 +717,31 @@
 <span class="sd">    ret</span>
 <span class="sd">        The number of bits used to represent the data type.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Dtype` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.dtype_bits(ivy.float32)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    32</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.dtype_bits(&#39;int64&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    64</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.dtype_bits(ivy.uint16)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    16</span>
+
+<span class="sd">    With :code:`ivy.NativeDtype` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.dtype_bits(ivy.native_int8)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    8</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.dtype_bits(ivy.native_bool)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    1</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_bits</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
