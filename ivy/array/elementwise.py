@@ -1434,6 +1434,11 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([-94., 256., 0., -6., 37.])
 
+        >>> x = ivy.array([0.23, 3., -1.2])
+        >>> y = ivy.zeros(3)
+        >>> print(x.round(out=y))
+        ivy.array([ 0.,  3., -1.])
+
         >>> x = ivy.array([[ -1., -67.,  0.,  15.5,  1.], [3, -45, 24.7, -678.5, 32.8]])
         >>> y = x.round()
         >>> print(y)
