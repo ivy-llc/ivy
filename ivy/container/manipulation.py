@@ -143,12 +143,12 @@ class ContainerWithManipulation(ContainerBase):
             One shape dimension can be -1. In this case, the value is 
             inferred from the length of the array and remaining dimensions.
         copy
-             boolean indicating whether or not to copy the input array.
-             If True, the function must always copy.
-             If False, the function must never copy and must
-             raise a ValueError in case a copy would be necessary.
-             If None, the function must reuse existing memory buffer if possible
-             and copy otherwise. Default: None.
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: None.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -166,8 +166,8 @@ class ContainerWithManipulation(ContainerBase):
         Returns
         -------
         ret
-        optional output container, for writing the result to.
-        It must have a shape that the inputs broadcast to.
+            optional output container, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
         Examples
         --------
@@ -224,12 +224,12 @@ class ContainerWithManipulation(ContainerBase):
             can be -1. In this case, the value is inferred from the length of the array and
             remaining dimensions.
         copy
-             boolean indicating whether or not to copy the input array.
-             If True, the function must always copy.
-             If False, the function must never copy and must
-             raise a ValueError in case a copy would be necessary.
-             If None, the function must reuse existing memory buffer if possible
-             and copy otherwise. Default: None.
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: None.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
