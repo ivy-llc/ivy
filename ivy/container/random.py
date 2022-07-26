@@ -260,7 +260,7 @@ class ContainerWithRandom(ContainerBase):
         ret
             Drawn samples from the parameterized normal distribution.
 
-        Examples (to update)
+        Examples
         --------
         With :code:`ivy.Container` inputs:
 
@@ -379,7 +379,7 @@ class ContainerWithRandom(ContainerBase):
         {
             a: ivy.array([[-12.7, 72.7],
                           [12.8, -0.0762]]),
-            b: ivy.array([[-6.56, -5.12], 
+            b: ivy.array([[-6.56, -5.12],
                           [12.8, 13.2]])
         }
         """
