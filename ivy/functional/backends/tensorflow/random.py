@@ -9,7 +9,10 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _randint_check_dtype_and_bound,
+)
 
 # Extra #
 # ------#
@@ -74,16 +77,18 @@ def multinomial(
 def randint(
     low: Union[float, tf.Tensor, tf.Variable],
     high: Union[float, tf.Tensor, tf.Variable],
-    shape: Union[ivy.NativeShape, Sequence[int]],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
     dtype: DType,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    low = tf.cast(low, "int64")
-    high = tf.cast(high, "int64")
+    _randint_check_dtype_and_bound(low, high, dtype)
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    low = tf.cast(low, dtype)
+    high = tf.cast(high, dtype)
     with tf.device(device):
-        return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int64)
+        return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=dtype)
 
 
 def seed(seed_value: int = 0) -> None:
