@@ -38,21 +38,34 @@ def statistical_dtype_values(draw, *, function):
             length=size,
         )
     )
-    return dtype, values
+    shape = np.asarray(values, dtype=dtype).shape
+    axis = draw(helpers.get_axis(shape=shape,allow_none=True))
+    return dtype, values, axis
+
+
+@st.composite
+def statistical_correction_values(draw, *, function):
+    correction = draw(
+        st.integers()
+        | st.floats()
+    )
+    return correction
+
 
 
 # min
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
+    dtype_values_axis=helpers.dtype_values_axis(available_dtypes=ivy_np.valid_numeric_dtypes,ret_shape=True),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="min"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    keep_dims=st.booleans(),
 )
 def test_min(
-    dtype_and_x,
+    dtype_values_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -60,8 +73,9 @@ def test_min(
     container,
     instance_method,
     fw,
+    keep_dims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
     assume(x)
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -74,21 +88,24 @@ def test_min(
         fw=fw,
         fn_name="min",
         x=np.asarray(x, dtype=input_dtype),
+        axis=None, #axis=axis,
+        keepdims=keep_dims,
     )
 
 
 # max
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
+    dtype_values_axis=helpers.dtype_values_axis(available_dtypes=ivy_np.valid_numeric_dtypes,ret_shape=True),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="max"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    keep_dims=st.booleans(),
 )
 def test_max(
-    dtype_and_x,
+    dtype_values_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -96,8 +113,9 @@ def test_max(
     container,
     instance_method,
     fw,
+    keep_dims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
     assume(x)
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -110,21 +128,24 @@ def test_max(
         fw=fw,
         fn_name="max",
         x=np.asarray(x, dtype=input_dtype),
+        axis=None, #axis=axis,
+        keepdims=keep_dims,
     )
 
 
 # mean
 @given(
-    dtype_and_x=statistical_dtype_values(function="mean"),
+    dtype_values_axis=helpers.dtype_values_axis(available_dtypes=ivy_np.valid_numeric_dtypes,ret_shape=True),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="mean"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    keep_dims=st.booleans(),
 )
 def test_mean(
-    dtype_and_x,
+    dtype_values_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -132,8 +153,9 @@ def test_mean(
     container,
     instance_method,
     fw,
+    keep_dims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -146,21 +168,25 @@ def test_mean(
         fn_name="mean",
         test_rtol=1e-1,
         x=np.asarray(x, dtype=input_dtype),
+        axis=None, #axis=axis,
+        keepdims=keep_dims
     )
 
 
 # var
 @given(
-    dtype_and_x=statistical_dtype_values(function="var"),
+    dtype_values_axis=statistical_dtype_values(function="var"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="var"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    correction=statistical_correction_values(function="var"),
+    keep_dims=st.booleans()
 )
 def test_var(
-    dtype_and_x,
+    dtype_values_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -168,8 +194,10 @@ def test_var(
     container,
     instance_method,
     fw,
+    correction,
+    keep_dims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -181,21 +209,25 @@ def test_var(
         fw=fw,
         fn_name="var",
         x=np.asarray(x, dtype=input_dtype),
+        axis=None, #axis=axis,
+        correction=correction,
+        keepdims=keep_dims,
     )
 
 
 # prod
 @given(
-    dtype_and_x=statistical_dtype_values(function="prod"),
+    dtype_values_axis=statistical_dtype_values(function="prod"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="prod"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    keep_dims=st.booleans(),
 )
 def test_prod(
-    dtype_and_x,
+    dtype_values_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -203,8 +235,9 @@ def test_prod(
     container,
     instance_method,
     fw,
+    keep_dims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
     if fw == "torch" and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype)):
         return  # torch implementation exhibits strange behaviour
     helpers.test_function(
@@ -218,21 +251,24 @@ def test_prod(
         fw=fw,
         fn_name="prod",
         x=np.asarray(x, dtype=input_dtype),
+        axis=None, #axis=axis,
+        keepdims=keep_dims,
     )
 
 
 # sum
 @given(
-    dtype_and_x=statistical_dtype_values(function="sum"),
+    dtype_values_axis=statistical_dtype_values(function="sum"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    keep_dims=st.booleans(),
 )
 def test_sum(
-    dtype_and_x,
+    dtype_values_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -240,8 +276,9 @@ def test_sum(
     container,
     instance_method,
     fw,
+    keep_dims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -255,21 +292,25 @@ def test_sum(
         fn_name="sum",
         test_rtol=1e-2,
         x=np.asarray(x, dtype=input_dtype),
+        axis=None, #axis=axis,
+        keepdims=keep_dims,
     )
 
 
 # std
 @given(
-    dtype_and_x=statistical_dtype_values(function="std"),
+    dtype_values_axis=statistical_dtype_values(function="std"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="std"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    correction=statistical_correction_values(function="std"),
+    keep_dims=st.booleans(),
 )
 def test_std(
-    dtype_and_x,
+    dtype_values_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -277,8 +318,10 @@ def test_std(
     container,
     instance_method,
     fw,
+    correction,
+    keep_dims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -292,6 +335,9 @@ def test_std(
         test_rtol=1e-2,
         test_atol=1e-2,
         x=np.asarray(x, dtype=input_dtype),
+        axis=None, #axis=axis,
+        correction=correction,
+        keepdims=keep_dims,
     )
 
 
@@ -308,7 +354,14 @@ def test_std(
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
+def test_einsum(
+        eq_n_op_n_shp,
+        dtype,
+        with_out,
+        tensor_fn,
+        device,
+        call,
+):
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
     operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]
