@@ -6,7 +6,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import _check_bounds_and_get_shape, _check_valid_scale
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
@@ -42,15 +42,17 @@ def random_normal(
     device: mx.context.Context,
     dtype: type,
 ) -> mx.nd.NDArray:
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
     if isinstance(mean, mx.nd.NDArray):
         mean = mean.asscalar()
     if isinstance(std, mx.nd.NDArray):
         std = std.asscalar()
-    if shape is None or len(shape) == 0:
+    if shape == ():
         return _1_dim_array_to_flat_array(
-            mx.nd.random.normal(mean, std, (1,), ctx=device)
+            mx.nd.random.normal(mean, std, (1,), ctx=device, dtype=dtype)
         )
-    return mx.nd.random.uniform(mean, std, shape, ctx=device)
+    return mx.nd.random.normal(mean, std, shape, ctx=device, dtype=dtype)
 
 
 def multinomial(
