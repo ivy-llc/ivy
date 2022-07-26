@@ -252,13 +252,15 @@ def atan(x: mx.nd.NDArray) -> mx.nd.NDArray:
     else:
         return mx.nd.arctan(x)
 
+
 @_handle_flat_arrays_in_out
 def atanh(x: mx.nd.NDArray) -> mx.nd.NDArray:
     if isinstance(x, float):
         return math.atanh(x)
     else:
         return mx.nd.arctanh(x)
-    
+  
+  
 @_handle_flat_arrays_in_out
 def atan2(x: mx.nd.NDArray, y: mx.nd.NDArray) -> mx.nd.NDArray:
     if isinstance(x, float):
