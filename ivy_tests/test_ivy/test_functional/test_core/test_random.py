@@ -130,40 +130,59 @@ def test_multinomial(everything, device, call):
 
 # randint
 @given(
-    data=st.data(),
-    shape=helpers.get_shape(allow_none=False),
-    as_variable=st.booleans(),
+    dtype_and_low=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_int_dtypes).difference(set(ivy_np.valid_uint_dtypes))
+        ),
+        min_value=-1000,
+        max_value=50,
+    ),
+    dtype_and_high=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_int_dtypes).difference(set(ivy_np.valid_uint_dtypes))
+        ),
+        min_value=51,
+        max_value=1000,
+    ),
+    dtype=st.sampled_from(ivy_np.valid_int_dtypes + (None,)),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="randint"),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
+    instance_method=st.booleans(),
 )
-def test_randint(data, shape, as_variable, device, call):
-    dtype = ivy.default_int_dtype()
-    # smoke test
-    low, high = data.draw(helpers.get_bounds(dtype=dtype))
-    if (
-        call in [helpers.mx_call, helpers.torch_call]
-        and as_variable
-        or dtype == "uint64"
-        or call == helpers.torch_call
-        and dtype[0] == "u"
-    ):
-        # PyTorch and MXNet do not support non-float variables
-        return
-    low_tnsr = ivy.array(low, dtype=dtype, device=device)
-    high_tnsr = ivy.array(high, dtype=dtype, device=device)
-    if as_variable:
-        low_tnsr, high_tnsr = ivy.variable(low_tnsr), ivy.variable(high_tnsr)
-    kwargs = {
-        k: v for k, v in zip(["low", "high"], [low_tnsr, high_tnsr]) if v is not None
-    }
-    kwargs["shape"] = shape
-    ret = ivy.randint(**kwargs, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == shape
-    # value test
-    ret_np = call(ivy.randint, **kwargs, device=device)
-    assert np.min((ret_np < high).astype(np.int64)) == 1
-    assert np.min((ret_np >= low).astype(np.int64)) == 1
+def test_randint(
+    dtype_and_low,
+    dtype_and_high,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    low_dtype, low = dtype_and_low
+    high_dtype, high = dtype_and_high
+    helpers.test_function(
+        input_dtypes=[low_dtype, high_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="randint",
+        low=np.asarray(low, dtype=low_dtype),
+        high=np.asarray(high, dtype=high_dtype),
+        shape=None,
+        dtype=dtype,
+        device=device,
+    )
 
 
 # seed
