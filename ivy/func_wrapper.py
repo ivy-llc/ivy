@@ -79,6 +79,8 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with native arrays passed in the arguments.
         """
+        if not ivy.get_array_mode():
+            return fn(*args, **kwargs)
         # check if kwargs contains an out argument, and if so, remove it
         has_out = False
         out = None
@@ -150,6 +152,8 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
+        if not ivy.get_array_mode():
+            return ret
         # convert all arrays in the return to `ivy.Array` instances
         return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
 
