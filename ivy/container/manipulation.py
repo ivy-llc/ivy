@@ -199,6 +199,7 @@ class ContainerWithManipulation(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+        
     def reshape(
         self: ivy.Container,
         shape: Union[int, Tuple[int], List[int]],
@@ -211,18 +212,18 @@ class ContainerWithManipulation(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.reshape. This method simply wraps the
-        function, and so the docstring for ivy.reshape also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.reshape. This method
+        simply wraps the function, and so the docstring for ivy.reshape also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             input container.
         shape
-            The new shape should be compatible with the original shape. One shape dimension
-            can be -1. In this case, the value is inferred from the length of the array and
-            remaining dimensions.
+            The new shape should be compatible with the original shape.
+            One shape dimension can be -1. In this case, the value is
+            inferred from the length of the array and remaining dimensions.
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
@@ -247,7 +248,8 @@ class ContainerWithManipulation(ContainerBase):
         Returns
         -------
         ret
-            an output container having the same data type as ``self`` and elements as ``self``.
+            an output container having the same data type as ``self``
+            and elements as ``self``.
 
         Examples
         --------
