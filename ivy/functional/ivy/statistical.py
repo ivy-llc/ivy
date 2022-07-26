@@ -333,8 +333,9 @@ def prod(
     ivy.array(0)
 
     """
-    return current_backend(x).prod(x, axis=axis, dtype=dtype, 
-                                   keepdims=keepdims, out=out)
+    return current_backend(x).prod(
+        x, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+    )
 
 
 @to_native_arrays_and_back
