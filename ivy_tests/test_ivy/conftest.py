@@ -184,4 +184,4 @@ def pytest_addoption(parser):
     parser.addoption("--with-instance-method-testing", action="store", default="false")
 
     parser.addoption("--no-extra-testing", action="store", default="false")
-    parser.addoption("--num-examples", action="store,", default=None)
+    parser.addoption("--num-examples", action="store", default=None)
