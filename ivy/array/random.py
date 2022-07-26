@@ -11,7 +11,7 @@ import ivy
 class ArrayWithRandom(abc.ABC):
     def random_uniform(
         self: ivy.Array,
-        high: Union[ivy.Array, ivy.NativeArray] = 1.0,
+        high: Union[float, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,

@@ -109,7 +109,7 @@ class ContainerWithRandom(ContainerBase):
 
     def random_uniform(
         self: ivy.Container,
-        high: Union[ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
+        high: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
