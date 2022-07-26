@@ -129,8 +129,8 @@ class ContainerWithStatistical(ContainerBase):
         >>> y = x.var()
         >>> print(y)
         {
-            a:ivy.array(0.127),
-            b:ivy.array(0.116)
+            a:ivy.array(0.12666667),
+            b:ivy.array(0.11555555)
         }
         """
         return self.handle_inplace(
@@ -201,8 +201,8 @@ class ContainerWithStatistical(ContainerBase):
         >>> y = x.var()
         >>> print(y)
         {
-            a:ivy.array(0.127),
-            b:ivy.array(0.116)
+            a:ivy.array(0.12666667),
+            b:ivy.array(0.11555555)
         }
 
         """

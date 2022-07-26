@@ -507,18 +507,18 @@ def var(
     >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
     >>> y = ivy.var(x)
     >>> print(y)
-    ivy.array(0.075)
+    ivy.array(0.07472222)
 
     >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
     >>> y = ivy.zeros(6)
     >>> ivy.var(x, out=y)
     >>> print(y)
-    ivy.array(0.075)
+    ivy.array(0.07472222)
 
     >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
     >>> ivy.var(x, out=x)
     >>> print(x)
-    ivy.array(0.075)
+    ivy.array(0.07472222)
 
     """
     return current_backend(x).var(x, axis, correction, keepdims, out=out)

@@ -100,7 +100,7 @@ class ArrayWithStatistical(abc.ABC):
          >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
          >>> y = x.var()
          >>> print(y)
-         ivy.array(0.075)
+         ivy.array(0.07472222)
 
         """
         return ivy.var(self._data, axis, correction, keepdims, out=out)
