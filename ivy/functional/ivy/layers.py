@@ -370,7 +370,6 @@ def multi_head_attention(
 ):
 
     """Applies multi-head attention to inputs x.
-
     Parameters
     ----------
     x
@@ -385,25 +384,31 @@ def multi_head_attention(
         The array to determine the keys and values from. Default is None.
         The shape of context input array should be in *[batch_shape,num_keys,cont_feat_dim]*.
     mask
-        The mask input array. The mask to apply to the query-key values. Default is None.
+        The mask input array. 
+        The mask to apply to the query-key values. Default is None.
         The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
     to_q_fn
-        The function to compute queries from input x, returning queries in shape
-        *[batch_shape,num_queries,numheads×feat_dim]*. (Default value = None)
+        The function to compute queries from input x, 
+        returning queries in shape *[batch_shape,num_queries,numheads×feat_dim]*. 
+        (Default value = None)
     to_kv_fn
-        The function to compute keys and values from the context. (Default value = None)
+        The function to compute keys and values from the context. 
+        (Default value = None)
     to_out_fn
         The function to compute the output from the scaled dot-product attention.
         (Default value = None)
     to_q_v
-        The variables for function to_q_fn. Default is None.
+        The variables for function to_q_fn. 
+        Default is None.
     to_kv_v
-        The variables for function to_kv_fn. Default is None.
+        The variables for function to_kv_fn. 
+        Default is None.
     to_out_v
-        The variables for function to_out_fn. Default is None.
+        The variables for function to_out_fn. 
+        Default is None.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to. 
+        It must have a shape that the inputs broadcast to.
 
     Returns
     -------
