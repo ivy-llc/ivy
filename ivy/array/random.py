@@ -111,7 +111,7 @@ class ArrayWithRandom(abc.ABC):
         Returns
         -------
         ret
-            Drawn samples from the parameterized uniform distribution.
+            Drawn samples from the parameterized normal distribution.
 
         Examples
         --------
