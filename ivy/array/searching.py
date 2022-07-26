@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional
+from typing import Optional, Union
 
 # local
 import ivy
@@ -16,7 +16,7 @@ class ArrayWithSearching(abc.ABC):
         keepdims: Optional[bool] = False,
         *,
         out: Optional[ivy.Array] = None
-    ) -> int:
+    ) -> Union[ivy.Array, int]:
         """
         ivy.Array instance method variant of ivy.argmax. This method simply
         wraps the function, and so the docstring for ivy.argmax also applies
