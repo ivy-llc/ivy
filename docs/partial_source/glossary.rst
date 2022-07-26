@@ -4,7 +4,7 @@ This glossary provides definitions for terms and abbreviations used in the TF-A
 documentation.
 You can find additional definitions in the `Arm Glossary`_.
 
-.. glossary::
+.. glossary:: glossary
     :sorted:
 
     API
