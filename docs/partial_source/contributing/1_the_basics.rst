@@ -10,6 +10,8 @@ The Basics
 .. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
 .. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
 .. _`other channel`: https://discord.com/channels/799879767196958751/933380219832762430
+.. _`PyCharm blog`: https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html
+.. _`Debugging`: https://www.jetbrains.com/help/pycharm/debugging-code.html
 
 Getting Help
 ------------
@@ -536,7 +538,7 @@ with PyCharm
         #. :code:`Ctrl+R` will prompt you to type in the text to be found and the text to be replaced, 
             if not already selected, within current file.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/find_and_replace_file.png?raw=true
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/find_n_replace_file.png?raw=true
                :align: center
                :width: 50%
 
@@ -555,7 +557,7 @@ with PyCharm
                :align: center
                :width: 50%
 
-    You can visit `Pycharm's Blog <https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html>_` 
+    You can visit `Pycharm Blog`_
     for more details on efficient coding!
 
 #. Debugging:
@@ -633,7 +635,7 @@ with PyCharm
            :align: center
            :width: 50%
 
-    PyCharm has a detailed blog on efficient `Debugging <https://www.jetbrains.com/help/pycharm/debugging-code.html>_`
+    PyCharm has a detailed blog on efficient `Debugging`_
     which is quite useful.  
 
 **Round Up**
