@@ -3984,19 +3984,23 @@ class ContainerWithElementwise(ContainerBase):
         {
             a: ivy.array([True, False, False, False])
         }
+
         >>> print(x)
         {
             a: ivy.array([False, True, False, False])
         }
+
         >>> print(y)
         {
             a: ivy.array([False, False, False, False])
         }
+
         >>> print(z)
         {
             a: ivy.array([True, False, True]),
             b: ivy.array([False, False, False])
         }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "logical_and",
@@ -4074,14 +4078,15 @@ class ContainerWithElementwise(ContainerBase):
         {
             a: ivy.array([True, False, False, False])
         }
+
         >>> print(x)
         {
             a: ivy.array([False, True, False, False])
         }
+
         >>> print(y)
-        {
-            a: ivy.array([False, False, False, False])
-        }
+        ivy.array([False, False, False, False])
+
         >>> print(z)
         {
             a: ivy.array([True, False, True]),
