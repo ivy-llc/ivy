@@ -591,7 +591,7 @@ def var(
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = x.var()
-    >>> y
+    >>> print(y)
     {
         a: ivy.array(0.66666667),
         b: ivy.array(0.66666667)
