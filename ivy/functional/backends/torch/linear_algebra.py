@@ -27,18 +27,34 @@ def cholesky(
         )
     return ret
 
+def _cast_for_binary_op(x1,x2,clamp=False):
+    if isinstance(x1, torch.Tensor):
+        if isinstance(x2, torch.Tensor):
+            promoted_type = torch.promote_types(x1.dtype, x2.dtype)
+            if clamp:
+                x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
+            x1 = x1.to(promoted_type)
+            x2 = x2.to(promoted_type)
+        else:
+            x2 = torch.tensor(x2, dtype=x1.dtype)
+    else:
+        if isinstance(x2, torch.Tensor):
+            x1 = torch.tensor(x1, dtype=x2.dtype)
+        else:
+            x1 = torch.tensor(x1)
+            x2 = torch.tensor(x2)
+    return x1, x2
 
 def cross(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
+    x1: Union[float,torch.Tensor],
+    x2: Union[float,torch.Tensor],
     axis: int = -1,
+    *,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+   ) -> torch.Tensor:
     if axis is None:
         axis = -1
-    promote_type = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.type(promote_type)
-    x2 = x2.type(promote_type)
+    x1,x2= _cast_for_binary_op(x1, x2)
     return torch.linalg.cross(input=x1, other=x2, dim=axis, out=out)
 
 
