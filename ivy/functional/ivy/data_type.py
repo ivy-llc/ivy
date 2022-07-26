@@ -576,7 +576,7 @@ class DefaultUintDtype:
         return self
 
 
-def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
+def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str]) -> int:
     """Get the number of bits used for representing the input data type.
 
     Parameters
@@ -589,6 +589,31 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
     ret
         The number of bits used to represent the data type.
 
+    Examples
+    --------
+    With :code:`ivy.Dtype` inputs:
+
+    >>> x = ivy.dtype_bits(ivy.float32)
+    >>> print(x)
+    32
+
+    >>> x = ivy.dtype_bits('int64')
+    >>> print(x)
+    64
+
+    >>> x = ivy.dtype_bits(ivy.uint16)
+    >>> print(x)
+    16
+
+    With :code:`ivy.NativeDtype` inputs:
+
+    >>> x = ivy.dtype_bits(ivy.native_int8)
+    >>> print(x)
+    8
+
+    >>> x = ivy.dtype_bits(ivy.native_bool)
+    >>> print(x)
+    1
     """
     return current_backend(dtype_in).dtype_bits(dtype_in)
 
