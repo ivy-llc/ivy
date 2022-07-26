@@ -218,9 +218,15 @@ def copy_array(
     ivy.array([1, 0, 1, 1])
 
     >>> x = ivy.array([1, 0, 1, -1])
-    >>> y = ivy.copy_array(x)
+    >>> y = ivy.zeros((1, 4))
+    >>> ivy.copy_array(x, out=y)
     >>> print(y)
     ivy.array([1, 0, 1, -1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> ivy.copy_array(x, out=x)
+    >>>print(x)
+    ivy.array([1, 0, 1, 1])
 
     With :code:`ivy.NativeArray` input:
 
@@ -238,6 +244,17 @@ def copy_array(
     >>> y = ivy.copy_array(x)
     >>> print(y)
     ivy.array([1, 0, 1, -1])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.Container.static_copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0])
+    }
 
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
 
