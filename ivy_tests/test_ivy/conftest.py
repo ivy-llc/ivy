@@ -46,7 +46,7 @@ def pytest_configure(config):
     num_examples = config.getoption("--num-examples")
     if num_examples is not None:
         settings.register_profile("custom max_examples", max_examples=int(num_examples))
-        settings.load_profile("custom_max_examples")
+        settings.load_profile("custom max_examples")
     else:
         settings.register_profile("default", max_examples=5)
         settings.load_profile("default")
