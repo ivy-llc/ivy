@@ -42,6 +42,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
+    dtype: jnp.dtype,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     global RNG

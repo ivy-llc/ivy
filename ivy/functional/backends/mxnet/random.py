@@ -40,6 +40,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: mx.context.Context,
+    dtype: type,
 ) -> mx.nd.NDArray:
     if isinstance(mean, mx.nd.NDArray):
         mean = mean.asscalar()

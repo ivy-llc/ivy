@@ -31,6 +31,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
+    dtype: np.dtype,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.asarray(np.random.normal(mean, std, shape))
