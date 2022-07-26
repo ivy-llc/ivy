@@ -509,6 +509,7 @@ def percent_used_mem_on_dev(
     >>> y = ivy.percent_used_mem_on_dev(device = x, process_specific = False)
     >>> print(y)
     0.7095597456708771
+    
     """
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
