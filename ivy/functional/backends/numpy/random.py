@@ -6,6 +6,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 
 # Extra #
 # ------#
@@ -20,6 +21,7 @@ def random_uniform(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    shape = _check_bounds_and_get_shape(low, high, shape)
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
 
