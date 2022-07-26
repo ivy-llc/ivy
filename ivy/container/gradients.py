@@ -402,10 +402,10 @@ class ContainerWithGradients(ContainerBase):
         >>> lr = ivy.array(0.3)
         >>> ivy.Container.static_gradient_descent_update(w, dcdw, lr)
         >>> print(w)
-        {
-            a: ivy.array([0.85, 1.94, 2.97]),
-            b: ivy.array([2.88, 4.69, 1.47])
-        }
+            ({
+                a: ivy.array([0.85, 1.94, 2.97]),
+                b: ivy.array([2.88, 4.69, 1.47])
+            })
 
         >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
                               b=ivy.array([3.48, 5.72, 1.98]))
@@ -418,10 +418,10 @@ class ContainerWithGradients(ContainerBase):
                                                                       lr,\
                                                                       inplace=False)
         >>> print(NewWeights)
-        {
-            a: ivy.array([0.85, 1.94, 2.97]),
-            b: ivy.array([3.28, 5.38, 1.81])
-        }
+            ({
+                a: ivy.array([0.85, 1.94, 2.97]),
+                b: ivy.array([3.28, 5.38, 1.81])
+            })
         """
         return ContainerBase.multi_map_in_static_method(
             "gradient_descent_update",
@@ -498,10 +498,10 @@ class ContainerWithGradients(ContainerBase):
         >>> lr = ivy.array(0.3)
         >>> w.gradient_descent_update(dcdw, lr)
         >>> print(w)
-        {
-            a: ivy.array([0.85, 1.94, 2.97]),
-            b: ivy.array([2.88, 4.69, 1.47])
-        }
+            ({
+                a: ivy.array([0.85, 1.94, 2.97]),
+                b: ivy.array([2.88,4.69,1.47])
+            })
 
         >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
                               b=ivy.array([3.48, 5.72, 1.98]))
@@ -511,10 +511,10 @@ class ContainerWithGradients(ContainerBase):
                                 b=ivy.array(0.1))
         >>> w.gradient_descent_update(dcdw, lr)
         >>> print(w)
-        {
-            a: ivy.array([0.85, 1.94, 2.97]),
-            b: ivy.array([3.28, 5.38, 1.81])
-        }
+            ({
+                a: ivy.array([0.85, 1.94, 2.97]),
+                b: ivy.array([3.28, 5.38, 1.81])
+            })
         """
         return self.static_gradient_descent_update(
             self,

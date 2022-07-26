@@ -140,8 +140,8 @@ class ArrayWithGradients(abc.ABC):
         >>> lr = ivy.array(0.3)
         >>> w.gradient_descent_update(dcdw, lr)
         >>> print(w)
-        ivy.array([[[ 4.85,  2.72,  1.97],
-                    [-0.06,  3.79,  0.91],
-                    [-2.09,  2.76, -1.  ]]])
+            (ivy.array([[[ 4.85,  2.72,  1.97],
+                        [-0.06,  3.79,  0.91],
+                        [-2.09,  2.76, -1.  ]]]))
         """
         return ivy.gradient_descent_update(self, dcdw, lr, inplace, stop_gradients)
