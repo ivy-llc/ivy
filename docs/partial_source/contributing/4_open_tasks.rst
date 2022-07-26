@@ -5,8 +5,8 @@ Open Tasks
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
-.. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/15_ivy_frontends.html
-.. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontend_tests.html
+.. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html
+.. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/17_ivy_frontend_tests.html
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
