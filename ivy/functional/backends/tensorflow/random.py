@@ -94,6 +94,9 @@ def randint(
         return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=dtype)
 
 
+randint.supported_dtypes = ("int32", "int64")
+
+
 def seed(seed_value: int = 0) -> None:
     tf.random.set_seed(seed_value)
 
