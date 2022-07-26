@@ -43,7 +43,6 @@ native_dtype_dict = {
     "uint16": np.dtype("uint16"),
     "uint32": np.dtype("uint32"),
     "uint64": np.dtype("uint64"),
-    "bfloat16": "bfloat16",
     "float16": np.dtype("float16"),
     "float32": np.dtype("float32"),
     "float64": np.dtype("float64"),
@@ -60,7 +59,7 @@ class Finfo:
 
     @property
     def bits(self):
-        return self._np_finfo.bits    
+        return self._np_finfo.bits
 
     @property
     def eps(self):
@@ -138,7 +137,7 @@ def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> np.dtype:
     result = np.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
     for i in range(2, len(arrays_and_dtypes)):
         result = np.result_type(result, arrays_and_dtypes[i])
-    return result
+    return as_ivy_dtype(result)
 
 
 # Extra #
@@ -154,7 +153,12 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str]) -> ivy.Dtype:
 def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
-    return native_dtype_dict[ivy.Dtype(dtype_in)]
+    if dtype_in in native_dtype_dict.values():
+        return native_dtype_dict[ivy.Dtype(dtype_in)]
+    else:
+        raise TypeError(
+            f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
+        )
 
 
 def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:

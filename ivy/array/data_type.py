@@ -15,6 +15,45 @@ class ArrayWithDataTypes(abc.ABC):
     def broadcast_arrays(
         self: ivy.Array, *arrays: Union[ivy.Array, ivy.NativeArray]
     ) -> List[ivy.Array]:
+        """
+        `ivy.Array` instance method variant of `ivy.broadcast_arrays`.
+        This method simply wraps the function,
+        and so the docstring for `ivy.broadcast_arrays`
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            An input array to be broadcasted against other input arrays.
+        arrays
+            an arbitrary number of arrays to-be broadcasted.
+            Each array must have the same shape.
+            Each array must have the same dtype as its
+            corresponding input array.
+
+        Returns
+        -------
+        ret
+            A list containing broadcasted arrays of type `ivy.Array`
+        Examples
+        --------
+        With :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([1, 2])
+        >>> x2 = ivy.array([0.2, 0.])
+        >>> x3 = ivy.zeros(2)
+        >>> y = x1.broadcast_arrays(x2, x3)
+        >>> print(y)
+        [ivy.array([1, 2]), ivy.array([0.2, 0. ]), ivy.array([0., 0.])]
+
+        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.array([-1., 3.4])
+        >>> x2 = ivy.native_array([2.4, 5.1])
+        >>> y = x1.broadcast_arrays(x2)
+        >>> print(y)
+        [ivy.array([-1., 3.4]), ivy.array([2.4, 5.1])]
+        """
         return ivy.broadcast_arrays(self._data, *arrays)
 
     def broadcast_to(
@@ -69,6 +108,9 @@ class ArrayWithDataTypes(abc.ABC):
 
     def is_int_dtype(self: ivy.Array) -> bool:
         return ivy.is_int_dtype(self._data)
+
+    def is_uint_dtype(self: ivy.Array) -> bool:
+        return ivy.is_uint_dtype(self._data)
 
     def result_type(
         self: ivy.Array,
