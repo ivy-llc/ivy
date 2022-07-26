@@ -2685,7 +2685,6 @@ def isnan(
     Instance Method Examples
     ------------------------
     With :code:`ivy.Array` inputs:
-
     >>> x = ivy.array([1, 2, 3])
     >>> x.isnan()
     ivy.array([False, False, False])
@@ -2723,6 +2722,7 @@ def isnan(
         [True]])
 
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
         b=ivy.array([math.nan, 3.3, -4.2]))
     >>> x.isnan()
@@ -2742,7 +2742,7 @@ def isnan(
         a: ivy.array([False, True, False]),
         b: ivy.array([True, False, False])
     }
-
+    
     """
     return ivy.current_backend(x).isnan(x, out=out)
 
