@@ -231,7 +231,7 @@ ivy.full()
 ^^^^^^^^^^
 
 Here we are going to look at an example of a function that does not consume an :code:`array`. 
-This is the creation function :code:`full()`, which takes an array shape as an argument to create an array with all elements with the same value as fill value.
+This is the creation function :code:`full()`, which takes an array shape as an argument to create an array and filled with elements of a given value.
 This function requires us to create extra methods for generating :code:`shape` and :code:`fill value`, these use the :code:`shared` hypothesis strategy.
 
 
@@ -517,7 +517,7 @@ This function requires us to create extra methods for generating :code:`shape` a
             requires_grad=requires_grad,
         )
 
-* Here we created another extra function to accommodate the :code:`_requires_grad` argument. This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
+* Here we created another extra function, :code:`_requires_grad`, to accommodate the :code:`requires_grad` argument. This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
 * We use :code:`ivy_torch.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
 * :code:`torch.full()` supports :code:`out` so we generate :code:`with_out`.
 
