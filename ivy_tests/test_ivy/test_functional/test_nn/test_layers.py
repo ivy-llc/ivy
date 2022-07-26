@@ -53,9 +53,6 @@ def test_linear(
         size=outer_batch_shape + [num_out_feats] + [num_in_feats]
     ).astype(dtype[1])
     bias = np.random.uniform(size=weight.shape[:-1]).astype(dtype[2])
-    as_variable = [as_variable for i in range(3)]
-    native_array = [native_array for i in range(3)]
-    container = [container for i in range(3)]
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -453,9 +450,6 @@ def test_conv2d(
 ):
     dtype, x, filters, dilations, data_format = x_f_d_df
     dtype = [dtype] * 2
-    as_variable = [as_variable for i in range(2)]
-    native_array = [native_array for i in range(2)]
-    container = [container for i in range(2)]
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -525,9 +519,6 @@ def test_conv2d_transpose(
     filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
         dtype[1]
     )
-    as_variable = [as_variable for i in range(2)]
-    native_array = [native_array for i in range(2)]
-    container = [container for i in range(2)]
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -634,9 +625,6 @@ def test_conv3d(
 ):
     dtype, x, filters, dilations, data_format = x_f_d_df
     dtype = [dtype] * 2
-    as_variable = [as_variable for i in range(2)]
-    native_array = [native_array for i in range(2)]
-    container = [container for i in range(2)]
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -711,9 +699,6 @@ def test_conv3d_transpose(
     filters = np.random.uniform(
         size=(filter_shape, filter_shape, filter_shape, 1, 1)
     ).astype(dtype[1])
-    as_variable = [as_variable for i in range(2)]
-    native_array = [native_array for i in range(2)]
-    container = [container for i in range(2)]
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -787,10 +772,6 @@ def test_lstm(
     bias = np.random.uniform(size=[4 * hidden_channel]).astype(dtype[5])
 
     recurrent_bias = np.random.uniform(size=[4 * hidden_channel]).astype(dtype[6])
-
-    as_variable = [as_variable for i in range(7)]
-    native_array = [native_array for i in range(7)]
-    container = [container for i in range(7)]
 
     helpers.test_function(
         input_dtypes=dtype,

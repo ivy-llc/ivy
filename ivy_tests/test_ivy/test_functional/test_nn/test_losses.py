@@ -53,9 +53,6 @@ def test_cross_entropy(
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
-    as_variable = [as_variable for i in range(2)]
-    native_array = [native_array for i in range(2)]
-    container = [container for i in range(2)]
 
     helpers.test_function(
         input_dtypes=[true_dtype, pred_dtype],
@@ -118,9 +115,6 @@ def test_binary_cross_entropy(
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
-    as_variable = [as_variable for i in range(2)]
-    native_array = [native_array for i in range(2)]
-    container = [container for i in range(2)]
 
     helpers.test_function(
         input_dtypes=[true_dtype, pred_dtype],
@@ -183,9 +177,6 @@ def test_sparse_cross_entropy(
 ):
     true_dtype, true = dtype_and_true
     pred_dtype, pred = dtype_and_pred
-    as_variable = [as_variable for i in range(2)]
-    native_array = [native_array for i in range(2)]
-    container = [container for i in range(2)]
 
     helpers.test_function(
         input_dtypes=[true_dtype, pred_dtype],

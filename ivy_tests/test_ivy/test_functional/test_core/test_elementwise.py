@@ -136,9 +136,7 @@ def test_add(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -278,9 +276,7 @@ def test_atan2(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -352,9 +348,7 @@ def test_bitwise_and(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -392,9 +386,7 @@ def test_bitwise_left_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -468,9 +460,7 @@ def test_bitwise_or(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -508,9 +498,7 @@ def test_bitwise_right_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -548,9 +536,7 @@ def test_bitwise_xor(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -690,9 +676,7 @@ def test_divide(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
     # prevent division by 0
@@ -735,9 +719,7 @@ def test_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -882,9 +864,6 @@ def test_floor_divide(
     x1 = (np.asarray(x[0], dtype=input_dtype[0]),)
     x2 = (np.asarray(x[1], dtype=input_dtype[1]),)
     assume(np.all(x2[0] != 0))
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -923,9 +902,7 @@ def test_greater(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -963,9 +940,7 @@ def test_greater_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1105,9 +1080,7 @@ def test_less(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1145,9 +1118,7 @@ def test_less_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1321,9 +1292,7 @@ def test_logaddexp(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1360,9 +1329,7 @@ def test_logical_and(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1432,9 +1399,7 @@ def test_logical_or(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1470,9 +1435,7 @@ def test_logical_xor(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1510,9 +1473,7 @@ def test_multiply(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1584,9 +1545,7 @@ def test_not_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1658,9 +1617,7 @@ def test_pow(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
     assume(
@@ -1958,9 +1915,7 @@ def test_subtract(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2147,9 +2102,7 @@ def test_minimum(
             )
         )
     )
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2187,9 +2140,7 @@ def test_maximum(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
+
     assume(
         not (
             (isinstance(x[0], Number) or isinstance(x[1], Number))
