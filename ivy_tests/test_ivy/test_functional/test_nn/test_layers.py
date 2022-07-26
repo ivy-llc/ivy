@@ -64,7 +64,7 @@ def test_linear(
         instance_method=instance_method,
         fw=fw,
         fn_name="linear",
-        test_rtol=1e-03,
+        rtol_=1e-03,
         x=x,
         weight=weight,
         bias=bias,
@@ -203,17 +203,13 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
 # Convolutions #
 # -------------#
 
+
 @st.composite
-def x_and_filters(
-        draw,
-        dtypes,
-        data_format,
-        type: str = '2d'
-):
+def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
     data_format = draw(data_format)
     dtype = draw(dtypes)
     dilations = draw(st.integers(min_value=1, max_value=3))
-    if type == '1d':
+    if type == "1d":
         filter_shape = draw(
             st.tuples(
                 st.integers(3, 5),
@@ -224,7 +220,7 @@ def x_and_filters(
 
         min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         d_in = filter_shape[1]
-        if data_format == 'NWC':
+        if data_format == "NWC":
             x_shape = draw(
                 st.tuples(
                     st.integers(1, 5),
@@ -240,7 +236,7 @@ def x_and_filters(
                     st.integers(min_value=min_x_width, max_value=100),
                 )
             )
-    elif type == '2d':
+    elif type == "2d":
         filter_shape = draw(
             st.tuples(
                 st.integers(3, 5),
@@ -253,7 +249,7 @@ def x_and_filters(
         min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
         d_in = filter_shape[2]
-        if data_format == 'NHWC':
+        if data_format == "NHWC":
             x_shape = draw(
                 st.tuples(
                     st.integers(1, 5),
@@ -289,7 +285,7 @@ def x_and_filters(
         min_x_height = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
         min_x_width = filter_shape[2] + (filter_shape[2] - 1) * (dilations - 1)
         d_in = filter_shape[3]
-        if data_format == 'NDHWC':
+        if data_format == "NDHWC":
             x_shape = draw(
                 st.tuples(
                     st.integers(1, 5),
@@ -309,37 +305,22 @@ def x_and_filters(
                     st.integers(min_value=min_x_width, max_value=100),
                 )
             )
-    x = draw(
-        helpers.array_values(
-            dtype=dtype,
-            shape=x_shape,
-            min_value=0,
-            max_value=1
-        )
-    )
+    x = draw(helpers.array_values(dtype=dtype, shape=x_shape, min_value=0, max_value=1))
     filters = draw(
-        helpers.array_values(
-            dtype=dtype,
-            shape=filter_shape,
-            min_value=0,
-            max_value=1
-        )
+        helpers.array_values(dtype=dtype, shape=filter_shape, min_value=0, max_value=1)
     )
     return dtype, x, filters, dilations, data_format
 
 
 # conv1d
 @given(
-    batch_size=st.integers(min_value=1, max_value=5),
-    w=st.integers(min_value=1, max_value=100),
-    d_in=st.integers(min_value=1, max_value=5),
-    d_out=st.integers(min_value=1, max_value=5),
-    filter=st.integers(min_value=1, max_value=5),
-    stride=st.integers(min_value=1, max_value=3),
+    x_f_d_df=x_and_filters(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        data_format=st.sampled_from(["NWC", "NCW"]),
+        type="1d",
+    ),
+    stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
-    data_format=st.sampled_from(["NWC", "NCW"]),
-    dilations=st.integers(min_value=1, max_value=3),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv1d"),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
@@ -347,16 +328,9 @@ def x_and_filters(
     instance_method=st.booleans(),
 )
 def test_conv1d(
-    batch_size,
-    w,
-    d_in,
-    d_out,
-    filter,
+    x_f_d_df,
     stride,
     pad,
-    data_format,
-    dilations,
-    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -365,20 +339,9 @@ def test_conv1d(
     fw,
     device,
 ):
+    dtype, x, filters, dilations, data_format = x_f_d_df
     dtype = [dtype] * 2
-    if fw == "torch" and "float16" in dtype:
-        # not implemented for Half in torch
-        return
 
-    if filter + (filter - 1) * (dilations - 1) > w:
-        # kernel size can't be greater than input
-        w = filter + (filter - 1) * (dilations - 1)
-
-    if data_format == "NWC":
-        x = np.random.uniform(size=[batch_size] + [w] + [d_in]).astype(dtype[0])
-    else:
-        x = np.random.uniform(size=[batch_size, d_in, w]).astype(dtype[0])
-    filters = np.random.uniform(size=[filter] + [d_in] + [d_out]).astype(dtype[1])
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -389,8 +352,8 @@ def test_conv1d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv1d",
-        x=x,
-        filters=filters,
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
         data_format=data_format,
@@ -458,7 +421,7 @@ def test_conv1d_transpose(
     x_f_d_df=x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
-        type='2d'
+        type="2d",
     ),
     stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
@@ -561,6 +524,7 @@ def test_conv2d_transpose(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv2d_transpose",
+        device_=device,
         x=x,
         filters=filters,
         strides=stride,
@@ -627,190 +591,52 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, cal
 
 
 # conv3d
-@pytest.mark.parametrize(
-    "x_n_filters_n_pad_n_res",
-    [
-        (
-            [
-                [
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [3.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                ]
-            ],
-            [
-                [
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                ],
-                [
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                ],
-                [
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                ],
-            ],
-            "SAME",
-            [
-                [
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[3.0], [3.0], [3.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                    [
-                        [[3.0], [3.0], [3.0]],
-                        [[3.0], [3.0], [3.0]],
-                        [[3.0], [3.0], [3.0]],
-                    ],
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[3.0], [3.0], [3.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                ]
-            ],
-        ),
-        (
-            [
-                [
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [3.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                ]
-                for _ in range(5)
-            ],
-            [
-                [
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                ],
-                [
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                ],
-                [
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                ],
-            ],
-            "SAME",
-            [
-                [
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[3.0], [3.0], [3.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                    [
-                        [[3.0], [3.0], [3.0]],
-                        [[3.0], [3.0], [3.0]],
-                        [[3.0], [3.0], [3.0]],
-                    ],
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[3.0], [3.0], [3.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                ]
-                for _ in range(5)
-            ],
-        ),
-        (
-            [
-                [
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [3.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                    [
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                        [[0.0], [0.0], [0.0]],
-                    ],
-                ]
-            ],
-            [
-                [
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                ],
-                [
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                ],
-                [
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                    [[[1.0]], [[1.0]], [[1.0]]],
-                    [[[0.0]], [[0.0]], [[0.0]]],
-                ],
-            ],
-            "VALID",
-            [[[[[3.0]]]]],
-        ),
-    ],
+@given(
+    x_f_d_df=x_and_filters(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        data_format=st.sampled_from(["NDHWC", "NCDHW"]),
+        type="3d",
+    ),
+    stride=st.integers(min_value=1, max_value=4),
+    pad=st.sampled_from(["VALID", "SAME"]),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    num_positional_args=helpers.num_positional_args(fn_name="conv3d"),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
-        # tf conv3d does not work when CUDA is installed, but array is on CPU
-        pytest.skip()
-    # smoke test
-    if call in [helpers.np_call, helpers.jnp_call]:
-        # numpy and jax do not yet support 3d convolutions
-        pytest.skip()
-    x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype=dtype, device=device)
-    filters = tensor_fn(filters, dtype=dtype, device=device)
-    true_res = tensor_fn(true_res, dtype=dtype, device=device)
-    ret = ivy.conv3d(x, filters, 1, padding)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_res.shape
-    # value test
-    assert np.allclose(call(ivy.conv3d, x, filters, 1, padding), ivy.to_numpy(true_res))
+def test_conv3d(
+    x_f_d_df,
+    stride,
+    pad,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtype, x, filters, dilations, data_format = x_f_d_df
+    dtype = [dtype] * 2
+
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv3d",
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
+        strides=stride,
+        padding=pad,
+        data_format=data_format,
+        dilations=dilations,
+    )
 
 
 # conv3d_transpose
