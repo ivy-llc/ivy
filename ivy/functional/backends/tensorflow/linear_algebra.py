@@ -26,6 +26,9 @@ def cholesky(
     return ret
 
 
+cholesky.unsupported_dtypes = ("float16",)
+
+
 def cross(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -46,6 +49,9 @@ def det(
     return ret
 
 
+det.unsupported_dtypes = ("float16",)
+
+
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
     offset: int = 0,
@@ -63,6 +69,9 @@ def eigh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return ret
 
 
+eigh.unsupported_dtypes = ("float16",)
+
+
 def eigvalsh(
     x: Union[tf.Tensor, tf.Variable],
     *,
@@ -70,6 +79,9 @@ def eigvalsh(
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.linalg.eigvalsh(x)
     return ret
+
+
+eigvalsh.unsupported_dtypes = ("float16",)
 
 
 def inv(
@@ -82,6 +94,9 @@ def inv(
     else:
         ret = tf.linalg.inv(x)
     return ret
+
+
+inv.unsupported_dtypes = ("float16",)
 
 
 def matmul(
@@ -183,6 +198,9 @@ def matrix_norm(
     return ret
 
 
+matrix_norm.unsupported_dtypes = ("float16",)
+
+
 def matrix_power(
     x: Union[tf.Tensor, tf.Variable],
     n: int,
@@ -211,6 +229,9 @@ def matrix_power(
     # replace any -0 with 0
     result = tf.where(tf.equal(result, -0), tf.zeros_like(result), result)
     return result
+
+
+matrix_power.unsupported_dtypes = ("int8", "float16")
 
 
 # noinspection PyPep8Naming
@@ -249,6 +270,19 @@ def matrix_transpose(
     return ret
 
 
+matrix_transpose.unsupported_dtypes = (
+    "float16",
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+)
+
+
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
@@ -272,6 +306,9 @@ def pinv(
     return ret
 
 
+pinv.unsupported_dtypes = ("float16",)
+
+
 def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
@@ -288,6 +325,9 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     return ret
 
 
+qr.unsupported_dtypes = ("float16",)
+
+
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -297,6 +337,9 @@ def slogdet(
     sign, logabsdet = tf.linalg.slogdet(x)
     ret = results(sign, logabsdet)
     return ret
+
+
+slogdet.unsupported_dtypes = ("float16",)
 
 
 def solve(
@@ -338,6 +381,9 @@ def solve(
     return ret
 
 
+solve.unsupported_dtypes = ("float16",)
+
+
 def svd(
     x: Union[tf.Tensor, tf.Variable],
     full_matrices: bool = True,
@@ -353,6 +399,9 @@ def svd(
     return ret
 
 
+svd.unsupported_dtypes = ("float16",)
+
+
 def svdvals(
     x: Union[tf.Tensor, tf.Variable],
     *,
@@ -360,6 +409,9 @@ def svdvals(
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.linalg.svd(x, compute_uv=False)
     return ret
+
+
+svdvals.unsupported_dtypes = ("float16",)
 
 
 def tensordot(
@@ -391,6 +443,9 @@ def trace(
     return ret
 
 
+trace.unsupported_dtypes = ("float16",)
+
+
 def vecdot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -402,6 +457,9 @@ def vecdot(
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
     ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
     return ret
+
+
+vecdot.unsupported_dtypes = ("int8",)
 
 
 def vector_norm(
@@ -432,6 +490,9 @@ def vector_norm(
     return ret
 
 
+vector_norm.unsupported_dtypes = ("float16",)
+
+
 # Extra #
 # ------#
 
@@ -457,3 +518,18 @@ def vector_to_skew_symmetric_matrix(
     # BS x 3 x 3
     ret = tf.concat((row1, row2, row3), -2)
     return ret
+
+
+vector_to_skew_symmetric_matrix.unsupported_dtypes = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "float16",
+    "float64",
+)
+# vector_to_skew_symmetric_matrix.unsupported_dtypes = ("float16", "float64")

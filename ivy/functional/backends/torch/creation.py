@@ -1,8 +1,9 @@
+# For Review
 # global
 import numpy as np
 import torch
 from torch import Tensor
-from typing import Union, List, Optional, Sequence
+from typing import Union, Tuple, List, Optional, Sequence
 
 # local
 import ivy
@@ -37,14 +38,14 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
 
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
-    start,
-    stop=None,
-    step=1,
+    start: float,
+    stop: Optional[float] = None,
+    step: float = 1,
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
-):
+) -> torch.Tensor:
     if stop is None:
         stop = start
         start = 0
@@ -69,13 +70,13 @@ arange.support_native_out = True
 
 
 def asarray(
-    object_in,
+    object_in: Union[torch.Tensor, np.ndarray, List[float], Tuple[float]],
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
-):
+) -> torch.Tensor:
     if isinstance(object_in, torch.Tensor) and dtype is None:
         dtype = object_in.dtype
     elif (
@@ -106,7 +107,7 @@ def empty(
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
-) -> Tensor:
+) -> torch.Tensor:
     return torch.empty(
         shape,
         dtype=dtype,
@@ -230,16 +231,16 @@ def full_like(
 
 
 def linspace(
-    start,
-    stop,
-    num,
-    axis=None,
-    endpoint=True,
+    start: Union[torch.Tensor, float],
+    stop: Union[torch.Tensor, float],
+    num: int,
+    axis: Optional[int] = None,
+    endpoint: bool = True,
     *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
-):
+) -> torch.Tensor:
     if not endpoint:
         ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
             :-1
@@ -425,19 +426,17 @@ array = asarray
 
 
 def logspace(
-    start,
-    stop,
-    num,
-    base=10.0,
-    axis=None,
+    start: Union[torch.Tensor, int],
+    stop: Union[torch.Tensor, int],
+    num: int,
+    base: float = 10.0,
+    axis: Optional[int] = None,
     *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
-):
-    power_seq = ivy.linspace(
-        start, stop, num, axis, dtype=dtype, device=device
-    )
+) -> torch.Tensor:
+    power_seq = ivy.linspace(start, stop, num, axis, dtype=dtype, device=device)
     return base**power_seq
 
 

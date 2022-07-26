@@ -77,7 +77,7 @@ def conv1d_transpose(
     return res.permute(0, 2, 1)
 
 
-conv1d.unsupported_dtypes = ('float16',)
+conv1d.unsupported_dtypes = ("float16",)
 
 
 # noinspection PyUnresolvedReferences
@@ -137,7 +137,7 @@ def conv2d(
     return res
 
 
-conv2d.unsupported_dtypes = ('float16',)
+conv2d.unsupported_dtypes = ("float16",)
 
 
 # noinspection PyUnresolvedReferences
@@ -232,7 +232,7 @@ def conv3d(
     return res.permute(0, 2, 3, 4, 1)
 
 
-conv3d.unsupported_dtypes = ('float16',)
+conv3d.unsupported_dtypes = ("float16",)
 
 
 # noinspection PyUnresolvedReferences
