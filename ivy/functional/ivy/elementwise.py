@@ -1618,8 +1618,8 @@ def divide(
 @handle_out_argument
 @handle_nestable
 def equal(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
+    x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1643,6 +1643,53 @@ def equal(
         an array containing the element-wise results. The returned array must have a
         data type of bool.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([2., 7., 9.])
+    >>> x2 = ivy.array([1., 7., 9.])
+    >>> y = ivy.equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, True, True])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([2.5, 7.3, 9.375])
+    >>> x2 = ivy.native_array([2.5, 2.9, 9.375])
+    >>> y = ivy.equal(x1, x2)
+    >>> print(y)
+    ivy.array([True, False,  True])
+
+    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.array([5, 6, 9])
+    >>> x2 = ivy.native_array([2, 6, 2])
+    >>> y = ivy.equal(x1, x2)
+    >>> print(y)
+    ivy.array([False, True, False])
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+    >>> x2 = ivy.Container(a=ivy.array([12, 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
+    >>> y = ivy.equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([True, False, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+    >>> x2 = ivy.array([3., 1., 0.9])
+    >>> y = ivy.equal(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([True, True, True])
+    }
     """
     return ivy.current_backend(x1, x2).equal(x1, x2, out=out)
 
@@ -2442,7 +2489,7 @@ def isinf(
 
     >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
     >>> z = ivy.isinf(x)
-    >>> print(x)
+    >>> print(z)
     ivy.array([[[False],
             [True],
             [False]]])
@@ -2814,8 +2861,8 @@ def logaddexp(
 @handle_out_argument
 @handle_nestable
 def logical_and(
-    x1: ivy.Array,
-    x2: ivy.Array,
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2838,6 +2885,59 @@ def logical_and(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of bool.
+    
+    Examples
+    --------
+    >>> x = ivy.array([True, True, False])
+    >>> y = ivy.array([True, False, True])
+    >>> print(ivy.logical_and(x, y))
+    ivy.array([True, False, False])
+
+    >>> ivy.logical_and(x, y, out=y)
+    >>> print(y)
+    ivy.array([True, False, False])
+
+    x = ivy.Container(a=ivy.array([False, True, True]), \
+        b=ivy.array([True, False, False]))
+    y = ivy.Container(a=ivy.array([True, True, False]), \
+        b=ivy.array([False, False, True]))
+    print(ivy.logical_and(y, x))
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    >>> ivy.logical_and(y, x, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([False, False, False])
+    }
+
+    >>> x = ivy.native_array([True, True, False])
+    >>> y = ivy.native_array([True, False, True])
+    >>> print(ivy.logical_and(x, y))
+    ivy.array([True, False, False])
+
+    >>> ivy.logical_and(x, y, out=y)
+    >>> print(y)
+    ivy.array([True, False, False])
+
+    >>> x = ivy.Container(a=ivy.array([False, True, True]), \
+        b=ivy.array([True, False, False]))
+    >>> y = ivy.array([True, False, True])
+    >>> print(ivy.logical_and(y, x))
+    {
+        a: ivy.array([False, False, True]),
+        b: ivy.array([True, False, False])
+    }
+
+    >>> ivy.logical_and(y, x, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([False, False, True]),
+        b: ivy.array([True, False, False])
+    }
 
     """
     return ivy.current_backend(x1, x2).logical_and(x1, x2, out=out)
@@ -2859,6 +2959,15 @@ def logical_not(
        accept input arrays having numeric data types. If non-boolean data types are
        supported, zeros must be considered the equivalent of ``False``, while non-zeros
        must be considered the equivalent of ``True``.
+       
+       **Special cases**
+       
+       For this particular case,
+       
+       - If ``x_i`` is ``NaN``, the result is ``False``.
+       - If ``x_i`` is ``-0``, the result is ``True``.
+       - If ``x_i`` is ``-infinity``, the result is ``False``.
+       - If ``x_i`` is ``+infinity``, the result is ``False``.
 
     Parameters
     ----------
@@ -2873,6 +2982,74 @@ def logical_not(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of ``bool``.
+        
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+    >>> x=ivy.array([1,0,1,1,0])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False,  True])
+    
+    >>> x=ivy.array([2,0,3,5])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False])
+    
+    With :code:`ivy.NativeArray` input:
+    >>> x=ivy.native_array([1,0,1,1,0])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False,  True])
+    
+    >>> x=ivy.native_array([1,0,6,5])
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    ivy.array([False, True, False, False])
+    
+    With :code:`ivy.Container` input:
+    >>> x=ivy.Container(a=ivy.array([1,0,1,1]), b=ivy.array([1,0,8,9]))
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    {
+        a: ivy.array([False, True, False, False]),
+        b: ivy.array([False, True, False, False])
+    }
+    
+    >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
+    >>> y=ivy.logical_not(x)
+    >>> print(y)
+    {
+        a: ivy.array([False, True, False, True]),
+        b: ivy.array([False, False, True, False])
+    }
+    
+    Instance Method Examples
+    ------------------------
+    
+    With :code:`ivy.Array` input:
+    >>> x=ivy.array([0,1,1,0])
+    >>> x.logical_not()
+    ivy.array([ True, False, False,  True])
+    
+    >>> x=ivy.array([2,0,3,9])
+    >>> x.logical_not()
+    ivy.array([False,  True, False, False])
+    
+    With :code:`ivy.Container` input:
+    >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
+    >>> x.logical_not()
+    {
+        a: ivy.array([False, True, True, False]),
+        b: ivy.array([False, False, False, True])
+    }
+    
+    >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
+    >>> x.logical_not()
+    {
+        a: ivy.array([False, True, False, True]),
+        b: ivy.array([False, False, True, False])
+    }
 
     """
     return ivy.current_backend(x).logical_not(x, out=out)
