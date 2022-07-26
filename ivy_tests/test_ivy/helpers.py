@@ -1477,6 +1477,85 @@ def subsets(draw, *, elements):
 
 
 @st.composite
+def array_and_indices(
+    draw,
+    last_dim_same_size=True,
+    allow_inf=False,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    """Generates two arrays x & indices, the values in the indices array are indices of the array x.
+    Draws an integers randomly from the minimum and maximum number of positional
+    arguments a given function can take.
+
+    Parameters
+    ----------
+    last_dim_same_size 
+        True: 
+            The shape of the indices array is the exact same as the shape of the values array.
+        False: 
+            The last dimension of the second array is generated from a range of (0 -> dimension size of first array).
+            This results in output shapes such as x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
+    allow_inf
+        True: inf values are allowed to be generated in the values array
+    min_num_dims
+        The minimum number of dimensions the arrays can have.
+    max_num_dims
+        The maximum number of dimensions the arrays can have.
+    min_dim_size
+        The minimum size of the dimensions of the arrays.
+    max_dim_size
+        The maximum size of the dimensions of the arrays.
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator which generates arrays of values and indices.
+
+    Examples
+    --------
+    @given(
+        array_and_indices=array_and_indices( 
+            last_dim_same_size= False
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10
+            )
+    )
+    @given(
+        array_and_indices=array_and_indices( last_dim_same_size= True)
+    )
+    """
+    x_num_dims = draw(st.integers(min_value=min_num_dims, max_value=max_num_dims))
+    x_dim_size = draw(st.integers(min_value=min_dim_size, max_value=max_dim_size))
+    x = draw(
+        dtype_and_values(
+            available_dtypes=ivy_np.valid_numeric_dtypes,
+            allow_inf=allow_inf,
+            ret_shape=True,
+            min_num_dims=x_num_dims,
+            max_num_dims=x_num_dims,
+            min_dim_size=x_dim_size,
+            max_dim_size=x_dim_size
+        ))
+    indices_shape = list(x[2])
+    if not (last_dim_same_size):
+        indices_dim_size = draw(st.integers(min_value=1, max_value=x_dim_size))
+        indices_shape[-1] = indices_dim_size
+    indices = draw(
+        dtype_and_values(
+            available_dtypes=['int32', 'int64'],
+            allow_inf=False,
+            min_value=0,
+            max_value=max(x[2][-1] - 1, 0),
+            shape=indices_shape
+        ))
+    x = x[0:2]
+    return (x, indices)
+
+
+@st.composite
 def array_values(
     draw,
     *,
