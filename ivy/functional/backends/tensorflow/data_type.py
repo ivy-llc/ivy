@@ -120,7 +120,7 @@ def broadcast_to(
 
 
 def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bool:
-    if isinstance(from_, tf.Tensor):
+    if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
         from_ = from_.dtype
     from_str = str(from_)
     to_str = str(to)

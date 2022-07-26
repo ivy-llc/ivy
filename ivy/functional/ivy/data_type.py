@@ -732,8 +732,8 @@ def default_float_dtype(
 
 # noinspection PyShadowingNames
 def default_dtype(
-    item=None, dtype: Union[ivy.Dtype, str] = None, as_native: Optional[bool] = None
-) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
+    dtype: Union[ivy.Dtype, str] = None, item=None, as_native: Optional[bool] = None
+) -> Union[ivy.Dtype, str]:
     """Summary.
 
     Parameters
@@ -1122,7 +1122,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     -------
     ret
         Boolean, whether the data-type string is un-supported.
-    
+
     Examples
     --------
     >>> ivy.invalid_dtype(dtype_in = None)
