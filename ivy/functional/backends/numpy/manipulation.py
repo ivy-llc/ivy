@@ -32,6 +32,8 @@ def concat(
         highest_dtype = np.promote_types(highest_dtype, i.dtype)
     ret = ret.astype(highest_dtype)
     return ret
+
+
 concat.support_native_out = True
 
 

@@ -35,7 +35,6 @@ def concat(
 
 
 def expand_dims(
-
     x: JaxArray,
     axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> JaxArray:

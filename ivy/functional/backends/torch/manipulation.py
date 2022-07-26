@@ -39,8 +39,8 @@ def expand_dims(
     out_dims = len(axis) + len(x.shape)
     norm_axis = normalize_axis_tuple(axis, out_dims)
     shape_iter = iter(x.shape)
-    out_shape = [1 if current_ax in norm_axis else next(shape_iter) for current_ax in
-                 range(out_dims)]
+    out_shape = [1 if current_ax in norm_axis else next(shape_iter)
+                 for current_ax in range(out_dims)]
 
     # torch.reshape since it can operate on contiguous and non_contiguous tensors
     ret = x.reshape(out_shape)
