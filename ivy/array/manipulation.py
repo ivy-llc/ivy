@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, List, Iterable
+from typing import Optional, Union, Tuple, List, Iterable, Sequence
 from numbers import Number
 
 # local
@@ -41,10 +41,48 @@ class ArrayWithManipulation(abc.ABC):
     def reshape(
         self: ivy.Array,
         shape: Union[ivy.Shape, ivy.NativeShape],
+        copy: Optional[bool] = None,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.reshape(self._data, shape, out=out)
+        """ivy.Array instance method variant of ivy.reshape. This method simply wraps the
+        function, and so the docstring for ivy.reshape also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to be reshaped.
+        shape
+            The new shape should be compatible with the original shape. One shape
+            dimension can be -1. In this case, the value is inferred from the length
+            of the array and remaining dimensions.
+        copy
+            boolean indicating whether or not to copy the input array. If True, the
+            function must always copy. If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary. If None, the function
+            must reuse existing memory buffer if possible and copy otherwise.
+            Default: None.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Reshaped array.
+
+        Examples
+        --------
+        >>> x = ivy.array([[0., 1., 2.]])
+        >>> y = x.reshape((3, 1))
+        >>> print(y)
+        ivy.array([[0.],
+                [1.],
+                [2.]])
+
+        """
+        return ivy.reshape(self._data, shape, copy, out=out)
 
     def permute_dims(
         self: ivy.Array,
@@ -56,8 +94,8 @@ class ArrayWithManipulation(abc.ABC):
 
     def roll(
         self: ivy.Array,
-        shift: Union[int, Tuple[int, ...]],
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        shift: Union[int, Sequence[int]],
+        axis: Optional[Union[int, Sequence[int]]] = None,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -65,6 +103,33 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.roll. This method simply wraps the
         function, and so the docstring for ivy.roll also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        shift
+            number of places by which the elements are shifted. If ``shift`` is a tuple,
+            then ``axis`` must be a tuple of the same size, and each of the given axes
+            must be shifted by the corresponding element in ``shift``. If ``shift`` is
+            an ``int`` and ``axis`` a tuple, then the same ``shift`` must be used for
+            all specified axes. If a shift is positive, then array elements must be
+            shifted positively (toward larger indices) along the dimension of ``axis``.
+            If a shift is negative, then array elements must be shifted negatively
+            (toward smaller indices) along the dimension of ``axis``.
+        axis
+            axis (or axes) along which elements to shift. If ``axis`` is ``None``, the
+            array must be flattened, shifted, and then restored to its original shape.
+            Default ``None``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output array having the same data type as ``self`` and whose elements,
+            relative to ``self``, are shifted.
 
         Examples
         --------
@@ -81,6 +146,18 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.squeeze. This method simply wraps
+        the function, and so the docstring for ivy.squeeze also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[[0.],[ 1.]]])
+        >>> y = x.squeeze(2)
+        >>> print(y)
+        ivy.array([[0., 1.]])
+        """
         return ivy.squeeze(self._data, axis=axis, out=out)
 
     def stack(
@@ -107,6 +184,24 @@ class ArrayWithManipulation(abc.ABC):
         function, and so the docstring for ivy.roll also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            Input array containing elements to clip.
+        x_min
+            Minimum value.
+        x_max
+            Maximum value.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the elements of self, but where values < x_min are replaced
+            with x_min, and those > x_max with x_max.
+
         Examples
         --------
         >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
@@ -123,6 +218,18 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.repeat. This method simply wraps the
+        function, and so the docstring for ivy.repeat also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y= x.repeat(2)
+        >>> print(y)
+        ivy.array([0., 0., 1., 1., 2., 2.])
+        """
         return ivy.repeat(self._data, repeats=repeats, axis=axis, out=out)
 
     def tile(

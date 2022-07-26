@@ -118,6 +118,7 @@ ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod_
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is -0 and x2_i < 0) -> -0]
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i > 0 and x2_i is -0) -> NaN]
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i < 0 and x2_i is -0) -> NaN]
+ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i < 0 and x2_i is +0) -> NaN]
 
 ### Failing for other reasons ###
 

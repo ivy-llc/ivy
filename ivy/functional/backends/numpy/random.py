@@ -6,30 +6,37 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
+from ivy.functional.ivy.random import _check_bounds_and_get_shape, _check_valid_scale
 
 # Extra #
 # ------#
 
 
 def random_uniform(
-    low: float = 0.0,
-    high: float = 1.0,
+    low: Union[float, np.ndarray] = 0.0,
+    high: Union[float, np.ndarray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dtype=None,
     *,
+    dtype: np.dtype,
     device: str,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    shape = _check_bounds_and_get_shape(low, high, shape)
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, np.ndarray] = 0.0,
+    std: Union[float, np.ndarray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
+    dtype: np.dtype,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.random.normal(mean, std, shape))
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
+    return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
 
 def multinomial(
@@ -67,8 +74,16 @@ def multinomial(
     return np.asarray(np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
 
 
+multinomial.support_native_out = True
+
+
 def randint(
-    low: int, high: int, shape: Union[ivy.NativeShape, Sequence[int]], *, device: str
+    low: int,
+    high: int,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    device: str,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.random.randint(low, high, shape)
 
@@ -77,5 +92,5 @@ def seed(seed_value: int = 0) -> None:
     np.random.seed(seed_value)
 
 
-def shuffle(x: np.ndarray) -> np.ndarray:
+def shuffle(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.random.permutation(x)
