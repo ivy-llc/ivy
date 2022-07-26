@@ -1906,7 +1906,7 @@ def num_positional_args(draw, *, fn_name: str = None):
 def bool_val_flags(cl_arg: Union[bool, None]):
     if cl_arg is not None:
         return st.booleans().filter(lambda x: x == cl_arg)
-    return array_bools(num_arrays=1)
+    return st.booleans()
 
 
 def handle_cmd_line_args(test_fn):
@@ -1917,36 +1917,36 @@ def handle_cmd_line_args(test_fn):
             if param.kind == param.KEYWORD_ONLY:
                 if param.name == "data":
                     data = kwargs["data"]
-                if param.name == "as_variable":
+                elif param.name == "as_variable":
                     as_variable = data.draw(
                         bool_val_flags(get_command_line_flags["as-variable"])
                     )
                     kwargs["as_variable"] = as_variable
-                if param.name == "native_array":
+                elif param.name == "native_array":
                     native_array = data.draw(
                         bool_val_flags(get_command_line_flags["native-array"])
                     )
                     kwargs["native_array"] = native_array
-                if param.name == "with_out":
+                elif param.name == "with_out":
                     with_out = data.draw(
                         bool_val_flags(get_command_line_flags["with-out"])
                     )
                     kwargs["with_out"] = with_out
-                if param.name == "instance_method":
+                elif param.name == "instance_method":
                     instance_method = data.draw(
                         bool_val_flags(get_command_line_flags["instance-method"])
                     )
                     kwargs["instance_method"] = instance_method
-                if param.name == "container":
+                elif param.name == "container":
                     container = data.draw(
                         bool_val_flags(get_command_line_flags["nestable"])
                     )
                     kwargs["container"] = container
-                if param.name == "fw":
+                elif param.name == "fw":
                     kwargs["fw"] = fw
-                if param.name == "device":
+                elif param.name == "device":
                     kwargs["device"] = device
-                if param.name == "call":
+                elif param.name == "call":
                     kwargs["call"] = call
         return test_fn(*args, **kwargs)
 

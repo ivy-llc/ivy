@@ -4,8 +4,13 @@ import pytest
 from typing import Dict, Union, Tuple
 from hypothesis import settings
 
+for i in range(1, 5):
+    settings.register_profile(
+        f"num_examples({2**i})", max_examples=2**i, deadline=None
+    )
+
 settings.register_profile("default", max_examples=5, deadline=None)
-settings.load_profile("default")
+settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
 
 # local
 from ivy_tests.test_ivy import helpers
