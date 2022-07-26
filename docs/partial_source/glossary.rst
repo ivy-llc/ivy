@@ -1,9 +1,6 @@
 .. glossary::
    :sorted:
 
-Glossary
-========
-
 builder
     A class (inheriting from :class:`~sphinx.builders.Builder`) that takes
       parsed documents and performs an action on them.  Normally, builders
