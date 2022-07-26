@@ -6,6 +6,7 @@ from typing import Optional, Union
 # local
 import ivy
 from ivy.func_wrapper import (
+    infer_dtype,
     infer_device,
     handle_out_argument,
     to_native_arrays_and_back,
@@ -46,6 +47,7 @@ def _check_bounds_and_get_shape(low, high, shape):
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
+@infer_dtype
 @handle_nestable
 def random_uniform(
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
