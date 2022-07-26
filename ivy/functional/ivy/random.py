@@ -311,12 +311,14 @@ def random_uniform(
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
+@infer_dtype
 @handle_nestable
 def random_normal(
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.array:
@@ -378,7 +380,9 @@ def random_normal(
     }
 
     """
-    return ivy.current_backend().random_normal(mean, std, shape, device=device, out=out)
+    return ivy.current_backend().random_normal(
+        mean, std, shape, dtype=dtype, device=device, out=out
+    )
 
 
 @to_native_arrays_and_back
