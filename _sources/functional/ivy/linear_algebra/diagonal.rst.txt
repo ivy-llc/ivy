@@ -4,6 +4,10 @@ diagonal
 .. autofunction:: ivy.functional.ivy.linear_algebra.diagonal
 
 .. autofunction:: ivy.array.array_methods.diagonal
+
+.. autofunction:: ivy.container.container_methods.static_diagonal
+
+.. autofunction:: ivy.container.container_methods.diagonal
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ diagonal
 
    diagonal/diagonal_functional.rst
    diagonal/diagonal_array.rst
+   diagonal/diagonal_container.rst
+   diagonal/static_diagonal_container.rst
 

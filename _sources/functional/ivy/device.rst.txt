@@ -35,6 +35,8 @@ Device
    device/split_factor.rst
    device/set_split_factor.rst
    device/split_func_call.rst
+   device/function_unsupported_devices.rst
+   device/function_supported_devices.rst
    device/DefaultDevice:
     """"""
 
