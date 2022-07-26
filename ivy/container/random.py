@@ -268,22 +268,22 @@ class ContainerWithRandom(ContainerBase):
                               b=ivy.array([[0.9,2.4],[7.6,5.4]]))
         >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \
                               b=ivy.array([[4.3,5.6],[23.4,54.3]]))
-        >>> ivy.Container.static_random_uniform(x, y, device='cpu', dtype='float64')
+        >>> ivy.Container.static_random_normal(x, y, device='cpu', dtype='float64')
         {
-            a: ivy.array([[10.8, 23.7],
-                          [17., 16.6]]),
-            b: ivy.array([[2.35, 3.69],
-                          [17.4, 48.]])
+            a: ivy.array([[-4.11, 0.651],
+                          [19.3, -30.4]]),
+            b: ivy.array([[1.15, 3.39],
+                          [-9.35, -13.9]])
         }
 
         With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
         >>> x = ivy.array([-1.0,-9.0,-3.4])
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
-        >>> ivy.Container.static_random_uniform(x, y)
+        >>> ivy.Container.static_random_normal(x, y)
         {
-            a: ivy.array([0.481, -8.03, -2.74]),
-            b: ivy.array([0.0999, -7.38, -1.29])
+            a: ivy.array([-0.651, -9.25, -3.54]),
+            b: ivy.array([0.464, -8.51, -3.75])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -357,17 +357,17 @@ class ContainerWithRandom(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([7.5,6.7,0.9]), b=ivy.array([8.7,9.8,4.5]))
-        >>> x.random_uniform(17.4)
+        >>> x.random_normal(17.4)
         {
-            a: ivy.array([11.2, 10.5, 13.1]),
-            b: ivy.array([11.2, 11.9, 6.01])
+            a: ivy.array([8.79, 27.2, 7.01]),
+            b: ivy.array([-18.6, 11.4, 15.])
         }
 
         >>> y = ivy.Container(a=10.4, b=17.4)
-        >>> x.random_uniform(y, device='cpu')
+        >>> x.random_normal(y, device='cpu')
         {
-            a: ivy.array([8.55, 10.1, 4.08]),
-            b: ivy.array([9.45, 9.9, 8.6])
+            a: ivy.array([11.8, 7.45, 9.95]),
+            b: ivy.array([-15.1, 29., 30.2])
         }
 
         >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
@@ -375,12 +375,12 @@ class ContainerWithRandom(ContainerBase):
         >>> y = ivy.Container(a=ivy.array([[10.9,32.4],[18.7,19.6]]), \
                               b=ivy.array([[4.3,5.6],[23.4,54.3]]))
         >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
-        >>> x.random_uniform(y, device='cpu', dtype='float64', out=z)
+        >>> x.random_normal(y, device='cpu', dtype='float64', out=z)
         {
-            a: ivy.array([[10.4, 29.8],
-                          [12.1, 3.9]]),
-            b: ivy.array([[3.79, 5.4],
-                          [16.2, 31.7]])
+            a: ivy.array([[-12.7, 72.7],
+                          [12.8, -0.0762]]),
+            b: ivy.array([[-6.56, -5.12], 
+                          [12.8, 13.2]])
         }
         """
         return self.static_random_normal(
