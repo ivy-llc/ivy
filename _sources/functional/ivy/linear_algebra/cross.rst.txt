@@ -4,6 +4,10 @@ cross
 .. autofunction:: ivy.functional.ivy.linear_algebra.cross
 
 .. autofunction:: ivy.array.array_methods.cross
+
+.. autofunction:: ivy.container.container_methods.cross
+
+.. autofunction:: ivy.container.container_methods.static_cross
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ cross
 
    cross/cross_functional.rst
    cross/cross_array.rst
+   cross/cross_container.rst
+   cross/static_cross_container.rst
 

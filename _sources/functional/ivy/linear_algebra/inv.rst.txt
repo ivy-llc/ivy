@@ -4,6 +4,10 @@ inv
 .. autofunction:: ivy.functional.ivy.linear_algebra.inv
 
 .. autofunction:: ivy.array.array_methods.inv
+
+.. autofunction:: ivy.container.container_methods.inv
+
+.. autofunction:: ivy.container.container_methods.static_inv
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ inv
 
    inv/inv_functional.rst
    inv/inv_array.rst
+   inv/inv_container.rst
+   inv/static_inv_container.rst
 

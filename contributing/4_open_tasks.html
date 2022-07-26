@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="FAQ" href="../faq.html" />
-    <link rel="prev" title="Ivy Tests" href="../deep_dive/14_ivy_tests.html" /> 
+    <link rel="prev" title="Ivy Tests" href="../deep_dive/15_ivy_tests.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -193,8 +193,9 @@ Specifically, you <strong>do not</strong> need to address the following:</p>
 <p>However, everything else covered in the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> must be addressed.
 Some common important tasks are:</p>
 <ol class="arabic simple">
-<li><p>remove all <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> and direct bindings for the backend functions,
-with each function instead defined using <code class="code docutils literal notranslate"><span class="pre">def</span></code>.</p></li>
+<li><p>remove all <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> and direct bindings for the backend functions
+(in <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends</span></code>), with each function instead defined using
+<code class="code docutils literal notranslate"><span class="pre">def</span></code>.</p></li>
 <li><p>implement the following if they don’t exist but should do: <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance
 method, <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method, <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method,
 <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method, <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method,
@@ -205,9 +206,9 @@ category-specific parent class, such as <code class="code docutils literal notra
 <li><p>correct all of the <a class="reference internal" href="../deep_dive/10_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> and the type hints for every
 function <strong>and</strong> its <em>relevant methods</em>, including those you did not implement
 yourself.</p></li>
-<li><p>add the correct <a class="reference internal" href="../deep_dive/11_docstrings.html#docstrings"><span class="std std-ref">Docstrings</span></a> to every function <strong>and</strong> its <em>relevant methods</em>,
+<li><p>add the correct <a class="reference internal" href="../deep_dive/12_docstrings.html#docstrings"><span class="std std-ref">Docstrings</span></a> to every function <strong>and</strong> its <em>relevant methods</em>,
 including those you did not implement yourself.</p></li>
-<li><p>add thorough <a class="reference internal" href="../deep_dive/12_docstring_examples.html#docstring-examples"><span class="std std-ref">Docstring Examples</span></a> for every function <strong>and</strong> its
+<li><p>add thorough <a class="reference internal" href="../deep_dive/13_docstring_examples.html#docstring-examples"><span class="std std-ref">Docstring Examples</span></a> for every function <strong>and</strong> its
 <em>relevant methods</em></p></li>
 </ol>
 </section>
@@ -231,7 +232,7 @@ or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQ
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../deep_dive/14_ivy_tests.html" class="btn btn-neutral float-left" title="Ivy Tests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../deep_dive/15_ivy_tests.html" class="btn btn-neutral float-left" title="Ivy Tests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

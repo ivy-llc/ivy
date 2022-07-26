@@ -4,6 +4,10 @@ qr
 .. autofunction:: ivy.functional.ivy.linear_algebra.qr
 
 .. autofunction:: ivy.array.array_methods.qr
+
+.. autofunction:: ivy.container.container_methods.qr
+
+.. autofunction:: ivy.container.container_methods.static_qr
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ qr
 
    qr/qr_functional.rst
    qr/qr_array.rst
+   qr/qr_container.rst
+   qr/static_qr_container.rst
 
