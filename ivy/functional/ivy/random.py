@@ -41,10 +41,12 @@ def _check_bounds_and_get_shape(low, high, shape):
 
 
 def _randint_check_dtype_and_bound(low, high, dtype):
-    if ivy.is_float_dtype(dtype):
+    if ivy.is_float_dtype(dtype) or ivy.is_uint_dtype(dtype):
         raise Exception("randint cannot take `float` dtype")
     if ivy.is_uint_dtype(low) or ivy.is_uint_dtype(high):
         raise Exception("`low` and `high` cannot take `uint` dtype")
+    if ivy.is_float_dtype(low) or ivy.is_float_dtype(high):
+        raise Exception("`low` and `high` cannot take `float` dtype")
     if ivy.any(ivy.greater_equal(low, high)):
         raise Exception("`low` must be smaller than `high`")
 
