@@ -151,7 +151,7 @@
 <span class="sd">        ivy.Container static method variant of ivy.relu.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.relu also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
@@ -169,13 +169,13 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container with the rectified linear activation unit function</span>
-<span class="sd">            applied element-wise.</span>
-
+<span class="sd">            a container with the rectified linear activation unit function </span>
+<span class="sd">            applied element-wise.     </span>
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))</span>
@@ -184,7 +184,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([1., 0., 1.])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
@@ -209,7 +209,7 @@
 <span class="sd">        ivy.Container instance method variant of ivy.relu.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.relu also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -227,13 +227,13 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container with the rectified linear activation unit function</span>
-<span class="sd">            applied element-wise.</span>
-
+<span class="sd">            a container with the rectified linear activation unit function </span>
+<span class="sd">            applied element-wise.   </span>
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))</span>
@@ -242,7 +242,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([1., 0., 1.])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_relu</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -263,7 +263,7 @@
 <span class="sd">        ivy.Container static method variant of ivy.leaky_relu.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.leaky_relu also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
@@ -283,12 +283,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">             a container with the leaky relu unit function applied element-wise.</span>
-
+<span class="sd">             </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a =ivy.array([0.39, -0.85]))</span>
@@ -297,7 +297,7 @@
 <span class="sd">        {</span>
 <span class="sd">              a: ivy.array([0.39, -0.17])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;leaky_relu&quot;</span><span class="p">,</span>
@@ -324,7 +324,7 @@
 <span class="sd">        ivy.Container instance method variant of ivy.leaky_relu.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.leaky_relu also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -344,12 +344,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">           a container with the leaky relu unit function applied element-wise.</span>
-
+<span class="sd">           a container with the leaky relu unit function applied element-wise.  </span>
+<span class="sd">           </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a =ivy.array([0.39, -0.85]))</span>
@@ -358,7 +358,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0.39, -0.17])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_leaky_relu</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -379,7 +379,7 @@
 <span class="sd">        ivy.Container static method variant of ivy.gelu.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.gelu also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
@@ -399,12 +399,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            a container with the gelu unit function applied element-wise.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a =ivy.array([0.3, -0.1]))</span>
@@ -413,7 +413,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0.185, -0.046])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;gelu&quot;</span><span class="p">,</span>
@@ -440,7 +440,7 @@
 <span class="sd">        ivy.Container instance method variant of ivy.gelu.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.gelu also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -460,12 +460,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            a container with the gelu unit function applied element-wise.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a =ivy.array([0.3, -0.1]))</span>
@@ -474,16 +474,15 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0.185, -0.046])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_gelu</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">approximate</span><span class="p">,</span>
-            <span class="n">key_chains</span><span class="p">,</span>
-            <span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="p">,</span>
             <span class="n">map_sequences</span><span class="p">,</span>
-            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithActivations.static_tanh"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_tanh">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -500,7 +499,7 @@
 <span class="sd">        ivy.Container static method variant of ivy.tanh.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.tanh also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
@@ -518,13 +517,13 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container with Hyperbolic tangent activation function</span>
-<span class="sd">            applied element-wise.</span>
-
+<span class="sd">            a container with Hyperbolic tangent activation function </span>
+<span class="sd">            applied element-wise.    </span>
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0.55 , -0.55]]))</span>
@@ -533,7 +532,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[0.501, -0.501]])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;tanh&quot;</span><span class="p">,</span>
@@ -558,7 +557,7 @@
 <span class="sd">        ivy.Container instance method variant of ivy.tanh.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.tanh also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -576,13 +575,13 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">              a container with Hyperbolic tangent activation function</span>
+<span class="sd">              a container with Hyperbolic tangent activation function </span>
 <span class="sd">              applied element-wise.</span>
-
+<span class="sd">              </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0.55 , -0.55]]))</span>
@@ -591,7 +590,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[0.501, -0.501]])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_tanh</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -611,7 +610,7 @@
 <span class="sd">        ivy.Container static method variant of ivy.sigmoid.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.sigmoid also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
@@ -629,12 +628,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container with the sigmoid unit function applied element-wise.</span>
-
+<span class="sd">            a container with the sigmoid unit function applied element-wise.    </span>
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1., 1., 2.]))</span>
@@ -643,7 +642,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0.269, 0.731, 0.881])</span>
 <span class="sd">        }</span>
-
+<span class="sd">      </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span>
@@ -668,7 +667,7 @@
 <span class="sd">        ivy.Container instance method variant of ivy.sigmoid.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.sigmoid also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -686,12 +685,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            a container with the sigmoid unit function applied element-wise.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1., 1., 2.]))</span>
@@ -700,7 +699,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0.269, 0.731, 0.881])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_sigmoid</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -721,7 +720,7 @@
 <span class="sd">        ivy.Container static method variant of ivy.softmax.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.softmax also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
@@ -741,12 +740,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container with the softmax unit function applied element-wise.</span>
-
+<span class="sd">            a container with the softmax unit function applied element-wise.  </span>
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))</span>
@@ -755,7 +754,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0.422, 0.155, 0.422])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;softmax&quot;</span><span class="p">,</span>
@@ -766,6 +765,7 @@
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithActivations.softmax"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.softmax">[docs]</a>    <span class="k">def</span> <span class="nf">softmax</span><span class="p">(</span>
@@ -782,7 +782,7 @@
 <span class="sd">        ivy.Container instance method variant of ivy.softmax.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.softmax also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -802,12 +802,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container with the softmax unit function applied element-wise.</span>
-
+<span class="sd">            a container with the softmax unit function applied element-wise. </span>
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))</span>
@@ -816,7 +816,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0.422, 0.155, 0.422])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_softmax</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -836,7 +836,7 @@
 <span class="sd">        ivy.Container static method variant of ivy.softplus.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.softplus also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
@@ -854,12 +854,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            a container with the softplus unit function applied element-wise.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))</span>
@@ -868,7 +868,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0.535, 0.42])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;softplus&quot;</span><span class="p">,</span>
@@ -893,7 +893,7 @@
 <span class="sd">        ivy.Container instance method variant of ivy.softplus.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.softplus also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -911,12 +911,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container with the softplus unit function applied element-wise.</span>
-
+<span class="sd">            a container with the softplus unit function applied element-wise.  </span>
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))</span>
@@ -925,7 +925,7 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0.535, 0.42])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_softplus</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>

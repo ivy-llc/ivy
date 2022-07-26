@@ -233,68 +233,14 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    arrays</span>
-<span class="sd">        an arbitrary number of arrays to-be broadcasted.</span>
-<span class="sd">        Each array must have the same shape. Each array must have the same dtype as its</span>
-<span class="sd">        corresponding input array.</span>
+<span class="sd">        an arbitrary number of to-be broadcasted arrays.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        A list containing broadcasted arrays of type `ivy.Array`</span>
+<span class="sd">        Each array must have the same shape. Each array must have the same dtype as its</span>
+<span class="sd">        corresponding input array.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([4, 5, 6])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.broadcast_arrays(x1, x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [ivy.array([1, 2, 3]), ivy.array([4, 5, 6])]</span>
-
-<span class="sd">    With :code:`ivy.NativeArray` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.native_array([0.3, 4.3])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([3.1, 5])</span>
-<span class="sd">    &gt;&gt;&gt; x3 = ivy.native_array([2, 0])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.broadcast_arrays(x1, x2, x3)</span>
-<span class="sd">    [ivy.array([0.3, 4.3]), ivy.array([3.1, 5.]), ivy.array([2, 0])]</span>
-
-<span class="sd">    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 2])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([0.3, 4.3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.broadcast_arrays(x1, x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [ivy.array([1, 2]), ivy.array([0.3, 4.3])]</span>
-
-<span class="sd">    With :code:`ivy.Container` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([3, 1]), b=ivy.zeros(2))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.broadcast_arrays(x1, x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [{</span>
-<span class="sd">        a: ivy.array([3, 1]),</span>
-<span class="sd">        b: ivy.array([0., 0.])</span>
-<span class="sd">    }, {</span>
-<span class="sd">        a: ivy.array([4, 5]),</span>
-<span class="sd">        b: ivy.array([2, -1])</span>
-<span class="sd">    }]</span>
-
-<span class="sd">    With mixed :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.zeros(2)</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.broadcast_arrays(x1, x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [{</span>
-<span class="sd">        a: ivy.array([0., 0.]),</span>
-<span class="sd">        b: ivy.array([0., 0.])</span>
-<span class="sd">    }, {</span>
-<span class="sd">        a: ivy.array([4, 5]),</span>
-<span class="sd">        b: ivy.array([2, -1])</span>
-<span class="sd">    }]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">)</span></div>
 
