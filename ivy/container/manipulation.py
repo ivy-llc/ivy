@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Tuple, Dict, Iterable
+from typing import Optional, Union, List, Tuple, Dict, Iterable, Sequence
 from numbers import Number
 
 # local
@@ -119,6 +119,7 @@ class ContainerWithManipulation(ContainerBase):
     def reshape(
         self: ivy.Container,
         shape: Union[ivy.Shape, ivy.NativeShape, ivy.Container],
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -126,9 +127,67 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.reshape. This method simply wraps the
+        function, and so the docstring for ivy.reshape also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container.
+        shape
+            The new shape should be compatible with the original shape. One shape
+            dimension can be -1. In this case, the value is inferred from the length
+            of the array and remaining dimensions.
+        copy
+            boolean indicating whether or not to copy the input array. If True, the 
+            function must always copy. If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary. If None, the function
+            must reuse existing memory buffer if possible and copy otherwise.
+            Default: None.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Reshaped array.
+
+        Examples
+        --------
+
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
+                            b=ivy.array([[6., 7., 8.], [9., 10., 11.]]))
+        >>> y = x.reshape((-1, 2))
+        >>> print(y)
+        {
+            a: ivy.array([[0., 1.],
+                        [2., 3.],
+                        [4., 5.]]),
+            b: ivy.array([[6., 7.],
+                        [8., 9.],
+                        [10., 11.]])
+        }
+
+        """
         return ContainerBase.handle_inplace(
             self.map(
-                lambda x_, _: ivy.reshape(x_, shape=shape) if ivy.is_array(x_) else x_,
+                lambda x_, _: ivy.reshape(x_, shape=shape, copy=copy)
+                if ivy.is_array(x_)
+                else x_,
                 key_chains,
                 to_apply,
                 prune_unapplied,
@@ -230,8 +289,8 @@ class ContainerWithManipulation(ContainerBase):
 
     def roll(
         self: ivy.Container,
-        shift: Union[int, Tuple[int, ...], ivy.Container],
-        axis: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
+        shift: Union[int, Sequence[int], ivy.Container],
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -312,6 +371,31 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.squeeze. This method simply wraps
+        the function, and so the docstring for ivy.squeeze also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
+                              b=ivy.array([[[11.], [12.]]]))
+        >>> y = x.squeeze(2)
+        >>> print(y)
+        {
+            a: ivy.array([[10., 11.]]),
+            b: ivy.array([[11., 12.]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]), \
+                              b=ivy.array([[[11.], [12.]]]))
+        >>> y = x.squeeze(0)
+        >>> print(y)
+        {
+            a: ivy.array([[10.], [11.]]),
+            b: ivy.array([[11.], [12.]])
+        }
+        """
         return ContainerBase.handle_inplace(
             self.map(
                 lambda x_, _: ivy.squeeze(x_, axis=axis) if ivy.is_array(x_) else x_,
@@ -361,6 +445,45 @@ class ContainerWithManipulation(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_repeat(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        repeats: Union[int, Iterable[int]],
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.repeat. This method simply wraps the
+        function, and so the docstring for ivy.repeat also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_repeat(2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0., 1., 1., 2., 2.]),
+            b: ivy.array([3., 3., 4., 4., 5., 5.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "repeat",
+            x,
+            repeats,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def repeat(
         self: ivy.Container,
         repeats: Union[int, Iterable[int]],
@@ -372,16 +495,29 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.repeat(x_, repeats=repeats, axis=axis)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+        """
+        ivy.Container instance method variant of ivy.repeat. This method
+        simply wraps the function, and so the docstring for ivy.repeat
+        also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.repeat(2)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0., 1., 1., 2., 2.]),
+            b: ivy.array([3., 3., 4., 4., 5., 5.])
+        }
+        """
+        return self.static_repeat(
+            self,
+            repeats,
+            axis,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out=out,
         )
 

@@ -1,6 +1,6 @@
 # global
 import tensorflow as tf
-from typing import NamedTuple, Union
+from typing import NamedTuple, Union, Optional
 from collections import namedtuple
 
 
@@ -62,6 +62,10 @@ def unique_inverse(
     return out(values, inverse_indices)
 
 
-def unique_values(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def unique_values(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.unique(tf.reshape(x, [-1]))[0]
     return ret

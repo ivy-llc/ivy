@@ -13,6 +13,9 @@ def all(
     return np.asarray(np.all(x, axis=axis, keepdims=keepdims, out=out))
 
 
+all.support_native_out = True
+
+
 def any(
     x: np.ndarray,
     axis: Optional[Union[int, Sequence[int]]] = None,
@@ -21,3 +24,6 @@ def any(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.asarray(np.any(x, axis=axis, keepdims=keepdims, out=out))
+
+
+any.support_native_out = True
