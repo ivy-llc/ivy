@@ -199,6 +199,79 @@ class ContainerWithManipulation(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+    def reshape(
+        self: ivy.Container,
+        shape: Union[int, Tuple[int], List[int]],
+        copy: Optional[bool] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.reshape. This method simply wraps the
+        function, and so the docstring for ivy.reshape also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        shape
+            The new shape should be compatible with the original shape. One shape dimension
+            can be -1. In this case, the value is inferred from the length of the array and
+            remaining dimensions.
+        copy
+             boolean indicating whether or not to copy the input array.
+             If True, the function must always copy.
+             If False, the function must never copy and must
+             raise a ValueError in case a copy would be necessary.
+             If None, the function must reuse existing memory buffer if possible
+             and copy otherwise. Default: None.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container having the same data type as ``self`` and elements as ``self``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
+                              b=ivy.array([0, 1, 2, 3, 4, 5]))
+        >>> y = x.reshape((2,3))
+        >>> print(y)
+        {
+            a: ivy.array([[0, 1, 2],
+                          [3, 4, 5]]),
+            b: ivy.array([[0, 1, 2],
+                          [3, 4, 5]])
+        }
+        """
+        return self.static_reshape(
+            self,
+            shape,
+            copy,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
+        ) 
 
     @staticmethod
     def static_roll(
