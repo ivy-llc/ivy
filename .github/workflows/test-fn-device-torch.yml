@@ -25,7 +25,7 @@ jobs:
           unzip examples.zip
           rm examples.zip
 
-      - name: Run Creation Tests
+      - name: Run Device Tests
         run: |
           cd ivy
           mkdir -p .hypothesis
