@@ -40,6 +40,15 @@ def _check_bounds_and_get_shape(low, high, shape):
     return ()
 
 
+def _randint_check_dtype_and_bound(low, high, dtype):
+    if ivy.is_float_dtype(dtype):
+        raise Exception("randint cannot take `float` dtype")
+    if ivy.is_uint_dtype(low) or ivy.is_uint_dtype(high):
+        raise Exception("`low` and `high` cannot take `uint` dtype")
+    if ivy.any(ivy.greater_equal(low, high)):
+        raise Exception("`low` must be smaller than `high`")
+
+
 # Extra #
 # ------#
 
@@ -485,7 +494,7 @@ def multinomial(
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
-    shape: Union[ivy.Shape, ivy.NativeShape],
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
