@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, strategies as st
 
 
 # local
@@ -469,14 +469,24 @@ def test_as_ivy_dtype(
     assert isinstance(res, str), f"result={res!r}, but should be str"
 
 
+_valid_dtype_in_all_frameworks = [
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "float16",
+    "float32",
+    "float64",
+    "bool",
+]
+
+
 # as_native_dtype
-@given(
-    input_dtype=st.sampled_from(ivy.valid_dtypes),
-)
+@given(input_dtype=st.sampled_from(_valid_dtype_in_all_frameworks))
 def test_as_native_dtype(
     input_dtype,
 ):
-    assume(input_dtype in ivy.valid_dtypes)
     res = ivy.as_native_dtype(input_dtype)
     if isinstance(input_dtype, ivy.NativeDtype):
         assert isinstance(res, ivy.NativeDtype)
@@ -490,13 +500,10 @@ def test_as_native_dtype(
 
 
 # closest_valid_dtypes
-@given(
-    input_dtype=st.sampled_from(ivy.valid_dtypes),
-)
+@given(input_dtype=st.sampled_from(_valid_dtype_in_all_frameworks))
 def test_closest_valid_dtype(
     input_dtype,
 ):
-    assume(input_dtype in ivy.valid_dtypes)
     res = ivy.closest_valid_dtype(input_dtype)
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(input_dtype, str)
     assert isinstance(res, ivy.Dtype) or isinstance(
@@ -541,7 +548,6 @@ def test_default_dtype(
     num_positional_args=helpers.num_positional_args(fn_name="dtype"),
     native_array=st.booleans(),
     container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_dtype(
     array,
@@ -551,7 +557,6 @@ def test_dtype(
     num_positional_args,
     native_array,
     container,
-    instance_method,
     fw,
 ):
     helpers.test_function(
@@ -980,12 +985,3 @@ def test_valid_dtype(dtype_in, fw):
         assert res is False, (
             f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
         )
-
-
-# Still to Add #
-# ------------ #
-
-
-# default_dtype
-# default_int_dtype
-# test_dtype

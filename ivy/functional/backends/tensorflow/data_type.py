@@ -156,7 +156,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
 
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
-) -> tf.DType:
+) -> ivy.Dtype:
     if len(arrays_and_dtypes) <= 1:
         return tf.experimental.numpy.result_type(arrays_and_dtypes)
 
