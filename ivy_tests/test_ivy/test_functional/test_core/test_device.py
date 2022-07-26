@@ -54,6 +54,14 @@ def _get_possible_devices():
     return list(map(ivy.Device, devices))
 
 
+def _empty_dir(path, recreate=False):
+    # Delete the directory if it exists and create it again if recreate is True
+    if os.path.exists(path):
+        shutil.rmtree(path)
+    if recreate:
+        os.makedirs(path)
+
+
 # Tests #
 # ------#
 
@@ -388,11 +396,8 @@ def test_profiler(device, fw):
     log_dir = os.path.join(this_dir, "../log")
     fw_log_dir = os.path.join(log_dir, fw)
 
-    # Remove old content
-    if os.path.exists(fw_log_dir):
-        shutil.rmtree(fw_log_dir)
-    # Make a directory to put the logs
-    os.makedirs(fw_log_dir)
+    # Remove old content and recreate log dir
+    _empty_dir(fw_log_dir, True)
 
     # with statement
     with ivy.Profiler(fw_log_dir):
@@ -403,10 +408,11 @@ def test_profiler(device, fw):
     # Should have content in folder
     assert len(os.listdir(fw_log_dir)) != 0, "Profiler did not log anything"
 
-    # Remove old content
-    if os.path.exists(fw_log_dir):
-        shutil.rmtree(fw_log_dir)
-    os.makedirs(fw_log_dir)
+    # Remove old content and recreate log dir
+    _empty_dir(fw_log_dir, True)
+
+    # Profiler should stop log
+    assert len(os.listdir(fw_log_dir)) == 0, "Profiler logged something while stopped"
 
     # start and stop methods
     profiler = ivy.Profiler(fw_log_dir)
@@ -418,6 +424,11 @@ def test_profiler(device, fw):
 
     # Should have content in folder
     assert len(os.listdir(fw_log_dir)) != 0, "Profiler did not log anything"
+
+    # Remove old content including the logging folder
+    _empty_dir(fw_log_dir, False)
+
+    assert not os.path.exists(fw_log_dir), "Profiler recreated logging folder"
 
 
 @given(num=st.integers(0, 5))
