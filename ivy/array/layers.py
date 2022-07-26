@@ -62,42 +62,42 @@ class ArrayWithLayers(abc.ABC):
 
     def conv1d(
         self: ivy.Array,
-            filters: Union[ivy.Array, ivy.NativeArray],
-            strides: int,
-            padding: str,
-            data_format: str = "NWC",
-            dilations: int = 1,
-            *,
-            out: Optional[ivy.Array] = None,
+        filters: Union[ivy.Array, ivy.NativeArray],
+        strides: int,
+        padding: str,
+        data_format: str = "NWC",
+        dilations: int = 1,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.conv1d. This method simply
         wraps the function, and so the docstring for ivy.conv1d also applies
         to this method with minimal changes.
 
-       Parameters
-    ----------
-    x
-        Input image *[batch_size,w,d_in]*.
-    filters
-        Convolution filters *[fw,d_in,d_out]*.
-    strides
-        The stride of the sliding window for each dimension of input.
-    padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
-    data_format
-        NWC" or "NCW". Defaults to "NWC".
-    dilations
-        The dilation factor for each dimension of input. (Default value = 1)
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,w,d_in]*.
+        filters
+            Convolution filters *[fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+            paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
 
-    Returns
-    -------
-    ret
-        The result of the convolution operation.
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
 
         Examples
         --------
