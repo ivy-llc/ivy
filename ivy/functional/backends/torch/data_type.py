@@ -69,7 +69,7 @@ def astype(x: torch.Tensor, dtype: torch.dtype, *, copy: bool = True) -> torch.T
 
 
 def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
-    return torch.broadcast_tensors(*arrays)
+    return list(torch.broadcast_tensors(*arrays))
 
 
 def broadcast_to(
