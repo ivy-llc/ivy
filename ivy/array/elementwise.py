@@ -535,6 +535,17 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the hyperbolic cosine of each element in ``self``.
             The returned array must have a floating-point data type determined by
             :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1., 2., 3.])
+        >>> print(x.cosh())
+            ivy.array([1.54, 3.76, 10.1])
+
+        >>> x = ivy.array([0.23, 3., -1.2])
+        >>> y = ivy.zeros(3)
+        >>> print(x.cosh(out=y))
+            ivy.array([1.03, 10.1, 1.81])
         """
         return ivy.cosh(self._data, out=out)
 
@@ -1124,6 +1135,16 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        Using 'ivy.Array' instance:
+
+        >>> x = ivy.array([True, False, True, False])
+        >>> y = ivy.array([True, True, False, False])
+        >>> z = x.logical_and(y)
+        >>> print(z)
+        ivy.array([True, False, False, False])
         """
         return ivy.logical_and(self._data, x2, out=out)
 
