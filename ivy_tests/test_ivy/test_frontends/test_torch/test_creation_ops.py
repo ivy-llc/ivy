@@ -1,4 +1,5 @@
 # global
+import ivy
 from hypothesis import given, strategies as st
 
 # local
@@ -6,7 +7,38 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.torch as ivy_torch
 
 
-# ones
+@st.composite
+def _dtypes(draw):
+    return draw(
+        st.shared(
+            helpers.list_of_length(
+                x=st.sampled_from(ivy_torch.valid_numeric_dtypes), length=1
+            ),
+            key="dtype",
+        )
+    )
+
+
+@st.composite
+def _fill_value(draw):
+    dtype = draw(_dtypes())[0]
+    if ivy.is_uint_dtype(dtype):
+        return draw(st.integers(0, 5))
+    if ivy.is_int_dtype(dtype):
+        return draw(st.integers(-5, 5))
+    return draw(st.floats(-5, 5))
+
+
+@st.composite
+def _requires_grad(draw):
+    dtype = draw(_dtypes())[0]
+    if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
+        return draw(st.just(False))
+    else:
+        return draw(st.booleans())
+
+
+# full
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -15,28 +47,33 @@ import ivy.functional.backends.torch as ivy_torch
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=st.sampled_from(ivy_torch.valid_numeric_dtypes),
-    with_out=st.booleans(),
+    fill_value=_fill_value(),
+    dtypes=_dtypes(),
+    requires_grad=_requires_grad(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.ones"
+        fn_name="ivy.functional.frontends.torch.full"
     ),
 )
-def test_torch_ones(
+def test_torch_full(
     shape,
-    dtype,
-    with_out,
+    fill_value,
+    dtypes,
+    requires_grad,
+    device,
     num_positional_args,
     fw,
 ):
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtypes,
         as_variable_flags=False,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=False,
         fw=fw,
         frontend="torch",
-        fn_name="ones",
+        fn_name="full",
         size=shape,
-        dtype=dtype,
+        fill_value=fill_value,
+        device=device,
+        requires_grad=requires_grad,
     )

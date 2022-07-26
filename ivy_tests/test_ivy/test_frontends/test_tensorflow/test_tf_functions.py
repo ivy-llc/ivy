@@ -1,4 +1,5 @@
 # global
+import ivy
 import numpy as np
 from hypothesis import given, strategies as st
 
@@ -131,7 +132,29 @@ def test_tensorflow_concat(
     )
 
 
-# ones
+@st.composite
+def _dtypes(draw):
+    return draw(
+        st.shared(
+            helpers.list_of_length(
+                x=st.sampled_from(ivy_tf.valid_numeric_dtypes), length=1
+            ),
+            key="dtype",
+        )
+    )
+
+
+@st.composite
+def _fill_value(draw):
+    dtype = draw(_dtypes())[0]
+    if ivy.is_uint_dtype(dtype):
+        return draw(st.integers(0, 5))
+    if ivy.is_int_dtype(dtype):
+        return draw(st.integers(-5, 5))
+    return draw(st.floats(-5, 5))
+
+
+# full
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -140,26 +163,29 @@ def test_tensorflow_concat(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=st.sampled_from(ivy_tf.valid_numeric_dtypes),
+    fill_value=_fill_value(),
+    dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.ones"
+        fn_name="ivy.functional.frontends.tensorflow.fill"
     ),
 )
-def test_tensorflow_ones(
+def test_tensorflow_full(
     shape,
-    dtype,
+    fill_value,
+    dtypes,
     num_positional_args,
     fw,
 ):
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtypes,
         as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=False,
         fw=fw,
         frontend="tensorflow",
-        fn_name="ones",
-        shape=shape,
-        dtype=dtype,
+        fn_name="fill",
+        dims=shape,
+        value=fill_value,
+        rtol=1e-05,
     )

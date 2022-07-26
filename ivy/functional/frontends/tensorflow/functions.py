@@ -20,8 +20,8 @@ def concat(values, axis, name="concat"):
     return ivy.concat(values, axis)
 
 
-def fill(shape, fill_value, name="full"):
-    return ivy.full(shape, fill_value)
+def fill(dims, value, name="full"):
+    return ivy.full(dims, value)
 
 
 fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
