@@ -7,6 +7,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # all
@@ -15,14 +16,13 @@ import ivy_tests.test_ivy.helpers as helpers
         available_dtypes=ivy_np.valid_float_dtypes, min_axis=-1, max_axis=0
     ),
     keepdims=st.booleans(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="all"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_all(
+    *,
+    data,
     dtype_x_axis,
     keepdims,
     as_variable,
@@ -56,14 +56,13 @@ def test_all(
         available_dtypes=ivy_np.valid_float_dtypes, min_axis=-1, max_axis=0
     ),
     keepdims=st.booleans(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="any"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_any(
+    *,
+    data,
     dtype_x_axis,
     keepdims,
     as_variable,
