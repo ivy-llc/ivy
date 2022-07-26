@@ -11,15 +11,12 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def relu(
-    x: JaxArray, 
+    x: JaxArray,
 ) -> JaxArray:
     return jnp.maximum(x, 0)
 
 
-def leaky_relu(
-    x: JaxArray,
-    alpha: Optional[float] = 0.2
-) -> JaxArray:
+def leaky_relu(x: JaxArray, alpha: Optional[float] = 0.2) -> JaxArray:
     return jnp.where(x > 0, x, x * alpha)
 
 

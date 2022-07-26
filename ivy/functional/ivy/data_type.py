@@ -105,14 +105,68 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     Parameters
     ----------
     arrays
-        an arbitrary number of to-be broadcasted arrays.
+        an arbitrary number of arrays to-be broadcasted.
+        Each array must have the same shape. Each array must have the same dtype as its
+        corresponding input array.
 
     Returns
     -------
     ret
-        Each array must have the same shape. Each array must have the same dtype as its
-        corresponding input array.
+        A list containing broadcasted arrays of type `ivy.Array`
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> y = ivy.broadcast_arrays(x1, x2)
+    >>> print(y)
+    [ivy.array([1, 2, 3]), ivy.array([4, 5, 6])]
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([0.3, 4.3])
+    >>> x2 = ivy.native_array([3.1, 5])
+    >>> x3 = ivy.native_array([2, 0])
+    >>> y = ivy.broadcast_arrays(x1, x2, x3)
+    [ivy.array([0.3, 4.3]), ivy.array([3.1, 5.]), ivy.array([2, 0])]
+
+    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.array([1, 2])
+    >>> x2 = ivy.native_array([0.3, 4.3])
+    >>> y = ivy.broadcast_arrays(x1, x2)
+    >>> print(y)
+    [ivy.array([1, 2]), ivy.array([0.3, 4.3])]
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([3, 1]), b=ivy.zeros(2))
+    >>> x2 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
+    >>> y = ivy.broadcast_arrays(x1, x2)
+    >>> print(y)
+    [{
+        a: ivy.array([3, 1]),
+        b: ivy.array([0., 0.])
+    }, {
+        a: ivy.array([4, 5]),
+        b: ivy.array([2, -1])
+    }]
+
+    With mixed :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.zeros(2)
+    >>> x2 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
+    >>> y = ivy.broadcast_arrays(x1, x2)
+    >>> print(y)
+    [{
+        a: ivy.array([0., 0.]),
+        b: ivy.array([0., 0.])
+    }, {
+        a: ivy.array([4, 5]),
+        b: ivy.array([2, -1])
+    }]
     """
     return current_backend(arrays[0]).broadcast_arrays(*arrays)
 
@@ -522,7 +576,7 @@ class DefaultUintDtype:
         return self
 
 
-def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
+def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str]) -> int:
     """Get the number of bits used for representing the input data type.
 
     Parameters
@@ -535,6 +589,31 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
     ret
         The number of bits used to represent the data type.
 
+    Examples
+    --------
+    With :code:`ivy.Dtype` inputs:
+
+    >>> x = ivy.dtype_bits(ivy.float32)
+    >>> print(x)
+    32
+
+    >>> x = ivy.dtype_bits('int64')
+    >>> print(x)
+    64
+
+    >>> x = ivy.dtype_bits(ivy.uint16)
+    >>> print(x)
+    16
+
+    With :code:`ivy.NativeDtype` inputs:
+
+    >>> x = ivy.dtype_bits(ivy.native_int8)
+    >>> print(x)
+    8
+
+    >>> x = ivy.dtype_bits(ivy.native_bool)
+    >>> print(x)
+    1
     """
     return current_backend(dtype_in).dtype_bits(dtype_in)
 
@@ -1055,8 +1134,9 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
 
 
 def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
-    """Determines whether the provided data type is not support by the current
-    framework.
+    """
+    Determines whether the provided data type is not support by
+    the current framework.
 
     Parameters
     ----------
@@ -1067,7 +1147,26 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     -------
     ret
         Boolean, whether the data-type string is un-supported.
+    
+    Examples
+    --------
+    >>> ivy.invalid_dtype(dtype_in = None)
+    False
 
+    >>> ivy.invalid_dtype(dtype_in = 'uint64')
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = ivy.float64)
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = 'float32')
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = ivy.native_int16)
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = 'native_int16')
+    True
     """
     if dtype_in is None:
         return False

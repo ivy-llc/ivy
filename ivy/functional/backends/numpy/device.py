@@ -81,7 +81,7 @@ def to_device(
 
 
 class Profiler(BaseProfiler):
-    def __init__(self, save_dir):
+    def __init__(self, save_dir: str):
         # ToDO: add proper numpy profiler
         super(Profiler, self).__init__(save_dir)
         os.makedirs(save_dir, exist_ok=True)
