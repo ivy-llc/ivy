@@ -333,15 +333,21 @@ def random_normal(
     Parameters
     ----------
     mean
-        The mean of the normal distribution to sample from. Default is ``0``.
+        The mean of the normal distribution to sample from. Default is ``0.0``.
     std
         The standard deviation of the normal distribution to sample from.
-        Default is ``1``.
+        Must be non-negative. Default is ``1.0``.
     shape
-        Output shape. If the given shape is, e.g., ``(m, n, k)``, then ``m * n * k``
-        samples are drawn. If size is ``None`` (default), a single value is returned.
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn.
+        Can only be specified when ``mean`` and ``std`` are numeric values, else
+        exception will be raised.
+        Default is ``None``, where a single value is returned.
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default floating-point data type. Default ``None``
     device
-        (Default value = ``None``)
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        (Default value = None).
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
