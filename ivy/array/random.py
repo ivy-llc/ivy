@@ -116,15 +116,15 @@ class ArrayWithRandom(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
-        >>> x.random_uniform(10.2)
-        ivy.array([[9.86, 4.89],
-                   [7.06, 7.47]])
+        >>> x.random_normal(10.2)
+        ivy.array([[10.6 , 14.9 ],
+                   [22.1 , -1.64]])
 
         >>> x = ivy.array([8.7, 9.3])
         >>> y = ivy.array([12.8, 14.5])
         >>> z = ivy.ones((2,))
-        >>> x.random_uniform(y, device='cpu', dtype='float64', out=z)
-        ivy.array([12.1, 14. ])
+        >>> x.random_normal(y, device='cpu', dtype='float64', out=z)
+        ivy.array([ 4.59, 13.4 ])
         """
         return ivy.random_normal(
             self._data,
