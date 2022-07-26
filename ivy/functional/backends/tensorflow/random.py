@@ -88,10 +88,10 @@ def randint(
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
-    low = tf.cast(low, dtype)
-    high = tf.cast(high, dtype)
+    low = tf.cast(low, "float16")
+    high = tf.cast(high, "float16")
     with tf.device(device):
-        return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=dtype)
+        return tf.cast(tf.random.uniform(shape, low, high, "float16"), dtype)
 
 
 randint.supported_dtypes = ("int32", "int64")
