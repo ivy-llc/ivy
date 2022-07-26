@@ -23,9 +23,9 @@ def random_uniform(
     dtype: type,
 ) -> mx.nd.NDArray:
     shape = _check_bounds_and_get_shape(low, high, shape)
-    if not dtype:
-        dtype = ivy.default_float_dtype()
-    dtype = ivy.as_native_dtype(dtype)
+    # if not dtype:
+    #     dtype = ivy.default_float_dtype()
+    # dtype = ivy.as_native_dtype(dtype)
     if isinstance(low, mx.nd.NDArray):
         low = low.asscalar()
     if isinstance(high, mx.nd.NDArray):
