@@ -7,6 +7,7 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
 
+# full
 @st.composite
 def _dtypes(draw):
     return draw(
@@ -29,7 +30,6 @@ def _fill_value(draw):
     return draw(st.floats(-5, 5))
 
 
-# full
 @given(
     shape=helpers.get_shape(
         allow_none=False,

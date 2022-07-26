@@ -142,6 +142,7 @@ def test_jax_lax_concat(
     )
 
 
+# full
 @st.composite
 def _dtypes(draw):
     return draw(
@@ -164,7 +165,6 @@ def _fill_value(draw):
     return draw(st.floats(-5, 5))
 
 
-# full
 @given(
     shape=helpers.get_shape(
         allow_none=False,

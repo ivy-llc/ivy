@@ -48,6 +48,7 @@ ivy.tan()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py
+    #tan
     @given(
         dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
         as_variable=st.booleans(),
@@ -92,6 +93,7 @@ ivy.tan()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_np_trigonometric_functions.py
+    #tan
     @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -152,6 +154,7 @@ ivy.tan()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tf_functions.py
+    #tan
     @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
     as_variable=st.booleans(),
@@ -183,6 +186,7 @@ ivy.tan()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_torch/test_pointwise_ops.py
+    #tan
     @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -223,19 +227,42 @@ ivy.tan()
 * We use :code:`ivy_tf.valid_float_dtypes` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for TensorFlow.
 * Torch accepts both Torch and NumPy data-types so we create a :code:`tuple` of the two as :code:`available_dtypes`.
 
-ivy.ones()
+ivy.full()
 ^^^^^^^^^^
 
 Here we are going to look at an example of a function that does not consume an :code:`array`. 
-This is the creation function :code:`ones`, which takes an array shape as an argument to create an array of ones.
+This is the creation function :code:`full()`, which takes an array shape as an argument to create an array with all elements with the same value as fill value.
+This function requires us to create extra methods for generating :code:`shape` and :code:`fill value`, these use the :code:`shared` hypothesis strategy.
 
 
 **Jax**
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_numpy_functions.py
-    # ones
+    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py
+    # full
+    @st.composite
+    def _dtypes(draw):
+        return draw(
+            st.shared(
+                helpers.list_of_length(
+                    x=st.sampled_from(ivy_jax.valid_numeric_dtypes), length=1
+                ),
+                key="dtype",
+            )
+        )
+
+
+    @st.composite
+    def _fill_value(draw):
+        dtype = draw(_dtypes())[0]
+        if ivy.is_uint_dtype(dtype):
+            return draw(st.integers(0, 5))
+        if ivy.is_int_dtype(dtype):
+            return draw(st.integers(-5, 5))
+            return draw(st.floats(-5, 5))
+
+
     @given(
         shape=helpers.get_shape(
             allow_none=False,
@@ -244,33 +271,38 @@ This is the creation function :code:`ones`, which takes an array shape as an arg
             min_dim_size=1,
             max_dim_size=10,
         ),
-        dtype=st.sampled_from(ivy_jax.valid_numeric_dtypes),
+        fill_value=_fill_value(),
+        dtypes=_dtypes(),
         num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.jax.numpy.ones"
+            fn_name="ivy.functional.frontends.jax.lax.full"
         ),
     )
-    def test_jax_numpy_ones(
+    def test_jax_lax_full(
         shape,
-        dtype,
+        fill_value,
+        dtypes,
         num_positional_args,
         fw,
     ):
         helpers.test_frontend_function(
-            input_dtypes=dtype,
+            input_dtypes=dtypes,
             as_variable_flags=False,
             with_out=False,
             num_positional_args=num_positional_args,
             native_array_flags=False,
             fw=fw,
             frontend="jax",
-            fn_name="numpy.ones",
+            fn_name="lax.full",
             shape=shape,
-            dtype=dtype,
+            fill_value=fill_value,
+            dtype=dtypes[0],
         )
 
-* Here we use the helper function :code:`helpers.get_shape()` to generate :code:`shape`.
+* The first extra function we use is :code:`_dtypes` which generates a :code:`list` of :code:`dtypes` to use for the :code:`dtype` argument. Notice how we use :code:`st.shared` to generate a dtype which is unique to that test instance.
+* The second extra function we use is :code:`_fill_value` which generates a :code:`fill_value` to use for the :code:`fill_value` argument but handles the complications of :code:`int` and :code:`uint` types correctly
+* We use the helper function :code:`helpers.get_shape()` to generate :code:`shape`.
 * We use :code:`ivy_jax.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Jax. This is used to specify the data type of the output array.
-* Because :code:`ones()` does not consume :code:`array` so we set :code:`as_variable_flags`, :code:`with_out` and :code:`native_array_flags` to :code:`False`.
+* Because :code:`full()` does not consume :code:`array` so we set :code:`as_variable_flags`, :code:`with_out` and :code:`native_array_flags` to :code:`False`.
 
 
 **NumPy**
@@ -278,7 +310,29 @@ This is the creation function :code:`ones`, which takes an array shape as an arg
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_numpy/creation_routines/test_from_shape_or_value.py
-    # ones
+    # full
+    @st.composite
+    def _dtypes(draw):
+        return draw(
+            st.shared(
+                helpers.list_of_length(
+                    x=st.sampled_from(ivy_np.valid_numeric_dtypes), length=1
+                ),
+                key="dtype",
+            )
+        )
+
+
+    @st.composite
+    def _fill_value(draw):
+        dtype = draw(_dtypes())[0]
+        if ivy.is_uint_dtype(dtype):
+            return draw(st.integers(0, 5))
+        if ivy.is_int_dtype(dtype):
+            return draw(st.integers(-5, 5))
+        return draw(st.floats(-5, 5))
+
+
     @given(
         shape=helpers.get_shape(
             allow_none=False,
@@ -287,39 +341,64 @@ This is the creation function :code:`ones`, which takes an array shape as an arg
             min_dim_size=1,
             max_dim_size=10,
         ),
-        dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+        fill_value=_fill_value(),
+        dtypes=_dtypes(),
         num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.numpy.ones"
+            fn_name="ivy.functional.frontends.numpy.full"
         ),
     )
-    def test_numpy_ones(
+    def test_numpy_full(
         shape,
-        dtype,
+        fill_value,
+        dtypes,
         num_positional_args,
         fw,
     ):
         helpers.test_frontend_function(
-            input_dtypes=dtype,
+            input_dtypes=dtypes,
             as_variable_flags=False,
             with_out=False,
             num_positional_args=num_positional_args,
             native_array_flags=False,
             fw=fw,
             frontend="numpy",
-            fn_name="ones",
+            fn_name="full",
             shape=shape,
-            dtype=dtype,
+            fill_value=fill_value,
+            dtype=dtypes[0],
         )
 
 * We use :code:`ivy_np.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for NumPy.
-* :code:`numpy.ones()` does not have a :code:`where` argument so we can use :code:`helpers.test_frontend_function()`
+* :code:`numpy.full()` does not have a :code:`where` argument so we can use :code:`helpers.test_frontend_function()`
 
 **TensorFlow**
 
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tf_functions.py
-    # ones
+    # full
+    @st.composite
+    def _dtypes(draw):
+        return draw(
+            st.shared(
+                helpers.list_of_length(
+                    x=st.sampled_from(ivy_tf.valid_numeric_dtypes), length=1
+                ),
+                key="dtype",
+            )
+        )
+
+
+    @st.composite
+    def _fill_value(draw):
+        dtype = draw(_dtypes())[0]
+        if ivy.is_uint_dtype(dtype):
+            return draw(st.integers(0, 5))
+        if ivy.is_int_dtype(dtype):
+            return draw(st.integers(-5, 5))
+        return draw(st.floats(-5, 5))
+
+
     @given(
         shape=helpers.get_shape(
             allow_none=False,
@@ -328,31 +407,36 @@ This is the creation function :code:`ones`, which takes an array shape as an arg
             min_dim_size=1,
             max_dim_size=10,
         ),
-        dtype=st.sampled_from(ivy_tf.valid_numeric_dtypes),
+        fill_value=_fill_value(),
+        dtypes=_dtypes(),
         num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.tensorflow.ones"
-        ),
+            fn_name="ivy.functional.frontends.tensorflow.fill"
+        ),  
     )
-    def test_tensorflow_ones(
+    def test_tensorflow_full(
         shape,
-        dtype,
+        fill_value,
+        dtypes,
         num_positional_args,
         fw,
     ):
         helpers.test_frontend_function(
-            input_dtypes=dtype,
+            input_dtypes=dtypes,
             as_variable_flags=False,
             with_out=False,
             num_positional_args=num_positional_args,
             native_array_flags=False,
             fw=fw,
             frontend="tensorflow",
-            fn_name="ones",
-            shape=shape,
-            dtype=dtype,
+            fn_name="fill",
+            dims=shape,
+            value=fill_value,
+            rtol=1e-05,
         )
 
 * We use :code:`ivy_tf.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for TensorFlow.
+* Tensorflow's version of :code:`full()` is named :code:`fill()` therefore we specify the :code:`fn_name` argument to be :code:`"fill"`
+* When running the test there where some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance.
 
 
 **PyTorch**
@@ -360,42 +444,82 @@ This is the creation function :code:`ones`, which takes an array shape as an arg
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_torch/test_creation_ops.py
-    # ones
+    # full
+    @st.composite
+    def _dtypes(draw):
+        return draw(
+            st.shared(
+                helpers.list_of_length(
+                    x=st.sampled_from(ivy_torch.valid_numeric_dtypes), length=1
+                ),
+                key="dtype",
+            )
+        )
+
+
+    @st.composite
+    def _fill_value(draw):
+        dtype = draw(_dtypes())[0]
+        if ivy.is_uint_dtype(dtype):
+            return draw(st.integers(0, 5))
+        if ivy.is_int_dtype(dtype):
+            return draw(st.integers(-5, 5))
+        return draw(st.floats(-5, 5))
+
+
+    @st.composite
+    def _requires_grad(draw):
+        dtype = draw(_dtypes())[0]
+        if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
+            return draw(st.just(False))
+        else:
+            return draw(st.booleans())
+
+
+    # full
     @given(
-        size=helpers.get_shape(
+        shape=helpers.get_shape(
             allow_none=False,
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=1,
             max_dim_size=10,
         ),
-        dtype=st.sampled_from(ivy_torch.valid_numeric_dtypes),
-        with_out = st.booleans(),
+        fill_value=_fill_value(),
+        dtypes=_dtypes(),
+        requires_grad=_requires_grad(),
         num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.torch.ones"
+            fn_name="ivy.functional.frontends.torch.full"
         ),
     )
-    def test_torch_ones(
-        size,
-        dtype,
+    def test_torch_full(
+        shape,
+        fill_value,
+        dtypes,
+        requires_grad,
+        device,
         num_positional_args,
         fw,
     ):
         helpers.test_frontend_function(
-            input_dtypes=dtype,
+            input_dtypes=dtypes,
             as_variable_flags=False,
-            with_out=with_out,
+            with_out=False,
             num_positional_args=num_positional_args,
             native_array_flags=False,
             fw=fw,
             frontend="torch",
-            fn_name="ones",
-            size=size,
-            dtype=dtype,
+            fn_name="full",
+            size=shape,
+            dtype=dtypes[0],
+            fill_value=fill_value,
+            device=device,
+            requires_grad=requires_grad,
         )
 
+* Here we created another extra function to accommodate the :code:`_requires_grad` argument. This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
 * We use :code:`ivy_torch.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
-* :code:`torch.ones()` supports :code:`out` so we generate :code:`with_out`.
+* :code:`torch.full()` supports :code:`out` so we generate :code:`with_out`.
 
 
 **Round Up**

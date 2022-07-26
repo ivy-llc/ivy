@@ -7,6 +7,7 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.torch as ivy_torch
 
 
+# full
 @st.composite
 def _dtypes(draw):
     return draw(
@@ -73,6 +74,7 @@ def test_torch_full(
         frontend="torch",
         fn_name="full",
         size=shape,
+        dtype=dtypes[0],
         fill_value=fill_value,
         device=device,
         requires_grad=requires_grad,
