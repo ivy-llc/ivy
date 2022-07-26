@@ -150,8 +150,8 @@ def cholesky(
 @handle_out_argument
 @handle_nestable
 def cross(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     axis: int = -1,
     *,
     out: Optional[ivy.Array] = None,
@@ -265,7 +265,7 @@ def cross(
     }
 
     """
-    return current_backend(x1).cross(x1, x2, axis, out=out)
+    return current_backend(x1,x2).cross(x1, x2, axis, out=out)
 
 
 @to_native_arrays_and_back
