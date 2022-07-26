@@ -49,6 +49,95 @@ class ContainerWithManipulation(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_expand_dims(
+        x: ivy.Container,
+        axis: Union[int, Tuple[int], List[int]] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.expand_dims. This method simply
+        wraps the function, and so the docstring for ivy.expand_dims also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        axis
+            position where a new axis (dimension) of size one will be added. If an
+            element of the container has the rank of ``N``, then the ``axis`` needs
+            to be between ``[-N-1, N]``. Default: ``0``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container with the elements of ``x``, but with the dimensions of
+            its elements added by one in a given ``axis``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1.]), \
+                              b=ivy.array([3., 4.]), \
+                              c=ivy.array([6., 7.]))
+        >>> y = ivy.Container.static_expand_dims(x, axis=1)
+        >>> print(y)
+        {
+            a: ivy.array([[0.],
+                          [1.]]),
+            b: ivy.array([[3.],
+                          [4.]]),
+            c: ivy.array([[6.],
+                          [7.]])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]), \
+                              c=ivy.array([6., 7., 8.]))
+        >>> container_axis = ivy.Container(a=0, b=-1, c=(0,1))
+        >>> y = ivy.Container.static_expand_dims(x, axis=container_axis)
+        >>> print(y)
+        {
+            a: ivy.array([[0., 1., 2.]]),
+            b: ivy.array([[3.],
+                          [4.],
+                          [5.]]),
+            c: ivy.array([[[6., 7., 8.]]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "expand_dims",
+            x,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def expand_dims(
         self: ivy.Container,
         axis: Union[int, Tuple[int], List[int]] = 0,
@@ -67,7 +156,7 @@ class ContainerWithManipulation(ContainerBase):
         Parameters
         ----------
         self
-            Input container.
+            input container.
         axis
             position where a new axis (dimension) of size one will be added. If an
             element of the container has the rank of ``N``, the ``axis`` needs to

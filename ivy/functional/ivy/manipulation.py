@@ -118,7 +118,7 @@ def expand_dims(
     ivy.array([[[0., 0., 0.]],
                [[0., 0., 0.]]])
     >>> ivy.expand_dims(x, axis=1, out=y)
-    >>> print(Y.shape)
+    >>> print(y.shape)
     (2, 1, 3)
     >>> print(y)
     ivy.array([[[0.5, -0.7, 2.4]],
