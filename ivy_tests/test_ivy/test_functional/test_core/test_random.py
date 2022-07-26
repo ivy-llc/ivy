@@ -59,31 +59,55 @@ def test_random_uniform(
 
 # random_normal
 @given(
-    data=st.data(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_mean=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        min_value=-1000,
+        max_value=1000,
+    ),
+    dtype_and_std=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        min_value=0,
+        max_value=1000,
+    ),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
+    instance_method=st.booleans(),
 )
-def test_random_normal(data, dtype, as_variable, device, call):
-    mean, std = data.draw(helpers.get_mean_std(dtype=dtype))
-    ivy.seed(0)
-    # smoke test
-    if as_variable and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        return
-    mean_tnsr = (
-        ivy.array(mean, dtype=dtype, device=device) if mean is not None else None
+def test_random_normal(
+    dtype_and_mean,
+    dtype_and_std,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    mean_dtype, mean = dtype_and_mean
+    std_dtype, std = dtype_and_std
+    helpers.test_function(
+        input_dtypes=[mean_dtype, std_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="random_normal",
+        mean=np.asarray(mean, dtype=mean_dtype),
+        std=np.asarray(std, dtype=std_dtype),
+        shape=None,
+        dtype=dtype,
+        device=device,
     )
-    std_tnsr = ivy.array(std, dtype=dtype, device=device) if std is not None else None
-    if as_variable and (mean is not None):
-        mean_tnsr = ivy.variable(mean_tnsr)
-    if as_variable and (std is not None):
-        std_tnsr = ivy.variable(std_tnsr)
-    kwargs = {
-        k: v for k, v in zip(["mean", "std"], [mean_tnsr, std_tnsr]) if v is not None
-    }
-    ret = ivy.random_normal(**kwargs, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
 
 
 @st.composite
