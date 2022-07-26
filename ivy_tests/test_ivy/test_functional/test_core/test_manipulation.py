@@ -437,13 +437,6 @@ def test_squeeze(
     ):
         return
 
-
-    # Torch does not support unsigned integers of more than 8 bits (>uint8)
-    if input_dtype in [
-        ivy.IntDtype("uint16"), ivy.IntDtype("uint32"), ivy.IntDtype("uint64")
-    ] and fw == "torch":
-        return
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
