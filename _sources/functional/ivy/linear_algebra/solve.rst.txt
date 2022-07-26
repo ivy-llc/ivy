@@ -4,6 +4,10 @@ solve
 .. autofunction:: ivy.functional.ivy.linear_algebra.solve
 
 .. autofunction:: ivy.array.array_methods.solve
+
+.. autofunction:: ivy.container.container_methods.static_solve
+
+.. autofunction:: ivy.container.container_methods.solve
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ solve
 
    solve/solve_functional.rst
    solve/solve_array.rst
+   solve/solve_container.rst
+   solve/static_solve_container.rst
 

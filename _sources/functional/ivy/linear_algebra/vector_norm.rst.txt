@@ -4,6 +4,10 @@ vector_norm
 .. autofunction:: ivy.functional.ivy.linear_algebra.vector_norm
 
 .. autofunction:: ivy.array.array_methods.vector_norm
+
+.. autofunction:: ivy.container.container_methods.vector_norm
+
+.. autofunction:: ivy.container.container_methods.static_vector_norm
 |
 | **Supported Frameworks:**
 
@@ -31,5 +35,7 @@ vector_norm
    :caption: vector_norm
 
    vector_norm/vector_norm_functional.rst
+   vector_norm/static_vector_norm_container.rst
    vector_norm/vector_norm_array.rst
+   vector_norm/vector_norm_container.rst
 
