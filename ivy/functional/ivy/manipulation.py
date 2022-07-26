@@ -172,6 +172,20 @@ def expand_dims(
                       [4.],
                       [5.]])
     }
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> container_axis = ivy.Container(a=0, b=1)
+    >>> y = ivy.expand_dims(x, axis=container_axis)
+    >>> print(y)
+    {
+        a: ivy.array([[0., 1., 2.]]),
+        b: ivy.array([[3.],
+                      [4.],
+                      [5.]])
+    }
     """
     return current_backend(x).expand_dims(x, axis)
 
