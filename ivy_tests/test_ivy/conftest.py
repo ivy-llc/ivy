@@ -4,13 +4,6 @@ import pytest
 from typing import Dict, Union, Tuple
 from hypothesis import settings
 
-for i in range(1, 5):
-    settings.register_profile(
-        f"num_examples({2**i})", max_examples=2**i, deadline=None
-    )
-
-settings.register_profile("default", max_examples=5, deadline=None)
-settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
 
 # local
 from ivy_tests.test_ivy import helpers
@@ -48,6 +41,16 @@ MAP_BOOL_FLAGS: Dict[str, bool] = {
 
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
+
+
+def pytest_configure(config):
+    max_examples = config.getoption("--num-examples")
+    if max_examples is not None:
+        settings.register_profile("custom max_examples", max_examples=int(max_examples))
+        settings.load_profile("custom_max_examples")
+    else:
+        settings.register_profile("default", max_examples=5, deadline=None)
+        settings.load_profile("default")
 
 
 @pytest.fixture(autouse=True)
@@ -181,3 +184,4 @@ def pytest_addoption(parser):
     parser.addoption("--with-instance-method-testing", action="store", default="false")
 
     parser.addoption("--no-extra-testing", action="store", default="false")
+    parser.addoption("--num-examples", action="store,", default=None)
