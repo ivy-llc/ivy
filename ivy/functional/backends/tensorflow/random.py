@@ -9,7 +9,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import _check_bounds_and_get_shape, _check_valid_scale
 
 # Extra #
 # ------#
@@ -40,10 +40,12 @@ def random_normal(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    mean = tf.cast(mean, "float32")
-    std = tf.cast(std, "float32")
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
+    mean = tf.cast(mean, dtype)
+    std = tf.cast(std, dtype)
     with tf.device(device):
-        return tf.random.normal(shape if shape else (), mean, std)
+        return tf.random.normal(shape, mean, std, dtype=dtype)
 
 
 def multinomial(
