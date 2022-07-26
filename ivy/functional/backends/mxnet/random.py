@@ -20,7 +20,7 @@ def random_uniform(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: mx.context.Context,
-    dtype: Optional[Union[type, ivy.Dtype]] = None,
+    dtype: type,
 ) -> mx.nd.NDArray:
     shape = _check_bounds_and_get_shape(low, high, shape)
     if not dtype:
