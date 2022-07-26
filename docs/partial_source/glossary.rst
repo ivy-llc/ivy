@@ -10,3 +10,6 @@ Glossary
       translate the documents to an output format, but it is also possible to
       use the builder builders that e.g. check for broken links in the
       documentation, or build coverage information.
+    
+    alpha
+        The alpha version of Sphinx.
