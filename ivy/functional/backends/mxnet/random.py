@@ -88,7 +88,7 @@ def randint(
     *,
     device: mx.context.Context,
     dtype: type,
-    out: Optional[mx.nd.NDArray],
+    out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     _randint_check_dtype_and_bound(low, high, dtype)
     shape = _check_bounds_and_get_shape(low, high, shape)
