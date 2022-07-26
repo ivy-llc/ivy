@@ -8,7 +8,10 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _randint_check_dtype_and_bound,
+)
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_device
 
@@ -98,15 +101,19 @@ def multinomial(
 def randint(
     low: Union[int, JaxArray],
     high: Union[int, JaxArray],
-    shape: Union[ivy.NativeShape, Sequence[int]],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
     dtype: jnp.dtype,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    _randint_check_dtype_and_bound(low, high, dtype)
+    shape = _check_bounds_and_get_shape(low, high, shape)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    return to_device(jax.random.randint(rng_input, shape, low, high), device=device)
+    return to_device(
+        jax.random.randint(rng_input, shape, low, high, dtype), device=device
+    )
 
 
 def seed(seed_value: int = 0) -> None:
