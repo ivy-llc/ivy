@@ -26,8 +26,8 @@ def random_uniform(
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, np.ndarray] = 0.0,
+    std: Union[float, np.ndarray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,

@@ -37,8 +37,8 @@ def random_uniform(
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, JaxArray] = 0.0,
+    std: Union[float, JaxArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: jaxlib.xla_extension.Device,
