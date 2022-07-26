@@ -88,7 +88,7 @@ def index_nest(
     return ret
 
 
-def prune_nest_at_index(nest, index):
+def prune_nest_at_index(nest: Iterable, index: Tuple):
     """Prune a nested object at a specified index.
 
     Parameters
@@ -106,9 +106,9 @@ def prune_nest_at_index(nest, index):
 
 
 def set_nest_at_index(
-    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List], 
-    index: Sequence[Union[str, int]], 
-    value: Any
+    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
+    index: Sequence[Union[str, int]],
+    value: Any,
 ):
     """Set the value of a nested item at a specified index.
 
@@ -173,7 +173,7 @@ def set_nest_at_index(
         ivy.set_nest_at_index(nest[index[0]], index[1:], value)
 
 
-def insert_into_nest_at_index(nest, index, value):
+def insert_into_nest_at_index(nest: Iterable, index: Tuple, value):
     if len(index) == 1:
         idx = index[0]
         if isinstance(nest, list):
@@ -184,7 +184,7 @@ def insert_into_nest_at_index(nest, index, value):
         insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
-def map_nest_at_index(nest, index, fn):
+def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable):
     """Map a function to the value of a nested item at a specified index.
 
     Parameters
@@ -203,7 +203,7 @@ def map_nest_at_index(nest, index, fn):
         map_nest_at_index(nest[index[0]], index[1:], fn)
 
 
-def multi_index_nest(nest, indices):
+def multi_index_nest(nest: Iterable, indices: Tuple):
     """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
     the case of dicts.
 
@@ -218,7 +218,7 @@ def multi_index_nest(nest, indices):
     return [index_nest(nest, index) for index in indices]
 
 
-def prune_nest_at_indices(nest, indices):
+def prune_nest_at_indices(nest: Iterable, indices: Tuple):
     """Prune a nested object at specified indices.
 
     Parameters
@@ -291,7 +291,7 @@ def set_nest_at_indices(
     [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
 
 
-def insert_into_nest_at_indices(nest, indices, values):
+def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values):
     """Insert a value into the nested item at specified indices with specified values.
 
     Parameters
@@ -313,7 +313,7 @@ def insert_into_nest_at_indices(nest, indices, values):
     ]
 
 
-def map_nest_at_indices(nest, indices, fn):
+def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable):
     """Map a function to the values of a nested item at the specified indices.
 
     Parameters
@@ -746,7 +746,7 @@ def copy_nest(
 
 
 def nested_multi_map(
-    func,
+    func: Callable,
     nests,
     key_chains=None,
     to_apply=True,

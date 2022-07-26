@@ -8,9 +8,9 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.backends.jax.device import to_device
-from ivy.functional.ivy.device import default_device
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax.device import to_device
 
 # Extra #
 # ------#
@@ -27,12 +27,11 @@ def random_uniform(
     dtype: jnp.dtype,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    shape = _check_bounds_and_get_shape(low, high, shape)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return to_device(
-        jax.random.uniform(
-            rng_input, shape if shape else (), minval=low, maxval=high, dtype=dtype
-        ),
+        jax.random.uniform(rng_input, shape, minval=low, maxval=high, dtype=dtype),
         device=device,
     )
 
@@ -50,7 +49,7 @@ def random_normal(
     return (
         to_device(
             jax.random.normal(rng_input, shape if shape else ()),
-            device=default_device(device),
+            device=device,
         )
         * std
         + mean
@@ -92,7 +91,7 @@ def multinomial(
     samples_flat = jnp.stack(samples_stack)
     return to_device(
         jnp.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]),
-        device=default_device(device),
+        device=device,
     )
 
 
@@ -106,9 +105,7 @@ def randint(
 ) -> JaxArray:
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    return to_device(
-        jax.random.randint(rng_input, shape, low, high), device=default_device(device)
-    )
+    return to_device(jax.random.randint(rng_input, shape, low, high), device=device)
 
 
 def seed(seed_value: int = 0) -> None:
