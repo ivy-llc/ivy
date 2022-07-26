@@ -1009,6 +1009,21 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.log10. This method simply wraps the
         function, and so the docstring for ivy.log10 also applies to this method
         with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            input array. Should have a real-valued floating-point data type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the evaluated base ``10`` logarithm for each element
+            in ``self``. The returned array must have a real-valued
+            floating-point data type determined by :ref:`type-promotion`.
 
         Examples
         --------

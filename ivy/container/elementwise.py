@@ -892,7 +892,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of the quotient ``self/x2``.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
-        
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\
@@ -2394,7 +2394,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the evaluated result for each element in ``self``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
-        
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([2.5, 0.5]),\
@@ -2506,7 +2506,7 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the rounded result for each element in ``self``.
             The returned array must have the same data type as ``self``.
-         
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),\
@@ -3668,6 +3668,31 @@ class ContainerWithElementwise(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.log10 also applies to this method with minimal changes.
 
+        Parameters
+        ----------
+        x
+            input container. Should have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the evaluated base ``10`` logarithm for each
+            element in ``x``. The returned array must have a real-valued
+            floating-point data type determined by :ref:`type-promotion`.
+
         Examples
         --------
         Using :code:`ivy.Container` input:
@@ -3707,6 +3732,31 @@ class ContainerWithElementwise(ContainerBase):
         ivy.Container instance method variant of ivy.log10.
         This method simply wraps the function, and so the docstring for
         ivy.log10 also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the evaluated base ``10`` logarithm for
+            each element in ``self``. The returned array must have a real-valued
+            floating-point data type determined by :ref:`type-promotion`.
 
         Examples
         --------
