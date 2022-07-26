@@ -1,15 +1,17 @@
-.. glossary::
-   :sorted:
-
 Glossary
 ========
+This glossary provides definitions for terms and abbreviations used in the TF-A
+documentation.
+You can find additional definitions in the `Arm Glossary`_.
 
-builder
-    A class (inheriting from :class:`~sphinx.builders.Builder`) that takes
-      parsed documents and performs an action on them.  Normally, builders
-      translate the documents to an output format, but it is also possible to
-      use the builder builders that e.g. check for broken links in the
-      documentation, or build coverage information.
-    
-alpha
-    The alpha version of Sphinx.
+.. glossary::
+    :sorted:
+
+    API
+      Application Programming Interface
+    AT
+      Address Translation
+    AArch32
+      32-bit execution state of the ARMv8 ISA
+    AArch64
+      64-bit execution state of the ARMv8 ISA
