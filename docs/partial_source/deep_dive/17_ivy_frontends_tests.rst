@@ -517,7 +517,7 @@ This function requires us to create extra methods for generating :code:`shape` a
             requires_grad=requires_grad,
         )
 
-* Here we created another extra function, :code:`_requires_grad`, to accommodate the :code:`requires_grad` argument. This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
+* Here we created another extra function, :code:`_requires_grad()`, to accommodate the :code:`requires_grad` argument. This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
 * We use :code:`ivy_torch.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
 * :code:`torch.full()` supports :code:`out` so we generate :code:`with_out`.
 
