@@ -144,7 +144,7 @@ def test_mean(
         instance_method=instance_method,
         fw=fw,
         fn_name="mean",
-        test_rtol=1e-1,
+        rtol_=1e-1,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -253,7 +253,7 @@ def test_sum(
         instance_method=instance_method,
         fw=fw,
         fn_name="sum",
-        test_rtol=1e-2,
+        rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -289,8 +289,8 @@ def test_std(
         instance_method=instance_method,
         fw=fw,
         fn_name="std",
-        test_rtol=1e-2,
-        test_atol=1e-2,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
