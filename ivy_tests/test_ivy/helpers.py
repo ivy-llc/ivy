@@ -503,8 +503,9 @@ def flatten(*, ret):
     return ret_np_flat
 
 
-def get_flattened_array_returns(*, ret, ret_from_gt):
-    return flatten(ret=ret), flatten(ret=ret_from_gt)
+def get_ret_and_flattened_array(func, *args, **kwargs):
+    ret = func(*args, **kwargs)
+    return ret, flatten(ret=ret)
 
 
 def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
@@ -747,11 +748,9 @@ def test_method(
         input_dtypes=input_dtypes_constructor,
         as_variable_flags=as_variable_flags_constructor,
     )
-
     # run
     ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
-    ret = ins(*calling_args, **calling_kwargs)
-
+    ret, ret_np_flat = get_ret_and_flattened_array(ins, *calling_args, **calling_kwargs)
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     calling_args_gt, calling_kwargs_gt, _, _, _ = create_args_kwargs(
@@ -766,20 +765,14 @@ def test_method(
         input_dtypes=input_dtypes_constructor,
         as_variable_flags=as_variable_flags_constructor,
     )
-
     ins_gt = ivy.__dict__[class_name](*constructor_args_gt, **constructor_kwargs_gt)
-    ret_from_gt = ivy.to_native(
-        ins_gt(*calling_args_gt, **calling_kwargs_gt), nested=True
+    ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_array(
+        ins_gt, *calling_args_gt, **calling_kwargs_gt
     )
     ivy.unset_backend()
-
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_gt
-    # flattened array returns
-    ret_np_flat, ret_np_from_gt_flat = get_flattened_array_returns(
-        ret=ret, ret_from_gt=ret_from_gt
-    )
     # value test
     value_test(
         ret_np_flat=ret_np_flat,
@@ -804,7 +797,7 @@ def test_function(
     atol_: float = 1e-06,
     test_values: bool = True,
     ground_truth_backend: str = "numpy",
-    device_: str = 'cpu',
+    device_: str = "cpu",
     **all_as_kwargs_np,
 ):
     """Tests a function that consumes (or returns) arrays for the current backend
@@ -984,14 +977,19 @@ def test_function(
                 fn=instance.__getattribute__(fn_name), args=args, kwargs=kwargs
             )
             return
-        ret = instance.__getattribute__(fn_name)(*args, **kwargs)
+
+        ret, ret_np_flat = get_ret_and_flattened_array(
+            instance.__getattribute__(fn_name), *args, **kwargs
+        )
     else:
         if test_unsupported:
             test_unsupported_function(
                 fn=ivy.__dict__[fn_name], args=args, kwargs=kwargs
             )
             return
-        ret = ivy.__dict__[fn_name](*args, **kwargs)
+        ret, ret_np_flat = get_ret_and_flattened_array(
+            ivy.__dict__[fn_name], *args, **kwargs
+        )
     # assert idx of return if the idx of the out array provided
     if with_out:
         out = ivy.zeros_like(ret)
@@ -1001,9 +999,13 @@ def test_function(
         else:
             assert ivy.is_array(ret)
         if instance_method:
-            ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
+            ret, ret_np_flat = get_ret_and_flattened_array(
+                instance.__getattribute__(fn_name), *args, **kwargs, out=out
+            )
         else:
-            ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
+            ret, ret_np_flat = get_ret_and_flattened_array(
+                ivy.__dict__[fn_name], *args, **kwargs, out=out
+            )
         assert ret is out
         if not max(container_flags) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
@@ -1044,7 +1046,9 @@ def test_function(
             )
             ivy.unset_backend()
             return
-        ret_from_gt = ivy.to_native(ivy.__dict__[fn_name](*args, **kwargs), nested=True)
+        ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_array(
+            ivy.__dict__[fn_name], *args, **kwargs
+        )
     except Exception as e:
         ivy.unset_backend()
         raise e
@@ -1052,10 +1056,6 @@ def test_function(
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_gt
-    # flattened array returns
-    ret_np_flat, ret_np_from_gt_flat = get_flattened_array_returns(
-        ret=ret, ret_from_gt=ret_from_gt
-    )
     # value test
     value_test(
         ret_np_flat=ret_np_flat,
