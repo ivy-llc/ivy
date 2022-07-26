@@ -6,12 +6,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.device import default_device
-
-# noinspection PyProtectedMember
-from ivy.functional.backends.mxnet import _mxnet_init_context
-
-# noinspection PyProtectedMember
+from ivy.functional.ivy.random import _check_bounds_and_get_shape, _check_valid_scale
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
@@ -23,35 +18,41 @@ def random_uniform(
     low: Union[float, mx.nd.NDArray] = 0.0,
     high: Union[float, mx.nd.NDArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
-    dtype=None,
+    *,
+    device: mx.context.Context,
+    dtype: type,
 ) -> mx.nd.NDArray:
+    shape = _check_bounds_and_get_shape(low, high, shape)
     if isinstance(low, mx.nd.NDArray):
         low = low.asscalar()
     if isinstance(high, mx.nd.NDArray):
         high = high.asscalar()
-    ctx = _mxnet_init_context(default_device(device))
-    if shape is None or len(shape) == 0:
+    if shape == ():
         return _1_dim_array_to_flat_array(
-            mx.nd.random.uniform(low, high, (1,), ctx=ctx, dtype=dtype)
+            mx.nd.random.uniform(low, high, (1,), ctx=device, dtype=dtype)
         )
-    return mx.nd.random.uniform(low, high, shape, ctx=ctx, dtype=dtype)
+    return mx.nd.random.uniform(low, high, shape, ctx=device, dtype=dtype)
 
 
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
+    mean: Union[float, mx.nd.NDArray] = 0.0,
+    std: Union[float, mx.nd.NDArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    *,
+    device: mx.context.Context,
+    dtype: type,
 ) -> mx.nd.NDArray:
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
     if isinstance(mean, mx.nd.NDArray):
         mean = mean.asscalar()
     if isinstance(std, mx.nd.NDArray):
         std = std.asscalar()
-    ctx = _mxnet_init_context(default_device(device))
-    if shape is None or len(shape) == 0:
-        return _1_dim_array_to_flat_array(mx.nd.random.normal(mean, std, (1,), ctx=ctx))
-    return mx.nd.random.uniform(mean, std, shape, ctx=ctx)
+    if shape == ():
+        return _1_dim_array_to_flat_array(
+            mx.nd.random.normal(mean, std, (1,), ctx=device, dtype=dtype)
+        )
+    return mx.nd.random.normal(mean, std, shape, ctx=device, dtype=dtype)
 
 
 def multinomial(
@@ -60,11 +61,11 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[mx.nd.NDArray] = None,
     replace: bool = True,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    *,
+    device: mx.context.Context,
 ) -> mx.nd.NDArray:
     if not replace:
         raise Exception("MXNet does not support multinomial without replacement")
-    ctx = _mxnet_init_context(default_device(device))
     if probs is None:
         probs = (
             mx.nd.ones(
@@ -72,7 +73,7 @@ def multinomial(
                     batch_size,
                     population_size,
                 ),
-                ctx=ctx,
+                ctx=device,
             )
             / population_size
         )
@@ -92,12 +93,11 @@ def randint(
         low = int(low.asscalar())
     if isinstance(high, mx.nd.NDArray):
         high = int(high.asscalar())
-    ctx = _mxnet_init_context(default_device(device))
     if len(shape) == 0:
         return _1_dim_array_to_flat_array(
-            mx.nd.random.randint(low, high, (1,), ctx=ctx)
+            mx.nd.random.randint(low, high, (1,), ctx=device)
         )
-    return mx.nd.random.randint(low, high, shape, ctx=ctx)
+    return mx.nd.random.randint(low, high, shape, ctx=device)
 
 
 def seed(seed_value: int = 0) -> None:

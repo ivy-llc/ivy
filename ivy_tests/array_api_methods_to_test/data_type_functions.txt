@@ -3,7 +3,5 @@ broadcast_arrays
 broadcast_to
 can_cast
 finfo
-#iinfo - failing for torch due to unsupported dtypes (uint16+).
-# Even if these types are skipped in backend, the test still fails as it tries to
-# access attributes of the function output.
+iinfo
 result_type

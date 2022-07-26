@@ -7,12 +7,13 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # argsort
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_numeric_dtypes,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -20,39 +21,38 @@ import ivy.functional.backends.numpy as ivy_np
         min_axis=-1,
         max_axis=0,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="argsort"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     descending=st.booleans(),
     stable=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_argsort(
+    *,
+    data,
     dtype_x_axis,
+    descending,
+    stable,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     container,
     instance_method,
-    descending,
-    stable,
     fw,
 ):
     dtype, x, axis = dtype_x_axis
 
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "argsort",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="argsort",
         x=np.asarray(x, dtype=dtype),
         axis=axis,
         descending=descending,
@@ -63,7 +63,7 @@ def test_argsort(
 # sort
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_numeric_dtypes,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -71,39 +71,38 @@ def test_argsort(
         min_axis=-1,
         max_axis=0,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sort"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     descending=st.booleans(),
     stable=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_sort(
+    *,
+    data,
     dtype_x_axis,
+    num_positional_args,
+    descending,
+    stable,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
-    descending,
-    stable,
     fw,
 ):
     dtype, x, axis = dtype_x_axis
 
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "sort",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="sort",
         x=np.asarray(x, dtype=dtype),
         axis=axis,
         descending=descending,
