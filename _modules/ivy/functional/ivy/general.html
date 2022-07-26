@@ -155,7 +155,6 @@
 <span class="n">TIMEOUT</span> <span class="o">=</span> <span class="mf">15.0</span>
 <span class="n">TMP_DIR</span> <span class="o">=</span> <span class="s2">&quot;/tmp&quot;</span>
 
-<span class="n">array_mode_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 <span class="n">shape_array_mode_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 <span class="n">nestable_mode_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
@@ -221,7 +220,8 @@
 
 
 <div class="viewcode-block" id="is_native_array"><a class="viewcode-back" href="../../../../functional/ivy/general/is_native_array.html#ivy.functional.ivy.general.is_native_array">[docs]</a><span class="k">def</span> <span class="nf">is_native_array</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines whether the input x is a Native Array.</span>
@@ -335,68 +335,6 @@
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="set_array_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/set_array_mode.html#ivy.functional.ivy.general.set_array_mode">[docs]</a><span class="k">def</span> <span class="nf">set_array_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Set the mode of whether to convert inputs to ivy.NativeArray, then convert</span>
-<span class="sd">    outputs back to ivy.Array</span>
-
-<span class="sd">    Parameter</span>
-<span class="sd">    ---------</span>
-<span class="sd">    mode</span>
-<span class="sd">        boolean whether to perform ivy.Array conversions</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_array_mode(False)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_array_mode()</span>
-<span class="sd">    False</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_array_mode(True)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_array_mode()</span>
-<span class="sd">    True</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">global</span> <span class="n">array_mode_stack</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;set_array_mode only accepts type bool&quot;</span><span class="p">)</span>
-    <span class="n">array_mode_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="unset_array_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/unset_array_mode.html#ivy.functional.ivy.general.unset_array_mode">[docs]</a><span class="k">def</span> <span class="nf">unset_array_mode</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Reset the mode of converting inputs to ivy.NativeArray, then converting</span>
-<span class="sd">    outputs back to ivy.Array to the previous state</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_array_mode(False)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_array_mode()</span>
-<span class="sd">    False</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.unset_shape_array_mode()</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_array_mode()</span>
-<span class="sd">    True</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">global</span> <span class="n">array_mode_stack</span>
-    <span class="k">if</span> <span class="n">array_mode_stack</span><span class="p">:</span>
-        <span class="n">array_mode_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="get_array_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/get_array_mode.html#ivy.functional.ivy.general.get_array_mode">[docs]</a><span class="k">def</span> <span class="nf">get_array_mode</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get the current state of array_mode</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_array_mode()</span>
-<span class="sd">    True</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_array_mode(False)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_array_mode()</span>
-<span class="sd">    False</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">global</span> <span class="n">array_mode_stack</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">array_mode_stack</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="n">array_mode_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
-
-
 <div class="viewcode-block" id="set_nestable_mode"><a class="viewcode-back" href="../../../../functional/ivy/general/set_nestable_mode.html#ivy.functional.ivy.general.set_nestable_mode">[docs]</a><span class="k">def</span> <span class="nf">set_nestable_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Set the mode of whether to check if function inputs are ivy.Container</span>
 
@@ -427,13 +365,13 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_nestable_mode(False)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_nestable_mode(True)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
-<span class="sd">    False</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.unset_nestable_mode()</span>
 <span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
-<span class="sd">    True</span>
+<span class="sd">    False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">nestable_mode_stack</span>
     <span class="k">if</span> <span class="n">nestable_mode_stack</span><span class="p">:</span>
@@ -447,11 +385,11 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
-<span class="sd">    True</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_nestable_mode(False)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
 <span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_nestable_mode(True)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.get_nestable_mode()</span>
+<span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">nestable_mode_stack</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">nestable_mode_stack</span><span class="p">:</span>
@@ -2735,7 +2673,7 @@
 <span class="k">def</span> <span class="nf">indices_where</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns indices or true elements in an input boolean array.</span>
 
