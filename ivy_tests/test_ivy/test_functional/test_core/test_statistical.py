@@ -7,6 +7,7 @@ from hypothesis import given, assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
@@ -44,14 +45,13 @@ def statistical_dtype_values(draw, *, function):
 # min
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="min"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_min(
+    *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -80,14 +80,13 @@ def test_min(
 # max
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="max"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_max(
+    *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -116,14 +115,13 @@ def test_max(
 # mean
 @given(
     dtype_and_x=statistical_dtype_values(function="mean"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="mean"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_mean(
+    *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -152,14 +150,13 @@ def test_mean(
 # var
 @given(
     dtype_and_x=statistical_dtype_values(function="var"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="var"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_var(
+    *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -187,14 +184,13 @@ def test_var(
 # prod
 @given(
     dtype_and_x=statistical_dtype_values(function="prod"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="prod"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_prod(
+    *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -224,14 +220,13 @@ def test_prod(
 # sum
 @given(
     dtype_and_x=statistical_dtype_values(function="sum"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_sum(
+    *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -261,14 +256,13 @@ def test_sum(
 # std
 @given(
     dtype_and_x=statistical_dtype_values(function="std"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="std"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_std(
+    *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -307,8 +301,10 @@ def test_std(
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+    data=st.data(),
 )
-def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
+@handle_cmd_line_args
+def test_einsum(*, data, eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
     operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]

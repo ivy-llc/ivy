@@ -311,7 +311,10 @@ logical_xor.support_native_out = True
 
 
 def logical_and(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.logical_and(x1.type(torch.bool), x2.type(torch.bool), out=out)
 
