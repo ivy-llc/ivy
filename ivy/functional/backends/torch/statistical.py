@@ -1,7 +1,7 @@
 # global
 torch_scatter = None
 import torch
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union, Optional, Sequence
 
 # local
 import ivy
@@ -28,6 +28,9 @@ def max(
     return torch.amax(input=x, dim=axis, keepdim=keepdims, out=out)
 
 
+max.support_native_out = True
+
+
 def mean(
     x: torch.Tensor,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -44,6 +47,9 @@ def mean(
         else:
             return x
     return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
+
+
+mean.support_native_out = True
 
 
 def min(
@@ -63,12 +69,15 @@ def min(
     return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
 
 
+min.support_native_out = True
+
+
 def prod(
     x: torch.Tensor,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: torch.dtype = None,
-    keepdims: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
@@ -100,6 +109,9 @@ def prod(
                 out=out,
             )
     return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
+
+
+prod.support_native_out = True
 
 
 def std(
@@ -135,6 +147,9 @@ def std(
                 out=out,
             )
     return x
+
+
+std.support_native_out = True
 
 
 def sum(
@@ -190,9 +205,14 @@ def var(
     return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False, out=out)
 
 
+var.support_native_out = True
+
+
 # Extra #
 # ------#
 
 
-def einsum(equation: str, *operands: torch.Tensor) -> torch.Tensor:
+def einsum(
+    equation: str, *operands: torch.Tensor, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.einsum(equation, *operands)

@@ -19,11 +19,13 @@ def _arrays_idx_n_dtypes(draw):
     num_dims = draw(st.shared(st.integers(1, 4), key="num_dims"))
     num_arrays = draw(st.shared(st.integers(2, 4), key="num_arrays"))
     common_shape = draw(
-        helpers.lists(st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1)
+        helpers.lists(
+            arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
+        )
     )
-    unique_idx = draw(helpers.integers(0, num_dims - 1))
+    unique_idx = draw(helpers.integers(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
+        helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
     )
     xs = list()
     input_dtypes = draw(helpers.array_dtypes())
@@ -61,15 +63,15 @@ def test_concat(
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_function(
-        input_dtypes,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "concat",
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="concat",
         xs=xs,
         axis=unique_idx,
     )
@@ -78,9 +80,12 @@ def test_concat(
 # expand_dims
 @given(
     array_shape=helpers.lists(
-        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+        arg=st.integers(2, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
     ),
-    unique_idx=helpers.integers(0, "num_dims"),
+    unique_idx=helpers.integers(min_value=0, max_value="num_dims"),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -117,15 +122,15 @@ def test_expand_dims(
         return
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "expand_dims",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="expand_dims",
         x=x,
         axis=unique_idx,
     )
@@ -134,7 +139,10 @@ def test_expand_dims(
 # flip
 @given(
     array_shape=helpers.lists(
-        st.integers(2, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+        arg=st.integers(2, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 3],
     ),
     axis=helpers.valid_axes(ndim="num_dims", size_bounds=[1, 3]),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
@@ -171,15 +179,15 @@ def test_flip(
         return
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "flip",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="flip",
         x=x,
         axis=axis,
     )
@@ -188,7 +196,10 @@ def test_flip(
 # permute_dims
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+        arg=st.integers(1, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 5],
     ),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_variable=st.booleans(),
@@ -225,15 +236,15 @@ def test_permute_dims(
         return
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "permute_dims",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="permute_dims",
         x=x,
         axes=axes,
     )
@@ -241,7 +252,10 @@ def test_permute_dims(
 
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 10), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+        arg=st.integers(1, 10),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 5],
     ),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
@@ -275,18 +289,18 @@ def test_reshape(
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
 
     # draw a valid reshape shape
-    shape = data.draw(helpers.reshape_shapes(x.shape))
+    shape = data.draw(helpers.reshape_shapes(shape=x.shape))
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "reshape",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="reshape",
         x=x,
         shape=shape,
     )
@@ -295,7 +309,10 @@ def test_reshape(
 # roll
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+        arg=st.integers(1, 5),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 5],
     ),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
@@ -354,15 +371,15 @@ def test_roll(
     axis = data.draw(valid_axis)
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "roll",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="roll",
         x=x,
         shift=shift,
         axis=axis,
@@ -372,7 +389,10 @@ def test_roll(
 # squeeze
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+        arg=st.integers(1, 5),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 5],
     ).filter(lambda s: 1 in s),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
@@ -398,7 +418,9 @@ def test_squeeze(
     x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
     squeezable_axes = [i for i, side in enumerate(x.shape) if side == 1]
 
-    valid_axis = st.sampled_from(squeezable_axes) | helpers.subsets(squeezable_axes)
+    valid_axis = st.sampled_from(squeezable_axes) | helpers.subsets(
+        elements=squeezable_axes
+    )
 
     axis = data.draw(valid_axis)
 
@@ -416,15 +438,15 @@ def test_squeeze(
         return
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "squeeze",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="squeeze",
         x=x,
         axis=axis,
     )
@@ -433,7 +455,10 @@ def test_squeeze(
 # stack
 @given(
     array_shape=helpers.lists(
-        st.integers(0, 3), min_size="num_dims", max_size="num_dims", size_bounds=[0, 3]
+        arg=st.integers(0, 3),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[0, 3],
     ),
     num_arrays=st.shared(st.integers(1, 3), key="num_arrays"),
     input_dtype=helpers.array_dtypes(
@@ -474,15 +499,15 @@ def test_stack(
     axis = data.draw(st.integers(-ndim, max(0, ndim - 1)))
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "stack",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="stack",
         x=xs,
         axis=axis,
     )
@@ -495,7 +520,10 @@ def test_stack(
 # repeat
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+        arg=st.integers(1, 5),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 5],
     ),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
@@ -535,15 +563,15 @@ def test_repeat(
     repeats = data.draw(st.integers(1, 3))
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "repeat",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="repeat",
         x=x,
         repeats=repeats,
         axis=axis,
@@ -553,7 +581,10 @@ def test_repeat(
 # tile
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+        arg=st.integers(1, 5),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 5],
     ),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
@@ -600,15 +631,15 @@ def test_tile(
         )
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "tile",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="tile",
         x=x,
         reps=reps,
     )
@@ -617,7 +648,10 @@ def test_tile(
 # constant_pad
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+        arg=st.integers(1, 5),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 5],
     ),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
@@ -645,7 +679,7 @@ def test_constant_pad(
         (data.draw(st.integers(0, 3)), data.draw(st.integers(0, 3)))
         for _ in range(len(x.shape))
     ]
-    constant = data.draw(st.integers(0, 10))
+    constant = data.draw(helpers.array_values(dtype=input_dtype, shape=()))
 
     # Torch does not support unsigned integers of more than 8 bits (>uint8)
     if (
@@ -656,15 +690,15 @@ def test_constant_pad(
         return
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "constant_pad",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="constant_pad",
         x=x,
         pad_width=pads,
         value=constant,
@@ -674,7 +708,10 @@ def test_constant_pad(
 # zero_pad
 @given(
     array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+        arg=st.integers(1, 5),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 5],
     ),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
@@ -712,15 +749,15 @@ def test_zero_pad(
         return
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "zero_pad",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="zero_pad",
         x=x,
         pad_width=pads,
     )
@@ -729,7 +766,10 @@ def test_zero_pad(
 # swapaxes
 @given(
     array_shape=helpers.lists(
-        st.integers(0, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+        arg=st.integers(0, 5),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[1, 5],
     ),
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     data=st.data(),
@@ -765,15 +805,15 @@ def test_swapaxes(
         return
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "swapaxes",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="swapaxes",
         x=x,
         axis0=axis0,
         axis1=axis1,
@@ -782,7 +822,9 @@ def test_swapaxes(
 
 # clip
 @given(
-    x_min_n_max=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes, num_arrays=3),
+    x_min_n_max=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3
+    ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
@@ -807,15 +849,15 @@ def test_clip(
     min_val = np.asarray(np.minimum(min_val_raw, max_val_raw))
     max_val = np.asarray(np.maximum(min_val_raw, max_val_raw))
     helpers.test_function(
-        [x_dtype, min_dtype, max_dtype],
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "clip",
+        input_dtypes=[x_dtype, min_dtype, max_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="clip",
         x=np.asarray(x_list, dtype=x_dtype),
         x_min=min_val,
         x_max=max_val,

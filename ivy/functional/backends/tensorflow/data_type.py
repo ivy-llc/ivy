@@ -44,6 +44,9 @@ class Finfo:
     def __init__(self, tf_finfo: tf.experimental.numpy.finfo):
         self._tf_finfo = tf_finfo
 
+    def __repr__(self):
+        return repr(self._tf_finfo)
+
     @property
     def bits(self):
         return self._tf_finfo.bits
@@ -162,7 +165,7 @@ def result_type(
     )
     for i in range(2, len(arrays_and_dtypes)):
         result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
-    return result
+    return as_ivy_dtype(result)
 
 
 # Extra #

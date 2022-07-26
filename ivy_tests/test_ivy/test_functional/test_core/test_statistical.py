@@ -10,7 +10,7 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 @st.composite
-def statistical_dtype_values(draw, function):
+def statistical_dtype_values(draw, *, function):
     dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
     size = draw(st.integers(1, 10))
     if dtype == "float16":
@@ -29,13 +29,13 @@ def statistical_dtype_values(draw, function):
 
     values = draw(
         helpers.list_of_length(
-            st.floats(
+            x=st.floats(
                 -abs_value_limit,
                 abs_value_limit,
                 allow_subnormal=False,
                 allow_infinity=False,
             ),
-            size,
+            length=size,
         )
     )
     return dtype, values
@@ -43,7 +43,7 @@ def statistical_dtype_values(draw, function):
 
 # min
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="min"),
@@ -64,22 +64,22 @@ def test_min(
     input_dtype, x = dtype_and_x
     assume(x)
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "min",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="min",
         x=np.asarray(x, dtype=input_dtype),
     )
 
 
 # max
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_numeric_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="max"),
@@ -100,22 +100,22 @@ def test_max(
     input_dtype, x = dtype_and_x
     assume(x)
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "max",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="max",
         x=np.asarray(x, dtype=input_dtype),
     )
 
 
 # mean
 @given(
-    dtype_and_x=statistical_dtype_values("mean"),
+    dtype_and_x=statistical_dtype_values(function="mean"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="mean"),
@@ -135,23 +135,23 @@ def test_mean(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "mean",
-        test_rtol=1e-1,
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="mean",
+        rtol_=1e-1,
         x=np.asarray(x, dtype=input_dtype),
     )
 
 
 # var
 @given(
-    dtype_and_x=statistical_dtype_values("var"),
+    dtype_and_x=statistical_dtype_values(function="var"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="var"),
@@ -171,22 +171,22 @@ def test_var(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "var",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="var",
         x=np.asarray(x, dtype=input_dtype),
     )
 
 
 # prod
 @given(
-    dtype_and_x=statistical_dtype_values("prod"),
+    dtype_and_x=statistical_dtype_values(function="prod"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="prod"),
@@ -208,22 +208,22 @@ def test_prod(
     if fw == "torch" and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype)):
         return  # torch implementation exhibits strange behaviour
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "prod",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="prod",
         x=np.asarray(x, dtype=input_dtype),
     )
 
 
 # sum
 @given(
-    dtype_and_x=statistical_dtype_values("sum"),
+    dtype_and_x=statistical_dtype_values(function="sum"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
@@ -244,23 +244,23 @@ def test_sum(
     input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "sum",
-        test_rtol=1e-2,
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="sum",
+        rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
 
 # std
 @given(
-    dtype_and_x=statistical_dtype_values("std"),
+    dtype_and_x=statistical_dtype_values(function="std"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="std"),
@@ -280,17 +280,17 @@ def test_std(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "std",
-        test_rtol=1e-2,
-        test_atol=1e-2,
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="std",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 

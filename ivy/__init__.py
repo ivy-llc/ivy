@@ -66,7 +66,10 @@ class Dtype(str):
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
-        assert isinstance(shape_tup, (int, list, tuple, ivy.NativeShape))
+        valid_types = (int, list, tuple)
+        if len(backend_stack) != 0:
+            valid_types += (ivy.NativeShape,)
+        assert isinstance(shape_tup, valid_types)
         if isinstance(shape_tup, int):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
@@ -86,6 +89,12 @@ class IntDtype(Dtype):
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
         assert "float" in dtype_str
+        return str.__new__(cls, dtype_str)
+
+
+class UintDtype(IntDtype):
+    def __new__(cls, dtype_str):
+        assert "uint" in dtype_str
         return str.__new__(cls, dtype_str)
 
 
@@ -112,7 +121,6 @@ from .array.conversions import *
 from .container import (
     ContainerBase,
     Container,
-    MultiDevContainer,
     add_ivy_container_instance_methods,
 )
 from .backend_handler import (
@@ -240,10 +248,10 @@ int8 = IntDtype("int8")
 int16 = IntDtype("int16")
 int32 = IntDtype("int32")
 int64 = IntDtype("int64")
-uint8 = IntDtype("uint8")
-uint16 = IntDtype("uint16")
-uint32 = IntDtype("uint32")
-uint64 = IntDtype("uint64")
+uint8 = UintDtype("uint8")
+uint16 = UintDtype("uint16")
+uint32 = UintDtype("uint32")
+uint64 = UintDtype("uint64")
 bfloat16 = FloatDtype("bfloat16")
 float16 = FloatDtype("float16")
 float32 = FloatDtype("float32")
@@ -256,10 +264,10 @@ native_int8 = IntDtype("int8")
 native_int16 = IntDtype("int16")
 native_int32 = IntDtype("int32")
 native_int64 = IntDtype("int64")
-native_uint8 = IntDtype("uint8")
-native_uint16 = IntDtype("uint16")
-native_uint32 = IntDtype("uint32")
-native_uint64 = IntDtype("uint64")
+native_uint8 = UintDtype("uint8")
+native_uint16 = UintDtype("uint16")
+native_uint32 = UintDtype("uint32")
+native_uint64 = UintDtype("uint64")
 native_bfloat16 = FloatDtype("bfloat16")
 native_float16 = FloatDtype("float16")
 native_float32 = FloatDtype("float32")
@@ -312,18 +320,26 @@ all_float_dtypes = (
     float32,
     float64,
 )
+all_uint_dtypes = (
+    uint8,
+    uint16,
+    uint32,
+    uint64,
+)
 
 # valid data types
 valid_dtypes = all_dtypes
 valid_numeric_dtypes = all_numeric_dtypes
 valid_int_dtypes = all_int_dtypes
 valid_float_dtypes = all_float_dtypes
+valid_uint_dtypes = all_uint_dtypes
 
 # invalid data types
 invalid_dtypes = ()
 invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
+invalid_uint_dtypes = ()
 
 # data type promotion
 promotion_table = {
@@ -398,6 +414,8 @@ promotion_table = {
 locks = {"backend_setter": threading.Lock()}
 
 backend = "none"
+
+native_inplace_support = None
 
 if "IVY_BACKEND" in os.environ:
     ivy.set_backend(os.environ["IVY_BACKEND"])

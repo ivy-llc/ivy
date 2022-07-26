@@ -226,3 +226,12 @@ This should have hopefully given you a good feel for the different function type
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `function types discussion`_,
 or reach out on `discord`_ in the `function types channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/mWYhQRu1Vuk" class="video">
+    </iframe>
