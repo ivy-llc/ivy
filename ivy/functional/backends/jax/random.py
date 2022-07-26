@@ -8,7 +8,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import _check_bounds_and_get_shape, _check_valid_scale
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_device
 
@@ -45,11 +45,13 @@ def random_normal(
     dtype: jnp.dtype,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     return (
         to_device(
-            jax.random.normal(rng_input, shape if shape else ()),
+            jax.random.normal(rng_input, shape, dtype=dtype),
             device=device,
         )
         * std
