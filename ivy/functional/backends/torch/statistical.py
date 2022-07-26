@@ -158,6 +158,7 @@ def sum(
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: torch.dtype = None,
     keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
         if x.dtype in [torch.int8, torch.int16]:
@@ -188,7 +189,7 @@ def sum(
                 ),
                 dtype=dtype,
             )
-    return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
+    return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
 
 
 def var(
