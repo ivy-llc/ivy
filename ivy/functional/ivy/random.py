@@ -40,6 +40,11 @@ def _check_bounds_and_get_shape(low, high, shape):
     return ()
 
 
+def _check_valid_scale(std):
+    if (isinstance(std, (int, float)) and std < 0) or ivy.any(ivy.less(std, 0)):
+        raise Exception("`std` must be non-negative")
+
+
 # Extra #
 # ------#
 
