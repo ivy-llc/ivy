@@ -2627,7 +2627,6 @@ def isnan(
     Examples
     --------
     With :code:`ivy.Array` inputs:
-    
     >>> x = ivy.array([1, 2, 3])
     >>> z = ivy.isnan(x)
     >>> print(z)
