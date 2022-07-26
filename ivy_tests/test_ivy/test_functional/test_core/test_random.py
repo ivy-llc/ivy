@@ -132,19 +132,19 @@ def test_multinomial(everything, device, call):
 @given(
     dtype_and_low=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).difference(set(ivy_np.valid_uint_dtypes))
+            set(ivy_np.valid_int_dtypes).difference(set(ivy_np.valid_uint_dtypes))
         ),
-        min_value=-1000,
-        max_value=50,
+        min_value=-100,
+        max_value=25,
     ),
     dtype_and_high=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).difference(set(ivy_np.valid_uint_dtypes))
+            set(ivy_np.valid_int_dtypes).difference(set(ivy_np.valid_uint_dtypes))
         ),
-        min_value=51,
-        max_value=1000,
+        min_value=26,
+        max_value=100,
     ),
-    dtype=st.sampled_from(ivy_np.valid_int_dtypes + (None,)),
+    dtype=st.sampled_from(("int8", "int16", "int32", "int64", None)),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
