@@ -218,34 +218,36 @@ def acosh(
     Examples
     --------
     With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([0, 2.5, 10, -1])
+    >>> import ivy
+    >>> ivy.set_backend("numpy")
+    >>> x = ivy.array([1, 2.5, 10])
     >>> y = ivy.acosh(x)
     >>> print(y)
-    ivy.array([ nan, 1.57, 2.99,  nan])
+    ivy.array([0.  , 1.57, 2.99])
 
-    >>> x = ivy.array([1., 2., -6.])
+    >>> x = ivy.array([1., 2., 6.])
     >>> y = ivy.zeros(3)
     >>> ivy.acosh(x, out=y)
     >>> print(y)
-    ivy.array([0.  , 1.32,  nan])
+    ivy.array([0.  , 1.32, 2.48])
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.array([1., 0., 2.,10.])
+    >>> x = ivy.array([1., 2., 10.])
     >>> y = ivy.acosh(x)
     >>> print(y)
-    ivy.array([0.  ,  nan, 1.32, 2.99])
+    ivy.array([0.  , 1.32, 2.99])
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., -1, 2, 1]), b=ivy.array([1., 0., 10, -6]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 10]), b=ivy.array([1., 10, 6]))
     >>> y = ivy.acosh(x)
     >>> print(y)
     {
-        a: ivy.array([nan, nan, 1.32, 0.]),
-        b: ivy.array([0., nan, 2.99, nan])
+        a: ivy.array([0., 1.32, 2.99]),
+        b: ivy.array([0., 2.99, 2.48])
     }
+
     
     """
     return ivy.current_backend(x).acosh(x, out=out)
@@ -625,7 +627,8 @@ def atan(
     Examples
     --------
     With :code:`ivy.Array` input:
-    
+    >>> import ivy
+    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.atan(x)
     >>> print(y)
@@ -637,16 +640,6 @@ def atan(
     >>> print(y)
     ivy.array([ 1.33,  0.  , -1.41])
 
-    >>> nan = float("nan")
-    >>> x = ivy.array([nan, 1.0, -1.0])
-    >>> x.atan()
-    ivy.array([   nan,  0.785, -0.785])
-
-    >>> inf = float("infinity")
-    >>> x = ivy.array([inf,-inf])
-    >>> y = x.atan()
-    >>> print(y)
-    ivy.array([ 1.57, -1.57])
 
     With :code:`ivy.NativeArray` input:
 
@@ -873,34 +866,36 @@ def atanh(
     Examples
     --------
     With :code:`ivy.Array` input:
-    
-    >>> x = ivy.array([0, -0.5, 1, -2])
+    >>> import ivy
+    >>> ivy.set_backend("numpy")
+    >>> x = ivy.array([0, -0.5])
     >>> y = ivy.atanh(x)
     >>> print(y)
-    ivy.array([ 0.   , -0.549,    inf,    nan])
+    ivy.array([ 0.   , -0.549])
 
-    >>> x = ivy.array([0.5, -0.5, -6.])
+    >>> x = ivy.array([0.5, -0.5, 0.])
     >>> y = ivy.zeros(3)
     >>> ivy.atanh(x, out=y)
     >>> print(y)
-    ivy.array([ 0.549, -0.549,    nan])
+    ivy.array([ 0.549, -0.549,  0.   ])
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.array([1., 0., 2.])
+    >>> x = ivy.array([ 0., 0.5])
     >>> y = ivy.atanh(x)
     >>> print(y)
-    ivy.array([inf,  0., nan])
+    ivy.array([0.   , 0.549])
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+    >>> x = ivy.Container(a=ivy.array([0., -0.5]), b=ivy.array([ 0., 0.5]))
     >>> y = ivy.atanh(x)
     >>> print(y)
     {
-        a: ivy.array([0., -inf, inf]),
-        b: ivy.array([inf, 0., nan])
+        a: ivy.array([0., -0.549]),
+        b: ivy.array([0., 0.549])
     }
+
 
     """
     return ivy.current_backend(x).atanh(x, out=out)
