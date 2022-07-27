@@ -226,8 +226,23 @@ that the inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – a container containing the element-wise results. The returned container
+<dd class="field-odd"><p><ul>
+<li><p><em>ret</em> – a container containing the element-wise results. The returned container
 must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+<blockquote>
+<div><p>Examples</p>
+</div></blockquote>
+</li>
+<li><p><em>——–</em></p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),                          b=ivy.array([2, 3, 4]))</em></p></li>
+<li><p><em>&gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),                          b=ivy.array([5, 6, 7]))</em></p></li>
+<li><p><em>&gt;&gt;&gt; z = x.less(y)</em></p></li>
+<li><p><em>&gt;&gt;&gt; print(z)</em></p></li>
+<li><p><em>{</em> – a: ivy.array([False, False, False]),
+b: ivy.array([True, True, True])</p></li>
+<li><p><em>}</em></p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
