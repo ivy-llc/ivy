@@ -544,6 +544,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+        """
 
     def matrix_rank(
         self: ivy.Container,

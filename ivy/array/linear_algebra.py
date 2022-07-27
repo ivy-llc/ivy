@@ -125,28 +125,30 @@ class ArrayWithLinearAlgebra(abc.ABC):
         Parameters
         ----------
         self
-            input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-            ``MxN`` matrices. Should have a floating-point data type.
+            input array having shape ``(..., M, N)`` and whose innermost two dimensions 
+            form ``MxN`` matrices. Should have a floating-point data type.
         rtol
-            relative tolerance for small singular values. Singular values approximately less
-            than or equal to ``rtol * largest_singular_value`` are set to zero. If a
-            ``float``, the value is equivalent to a zero-dimensional array having a
-            floating-point data type determined by :ref:`type-promotion` (as applied to
-            ``x``) and must be broadcast against each matrix. If an ``array``, must have a
-            floating-point data type and must be compatible with ``shape(x)[:-2]`` (see
-            :ref:`broadcasting`). If ``None``, the default value is ``max(M, N) * eps``,
-            where ``eps`` must be the machine epsilon associated with the floating-point
-            data type determined by :ref:`type-promotion` (as applied to ``x``).
+            relative tolerance for small singular values. Singular values approximately
+            less than or equal to ``rtol * largest_singular_value`` are set to zero. 
+            If a ``float``, the value is equivalent to a zero-dimensional array having
+            a floating-point data type determined by :ref:`type-promotion`
+            (as applied to ``x``) and must be broadcast against each matrix. 
+            If an ``array``, must have a floating-point data type and must be 
+            compatible with ``shape(x)[:-2]`` (see :ref:`broadcasting`). 
+            If ``None``, the default value is ``max(M, N) * eps``, where ``eps`` must 
+            be the machine epsilon associated with the floating-point data type 
+            determined by :ref:`type-promotion` (as applied to ``x``).
             Default: ``None``.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that 
+            the inputs broadcast to.
 
         Returns
         -------
         ret
-            a container containing the ranks. The returned array must have a floating-point
-            data type determined by :ref:`type-promotion` and must have shape ``(...)``
+            a container containing the ranks. The returned array must have a 
+            floating-point data type determined by :ref:`type-promotion` and 
+            must have shape ``(...)``
             (i.e., must have a shape equal to ``shape(x)[:-2]``).
         
         Examples
