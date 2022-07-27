@@ -519,6 +519,72 @@ def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
             assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
 
 
+def args_to_container(array_args):
+    array_args_container = ivy.Container({str(k): v for k, v in enumerate(array_args)})
+    return array_args_container
+
+
+def gradient_test(
+    *,
+    func,
+    args_np,
+    kwargs_np,
+    input_dtypes,
+    as_variable_flags,
+    native_array_flags,
+    container_flags,
+    rtol_: float = None,
+    atol_: float = 1e-06,
+    ground_truth_backend: str = "torch",
+):
+    print("BACKEND", ivy.get_backend())
+    # ivy.set_backend(ground_truth_backend)
+
+    def grad_fn(_):
+        return ivy.mean(func(*args, **kwargs))
+
+    args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
+        args_np=args_np,
+        kwargs_np=kwargs_np,
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable_flags,
+        native_array_flags=native_array_flags,
+        container_flags=container_flags,
+    )
+    arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
+    kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
+    xs = args_to_container(arg_array_vals + kwarg_array_vals)
+    _, ret_np_flat = get_ret_and_flattened_array(
+        ivy.execute_with_gradients, grad_fn, xs
+    )
+    grads_np_flat = ret_np_flat[1]
+    ivy.set_backend(ground_truth_backend)
+    args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
+        args_np=args_np,
+        kwargs_np=kwargs_np,
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable_flags,
+        native_array_flags=native_array_flags,
+        container_flags=container_flags,
+    )
+    arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
+    kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
+    xs = args_to_container(arg_array_vals + kwarg_array_vals)
+    _, ret_np_from_gt_flat = get_ret_and_flattened_array(
+        ivy.execute_with_gradients, grad_fn, xs
+    )
+    grads_np_from_gt_flat = ret_np_from_gt_flat[1]
+    ivy.unset_backend()
+    print("grads_np_flat", grads_np_flat)
+    print("grads_np_from_gt_flat", grads_np_from_gt_flat)
+    value_test(
+        ret_np_flat=grads_np_flat,
+        ret_from_np_flat=grads_np_from_gt_flat,
+        rtol=rtol_,
+        atol=atol_,
+    )
+
+
 def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
     # check for unsupported dtypes
     test_unsupported = False
@@ -796,6 +862,7 @@ def test_function(
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: bool = True,
+    test_gradients: bool = False,
     ground_truth_backend: str = "numpy",
     device_: str = "cpu",
     **all_as_kwargs_np,
@@ -834,6 +901,8 @@ def test_function(
         absolute tolerance value.
     test_values
         if True, test for the correctness of the resulting values.
+    test_gradients
+        if True, test for the correctness of gradients.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     all_as_kwargs_np
@@ -1053,6 +1122,27 @@ def test_function(
         ivy.unset_backend()
         raise e
     ivy.unset_backend()
+    # gradient test
+    if (
+        test_gradients
+        and not fw == "numpy"
+        and all(as_variable_flags)
+        and not any(container_flags)
+        and not any(native_array_flags)
+        and not instance_method
+    ):
+        gradient_test(
+            func=ivy.__dict__[fn_name],
+            args_np=args_np,
+            kwargs_np=kwargs_np,
+            input_dtypes=input_dtypes,
+            as_variable_flags=as_variable_flags,
+            native_array_flags=native_array_flags,
+            container_flags=container_flags,
+            rtol_=rtol_,
+            atol_=atol_,
+        )
+
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_gt
