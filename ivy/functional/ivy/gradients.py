@@ -131,27 +131,7 @@ def set_with_grads(with_grads: bool):
 
 
 def unset_with_grads():
-    """
-    Exit a nested code space where gradients are computed. This method
-    removes the with_grads component from the global list with_grads_stack
-
-    Examples
-    --------
-    >>> ivy.set_with_grads(True)
-    >>> print(ivy.with_grads(with_grads=None))
-    True
-
-    >>> ivy.set_with_grads(False)
-    >>> print(ivy.with_grads(with_grads=None))
-    False
-
-    >>> print(ivy.with_grads(with_grads=True))
-    True
-
-    >>> print(ivy.with_grads(with_grads=False))
-    False
-
-    """
+   
     global with_grads_stack
     if with_grads_stack:
          with_grads_stack.pop(-1)
