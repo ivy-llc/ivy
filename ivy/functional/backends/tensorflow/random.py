@@ -9,7 +9,11 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape, _check_valid_scale
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _randint_check_dtype_and_bound,
+    _check_valid_scale,
+)
 
 # Extra #
 # ------#
@@ -75,17 +79,23 @@ def multinomial(
 
 
 def randint(
-    low: int,
-    high: int,
-    shape: Union[ivy.NativeShape, Sequence[int]],
+    low: Union[float, tf.Tensor, tf.Variable],
+    high: Union[float, tf.Tensor, tf.Variable],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
+    dtype: Optional[Union[DType, ivy.Dtype]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    low = tf.cast(low, "int64")
-    high = tf.cast(high, "int64")
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    _randint_check_dtype_and_bound(low, high, dtype)
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    low = tf.cast(low, "float32")
+    high = tf.cast(high, "float32")
     with tf.device(device):
-        return tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=tf.int64)
+        return tf.cast(tf.random.uniform(shape, low, high, "float32"), dtype)
 
 
 def seed(seed_value: int = 0) -> None:

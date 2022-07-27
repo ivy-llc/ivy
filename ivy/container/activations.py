@@ -360,7 +360,7 @@ class ContainerWithActivations(ContainerBase):
 
     @staticmethod
     def static_tanh(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -370,13 +370,14 @@ class ContainerWithActivations(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.tanh.
-        This method simply wraps the function, and so the docstring
-        for ivy.tanh also applies to this method with minimal changes.
+        This method simply wraps the function, and so the docstring for
+        ivy.tanh also applies to this method with minimal changes.
 
         Parameters
         ----------
         x
-            input container.
+            input container whose elements each represent a hyperbolic angle.
+            Should have a real-valued floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -394,18 +395,19 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-            a container with Hyperbolic tangent activation function
-            applied element-wise.
+            an container containing the hyperbolic tangent of each element in ``x``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[0.55 , -0.55]]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_tanh(x)
         >>> print(y)
         {
-            a: ivy.array([[0.501, -0.501]])
+            a: ivy.array([0., 0.76, 0.96]),
+            b: ivy.array([0.995, 0.999, 0.9999])
         }
-
         """
         return ContainerBase.multi_map_in_static_method(
             "tanh",
@@ -428,13 +430,14 @@ class ContainerWithActivations(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.tanh.
-        This method simply wraps the function, and so the docstring
-        for ivy.tanh also applies to this method with minimal changes.
+        This method simply wraps the function, and so the docstring for
+        ivy.tanh also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            input container.
+            input container whose elements each represent a hyperbolic angle.
+            Should have a real-valued floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -452,18 +455,20 @@ class ContainerWithActivations(ContainerBase):
         Returns
         -------
         ret
-              a container with Hyperbolic tangent activation function
-              applied element-wise.
+            an container containing the hyperbolic tangent of each element in
+            ``self``. The returned container must have a real-valued floating-point
+            data type determined by :ref:`type-promotion`.
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[0.55 , -0.55]]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                              b=ivy.array([3., 4., 5.]))
         >>> y = x.tanh()
         >>> print(y)
         {
-            a: ivy.array([[0.501, -0.501]])
+            a:ivy.array([0., 0.762, 0.964]),
+            b:ivy.array([0.995, 0.999, 1.])
         }
-
         """
         return self.static_tanh(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
