@@ -488,8 +488,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         of a matrix (or a stack of matrices).
 
         Parameters
-        ----------
-        
+        ----------        
         x
             input array or container having shape ``(..., M, N)`` and whose innermost
             two dimensions form ``MxN`` matrices. Should have a floating-point data 
@@ -522,7 +521,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Returns
         -------
-
         ret
             a container containing the ranks. The returned array must have a 
             floating-point data type determined by :ref:`type-promotion` and must have 
@@ -530,7 +528,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-
         With :code: `ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \
@@ -567,6 +564,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ivy.Container instance method variant of ivy.matrix_rank.
         This method returns the rank (i.e., number of non-zero singular values)
         of a matrix (or a stack of matrices).
+
         Parameters
         ----------
         self
@@ -596,12 +594,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
         Returns
         -------
         ret
             a container containing the ranks. The returned array must have a
             floating-point data type determined by :ref:`type-promotion` and must have 
             shape ``(...)`` (i.e., must have a shape equal to ``shape(x)[:-2]``).
+            
         Examples
         --------
         With :code: `ivy.Container` input:
