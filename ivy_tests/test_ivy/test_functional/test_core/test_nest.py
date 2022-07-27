@@ -106,7 +106,7 @@ def test_map_nest_at_index(nest, index, fn, device, call):
 @pytest.mark.parametrize(
     "multi_indices", [(("a", 0, 0), ("a", 1, 0)), (("b", "c", 0), ("b", "c", 1, 0))]
 )
-def test_multi_index_nest(nest, multi_indices, device, call):
+def test_multi_index_nest_ground_truth(nest, multi_indices, device, call):
     rets = ivy.multi_index_nest(nest, multi_indices)
     true_rets = list()
     for indices in multi_indices:
@@ -125,7 +125,7 @@ def test_multi_index_nest(nest, multi_indices, device, call):
     "indices", [(("a", 0, 0), ("a", 1, 0)), (("b", "c", 0), ("b", "c", 1, 0))]
 )
 @pytest.mark.parametrize("values", [(1, 2)])
-def test_set_nest_at_indices(nest, indices, values, device, call):
+def test_set_nest_at_indices_ground_truth(nest, indices, values, device, call):
     nest_copy = copy.deepcopy(nest)
     ivy.set_nest_at_indices(nest, indices, values)
 
@@ -145,7 +145,7 @@ def test_set_nest_at_indices(nest, indices, values, device, call):
     "indices", [(("a", 0, 0), ("a", 1, 0)), (("b", "c", 0, 0, 0), ("b", "c", 1, 0, 0))]
 )
 @pytest.mark.parametrize("fn", [lambda x: x + 2, lambda x: x**2])
-def test_map_nest_at_indices(nest, indices, fn, device, call):
+def test_map_nest_at_indices_ground_truth(nest, indices, fn, device, call):
     nest_copy = copy.deepcopy(nest)
     ivy.map_nest_at_indices(nest, indices, fn)
 
@@ -161,7 +161,7 @@ def test_map_nest_at_indices(nest, indices, fn, device, call):
 @pytest.mark.parametrize(
     "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
 )
-def test_nested_indices_where(nest, device, call):
+def test_nested_indices_where_ground_truth(nest, device, call):
     indices = ivy.nested_indices_where(nest, lambda x: x < 5)
     assert indices[0] == ["a", 0, 0]
     assert indices[1] == ["a", 1, 0]
@@ -197,7 +197,7 @@ def test_nested_indices_where_w_nest_checks(nest, device, call):
 @pytest.mark.parametrize(
     "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
 )
-def test_all_nested_indices(nest, device, call):
+def test_all_nested_indices_ground_truth(nest, device, call):
     indices = ivy.all_nested_indices(nest)
     assert indices[0] == ["a", 0, 0]
     assert indices[1] == ["a", 1, 0]
@@ -324,7 +324,7 @@ def test_prune_nest_at_index(nest, index, device, call):
     "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
 )
 @pytest.mark.parametrize("indices", [(("a", 0, 0), ("b", "c", 0))])
-def test_prune_nest_at_indices(nest, indices, device, call):
+def test_prune_nest_at_indices_ground_truth(nest, indices, device, call):
     nest_copy = copy.deepcopy(nest)
 
     def pnais(n, idxs):
