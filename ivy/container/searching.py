@@ -42,10 +42,8 @@ class ContainerWithSearching(ContainerBase):
         Returns
         -------
         ret
-            if axis is None, a zero-dimensional array containing the index of the first
-            occurrence of the maximum value; otherwise, a non-zero-dimensional array
-            containing the indices of the maximum values. The returned array must have
-            the default array index data type.
+            a container containing the indices of the maximum values across the
+            specified axis.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -82,10 +80,8 @@ class ContainerWithSearching(ContainerBase):
         Returns
         -------
         ret
-            if axis is None, a zero-dimensional array containing the index of the first
-            occurrence of the maximum value; otherwise, a non-zero-dimensional array
-            containing the indices of the maximum values. The returned array must have
-            the default array index data type.
+            a container containing the indices of the maximum values across the
+            specified axis.
 
         """
         return self.static_argmax(self, axis=axis, keepdims=keepdims, out=out)
@@ -116,16 +112,14 @@ class ContainerWithSearching(ContainerBase):
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
         out
-            if axis is None, a zero-dimensional array containing the index of the first
-            occurrence of the minimum value; otherwise, a non-zero-dimensional array
-            containing the indices of the minimum values. The returned array must have
-            the default array index data type.
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
         ret
-            Array containing the indices of the minimum values across the specified
-            axis.
+            a container containing the indices of the minimum values across the
+            specified axis.
         """
         return ContainerBase.multi_map_in_static_method(
             "argmin", x, axis=axis, keepdims=keepdims, out=out
@@ -156,16 +150,14 @@ class ContainerWithSearching(ContainerBase):
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
         out
-            if axis is None, a zero-dimensional array containing the index of the first
-            occurrence of the minimum value; otherwise, a non-zero-dimensional array
-            containing the indices of the minimum values. The returned array must have
-            the default array index data type.
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
         ret
-            Array containing the indices of the minimum values across the specified
-            axis.
+            a container containing the indices of the minimum values across the
+            specified axis.
 
         """
         return self.static_argmin(self, axis=axis, keepdims=keepdims, out=out)
