@@ -329,7 +329,7 @@ class ContainerWithCreation(ContainerBase):
         Returns
         -------
         ret
-            an array having the same shape as ``self`` and filled with ones.
+            a container having the same shape as ``self`` and filled with ones.
         """
         return ContainerBase.multi_map_in_static_method(
             "ones_like",
@@ -386,7 +386,7 @@ class ContainerWithCreation(ContainerBase):
         Returns
         -------
         ret
-            an array having the same shape as ``self`` and filled with ones.
+            a container having the same shape as ``self`` and filled with ones.
         """
         return self.static_ones_like(
             self,
