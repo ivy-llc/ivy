@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy.functional.backends.numpy as ivy_np
@@ -159,6 +159,7 @@ def test_binary_cross_entropy(
     num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
     data=st.data(),
 )
+@settings(deadline=None)
 @handle_cmd_line_args
 def test_sparse_cross_entropy(
     *,
