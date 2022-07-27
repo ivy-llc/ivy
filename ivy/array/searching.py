@@ -86,3 +86,22 @@ class ArrayWithSearching(abc.ABC):
 
         """
         return ivy.argmin(self, axis=axis, keepdims=keepdims, out=out)
+
+    def nonzero(self: ivy.Array):
+        """
+        ivy.Array instance method variant of ivy.nonzero. This method simply
+        wraps the function, and so the docstring for ivy.nonzero also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            Array containing the indices of the non-zero values.
+
+        """
+        return ivy.nonzero(self)
