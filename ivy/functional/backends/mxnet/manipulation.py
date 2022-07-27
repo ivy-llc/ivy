@@ -87,9 +87,10 @@ def squeeze(
 
 def reshape(    
     x: Union[ivy.Array, ivy.NativeArray],
-    shape: Union[int, Tuple[int, int], List[int]]
+    shape: Union[int, Tuple[int, int], List[int]],
+    copy: Optional[bool] = None
 ):
-    return mx.nd.reshape(x, shape)
+    return mx.nd.reshape(x, shape, copy)
 
 
 @_handle_flat_arrays_in_out
