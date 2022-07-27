@@ -26,6 +26,7 @@ jobs:
       #     rm examples.zip
 
       - name: Run Activations Tests
+        id: tests
         run: |
           cd ivy
           mkdir -p .hypothesis
