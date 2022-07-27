@@ -82,13 +82,13 @@ def test_random_uniform(
         max_value=1000,
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
     data=st.data(),
 )
+@handle_cmd_line_args
 def test_random_normal(
+    *,
+    data,
     dtype_and_mean,
     dtype_and_std,
     dtype,
@@ -103,7 +103,7 @@ def test_random_normal(
 ):
     mean_dtype, mean = dtype_and_mean
     std_dtype, std = dtype_and_std
-    helpers.test_function(
+    ret, ret_gt = helpers.test_function(
         input_dtypes=[mean_dtype, std_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -111,6 +111,7 @@ def test_random_normal(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
+        test_values=False,
         fw=fw,
         fn_name="random_normal",
         mean=np.asarray(mean, dtype=mean_dtype),
