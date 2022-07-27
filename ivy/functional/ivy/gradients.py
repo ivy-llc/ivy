@@ -126,6 +126,7 @@ def set_with_grads(with_grads: bool):
     False
 
     """
+    assert with_grads in [True, False]
     global with_grads_stack
     with_grads_stack.append(with_grads)
 
