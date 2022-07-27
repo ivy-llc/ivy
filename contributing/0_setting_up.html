@@ -59,6 +59,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#windows">Windows</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#macos">MacOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ubuntu">Ubuntu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#more-detailed-hypothesis-logs">More Detailed Hypothesis Logs</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#github-codespaces">GitHub Codespaces</a></li>
@@ -399,6 +400,27 @@ $(lsb_release -cs) stable&quot; | sudo tee /etc/apt/sources.list.d/docker.list &
 </ol>
 <p>For questions, please reach out on the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1308">setting up discussion</a>
 or on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>!</p>
+</section>
+<section id="more-detailed-hypothesis-logs">
+<h3>More Detailed Hypothesis Logs<a class="headerlink" href="#more-detailed-hypothesis-logs" title="Permalink to this heading"></a></h3>
+<p>For testing, we use the <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/#">Hypothesis</a> module for data generation.
+During testing, if Hypothesis detects an error, it will do its best to find the simplest values that are causing the error.
+However, when using PyCharm, if Hypothesis detects two or more distinct errors, it will return the number of errors found and not return much more information.
+This is because PyCharm by default turns off headers and summary’s while running tests. To get more detailed information on errors in the code, we recommend doing the following:</p>
+<ol class="arabic">
+<li><p>Going to the settings -&gt; Advanced</p></li>
+<li><p>Using the search bar to search for ‘Pytest’</p></li>
+<li><p>Make sure that the checkbox for ‘Pytest: do not add “–no-header –no-summary -q”’ is checked.</p>
+<blockquote>
+<div><ol class="loweralpha">
+<li><a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_setting.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_setting.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_setting.png" style="width: 420px;" /></a>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+<p>Now, if Hypothesis detects an error in the code it will return more detailed information on each of the failing examples:</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_example.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_example.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_example.png" style="width: 420px;" /></a>
 </section>
 </section>
 <section id="github-codespaces">
