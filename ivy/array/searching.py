@@ -22,6 +22,29 @@ class ArrayWithSearching(abc.ABC):
         wraps the function, and so the docstring for ivy.argmax also applies
         to this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+        axis
+            axis along which to search. If None, the function must return the index of
+            the maximum value of the flattened array. Default  None.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result as
+            dimensions with size one. With this option, the result will broadcast
+            correctly against the array.
+        out
+            If provided, the result will be inserted into this array. It should be of
+            the appropriate shape and dtype.
+
+        Returns
+        -------
+        ret
+            if axis is None, a zero-dimensional array containing the index of the first
+            occurrence of the maximum value; otherwise, a non-zero-dimensional array
+            containing the indices of the maximum values. The returned array must have
+            be the default array index data type.
+
         """
         return ivy.argmax(self, axis=axis, keepdims=keepdims, out=out)
 
@@ -36,6 +59,30 @@ class ArrayWithSearching(abc.ABC):
         ivy.Array instance method variant of ivy.argmin. This method simply
         wraps the function, and so the docstring for ivy.argmin also applies
         to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+        axis
+            axis along which to search. If None, the function must return the index of
+            the minimum value of the flattened array. Default = None.
+        keepdims
+            if True, the reduced axes (dimensions) must be included in the result as
+            singleton dimensions, and, accordingly, the result must be compatible with
+            the input array (see Broadcasting). Otherwise, if False, the reduced axes
+            (dimensions) must not be included in the result. Default = False.
+        out
+            if axis is None, a zero-dimensional array containing the index of the first
+            occurrence of the minimum value; otherwise, a non-zero-dimensional array
+            containing the indices of the minimum values. The returned array must have
+            the default array index data type.
+
+        Returns
+        -------
+        ret
+            Array containing the indices of the minimum values across the specified
+            axis.
 
         """
         return ivy.argmin(self, axis=axis, keepdims=keepdims, out=out)
