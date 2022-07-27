@@ -51,10 +51,11 @@ class NativeShape:
 
 class Device(str):
     def __new__(cls, dev_str):
-        assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
-        if dev_str != "cpu":
-            assert dev_str[3] == ":"
-            assert dev_str[4:].isnumeric()
+        if dev_str != "":
+            assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
+            if dev_str != "cpu":
+                assert dev_str[3] == ":"
+                assert dev_str[4:].isnumeric()
         return str.__new__(cls, dev_str)
 
 
