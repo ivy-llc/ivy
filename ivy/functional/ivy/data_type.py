@@ -670,46 +670,49 @@ def _check_float64(input) -> bool:
 
 # noinspection PyShadowingBuiltins
 def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, str]:
-    """ Identifies the closest data-type to  provided data-type  that the current backend supports.
+    """Determines the closest valid datatype to the datatype passed as input.
     Parameters
     ----------
     type
-        data-type to find the closest valid data-type to it.
+        The data type for which to check the closest valid type for.
     Returns
     -------
     ret
-        The closest valid data-type supported by the backend as a native ivy.Dtype
+        The closest valid data type as a native ivy.Dtype
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
     in the standard.
+
     Examples
     --------
+
     With :code:`ivy.Dtype` input:
+
     >>> xType = ivy.float16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     float16
-    >>> ivy.set_backend('numpy')
-    >>> xType = ivy.bfloat16
+
+    >>> xType = ivy.int8
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
-    float16
+    int8
+
     With :code:`ivy.Native_dtype` inputs:
+
     >>> xType = ivy.native_uint16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     uint16
+
     With :code:`str` input:
+
     >>> xType = 'int32'
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
     int32
-    With :code:`None` input:
-    >>> xType = None
-    >>> yType = ivy.closest_valid_dtype(xType)
-    >>> print(yType)
-    float32
 
     """
     return current_backend(type).closest_valid_dtype(type)
