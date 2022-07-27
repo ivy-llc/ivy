@@ -439,6 +439,7 @@ def sum(
     >>> y = ivy.sum(x)
     >>> print(y)
     ivy.array(1.3)
+
     """
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
@@ -519,6 +520,24 @@ def var(
     >>> ivy.var(x, out=x)
     >>> print(x)
     ivy.array(0.)
+
+    With :code:`ivy.native_array` input:
+
+    >>> x = ivy.native_array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
+    >>> y = ivy.var(x)
+    >>> print(y)
+    ivy.array(0.07472222)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
+                          b=ivy.array([0.7, 0.1, 0.9]))
+    >>> y = x.var()
+    >>> print(y)
+    {
+        a:ivy.array(0.12666667),
+        b:ivy.array(0.11555555)
+    }
 
     """
     return current_backend(x).var(x, axis, correction, keepdims, out=out)
