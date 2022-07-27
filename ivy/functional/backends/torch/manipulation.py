@@ -66,9 +66,12 @@ def permute_dims(
 
 def reshape(
     x: torch.Tensor,
-    shape: Union[ivy.NativeShape, Sequence[int], Tuple[int]],
-    copy: Optional[bool] = None,
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None
 ) -> torch.Tensor:
+    if copy:
+        newarr = torch.clone(x)
+        return torch.reshape(newarr, shape)
     return torch.reshape(x, shape)
 
 
