@@ -254,16 +254,27 @@ Your PR will never be closed until we have provided at least code review on it.
 
 After a new PR is made, for the tests to run, it needs an approval of someone
 from the ivy team for the workflows to start running. Once approved, you can see the failing
-and passing checks for a commit relevant to your PR by clicking on the ❌ or ✔ or 🟤(each for:
-one or more tests are failing, all tests are passing, the check has just started respectively)
-icon️next to the commit hash.
+and passing checks for a commit relevant to your PR by clicking on the ❌ or ✔️or 🟤(each for:
+one or more tests are failing, all tests are passing, the check has just started, respectively)
+icon next to the commit hash.
 
     .. image:: content/PR_checks.png
        :width: 420
 
-If you further click on the details next to a check then you can see the logs for that particular
-test
+Further, if you click on the details next to a check then you can see the logs for that particular
+test.
 
+    .. image:: content/pr_logs.png
+       :width: 420
+
+Also, if you have pushed multiple commits to a PR in a relatively short time, you may want to cancel
+the checks for a previous commit to speedup the process, you can do that by going to the log page as
+described above and clicking on the `Cancel Workflow` button.
+
+Note that this option might be unavailable depending on the level of access that you have.
+
+    .. image:: content/cancel_workflow.png
+       :width: 420
 
 Finally, all PRs must give write access to Ivy maintainers of the branch.
 This can be done by checking a tickbox in the lower right corner of the PR.
