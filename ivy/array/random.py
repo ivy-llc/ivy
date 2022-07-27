@@ -237,16 +237,45 @@ class ArrayWithRandom(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
-        >>> x.random_uniform(10.2)
-        ivy.array([[9.86, 4.89],
-                   [7.06, 7.47]])
+        >>> x = ivy.array([[1, 2], [0, 5]])
+        >>> x.randint(10)
+        ivy.array([[1, 5],
+                   [9, 7]])
 
-        >>> x = ivy.array([8.7, 9.3])
-        >>> y = ivy.array([12.8, 14.5])
-        >>> z = ivy.ones((2,))
-        >>> x.random_uniform(y, device='cpu', dtype='float64', out=z)
-        ivy.array([12.1, 14. ])
+        >>> x.randint(8, device='cpu')
+        ivy.array([[6, 5],
+                   [0, 5]])
+
+        >>> x.randint(9, dtype='int8')
+        ivy.array([[1, 2],
+                   [7, 7]])
+
+        >>> x.randint(14, device='cpu', dtype='int16')
+        ivy.array([[6, 5],
+                   [0, 5]])
+
+        >>> z = ivy.ones((2,2))
+        >>> x.randint(16, device='cpu', dtype='int64', out=z)
+        ivy.array([[1, 2],
+                   [7, 7]])
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([23, 25, 98])
+        >>> x.randint(y)
+        ivy.array([ 5, 14, 18])
+
+        >>> x.randint(y, device='cpu')
+        ivy.array([20, 13, 46])
+
+        >>> x.randint(y, dtype='int32')
+        ivy.array([ 9, 18, 33])
+
+        >>> x.randint(y, device='cpu', dtype='int16')
+        ivy.array([ 9, 20, 85])
+
+        >>> z = ivy.ones((3,))
+        >>> x.randint(y, device='cpu', dtype='int64', out=z)
+        ivy.array([20, 13, 46])
         """
         return ivy.randint(
             self._data,
