@@ -7,6 +7,7 @@ from hypothesis import given, assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
@@ -65,6 +66,7 @@ def statistical_correction_values(draw, *, function):
     instance_method=st.booleans(),
     keep_dims=st.booleans(),
 )
+@handle_cmd_line_args
 def test_min(
     dtype_values_axis,
     as_variable,
@@ -96,6 +98,7 @@ def test_min(
 
 # max
 @given(
+
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         ret_shape=True),
@@ -107,6 +110,7 @@ def test_min(
     instance_method=st.booleans(),
     keep_dims=st.booleans(),
 )
+@handle_cmd_line_args
 def test_max(
     dtype_values_axis,
     as_variable,
@@ -149,6 +153,7 @@ def test_max(
     instance_method=st.booleans(),
     keep_dims=st.booleans(),
 )
+@handle_cmd_line_args
 def test_mean(
     dtype_values_axis,
     as_variable,
@@ -192,6 +197,7 @@ def test_mean(
     correction=statistical_correction_values(function="var"),
     keep_dims=st.booleans()
 )
+@handle_cmd_line_args
 def test_var(
     dtype_values_axis,
     as_variable,
@@ -233,6 +239,7 @@ def test_var(
     instance_method=st.booleans(),
     keep_dims=st.booleans(),
 )
+@handle_cmd_line_args
 def test_prod(
     dtype_values_axis,
     as_variable,
@@ -274,6 +281,7 @@ def test_prod(
     instance_method=st.booleans(),
     keep_dims=st.booleans(),
 )
+@handle_cmd_line_args
 def test_sum(
     dtype_values_axis,
     as_variable,
@@ -316,6 +324,7 @@ def test_sum(
     correction=statistical_correction_values(function="std"),
     keep_dims=st.booleans(),
 )
+@handle_cmd_line_args
 def test_std(
     dtype_values_axis,
     as_variable,
@@ -360,6 +369,7 @@ def test_std(
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+    data=st.data(),
 )
 def test_einsum(
         eq_n_op_n_shp,
