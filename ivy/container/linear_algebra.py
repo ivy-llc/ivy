@@ -205,7 +205,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
     def static_cross(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         axis: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -214,6 +214,70 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.cross.
+        This method simply wraps the function, and so the docstring for
+        ivy.cross also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input array or container. Should have a numeric data type.
+        x2
+            second input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        axis
+             the axis (dimension) of x1 and x2 containing the vectors for
+             which to compute (default: -1) the cross product.vIf set to -1, the
+             function computes the cross product for vectors defined by the last axis (dimension). Default: -1.
+        key_chains
+             The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+             If True, the method will be applied to key_chains, otherwise key_chains
+             will be skipped. Default is True.
+        prune_unapplied
+              Whether to prune key_chains for which the function was not applied.
+              Default is False.
+        map_sequences
+              Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+              optional output container, for writing the result to. It must have a shape
+              that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+              a container containing the element-wise products.
+              The returned container must have a data type determined
+              by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.array([9., 0., 3.])
+        >>> y = ivy.Container(a=ivy.array([1., 1., 0.]),\
+                              b=ivy.array([1., 0., 1.]))
+        >>> z = ivy.Container.static_cross(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([-3., 3., 9.]),
+            b: ivy.array([0., -6., 0.])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), \
+                              b=ivy.array([0., 0., 2.]))
+        >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), \
+                              b=ivy.array([3., 0., 0.]))
+        >>> z = ivy.Container.static_cross(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([0., 0., 35.]),
+            b: ivy.array([0., 6., 0.])
+         }
+         """
         return ContainerBase.multi_map_in_static_method(
             "cross",
             x1,
@@ -237,6 +301,56 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.cross.
+        This method simply wraps the function, and so the docstring for
+        ivy.cross also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        x2
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        axis
+            the axis (dimension) of x1 and x2 containing the vectors for
+            which to compute (default: -1) the cross product.vIf set to -1, the
+            function computes the cross product for vectors defined by the last axis (dimension). Default: -1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise products.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([5., 0., 0.]),\
+                              b=ivy.array([0., 0., 2.]))
+        >>> y = ivy.Container(a=ivy.array([0., 7., 0.]),\
+                              b=ivy.array([3., 0., 0.]))
+        >>> z = ivy.cross(x,y)
+        >>> print(z)
+        {
+            a: ivy.array([0., 0., 35.]),
+            b: ivy.array([0., 6., 0.])
+        }
+        """
         return self.static_cross(
             self,
             x2,
