@@ -23,7 +23,8 @@ jobs:
       - name: execute py script # run the run.py to get the latest data
         id: dash
         run: |
-          python run.py
+          cd ivy/automation_tools/tools/pr_tools
+          python3 pr_dash.py -all
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           key: ${{ secrets.key }} # if run.py requires passwords..etc, set it as secrets
