@@ -8,6 +8,7 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # random_uniform
@@ -20,13 +21,15 @@ import ivy_tests.test_ivy.helpers as helpers
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
     container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_random_uniform(
+    *,
+    data,
     dtypes_and_values,
     dtype,
     as_variable,
@@ -59,31 +62,54 @@ def test_random_uniform(
 
 # random_normal
 @given(
+    dtype_and_mean=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        min_value=-1000,
+        max_value=1000,
+    ),
+    dtype_and_std=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        min_value=0,
+        max_value=1000,
+    ),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
     data=st.data(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
 )
-def test_random_normal(data, dtype, as_variable, device, call):
-    mean, std = data.draw(helpers.get_mean_std(dtype=dtype))
-    ivy.seed(0)
-    # smoke test
-    if as_variable and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        return
-    mean_tnsr = (
-        ivy.array(mean, dtype=dtype, device=device) if mean is not None else None
+def test_random_normal(
+    dtype_and_mean,
+    dtype_and_std,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    mean_dtype, mean = dtype_and_mean
+    std_dtype, std = dtype_and_std
+    helpers.test_function(
+        input_dtypes=[mean_dtype, std_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="random_normal",
+        mean=np.asarray(mean, dtype=mean_dtype),
+        std=np.asarray(std, dtype=std_dtype),
+        shape=None,
+        dtype=dtype,
+        device=device,
     )
-    std_tnsr = ivy.array(std, dtype=dtype, device=device) if std is not None else None
-    if as_variable and (mean is not None):
-        mean_tnsr = ivy.variable(mean_tnsr)
-    if as_variable and (std is not None):
-        std_tnsr = ivy.variable(std_tnsr)
-    kwargs = {
-        k: v for k, v in zip(["mean", "std"], [mean_tnsr, std_tnsr]) if v is not None
-    }
-    ret = ivy.random_normal(**kwargs, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
 
 
 @st.composite
@@ -132,9 +158,9 @@ def test_multinomial(everything, device, call):
 @given(
     data=st.data(),
     shape=helpers.get_shape(allow_none=False),
-    as_variable=st.booleans(),
 )
-def test_randint(data, shape, as_variable, device, call):
+@handle_cmd_line_args
+def test_randint(*, data, shape, as_variable, device, call):
     dtype = ivy.default_int_dtype()
     # smoke test
     low, high = data.draw(helpers.get_bounds(dtype=dtype))
@@ -180,9 +206,10 @@ def test_seed(seed_val):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
     ),
-    as_variable=st.booleans(),
+    data=st.data(),
 )
-def test_shuffle(dtype_and_x, as_variable, device, call):
+@handle_cmd_line_args
+def test_shuffle(*, data, dtype_and_x, as_variable, device, call):
     # smoke test
     dtype, x = dtype_and_x
     x = ivy.array(x, dtype=dtype, device=device)
