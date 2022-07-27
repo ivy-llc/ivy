@@ -43,3 +43,36 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return self.static_argmax(self, axis=axis, keepdims=keepdims, out=out)
+
+    @staticmethod
+    def static_argmin(
+        x: ivy.Container,
+        axis: Optional[int] = None,
+        keepdims: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.argmin. This method simply
+        wraps the function, and so the docstring for ivy.argmin also applies
+        to this method with minimal changes.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "argmin", x, axis=axis, keepdims=keepdims, out=out
+        )
+
+    def argmin(
+        self: ivy.Container,
+        axis: Optional[int] = None,
+        keepdims: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.argmin. This method simply
+        wraps the function, and so the docstring for ivy.argmin also applies
+        to this method with minimal changes.
+
+        """
+        return self.static_argmin(self, axis=axis, keepdims=keepdims, out=out)
