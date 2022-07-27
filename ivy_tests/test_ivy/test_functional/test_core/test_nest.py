@@ -7,7 +7,6 @@ import pytest
 
 # local
 import ivy
-from ivy_tests.test_ivy import helpers
 
 # Helpers #
 # --------#
@@ -254,49 +253,24 @@ def test_copy_nest(device, call):
 
 
 # nested_multi_map
+@pytest.mark.parametrize("func", [lambda x, _: x[0] - x[1]])
 @pytest.mark.parametrize(
-    "x0_n_x1_n_res",
+    "nests",
     [
-        (
-            "int16",
-            [
-                [-11620],
-                [26954],
-                [15454],
-                [-8221],
-                [-28553],
-                [15758],
-                [2810],
-                [29072],
-                [3003],
-                [2750],
-            ],
-        ),
-        ("int32", [-52718, -249, 1953567615, -57372, 24742, 691182098, -37707]),
+        [
+            ivy.array([-1.82, 1.25, -2.91, 0.109, 0.76, 1.7, 0.231, 4.45]),
+            ivy.array([-3.98, -3.86, 7.94, 2.08, 9.3, 2.35, 9.37, 1.7]),
+        ]
     ],
 )
-@pytest.mark.parametrize("num_positional_args", [4, 2, 1])
-def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
+def test_nested_multi_map(func, nests, device, call, fw):
     # without key_chains specification
-    dtype = x0_n_x1_n_res[0]
-    nest0 = ivy.array(x0_n_x1_n_res[1], dtype=dtype)
-    nest1 = nest0 * 2
-    if nest0.shape == ():
-        return
+    nested_multi_map_res = ivy.nested_multi_map(func, nests)
 
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=False,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=False,
-        container_flags=False,
-        instance_method=False,
-        fw=fw,
-        fn_name="nested_multi_map",
-        func=lambda x, _: x[0] - x[1],
-        nests=[nest0, nest1],
-    )
+    # modify this to test for other functions
+    nests_without_multi_map_res = nests[0] - nests[1]
+
+    assert ivy.all_equal(nested_multi_map_res, nests_without_multi_map_res)
 
 
 # prune_nest_at_index
@@ -309,7 +283,7 @@ def test_nested_multi_map(x0_n_x1_n_res, num_positional_args, device, call, fw):
 def test_prune_nest_at_index(nest, index, device, call):
     nest_copy = copy.deepcopy(nest)
 
-    # find a better way of doing this
+    # handling cases where there is nothing to prune
     try:
         ivy.prune_nest_at_index(nest, index)
         _pnai(nest_copy, index)
@@ -330,6 +304,7 @@ def test_prune_nest_at_indices(nest, indices, device, call):
     def pnais(n, idxs):
         [_pnai(n, index) for index in idxs]
 
+    # handling cases where there is nothing to prune
     try:
         ivy.prune_nest_at_indices(nest, indices)
         pnais(nest_copy, indices)
