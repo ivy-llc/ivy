@@ -43,7 +43,7 @@ class ArrayWithSearching(abc.ABC):
             if axis is None, a zero-dimensional array containing the index of the first
             occurrence of the maximum value; otherwise, a non-zero-dimensional array
             containing the indices of the maximum values. The returned array must have
-            be the default array index data type.
+            the default array index data type.
 
         """
         return ivy.argmax(self, axis=axis, keepdims=keepdims, out=out)
