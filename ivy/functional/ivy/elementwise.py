@@ -2810,15 +2810,12 @@ def log1p(
     >>> ivy.log1p(x , out = x)
     >>> print(x)
     ivy.array([[0.742, 1.16 , 1.46 ],
-               [1.69 , 1.87 , 2.03 ]])
+           [1.69 , 1.87 , 2.03 ]])
 
-    >>> x = ivy.array([1e-99])
-    >>> y = ivy.log(1+ x)
+    >>> x = ivy.array([1e-9] , dtype = ivy.float32)
+    >>> y = x.log1p()
     >>> print(y)
-    ivy.array([0.])
-    >>> y = x.log1p( )
-    >>> print(y)
-    ivy.array([1.e-99])
+    ivy.array([1.e-09])
 
     With :code:`ivy.NativeArray` input:
 
@@ -2827,23 +2824,14 @@ def log1p(
     >>> print(y)
     ivy.array([2.4 , 3.04])
 
-
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))
-    >>> y = ivy.log1p(x)
+    >>> y = ivy.Container.static_log1p(x)
     >>> print(y)
     {
         a: ivy.array([0., 0.693, 1.1]),
         b: ivy.array([1.39, 1.61, 1.81])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([ 1., 2.]), b=ivy.array([0., 1.]))
-    >>> y = ivy.Container.static_log1p(x)
-    >>> print(y)
-    {
-        a: ivy.array([0.693, 1.1]),
-        b: ivy.array([0., 0.693])
     }
 
     """
@@ -2966,7 +2954,7 @@ def logical_and(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of bool.
-
+    
     Examples
     --------
     >>> x = ivy.array([True, True, False])
@@ -2978,9 +2966,9 @@ def logical_and(
     >>> print(y)
     ivy.array([True, False, False])
 
-    >>> x = ivy.Container(a=ivy.array([False, True, True]), \
+    x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
-    >>> y = ivy.Container(a=ivy.array([True, True, False]), \
+    y = ivy.Container(a=ivy.array([True, True, False]), \
         b=ivy.array([False, False, True]))
     print(ivy.logical_and(y, x))
     {
@@ -3000,6 +2988,10 @@ def logical_and(
     >>> print(ivy.logical_and(x, y))
     ivy.array([True, False, False])
 
+    >>> ivy.logical_and(x, y, out=y)
+    >>> print(y)
+    ivy.array([True, False, False])
+
     >>> x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
     >>> y = ivy.array([True, False, True])
@@ -3009,8 +3001,8 @@ def logical_and(
         b: ivy.array([True, False, False])
     }
 
-    >>> ivy.logical_and(y, x, out=x)
-    >>> print(x)
+    >>> ivy.logical_and(y, x, out=y)
+    >>> print(y)
     {
         a: ivy.array([False, False, True]),
         b: ivy.array([True, False, False])
@@ -3036,11 +3028,11 @@ def logical_not(
        accept input arrays having numeric data types. If non-boolean data types are
        supported, zeros must be considered the equivalent of ``False``, while non-zeros
        must be considered the equivalent of ``True``.
-
+       
        **Special cases**
-
+       
        For this particular case,
-
+       
        - If ``x_i`` is ``NaN``, the result is ``False``.
        - If ``x_i`` is ``-0``, the result is ``True``.
        - If ``x_i`` is ``-infinity``, the result is ``False``.
@@ -3059,7 +3051,7 @@ def logical_not(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of ``bool``.
-
+        
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
@@ -3067,23 +3059,23 @@ def logical_not(
     >>> y=ivy.logical_not(x)
     >>> print(y)
     ivy.array([False, True, False, False,  True])
-
+    
     >>> x=ivy.array([2,0,3,5])
     >>> y=ivy.logical_not(x)
     >>> print(y)
     ivy.array([False, True, False, False])
-
+    
     With :code:`ivy.NativeArray` input:
     >>> x=ivy.native_array([1,0,1,1,0])
     >>> y=ivy.logical_not(x)
     >>> print(y)
     ivy.array([False, True, False, False,  True])
-
+    
     >>> x=ivy.native_array([1,0,6,5])
     >>> y=ivy.logical_not(x)
     >>> print(y)
     ivy.array([False, True, False, False])
-
+    
     With :code:`ivy.Container` input:
     >>> x=ivy.Container(a=ivy.array([1,0,1,1]), b=ivy.array([1,0,8,9]))
     >>> y=ivy.logical_not(x)
@@ -3092,7 +3084,7 @@ def logical_not(
         a: ivy.array([False, True, False, False]),
         b: ivy.array([False, True, False, False])
     }
-
+    
     >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
     >>> y=ivy.logical_not(x)
     >>> print(y)
@@ -3100,19 +3092,19 @@ def logical_not(
         a: ivy.array([False, True, False, True]),
         b: ivy.array([False, False, True, False])
     }
-
+    
     Instance Method Examples
     ------------------------
-
+    
     With :code:`ivy.Array` input:
     >>> x=ivy.array([0,1,1,0])
     >>> x.logical_not()
     ivy.array([ True, False, False,  True])
-
+    
     >>> x=ivy.array([2,0,3,9])
     >>> x.logical_not()
     ivy.array([False,  True, False, False])
-
+    
     With :code:`ivy.Container` input:
     >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
     >>> x.logical_not()
@@ -3120,7 +3112,7 @@ def logical_not(
         a: ivy.array([False, True, True, False]),
         b: ivy.array([False, False, False, True])
     }
-
+    
     >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
     >>> x.logical_not()
     {
