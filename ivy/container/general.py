@@ -10,48 +10,141 @@ import ivy
 
 # noinspection PyMissingConstructor
 class ContainerWithGeneral(ContainerBase):
-    def clip_vector_norm(
-        self,
-        max_norm,
-        p,
-        global_norm=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
+    @staticmethod
+    def static_clip_vector_norm(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        max_norm: float,
+        p: float = 2.0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-    ):
-        max_norm_is_container = isinstance(max_norm, ivy.Container)
-        p_is_container = isinstance(p, ivy.Container)
-        if global_norm:
-            if max_norm_is_container or p_is_container:
-                raise Exception(
-                    """global_norm can only be computed for 
-                    scalar max_norm and p_val arguments,"""
-                    "but found {} and {} of type {} and {} respectively".format(
-                        max_norm, p, type(max_norm), type(p)
-                    )
-                )
-            vector_norm = self.vector_norm(p, global_norm=True)
-            ratio = max_norm / vector_norm
-            if ratio < 1:
-                return self.handle_inplace(self * ratio, out)
-            return self.handle_inplace(self.copy(), out)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.clip_vector_norm(
-                    x,
-                    max_norm[kc] if max_norm_is_container else max_norm,
-                    p[kc] if p_is_container else p,
-                )
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.clip_vector_norm. This method
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array
+        max_norm
+            float, the maximum value of the array norm.
+        p
+            optional float, the p-value for computing the p-norm. Default is 2.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the vector norm downscaled to the max norm if needed.
+
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_clip_vector_norm(x, 2.0)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.894, 1.79]),
+            b: ivy.array([0.849, 1.13, 1.41])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "clip_vector_norm",
+            x,
+            max_norm,
+            p,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def clip_vector_norm(
+        self: ivy.Container,
+        max_norm: float,
+        p: float = 2.0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.clip_vector_norm. This method
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        max_norm
+            float, the maximum value of the array norm.
+        p
+            optional float, the p-value for computing the p-norm. Default is 2.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the vector norm downscaled to the max norm if needed.
+
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = x.clip_vector_norm(2.0, 1.0)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.667, 1.33]),
+            b: ivy.array([0.5, 0.667, 0.833])
+        }
+
+        """
+        return self.static_clip_vector_norm(
+            self,
+            max_norm,
+            p,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out=out,
         )
 
@@ -69,6 +162,32 @@ class ContainerWithGeneral(ContainerBase):
         ivy.Container static method variant of ivy.all_equal. This method simply wraps
         the function, and so the docstring for ivy.add also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            input container.
+        x2
+            array or container to be compared to ``x1``.
+        equality_matrix
+            Whether to return a matrix of equalities comparing each input with every
+            other. Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not the inputs are equal, or matrix container of
+            booleans if equality_matrix=True is set.
 
         Examples
         --------
@@ -121,6 +240,32 @@ class ContainerWithGeneral(ContainerBase):
         ivy.Container instance method variant of ivy.all_equal.
         This method simply wraps the function, and so the docstring for
         ivy.all_equal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        x2
+            array or container to be compared to ``self``.
+        equality_matrix
+            Whether to return a matrix of equalities comparing each input with every
+            other. Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not the inputs are equal, or matrix container of
+            booleans if equality_matrix=True is set.
 
         Examples
         --------
@@ -191,10 +336,37 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.gather_nd.
-        This method simply wraps the function, and so the docstring
-        for ivy.gather_nd also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.gather_nd. This method simply wraps
+        the function, and so the docstring for ivy.gather_nd also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        params
+            The container from which to gather values.
+        indices
+            Index array or container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+            ``x`` if None.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container of given shape, with the values gathered at the indices.
 
         Examples
         --------
@@ -250,6 +422,34 @@ class ContainerWithGeneral(ContainerBase):
         for ivy.gather_nd also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            The container from which to gather values.
+        indices
+            Index array or container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+            ``x`` if None.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container of given shape, with the values gathered at the indices.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
@@ -265,4 +465,138 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_gather_nd(
             self, indices, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )
+
+    def to_numpy(
+        self,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.to_numpy. This method simply wraps
+        the function, and so the docstring for ivy.to_numpy also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of numpy arrays copying all the element of the container
+            ``self``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
+                    b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
+        >>> y = x.to_numpy()
+        >>> print(y)
+        {
+            a: array([[-1, 0, 1],
+                      [-1, 0, 1],
+                      [1, 0, -1]], dtype=int32),
+            b: array([[-1, 0, 0],
+                      [1, 0, 1],
+                      [1, 1, 1]], dtype=int32)
+        }
+
+        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
+                            b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
+        >>> y = ivy.Container.static_to_numpy(x)
+        >>> print(y)
+        {
+            a: array([[-1, 0, 1],
+                      [-1, 0, 1],
+                      [1, 0, -1]], dtype=int32),
+            b: array([[-1, 0, 0],
+                      [1, 0, 1],
+                      [1, 1, 1]], dtype=int32)
+        }
+
+        """
+        return self.static_to_numpy(
+            self, key_chains, to_apply, prune_unapplied, map_sequences
+        )
+
+    @staticmethod
+    def static_to_numpy(
+        x: Union[ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.to_numpy. This method simply wraps
+        the function, and so the docstring for ivy.to_numpy also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of numpy arrays copying all the element of the container
+            ``self``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
+                            b=ivy.array([1, -1, 0, 0]))
+        >>> y = ivy.Container.static_to_numpy(x)
+        >>> print(y)
+        {
+            a: array([1, 0, 1, 1], dtype=int32),
+            b: array([1, -1, 0, 0], dtype=int32)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> y = ivy.Container.static_to_numpy(x)
+        >>> print(y)
+        {
+            a: array([1., 0., 0., 1.], dtype=float32),
+            b: array([1, 1, -1, 0], dtype=int32)
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "to_numpy",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )

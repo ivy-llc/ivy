@@ -1,12 +1,7 @@
 name: test-array-api-jax
-on:
-  push:
-  pull_request:
-    types: [labeled, opened, reopened, edited]
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch]
 jobs:
   run-jax-array-api-tests:
-    if: ${{ github.event.label.name!='Function Reformatting' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy

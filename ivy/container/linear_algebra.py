@@ -534,7 +534,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a: ivy.array(2.),
             b: ivy.array(1.)
         }
-        """
         return ContainerBase.multi_map_in_static_method(
             "matrix_rank",
             x,
@@ -606,7 +605,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a: ivy.array(2.),
             b: ivy.array(1.)
         }
-        """ 
+        """
         return self.static_matrix_rank(
             self,
             rtol,

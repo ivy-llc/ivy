@@ -4,7 +4,7 @@
 import os
 import time
 import numpy as np
-from typing import Union
+from typing import Union, Optional, Any
 
 # local
 import ivy
@@ -60,7 +60,9 @@ def _to_device(x: np.ndarray, device=None) -> np.ndarray:
     return x
 
 
-def to_device(x: np.ndarray, device: str) -> np.ndarray:
+def to_device(
+    x: np.ndarray, device: str, *, stream: Optional[Union[int, Any]] = None
+) -> np.ndarray:
     if device is not None:
         device = as_native_dev(device)
         if "gpu" in device:
@@ -79,7 +81,7 @@ def to_device(x: np.ndarray, device: str) -> np.ndarray:
 
 
 class Profiler(BaseProfiler):
-    def __init__(self, save_dir):
+    def __init__(self, save_dir: str):
         # ToDO: add proper numpy profiler
         super(Profiler, self).__init__(save_dir)
         os.makedirs(save_dir, exist_ok=True)

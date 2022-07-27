@@ -5,22 +5,36 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @given(
+    dtype_x_normidxs=helpers.dtype_values_axis(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        allow_inf=False,
+        min_num_dims=1,
+        min_axis=1,
+        ret_shape=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
+    scale=st.floats(min_value=0.0),
+    offset=st.floats(min_value=0.0),
+    epsilon=st.floats(min_value=ivy._MIN_BASE, max_value=0.1),
+    new_std=st.floats(min_value=0.0, exclude_min=True),
     data=st.data(),
-    input_dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
+@handle_cmd_line_args
 def test_layer_norm(
-    data,
-    input_dtype,
+    *,
+    dtype_x_normidxs,
+    num_positional_args,
+    scale,
+    offset,
+    epsilon,
+    new_std,
     as_variable,
     with_out,
     native_array,
@@ -28,31 +42,18 @@ def test_layer_norm(
     instance_method,
     fw,
 ):
-    num_positional_args = data.draw(helpers.num_positional_args(fn_name="layer_norm"))
-    shape = data.draw(helpers.get_shape(min_num_dims=1))
-    x = data.draw(helpers.array_values(dtype=input_dtype, shape=shape))
-    normalized_idxs = data.draw(helpers.get_axis(shape=shape))
-    if type(normalized_idxs) == int:
-        normalized_idxs = [normalized_idxs]
-    else:
-        normalized_idxs = list(normalized_idxs)
-    scale, offset = tuple(data.draw(helpers.array_values(input_dtype, shape=(2,))))
-    epsilon, new_std = tuple(
-        data.draw(
-            helpers.array_values(input_dtype, shape=(2,), min_value=0, exclude_min=True)
-        )
-    )
+    dtype, x, normalized_idxs = dtype_x_normidxs
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "layer_norm",
-        x=np.asarray(x, dtype=input_dtype),
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="layer_norm",
+        x=np.asarray(x, dtype=dtype),
         normalized_idxs=normalized_idxs,
         epsilon=epsilon,
         scale=scale,

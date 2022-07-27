@@ -1,4 +1,4 @@
-from typing import Optional, Union, List, Dict
+from typing import Callable, Optional, Union, List, Dict
 
 # local
 import ivy
@@ -8,6 +8,116 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithGradients(ContainerBase):
     @staticmethod
+    def static_variable(
+        x: ivy.Container,
+        key_chains: Union[bool, ivy.Container] = False,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.variable. This method simply wraps
+        the function, and so the docstring for ivy.variable also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            An ivy container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container with ivy variables, that supports gradient computation.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> ivy.set_backend('torch')
+        >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([3., 4.]))
+        >>> y = ivy.Container.static_variable(x)
+        >>> y
+        {
+            a: ivy.array([1., 2.]),
+            b: ivy.array([3., 4.])
+        }
+        >>> ivy.unset_backend()
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "variable",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def variable(
+        self: ivy.Container,
+        key_chains: Union[bool, ivy.Container] = False,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.variable. This method simply
+        wraps the function, and so the docstring for ivy.variable also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            An ivy container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container with ivy variables, that supports gradient computation.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> ivy.set_backend('jax')
+        >>> x = ivy.Container(a=ivy.array([0.3, 1.]), b=ivy.array([-1., 2.2]))
+        >>> y = x.variable()
+        >>> y
+        {
+            a: ivy.array([0.3, 1.]),
+            b: ivy.array([-1., 2.2])
+        }
+        >>> ivy.unset_backend()
+        """
+        return self.static_variable(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_is_variable(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         exclusive: Union[bool, ivy.Container] = False,
@@ -16,6 +126,59 @@ class ContainerWithGradients(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.is_variable. This method simply wraps
+        the function, and so the docstring for ivy.is_variable also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            An ivy container.
+        exclusive
+            Whether to check if the data type is exclusively a variable, rather than an
+            array. For frameworks like JAX that do not have exclusive variable types,
+            the function will always return False if this flag is set, otherwise the
+            check is the same for general arrays. Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean, true if x is a trainable variable, false otherwise.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> is_var = ivy.Container.static_is_variable(x)
+        >>> print(is_var)
+        {
+            a: false,
+            b: false
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> exclusive = ivy.Container(a=False, b=True)
+        >>> is_var = ivy.Container.static_is_variable(x, exclusive=exclusive)
+        >>> print(is_var)
+        {
+            a: false,
+            b: false
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "is_variable",
             x,
@@ -34,8 +197,82 @@ class ContainerWithGradients(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.is_variable. This method simply
+        wraps the function, and so the docstring for ivy.is_variable also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            An ivy container.
+        exclusive
+            Whether to check if the data type is exclusively a variable, rather than an
+            array. For frameworks like JAX that do not have exclusive variable types,
+            the function will always return False if this flag is set, otherwise the
+            check is the same for general arrays. Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean, true if x is a trainable variable, false otherwise.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> is_var = x.is_variable(exclusive=True)
+        >>> print(is_var)
+        {
+            a: false,
+            b: false
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> exclusive = ivy.Container(a=True, b=True)
+        >>> is_var = x.is_variable(exclusive=exclusive)
+        >>> print(is_var)
+        {
+            a: false,
+            b: false
+        }
+        """
         return self.static_is_variable(
             self, exclusive, key_chains, to_apply, prune_unapplied, map_sequences
+        )
+
+    @staticmethod
+    def static_execute_with_gradients(
+        func: Callable,
+        xs: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        retain_grads: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ):
+        return ContainerBase.multi_map_in_static_method(
+            "execute_with_gradients",
+            func,
+            xs,
+            retain_grads=retain_grads,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -49,9 +286,32 @@ class ContainerWithGradients(ContainerBase):
         epsilon=1e-7,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.adam_step.
-        This method simply wraps the function, and so the docstring for ivy.
-        adam_step also applies to this method with minimal changes
+        ivy.Container instance method variant of ivy.adam_step. This method simply wraps
+        the function, and so the docstring for ivy.adam_step also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        dcdw
+            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
+        mw
+            running average of the gradients.
+        vw
+            running average of second moments of the gradients.
+        step
+            training step.
+        beta1
+            gradient forgetting factor (Default value = 0.9).
+        beta2
+            second moment of gradient forgetting factor (Default value = 0.999).
+        epsilon
+            divisor during adam update, preventing division by zero
+            (Default value = 1e-7).
+
+        Returns
+        -------
+        ret
+            The adam step delta.
 
         Examples
         --------
@@ -96,9 +356,32 @@ class ContainerWithGradients(ContainerBase):
         epsilon=1e-7,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.adam_step.
-        This method simply wraps the function, and so the docstring for ivy.
-        adam_step also applies to this method with minimal changes
+        ivy.Container instance method variant of ivy.adam_step. This method simply wraps
+        the function, and so the docstring for ivy.adam_step also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
+        mw
+            running average of the gradients.
+        vw
+            running average of second moments of the gradients.
+        step
+            training step.
+        beta1
+            gradient forgetting factor (Default value = 0.9).
+        beta2
+            second moment of gradient forgetting factor (Default value = 0.999).
+        epsilon
+            divisor during adam update, preventing division by zero
+            (Default value = 1e-7).
+
+        Returns
+        -------
+        ret
+            The adam step delta.
 
         Examples
         --------

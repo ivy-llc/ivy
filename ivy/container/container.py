@@ -108,6 +108,20 @@ class Container(
         ivy.Container special method for the add operator, calling :code:`operator.add`
         for each of the corresponding leaves of the two containers.
 
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
         Examples
         --------
         With :code:`Number` instances at the leaves:
@@ -158,6 +172,20 @@ class Container(
         """
         ivy.Container reverse special method for the add operator, calling
         :code:`operator.add` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
 
         Examples
         --------
@@ -294,52 +322,3 @@ class Container(
                     config["ivyh"] = ivy.get_backend(config["ivyh"])
             state_dict["_config"] = config
         self.__dict__.update(state_dict)
-
-
-class MultiDevContainer(Container):
-    def __init__(
-        self,
-        dict_in,
-        devs,
-        queues=None,
-        queue_load_sizes=None,
-        container_combine_method="list_join",
-        queue_timeout=None,
-        print_limit=10,
-        key_length_limit=None,
-        print_indent=4,
-        print_line_spacing=0,
-        ivyh=None,
-        default_key_color="green",
-        keyword_color_dict=None,
-        rebuild_child_containers=False,
-        types_to_iteratively_nest=None,
-        alphabetical_keys=True,
-        **kwargs
-    ):
-        super().__init__(
-            dict_in,
-            queues,
-            queue_load_sizes,
-            container_combine_method,
-            queue_timeout,
-            print_limit,
-            key_length_limit,
-            print_indent,
-            print_line_spacing,
-            ivyh,
-            default_key_color,
-            keyword_color_dict,
-            rebuild_child_containers,
-            types_to_iteratively_nest,
-            alphabetical_keys,
-            **kwargs
-        )
-        self._devs = devs
-        self._num_devs = len(devs)
-
-    def at_dev(self, dev):
-        return self.map(lambda x, kc: x[dev] if isinstance(x, ivy.MultiDevItem) else x)
-
-    def at_devs(self):
-        return {ds: self.at_dev(ds) for ds in self._devs}

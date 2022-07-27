@@ -28,6 +28,29 @@ class ArrayWithLinearAlgebra(abc.ABC):
         function, and so the docstring for ivy.cholesky also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array having shape (..., M, M) and whose innermost two dimensions form
+            square symmetric positive-definite matrices. Should have a floating-point
+            data type.
+        upper
+            If True, the result must be the upper-triangular Cholesky factor U. If
+            False, the result must be the lower-triangular Cholesky factor L.
+            Default: False.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the Cholesky factors for each square matrix. If upper is
+            False, the returned array must contain lower-triangular matrices; otherwise,
+            the returned array must contain upper-triangular matrices. The returned
+            array must have a floating-point data type determined by Type Promotion
+            Rules and must have the same shape as self.
+
         Examples
         --------
         >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \
@@ -187,10 +210,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def svd(
         self: ivy.Array,
         full_matrices: bool = True,
-        *,
-        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-        return ivy.svd(self._data, full_matrices, out=out)
+        return ivy.svd(self._data, full_matrices)
 
     def svdvals(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.svdvals(self._data, out=out)
