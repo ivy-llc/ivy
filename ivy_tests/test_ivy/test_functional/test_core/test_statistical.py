@@ -39,8 +39,9 @@ def statistical_dtype_values(draw, *, function):
         )
     )
     shape = np.asarray(values, dtype=dtype).shape
-    axis = draw(helpers.get_axis(shape=shape,allow_none=True))
+    axis = draw(helpers.get_axis(shape=shape, allow_none=True))
     return dtype, values, axis
+
 
 @st.composite
 def statistical_correction_values(draw, *, function):
@@ -88,8 +89,7 @@ def test_min(
         fw=fw,
         fn_name="min",
         x=np.asarray(x, dtype=input_dtype),
-        #axis=axis,
-        axis=None,
+        axis=None, # axis=axis,
         keepdims=keep_dims,
     )
 
@@ -131,8 +131,7 @@ def test_max(
         fw=fw,
         fn_name="max",
         x=np.asarray(x, dtype=input_dtype),
-        #axis=axis,
-        axis=None,
+        axis=None, # axis=axis,
         keepdims=keep_dims,
     )
 
@@ -176,8 +175,7 @@ def test_mean(
         fn_name="mean",
         rtol_=1e-1,
         x=np.asarray(x, dtype=input_dtype),
-        #axis=axis,
-        axis=None,
+        axis=None, # axis=axis,
         keepdims=keep_dims
     )
 
@@ -218,8 +216,7 @@ def test_var(
         fw=fw,
         fn_name="var",
         x=np.asarray(x, dtype=input_dtype),
-        #axis=axis,
-        axis=None,
+        axis=None, # axis=axis,
         correction=correction,
         keepdims=keep_dims,
     )
@@ -261,8 +258,7 @@ def test_prod(
         fw=fw,
         fn_name="prod",
         x=np.asarray(x, dtype=input_dtype),
-        #axis=axis,
-        axis=None,
+        axis=None, # axis=axis,
         keepdims=keep_dims,
     )
 
@@ -303,8 +299,7 @@ def test_sum(
         fn_name="sum",
         rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
-        #axis=axis,
-        axis=None,
+        axis=None, # axis=axis,
         keepdims=keep_dims,
     )
 
@@ -347,8 +342,7 @@ def test_std(
         rtol_=1e-2,
         atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
-        #axis=axis,
-        axis=None,
+        axis=None, # axis=axis,
         correction=correction,
         keepdims=keep_dims,
     )
