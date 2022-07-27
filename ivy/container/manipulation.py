@@ -202,7 +202,7 @@ class ContainerWithManipulation(ContainerBase):
         
     def reshape(
         self: ivy.Container,
-        shape: Union[int, Tuple[int], List[int]],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
         copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
