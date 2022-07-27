@@ -13,24 +13,26 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # random_uniform
 @given(
-    dtypes_and_values=helpers.dtype_and_values(
+    dtype_and_low=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
-        num_arrays=2,
         min_value=-1000,
+        max_value=100,
+    ),
+    dtype_and_high=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        min_value=101,
         max_value=1000,
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_random_uniform(
     *,
     data,
-    dtypes_and_values,
+    dtype_and_low,
+    dtype_and_high,
     dtype,
     as_variable,
     with_out,
@@ -41,23 +43,30 @@ def test_random_uniform(
     fw,
     device,
 ):
-    dtypes, values = dtypes_and_values
-    helpers.test_function(
-        input_dtypes=dtypes,
+    low_dtype, low = dtype_and_low
+    high_dtype, high = dtype_and_high
+    ret, ret_gt = helpers.test_function(
+        input_dtypes=[low_dtype, high_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
+        test_values=False,
         fw=fw,
         fn_name="random_uniform",
-        low=np.asarray(values[0], dtype=dtypes[0]),
-        high=np.asarray(values[1], dtype=dtypes[1]),
+        low=np.asarray(low, dtype=low_dtype),
+        high=np.asarray(high, dtype=high_dtype),
         shape=None,
         dtype=dtype,
         device=device,
     )
+    ret = helpers.flatten(ret=ret)
+    ret_gt = helpers.flatten(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert ivy.all(u >= low) and ivy.all(u < high)
+        assert ivy.all(v >= low) and ivy.all(v < high)
 
 
 # random_normal
