@@ -8,6 +8,7 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # random_uniform
@@ -20,13 +21,15 @@ import ivy_tests.test_ivy.helpers as helpers
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
     container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_random_uniform(
+    *,
+    data,
     dtypes_and_values,
     dtype,
     as_variable,
@@ -71,11 +74,10 @@ def test_random_uniform(
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
     container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
 def test_random_normal(
     dtype_and_mean,
@@ -169,14 +171,13 @@ def test_multinomial(everything, device, call):
         max_value=100,
     ),
     dtype=st.sampled_from(("int8", "int16", "int32", "int64", None)),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_randint(
+    *,
+    data,
     dtype_and_low,
     dtype_and_high,
     dtype,
@@ -191,7 +192,7 @@ def test_randint(
 ):
     low_dtype, low = dtype_and_low
     high_dtype, high = dtype_and_high
-    helpers.test_function(
+    ret, ret_gt = helpers.test_function(
         input_dtypes=[low_dtype, high_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -207,6 +208,8 @@ def test_randint(
         dtype=dtype,
         device=device,
     )
+    assert ret >= low and ret < high
+    assert ret_gt >= low and ret_gt < high
 
 
 # seed
@@ -223,9 +226,10 @@ def test_seed(seed_val):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
     ),
-    as_variable=st.booleans(),
+    data=st.data(),
 )
-def test_shuffle(dtype_and_x, as_variable, device, call):
+@handle_cmd_line_args
+def test_shuffle(*, data, dtype_and_x, as_variable, device, call):
     # smoke test
     dtype, x = dtype_and_x
     x = ivy.array(x, dtype=dtype, device=device)
