@@ -10,7 +10,27 @@ from collections import namedtuple
 # Array API Standard #
 # -------------------#
 
+def _cast_for_binary_op(x1, x2):
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            promoted_type = np.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
+        else:
+            x2 = np.asarray(x2, dtype=x1.dtype)
+    return x1, x2
 
+
+# when inputs are 0 dimensional, numpy's functions return scalars
+# so we use this wrapper to ensure outputs are always numpy arrays
+def _handle_0_dim_output(function: Callable) -> Callable:
+    @functools.wraps(function)
+    def new_function(*args, **kwargs):
+        ret = function(*args, **kwargs)
+        return np.asarray(ret) if not isinstance(ret, np.ndarray) else ret
+
+    return new_function
+    
 def cholesky(
     x: np.ndarray, upper: bool = False, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -24,10 +44,11 @@ def cholesky(
 
 cholesky.unsupported_dtypes = ("float16",)
 
-
+@_handle_0_dim_output
 def cross(
-    x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
+    x1: Union[float,np.ndarray], x2: Union[float,np.ndarray], axis: int = -1, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     ret = np.cross(a=x1, b=x2, axis=axis)
     return ret
 
