@@ -64,8 +64,8 @@ class ArrayWithManipulation(abc.ABC):
         >>> x = ivy.array([-4.7, -2.3, 0.7])
         >>> y = x.expand_dims()
         >>> print(x.shape, y.shape)
-        (3,) (1, 3)
         >>> print(y)
+        (3,) (1, 3)
         ivy.array([[-4.7, -2.3,  0.7]])
         """
         return ivy.expand_dims(self._data, axis, out=out)
