@@ -15,7 +15,7 @@ class ArrayWithSearching(abc.ABC):
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
         *,
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
         ivy.Array instance method variant of ivy.argmax. This method simply
@@ -24,3 +24,18 @@ class ArrayWithSearching(abc.ABC):
 
         """
         return ivy.argmax(self, axis=axis, keepdims=keepdims, out=out)
+
+    def argmin(
+        self: ivy.Array,
+        axis: Optional[int] = None,
+        keepdims: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> Union[ivy.Array, int]:
+        """
+        ivy.Array instance method variant of ivy.argmin. This method simply
+        wraps the function, and so the docstring for ivy.argmin also applies
+        to this method with minimal changes.
+
+        """
+        return ivy.argmin(self, axis=axis, keepdims=keepdims, out=out)
