@@ -494,7 +494,7 @@ def test_fomaml_step_overlapping_vars(
 @pytest.mark.parametrize("stop_gradients", [True, False])
 @pytest.mark.parametrize("num_tasks", [1, 2])
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
-def test_reptile_step(
+def test_reptile_step_ground_truth(
     device, call, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v
 ):
     if call in [helpers.np_call, helpers.mx_call]:
