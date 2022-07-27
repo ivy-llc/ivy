@@ -1087,19 +1087,26 @@ def function_supported_devices(fn: Callable) -> Tuple:
 
 
 class Profiler(abc.ABC):
-    """"""
+    """The profiler class is used to profile the execution of some code.
 
-    def __init__(self, save_dir):
+    Parameters
+    ----------
+    save_dir
+        The directory to save the profile data to.
+
+    """
+
+    def __init__(self, save_dir: str):
         self._save_dir = save_dir
 
     @abc.abstractmethod
     def start(self):
-        """"""
+        """Start the profiler. This should be called before the code to be profiled."""
         raise NotImplementedError
 
     @abc.abstractmethod
     def stop(self):
-        """"""
+        """Stop the profiler. This should be called after the code to be profiled."""
         raise NotImplementedError
 
     @abc.abstractmethod
