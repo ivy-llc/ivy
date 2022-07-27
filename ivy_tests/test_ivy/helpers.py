@@ -509,6 +509,11 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
 
 
 def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
+    if type(ret_np_flat) != np.ndarray:
+        ret_np_flat = np.asarray(ret_np_flat)
+    if type(ret_from_np_flat) != np.ndarray:
+        ret_from_np_flat = np.asarray(ret_from_np_flat)
+    assert ret_np_flat.shape[0] == ret_from_np_flat.shape[0]
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
@@ -526,7 +531,8 @@ def args_to_container(array_args):
 
 def gradient_test(
     *,
-    func,
+    fn_name,
+    all_as_kwargs_np,
     args_np,
     kwargs_np,
     input_dtypes,
@@ -537,11 +543,13 @@ def gradient_test(
     atol_: float = 1e-06,
     ground_truth_backend: str = "torch",
 ):
-    print("BACKEND", ivy.get_backend())
-    # ivy.set_backend(ground_truth_backend)
-
-    def grad_fn(_):
-        return ivy.mean(func(*args, **kwargs))
+    def grad_fn(xs):
+        array_vals = [v for k, v in xs.to_iterator()]
+        args_writeable = ivy.copy_nest(args)
+        kwargs_writeable = ivy.copy_nest(kwargs)
+        ivy.set_nest_at_indices(args_writeable, args_idxs, array_vals)
+        ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, array_vals)
+        return ivy.mean(ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable))
 
     args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
         args_np=args_np,
@@ -558,7 +566,15 @@ def gradient_test(
         ivy.execute_with_gradients, grad_fn, xs
     )
     grads_np_flat = ret_np_flat[1]
+    # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
+    test_unsupported = check_unsupported_dtype(
+        fn=ivy.__dict__[fn_name],
+        input_dtypes=input_dtypes,
+        all_as_kwargs_np=all_as_kwargs_np,
+    )
+    if test_unsupported:
+        return
     args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
         args_np=args_np,
         kwargs_np=kwargs_np,
@@ -575,8 +591,7 @@ def gradient_test(
     )
     grads_np_from_gt_flat = ret_np_from_gt_flat[1]
     ivy.unset_backend()
-    print("grads_np_flat", grads_np_flat)
-    print("grads_np_from_gt_flat", grads_np_from_gt_flat)
+    # value test
     value_test(
         ret_np_flat=grads_np_flat,
         ret_from_np_flat=grads_np_from_gt_flat,
@@ -1132,7 +1147,8 @@ def test_function(
         and not instance_method
     ):
         gradient_test(
-            func=ivy.__dict__[fn_name],
+            fn_name=fn_name,
+            all_as_kwargs_np=all_as_kwargs_np,
             args_np=args_np,
             kwargs_np=kwargs_np,
             input_dtypes=input_dtypes,
