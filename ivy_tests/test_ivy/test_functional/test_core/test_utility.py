@@ -18,7 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_value=1,
         allow_inf=False,
         min_axis=-1,
-        max_axis=0
+        max_axis=0,
     ),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="all"),
@@ -27,7 +27,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 def test_all(
     *,
-    data,
     dtype_x_axis,
     keepdims,
     as_variable,
@@ -63,7 +62,7 @@ def test_all(
         max_value=1,
         allow_inf=False,
         min_axis=-1,
-        max_axis=0
+        max_axis=0,
     ),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="any"),
@@ -72,7 +71,6 @@ def test_all(
 @handle_cmd_line_args
 def test_any(
     *,
-    data,
     dtype_x_axis,
     keepdims,
     as_variable,
