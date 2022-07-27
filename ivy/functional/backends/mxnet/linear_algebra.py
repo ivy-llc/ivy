@@ -7,7 +7,10 @@ from typing import Union, Optional, Tuple, Literal
 # local
 import ivy
 from ivy import inf
-
+from ivy.functional.backends.mxnet import (
+    _handle_flat_arrays_in_out,
+    _scalar_or_flat_array_to_scalar,
+)
 DET_THRESHOLD = 1e-12
 
 
@@ -24,8 +27,8 @@ def cholesky(x: mx.nd.NDArray, upper: bool = False) -> mx.nd.NDArray:
             mx.np.linalg.cholesky(mx.np.transpose(x, axes=axes)), axes=axes
         )
 
-
-def cross(x1: mx.nd.NDArray, x2: mx.nd.NDArray, axis: int = -1) -> mx.nd.NDArray:
+@_handle_flat_arrays_in_out
+def cross(x1: Union[float,mx.nd.NDArray], x2: Union[float,mx.nd.NDArray], axis: int = -1) -> mx.nd.NDArray:
     return mx.np.cross(a=x1, b=x2, axis=axis)
 
 
