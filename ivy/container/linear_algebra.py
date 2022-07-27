@@ -288,7 +288,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences: bool = False,
             *,
             out: Optional[ivy.Container] = None,
-       )->  ivy.Container:
+        )->  ivy.Container:
          """
                  ivy.Container static method variant of ivy.cross.
                  This method simply wraps the function, and so the docstring for
