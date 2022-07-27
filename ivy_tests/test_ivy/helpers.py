@@ -503,8 +503,9 @@ def flatten(*, ret):
     return ret_np_flat
 
 
-def get_flattened_array_returns(*, ret, ret_from_gt):
-    return flatten(ret=ret), flatten(ret=ret_from_gt)
+def get_ret_and_flattened_array(func, *args, **kwargs):
+    ret = func(*args, **kwargs)
+    return ret, flatten(ret=ret)
 
 
 def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
@@ -567,6 +568,60 @@ def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
             and all_as_kwargs_np["device"] not in supported_devices_fn
         ):
             test_unsupported = True
+    return test_unsupported
+
+
+def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwargs_np):
+    # check for unsupported dtypes
+    test_unsupported = False
+    unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
+    supported_devices_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)
+    for i in range(len(unsupported_devices_dtypes_fn['devices'])):
+        if device in unsupported_devices_dtypes_fn['devices'][i]:
+            for d in input_dtypes:
+                if d in unsupported_devices_dtypes_fn['dtypes'][i]:
+                    test_unsupported = True
+                    break
+    if (
+        "device" in all_as_kwargs_np
+        and "dtype" in all_as_kwargs_np
+        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn['devices']
+    ):
+        index = unsupported_devices_dtypes_fn['devices'].index(
+            all_as_kwargs_np["device"]
+        )
+        if (
+            all_as_kwargs_np["dtype"]
+            in unsupported_devices_dtypes_fn['dtypes'][index]
+        ):
+            test_unsupported = True
+    if test_unsupported:
+        return test_unsupported
+
+    for i in range(len(supported_devices_dtypes_fn['devices'])):
+        if device in supported_devices_dtypes_fn['devices'][i]:
+            for d in input_dtypes:
+                if d not in supported_devices_dtypes_fn['dtypes'][i]:
+                    test_unsupported = True
+                    break
+        else:
+            test_unsupported = True
+        if (
+            "device" in all_as_kwargs_np
+            and "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn['devices']
+        ):
+            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn['devices']:
+                test_unsupported = True
+            else:
+                index = supported_devices_dtypes_fn['devices'].index(
+                    all_as_kwargs_np["device"]
+                )
+                if (
+                    all_as_kwargs_np["dtype"]
+                    not in supported_devices_dtypes_fn['dtypes'][index]
+                ):
+                    test_unsupported = True
     return test_unsupported
 
 
@@ -747,11 +802,9 @@ def test_method(
         input_dtypes=input_dtypes_constructor,
         as_variable_flags=as_variable_flags_constructor,
     )
-
     # run
     ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
-    ret = ins(*calling_args, **calling_kwargs)
-
+    ret, ret_np_flat = get_ret_and_flattened_array(ins, *calling_args, **calling_kwargs)
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     calling_args_gt, calling_kwargs_gt, _, _, _ = create_args_kwargs(
@@ -766,20 +819,14 @@ def test_method(
         input_dtypes=input_dtypes_constructor,
         as_variable_flags=as_variable_flags_constructor,
     )
-
     ins_gt = ivy.__dict__[class_name](*constructor_args_gt, **constructor_kwargs_gt)
-    ret_from_gt = ivy.to_native(
-        ins_gt(*calling_args_gt, **calling_kwargs_gt), nested=True
+    ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_array(
+        ins_gt, *calling_args_gt, **calling_kwargs_gt
     )
     ivy.unset_backend()
-
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_gt
-    # flattened array returns
-    ret_np_flat, ret_np_from_gt_flat = get_flattened_array_returns(
-        ret=ret, ret_from_gt=ret_from_gt
-    )
     # value test
     value_test(
         ret_np_flat=ret_np_flat,
@@ -804,7 +851,7 @@ def test_function(
     atol_: float = 1e-06,
     test_values: bool = True,
     ground_truth_backend: str = "numpy",
-    device_: str = 'cpu',
+    device_: str = "cpu",
     **all_as_kwargs_np,
 ):
     """Tests a function that consumes (or returns) arrays for the current backend
@@ -931,6 +978,13 @@ def test_function(
         test_unsupported = check_unsupported_device(
             fn=fn, input_device=device_, all_as_kwargs_np=all_as_kwargs_np
         )
+    if not test_unsupported:
+        test_unsupported = check_unsupported_device_and_dtype(
+            fn=fn,
+            device=device_,
+            input_dtypes=input_dtypes,
+            all_as_kwargs_np=all_as_kwargs_np
+        )
     if test_unsupported:
         try:
             args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
@@ -984,14 +1038,19 @@ def test_function(
                 fn=instance.__getattribute__(fn_name), args=args, kwargs=kwargs
             )
             return
-        ret = instance.__getattribute__(fn_name)(*args, **kwargs)
+
+        ret, ret_np_flat = get_ret_and_flattened_array(
+            instance.__getattribute__(fn_name), *args, **kwargs
+        )
     else:
         if test_unsupported:
             test_unsupported_function(
                 fn=ivy.__dict__[fn_name], args=args, kwargs=kwargs
             )
             return
-        ret = ivy.__dict__[fn_name](*args, **kwargs)
+        ret, ret_np_flat = get_ret_and_flattened_array(
+            ivy.__dict__[fn_name], *args, **kwargs
+        )
     # assert idx of return if the idx of the out array provided
     if with_out:
         out = ivy.zeros_like(ret)
@@ -1001,9 +1060,13 @@ def test_function(
         else:
             assert ivy.is_array(ret)
         if instance_method:
-            ret = instance.__getattribute__(fn_name)(*args, **kwargs, out=out)
+            ret, ret_np_flat = get_ret_and_flattened_array(
+                instance.__getattribute__(fn_name), *args, **kwargs, out=out
+            )
         else:
-            ret = ivy.__dict__[fn_name](*args, **kwargs, out=out)
+            ret, ret_np_flat = get_ret_and_flattened_array(
+                ivy.__dict__[fn_name], *args, **kwargs, out=out
+            )
         assert ret is out
         if not max(container_flags) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
@@ -1044,7 +1107,9 @@ def test_function(
             )
             ivy.unset_backend()
             return
-        ret_from_gt = ivy.to_native(ivy.__dict__[fn_name](*args, **kwargs), nested=True)
+        ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_array(
+            ivy.__dict__[fn_name], *args, **kwargs
+        )
     except Exception as e:
         ivy.unset_backend()
         raise e
@@ -1052,10 +1117,6 @@ def test_function(
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_gt
-    # flattened array returns
-    ret_np_flat, ret_np_from_gt_flat = get_flattened_array_returns(
-        ret=ret, ret_from_gt=ret_from_gt
-    )
     # value test
     value_test(
         ret_np_flat=ret_np_flat,
@@ -1474,6 +1535,85 @@ def reshape_shapes(draw, *, shape):
 @st.composite
 def subsets(draw, *, elements):
     return tuple(e for e in elements if draw(st.booleans()))
+
+
+@st.composite
+def array_and_indices(
+    draw,
+    last_dim_same_size=True,
+    allow_inf=False,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    """Generates two arrays x & indices, the values in the indices array are indices of the array x.
+    Draws an integers randomly from the minimum and maximum number of positional
+    arguments a given function can take.
+
+    Parameters
+    ----------
+    last_dim_same_size 
+        True: 
+            The shape of the indices array is the exact same as the shape of the values array.
+        False: 
+            The last dimension of the second array is generated from a range of (0 -> dimension size of first array).
+            This results in output shapes such as x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
+    allow_inf
+        True: inf values are allowed to be generated in the values array
+    min_num_dims
+        The minimum number of dimensions the arrays can have.
+    max_num_dims
+        The maximum number of dimensions the arrays can have.
+    min_dim_size
+        The minimum size of the dimensions of the arrays.
+    max_dim_size
+        The maximum size of the dimensions of the arrays.
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator which generates arrays of values and indices.
+
+    Examples
+    --------
+    @given(
+        array_and_indices=array_and_indices( 
+            last_dim_same_size= False
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10
+            )
+    )
+    @given(
+        array_and_indices=array_and_indices( last_dim_same_size= True)
+    )
+    """
+    x_num_dims = draw(st.integers(min_value=min_num_dims, max_value=max_num_dims))
+    x_dim_size = draw(st.integers(min_value=min_dim_size, max_value=max_dim_size))
+    x = draw(
+        dtype_and_values(
+            available_dtypes=ivy_np.valid_numeric_dtypes,
+            allow_inf=allow_inf,
+            ret_shape=True,
+            min_num_dims=x_num_dims,
+            max_num_dims=x_num_dims,
+            min_dim_size=x_dim_size,
+            max_dim_size=x_dim_size
+        ))
+    indices_shape = list(x[2])
+    if not (last_dim_same_size):
+        indices_dim_size = draw(st.integers(min_value=1, max_value=x_dim_size))
+        indices_shape[-1] = indices_dim_size
+    indices = draw(
+        dtype_and_values(
+            available_dtypes=['int32', 'int64'],
+            allow_inf=False,
+            min_value=0,
+            max_value=max(x[2][-1] - 1, 0),
+            shape=indices_shape
+        ))
+    x = x[0:2]
+    return (x, indices)
 
 
 @st.composite
@@ -1901,3 +2041,53 @@ def num_positional_args(draw, *, fn_name: str = None):
     return draw(
         integers(min_value=num_positional_only, max_value=(total - num_keyword_only))
     )
+
+
+def bool_val_flags(cl_arg: Union[bool, None]):
+    if cl_arg is not None:
+        return st.booleans().filter(lambda x: x == cl_arg)
+    return st.booleans()
+
+
+def handle_cmd_line_args(test_fn):
+    # first four arguments are all fixtures
+    def new_fn(get_command_line_flags, fw, device, call, *args, **kwargs):
+        # inspecting for keyword arguments in test function
+        for param in inspect.signature(test_fn).parameters.values():
+            if param.kind == param.KEYWORD_ONLY:
+                if param.name == "data":
+                    data = kwargs["data"]
+                elif param.name == "as_variable":
+                    as_variable = data.draw(
+                        bool_val_flags(get_command_line_flags["as-variable"])
+                    )
+                    kwargs["as_variable"] = as_variable
+                elif param.name == "native_array":
+                    native_array = data.draw(
+                        bool_val_flags(get_command_line_flags["native-array"])
+                    )
+                    kwargs["native_array"] = native_array
+                elif param.name == "with_out":
+                    with_out = data.draw(
+                        bool_val_flags(get_command_line_flags["with-out"])
+                    )
+                    kwargs["with_out"] = with_out
+                elif param.name == "instance_method":
+                    instance_method = data.draw(
+                        bool_val_flags(get_command_line_flags["instance-method"])
+                    )
+                    kwargs["instance_method"] = instance_method
+                elif param.name == "container":
+                    container = data.draw(
+                        bool_val_flags(get_command_line_flags["nestable"])
+                    )
+                    kwargs["container"] = container
+                elif param.name == "fw":
+                    kwargs["fw"] = fw
+                elif param.name == "device":
+                    kwargs["device"] = device
+                elif param.name == "call":
+                    kwargs["call"] = call
+        return test_fn(*args, **kwargs)
+
+    return new_fn

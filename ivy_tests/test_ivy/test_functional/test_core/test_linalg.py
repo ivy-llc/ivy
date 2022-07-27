@@ -9,6 +9,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
@@ -199,16 +200,15 @@ def _get_dtype_and_vector(draw):
 
 @given(
     dtype_x=_get_dtype_and_vector(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="vector_to_skew_symmetric_matrix"
     ),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_vector_to_skew_symmetric_matrix(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -241,15 +241,14 @@ def test_vector_to_skew_symmetric_matrix(
         max_value=50,
         shape=st.integers(2, 8).map(lambda x: tuple([x, x])),
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_power"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     n=st.integers(1, 8),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_matrix_power(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -281,14 +280,13 @@ def test_matrix_power(
 @given(
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="matmul"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_matmul(
+    *,
+    data,
     x,
     y,
     as_variable,
@@ -302,6 +300,10 @@ def test_matmul(
     input_dtype1, x_1 = x
     input_dtype2, y_1 = y
     input_dtype = [input_dtype1, input_dtype2]
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -320,14 +322,13 @@ def test_matmul(
 # det
 @given(
     dtype_x=_get_dtype_and_matrix(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="det"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_det(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -355,14 +356,13 @@ def test_det(
 # eigh
 @given(
     dtype_x=_get_dtype_and_matrix(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="eigh"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_eigh(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -406,14 +406,13 @@ def test_eigh(
 # eigvalsh
 @given(
     dtype_x=_get_dtype_and_matrix(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="eigvalsh"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_eigvalsh(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -446,14 +445,13 @@ def test_eigvalsh(
         max_value=50,
         shape=st.integers(2, 20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_inv(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -482,14 +480,13 @@ def test_inv(
 # matrix_transpose
 @given(
     dtype_x=_get_first_matrix_and_dtype(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_transpose"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_matrix_transpose(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -524,14 +521,13 @@ def test_matrix_transpose(
         min_num_dims=1,
         max_num_dims=1,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="outer"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_outer(
+    *,
+    data,
     dtype_xy,
     as_variable,
     with_out,
@@ -545,6 +541,10 @@ def test_outer(
     type1, type2 = types
     x1, x2 = arrays
     input_dtype = [type1, type2]
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -568,14 +568,13 @@ def test_outer(
         max_value=50,
         shape=st.integers(2, 20).map(lambda x: tuple([x, x])),
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_slogdet(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -639,14 +638,13 @@ def _get_second_matrix(draw):
 @given(
     x=_get_first_matrix(),
     y=_get_second_matrix(),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="solve"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_solve(
+    *,
+    data,
     x,
     y,
     as_variable,
@@ -660,6 +658,9 @@ def test_solve(
     input_dtype1, x1 = x
     input_dtype2, x2 = y
     input_dtype = [input_dtype1, input_dtype2]
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -684,14 +685,15 @@ def test_solve(
         max_value=50,
         min_num_dims=2,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="svdvals"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    a=st.integers(1, 50),
+    b=st.integers(1, 50),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_svdvals(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -725,14 +727,13 @@ def test_svdvals(
         min_dim_size=1,
         max_dim_size=15,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="tensordot"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_tensordot(
+    *,
+    data,
     dtype_x1_x2_axis,
     as_variable,
     with_out,
@@ -742,12 +743,17 @@ def test_tensordot(
     instance_method,
     fw,
 ):
+
     (
         dtype,
         x1,
         x2,
         axis,
     ) = dtype_x1_x2_axis
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
+
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -773,15 +779,14 @@ def test_tensordot(
         min_dim_size=1,
         max_dim_size=50,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="trace"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     offset=st.integers(-10, 10),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_trace(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -817,14 +822,13 @@ def test_trace(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="vecdot"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_vecdot(
+    *,
+    data,
     dtype_x1_x2_axis,
     as_variable,
     with_out,
@@ -834,6 +838,10 @@ def test_vecdot(
     instance_method,
     fw,
 ):
+
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
     dtype, x1, x2, axis = dtype_x1_x2_axis
     helpers.test_function(
         input_dtypes=dtype,
@@ -862,15 +870,15 @@ def test_vecdot(
         min_axis=-2,
         max_axis=1,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="vector_norm"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     kd=st.booleans(),
     ord=st.integers(1, 2),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_vector_norm(
+    *,
+    data,
     dtype_values_axis,
     as_variable,
     num_positional_args,
@@ -908,15 +916,14 @@ def test_vector_norm(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="pinv"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     rtol=st.floats(1e-5, 1e-3),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_pinv(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -952,14 +959,14 @@ def test_pinv(
         min_dim_size=2,
         max_dim_size=5,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="qr"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     mode=st.sampled_from(("reduced", "complete")),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_qr(
+    *,
+    data,
     dtype_x,
     as_variable,
     num_positional_args,
@@ -994,14 +1001,14 @@ def test_qr(
         min_dim_size=2,
         max_dim_size=5,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="svd"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     fm=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_svd(
+    *,
+    data,
     dtype_x,
     as_variable,
     num_positional_args,
@@ -1058,15 +1065,15 @@ def test_svd(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_norm"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     kd=st.booleans(),
     ord=st.integers(1, 2) | st.sampled_from(("fro", "nuc")),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_matrix_norm(
+    *,
+    data,
     dtype_x,
     as_variable,
     num_positional_args,
@@ -1103,15 +1110,14 @@ def test_matrix_norm(
         min_dim_size=2,
         max_dim_size=3,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_matrix_rank(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
@@ -1149,14 +1155,14 @@ def test_matrix_rank(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1])) != 0
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cholesky"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     upper=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_cholesky(
+    *,
+    data,
     dtype_x,
     as_variable,
     num_positional_args,
@@ -1196,14 +1202,13 @@ def test_cholesky(
         min_dim_size=3,
         max_dim_size=3,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cross"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_cross(
+    *,
+    data,
     dtype_x1_x2_axis,
     as_variable,
     with_out,
@@ -1214,6 +1219,9 @@ def test_cross(
     fw,
 ):
     dtype, x1, x2, axis = dtype_x1_x2_axis
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1239,18 +1247,17 @@ def test_cross(
         min_dim_size=1,
         max_dim_size=50,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="diagonal"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     offset=st.integers(-10, 50),
     axes=st.lists(st.integers(-2, 1), min_size=2, max_size=2, unique=True).filter(
         lambda axes: axes[0] % 2 != axes[1] % 2
     ),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_diagonal(
+    *,
+    data,
     dtype_x,
     as_variable,
     with_out,
