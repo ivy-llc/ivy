@@ -278,7 +278,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-     def cross(
+        
+    def cross(
             self: ivy.Container,
             x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
             axis: int = -1,
