@@ -93,4 +93,4 @@ We're excited for you to get involved!  🦾
    deep_dive/14_array_api_tests.rst
    deep_dive/15_ivy_tests.rst
    deep_dive/16_ivy_frontends.rst
-   deep_dive/17_ivy_frontend_tests.rst
+   deep_dive/17_ivy_frontends_tests.rst
