@@ -176,6 +176,7 @@ def test_fomaml_step_unique_vars(
     num_tasks=st.integers(1, 2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
+@settings(deadline=None)
 def test_fomaml_step_shared_vars(
     device,
     call,
@@ -343,6 +344,7 @@ def test_fomaml_step_shared_vars(
     num_tasks=st.integers(1, 2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
+@settings(deadline=None)
 def test_fomaml_step_overlapping_vars(
     device,
     call,
