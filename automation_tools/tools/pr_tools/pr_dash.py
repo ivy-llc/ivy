@@ -6,6 +6,19 @@ import subprocess
 from sys import argv, platform
 from prettytable import PrettyTable
 
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
+# use creds to create a client to interact with the Google Drive API
+scope = ['https://spreadsheets.google.com/feeds',
+         'https://www.googleapis.com/auth/drive']
+creds = ServiceAccountCredentials.from_json_keyfile_name(
+    'macro-precinct-357609-220191a202ca.json', scope)
+client = gspread.authorize(creds)
+
+# Find a workbook by name and open the first sheet
+# Make sure you use the right name here.
+sheet = client.open("Github").sheet1
 # flake8: noqa
 
 
@@ -182,6 +195,7 @@ def main():
             )
             rows = create_rows(prs)
             for row in rows:
+                sheet.append_rows(row)
                 table.add_row(row)
         elif argv[1] == "-h":
             help_menu()
