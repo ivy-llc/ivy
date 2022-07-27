@@ -19,13 +19,14 @@ jobs:
       #     path: |
       #       ivy/.hypothesis/
 
-      - name: Unzip Hypothesis Examples
-        run: |
-          cd ivy/.hypothesis
-          unzip examples.zip
-          rm examples.zip
+      # - name: Unzip Hypothesis Examples
+      #   run: |
+      #     cd ivy/.hypothesis
+      #     unzip examples.zip
+      #     rm examples.zip
 
       - name: Run Gradients Tests
+        id: tests
         run: |
           cd ivy
           mkdir -p .hypothesis
