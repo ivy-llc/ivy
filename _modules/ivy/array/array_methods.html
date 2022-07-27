@@ -2327,23 +2327,40 @@
 <span class="sd">    self</span>
 <span class="sd">        input array. Should have a numeric data type.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the rounded result for each element in ``self``.</span>
-<span class="sd">        The returned array must have the same data type as ``self``.</span>
+<span class="sd">        an array containing the rounded result for each element in ``self``. The</span>
+<span class="sd">        returned array must have the same data type as ``self``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1.2, 2.4, 3.6])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([6.3, -8.1, 0.5, -4.2, 6.8])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.round()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([1., 2., 4.])</span>
+<span class="sd">    ivy.array([ 6., -8.,  0., -4.,  7.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([-94.2, 256.0, 0.0001, -5.5, 36.6])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.round()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([-94., 256., 0., -6., 37.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.23, 3., -1.2])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; x.round(out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([ 0.,  3., -1.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[ -1., -67.,  0.,  15.5,  1.], [3, -45, 24.7, -678.5, 32.8]])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.round()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[-1., -67., 0., 16., 1.],</span>
+<span class="sd">    [3., -45., 25., -678., 33.]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
