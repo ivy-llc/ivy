@@ -193,6 +193,22 @@ def test_memory_on_dev(call):
             pytest.skip()
 
 
+@pytest.mark.parametrize("dev_to_check", ["cpu", "gpu:0"])
+def test_memory_on_dev_ground_truth(dev_to_check, device, call):
+    if "gpu" in dev_to_check and ivy.num_gpus() == 0:
+        # cannot get amount of memory for gpu which is not present
+        pytest.skip()
+    ret = ivy.total_mem_on_dev(dev_to_check)
+    # type test
+    assert isinstance(ret, float)
+    # value test
+    assert 0 < ret < 64
+    # compilation test
+    if call is helpers.torch_call:
+        # global variables aren't supported for pytorch scripting
+        pytest.skip()
+
+
 # Device Allocation #
 
 # default_device
@@ -336,6 +352,41 @@ def test_split_func_call(
     assert np.allclose(ivy.to_numpy(a), ivy.to_numpy(a_true))
     assert np.allclose(ivy.to_numpy(b), ivy.to_numpy(b_true))
     assert np.allclose(ivy.to_numpy(c), ivy.to_numpy(c_true))
+
+
+@pytest.mark.parametrize(
+    "x0", [[[0, 1, 2], [3, 4, 5], [6, 7, 8]], [[9, 8, 7], [6, 5, 4], [3, 2, 1]]]
+)
+@pytest.mark.parametrize(
+    "x1",
+    [[[2, 4, 6], [8, 10, 12], [14, 16, 18]], [[18, 16, 14], [12, 10, 8], [6, 4, 2]]],
+)
+@pytest.mark.parametrize("chunk_size", [1, 3])
+@pytest.mark.parametrize("axis", [0, 1])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+def test_split_func_call_ground_truth(x0, x1, chunk_size, axis, tensor_fn, device, call):
+
+    # inputs
+    in0 = tensor_fn(x0, dtype="float32", device=device)
+    in1 = tensor_fn(x1, dtype="float32", device=device)
+
+    # function
+    def func(t0, t1):
+        return t0 * t1, t0 - t1, t1 - t0
+
+    # predictions
+    a, b, c = ivy.split_func_call(
+        func, [in0, in1], "concat", chunk_size=chunk_size, input_axes=axis
+    )
+
+    # true
+    a_true, b_true, c_true = func(in0, in1)
+
+    # value test
+    assert np.allclose(ivy.to_numpy(a), ivy.to_numpy(a_true))
+    assert np.allclose(ivy.to_numpy(b), ivy.to_numpy(b_true))
+    assert np.allclose(ivy.to_numpy(c), ivy.to_numpy(c_true))
+
 
 
 @given(
@@ -524,6 +575,8 @@ def test_percent_used_mem_on_dev():
     _ram_array_and_clear_test(
         lambda: ivy.percent_used_mem_on_dev(ivy.Device("cpu"), True)
     )
+
+
 
 
 def test_gpu_is_available(fw):
