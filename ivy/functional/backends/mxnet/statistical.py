@@ -1,5 +1,5 @@
 from numbers import Number
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple, Union, Sequence
 import mxnet as mx
 
 # Local

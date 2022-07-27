@@ -98,36 +98,38 @@ class ContainerWithStatistical(ContainerBase):
         self
             input container. Should have a floating-point data type.
         axis
-            axis or axes along which variances must be computed. By default, the variance
-            must be computed over the entire array for each array in the input container.
-            If a tuple of integers, variances must be computed over multiple axes.
-            Default: None.
+            axis or axes along which variances must be computed. By default, the
+            variance must be computed over the entire array for each array in the input
+            container. If a tuple of integers, variances must be computed over
+            multiple axes. Default: None.
         correction
-            degrees of freedom adjustment. Setting this parameter to a value other than 0
-            has the effect of adjusting the divisor during the calculation of the variance
-            according to N-c where N corresponds to the total number of elements over which
-            the variance is computed and c corresponds to the provided degrees of freedom
-            adjustment. When computing the variance of a population, setting this parameter
-            to 0 is the standard choice (i.e., the provided array contains data constituting
-            an entire population). When computing the unbiased sample variance, setting this
-            parameter to 1 is the standard choice (i.e., the provided array contains data
-            sampled from a larger population; this is commonly referred to as Bessel's
-            correction). Default: 0.
+            degrees of freedom adjustment. Setting this parameter to a value other than
+            0 has the effect of adjusting the divisor during the calculation of the
+            variance according to N-c where N corresponds to the total number of
+            elements over which the variance is computed and c corresponds to the
+            provided degrees of freedom adjustment. When computing the variance of a
+            population, setting this parameter to 0 is the standard choice (i.e.,
+            the provided array contains data constituting an entire population).
+            When computing the unbiased sample variance, setting this parameter to 1
+            is the standard choice (i.e., the provided array contains data sampled from
+            a larger population; this is commonly referred to as Bessel's correction).
+            Default: 0.
         keepdims
             if True, the reduced axes (dimensions) must be included in the result as
-            singleton dimensions, and, accordingly, the result must be compatible with the
-            input array (see Broadcasting). Otherwise, if False, the reduced axes
-            (dimensions) must not be included in the result. Default: False.
+            singleton dimensions, and, accordingly, the result must be compatible
+            with the input array (see Broadcasting). Otherwise, if False, the
+            reduced axes (dimensions) must not be included in the result.
+            Default: False.
         out
             optional output container, for writing the result to.
 
         Returns
         -------
         ret
-            a container contianing different arrays depends on parameters. see below for
-            the types of arrays in the returned container if the variance was computed 
-            over the entire array, a zero-dimensional array containing the variance; 
-            otherwise, a non-zero-dimensional array containing the variances. 
+            a container contianing different arrays depends on parameters. see below
+            for the types of arrays in the returned container if the variance was
+            computed over the entire array, a zero-dimensional array containing the
+            variance; otherwise, a non-zero-dimensional array containing the variances. 
             The returned container must have the same data type as self.
 
         Examples
