@@ -42,7 +42,7 @@ def _dtype_x_limited_axis(draw, *, allow_none=False):
     data=st.data(),
 )
 @handle_cmd_line_args
-def test_any(
+def test_argmax(
     *,
     data,
     dtype_x_axis,
@@ -66,6 +66,43 @@ def test_any(
         instance_method=instance_method,
         fw=fw,
         fn_name="argmax",
+        x=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        keepdims=keepdims,
+    )
+
+
+@given(
+    dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
+    keepdims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="argmin"),
+    data=st.data(),
+)
+@handle_cmd_line_args
+def test_argmin(
+    *,
+    data,
+    dtype_x_axis,
+    keepdims,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="argmin",
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=keepdims,
