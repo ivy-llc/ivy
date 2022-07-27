@@ -209,12 +209,9 @@ class ArrayWithRandom(abc.ABC):
         Parameters
         ----------
         self
-            Lower boundary of the output interval. All values generated will be
-            greater than or equal to ``low``. If array, must have same shape as
-            ``high``.
+            Lowest integer that can be drawn from the distribution.
         high
-            Upper boundary of the output interval. All the values generated will be
-            less than ``high``. If array, must have same shape as ``low``.
+            One above the highest integer that can be drawn from the distribution.
         shape
             If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples
             are drawn. Can only be specified when ``low`` and ``high`` are numeric
@@ -225,7 +222,7 @@ class ArrayWithRandom(abc.ABC):
             (Default value = None).
         dtype
              output array data type. If ``dtype`` is ``None``, the output array data
-             type will be the default floating-point data type. Default ``None``
+             type will be the default integer data type. Default ``None``
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -233,7 +230,8 @@ class ArrayWithRandom(abc.ABC):
         Returns
         -------
         ret
-            Drawn samples from the parameterized uniform distribution.
+            Returns an array with the given shape filled with integers from
+            the uniform distribution in the “half-open” interval [low, high)
 
         Examples
         --------

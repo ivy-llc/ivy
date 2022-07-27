@@ -390,10 +390,16 @@ def randint(
     high
         One above the highest integer that can be drawn from the distribution.
     shape
-        a Sequence defining the shape of the output array.
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn
+        Can only be specified when ``mean`` and ``std`` are numeric values, else
+        exception will be raised.
+        Default is ``None``, where a single value is returned.
     device
         device on which to create the array. 'cuda:0',
         'cuda:1', 'cpu' etc. (Default value = None).
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default integer data type. Default ``None``
     out
         optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
