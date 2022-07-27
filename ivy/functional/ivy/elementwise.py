@@ -2456,17 +2456,6 @@ def isfinite(
         a: ivy.array([True, True]),
         b: ivy.array([True, False])
     }
-    
-    With :code:`ivy.Container` static method:
-    
-    >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
-                          b=ivy.array([float('-0'), ivy.nan]))
-    >>> y = ivy.Container.static_isfinite(x)
-    >>> print(y)
-    {
-        a: ivy.array([True, True]),
-        b: ivy.array([True, False])
-    }
     """
     return ivy.current_backend(x).isfinite(x, out=out)
 
