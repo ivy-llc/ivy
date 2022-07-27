@@ -100,63 +100,49 @@ def expand_dims(
     --------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([0, 1, 2])
-    >>> print(x.shape)
-    (3,)
-    >>> y = ivy.expand_dims(x)
-    >>> print(y.shape)
-    (1, 3)
+    >>> x = ivy.array([0, 1, 2]) #x.shape->(3,)
+    >>> y = ivy.expand_dims(x) #y.shape->(1, 3)
     >>> print(y)
     ivy.array([[0, 1, 2]])
 
     >>> x = ivy.array([[0.5, -0.7, 2.4], \
-                       [  1,    2,   3]])
-    >>> print(x.shape)
-    (2, 3)
+                       [  1,    2,   3]]) #x.shape->(2, 3)
     >>> y = ivy.zeros((2, 1, 3))
-    >>> print(y)
-    ivy.array([[[0., 0., 0.]],
-               [[0., 0., 0.]]])
-    >>> ivy.expand_dims(x, axis=1, out=y)
-    >>> print(y.shape)
-    (2, 1, 3)
+    >>> ivy.expand_dims(x, axis=1, out=y) #y.shape->(2, 1, 3)
     >>> print(y)
     ivy.array([[[0.5, -0.7, 2.4]],
                [[ 1.,   2.,  3.]]])
 
     >>> x = ivy.array([[-1, -2], \
-                       [ 3,  4]])
-    >>> ivy.expand_dims(x, out=x)
-    >>> print(x.shape)
-    (1, 2, 2)
+                       [ 3,  4]]) #x.shape->(2, 2)
+    >>> ivy.expand_dims(x, axis=0, out=x) #x.shape->(1, 2, 2)
     >>> print(x)
     ivy.array([[[-1, -2],
                 [3,  4]]])
 
-    >>> x = ivy.array([[-1.7, -3.2, 2.3], \
-                       [ 6.3,  1.4, 5.7]])
-    >>> print(x.shape)
-    (2, 3)
-    >>> y = ivy.expand_dims(x, axis=(0, -1))
-    >>> print(y.shape)
-    (1, 2, 3, 1)
-
-    >>> x = ivy.array([[-1.7, -3.2, 2.3], \
-                       [ 6.3,  1.4, 5.7]])
-    >>> print(x.shape)
-    (2, 3)
-    >>> y = ivy.expand_dims(x, axis=[1, 2, 3])
-    >>> print(y.shape)
-    (2, 1, 1, 1, 3)
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, 1, 2])
-    >>> print(x)
-    tensor([0, 1, 2], dtype=torch.int32)
-    >>> y = ivy.expand_dims(x)
+    >>> x = ivy.array([[-1.1, -2.2, 3.3], \
+                       [ 4.4,  5.5, 6.6]]) #x.shape->(2, 3)
+    >>> y = ivy.expand_dims(x, axis=(0, -1)) #y.shape->(1, 2, 3, 1)
     >>> print(y)
-    ivy.array([[0, 1, 2]])
+    ivy.array([[[[-1.1],
+                 [-2.2],
+                 [ 3.3]],
+
+                [[ 4.4],
+                 [ 5.5],
+                 [ 6.6]]]])
+
+    >>> x = ivy.array([[-1.7, -3.2, 2.3], \
+                       [ 6.3,  1.4, 5.7]]) #x.shape->(2, 3)
+    >>> y = ivy.expand_dims(x, axis=[0, 1, -1]) ##y.shape->(1, 1, 2, 3, 1)
+    >>> print(y)
+    ivy.array([[[[[-1.7],
+                  [-3.2],
+                  [ 2.3]],
+
+                 [[ 6.3],
+                  [ 1.4],
+                  [ 5.7]]]]])
 
     With one :code:`ivy.Container` input:
 
