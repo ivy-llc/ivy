@@ -137,6 +137,35 @@
 
 
 <div class="viewcode-block" id="ArrayWithGradients"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithGradients</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="ArrayWithGradients.variable"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.variable">[docs]</a>    <span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.variable. This method simply wraps</span>
+<span class="sd">        the function, and so the docstring for ivy.variable also applies to this</span>
+<span class="sd">        method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            An ivy array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            An ivy variable that supports gradient computation.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Array` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; ivy.set_backend(&quot;tensorflow&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([2., 4., -1.])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.variable()</span>
+<span class="sd">        &gt;&gt;&gt; y</span>
+<span class="sd">        ivy.array([ 2.,  4., -1.])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.unset_backend()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="ArrayWithGradients.is_variable"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.is_variable">[docs]</a>    <span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.is_variable. This method simply wraps</span>
