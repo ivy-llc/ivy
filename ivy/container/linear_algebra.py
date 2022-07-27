@@ -229,7 +229,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         axis
              the axis (dimension) of x1 and x2 containing the vectors for
              which to compute (default: -1) the cross product.vIf set to -1, the
-             function computes the cross product for vectors defined by the last axis (dimension). Default: -1.
+             function computes the cross product for vectors defined by the last 
+             axis (dimension). Default: -1.
         key_chains
              The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -315,8 +316,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
             (see :ref:`broadcasting`). Should have a numeric data type.
         axis
             the axis (dimension) of x1 and x2 containing the vectors for
-            which to compute (default: -1) the cross product.vIf set to -1, the
-            function computes the cross product for vectors defined by the last axis (dimension). Default: -1.
+            which to compute (default: -1) the cross product.vIf set to -1, 
+            the function computes the cross product for vectors defined by the 
+            last axis (dimension). Default: -1.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
