@@ -93,3 +93,49 @@ class ArrayWithGradients(abc.ABC):
             ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))
         """
         return ivy.adam_step(self, mw, vw, step, beta1, beta2, epsilon)
+    
+    def lars_update(
+        self:ivy.Array,
+        dcdw: Union[ivy.Array,ivy.NativeArray],
+        lr: Union[float,ivy.Array, ivy.NativeArray],
+        decay_lambda=0,
+        inplace=True,
+        stop_gradients=True,
+    ) ->ivy.Array:
+        """
+         ivy.Array instance method variant of ivy.lars_update. This method simply wraps the
+        function, and so the docstring for ivy.lars_update also applies to this method
+        with minimal changes.
+         Parameters
+        ----------
+        self
+            Weights of the function to be updated.
+        dcdw
+            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
+        lr
+            Learning rate, the rate at which the weights should be updated relative to the
+            gradient.
+        decay_lambda
+            The factor used for weight decay. Default is zero.
+        inplace
+            Whether to perform the operation inplace, for backends which support inplace
+            variable updates, and handle gradients behind the scenes such as PyTorch. If the
+            update step should form part of a computation graph (i.e. higher order
+            optimization), then this should be set to False. Default is True, provided the
+            backend framework supports it.
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is True.
+
+        Returns
+        -------
+        ret
+            The new function weights ws_new, following the LARS updates.        
+        """
+        w_norm=ivy.vector_norm(self)
+        lr = ivy.stable_divide(w_norm * lr, ivy.vector_norm(dcdw))
+        if decay_lambda > 0:
+            lr = w_norm * decay_lambda
+        
+        return ivy.lars_update(self,dcdw, lr, inplace,stop_gradients)
+        
