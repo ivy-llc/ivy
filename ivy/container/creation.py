@@ -71,30 +71,6 @@ class ContainerWithCreation(ContainerBase):
             device=device,
         )
 
-    def asarray(
-        self: ivy.Container,
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    ) -> ivy.Container:
-        return self.static_asarray(
-            self,
-            copy,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out,
-            dtype=dtype,
-            device=device,
-        )
-
     @staticmethod
     def static_zeros(
         shape: Union[int, Tuple[int], List[int]],
@@ -156,15 +132,73 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.full_like. This method simply wraps
+        the function, and so the docstring for ivy.full_like also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        fill_value
+            Scalar fill value
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        dtype
+            output array data type. If ``dtype`` is `None`, the output array data type
+            must be inferred from ``self``. Default: ``None``.
+        device
+            device on which to place the created array. If ``device`` is ``None``, the
+            output array device must be inferred from ``self``. Default: ``None``.
+
+        Returns
+        -------
+        ret
+            an output container having the same data type as ``x`` and whose elements,
+            relative to ``x``, are shifted.
+
+        Examples
+        --------
+        With ivy.Container input
+        >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
+        >>> fill_value = 10
+        >>> y = ivy.Container.full_like(fill_value)
+        {
+            a: ivy.array([10, 10, 10]),
+            b: ivy.array([10, 10, 10])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
+                               b=ivy.array([4.123,5.23,6.23]))
+        >>> fill_value = 15.0
+        >>> y = ivy.Container.full_like(fill_value)
+        >>> print(y)
+        {
+            a: ivy.array([15., 15., 15.]),
+            b: ivy.array([15., 15., 15.])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "full_like",
             x,
             fill_value,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
             dtype=dtype,
             device=device,
         )
@@ -181,6 +215,64 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.full_like. This method simply wraps
+        the function, and so the docstring for ivy.full_like also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        fill_value
+            Scalar fill value
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        dtype
+            output array data type. If ``dtype`` is `None`, the output array data type
+            must be inferred from ``self``. Default: ``None``.
+        device
+            device on which to place the created array. If ``device`` is ``None``, the
+            output array device must be inferred from ``self``. Default: ``None``.
+
+        Returns
+        -------
+        ret
+            an output container having the same data type as ``x`` and whose elements,
+            relative to ``x``, are shifted.
+
+        Examples
+        --------
+        With ivy.Container input
+        >>> x = ivy.Container(a = ivy.array([1,2,3]) ,b = ivy.array([4,5,6]))
+        >>> fill_value = 10
+        >>> y = x.full_like(fill_value)
+        {
+            a: ivy.array([10, 10, 10]),
+            b: ivy.array([10, 10, 10])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
+                               b=ivy.array([4.123,5.23,6.23]))
+        >>> fill_value = 15.0
+        >>> y = x.full_like(fill_value)
+        >>> print(y)
+        {
+            a: ivy.array([15., 15., 15.]),
+            b: ivy.array([15., 15., 15.])
+        }
+        """
         return self.static_full_like(
             self,
             fill_value,
@@ -205,14 +297,48 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.ones_like. This method simply
+        wraps the function, and so the docstring for ivy.ones_like also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array from which to derive the output array shape.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output array data type
+            must be inferred from ``self``. Default  ``None``.
+        device
+            device on which to place the created array. If device is ``None``, the
+            output array device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container having the same shape as ``self`` and filled with ones.
+        """
         return ContainerBase.multi_map_in_static_method(
             "ones_like",
             x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
             dtype=dtype,
             device=device,
         )
@@ -228,6 +354,40 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.ones_like. This method simply
+        wraps the function, and so the docstring for ivy.ones_like also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array from which to derive the output array shape.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output array data type
+            must be inferred from ``self``. Default  ``None``.
+        device
+            device on which to place the created array. If device is ``None``, the
+            output array device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container having the same shape as ``self`` and filled with ones.
+        """
         return self.static_ones_like(
             self,
             key_chains,

@@ -57,6 +57,9 @@ class Finfo:
     def __init__(self, mx_finfo: np.finfo):
         self._mx_finfo = mx_finfo
 
+    def __repr__(self):
+        return repr(self._mx_finfo)
+
     @property
     def bits(self):
         return self._mx_finfo.bits
@@ -87,9 +90,9 @@ def finfo(type: Union[type, str, mx.nd.NDArray]) -> Finfo:
 
 
 def broadcast_to(
-    x: mx.nd.NDArray, 
-    new_shape: Union[ivy.NativeShape, Sequence[int]], 
-    out: Optional[mx.nd.NDArray] = None
+    x: mx.nd.NDArray,
+    new_shape: Union[ivy.NativeShape, Sequence[int]],
+    out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     x_shape = list(x.shape)
     num_x_dims = len(x_shape)
