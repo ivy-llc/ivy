@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "macro-precinct-357609",
+  "private_key_id": "220191a202caa7061298848d9c14a8cf68fb4635",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDvHk99tOVytxBE\nFMFTuRxtLLpa03CJqSVvcO8skwDwZ6AXfaZ8mdZD34FZLxT973EZD+ihhYFB2lsy\nYBeL2wCcRqERsKFhO0KQqAHDlEEuZ+f2SHKLYKkWJ3iPzf++q20pI9FyUervUqLw\n+ms2SnyUlOFOc/Ibf1SgcC1K3wFhZ7k46jmkG/uUHy0ZOYUQusPyhuOJfOplN4ck\nS5Lxgow8tUtmRIc85qCf7ozYorkhJZNtyhlwm/W69D8VETMb4FNJ8QI2EOlKM/A8\nPxSlGWSK92CDRg6PBiuJyTic/qU/OTq0B9EvdWFAvzwWLFT8rxuw6kvW4fjgjBQQ\nZQMMemlRAgMBAAECggEAONM8s9SGBJ2BlZRTH0jp+v36qXP/Fg/m8BVoGXEz823E\n62A2bP0IIOggLqgUNoatG3Ye5Ce8gIBaVN3mKpvYiMr2IySVLWyuVH9AsBBu7w7N\nXsd3xSyq8jNeINqlMNQ/ZFv5PdA+4zIBu//e869+7LZ21rSSMDuxylDuSpE1nEZa\n8t2W2znztkfrZhw5b56cX9vTRmGguiS/FJZS6U+d7K914VKgCnk+FjbbVgQRsEXv\ndvuDqwnFBMty/ouSPm6Yfk9YUgiMJSvo6Qh+0n/2L3ke04aZ/dRwc8uHVxugV7Mb\nukVWtLO5TE5OvAh5RKxzlC25cQpC0cuiSyiOKdz/EwKBgQD4pPlFZPUVbdXpnH3K\nuS7258pPK44ykv6sB4dGIlm1rLqP/rheao/pE0xlZ7SQzxzHi010UZ5QFYarIhEM\nk2c67vXiUFSJidol5P8SqeP7pfQjzUhg8btvBTQE5c3OQOhHd7342aeSQPErdSoi\nlsMAiqwSoQWjG192716maQmg+wKBgQD2MTHPs6c5g8t5vuYgb36FFKlQJChYRqNy\nbVOj13GAtu3YIcWVtS7OgScrsTWQsuNZRzjfTKVcwTUSECrM09LNTha0Nio0Nsu2\n+pQ9/kkybmW3G4hPAOK3tuOSbqmarAp+XH70K7fEMxZH4oxWdXGL9IpZnKFm6+Js\nYUFh3eWFIwKBgA25BSzoSoJ5QmIXSfYDTG1CE69U5w8xf66856FeSfc15kIGO+Sy\nGukxMHk0RQns9Fiq/oZZ7tParEkLo0c/Z2YgRB/OcSv6GLkYr183UybTXOsQ7Fq1\nXLPe5KUUjcxBVtCC8lAmqxHuVaEhYUbxbSe9f4uzqVz8KMOmqGGk0Gw7AoGAamdm\ntPNbsiMBPXRBeAFYOGJuryGBgm29VMZloOmLt+rYL1KhWAv/1+bALEUh9pEqa7q5\nnOE+kzE6I71zEiX29R7r9yV15i1MrJ/ulECkGDTYp2Qx7JtgYbCc+Pv1N9Flk6mc\ngSGoAhdmaNlEeFW4JpohdYuZwqburJL4NDk4ausCgYEAvwHUcsVI1kGzhDqtVZsA\nK0EDuFCtjiDjLwAwtr/gBfdVIHcYteqod8iit4czZtfquDW7XtLjXPIlBIayj7oD\ntWcqFqJrP3IcHVHbfIt7oShIYy4spkKVSMSySCjYadjXJjdfWAIGhR5SYjx52Zqg\nHuO7/ge6/LDvCKkU6r3YxqE=\n-----END PRIVATE KEY-----\n",
+  "client_email": "github@macro-precinct-357609.iam.gserviceaccount.com",
+  "client_id": "107982696640890539662",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/github%40macro-precinct-357609.iam.gserviceaccount.com"
+}
