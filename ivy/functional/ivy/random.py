@@ -40,6 +40,17 @@ def _check_bounds_and_get_shape(low, high, shape):
     return ()
 
 
+def _randint_check_dtype_and_bound(low, high, dtype):
+    if ivy.is_float_dtype(dtype) or ivy.is_uint_dtype(dtype):
+        raise Exception("randint cannot take `float` dtype")
+    if ivy.is_uint_dtype(low) or ivy.is_uint_dtype(high):
+        raise Exception("`low` and `high` cannot take `uint` dtype")
+    if ivy.is_float_dtype(low) or ivy.is_float_dtype(high):
+        raise Exception("`low` and `high` cannot take `float` dtype")
+    if ivy.any(ivy.greater_equal(low, high)):
+        raise Exception("`low` must be smaller than `high`")
+
+
 def _check_valid_scale(std):
     if (isinstance(std, (int, float)) and std < 0) or ivy.any(ivy.less(std, 0)):
         raise Exception("`std` must be non-negative")
@@ -361,11 +372,12 @@ def multinomial(
 @infer_device
 @handle_nestable
 def randint(
-    low: int,
-    high: int,
-    shape: Union[ivy.Shape, ivy.NativeShape],
+    low: Union[int, ivy.NativeArray, ivy.Array],
+    high: Union[int, ivy.NativeArray, ivy.Array],
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns an array filled with random integers generated uniformly between
@@ -378,10 +390,16 @@ def randint(
     high
         One above the highest integer that can be drawn from the distribution.
     shape
-        a Sequence defining the shape of the output array.
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn
+        Can only be specified when ``mean`` and ``std`` are numeric values, else
+        exception will be raised.
+        Default is ``None``, where a single value is returned.
     device
         device on which to create the array. 'cuda:0',
         'cuda:1', 'cpu' etc. (Default value = None).
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default integer data type. Default ``None``
     out
         optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
@@ -415,7 +433,9 @@ def randint(
                [ 8, 11,  3]])
 
     """
-    return ivy.current_backend().randint(low, high, shape, device=device, out=out)
+    return ivy.current_backend().randint(
+        low, high, shape, device=device, dtype=dtype, out=out
+    )
 
 
 @handle_nestable
