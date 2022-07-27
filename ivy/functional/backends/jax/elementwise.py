@@ -25,11 +25,15 @@ def abs(x: Union[float, JaxArray], *, out: Optional[JaxArray] = None) -> JaxArra
     return jnp.absolute(x)
 
 
-def acos(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def acos(
+    x: JaxArray
+) -> JaxArray:
     return jnp.arccos(x)
 
 
-def acosh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def acosh(
+    x: JaxArray
+) -> JaxArray:
     return jnp.arccosh(x)
 
 
@@ -50,7 +54,9 @@ def asinh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsinh(x)
 
 
-def atan(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def atan(
+    x: JaxArray
+) -> JaxArray:
     return jnp.arctan(x)
 
 
@@ -59,7 +65,9 @@ def atan2(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxA
     return jnp.arctan2(x1, x2)
 
 
-def atanh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def atanh(
+    x: JaxArray
+) -> JaxArray:
     return jnp.arctanh(x)
 
 
@@ -179,10 +187,8 @@ def floor_divide(
 
 
 def greater(
-    x1: Union[float, JaxArray],
-    x2: Union[float, JaxArray],
-    *,
-    out: Optional[JaxArray] = None
+    x1: Union[float, JaxArray], 
+    x2: Union[float, JaxArray]
 ) -> JaxArray:
     return jnp.greater(x1, x2)
 
@@ -209,10 +215,8 @@ def isnan(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def less(
-    x1: Union[float, JaxArray],
-    x2: Union[float, JaxArray],
-    *,
-    out: Optional[JaxArray] = None
+    x1: Union[float, JaxArray], 
+    x2: Union[float, JaxArray]
 ) -> JaxArray:
     return jnp.less(x1, x2)
 

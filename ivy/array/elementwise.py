@@ -58,6 +58,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic cosine
             of each element in ``self``.
             The returned array must have the same data type as ``self``.
+            
+        Examples
+        --------
+        >>> x = ivy.array([2., 10.0, 1.0])
+        >>> y = x.acosh()
+        >>> print(y)
+        ivy.array([1.32, 2.99, 0.  ])
+        
         """
         return ivy.acosh(self._data, out=out)
 
@@ -80,6 +88,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse cosine of each element in ``self``.
             The  returned array must have the same data type as ``self``.
+            
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 0.0, -0.9])
+        >>> y = x.acos()
+        >>> print(y)
+        ivy.array([0.  , 1.57, 2.69])
+        
         """
         return ivy.acos(self._data, out=out)
 
@@ -193,6 +209,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse tangent of each element in ``self``. The
             returned array must have the same data type as ``self``.
+            
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 0.5, -0.5])
+        >>> y = x.atan()
+        >>> print(y)
+        ivy.array([ 0.785,  0.464, -0.464])
+        
         """
         return ivy.atan(self._data, out=out)
 
@@ -258,6 +282,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic tangent of each element
             in ``self``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.array([0.0, 0.5, -0.9])
+        >>> y = x.atanh()
+        >>> print(y)
+        ivy.array([ 0.   ,  0.549, -1.47 ])
+        
         """
         return ivy.atanh(self._data, out=out)
 
@@ -818,6 +850,15 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array must
             have a data type of ``bool``.
+            
+        Examples
+        --------
+        >>> x1 = ivy.array([2., 5., 15.])
+        >>> x2 = ivy.array([3., 2., 4.])
+        >>> y = x1.greater(x2)
+        >>> print(y)
+        ivy.array([False,  True,  True])
+
         """
         return ivy.greater(self._data, x2, out=out)
 
@@ -949,6 +990,15 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+            
+        Examples
+        --------
+        >>> x1 = ivy.array([2., 5., 15.])
+        >>> x2 = ivy.array([3., 2., 4.])
+        >>> y = x1.less(x2)
+        >>> print(y)
+        ivy.array([ True, False, False])
+
         """
         return ivy.less(self._data, x2, out=out)
 
