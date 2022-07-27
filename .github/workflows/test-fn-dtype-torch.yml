@@ -11,13 +11,13 @@ jobs:
           persist-credentials: false
           submodules: "recursive"
 
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: test-fn-dtype-torch.yml
-          name: hypothesis_fn_dtype_torch_zip
-          path: |
-            ivy/.hypothesis/
+      # - name: Download artifact
+      #   uses: dawidd6/action-download-artifact@v2
+      #   with:
+      #     workflow: test-fn-dtype-torch.yml
+      #     name: hypothesis_fn_dtype_torch_zip
+      #     path: |
+      #       ivy/.hypothesis/
 
       - name: Unzip Hypothesis Examples
         run: |
