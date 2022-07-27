@@ -145,10 +145,10 @@ def test_binary_cross_entropy(
     ),
     dtype_and_pred=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
-        min_value=1.0013580322265625e-05,
+        min_value=0.0999755859375,
         max_value=1,
         allow_inf=False,
-        exclude_min=True,
+        exclude_min=False,
         exclude_max=True,
         min_num_dims=1,
         max_num_dims=1,
