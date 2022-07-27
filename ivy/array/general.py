@@ -53,10 +53,10 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
     def gather_nd(
-        self: ivy.Array,
-        indices: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[ivy.Array] = None,
+            self: ivy.Array,
+            indices: Union[ivy.Array, ivy.NativeArray],
+            *,
+            out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
@@ -123,3 +123,44 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.to_numpy(self)
+
+    def clip_vector_norm(
+            self: ivy.Array,
+            max_norm: float,
+            p: float = 2.0,
+            *,
+            out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.clip_vector_norm. This method simply
+        wraps the function, and so the docstring for ivy.clip_vector_norm also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        max_norm
+            float, the maximum value of the array norm.
+        p
+            optional float, the p-value for computing the p-norm. Default is 2.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the vector norm downscaled to the max norm if needed.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.clip_vector_norm(2.0)
+        >>> print(y)
+        ivy.array([0.   , 0.894, 1.79 ])
+
+        """
+        return ivy.clip_vector_norm(self, max_norm, p, out=out)
