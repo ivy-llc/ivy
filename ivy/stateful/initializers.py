@@ -19,6 +19,7 @@ class Constant:
         )
 
 
+
 class Zeros(Constant):
     def __init__(self):
         super().__init__(0.0)
