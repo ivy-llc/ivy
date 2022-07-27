@@ -200,6 +200,7 @@ def test_randint(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
+        test_values=False,
         fw=fw,
         fn_name="randint",
         low=np.asarray(low, dtype=low_dtype),
@@ -208,8 +209,11 @@ def test_randint(
         dtype=dtype,
         device=device,
     )
-    assert ret >= low and ret < high
-    assert ret_gt >= low and ret_gt < high
+    ret = helpers.flatten(ret=ret)
+    ret_gt = helpers.flatten(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert ivy.all(u >= low) and ivy.all(u < high)
+        assert ivy.all(v >= low) and ivy.all(v < high)
 
 
 # seed
