@@ -71,6 +71,51 @@ def test_linear(
     )
 
 
+@pytest.mark.parametrize(
+    "x_n_w_n_b_n_res",
+    [
+        (
+            [[1.0, 2.0, 3.0]],
+            [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]],
+            [2.0, 2.0],
+            [[8.0, 8.0]],
+        ),
+        (
+            [[[1.0, 2.0, 3.0]]],
+            [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]],
+            [2.0, 2.0],
+            [[[8.0, 8.0]]],
+        ),
+        (
+            [[[1.0, 2.0, 3.0]], [[4.0, 5.0, 6.0]]],
+            [[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]], [[2.0, 2.0, 2.0], [2.0, 2.0, 2.0]]],
+            [[2.0, 2.0], [4.0, 4.0]],
+            [[[8.0, 8.0]], [[34.0, 34.0]]],
+        ),
+    ],
+)
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+def test_linear_ground_truth(x_n_w_n_b_n_res, dtype, tensor_fn, device, call):
+    # smoke test
+    x, weight, bias, true_res = x_n_w_n_b_n_res
+    x = tensor_fn(x, dtype=dtype, device=device)
+    weight = tensor_fn(weight, dtype=dtype, device=device)
+    bias = tensor_fn(bias, dtype=dtype, device=device)
+    true_res = tensor_fn(true_res, dtype=dtype, device=device)
+    ret = ivy.linear(x, weight, bias)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == true_res.shape
+    # value test
+    assert np.allclose(call(ivy.linear, x, weight, bias), ivy.to_numpy(true_res))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # optional Tensors in framework agnostic implementations not supported by torch.jit
+        return
+
+
 # Dropout #
 # --------#
 
@@ -102,6 +147,26 @@ def test_dropout(*, data, array_shape, dtype, as_variable, fw, device, call):
     # value test
     ivy.seed(0)
     assert np.min(call(ivy.dropout, x, 0.9)) == 0.0
+
+
+@pytest.mark.parametrize("x", [([[1.0, 2.0, 3.0]]), ([[[1.0, 2.0, 3.0]]])])
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+def test_dropout_ground_truth(x, dtype, tensor_fn, device, call):
+    # smoke test
+    x = tensor_fn(x, dtype=dtype, device=device)
+    ret = ivy.dropout(x, 0.9)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    ivy.seed(0)
+    assert np.min(call(ivy.dropout, x, 0.9)) == 0.0
+    # compilation test
+    if call in [helpers.torch_call]:
+        # str_to_dev not supported by torch.jit due to Device and Str not seen as the same
+        return
 
 
 # Attention #
@@ -177,6 +242,36 @@ def test_scaled_dot_product_attention(
     )
 
 
+@pytest.mark.parametrize(
+    "q_n_k_n_v_n_s_n_m_n_gt", [([[1.0]], [[2.0]], [[3.0]], 2.0, [[1.0]], [[3.0]])]
+)
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+def test_scaled_dot_product_attention_ground_truth(
+    q_n_k_n_v_n_s_n_m_n_gt, dtype, tensor_fn, device, call
+):
+    q, k, v, scale, mask, ground_truth = q_n_k_n_v_n_s_n_m_n_gt
+    # smoke test
+    q = tensor_fn(q, dtype=dtype, device=device)
+    k = tensor_fn(k, dtype=dtype, device=device)
+    v = tensor_fn(v, dtype=dtype, device=device)
+    mask = tensor_fn(mask, dtype=dtype, device=device)
+    ret = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == q.shape
+    # value test
+    assert np.allclose(
+        call(ivy.scaled_dot_product_attention, q, k, v, scale, mask),
+        np.array(ground_truth),
+    )
+    # compilation test
+    if call in [helpers.torch_call]:
+        # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
+        return
+
+
 # multi_head_attention
 @pytest.mark.parametrize(
     "x_n_s_n_m_n_c_n_gt",
@@ -184,7 +279,9 @@ def test_scaled_dot_product_attention(
 )
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call):
+def test_multi_head_attention_ground_truth(
+    x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
+):
     x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
     # smoke test
     x = tensor_fn(x, dtype=dtype, device=device)
@@ -541,61 +638,6 @@ def test_conv2d_transpose(
     )
 
 
-# depthwise_conv2d
-@pytest.mark.parametrize(
-    "x_n_filters_n_pad_n_res",
-    [
-        (
-            [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-            [[[0.0], [1.0], [0.0]], [[1.0], [1.0], [1.0]], [[0.0], [1.0], [0.0]]],
-            "SAME",
-            [[[[0.0], [3.0], [0.0]], [[3.0], [3.0], [3.0]], [[0.0], [3.0], [0.0]]]],
-        ),
-        (
-            [
-                [[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]
-                for _ in range(5)
-            ],
-            [[[0.0], [1.0], [0.0]], [[1.0], [1.0], [1.0]], [[0.0], [1.0], [0.0]]],
-            "SAME",
-            [
-                [[[0.0], [3.0], [0.0]], [[3.0], [3.0], [3.0]], [[0.0], [3.0], [0.0]]]
-                for _ in range(5)
-            ],
-        ),
-        (
-            [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-            [[[0.0], [1.0], [0.0]], [[1.0], [1.0], [1.0]], [[0.0], [1.0], [0.0]]],
-            "VALID",
-            [[[[3.0]]]],
-        ),
-    ],
-)
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
-        # tf depthwise conv2d does not work when CUDA is installed, but array is on CPU
-        pytest.skip()
-    # smoke test
-    if call in [helpers.np_call, helpers.jnp_call]:
-        # numpy and jax do not yet support depthwise 2d convolutions
-        pytest.skip()
-    x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype=dtype, device=device)
-    filters = tensor_fn(filters, dtype=dtype, device=device)
-    true_res = tensor_fn(true_res, dtype=dtype, device=device)
-    ret = ivy.depthwise_conv2d(x, filters, 1, padding)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_res.shape
-    # value test
-    assert np.allclose(
-        call(ivy.depthwise_conv2d, x, filters, 1, padding), ivy.to_numpy(true_res)
-    )
-
-
 # conv3d
 @given(
     x_f_d_df=x_and_filters(
@@ -791,3 +833,56 @@ def test_lstm(
         bias=bias,
         recurrent_bias=recurrent_bias,
     )
+
+
+@pytest.mark.parametrize(
+    "b_t_ic_hc_otf_sctv",
+    [
+        (
+            2,
+            3,
+            4,
+            5,
+            [0.93137765, 0.9587628, 0.96644664, 0.93137765, 0.9587628, 0.96644664],
+            3.708991,
+        ),
+    ],
+)
+@pytest.mark.parametrize("dtype", ["float32"])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+def test_lstm_ground_truth(b_t_ic_hc_otf_sctv, dtype, tensor_fn, device, call):
+    # smoke test
+    (
+        b,
+        t,
+        input_channels,
+        hidden_channels,
+        output_true_flat,
+        state_c_true_val,
+    ) = b_t_ic_hc_otf_sctv
+    x = ivy.asarray(
+        ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels),
+        dtype="float32",
+        device=device,
+    )
+    init_h = ivy.ones([b, hidden_channels])
+    init_c = ivy.ones([b, hidden_channels])
+    kernel = ivy.variable(ivy.ones([input_channels, 4 * hidden_channels])) * 0.5
+    recurrent_kernel = (
+        ivy.variable(ivy.ones([hidden_channels, 4 * hidden_channels])) * 0.5
+    )
+    output, state_c = ivy.lstm_update(x, init_h, init_c, kernel, recurrent_kernel)
+    # type test
+    assert ivy.is_ivy_array(output)
+    assert ivy.is_ivy_array(state_c)
+    # cardinality test
+    assert output.shape == (b, t, hidden_channels)
+    assert state_c.shape == (b, hidden_channels)
+    # value test
+    output_true = np.tile(
+        np.asarray(output_true_flat).reshape((b, t, 1)), (1, 1, hidden_channels)
+    )
+    state_c_true = np.ones([b, hidden_channels]) * state_c_true_val
+    output, state_c = call(ivy.lstm_update, x, init_h, init_c, kernel, recurrent_kernel)
+    assert np.allclose(output, output_true, atol=1e-6)
+    assert np.allclose(state_c, state_c_true, atol=1e-6)
