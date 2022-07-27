@@ -3,6 +3,10 @@ randint
 
 .. autofunction:: ivy.functional.ivy.random.randint
 
+.. autofunction:: ivy.array.array_methods.randint
+
+.. autofunction:: ivy.container.container_methods.randint
+
 .. autofunction:: ivy.container.container_methods.static_randint
 |
 | **Supported Frameworks:**
@@ -31,5 +35,7 @@ randint
    :caption: randint
 
    randint/randint_functional.rst
+   randint/randint_array.rst
+   randint/randint_container.rst
    randint/static_randint_container.rst
 
