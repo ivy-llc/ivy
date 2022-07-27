@@ -364,7 +364,9 @@ def test_split_func_call(
 @pytest.mark.parametrize("chunk_size", [1, 3])
 @pytest.mark.parametrize("axis", [0, 1])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_split_func_call_ground_truth(x0, x1, chunk_size, axis, tensor_fn, device, call):
+def test_split_func_call_ground_truth(
+    x0, x1, chunk_size, axis, tensor_fn, device, call
+):
 
     # inputs
     in0 = tensor_fn(x0, dtype="float32", device=device)
@@ -386,7 +388,6 @@ def test_split_func_call_ground_truth(x0, x1, chunk_size, axis, tensor_fn, devic
     assert np.allclose(ivy.to_numpy(a), ivy.to_numpy(a_true))
     assert np.allclose(ivy.to_numpy(b), ivy.to_numpy(b_true))
     assert np.allclose(ivy.to_numpy(c), ivy.to_numpy(c_true))
-
 
 
 @given(
@@ -575,8 +576,6 @@ def test_percent_used_mem_on_dev():
     _ram_array_and_clear_test(
         lambda: ivy.percent_used_mem_on_dev(ivy.Device("cpu"), True)
     )
-
-
 
 
 def test_gpu_is_available(fw):
