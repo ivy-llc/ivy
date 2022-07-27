@@ -278,6 +278,25 @@ Ubuntu
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `docker channel`_!
 
+More Detailed Hypothesis Logs
+****
+For testing, we use the `Hypothesis <https://hypothesis.readthedocs.io/en/latest/#>`_ module for data generation.
+During testing, if Hypothesis detects an error, it will do its best to find the simplest values that are causing the error.
+However, when using PyCharm, if Hypothesis detects two or more distinct errors, it will return the number of errors found and not return much more information.
+This is because PyCharm by default turns off headers and summary's while running tests. To get more detailed information on errors in the code, we recommend doing the following:
+
+#. Going to the settings -> Advanced
+#. Using the search bar to search for 'Pytest'
+#. Make sure that the checkbox for 'Pytest: do not add "--no-header --no-summary -q"' is checked.
+
+    a. .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_setting.png
+          :width: 420
+
+Now, if Hypothesis detects an error in the code it will return more detailed information on each of the failing examples:
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_example.png
+   :width: 420
+
 GitHub Codespaces
 -----------------
 
