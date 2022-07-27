@@ -500,6 +500,144 @@ def result_type(
     ret
         the dtype resulting from an operation involving the input arrays and dtypes.
 
+    Functional Method Examples
+    --------------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([1, 1, 1, 0, -1])
+    >>> x2 = ivy.array([1., 0., 0., 0., -1.])
+    >>> y = ivy.result_type(x1, x2)
+    >>> print(y)
+    float64
+
+    >>> x1 = ivy.array([1, 1, 1, 0, 0])
+    >>> x2 = ivy.array([0])
+    >>> y = ivy.result_type(x1, x2)
+    >>> print(y)
+    int32
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([1, 1, 1, 0, -1])
+    >>> x2 = ivy.native_array([1., 0., 0., 0., -1.])
+    >>> y = ivy.result_type(x1, x2)
+    >>> print(y)
+    float64
+
+    >>> x1 = ivy.native_array([1, 1, 1, 0, 0])
+    >>> x2 = ivy.native_array([0])
+    >>> y = ivy.result_type(x1, x2)
+    >>> print(y)
+    int32
+
+    With :code:`ivy.Dtype` inputs:
+
+    >>> x1 = ivy.dtype(ivy.array([1., 0., 1.]))
+    >>> x2 = ivy.dtype(ivy.array([1, 0, 1]))
+    >>> y = ivy.result_type(x1, x2)
+    >>> print(y)
+    float64
+
+    >>> x1 = ivy.dtype(ivy.native_array([1, 0, -1]))
+    >>> x2 = ivy.dtype(ivy.array([1, 0, 1]))
+    >>> y = ivy.result_type(x1, x2)
+    >>> print(y)
+    int32
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 1, 1, 0, -1]),\
+                            b=ivy.native_array([1, 1, 1, 0, -1]))
+    >>> x2 =  ivy.Container(a=ivy.native_array([1, 1, 1, 0, 0]),\
+                            b=ivy.dtype(ivy.array([1, 0, 1])))
+    >>> y = ivy.result_type(x1, x2)
+    >>> print(y)
+    {
+        a: dtype(int32),
+        b: dtype(int32)
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1., 1., 1., 0., -1.]),\
+                            b=ivy.array([1, 1, 1, 0, -1]))
+    >>> x2 =  ivy.Container(a=ivy.dtype(ivy.native_array([1, 0, 1])),\
+                            b=ivy.dtype(ivy.array([1, 0, 1])))
+    >>> y = ivy.result_type(x1, x2)
+    >>> print(y)
+    {
+        a: dtype(float64),
+        b: dtype(int32)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([1, 1, 1, 0, -1])
+    >>> x2 = ivy.array([1., 0., 0., 0., -1.])
+    >>> y = x1.result_type(x2)
+    >>> print(y)
+    float64
+
+    >>> x1 = ivy.array([1, 1, 1, 0, 0])
+    >>> x2 = ivy.array([0])
+    >>> y = x1.result_type(x2)
+    >>> print(y)
+    int32
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([1, 1, 1, 0, -1])
+    >>> x2 = ivy.native_array([1., 0., 0., 0., -1.])
+    >>> y = x1.result_type(x2)
+    >>> print(y)
+    float64
+
+    >>> x1 = ivy.native_array([1, 1, 1, 0, 0])
+    >>> x2 = ivy.native_array([0])
+    >>> y = x1.result_type(x2))
+    >>> print(y)
+    int32
+
+    With :code:`ivy.Dtype` inputs:
+
+    >>> x1 = ivy.dtype(ivy.array([1., 0., 1.]))
+    >>> x2 = ivy.dtype(ivy.array([1, 0, 1]))
+    >>> y = x1.result_type(x2)
+    >>> print(y)
+    float64
+
+    >>> x1 = ivy.dtype(ivy.native_array([1, 0, -1]))
+    >>> x2 = ivy.dtype(ivy.array([1, 0, 1]))
+    >>> y = x1.result_type(x2)
+    >>> print(y)
+    int32
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 1, 1, 0, -1]),\
+                            b=ivy.native_array([1, 1, 1, 0, -1]))
+    >>> x2 =  ivy.Container(a=ivy.native_array([1, 1, 1, 0, 0]),\
+                            b=ivy.dtype(ivy.array([1, 0, 1])))
+    >>> y = x1.result_type(x2)
+    >>> print(y)
+    {
+        a: dtype(int32),
+        b: dtype(int32)
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1., 1., 1., 0., -1.]),\
+                            b=ivy.array([1, 1, 1, 0, -1]))
+    >>> x2 =  ivy.Container(a=ivy.dtype(ivy.native_array([1, 0, 1])),\
+                            b=ivy.dtype(ivy.array([1, 0, 1])))
+    >>> y = x1.result_type(x2)
+    >>> print(y)
+    {
+        a: dtype(float64),
+        b: dtype(int32)
+    }
+
     """
     return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 

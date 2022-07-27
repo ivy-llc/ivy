@@ -116,4 +116,24 @@ class ArrayWithDataTypes(abc.ABC):
         self: ivy.Array,
         *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
     ) -> ivy.Dtype:
+        """
+        `ivy.Array` instance method variant of `ivy.result_type`.
+        This method simply wraps the function, and so the docstring for
+        `ivy.result_type` also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 1, 1, 0, -1])
+        >>> x2 = ivy.array([1., 0., 0., 0., -1.])
+        >>> y = x1.result_type(x2)
+        >>> print(y)
+        float64
+
+        >>> x1 = ivy.array([1, 1, 1, 0, -1])
+        >>> x2 = ivy.array([1, 0, 1, 0, -1])
+        >>> y = x1.result_type(x2)
+        >>> print(y)
+        int32
+
+        """
         return ivy.result_type(self._data, *arrays_and_dtypes)

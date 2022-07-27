@@ -647,6 +647,36 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `ivy.result_type`. This method simply
+        wraps the function, and so the docstring for `ivy.result_type` also applies to
+        this method with minimal changes.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> y = ivy.Container.result_type(x1, x2)
+        >>> print(y)
+        {
+            a: dtype(float32),
+            b: dtype(int32)
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 0, 0, 1]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> x2 =  ivy.Container(a=ivy.dtype(ivy.native_array([1, 0, 1])),\
+                            b=ivy.dtype(ivy.array([1, 0, 1])))
+        >>> y = ivy.Container.result_type(x1, x2)
+        >>> print(y)
+        {
+            a: dtype(int32),
+            b: dtype(int32)
+        }
+
+        """
         return ContainerBase.multi_map_in_static_method(
             "result_type",
             *arrays_and_dtypes,
@@ -664,6 +694,36 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` instance method variant of `ivy.result_type`. This method simply
+        wraps the function, and so the docstring for `ivy.result_type` also applies to
+        this method with minimal changes.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> y = x1.result_type(x2)
+        >>> print(y)
+        {
+            a: dtype(float32),
+            b: dtype(int32)
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 0, 0, 1]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> x2 =  ivy.Container(a=ivy.dtype(ivy.native_array([1, 0, 1])),\
+                            b=ivy.dtype(ivy.array([1, 0, 1])))
+        >>> y = x1.result_type(x2)
+        >>> print(y)
+        {
+            a: dtype(int32),
+            b: dtype(int32)
+        }
+
+        """
         return self.static_result_type(
             self,
             *arrays_and_dtypes,
