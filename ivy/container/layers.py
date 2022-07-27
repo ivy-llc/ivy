@@ -173,7 +173,7 @@ class ContainerWithLayers(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([[[2., 3., 4.], [5., 6., 7.]]]), \
                               b =ivy.array([[[7., 8., 9.], [10., 11., 12]]]))
         >>> filters = ivy.array([[[0., 0.5, 1.], [0.25, 0.5, 0.75], [-0.5, 0., 0.5 ]]])
-        >>> result= ivy.Container.static_conv1d(x,filters, strides=(1,), padding='VALID')
+        >>> result= ivy.Container.static_conv1d(x,filters,strides=(1,),padding='VALID')
         >>> print(result)
         {
             a: ivy.array([[[-1.25, 2.5, 6.25], \
