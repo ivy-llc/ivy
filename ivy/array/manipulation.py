@@ -40,7 +40,7 @@ class ArrayWithManipulation(abc.ABC):
 
     def reshape(
         self: ivy.Array,
-        shape: Union[ivy.Shape, ivy.NativeShape],
+        shape: Union[ivy.NativeShape, Sequence[int]],
         copy: Optional[bool] = None,
         *,
         out: Optional[ivy.Array] = None,
@@ -84,7 +84,7 @@ class ArrayWithManipulation(abc.ABC):
                    [3., 4., 5.]])
 
         """
-        return ivy.reshape(self._data, shape, out=out)
+        return ivy.reshape(self._data, shape, copy, out=out)
     
     def permute_dims(
         self: ivy.Array,
