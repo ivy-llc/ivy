@@ -119,7 +119,7 @@ class ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_reshape(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        shape: Union[int, Tuple[int, int], List[int]],
+        shape: Union[ivy.NativeShape, Sequence[int]],
         copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
