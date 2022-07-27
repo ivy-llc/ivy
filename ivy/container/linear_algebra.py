@@ -296,7 +296,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         
         """ 
 
-        return self.matrix_rank(
+        return self.static_matrix_rank(
             self,
             rtol,
             key_chains,
