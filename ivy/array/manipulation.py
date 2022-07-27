@@ -40,7 +40,7 @@ class ArrayWithManipulation(abc.ABC):
 
     def reshape(
         self: ivy.Array,
-        shape: Union[ivy.NativeShape, Sequence[int]],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
         copy: Optional[bool] = None,
         *,
         out: Optional[ivy.Array] = None,
