@@ -341,7 +341,7 @@ def permute_dims(
 @handle_nestable
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
-    shape: Union[ivy.Shape, ivy.NativeShape],
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     copy: Optional[bool] = None,
     *,
     out: Optional[ivy.Array] = None,
