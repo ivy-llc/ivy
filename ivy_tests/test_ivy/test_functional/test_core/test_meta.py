@@ -3,7 +3,7 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy
@@ -27,6 +27,7 @@ import ivy_tests.test_ivy.helpers as helpers
     num_tasks=st.integers(1, 2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
+@settings(deadline=None)
 def test_fomaml_step_unique_vars(
     device,
     call,
