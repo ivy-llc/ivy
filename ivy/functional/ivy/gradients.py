@@ -128,8 +128,6 @@ def set_with_grads(with_grads: bool):
     """
     assert with_grads in [True, False]
     global with_grads_stack
-    if not with_grads_stack:
-        with_grads_stack = [True]
     with_grads_stack.append(with_grads)
 
 
@@ -156,7 +154,8 @@ def unset_with_grads():
 
     """
     global with_grads_stack
-    with_grads_stack.pop()
+    if with_grads_stack:
+         with_grads_stack.pop(-1)
 
 
 # Variables #
