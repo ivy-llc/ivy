@@ -677,10 +677,11 @@ class ContainerWithDataTypes(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a = ivy.array([0, 1, 2]), \
-        b = ivy.array([3., 4., 5.]))
-        >>>print(x.a.dtype, x.b.dtype)
+                              b = ivy.array([3., 4., 5.]))
+        >>> print(x.a.dtype, x.b.dtype)
         int32 float32
-        print(ivy.Container.static_result_type(x, ivy.float64))
+
+        >>> print(ivy.Container.static_result_type(x, ivy.float64))
         {
             a: float64,
             b: float32
@@ -732,15 +733,16 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-            b=ivy.array([3, 4, 5]))
-        >>> print(x.a.dtype, x.b.dtype)
-        float32 int32
+        >>> x = ivy.Container(a = ivy.array([3, 3, 3]))
+        >>> print(x.a.dtype)
+        int32
 
-        >>> print(x.result_type(x))
+        >>> y = ivy.Container(b = ivy.float64)
+        >>> print(x.result_type(y))
         {
-            a:float32,
-            b:int32
+            a: {
+                b: float64
+            }
         }
         """
         return self.static_result_type(

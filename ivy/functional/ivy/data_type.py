@@ -526,6 +526,17 @@ def result_type(
 
     >>> print(ivy.result_type(ivy.uint8, ivy.uint64))
     uint64
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([3, 4, 5]))
+    >>> print(x.a.dtype)
+    int32
+
+    >>> print(ivy.result_type(x, ivy.float64))
+    {
+        a: float64
+    }
     """
     return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 
