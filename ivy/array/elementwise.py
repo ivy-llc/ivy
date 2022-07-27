@@ -989,6 +989,7 @@ class ArrayWithElementwise(abc.ABC):
         function, and so the docstring for ivy.log also applies to this method
         with minimal changes.
 
+
         Parameters
         ----------
         self
@@ -1008,10 +1009,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def log1p(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.log1p.
+       ivy.Array instance method variant of ivy.log1p.
         This method simply wraps the function, and so the docstring
         for ivy.log1p also applies to this method with minimal changes.
-
         Parameters
         ----------
         self
@@ -1019,13 +1019,26 @@ class ArrayWithElementwise(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
-
         Returns
         -------
         ret
             an array containing the evaluated result for each element in ``self``.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+
+        >>> x = ivy.array([1 , 2 ,3 ])
+        >>> y = x.log1p()
+        >>> print(y)
+        ivy.array([0.693, 1.1  , 1.39 ])
+
+        >>> x = ivy.array([0.1 , .001 ])
+        >>> x.log1p( out = x)
+        >>> print(x)
+        ivy.array([0.0953, 0.001 ])
+
         """
         return ivy.log1p(self._data, out=out)
 
