@@ -161,3 +161,42 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return self.static_argmin(self, axis=axis, keepdims=keepdims, out=out)
+
+    @staticmethod
+    def static_nonzero(x: ivy.Container) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nonzero. This method simply
+        wraps the function, and so the docstring for ivy.nonzero also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array or container. Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            a container containing the indices of the nonzero values.
+
+        """
+        return ContainerBase.multi_map_in_static_method("nonzero", x)
+
+    def nonzero(self: ivy.Container) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.nonzero. This method simply
+        wraps the function, and so the docstring for ivy.nonzero also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            a container containing the indices of the nonzero values.
+
+        """
+        return self.static_nonzero(self)
