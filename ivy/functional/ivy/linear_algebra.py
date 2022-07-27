@@ -265,7 +265,7 @@ def cross(
     }
 
     """
-    return current_backend(x1,x2).cross(x1, x2, axis, out=out)
+    return current_backend(x1).cross(x1, x2, axis, out=out)
 
 
 @to_native_arrays_and_back
