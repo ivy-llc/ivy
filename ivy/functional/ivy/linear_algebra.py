@@ -804,7 +804,6 @@ def matrix_rank(
 
     Examples
     --------
-
     With :code: 'ivy.Array' inputs:
 
     1. Full Matrix

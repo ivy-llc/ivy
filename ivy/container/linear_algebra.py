@@ -484,23 +484,27 @@ class ContainerWithLinearAlgebra(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.matrix_rank.
-        This method returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of
-        matrices).
+        This method returns the rank (i.e., number of non-zero singular values)
+        of a matrix (or a stack of matrices).
+
         Parameters
         ----------
+        
         x
-            input array or container having shape ``(..., M, N)`` and whose innermost two dimensions form
-            ``MxN`` matrices. Should have a floating-point data type.
+            input array or container having shape ``(..., M, N)`` and whose innermost
+            two dimensions form ``MxN`` matrices. Should have a floating-point data 
+            type.
         rtol
-            relative tolerance for small singular values. Singular values approximately less
-            than or equal to ``rtol * largest_singular_value`` are set to zero. If a
-            ``float``, the value is equivalent to a zero-dimensional array having a
-            floating-point data type determined by :ref:`type-promotion` (as applied to
-            ``x``) and must be broadcast against each matrix. If an ``array``, must have a
-            floating-point data type and must be compatible with ``shape(x)[:-2]`` (see
-            :ref:`broadcasting`). If ``None``, the default value is ``max(M, N) * eps``,
-            where ``eps`` must be the machine epsilon associated with the floating-point
-            data type determined by :ref:`type-promotion` (as applied to ``x``).
+            relative tolerance for small singular values. Singular values
+            approximately less than or equal to ``rtol * largest_singular_value`` are
+            set to zero. If a ``float``, the value is equivalent to a zero-dimensional
+            array having a floating-point data type determined by :ref:`type-promotion` 
+            (as applied to ``x``) and must be broadcast against each matrix. If an 
+            ``array``, must have a floating-point data type and must be compatible with
+            ``shape(x)[:-2]`` (see:ref:`broadcasting`). If ``None``, the default value
+            is ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated
+            with the floating-point data type determined by :ref:`type-promotion`
+            (as applied to ``x``).
             Default: ``None``.    
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -513,17 +517,20 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
         Returns
         -------
+
         ret
-            a container containing the ranks. The returned array must have a floating-point
-            data type determined by :ref:`type-promotion` and must have shape ``(...)``
-            (i.e., must have a shape equal to ``shape(x)[:-2]``).
+            a container containing the ranks. The returned array must have a 
+            floating-point data type determined by :ref:`type-promotion` and must have 
+            shape ``(...)`` (i.e., must have a shape equal to ``shape(x)[:-2]``).
 
         Examples
         --------
+
         With :code: `ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \
@@ -534,6 +541,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             a: ivy.array(2.),
             b: ivy.array(1.)
         }
+        """
         return ContainerBase.multi_map_in_static_method(
             "matrix_rank",
             x,
@@ -544,7 +552,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-        """
 
     def matrix_rank(
         self: ivy.Container,
@@ -558,24 +565,24 @@ class ContainerWithLinearAlgebra(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.matrix_rank.
-        This method returns the rank (i.e., number of non-zero singular values) of a matrix (or a stack of
-        matrices).
+        This method returns the rank (i.e., number of non-zero singular values)
+        of a matrix (or a stack of matrices).
         Parameters
         ----------
         self
-            input container having shape ``(..., M, N)`` and whose innermost two dimensions form
-            ``MxN`` matrices. Should have a floating-point data type.
+            input container having shape ``(..., M, N)`` and whose innermost two 
+            dimensions form ``MxN`` matrices. Should have a floating-point data type.
         rtol
-            relative tolerance for small singular values. Singular values approximately less
-            than or equal to ``rtol * largest_singular_value`` are set to zero. If a
-            ``float``, the value is equivalent to a zero-dimensional array having a
+            relative tolerance for small singular values. Singular values approximately
+            less than or equal to ``rtol * largest_singular_value`` are set to zero. If
+            a ``float``, the value is equivalent to a zero-dimensional array having a
             floating-point data type determined by :ref:`type-promotion` (as applied to
-            ``x``) and must be broadcast against each matrix. If an ``array``, must have a
-            floating-point data type and must be compatible with ``shape(x)[:-2]`` (see
-            :ref:`broadcasting`). If ``None``, the default value is ``max(M, N) * eps``,
-            where ``eps`` must be the machine epsilon associated with the floating-point
-            data type determined by :ref:`type-promotion` (as applied to ``x``).
-            Default: ``None``.        
+            ``x``) and must be broadcast against each matrix. If an ``array``, must have
+            a floating-point data type and must be compatible with ``shape(x)[:-2]`` 
+            (see :ref:`broadcasting`). If ``None``, the default value is 
+            ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated 
+            with the floating-point data type determined by :ref:`type-promotion`
+            (as applied to ``x``). Default: ``None``.        
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -587,14 +594,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
         Returns
         -------
         ret
-            a container containing the ranks. The returned array must have a floating-point
-            data type determined by :ref:`type-promotion` and must have shape ``(...)``
-            (i.e., must have a shape equal to ``shape(x)[:-2]``).
+            a container containing the ranks. The returned array must have a
+            floating-point data type determined by :ref:`type-promotion` and must have 
+            shape ``(...)`` (i.e., must have a shape equal to ``shape(x)[:-2]``).
         Examples
         --------
         With :code: `ivy.Container` input:
