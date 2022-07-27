@@ -1492,10 +1492,10 @@ def array_and_indices(
 
     Parameters
     ----------
-    last_dim_same_size 
-        True: 
+    last_dim_same_size
+        True:
             The shape of the indices array is the exact same as the shape of the values array.
-        False: 
+        False:
             The last dimension of the second array is generated from a range of (0 -> dimension size of first array).
             This results in output shapes such as x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
     allow_inf
@@ -1515,7 +1515,7 @@ def array_and_indices(
     Examples
     --------
     @given(
-        array_and_indices=array_and_indices( 
+        array_and_indices=array_and_indices(
             last_dim_same_size= False
             min_num_dims=1,
             max_num_dims=5,
@@ -1537,20 +1537,22 @@ def array_and_indices(
             min_num_dims=x_num_dims,
             max_num_dims=x_num_dims,
             min_dim_size=x_dim_size,
-            max_dim_size=x_dim_size
-        ))
+            max_dim_size=x_dim_size,
+        )
+    )
     indices_shape = list(x[2])
     if not (last_dim_same_size):
         indices_dim_size = draw(st.integers(min_value=1, max_value=x_dim_size))
         indices_shape[-1] = indices_dim_size
     indices = draw(
         dtype_and_values(
-            available_dtypes=['int32', 'int64'],
+            available_dtypes=["int32", "int64"],
             allow_inf=False,
             min_value=0,
             max_value=max(x[2][-1] - 1, 0),
-            shape=indices_shape
-        ))
+            shape=indices_shape,
+        )
+    )
     x = x[0:2]
     return (x, indices)
 
@@ -1990,36 +1992,33 @@ def bool_val_flags(cl_arg: Union[bool, None]):
 
 def handle_cmd_line_args(test_fn):
     # first four arguments are all fixtures
-    def new_fn(get_command_line_flags, fw, device, call, *args, **kwargs):
+    @st.composite
+    def new_fn(draw, get_command_line_flags, fw, device, call, *args, **kwargs):
         # inspecting for keyword arguments in test function
         for param in inspect.signature(test_fn).parameters.values():
             if param.kind == param.KEYWORD_ONLY:
                 if param.name == "data":
                     data = kwargs["data"]
                 elif param.name == "as_variable":
-                    as_variable = data.draw(
+                    as_variable = draw(
                         bool_val_flags(get_command_line_flags["as-variable"])
                     )
                     kwargs["as_variable"] = as_variable
                 elif param.name == "native_array":
-                    native_array = data.draw(
+                    native_array = draw(
                         bool_val_flags(get_command_line_flags["native-array"])
                     )
                     kwargs["native_array"] = native_array
                 elif param.name == "with_out":
-                    with_out = data.draw(
-                        bool_val_flags(get_command_line_flags["with-out"])
-                    )
+                    with_out = draw(bool_val_flags(get_command_line_flags["with-out"]))
                     kwargs["with_out"] = with_out
                 elif param.name == "instance_method":
-                    instance_method = data.draw(
+                    instance_method = draw(
                         bool_val_flags(get_command_line_flags["instance-method"])
                     )
                     kwargs["instance_method"] = instance_method
                 elif param.name == "container":
-                    container = data.draw(
-                        bool_val_flags(get_command_line_flags["nestable"])
-                    )
+                    container = draw(bool_val_flags(get_command_line_flags["nestable"]))
                     kwargs["container"] = container
                 elif param.name == "fw":
                     kwargs["fw"] = fw

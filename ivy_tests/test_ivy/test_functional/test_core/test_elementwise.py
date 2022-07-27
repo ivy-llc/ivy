@@ -120,12 +120,10 @@ def test_acos(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
-    data=st.data(),
 )
 @handle_cmd_line_args
 def test_add(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
