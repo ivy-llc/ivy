@@ -61,12 +61,12 @@ class ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([0., 1., 2.])
+        >>> x = ivy.array([-4.7, -2.3, 0.7])
         >>> y = x.expand_dims()
         >>> print(x.shape, y.shape)
         (3,) (1, 3)
         >>> print(y)
-        ivy.array([[0., 1., 2.]])
+        ivy.array([[-4.7, -2.3,  0.7]])
         """
         return ivy.expand_dims(self._data, axis, out=out)
 
