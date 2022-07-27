@@ -302,7 +302,7 @@ This function requires us to create extra methods for generating :code:`shape` a
 * The second extra function we use is :code:`_fill_value` which generates a :code:`fill_value` to use for the :code:`fill_value` argument but handles the complications of :code:`int` and :code:`uint` types correctly
 * We use the helper function :code:`helpers.get_shape()` to generate :code:`shape`.
 * We use :code:`ivy_jax.valid_numeric_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Jax. This is used to specify the data type of the output array.
-* Because :code:`full()` does not consume :code:`array` so we set :code:`as_variable_flags`, :code:`with_out` and :code:`native_array_flags` to :code:`False`.
+* :code:`full()` does not consume :code:`array`, we set :code:`as_variable_flags`, :code:`with_out` and :code:`native_array_flags` to :code:`False`.
 
 
 **NumPy**

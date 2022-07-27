@@ -17,8 +17,7 @@ def full(
     )
     if requires_grad:
         return ivy.variable(ret)
-    else:
-        return ret
+    return ret
 
 
 full.unsupported_dtypes = ("float16",)
