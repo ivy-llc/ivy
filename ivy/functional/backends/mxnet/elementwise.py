@@ -99,7 +99,11 @@ def less(
 
 
 @_handle_flat_arrays_in_out
-def logical_xor(x1: mx.nd.NDArray, x2: mx.nd.NDArray, dtype: ["bool"]) -> mx.nd.NDArray:
+def logical_xor(
+    x1: mx.nd.NDArray, 
+    x2: mx.nd.NDArray, 
+    dtype: ["bool"]
+) -> mx.nd.NDArray:
     ret = mx.nd.logical_xor(x1, x2, dtype).astype("bool")
     return ret
 
