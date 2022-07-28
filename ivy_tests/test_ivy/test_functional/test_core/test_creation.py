@@ -282,6 +282,8 @@ def test_empty(
         device=device,
         test_values=False,
     )
+    if not ivy.exists(ret):
+        return
     res, res_np = ret
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
@@ -314,7 +316,7 @@ def test_empty_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_function(
+    ret = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -327,7 +329,13 @@ def test_empty_like(
         x=np.asarray(x),
         dtype=dtype,
         device=device,
+        test_values=False,
     )
+    if not ivy.exists(ret):
+        return
+    res, res_np = ret
+    assert res.shape == res_np.shape
+    assert res.dtype == res_np.dtype
 
 
 # eye
