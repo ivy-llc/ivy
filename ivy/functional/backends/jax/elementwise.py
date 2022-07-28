@@ -247,8 +247,10 @@ def log2(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def logaddexp(
-    x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None
-) -> JaxArray:
+    x1: Union[int, JaxArray],
+    x2: Union[int, JaxArray],
+    *,
+    out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.logaddexp(x1, x2)
 
 
