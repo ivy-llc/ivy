@@ -2197,7 +2197,7 @@ def handle_cmd_line_args(test_fn):
                     kwargs["container"] = container
                 elif param.name == "test_gradients":
                     test_gradients = data.draw(
-                        bool_val_flags(get_command_line_flags["nestable"])
+                        bool_val_flags(get_command_line_flags["test_gradients"])
                     )
                     kwargs["test_gradients"] = test_gradients
                 elif param.name == "fw":

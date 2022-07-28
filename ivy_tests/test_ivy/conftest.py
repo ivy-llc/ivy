@@ -129,14 +129,14 @@ def get_command_line_flags(request) -> Dict[str, bool]:
     o_f_s = request.config.getoption("--skip-out-testing")
     n_s = request.config.getoption("--skip-nestable-testing")
     i_m_f_s = request.config.getoption("--skip-instance-method-testing")
-    # g_t_f_s = request.config.getoption("--skip-gradient-testing")
+    g_t_f_s = request.config.getoption("--skip-gradient-testing")
 
     a_v_f_w = request.config.getoption("--with-variable-testing")
     n_f_w = request.config.getoption("--with-native-array-testing")
     o_f_w = request.config.getoption("--with-out-testing")
     n_w = request.config.getoption("--with-nestable-testing")
     i_m_f_w = request.config.getoption("--with-instance-method-testing")
-    # g_t_f_w = request.config.getoption("--with-gradient-testing")
+    g_t_f_w = request.config.getoption("--with-gradient-testing")
 
     no_extra_testing = MAP_BOOL_FLAGS[request.config.getoption("--no-extra-testing")]
 
@@ -147,7 +147,7 @@ def get_command_line_flags(request) -> Dict[str, bool]:
     CONFIG_DICT["with-out"] = (MAP_BOOL_FLAGS[o_f_s], MAP_BOOL_FLAGS[o_f_w])
     CONFIG_DICT["nestable"] = (MAP_BOOL_FLAGS[n_s], MAP_BOOL_FLAGS[n_w])
     CONFIG_DICT["instance-method"] = (MAP_BOOL_FLAGS[i_m_f_s], MAP_BOOL_FLAGS[i_m_f_w])
-    # CONFIG_DICT["test_gradients"] = (MAP_BOOL_FLAGS[g_t_f_s], MAP_BOOL_FLAGS[g_t_f_w])
+    CONFIG_DICT["test_gradients"] = (MAP_BOOL_FLAGS[g_t_f_s], MAP_BOOL_FLAGS[g_t_f_w])
 
     # final mapping for hypothesis value generation
     for k, v in CONFIG_DICT.items():
