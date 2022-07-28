@@ -141,7 +141,7 @@ Extensions
 We primarily invite contributors to contribute to the tasks listed as :ref:`Open Tasks` as they are
 on our roadmap currently. As a result of this we mainly recommend contributions which fall under the
 :ref:`Open Tasks`. However, if a contributor would like to extend Ivy's functionality with new 
-functions, submodules, etc. following should ideally be the workflow:
+functions, submodules, etc. then the workflow should ideally be the following:
 
 #. Such contributors need to create a PR with the label :code:`Extension`.
 #. They should also describe what they're adding, as it makes it easier for us to understand its purpose
