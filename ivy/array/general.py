@@ -53,37 +53,36 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
+    def gather(
+        self: ivy.Array,
+        indices: Union[ivy.Array, ivy.NativeArray],
+        axis: int = -1,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.gather. This method simply wraps the
+        function, and so the docstring for ivy.gather also applies to this method
+        with minimal changes.
 
-def gather(
-    self: ivy.Array,
-    indices: Union[ivy.Array, ivy.NativeArray],
-    axis: int = -1,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    ivy.Array instance method variant of ivy.gather. This method simply wraps the
-    function, and so the docstring for ivy.gather also applies to this method
-    with minimal changes.
+        Parameters
+        ----------
+        self
+            array, the array from which to gather values.
+        indices
+            array, index array.
+        axis
+            optional int, the axis from which to gather from. Default is -1.
+        out
+            optional output array, for writing the result to.
 
-    Parameters
-    ----------
-    self
-        array, the array from which to gather values.
-    indices
-        array, index array.
-    axis
-        optional int, the axis from which to gather from. Default is -1.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        New array with the values gathered at the specified indices along the specified
-        axis.
-    """
-    return ivy.gather(self._data, indices, axis, out=out)
+        Returns
+        -------
+        ret
+            New array with the values gathered at the specified indices along
+            the specified axis.
+        """
+        return ivy.gather(self._data, indices, axis, out=out)
 
     def gather_nd(
         self: ivy.Array,
