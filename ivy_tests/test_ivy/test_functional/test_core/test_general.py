@@ -135,9 +135,8 @@ def test_copy_array(dtype_and_x, device, call, fw):
     helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
     assert id(x) != id(ret)
     # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support numpy conversion
-        return
+    # pytorch scripting does not support numpy conversion
+    assume(not (call in [helpers.torch_call]))
 
 
 # array_equal
@@ -249,9 +248,8 @@ def test_to_numpy(x0_n_x1_n_res, device, call, fw):
     # value test
     helpers.assert_all_close(ret, np.array(object_in).astype(dtype))
     # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support numpy conversion
-        return
+    # pytorch scripting does not support numpy conversion
+    assume(not (call in [helpers.torch_call]))
 
 
 # to_scalar
@@ -274,9 +272,8 @@ def test_to_scalar(object_in, dtype, device, call, fw):
     # value test
     assert ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device)) == true_val
     # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support scalar conversion
-        return
+    # pytorch scripting does not support scalar conversion
+    assume(not (call in [helpers.torch_call]))
 
 
 # to_list
@@ -304,9 +301,8 @@ def test_to_list(x0_n_x1_n_res, device, call, fw):
         np.nan_to_num(np.array(object_in).astype(dtype), posinf=np.inf, neginf=-np.inf),
     )
     # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support list conversion
-        return
+    # pytorch scripting does not support list conversion
+    assume(not (call in [helpers.torch_call]))
 
 
 # shape
@@ -345,9 +341,8 @@ def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
         ivy.to_numpy(ret), np.asarray(np.asarray(object_in).shape, np.int32)
     )
     # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support Union
-        return
+    # pytorch scripting does not support Union
+    assume(not (call in [helpers.torch_call]))
 
 
 # get_num_dims
@@ -385,9 +380,8 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
         ivy.to_numpy(ret), np.asarray(len(np.asarray(object_in).shape), np.int32)
     )
     # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support Union
-        return
+    # pytorch scripting does not support Union
+    assume(not (call in [helpers.torch_call]))
 
 
 # clip_vector_norm

@@ -362,7 +362,8 @@ def test_finfo(
         type=type,
         test_values=False,
     )
-    assume(ivy.exists(ret))
+    if not ivy.exists(ret):
+        return
     mach_lims, mach_lims_np = ret
     assert mach_lims.min == mach_lims_np.min
     assert mach_lims.max == mach_lims_np.max
@@ -399,7 +400,8 @@ def test_iinfo(
         test_values=False,
     )
 
-    assume(ivy.exists(ret))
+    if not ivy.exists(ret):
+        return
     mach_lims, mach_lims_np = ret
     assert mach_lims.min == mach_lims_np.min
     assert mach_lims.max == mach_lims_np.max
@@ -460,7 +462,8 @@ def test_as_ivy_dtype(
 ):
     res = ivy.as_ivy_dtype(input_dtype)
     if isinstance(input_dtype, str):
-        assume(isinstance(res, str))
+        assert isinstance(res, ivy.NativeDtype)
+        return
 
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(
         input_dtype, str
@@ -488,7 +491,8 @@ def test_as_native_dtype(
 ):
     res = ivy.as_native_dtype(input_dtype)
     if isinstance(input_dtype, ivy.NativeDtype):
-        assume(isinstance(res, ivy.NativeDtype))
+        assert isinstance(res, ivy.NativeDtype)
+        return
 
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(
         input_dtype, str
@@ -597,7 +601,8 @@ def test_dtype_bits(
         dtype_in=input_dtype,
         test_values=False,
     )
-    assume(ivy.exists(ret))
+    if not ivy.exists(ret):
+        return
     num_bits, num_bits_np = ret
     assert num_bits == num_bits_np
 

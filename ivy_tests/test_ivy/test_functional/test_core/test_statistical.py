@@ -304,7 +304,7 @@ def test_std(
     data=st.data(),
 )
 @handle_cmd_line_args
-def test_einsum(*, data, eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
+def test_einsum(*, data, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device, call):
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
     operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]
@@ -329,6 +329,6 @@ def test_einsum(*, data, eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call
         assert ret is out
 
         # these backends do not support native inplace updates
-        assume(not (ivy.current_backend_str() in ["tensorflow", "jax"]))
+        assume(not (fw in ["tensorflow", "jax"]))
 
         assert ret.data is out.data

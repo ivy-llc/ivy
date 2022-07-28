@@ -42,8 +42,7 @@ def test_fomaml_step_unique_vars(
 
     # Numpy does not support gradients, and jax does not support gradients on
     # custom nested classes
-    if call is helpers.np_call:
-        return
+    assume(not (call is helpers.np_call))
 
     # config
     inner_learning_rate = 1e-2
@@ -191,8 +190,7 @@ def test_fomaml_step_shared_vars(
     # Numpy does not support gradients, jax does not support gradients on custom
     # nested classes, and mxnet does not support only_inputs argument to
     # mx.autograd.grad
-    if call in [helpers.np_call, helpers.mx_call]:
-        return
+    assume(not (call in [helpers.np_call, helpers.mx_call]))
 
     # config
     inner_learning_rate = 1e-2
@@ -359,8 +357,7 @@ def test_fomaml_step_overlapping_vars(
     # Numpy does not support gradients, jax does not support gradients on custom
     # nested classes, and mxnet does not support only_inputs argument to
     # mx.autograd.grad
-    if call in [helpers.np_call, helpers.mx_call]:
-        return
+    assume(not (call in [helpers.np_call, helpers.mx_call]))
 
     # config
     inner_learning_rate = 1e-2

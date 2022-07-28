@@ -173,9 +173,8 @@ def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
         else:
             assert ret == device
         # compilation test
-        if call is helpers.torch_call:
-            # pytorch scripting does not handle converting string to device
-            return
+        # pytorch scripting does not handle converting string to device
+        assume(not (call is helpers.torch_call))
 
 
 # memory_on_dev
@@ -256,7 +255,7 @@ def test_to_device(
 
         # check if native arrays are the same
         # these backends do not support native inplace updates
-        assume(not (ivy.current_backend_str() in ["tensorflow", "jax"]))
+        assume(not (fw in ["tensorflow", "jax"]))
 
         assert x_on_dev.data is out.data
 
