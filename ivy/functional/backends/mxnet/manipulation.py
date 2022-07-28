@@ -2,10 +2,8 @@
 import mxnet as mx
 import math
 import numpy as np
-from typing import Union, Tuple, Optional, List, Sequence
 from numpy.core.numeric import normalize_axis_tuple
-
-
+from typing import Union, Tuple, Optional, List, Sequence
 from ivy.functional.backends.mxnet import (
     _flat_array_to_1_dim_array,
     _handle_flat_arrays_in_out,

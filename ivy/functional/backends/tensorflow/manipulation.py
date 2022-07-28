@@ -3,8 +3,8 @@ import ivy
 import math
 import tensorflow as tf
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
 from numpy.core.numeric import normalize_axis_tuple
+from typing import Union, Tuple, Optional, List, Sequence
 
 
 # Array API Standard #
