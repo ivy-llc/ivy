@@ -63,12 +63,12 @@ def permute_dims(
 def reshape(
     x: JaxArray,
     shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None,
-    *,
-    out: Optional[JaxArray] = None,
+    copy: Optional[bool] = None
 ) -> JaxArray:
-    ret = jnp.reshape(x, shape)
-    return ret
+    if copy:
+        newarr = jnp.copy(x)
+        return jnp.reshape(newarr, shape)
+    return jnp.reshape(x, shape)
 
 
 def roll(
