@@ -262,15 +262,13 @@ def test_empty(
     shape,
     dtype,
     device,
-    with_out,
     num_positional_args,
     fw,
 ):
-
-    helpers.test_function(
+    ret = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=False,
         container_flags=False,
@@ -280,7 +278,13 @@ def test_empty(
         shape=shape,
         dtype=dtype,
         device=device,
+        test_values=False,
     )
+    if not ivy.exists(ret):
+        return
+    res, res_np = ret
+    assert res.shape == res_np.shape
+    assert res.dtype == res_np.dtype
 
 
 # empty_like
@@ -309,7 +313,7 @@ def test_empty_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_function(
+    ret = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -322,7 +326,13 @@ def test_empty_like(
         x=np.asarray(x),
         dtype=dtype,
         device=device,
+        test_values=False,
     )
+    if not ivy.exists(ret):
+        return
+    res, res_np = ret
+    assert res.shape == res_np.shape
+    assert res.dtype == res_np.dtype
 
 
 # eye
