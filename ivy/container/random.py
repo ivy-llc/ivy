@@ -561,23 +561,21 @@ class ContainerWithRandom(ContainerBase):
             out=out,
         )
 
+    # randint
     @staticmethod
     def static_randint(
-        low: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
-        high: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
+        low: Union[int, ivy.Container] = 0.0,
+        high: Union[int, ivy.Container] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.randint. This method
-        simply wraps the function, and so the docstring for ivy.randint also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.randint. This method simply wraps the
+        function, and so the docstring for ivy.randint also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -586,26 +584,12 @@ class ContainerWithRandom(ContainerBase):
         high
             One above the highest integer that can be drawn from the distribution.
         shape
-            If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples
-            are drawn. Can only be specified when ``low`` and ``high`` are numeric
-            values, else exception will be raised.
-            Default is ``None``, where a single value is returned.
+            a Sequence defining the shape of the output array.
+        device
+            device on which to create the array. 'cuda:0',
+            'cuda:1', 'cpu' etc. (Default value = None).
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-            (Default value = None).
-        dtype
-             output array data type. If ``dtype`` is ``None``, the output array data
-             type will be the default integer data type. Default ``None``
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -618,28 +602,59 @@ class ContainerWithRandom(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With one :code:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[9,7],[6,2]]), \
-                              b=ivy.array([[0,2],[10,6]]))
-        >>> y = ivy.Container(a=ivy.array([[10,32],[18,19]]), \
-                              b=ivy.array([[44,5],[23,54]]))
-        >>> ivy.Container.static_randint(x, y, device='cpu', dtype='int32')
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=10), high=20, shape=2)
+        >>> print(x)
         {
-            a: ivy.array([[9, 27],
-                          [16, 17]]),
-            b: ivy.array([[13, 3],
-                          [16, 19]])
+            a: ivy.array([10, 15]),
+            b: ivy.array([16, 12])
         }
 
-        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-
-        >>> x = ivy.array([-1,-9,3])
-        >>> y = ivy.Container(a=ivy.array([4,7,9]),b=ivy.array([14,17,34]))
-        >>> ivy.Container.static_randint(x, y)
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=4), high=15, shape=(3,2))
+        >>> print(x)
         {
-            a: ivy.array([1, 6, 5]),
-            b: ivy.array([0, 10, 17])
+            a: ivy.array([[12, 3],
+                         [5, 7],
+                         [7, 2]]),
+            b: ivy.array([[8, 10],
+                         [9, 6],
+                         [6, 7]])
+        }
+
+        >>> x = ivy.Container.randint(low=ivy.Container(a=5,b=20,c=40),\
+                                      high=100,\
+                                      shape=3,\
+                                      device='gpu:1')
+        >>> print(x)
+        {
+            a: ivy.array([90, 87, 62]),
+            b: ivy.array([52, 95, 37]),
+            c: ivy.array([95, 90, 42])
+        }
+
+        >>> x = ivy.Container(a=1,b=2)
+        >>> y = ivy.Container.randint(low=ivy.Container(a=3,b=5,c=10,d=7),\
+                                      high=14,\
+                                      shape=5,\
+                                      out=x)
+        >>> print(x)
+        {
+            a: ivy.array([4, 10, 13, 3, 3]),
+            b: ivy.array([12, 11, 11, 12, 5]),
+            c: ivy.array([10, 13, 11, 13, 12]),
+            d: ivy.array([12, 7, 8, 11, 8])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container.randint(low=ivy.Container(a=1, b=10),\
+                                      high=ivy.Container(a=5, b= 15, c=2),\
+                                      shape=2)
+        >>> print(x)
+        {
+            a: ivy.array([1, 2]),
+            b: ivy.array([14, 10])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -648,189 +663,6 @@ class ContainerWithRandom(ContainerBase):
             high,
             shape,
             device=device,
-            dtype=dtype,
             key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def randint(
-        self: ivy.Container,
-        high: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
-        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.randint. This method
-        simply wraps the function, and so the docstring for ivy.randint also
-        applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Lowest integer that can be drawn from the distribution.
-        high
-            One above the highest integer that can be drawn from the distribution.
-        shape
-            If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples
-            are drawn. Can only be specified when ``low`` and ``high`` are numeric
-            values, else exception will be raised.
-            Default is ``None``, where a single value is returned.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-            (Default value = None).
-        dtype
-             output array data type. If ``dtype`` is ``None``, the output array data
-             type will be the default integer data type. Default ``None``
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            Returns an array with the given shape filled with integers from
-            the uniform distribution in the “half-open” interval [low, high)
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([7,6,0]), \
-                              b=ivy.array([8,9,4]))
-        >>> x.randint(30)
-        {
-            a: ivy.array([23, 15, 20]),
-            b: ivy.array([28, 22, 18])
-        }
-
-        >>> x.randint(10, device='cpu')
-        {
-            a: ivy.array([9, 7, 7]),
-            b: ivy.array([8, 9, 9])
-        }
-
-        >>> x.randint(102, dtype='int8')
-        {
-            a: ivy.array([9, 8, 2]),
-            b: ivy.array([62, 62, 60])
-        }
-
-        >>> x.randint(54, device='cpu', dtype='int64')
-        {
-            a: ivy.array([30, 29, 26]),
-            b: ivy.array([24, 24, 21])
-        }
-
-        >>> z = ivy.Container(a=ivy.zeros((3,)), b=ivy.ones((3,)))
-        >>> x.randint(21, device='cpu', dtype='int8', out=z)
-        {
-            a: ivy.array([7, 6, 0]),
-            b: ivy.array([8, 9, 4])
-        }
-
-        >>> y = ivy.Container(a=54, b=17)
-        >>> x.randint(y)
-        {
-            a: ivy.array([7, 6, 0]),
-            b: ivy.array([8, 9, 4])
-        }
-
-        >>> x.randint(y, device='cpu')
-        {
-            a: ivy.array([7, 6, 0]),
-            b: ivy.array([8, 9, 4])
-        }
-
-        >>> x.randint(y, dtype='int64')
-        {
-            a: ivy.array([7, 6, 0]),
-            b: ivy.array([8, 9, 4])
-        }
-
-        >>> x.randint(y, device='cpu', dtype='int32')
-        {
-            a: ivy.array([7, 6, 0]),
-            b: ivy.array([8, 9, 4])
-        }
-
-        >>> z = ivy.Container(a=ivy.zeros((3,)), b=ivy.ones((3,)))
-        >>> x.randint(y, device='cpu', dtype='int16', out=z)
-        {
-            a: ivy.array([7, 6, 0]),
-            b: ivy.array([8, 9, 4])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[9,7],[6,2]]), \
-                              b=ivy.array([[0,2],[10,6]]))
-        >>> y = ivy.Container(a=ivy.array([[10,32],[18,19]]), \
-                              b=ivy.array([[44,5],[23,54]]))
-        >>> x.randint(y)
-        {
-            a: ivy.array([[9, 7],
-                          [6, 2]]),
-            b: ivy.array([[0, 2],
-                          [10, 6]])
-        }
-
-        >>> x.randint(y, device='cpu')
-        {
-            a: ivy.array([[9, 7],
-                          [6, 2]]),
-            b: ivy.array([[0, 2],
-                          [10, 6]])
-        }
-
-        >>> x.randint(y, dtype='int64')
-        {
-            a: ivy.array([[9, 7],
-                          [6, 2]]),
-            b: ivy.array([[0, 2],
-                          [10, 6]])
-        }
-
-        >>> x.randint(y, device='cpu', dtype='int32')
-        {
-            a: ivy.array([[9, 7],
-                          [6, 2]]),
-            b: ivy.array([[0, 2],
-                          [10, 6]])
-        }
-
-        >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
-        >>> x.randint(y, device='cpu', dtype='int16', out=z)
-        {
-            a: ivy.array([[9, 7],
-                          [6, 2]]),
-            b: ivy.array([[0, 2],
-                          [10, 6]])
-        }
-        """
-        return self.static_randint(
-            self,
-            high,
-            shape,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            device=device,
-            dtype=dtype,
             out=out,
         )
