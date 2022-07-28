@@ -1041,22 +1041,6 @@ def test_container_flip(device, call):
     )
 
 
-def test_container_as_ones(device, call):
-    dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
-    }
-    container = Container(dict_in)
-
-    container_ones = container.as_ones()
-    assert np.allclose(ivy.to_numpy(container_ones["a"]), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_ones.a), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_ones["b"]["c"]), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_ones.b.c), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_ones["b"]["d"]), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_ones.b.d), np.array([1]))
-
-
 def test_container_as_zeros(device, call):
     dict_in = {
         "a": ivy.array([1], device=device),
@@ -1116,25 +1100,6 @@ def test_container_all_false(device, call):
     except AssertionError:
         error_raised = True
     assert error_raised
-
-
-def test_container_as_random_uniform(device, call):
-    dict_in = {
-        "a": ivy.array([1.0], device=device),
-        "b": {
-            "c": ivy.array([2.0], device=device),
-            "d": ivy.array([3.0], device=device),
-        },
-    }
-    container = Container(dict_in)
-
-    container_random = container.as_random_uniform()
-    assert (ivy.to_numpy(container_random["a"]) != np.array([1.0]))[0]
-    assert (ivy.to_numpy(container_random.a) != np.array([1.0]))[0]
-    assert (ivy.to_numpy(container_random["b"]["c"]) != np.array([2.0]))[0]
-    assert (ivy.to_numpy(container_random.b.c) != np.array([2.0]))[0]
-    assert (ivy.to_numpy(container_random["b"]["d"]) != np.array([3.0]))[0]
-    assert (ivy.to_numpy(container_random.b.d) != np.array([3.0]))[0]
 
 
 def test_container_clone(device, call):

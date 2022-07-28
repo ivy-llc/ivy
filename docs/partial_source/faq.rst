@@ -66,6 +66,21 @@ wraps the backend compilation methods, for example :code:`jax.jit`, :code:`tf.fu
 :code:`torch.jit.trace`. For some backends, shape-checking will be performed during the compilation phase and for others
 it will not.
 
+GPU handling
+------------
+**Q:** How does Ivy handle GPU usage? 
+
+**A:** Ivy handles GPU usage by simply wrapping the backend frameworks, and so Ivy will use GPUs in the same manner as the 
+backend framework does. E.g. When using a torch backend, then torch will be a dependency of Ivy, and its handling of GPU 
+functionalities will be inherited and extended upon by Ivy.
+
+Model Deployment
+----------------
+**Q:** Does Ivy support model deployment?
+**A:** Yes, Ivy will support efficient model deployment. However, currently this feature is not yet supported as the graph compiler 
+module is still under development, and will be released soon with ivy version 1.2.0.
+
+
 Dynamic Control Flow
 --------------------
 **Q:** Tensorflow has dynamic control-flow primitives (loops, branches) even within a static computation graph.

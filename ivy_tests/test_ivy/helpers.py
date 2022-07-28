@@ -571,6 +571,60 @@ def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
     return test_unsupported
 
 
+def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwargs_np):
+    # check for unsupported dtypes
+    test_unsupported = False
+    unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
+    supported_devices_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)
+    for i in range(len(unsupported_devices_dtypes_fn['devices'])):
+        if device in unsupported_devices_dtypes_fn['devices'][i]:
+            for d in input_dtypes:
+                if d in unsupported_devices_dtypes_fn['dtypes'][i]:
+                    test_unsupported = True
+                    break
+    if (
+        "device" in all_as_kwargs_np
+        and "dtype" in all_as_kwargs_np
+        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn['devices']
+    ):
+        index = unsupported_devices_dtypes_fn['devices'].index(
+            all_as_kwargs_np["device"]
+        )
+        if (
+            all_as_kwargs_np["dtype"]
+            in unsupported_devices_dtypes_fn['dtypes'][index]
+        ):
+            test_unsupported = True
+    if test_unsupported:
+        return test_unsupported
+
+    for i in range(len(supported_devices_dtypes_fn['devices'])):
+        if device in supported_devices_dtypes_fn['devices'][i]:
+            for d in input_dtypes:
+                if d not in supported_devices_dtypes_fn['dtypes'][i]:
+                    test_unsupported = True
+                    break
+        else:
+            test_unsupported = True
+        if (
+            "device" in all_as_kwargs_np
+            and "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn['devices']
+        ):
+            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn['devices']:
+                test_unsupported = True
+            else:
+                index = supported_devices_dtypes_fn['devices'].index(
+                    all_as_kwargs_np["device"]
+                )
+                if (
+                    all_as_kwargs_np["dtype"]
+                    not in supported_devices_dtypes_fn['dtypes'][index]
+                ):
+                    test_unsupported = True
+    return test_unsupported
+
+
 def create_args_kwargs(
     *,
     args_np,
@@ -923,6 +977,13 @@ def test_function(
     if not test_unsupported:
         test_unsupported = check_unsupported_device(
             fn=fn, input_device=device_, all_as_kwargs_np=all_as_kwargs_np
+        )
+    if not test_unsupported:
+        test_unsupported = check_unsupported_device_and_dtype(
+            fn=fn,
+            device=device_,
+            input_dtypes=input_dtypes,
+            all_as_kwargs_np=all_as_kwargs_np
         )
     if test_unsupported:
         try:
@@ -1477,6 +1538,87 @@ def subsets(draw, *, elements):
 
 
 @st.composite
+def array_and_indices(
+    draw,
+    last_dim_same_size=True,
+    allow_inf=False,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    """Generates two arrays x & indices, the values in the indices array are indices of the array x.
+    Draws an integers randomly from the minimum and maximum number of positional
+    arguments a given function can take.
+
+    Parameters
+    ----------
+    last_dim_same_size
+        True:
+            The shape of the indices array is the exact same as the shape of the values array.
+        False:
+            The last dimension of the second array is generated from a range of (0 -> dimension size of first array).
+            This results in output shapes such as x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
+    allow_inf
+        True: inf values are allowed to be generated in the values array
+    min_num_dims
+        The minimum number of dimensions the arrays can have.
+    max_num_dims
+        The maximum number of dimensions the arrays can have.
+    min_dim_size
+        The minimum size of the dimensions of the arrays.
+    max_dim_size
+        The maximum size of the dimensions of the arrays.
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator which generates arrays of values and indices.
+
+    Examples
+    --------
+    @given(
+        array_and_indices=array_and_indices(
+            last_dim_same_size= False
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10
+            )
+    )
+    @given(
+        array_and_indices=array_and_indices( last_dim_same_size= True)
+    )
+    """
+    x_num_dims = draw(st.integers(min_value=min_num_dims, max_value=max_num_dims))
+    x_dim_size = draw(st.integers(min_value=min_dim_size, max_value=max_dim_size))
+    x = draw(
+        dtype_and_values(
+            available_dtypes=ivy_np.valid_numeric_dtypes,
+            allow_inf=allow_inf,
+            ret_shape=True,
+            min_num_dims=x_num_dims,
+            max_num_dims=x_num_dims,
+            min_dim_size=x_dim_size,
+            max_dim_size=x_dim_size,
+        )
+    )
+    indices_shape = list(x[2])
+    if not (last_dim_same_size):
+        indices_dim_size = draw(st.integers(min_value=1, max_value=x_dim_size))
+        indices_shape[-1] = indices_dim_size
+    indices = draw(
+        dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            allow_inf=False,
+            min_value=0,
+            max_value=max(x[2][-1] - 1, 0),
+            shape=indices_shape,
+        )
+    )
+    x = x[0:2]
+    return (x, indices)
+
+
+@st.composite
 def array_values(
     draw,
     *,
@@ -1911,12 +2053,12 @@ def bool_val_flags(cl_arg: Union[bool, None]):
 
 def handle_cmd_line_args(test_fn):
     # first four arguments are all fixtures
-    def new_fn(get_command_line_flags, fw, device, call, *args, **kwargs):
+    def new_fn(data, get_command_line_flags, fw, device, call, *args, **kwargs):
         # inspecting for keyword arguments in test function
         for param in inspect.signature(test_fn).parameters.values():
             if param.kind == param.KEYWORD_ONLY:
                 if param.name == "data":
-                    data = kwargs["data"]
+                    kwargs["data"] = data
                 elif param.name == "as_variable":
                     as_variable = data.draw(
                         bool_val_flags(get_command_line_flags["as-variable"])
