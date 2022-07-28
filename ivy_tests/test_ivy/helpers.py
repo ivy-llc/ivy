@@ -2175,19 +2175,18 @@ def handle_cmd_line_args(test_fn):
     def new_fn(data, get_command_line_flags, fw, device, call, *args, **kwargs):
         # inspecting for keyword arguments in test function
         for param in inspect.signature(test_fn).parameters.values():
-            if param.kind == param.KEYWORD_ONLY:
-                if param.name in cmd_line_args:
-                    kwargs[param.name] = data.draw(
-                        bool_val_flags(get_command_line_flags[param.name])
-                    )
-                elif param.name == "data":
-                    kwargs["data"] = data
-                elif param.name == "fw":
-                    kwargs["fw"] = fw
-                elif param.name == "device":
-                    kwargs["device"] = device
-                elif param.name == "call":
-                    kwargs["call"] = call
+            if param.name in cmd_line_args:
+                kwargs[param.name] = data.draw(
+                    bool_val_flags(get_command_line_flags[param.name])
+                )
+            elif param.name == "data":
+                kwargs["data"] = data
+            elif param.name == "fw":
+                kwargs["fw"] = fw
+            elif param.name == "device":
+                kwargs["device"] = device
+            elif param.name == "call":
+                kwargs["call"] = call
         return test_fn(*args, **kwargs)
 
     return new_fn
