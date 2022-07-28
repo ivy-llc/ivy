@@ -577,32 +577,29 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
     test_unsupported = False
     unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
     supported_devices_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)
-    for i in range(len(unsupported_devices_dtypes_fn['devices'])):
-        if device in unsupported_devices_dtypes_fn['devices'][i]:
+    for i in range(len(unsupported_devices_dtypes_fn["devices"])):
+        if device in unsupported_devices_dtypes_fn["devices"][i]:
             for d in input_dtypes:
-                if d in unsupported_devices_dtypes_fn['dtypes'][i]:
+                if d in unsupported_devices_dtypes_fn["dtypes"][i]:
                     test_unsupported = True
                     break
     if (
         "device" in all_as_kwargs_np
         and "dtype" in all_as_kwargs_np
-        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn['devices']
+        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn["devices"]
     ):
-        index = unsupported_devices_dtypes_fn['devices'].index(
+        index = unsupported_devices_dtypes_fn["devices"].index(
             all_as_kwargs_np["device"]
         )
-        if (
-            all_as_kwargs_np["dtype"]
-            in unsupported_devices_dtypes_fn['dtypes'][index]
-        ):
+        if all_as_kwargs_np["dtype"] in unsupported_devices_dtypes_fn["dtypes"][index]:
             test_unsupported = True
     if test_unsupported:
         return test_unsupported
 
-    for i in range(len(supported_devices_dtypes_fn['devices'])):
-        if device in supported_devices_dtypes_fn['devices'][i]:
+    for i in range(len(supported_devices_dtypes_fn["devices"])):
+        if device in supported_devices_dtypes_fn["devices"][i]:
             for d in input_dtypes:
-                if d not in supported_devices_dtypes_fn['dtypes'][i]:
+                if d not in supported_devices_dtypes_fn["dtypes"][i]:
                     test_unsupported = True
                     break
         else:
@@ -610,17 +607,17 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
         if (
             "device" in all_as_kwargs_np
             and "dtype" in all_as_kwargs_np
-            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn['devices']
+            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn["devices"]
         ):
-            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn['devices']:
+            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn["devices"]:
                 test_unsupported = True
             else:
-                index = supported_devices_dtypes_fn['devices'].index(
+                index = supported_devices_dtypes_fn["devices"].index(
                     all_as_kwargs_np["device"]
                 )
                 if (
                     all_as_kwargs_np["dtype"]
-                    not in supported_devices_dtypes_fn['dtypes'][index]
+                    not in supported_devices_dtypes_fn["dtypes"][index]
                 ):
                     test_unsupported = True
     return test_unsupported
@@ -984,7 +981,7 @@ def test_function(
             fn=fn,
             device=device_,
             input_dtypes=input_dtypes,
-            all_as_kwargs_np=all_as_kwargs_np
+            all_as_kwargs_np=all_as_kwargs_np,
         )
     if test_unsupported:
         try:
@@ -1257,8 +1254,8 @@ def test_frontend_function(
             # these backends do not always support native inplace updates
             assert ret.data is out.data
 
+    # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in input_dtypes))
-    # return  # bfloat16 is not supported by numpy
 
     # create NumPy args
     args_np = ivy.nested_map(

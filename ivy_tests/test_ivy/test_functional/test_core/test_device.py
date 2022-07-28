@@ -119,7 +119,7 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
 )
 @handle_cmd_line_args
 def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
-    
+
     assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
@@ -151,7 +151,7 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
 )
 @handle_cmd_line_args
 def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
-    
+
     assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
@@ -234,7 +234,7 @@ def test_to_device(
     *, array_shape, dtype, as_variable, with_out, fw, device, call, stream
 ):
     assume(not (fw == "torch" and "int" in dtype))
-    
+
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
     x = ivy.asarray(x)
     if as_variable:
