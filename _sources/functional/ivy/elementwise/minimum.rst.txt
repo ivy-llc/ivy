@@ -2,6 +2,10 @@ minimum
 =======
 
 .. autofunction:: ivy.functional.ivy.elementwise.minimum
+
+.. autofunction:: ivy.container.container_methods.static_minimum
+
+.. autofunction:: ivy.container.container_methods.minimum
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ minimum
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: minimum
+
+   minimum/minimum_functional.rst
+   minimum/minimum_container.rst
+   minimum/static_minimum_container.rst
+
