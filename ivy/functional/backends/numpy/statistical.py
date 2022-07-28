@@ -36,8 +36,8 @@ def mean(
 
 def min(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    axis: Union[int, Tuple[int]] = None,
+    keepdims: bool = False,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:

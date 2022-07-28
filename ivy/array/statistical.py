@@ -16,6 +16,53 @@ class ArrayWithStatistical(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        Examples
+        --------
+        With: code:`ivy.Array`
+        input:
+
+        >> > x = ivy.array([1, 2, 3])
+        >> > z = x.min()
+        >> > print(z)
+        ivy.array(3)
+
+        >> > x = ivy.array([0, 1, 2])
+        >> > z = ivy.array([0, 0, 0])
+        >> > y = ivy.min(x, out=z)
+        >> > print(z)
+        ivy.array(2)
+
+        >> > x = ivy.array([[0, 1, 2], [4, 6, 10]])
+        >> > y = ivy.min(x, 0, True)
+        >> > print(y)
+        ivy.array([[4, 6, 10]])
+
+        >> > x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
+        >> > y = ivy.min(x)
+        >> > print(y)
+        ivy.array(10)
+
+        With: code:`ivy.Container`
+        input:
+
+        >> > x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >> > y = ivy.min(x)
+        >> > print(y)
+        {
+            a: ivy.array(2.),
+            b: ivy.array(5.)
+        }
+
+        >> > x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                               b=ivy.array([2, 3, 4]))
+        >> > z = x.min()
+        >> > print(z)
+        {
+            a: ivy.array(3),
+            b: ivy.array(4)
+        }
+        """
         return ivy.min(self._data, axis, keepdims, out=out)
 
     def max(
