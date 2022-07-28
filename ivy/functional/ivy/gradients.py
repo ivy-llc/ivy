@@ -125,37 +125,6 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     ret
         An ivy variable, supporting gradient computation.
 
-    Examples
-    --------
-    With :code:`ivy.Array` input:
-
-    >>> ivy.set_backend('torch')
-    >>> x = ivy.array([1., 0.3, -4.5])
-    >>> y = ivy.variable(x)
-    >>> y
-    ivy.array([ 1. ,  0.3, -4.5])
-    >>> ivy.unset_backend()
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> ivy.set_backend('jax')
-    >>> x = ivy.native_array([0.2, 2., 3.])
-    >>> y = ivy.variable(x)
-    >>> y
-    ivy.array([0.2, 2., 3.])
-    >>> ivy.unset_backend()
-
-    With :code:`ivy.Container` input:
-
-    >>> ivy.set_backend('tensorflow')
-    >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.2, 4.]))
-    >>> y = ivy.variable(x)
-    >>> y
-    {
-        a: ivy.array([1., 2.]),
-        b: ivy.array([-0.2, 4.])
-    }
-    >>> ivy.unset_backend()
     """
     return current_backend(x).variable(x)
 

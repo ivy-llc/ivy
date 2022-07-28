@@ -9,35 +9,6 @@ import ivy
 
 
 class ArrayWithGradients(abc.ABC):
-    def variable(self: ivy.Array) -> ivy.Variable:
-        """
-        ivy.Array instance method variant of ivy.variable. This method simply wraps
-        the function, and so the docstring for ivy.variable also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            An ivy array.
-
-        Returns
-        -------
-        ret
-            An ivy variable that supports gradient computation.
-
-        Examples
-        --------
-        With :code:`ivy.Array` input:
-
-        >>> ivy.set_backend("tensorflow")
-        >>> x = ivy.array([2., 4., -1.])
-        >>> y = x.variable()
-        >>> y
-        ivy.array([ 2.,  4., -1.])
-        >>> ivy.unset_backend()
-        """
-        return ivy.variable(self)
-
     def is_variable(self: ivy.Array, exclusive: bool = False) -> bool:
         """
         ivy.Array instance method variant of ivy.is_variable. This method simply wraps
