@@ -341,7 +341,7 @@ def permute_dims(
 @handle_nestable
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
-    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    shape: Union[ivy.Shape, ivy.NativeShape],
     copy: Optional[bool] = None,
     *,
     out: Optional[ivy.Array] = None,
@@ -357,12 +357,10 @@ def reshape(
         can be -1. In this case, the value is inferred from the length of the array and
         remaining dimensions.
     copy
-        boolean indicating whether or not to copy the input array.
-        If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: None.
+        boolean indicating whether or not to copy the input array. If True, the function
+        must always copy. If False, the function must never copy and must raise a
+        ValueError in case a copy would be necessary. If None, the function must reuse
+        existing memory buffer if possible and copy otherwise. Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -372,39 +370,16 @@ def reshape(
     ret
         Reshaped array.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([[0., 1., 2.], \
-                       [3., 4., 5.]])
-    >>> y = ivy.reshape(x,(3,2))
+    >>> x = ivy.array([[1,2,3], [4,5,6]])
+    >>> y = ivy.reshape(x, (3,2))
     >>> print(y)
-    ivy.array([[0., 1.],
-               [2., 3.],
-               [4., 5.]])
-
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[0., 1., 2.],[3., 4., 5.]])
-    >>> y = ivy.reshape(x,(2,3))
-    >>> print(y)
-    ivy.array([[0., 1., 2.],
-               [3., 4., 5.]])
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \
-                          b=ivy.array([0, 1, 2, 3, 4, 5]))
-    >>> y = ivy.reshape(x,(2,3))
-    >>> print(y)
-    {
-        a: ivy.array([[0, 1, 2],
-                      [3, 4, 5]]),
-        b: ivy.array([[0, 1, 2],
-                      [3, 4, 5]])
-    }
+    ivy.array([[1, 2],
+               [3, 4],
+               [5, 6]])
 
     With :code:`ivy.NativeArray` input:
 

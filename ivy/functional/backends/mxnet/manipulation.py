@@ -87,8 +87,9 @@ def squeeze(
 
 def reshape(
     x: mx.nd.NDArray,
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None
+    shape: Union[ivy.NativeShape, Tuple[int], Sequence[int]],
+    copy: Optional[bool] = None,
+    out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if copy:
         newarr = x.copy()
