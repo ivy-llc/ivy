@@ -25,6 +25,9 @@ def all(
     return x
 
 
+all.support_native_out = True
+
+
 def any(
     x: torch.Tensor,
     axis: Optional[Union[int, Sequence[int]]] = None,
@@ -44,3 +47,6 @@ def any(
     for i, a in enumerate(axis):
         x = torch.any(x, dim=a if keepdims else a - i, keepdim=keepdims, out=out)
     return x
+
+
+any.support_native_out = True

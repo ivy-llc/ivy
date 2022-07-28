@@ -17,6 +17,8 @@ def conv1d(
     padding: str,
     data_format: str = "NWC",
     dilations: int = 1,
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if isinstance(strides, tuple):
         strides = strides[0]
@@ -53,6 +55,8 @@ def conv1d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: int = 1,
+    *,
+    out: Optional[torch.Tensor] = None
 ):
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(1, 2, 0)
@@ -73,6 +77,9 @@ def conv1d_transpose(
     return res.permute(0, 2, 1)
 
 
+conv1d.unsupported_dtypes = ("float16",)
+
+
 # noinspection PyUnresolvedReferences
 def conv2d(
     x: torch.Tensor,
@@ -81,6 +88,8 @@ def conv2d(
     padding: str,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if isinstance(strides, int):
         strides = (strides, strides)
@@ -128,6 +137,9 @@ def conv2d(
     return res
 
 
+conv2d.unsupported_dtypes = ("float16",)
+
+
 # noinspection PyUnresolvedReferences
 def conv2d_transpose(
     x: torch.Tensor,
@@ -137,6 +149,8 @@ def conv2d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NHWC",
     dilations: int = 1,
+    *,
+    out: Optional[torch.Tensor] = None
 ):
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(2, 3, 0, 1)
@@ -165,6 +179,8 @@ def depthwise_conv2d(
     padding: str,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     filter_shape = list(filters.shape[0:2])
     dims_in = filters.shape[-1]
@@ -196,6 +212,8 @@ def conv3d(
     padding: str,
     data_format: str = "NDHWC",
     dilations: int = 1,
+    *,
+    out: Optional[torch.Tensor] = None
 ):
     filter_shape = list(filters.shape[0:3])
     filters = filters.permute(3, 4, 0, 1, 2)
@@ -214,6 +232,9 @@ def conv3d(
     return res.permute(0, 2, 3, 4, 1)
 
 
+conv3d.unsupported_dtypes = ("float16",)
+
+
 # noinspection PyUnresolvedReferences
 def conv3d_transpose(
     x: torch.Tensor,
@@ -223,6 +244,8 @@ def conv3d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(3, 4, 0, 1, 2)

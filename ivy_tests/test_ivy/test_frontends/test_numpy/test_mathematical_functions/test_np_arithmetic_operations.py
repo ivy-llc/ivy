@@ -10,7 +10,9 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 
 # add
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, 2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
+    ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(),
@@ -38,14 +40,14 @@ def test_numpy_add(
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        fw,
-        "numpy",
-        "add",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_name="add",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
