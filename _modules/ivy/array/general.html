@@ -128,6 +128,7 @@
   <h1>Source code for ivy.array.general</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
@@ -251,19 +252,69 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="ArrayWithGeneral.stable_divide"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.stable_divide">[docs]</a>    <span class="k">def</span> <span class="nf">stable_divide</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">denominator</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="n">min_denominator</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Number</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.stable_divide. This method simply wraps</span>
+<span class="sd">        the function, and so the docstring for ivy.stable_divide also applies to this</span>
+<span class="sd">        method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array, used as the numerator for division.</span>
+<span class="sd">        denominator</span>
+<span class="sd">            denominator for division.</span>
+<span class="sd">        min_denominator</span>
+<span class="sd">            the minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            a numpy array containing the elements of numerator divided by</span>
+<span class="sd">            the corresponding element of denominator</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.asarray([4., 5., 6.])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.stable_divide(2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([2., 2.5, 3.])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.asarray([4, 5, 6])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.stable_divide(4, min_denominator=1)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([0.8, 1. , 1.2])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.asarray([[4., 5., 6.], [7., 8., 9.]])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.asarray([[1., 2., 3.], [2., 3., 4.]])</span>
+<span class="sd">        &gt;&gt;&gt; z = x.stable_divide(y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        ivy.array([[4.  , 2.5 , 2.  ],</span>
+<span class="sd">               [3.5 , 2.67, 2.25]])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">denominator</span><span class="p">,</span> <span class="n">min_denominator</span><span class="o">=</span><span class="n">min_denominator</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithGeneral.clip_vector_norm"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.clip_vector_norm">[docs]</a>    <span class="k">def</span> <span class="nf">clip_vector_norm</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-            <span class="n">max_norm</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span>
-            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">max_norm</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.clip_vector_norm. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.clip_vector_norm also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
-
+<span class="sd">           </span>
+<span class="sd">            </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -275,12 +326,12 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            An array with the vector norm downscaled to the max norm if needed.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With :code:`ivy.Array` instance method:</span>
