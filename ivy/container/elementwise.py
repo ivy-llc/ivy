@@ -6305,7 +6305,7 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-    )-> ivy.Container:
+    ) -> ivy.Container:
         """Computes the elementwise minimum between this container and another container
         or number.
 
