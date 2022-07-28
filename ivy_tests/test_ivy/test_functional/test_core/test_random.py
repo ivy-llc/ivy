@@ -118,6 +118,10 @@ def test_random_normal(
         dtype=dtype,
         device=device,
     )
+    ret = helpers.flatten(ret=ret)
+    ret_gt = helpers.flatten(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert u.dtype == v.dtype
 
 
 @st.composite
