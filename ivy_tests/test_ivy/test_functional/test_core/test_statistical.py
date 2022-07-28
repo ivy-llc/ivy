@@ -7,6 +7,7 @@ from hypothesis import given, assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
@@ -44,14 +45,12 @@ def statistical_dtype_values(draw, *, function):
 # min
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="min"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_min(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -80,14 +79,12 @@ def test_min(
 # max
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="max"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_max(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -116,14 +113,12 @@ def test_max(
 # mean
 @given(
     dtype_and_x=statistical_dtype_values(function="mean"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="mean"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_mean(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -144,7 +139,7 @@ def test_mean(
         instance_method=instance_method,
         fw=fw,
         fn_name="mean",
-        test_rtol=1e-1,
+        rtol_=1e-1,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -152,14 +147,12 @@ def test_mean(
 # var
 @given(
     dtype_and_x=statistical_dtype_values(function="var"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="var"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_var(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -187,14 +180,12 @@ def test_var(
 # prod
 @given(
     dtype_and_x=statistical_dtype_values(function="prod"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="prod"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_prod(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -224,14 +215,12 @@ def test_prod(
 # sum
 @given(
     dtype_and_x=statistical_dtype_values(function="sum"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_sum(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -253,7 +242,7 @@ def test_sum(
         instance_method=instance_method,
         fw=fw,
         fn_name="sum",
-        test_rtol=1e-2,
+        rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -261,14 +250,12 @@ def test_sum(
 # std
 @given(
     dtype_and_x=statistical_dtype_values(function="std"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="std"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_std(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -289,8 +276,8 @@ def test_std(
         instance_method=instance_method,
         fw=fw,
         fn_name="std",
-        test_rtol=1e-2,
-        test_atol=1e-2,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -307,8 +294,10 @@ def test_std(
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+    data=st.data(),
 )
-def test_einsum(eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
+@handle_cmd_line_args
+def test_einsum(*, data, eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
     operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]

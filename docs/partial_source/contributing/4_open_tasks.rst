@@ -5,6 +5,8 @@ Open Tasks
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
+.. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html
+.. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -64,8 +66,9 @@ Specifically, you **do not** need to address the following:
 However, everything else covered in the :ref:`Deep Dive` must be addressed.
 Some common important tasks are:
 
-#. remove all :code:`lambda` and direct bindings for the backend functions,
-   with each function instead defined using :code:`def`.
+#. remove all :code:`lambda` and direct bindings for the backend functions
+   (in :code:`ivy.functional.backends`), with each function instead defined using
+   :code:`def`.
 #. implement the following if they don't exist but should do: :code:`ivy.Array` instance
    method, :code:`ivy.Container` static method, :code:`ivy.Container` instance method,
    :code:`ivy.Array` special method, :code:`ivy.Array` reverse special method,
@@ -89,8 +92,15 @@ frontend functional APIs (see :ref:`Ivy as a Transpiler`),
 with frontend APIs implemented for:
 :code:`JAX`, :code:`MXNet`, :code:`NumPy`, :code:`TensorFlow` and :code:`PyTorch`.
 
-This task is not *quite* ready to be engaged with yet,
-more details coming in the next few weeks! 🗓️
+Currently, we have many ToDo list issues
+`open <https://github.com/unifyai/ivy/issues?page=1&q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22>`_
+for this task, which is explained below.
+
+The general workflow for this task is:
+
+#. implement the function by following the `Ivy Frontends`_ guide
+#. write tests for your function by following the `Ivy Frontend Tests`_ guide
+#. verify that the tests for your function are passing
 
 **Round Up**
 

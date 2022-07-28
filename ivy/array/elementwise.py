@@ -58,6 +58,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic cosine
             of each element in ``self``.
             The returned array must have the same data type as ``self``.
+            
+        Examples
+        --------
+        >>> x = ivy.array([2., 10.0, 1.0])
+        >>> y = x.acosh()
+        >>> print(y)
+        ivy.array([1.32, 2.99, 0.  ])
+        
         """
         return ivy.acosh(self._data, out=out)
 
@@ -80,6 +88,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse cosine of each element in ``self``.
             The  returned array must have the same data type as ``self``.
+            
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 0.0, -0.9])
+        >>> y = x.acos()
+        >>> print(y)
+        ivy.array([0.  , 1.57, 2.69])
+        
         """
         return ivy.acos(self._data, out=out)
 
@@ -193,6 +209,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse tangent of each element in ``self``. The
             returned array must have the same data type as ``self``.
+            
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 0.5, -0.5])
+        >>> y = x.atan()
+        >>> print(y)
+        ivy.array([ 0.785,  0.464, -0.464])
+        
         """
         return ivy.atan(self._data, out=out)
 
@@ -258,6 +282,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic tangent of each element
             in ``self``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.array([0.0, 0.5, -0.9])
+        >>> y = x.atanh()
+        >>> print(y)
+        ivy.array([ 0.   ,  0.549, -1.47 ])
+        
         """
         return ivy.atanh(self._data, out=out)
 
@@ -535,6 +567,17 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the hyperbolic cosine of each element in ``self``.
             The returned array must have a floating-point data type determined by
             :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1., 2., 3.])
+        >>> print(x.cosh())
+            ivy.array([1.54, 3.76, 10.1])
+
+        >>> x = ivy.array([0.23, 3., -1.2])
+        >>> y = ivy.zeros(3)
+        >>> print(x.cosh(out=y))
+            ivy.array([1.03, 10.1, 1.81])
         """
         return ivy.cosh(self._data, out=out)
 
@@ -590,7 +633,7 @@ class ArrayWithElementwise(abc.ABC):
 
     def equal(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[float, ivy.Array, ivy.NativeArray],
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -616,6 +659,43 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([2., 7., 9.])
+        >>> x2 = ivy.array([1., 7., 9.])
+        >>> y = x1.equal(x2)
+        >>> print(y)
+        ivy.array([False, True, True])
+
+        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.array([2.5, 7.3, 9.375])
+        >>> x2 = ivy.native_array([2.5, 2.9, 9.375])
+        >>> y = x1.equal(x2)
+        >>> print(y)
+        ivy.array([True, False,  True])
+
+        With mixed :code:`ivy.Array` and `float` inputs:
+
+        >>> x1 = ivy.array([2.5, 7.3, 9.375])
+        >>> x2 = 7.3
+        >>> y = x1.equal(x2)
+        >>> print(y)
+        ivy.array([False, True, False])
+
+        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([3., 1., 0.9])
+        >>> x2 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> y = x1.equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([True, True, True])
+        }
         """
         return ivy.equal(self._data, x2, out=out)
 
@@ -770,6 +850,15 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array must
             have a data type of ``bool``.
+            
+        Examples
+        --------
+        >>> x1 = ivy.array([2., 5., 15.])
+        >>> x2 = ivy.array([3., 2., 4.])
+        >>> y = x1.greater(x2)
+        >>> print(y)
+        ivy.array([False,  True,  True])
+
         """
         return ivy.greater(self._data, x2, out=out)
 
@@ -901,6 +990,15 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+            
+        Examples
+        --------
+        >>> x1 = ivy.array([2., 5., 15.])
+        >>> x2 = ivy.array([3., 2., 4.])
+        >>> y = x1.less(x2)
+        >>> print(y)
+        ivy.array([ True, False, False])
+
         """
         return ivy.less(self._data, x2, out=out)
 
@@ -1087,6 +1185,16 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        Using 'ivy.Array' instance:
+
+        >>> x = ivy.array([True, False, True, False])
+        >>> y = ivy.array([True, True, False, False])
+        >>> z = x.logical_and(y)
+        >>> print(z)
+        ivy.array([True, False, False, False])
         """
         return ivy.logical_and(self._data, x2, out=out)
 
@@ -1374,23 +1482,40 @@ class ArrayWithElementwise(abc.ABC):
         self
             input array. Should have a numeric data type.
         out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array containing the rounded result for each element in ``self``.
-            The returned array must have the same data type as ``self``.
+            an array containing the rounded result for each element in ``self``. The
+            returned array must have the same data type as ``self``.
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        Using :code:`ivy.Array` instance method:
 
-        >>> x = ivy.array([1.2, 2.4, 3.6])
+        >>> x = ivy.array([6.3, -8.1, 0.5, -4.2, 6.8])
         >>> y = x.round()
         >>> print(y)
-        ivy.array([1., 2., 4.])
+        ivy.array([ 6., -8.,  0., -4.,  7.])
+
+        >>> x = ivy.array([-94.2, 256.0, 0.0001, -5.5, 36.6])
+        >>> y = x.round()
+        >>> print(y)
+        ivy.array([-94., 256., 0., -6., 37.])
+
+        >>> x = ivy.array([0.23, 3., -1.2])
+        >>> y = ivy.zeros(3)
+        >>> x.round(out=y)
+        >>> print(y)
+        ivy.array([ 0.,  3., -1.])
+
+        >>> x = ivy.array([[ -1., -67.,  0.,  15.5,  1.], [3, -45, 24.7, -678.5, 32.8]])
+        >>> y = x.round()
+        >>> print(y)
+        ivy.array([[-1., -67., 0., 16., 1.],
+        [3., -45., 25., -678., 33.]])
         """
         return ivy.round(self._data, out=out)
 

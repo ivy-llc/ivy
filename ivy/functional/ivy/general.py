@@ -29,6 +29,7 @@ INF = float("inf")
 TIMEOUT = 15.0
 TMP_DIR = "/tmp"
 
+array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
 
@@ -208,6 +209,68 @@ def is_ivy_container(x: Any) -> bool:
     return isinstance(x, ivy.Container)
 
 
+def set_array_mode(mode: bool) -> None:
+    """Set the mode of whether to convert inputs to ivy.NativeArray, then convert
+    outputs back to ivy.Array
+
+    Parameter
+    ---------
+    mode
+        boolean whether to perform ivy.Array conversions
+
+    Examples
+    --------
+    >>> ivy.set_array_mode(False)
+    >>> ivy.get_array_mode()
+    False
+
+    >>> ivy.set_array_mode(True)
+    >>> ivy.get_array_mode()
+    True
+    """
+    global array_mode_stack
+    if not isinstance(mode, bool):
+        raise Exception("set_array_mode only accepts type bool")
+    array_mode_stack.append(mode)
+
+
+def unset_array_mode() -> None:
+    """Reset the mode of converting inputs to ivy.NativeArray, then converting
+    outputs back to ivy.Array to the previous state
+
+    Examples
+    --------
+    >>> ivy.set_array_mode(False)
+    >>> ivy.get_array_mode()
+    False
+
+    >>> ivy.unset_shape_array_mode()
+    >>> ivy.get_array_mode()
+    True
+    """
+    global array_mode_stack
+    if array_mode_stack:
+        array_mode_stack.pop(-1)
+
+
+def get_array_mode() -> bool:
+    """Get the current state of array_mode
+
+    Examples
+    --------
+    >>> ivy.get_array_mode()
+    True
+
+    >>> ivy.set_array_mode(False)
+    >>> ivy.get_array_mode()
+    False
+    """
+    global array_mode_stack
+    if not array_mode_stack:
+        return True
+    return array_mode_stack[-1]
+
+
 def set_nestable_mode(mode: bool) -> None:
     """Set the mode of whether to check if function inputs are ivy.Container
 
@@ -238,13 +301,13 @@ def unset_nestable_mode() -> None:
 
     Examples
     --------
-    >>> ivy.set_nestable_mode(True)
+    >>> ivy.set_nestable_mode(False)
     >>> ivy.get_nestable_mode()
-    True
+    False
 
     >>> ivy.unset_nestable_mode()
     >>> ivy.get_nestable_mode()
-    False
+    True
     """
     global nestable_mode_stack
     if nestable_mode_stack:
@@ -258,11 +321,11 @@ def get_nestable_mode() -> bool:
     Examples
     --------
     >>> ivy.get_nestable_mode()
-    False
-
-    >>> ivy.set_nestable_mode(True)
-    >>> ivy.get_nestable_mode()
     True
+
+    >>> ivy.set_nestable_mode(False)
+    >>> ivy.get_nestable_mode()
+    False
     """
     global nestable_mode_stack
     if not nestable_mode_stack:
@@ -1131,6 +1194,75 @@ def clip_vector_norm(
     -------
     ret
         An array with the vector norm downscaled to the max norm if needed.
+
+    Functional Examples
+    ------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.clip_vector_norm(x, 2.0)
+    >>> print(y)
+    ivy.array([0.   , 0.894, 1.79 ])
+
+    >>> x = ivy.array([0.5, -0.7, 2.4])
+    >>> y = ivy.clip_vector_norm(x, 3.0, 1.0)
+    >>> print(y)
+    ivy.array([ 0.417, -0.583,  2.   ])
+
+    >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
+                       [[3., 9.], [4., 12.], [5., 15.]]])
+    >>> y = ivy.zeros(((2, 3, 2)))
+    >>> ivy.clip_vector_norm(x, 4.0, 1.0, out=y)
+    >>> print(y)
+    ivy.array([[[0.    , 0.    ],
+                [0.0667, 0.2   ],
+                [0.133 , 0.4   ]],
+               [[0.2   , 0.6   ],
+                [0.267 , 0.8   ],
+                [0.333 , 1.    ]]])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], \
+                       [-4.4, -5.5, -6.6]])
+    >>> ivy.clip_vector_norm(x, 1.0, 3.0, out=x)
+    >>> print(x)
+    ivy.array([[ 0.131,  0.263,  0.394],
+               [-0.526, -0.657, -0.788]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.clip_vector_norm(x, 2.0)
+    >>> print(y)
+    ivy.array([0.   , 0.894, 1.79 ])
+
+    >>> x = ivy.native_array([0.5, -0.7, 2.4])
+    >>> y = ivy.clip_vector_norm(x, 3.0, 1.0)
+    >>> print(y)
+    ivy.array([ 0.417, -0.583,  2.   ])
+
+    >>> x = ivy.native_array([[[0., 0.], [1., 3.], [2., 6.]], \
+                              [[3., 9.], [4., 12.], [5., 15.]]])
+    >>> y = ivy.zeros(((2, 3, 2)))
+    >>> ivy.clip_vector_norm(x, 4.0, 1.0, out=y)
+    >>> print(y)
+    ivy.array([[[0.    , 0.    ],
+                [0.0667, 0.2   ],
+                [0.133 , 0.4   ]],
+               [[0.2   , 0.6   ],
+                [0.267 , 0.8   ],
+                [0.333 , 1.    ]]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.clip_vector_norm(x, 2.0)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.894, 1.79]),
+        b: ivy.array([0.849, 1.13, 1.41])
+    }
 
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
@@ -2816,3 +2948,142 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
     if ivy.exists(name):
         return {"idx": list(params).index(name), "param": params[name]}
     return {"idx": idx, "param": list(params.values())[idx]}
+
+
+def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
+    if (
+        hasattr(fn, "unsupported_device_and_dtype")
+        and hasattr(fn, "supported_device_and_dtype")
+    ):
+        fn_unsupported_device_and_dtype = fn.unsupported_device_and_dtype
+        fn_supported_device_and_dtype = fn.supported_device_and_dtype
+        if isinstance(fn_unsupported_device_and_dtype, dict):
+            if isinstance(fn_supported_device_and_dtype, dict):
+                backend_str = ivy.current_backend_str()
+                if (
+                    backend_str in fn_unsupported_device_and_dtype
+                    and backend_str in fn_supported_device_and_dtype
+                ):
+                    return False
+                elif (
+                    "devices" in fn_unsupported_device_and_dtype
+                    and "devices" in fn_supported_device_and_dtype
+                ):
+                    return False
+    return True
+
+
+@handle_nestable
+def function_unsupported_devices_and_dtypes(fn: Callable) -> Dict:
+    """Returns the unsupported combination of devices and dtypes
+     of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported device and dtype attribute
+
+    Returns
+    -------
+    ret
+        The unsupported combination of devices and dtypes of the function
+    """
+    if not _is_valid_device_and_dtypes_attributes(fn):
+        raise Exception(
+            "supported_device_and_dtypes and unsupported_device_and_dtypes \
+             attributes cannot both exist in a particular backend"
+        )
+
+    unsupported_devices_dtype = {'devices': (), 'dtypes': ()}
+    if hasattr(fn, "unsupported_device_and_dtype"):
+        fn_unsupported_devices_dtypes = fn.unsupported_device_and_dtype
+        if isinstance(fn_unsupported_devices_dtypes, dict):
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_unsupported_devices_dtypes:
+                fn_unsupported_devices_dtypes = \
+                    fn_unsupported_devices_dtypes[backend_str]
+
+            elif "devices" not in fn_unsupported_devices_dtypes:
+                return unsupported_devices_dtype
+
+            keys = list(fn_unsupported_devices_dtypes.keys())
+            if 'dtypes' in keys and 'devices' in keys:
+                unsupported_devices_dtype['devices'] += \
+                    fn_unsupported_devices_dtypes['devices']
+
+                if (
+                    isinstance(fn_unsupported_devices_dtypes['dtypes'][0], tuple)
+                ):
+                    for dtypes in fn_unsupported_devices_dtypes['dtypes']:
+                        unsupported_devices_dtype['dtypes'] += (dtypes, )
+                else:
+                    unsupported_devices_dtype['dtypes'] += \
+                        (fn_unsupported_devices_dtypes['dtypes'], )
+            else:
+                raise Exception(
+                    "'unsupported_device_and_dtype' attr must have keys \
+                     'devices' and 'dtypes'"
+                )
+        else:
+            raise Exception(
+                "Have to provide a dictionary to 'unsupported_device_and_dtype' attr \
+                 with keys 'devices' and 'dtypes'"
+            )
+    return unsupported_devices_dtype
+
+
+@handle_nestable
+def function_supported_devices_and_dtypes(fn: Callable) -> Dict:
+    """Returns the supported combination of devices and dtypes
+     of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the supported device and dtype attribute
+
+    Returns
+    -------
+    ret
+        The unsupported devices of the function
+    """
+    if not _is_valid_device_and_dtypes_attributes(fn):
+        raise Exception(
+            "supported_device_and_dtypes and unsupported_device_and_dtypes \
+             attributes cannot both exist in a particular backend"
+        )
+
+    supported_devices_dtype = {'devices': (), 'dtypes': ()}
+    if hasattr(fn, "supported_device_and_dtype"):
+        fn_supported_devices_dtypes = fn.supported_device_and_dtype
+        if isinstance(fn_supported_devices_dtypes, dict):
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_supported_devices_dtypes:
+                fn_supported_devices_dtypes = \
+                    fn_supported_devices_dtypes[backend_str]
+            elif "devices" not in fn_supported_devices_dtypes:
+                return supported_devices_dtype
+            keys = list(fn_supported_devices_dtypes.keys())
+            if 'dtypes' in keys and 'devices' in keys:
+                supported_devices_dtype['devices'] += \
+                    fn_supported_devices_dtypes['devices']
+
+                if (
+                    isinstance(fn_supported_devices_dtypes['dtypes'][0], tuple)
+                ):
+                    for dtypes in fn_supported_devices_dtypes['dtypes']:
+                        supported_devices_dtype['dtypes'] += dtypes
+                else:
+                    supported_devices_dtype['dtypes'] += \
+                        (fn_supported_devices_dtypes['dtypes'], )
+            else:
+                raise Exception(
+                    "'supported_device_and_dtype' attr must have keys \
+                     'devices' and 'dtypes'"
+                )
+        else:
+            raise Exception(
+                "Have to provide a dictionary to 'supported_device_and_dtype' attr \
+                 with keys 'devices' and 'dtypes'"
+            )
+    return supported_devices_dtype
