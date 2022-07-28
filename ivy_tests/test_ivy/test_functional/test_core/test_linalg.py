@@ -1284,4 +1284,3 @@ def test_diagonal(
         axis1=axes[0],
         axis2=axes[1],
     )
-
