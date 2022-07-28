@@ -2,6 +2,8 @@
 
 # Gloabl
 from datetime import timedelta
+
+import hypothesis.extra.numpy as hnp
 import numpy as np
 from hypothesis import given, strategies as st, settings
 
@@ -30,6 +32,18 @@ def _dtype_x_limited_axis(draw, *, allow_none=False):
 
     axis = draw(st.integers(min_value=0, max_value=len(shape) - 1))
     return dtype, x, axis
+
+
+@st.composite
+def _broadcastable_trio(draw):
+    dtype = draw(st.sampled_from(ivy_np.valid_numeric_dtypes))
+
+    shapes_st = hnp.mutually_broadcastable_shapes(num_shapes=3, min_dims=1, min_side=1)
+    cond_shape, x1_shape, x2_shape = draw(shapes_st).input_shapes
+    cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
+    x1 = draw(hnp.arrays(dtype, x1_shape))
+    x2 = draw(hnp.arrays(dtype, x2_shape))
+    return cond, x1, x2, dtype
 
 
 # Functions #
@@ -147,4 +161,40 @@ def test_nonzero(
         fw=fw,
         fn_name="nonzero",
         x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@given(
+    broadcastables=_broadcastable_trio(),
+    num_positional_args=helpers.num_positional_args(fn_name="where"),
+    data=st.data(),
+)
+@handle_cmd_line_args
+def test_where(
+    *,
+    data,
+    broadcastables,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    cond, x1, x2, dtype = broadcastables
+
+    helpers.test_function(
+        input_dtypes=["bool", dtype, dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="where",
+        condition=cond,
+        x1=x1,
+        x2=x2,
     )
