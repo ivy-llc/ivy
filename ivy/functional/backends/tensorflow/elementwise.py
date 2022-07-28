@@ -34,13 +34,13 @@ def abs(
 
 
 def acos(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.acos(x)
 
 
 def acosh(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.acosh(x)
 
@@ -68,9 +68,9 @@ def asinh(
 
 
 def atan(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.atan(x)
+    return tf.math.atan(x)
 
 
 def atan2(
@@ -84,7 +84,7 @@ def atan2(
 
 
 def atanh(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.atanh(x)
 
@@ -238,9 +238,7 @@ def floor_divide(
 
 def greater(
     x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x2: Union[float, tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.greater(x1, x2)
@@ -285,9 +283,7 @@ def isnan(
 
 def less(
     x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x2: Union[float, tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.less(x1, x2)
