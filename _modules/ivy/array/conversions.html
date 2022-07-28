@@ -163,13 +163,6 @@
     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_to_container</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">x</span>
-
-
 <span class="c1"># Wrapped #</span>
 <span class="c1"># --------#</span>
 
@@ -300,20 +293,6 @@
     <span class="n">native_args</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">_to_native</span><span class="p">,</span> <span class="n">include_derived</span><span class="p">)</span>
     <span class="n">native_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">_to_native</span><span class="p">,</span> <span class="n">include_derived</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">native_args</span><span class="p">,</span> <span class="n">native_kwargs</span></div>
-
-
-<div class="viewcode-block" id="args_to_container"><a class="viewcode-back" href="../../../data_classes/array/conversions/args_to_container.html#ivy.array.conversions.args_to_container">[docs]</a><span class="k">def</span> <span class="nf">args_to_container</span><span class="p">(</span>
-    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-    <span class="n">include_derived</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-<span class="p">):</span>
-    <span class="n">all_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-    <span class="n">all_args_types</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">))</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">all_args</span>
-    <span class="p">]</span>
-    <span class="n">container_args</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">_to_container</span><span class="p">,</span> <span class="n">include_derived</span><span class="p">)</span>
-    <span class="n">container_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">_to_container</span><span class="p">,</span> <span class="n">include_derived</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">container_args</span><span class="p">,</span> <span class="n">container_kwargs</span><span class="p">,</span> <span class="kc">True</span> <span class="ow">in</span> <span class="n">all_args_types</span></div>
 </pre></div>
 
            </div>
