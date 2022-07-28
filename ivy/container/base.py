@@ -2062,54 +2062,6 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def as_random_uniform(
-        self,
-        low=0.0,
-        high=1.0,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Return arrays of random uniform values for all nested arrays in the
-        container.
-
-        Parameters
-        ----------
-        low
-            Lower boundary of the output interval. All values generated will be greater
-            than or equal to low. The default value is 0.
-        high
-            Upper boundary of the output interval. All values generated will be less
-            than high. The default value is 1.0.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays filled with random uniform values.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.random_uniform(
-                low, high, x.shape, device=self._ivy.dev(x)
-            )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def to_native(
         self,
         nested=False,
