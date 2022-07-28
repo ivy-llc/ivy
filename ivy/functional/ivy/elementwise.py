@@ -2079,7 +2079,7 @@ def less_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i <= x2_i for each element x1_i of the input array
     x1 with the respective element x2_i of the input array x2.

@@ -898,6 +898,35 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :code:'ivy.Array' inputs:
+
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([2, 2, 1])
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        ivy.array([True, True, False])
+
+        With mixed :code:'ivy.Array' and :code:'ivy.NativeArray' inputs:
+
+        >>> x1 = ivy.array([2.5, 3.3, 9.24])
+        >>> x2 = ivy.native_array([2.5, 1.1, 9.24])
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        ivy.array([True, False, True])
+
+        With mixed :code:'ivy.Container' and :code:'ivy.Array' inputs:
+
+        >>> x1 = ivy.array([3., 1., 0.8])
+        >>> x2 = ivy.Container(a=ivy.array([2., 1., 0.7]), b=ivy.array([3., 0.6, 1.2]))
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, True])
+        }
         """
         return ivy.less_equal(self._data, x2, out=out)
 

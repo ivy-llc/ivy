@@ -3289,6 +3289,30 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        With :code:'ivy.Container' inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 9.2]), b=ivy.array([2., 1.1, 5.5]))
+        >>> x2 = ivy.Container(a=ivy.array([12, 2.2, 4.1]), b=ivy.array([1, 0.7, 3.8]))
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, False, False]),
+            b: ivy.array([False, False, False])
+        }
+
+        With mixed :code:'ivy.Container' and :code:'ivy.Array' inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 9.2]), b=ivy.array([2., 1., 5.5]))
+        >>> x2 = ivy.array([2., 1.1, 5.5])
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False])
+            b: ivy.array([True, True, True])
+        }
+
+
         """
         return self.static_less_equal(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
