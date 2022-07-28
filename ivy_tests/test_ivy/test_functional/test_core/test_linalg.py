@@ -1282,4 +1282,6 @@ def test_diagonal(
         x=np.asarray(x, dtype=dtype),
         offset=offset,
         axis1=axes[0],
-        axis2=axes[1], )
+        axis2=axes[1],
+    )
+
