@@ -1983,39 +1983,6 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = value
         return ivy.Container(return_dict, **self._config)
 
-    def as_zeros(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Return arrays of zeros for all nested arrays in the container.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays filled with zeros.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.zeros_like(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def as_bools(
         self,
         assert_is_bool=False,
