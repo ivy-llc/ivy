@@ -4295,12 +4295,12 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With one :code:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([8.,float('+inf')]),
-                            b=ivy.array([0., 2.0,float('nan')]))
+        >>> x = ivy.Container(a=ivy.array([8., float('+inf')]),
+                            b=ivy.array([0., 2.0, float('nan')]))
         >>> y = ivy.Container.static_log2(x)
         >>> print(y)
         {
-            a: ivy.array([3.,inf]),
+            a: ivy.array([3., inf]),
             b: ivy.array([-inf, 1., nan])
         }
         """

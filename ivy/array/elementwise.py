@@ -957,12 +957,12 @@ class ArrayWithElementwise(abc.ABC):
         --------
         Using :code:`ivy.Array` instance method:
 
-        >>> x = ivy.array([0., 2.0,float('nan')])
+        >>> x = ivy.array([0., 2.0, float('nan')])
         >>> y = x.log2()
         >>> print(y)
         ivy.array([-inf, 1., nan])
 
-        >>> x = ivy.array([8.,float('+inf')])
+        >>> x = ivy.array([8., float('+inf')])
         >>> y = x.log2()
         >>> print(y)
         ivy.array([3., inf])
@@ -970,7 +970,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([[-4., 1.],[-0., 4.]])
         >>> y = x.log2()
         >>> print(y)
-        ivy.array([[ nan, 0.],[-inf,  2.]])
+        ivy.array([[nan, 0.],[-inf, 2.]])
         """
         return ivy.log2(self._data, out=out)
 
