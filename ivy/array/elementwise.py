@@ -1154,6 +1154,15 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = x1 = ivy.array([2., 5., 15.])
+        >>> y = ivy.array([3., 2., 4.])
+        >>> z = x.logaddexp(y)
+        >>> print(z)
+        ivy.array([ 3.31,  5.05, 15.  ])
+
         """
         return ivy.logaddexp(self._data, x2, out=out)
 
