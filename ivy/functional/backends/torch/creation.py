@@ -265,7 +265,6 @@ def linspace(
 
 
 linspace.support_native_out = True
-linspace.unsupported_device_and_dtype = {'devices': ('cpu', ), 'dtypes': ('float16', )}
 
 
 def linspace_helper(start, stop, num, axis=None, *, device, dtype):
