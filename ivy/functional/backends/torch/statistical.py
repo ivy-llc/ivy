@@ -166,8 +166,6 @@ def sum(
             dtype = torch.uint8
         elif x.dtype in [torch.int32, torch.int64]:
             dtype = torch.int64
-        elif x.dtype == torch.float16:
-            dtype = torch.float32
 
     dtype = ivy.as_native_dtype(dtype)
 

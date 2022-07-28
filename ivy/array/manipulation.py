@@ -41,8 +41,8 @@ class ArrayWithManipulation(abc.ABC):
     def reshape(
         self: ivy.Array,
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-        copy: Optional[bool] = None,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -56,7 +56,7 @@ class ArrayWithManipulation(abc.ABC):
             input array.
         shape
             The new shape should be compatible with the original shape.
-            One shape dimension can be -1. In this case, the value is 
+            One shape dimension can be -1. In this case, the value is
             inferred from the length of the array and remaining dimensions.
         copy
             boolean indicating whether or not to copy the input array.
@@ -85,7 +85,7 @@ class ArrayWithManipulation(abc.ABC):
 
         """
         return ivy.reshape(self._data, shape, copy, out=out)
-    
+
     def permute_dims(
         self: ivy.Array,
         axes: Tuple[int, ...],
