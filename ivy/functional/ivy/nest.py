@@ -747,7 +747,7 @@ def copy_nest(
 
 def nested_multi_map(
     func: Callable,
-    nests,
+    nests: List[Iterable],
     key_chains=None,
     to_apply=True,
     prune_unapplied=False,
