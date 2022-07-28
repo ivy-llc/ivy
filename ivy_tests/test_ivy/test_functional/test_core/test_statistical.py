@@ -58,22 +58,23 @@ def statistical_correction_values(draw, *, function):
     dtype_and_x=statistical_dtype_values(function="min"),
     num_positional_args=helpers.num_positional_args(fn_name="min"),
     data=st.data(),
+    container=st.booleans(),
+    keep_dims=st.booleans(),
 )
 @handle_cmd_line_args
 def test_min(
     *,
     dtype_and_x,
+    as_variable,
+    with_out,
     num_positional_args,
-    data,
+    native_array,
+    container,
+    instance_method,
     fw,
+    keep_dims,
 ):
-    input_dtype, x, axis = dtype_and_x
-    as_variable = data.draw(st.booleans())
-    with_out = data.draw(st.booleans())
-    native_array = data.draw(st.booleans())
-    container = data.draw(st.booleans())
-    instance_method = data.draw(st.booleans())
-    keep_dims = data.draw(st.booleans())
+    input_dtype, x, axis= dtype_and_x
     assume(x)
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -96,22 +97,23 @@ def test_min(
     dtype_and_x=statistical_dtype_values(function="max"),
     num_positional_args=helpers.num_positional_args(fn_name="max"),
     data=st.data(),
+    container=st.booleans(),
+    keep_dims=st.booleans(),
 )
 @handle_cmd_line_args
 def test_max(
     *,
     dtype_and_x,
+    as_variable,
+    with_out,
     num_positional_args,
-    data,
+    native_array,
+    container,
+    instance_method,
     fw,
+    keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
-    as_variable = data.draw(st.booleans())
-    with_out = data.draw(st.booleans())
-    native_array = data.draw(st.booleans())
-    container = data.draw(st.booleans())
-    instance_method = data.draw(st.booleans())
-    keep_dims = data.draw(st.booleans())
     assume(x)
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -134,22 +136,23 @@ def test_max(
     dtype_and_x=statistical_dtype_values(function="mean"),
     num_positional_args=helpers.num_positional_args(fn_name="mean"),
     data=st.data(),
+    container=st.booleans(),
+    keep_dims=st.booleans(),
 )
 @handle_cmd_line_args
 def test_mean(
     *,
     dtype_and_x,
+    as_variable,
+    with_out,
     num_positional_args,
-    data,
+    native_array,
+    container,
+    instance_method,
     fw,
+    keep_dims,
 ):
-    input_dtype, x, axis = dtype_and_x
-    as_variable = data.draw(st.booleans())
-    with_out = data.draw(st.booleans())
-    native_array = data.draw(st.booleans())
-    container = data.draw(st.booleans())
-    instance_method = data.draw(st.booleans())
-    keep_dims = data.draw(st.booleans())
+    input_dtype, x, axis= dtype_and_x
     if fw == "torch" and (input_dtype in ivy_np.valid_int_dtypes):
         return  # torch implementation exhibits strange behaviour
     helpers.test_function(
@@ -174,23 +177,25 @@ def test_mean(
     dtype_and_x=statistical_dtype_values(function="var"),
     num_positional_args=helpers.num_positional_args(fn_name="var"),
     data=st.data(),
+    container=st.booleans(),
+    correction=statistical_correction_values(function="var"),
+    keep_dims=st.booleans(),
 )
 @handle_cmd_line_args
 def test_var(
     *,
     dtype_and_x,
+    as_variable,
+    with_out,
     num_positional_args,
-    data,
+    native_array,
+    container,
+    instance_method,
     fw,
+    correction,
+    keep_dims,
 ):
-    input_dtype, x, axis = dtype_and_x
-    as_variable = data.draw(st.booleans())
-    with_out = data.draw(st.booleans())
-    native_array = data.draw(st.booleans())
-    container = data.draw(st.booleans())
-    instance_method = data.draw(st.booleans())
-    correction = data.draw(statistical_correction_values(function="std"))
-    keep_dims = data.draw(st.booleans())
+    input_dtype, x, axis= dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -213,22 +218,24 @@ def test_var(
     dtype_and_x=statistical_dtype_values(function="prod"),
     num_positional_args=helpers.num_positional_args(fn_name="prod"),
     data=st.data(),
+    container=st.booleans(),
+    keep_dims=st.booleans(),
+
 )
 @handle_cmd_line_args
 def test_prod(
     *,
     dtype_and_x,
+    as_variable,
+    with_out,
     num_positional_args,
-    data,
+    native_array,
+    container,
+    instance_method,
     fw,
+    keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
-    as_variable = data.draw(st.booleans())
-    with_out = data.draw(st.booleans())
-    native_array = data.draw(st.booleans())
-    container = data.draw(st.booleans())
-    instance_method = data.draw(st.booleans())
-    keep_dims=data.draw(st.booleans())
     if fw == "torch" and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype)):
         return  # torch implementation exhibits strange behaviour
     helpers.test_function(
@@ -252,22 +259,23 @@ def test_prod(
     dtype_and_x=statistical_dtype_values(function="sum"),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
     data=st.data(),
+    container=st.booleans(),
+    keep_dims=st.booleans(),
 )
 @handle_cmd_line_args
 def test_sum(
     *,
     dtype_and_x,
+    as_variable,
+    with_out,
     num_positional_args,
-    data,
+    native_array,
+    container,
+    instance_method,
     fw,
+    keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
-    as_variable = data.draw(st.booleans())
-    with_out = data.draw(st.booleans())
-    native_array = data.draw(st.booleans())
-    container = data.draw(st.booleans())
-    instance_method = data.draw(st.booleans())
-    keep_dims=data.draw(st.booleans())
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -290,23 +298,25 @@ def test_sum(
     dtype_and_x=statistical_dtype_values(function="std"),
     num_positional_args=helpers.num_positional_args(fn_name="std"),
     data=st.data(),
+    container=st.booleans(),
+    correction=statistical_correction_values(function="std"),
+    keep_dims=st.booleans(),
 )
 @handle_cmd_line_args
 def test_std(
     *,
     dtype_and_x,
+    as_variable,
+    with_out,
     num_positional_args,
-    data,
+    native_array,
+    container,
+    instance_method,
     fw,
+    correction,
+    keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
-    as_variable = data.draw(st.booleans())
-    with_out = data.draw(st.booleans())
-    native_array = data.draw(st.booleans())
-    container = data.draw(st.booleans())
-    instance_method = data.draw(st.booleans())
-    correction=data.draw(statistical_correction_values(function="std"))
-    keep_dims=data.draw(st.booleans())
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
