@@ -511,8 +511,8 @@ This function requires us to create extra methods for generating :code:`shape` a
             frontend="torch",
             fn_name="full",
             size=shape,
-            fill_value=fill_value,
             dtype=dtypes[0],
+            fill_value=fill_value,
             device=device,
             requires_grad=requires_grad,
         )
