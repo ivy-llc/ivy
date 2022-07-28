@@ -839,61 +839,37 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, call)
     assert np.allclose(ret, true)
 
 
-@st.composite
-def arrays_of_near_dims(draw):
-    dims = draw(st.integers(min_value=1, max_value=5))
-    dim_size = draw(st.integers(min_value=2, max_value=10))
-    x1 = draw(
-        helpers.dtype_and_values(
-            ivy_np.valid_numeric_dtypes,
-            allow_inf=False,
-            ret_shape=True,
-            min_num_dims=dims,
-            max_num_dims=dims,
-            min_dim_size=dim_size,
-            max_dim_size=dim_size
-        ))
-    x2 = draw(
-        helpers.dtype_and_values(
-            ['int32', 'int64'],
-            allow_inf=False,
-            min_value=0,
-            max_value=max(dim_size - 2, 0),
-            min_num_dims=dims,
-            max_num_dims=dims,
-            min_dim_size=0,
-            max_dim_size=dim_size,
-            # shape=x1[2]
-        ))
-    return (x1[0:2], x2)
-
 # gather
-
-
 @given(
-    params_n_indices=arrays_of_near_dims(),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    params_n_indices_n_axis=helpers.array_and_indices_and_axis(
+        last_dim_same_size=False,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name='gather'),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
     instance_method=st.booleans(),
 )
-def test_gather(params_n_indices, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
-    params, indices = params_n_indices
+def test_gather(params_n_indices_n_axis, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
+    params, indices, axis = params_n_indices_n_axis
     params_dtype, params = params
     indices_dtype, indices = indices
-    axis = -1
     helpers.test_function(
-        [params_dtype, indices_dtype],
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "gather",
+        input_dtypes=[params_dtype, indices_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="gather",
         params=np.asarray(params, dtype=params_dtype),
         indices=np.asarray(indices, dtype=indices_dtype),
         axis=axis
@@ -902,14 +878,14 @@ def test_gather(params_n_indices, as_variable, with_out, num_positional_args, na
 
 # gather_nd
 @given(
-    params_n_indices=st.sampled_from([
-        ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[0, 1], [1, 0]]),
-        ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[[0, 1]], [[1, 0]]]),
-        (
-            [[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]],
-            [[[0, 1, 0]], [[1, 0, 1]]],
-        ),
-    ]),
+    params_n_ndindices=helpers.array_and_ndindices(
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10
+    ),
+    ndindices_dtype=st.sampled_from(["int32", "int64"]),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name='gather_nd'),
@@ -917,20 +893,21 @@ def test_gather(params_n_indices, as_variable, with_out, num_positional_args, na
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
 )
-def test_gather_nd(params_n_indices, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
-    params, indices = params_n_indices
+def test_gather_nd(params_n_ndindices, ndindices_dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
+    params, ndindices = params_n_ndindices
+    params_dtype, params = params
     helpers.test_function(
-        ["float32", "int32"],
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "gather_nd",
-        params=np.asarray(params, dtype="float32"),
-        indices=np.asarray(indices, dtype="int32")
+        input_dtypes=[params_dtype, ndindices_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="gather_nd",
+        params=np.asarray(params, dtype=params_dtype),
+        indices=np.asarray(ndindices, dtype=ndindices_dtype)
     )
 
 # exists
@@ -1218,15 +1195,15 @@ def test_einops_rearrange(x, pattern_and_axes_lengths, with_out, as_variable, nu
     dtype, x = x
     x = [x]
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "einops_rearrange",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="einops_rearrange",
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
         **axes_lengths
@@ -1261,15 +1238,15 @@ def test_einops_reduce(x, pattern_and_axes_lengths, reduction, with_out, as_vari
     if (reduction in ['mean', 'prod']) and (dtype not in ivy_np.valid_float_dtypes):
         dtype = 'float32'
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "einops_reduce",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="einops_reduce",
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
         reduction=reduction,
@@ -1305,15 +1282,15 @@ def test_einops_repeat(x, pattern_and_axes_lengths, with_out, as_variable, num_p
     dtype, x = x
     x = [x]
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "einops_repeat",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="einops_repeat",
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
         **axes_lengths
@@ -1443,36 +1420,83 @@ def test_inplace_increment(
         return
 
 
-# Still to Add #
-# ---------------#
+def test_is_ivy_array():
+    return
 
-# is_ivy_array
-# is_array
-# is_ivy_container
-# all_equal
-# to_numpy
-# clip_matrix_norm
-# unstack
-# value_is_nan
-# has_nans
-# shape_to_tuple
-# try_else_none
-# arg_names
-# cache_fn
-# current_framework_str
-# get_min_denominator
-# set_min_denominator
-# get_min_base
-# set_min_base
-# stable_divide
-# stable_pow
-# get_all_arrays_in_memory
-# num_arrays_in_memory
-# print_all_arrays_in_memory
-# set_queue_timeout
-# queue_timeout
-# tmp_dir
-# set_tmp_dir
-# supports_inplace
-# assert_supports_inplace
-# arg_info
+def test_is_array():
+    return
+
+def test_is_ivy_container():
+    return
+
+def test_all_equal():
+    return
+
+def test_clip_matrix_norm():
+    return
+
+def test_value_is_nan():
+    return
+
+def test_has_nans():
+    return
+
+def test_shape_to_tuple():
+    return
+
+def test_try_else_none():
+    return
+
+def test_arg_names():
+    return
+
+def test_current_framework_str():
+    return
+
+def test_get_min_denominator():
+    return
+
+def test_set_min_denominator():
+    return
+
+def test_get_min_base():
+    return
+
+def test_set_min_base():
+    return
+
+def test_stable_divide():
+    return
+
+def test_stable_pow():
+    return
+
+def test_get_all_arrays_in_memory():
+    return
+
+def test_num_arrays_in_memory():
+    return
+
+def test_print_all_arrays_in_memory():
+    return
+
+def test_set_queue_timeout():
+    return
+
+def test_queue_timeout():
+    return
+
+def test_tmp_dir():
+    return
+
+def test_set_tmp_dir():
+    return
+
+def test_supports_inplace():
+    return
+
+def test_assert_supports_inplace():
+    return
+
+def test_arg_info():
+    return
