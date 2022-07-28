@@ -12,6 +12,13 @@ import math
 from typing import Union, List
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+cmd_line_args = (
+    "as_variable",
+    "native_array",
+    "with_out",
+    "container",
+    "instance_method",
+)
 
 try:
     import jax.numpy as jnp
@@ -1392,8 +1399,8 @@ def test_frontend_function(
             lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
         )
 
-        #fix for torch not accepting string args for dtype
-        if "dtype" in kwargs_frontend and frontend == 'torch':
+        # fix for torch not accepting string args for dtype
+        if "dtype" in kwargs_frontend and frontend == "torch":
             kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
 
         # compute the return via the frontend framework
@@ -1681,8 +1688,8 @@ def array_and_indices(
         The maximum size of the dimensions of the arrays.
     Returns
     -------
-    A strategy that can be used in the @given hypothesis decorator which generates
-    arrays of values and indices.
+    A strategy that can be used in the @given hypothesis decorator
+    which generates arrays of values and indices.
 
     Examples
     --------
@@ -2156,10 +2163,11 @@ def num_positional_args(draw, *, fn_name: str = None):
     )
 
 
-def bool_val_flags(cl_arg: Union[bool, None]):
+@st.composite
+def bool_val_flags(draw, cl_arg: Union[bool, None]):
     if cl_arg is not None:
-        return st.booleans().filter(lambda x: x == cl_arg)
-    return st.booleans()
+        return draw(st.booleans().filter(lambda x: x == cl_arg))
+    return draw(st.booleans())
 
 
 def handle_cmd_line_args(test_fn):
@@ -2168,33 +2176,12 @@ def handle_cmd_line_args(test_fn):
         # inspecting for keyword arguments in test function
         for param in inspect.signature(test_fn).parameters.values():
             if param.kind == param.KEYWORD_ONLY:
-                if param.name == "data":
+                if param.name in cmd_line_args:
+                    kwargs[param.name] = data.draw(
+                        bool_val_flags(get_command_line_flags[param.name])
+                    )
+                elif param.name == "data":
                     kwargs["data"] = data
-                elif param.name == "as_variable":
-                    as_variable = data.draw(
-                        bool_val_flags(get_command_line_flags["as-variable"])
-                    )
-                    kwargs["as_variable"] = as_variable
-                elif param.name == "native_array":
-                    native_array = data.draw(
-                        bool_val_flags(get_command_line_flags["native-array"])
-                    )
-                    kwargs["native_array"] = native_array
-                elif param.name == "with_out":
-                    with_out = data.draw(
-                        bool_val_flags(get_command_line_flags["with-out"])
-                    )
-                    kwargs["with_out"] = with_out
-                elif param.name == "instance_method":
-                    instance_method = data.draw(
-                        bool_val_flags(get_command_line_flags["instance-method"])
-                    )
-                    kwargs["instance_method"] = instance_method
-                elif param.name == "container":
-                    container = data.draw(
-                        bool_val_flags(get_command_line_flags["nestable"])
-                    )
-                    kwargs["container"] = container
                 elif param.name == "fw":
                     kwargs["fw"] = fw
                 elif param.name == "device":
