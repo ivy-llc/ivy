@@ -1,7 +1,7 @@
 # global
 import abc
 from numbers import Number
-from typing import Any, Iterable, Union, Optional
+from typing import Any, Iterable, Union, Optional, Dict, Callable
 
 # ToDo: implement all methods here as public instance methods
 
@@ -54,10 +54,10 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
     def gather_nd(
-            self: ivy.Array,
-            indices: Union[ivy.Array, ivy.NativeArray],
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        indices: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
@@ -92,6 +92,41 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.gather_nd(self, indices, out=out)
 
+    def einops_reduce(
+        self: ivy.Array,
+        pattern: str,
+        reduction: Union[str, Callable],
+        *,
+        out: Optional[ivy.Array] = None,
+        **axes_lengths: Dict[str, int],
+    ) -> ivy.Array:
+        """Perform einops reduce operation on input array x.
+
+        Parameters
+        ----------
+        self
+            Input array to be reduced.
+        pattern
+            Reduction pattern.
+        reduction
+            One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or
+            callable.
+        axes_lengths
+            Any additional specifications for dimensions.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New array with einops.reduce having been applied.
+
+        """
+        return ivy.einops_reduce(
+            self._data, pattern, reduction, out=out, **axes_lengths
+        )
+
     def to_numpy(self: ivy.Array):
         """
         ivy.Array instance method variant of ivy.to_numpy. This method simply wraps
@@ -124,7 +159,7 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.to_numpy(self)
-        
+
     def stable_divide(
         self,
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -185,8 +220,8 @@ class ArrayWithGeneral(abc.ABC):
         ivy.Array instance method variant of ivy.clip_vector_norm. This method simply
         wraps the function, and so the docstring for ivy.clip_vector_norm also applies
         to this method with minimal changes.
-           
-            
+
+
         Parameters
         ----------
         self
@@ -198,12 +233,12 @@ class ArrayWithGeneral(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-            
+
         Returns
         -------
         ret
             An array with the vector norm downscaled to the max norm if needed.
-        
+
         Examples
         --------
         With :code:`ivy.Array` instance method:
