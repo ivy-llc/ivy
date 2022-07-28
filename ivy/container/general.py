@@ -481,7 +481,10 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
-        """Perform einops reduce operation on input array x.
+        """
+        ivy.Container static method variant of ivy.einops_reduce. This method simply
+        wraps the function, and so the docstring for ivy.einops_reduce also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -539,7 +542,10 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
-        """Perform einops reduce operation on input array x.
+        """
+        ivy.Container instance method variant of ivy.einops_reduce. This method simply
+        wraps the function, and so the docstring for ivy.einops_reduce also applies
+        to this method with minimal changes.
 
         Parameters
         ----------

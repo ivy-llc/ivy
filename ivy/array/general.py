@@ -100,7 +100,10 @@ class ArrayWithGeneral(abc.ABC):
         out: Optional[ivy.Array] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Array:
-        """Perform einops reduce operation on input array x.
+        """
+        ivy.Array instance method variant of ivy.einops_reduce. This method simply
+        wraps the function, and so the docstring for ivy.einops_reduce also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
