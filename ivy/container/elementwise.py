@@ -163,7 +163,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse hyperbolic cosine of each element
             in ``x``. The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
-
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3, 4]),\
+                              b=ivy.array([1., 3., 10.0, 6]))
+        >>> y = ivy.Container.static_acosh(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1.32, 1.76, 2.06]),
+            b: ivy.array([0., 1.76, 2.99, 2.48])
+        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "acosh",
@@ -214,6 +225,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse hyperbolic cosine of each element in
             ``self``. The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1., 2., 3, 4]),\
+                              b=ivy.array([1., 3., 10.0, 6]))
+        >>> y = x.acosh()
+        >>> print(y)
+        {
+            a: ivy.array([0., 1.32, 1.76, 2.06]),
+            b: ivy.array([0., 1.76, 2.99, 2.48])
+        }
+        
         """
         return self.static_acosh(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -258,6 +281,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse cosine of each element in ``x``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -1.]))
+        >>> y = ivy.Container.static_acos(x)
+        >>> print(y)
+        {
+            a: ivy.array([1.57, 3.14, 0.]),
+            b: ivy.array([0., 1.57, 3.14])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -308,6 +341,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse cosine of each element in ``self``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -1.]))
+        >>> y = x.acos()
+        >>> print(y)
+        {
+            a: ivy.array([1.57, 3.14, 0.]),
+            b: ivy.array([0., 1.57, 3.14])
+        }
 
         """
         return self.static_acos(
@@ -712,6 +755,17 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of each element in ``x``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+        >>> y = ivy.Container.static_atan(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., -0.785, 0.785]),
+            b: ivy.array([0.785, 0., -1.41])
+        }
+
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -762,7 +816,17 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of each element in ``x``.
             The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
-
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
+        >>> y = x.atan()
+        >>> print(y)
+        {
+            a: ivy.array([0., -0.785, 0.785]),
+            b: ivy.array([0.785, 0., -1.41])
+        }
+        
         """
         return self.static_atan(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -959,6 +1023,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse hyperbolic tangent of each
             element in ``x``. The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0, 0.5, -0.5]), b=ivy.array([0., 0.2, 0.9]))
+        >>> y = ivy.Container.static_atanh(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.549, -0.549]),
+            b: ivy.array([0., 0.203, 1.47])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -1010,6 +1084,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse hyperbolic tangent of each element
             in ``self``. The returned container must have a floating-point
             data type determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0, 0.5, -0.5]), b=ivy.array([0., 0.2, 0.9]))
+        >>> y = x.atanh()
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.549, -0.549]),
+            b: ivy.array([0., 0.203, 1.47])
+        }
 
         """
         return self.static_atanh(
@@ -2784,6 +2868,20 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned array must
             have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                          b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([5, 6, 7]))
+        >>> z = ivy.Container.static_greater(y,x)
+        >>> print(z)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([True, True, True])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "greater",
@@ -2838,6 +2936,20 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned array must
             have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                          b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                          b=ivy.array([5, 6, 7]))
+        >>> z = x.greater(y)
+        >>> print(z)
+        {
+            a: ivy.array([True, True, True]),
+            b: ivy.array([False, False, False])
+        }
+
         """
         return self.static_greater(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -3273,6 +3385,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                              b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                              b=ivy.array([5, 6, 7]))
+        >>> z = ivy.Container.static_less(y,x)
+        >>> print(z)
+        {
+            a: ivy.array([True, True, True]),
+            b: ivy.array([False, False, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "less",
@@ -3327,6 +3452,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+                Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
+                              b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
+                              b=ivy.array([5, 6, 7]))
+        >>> z = x.less(y)
+        >>> print(z)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([True, True, True])
+        }
+
         """
         return self.static_less(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -6245,3 +6383,93 @@ class ContainerWithElementwise(ContainerBase):
         return self.static_erf(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
+
+    @staticmethod
+    def static_minimum(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """Computes the elementwise minimum between this container and another container
+        or number.
+
+        Parameters
+        ----------
+        x1
+            Input array containing elements to minimum threshold.
+        x2
+            The other container or number to compute the minimum against.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+            Container object with all sub-arrays having the minimum values computed.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "minimum",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def minimum(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """Computes the elementwise minimum between this container and another container
+        or number.
+
+        Parameters
+        ----------
+        self
+            Input array containing elements to minimum threshold.
+        x2
+            The other container or number to compute the minimum against.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+            Container object with all sub-arrays having the minimum values computed.
+
+        """
+        return self.static_minimum(self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out)
