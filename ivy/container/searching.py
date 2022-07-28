@@ -200,3 +200,72 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return self.static_nonzero(self)
+
+    @staticmethod
+    def static_where(
+        condition: ivy.Container,
+        x: ivy.Container,
+        y: ivy.Container,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.where. This method simply
+        wraps the function, and so the docstring for ivy.where also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        condition
+            input array or container. Should have a boolean data type.
+        x
+            input array or container. Should have a numeric data type.
+        y
+            input array or container. Should have a numeric data type.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the values of x where condition is True, and y
+            where condition is False.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "where", condition, x, y, out=out
+        )
+
+    def where(
+        self: ivy.Container,
+        condition: ivy.Container,
+        other: ivy.Container,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.where. This method simply
+        wraps the function, and so the docstring for ivy.where also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container. Should have a numeric data type.
+        condition
+            input array or container. Should have a boolean data type.
+        other
+            input array or container. Should have a numeric data type.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the values of self where condition is True, and other
+            where condition is False.
+
+        """
+        return self.static_where(condition, self, other, out=out)
