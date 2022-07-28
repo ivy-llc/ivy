@@ -87,12 +87,43 @@ def with_grads(with_grads: bool = None) -> bool:
 
 
 # noinspection PyShadowingNames
-def set_with_grads(with_grads):
-    """Summary.
+def set_with_grads(with_grads: bool):
+    """
+    Enter a nested code space where gradients are computed. This method
+    adds the with_grads component to the global list with_grads_stack
 
     Parameters
     ----------
     with_grads
+        Boolean value denoting whether the current code block has gradient
+        computation enabled or not.
+        'True' or 'False' or 'None' (Default value = None)
+
+    Returns
+    -------
+    ret
+        If with_grads is boolean, it returns the boolean value representing
+        if gradient computation is enabled or not.
+        If with_grads is None, it returns the last element in the with_grads_stack
+        representing the parent of the current nested code block. If with_grads_stack
+        is empty, it returns True by default.
+        If with_grads is neither None nor boolean, it will raise an AssertionError
+
+    Examples
+    --------
+    >>> ivy.set_with_grads(True)
+    >>> print(ivy.with_grads(with_grads=None))
+    True
+
+    >>> ivy.set_with_grads(False)
+    >>> print(ivy.with_grads(with_grads=None))
+    False
+
+    >>> print(ivy.with_grads(with_grads=True))
+    True
+
+    >>> print(ivy.with_grads(with_grads=False))
+    False
 
     """
     assert with_grads in [True, False]
@@ -101,10 +132,10 @@ def set_with_grads(with_grads):
 
 
 def unset_with_grads():
-    """"""
+   
     global with_grads_stack
     if with_grads_stack:
-        with_grads_stack.pop(-1)
+         with_grads_stack.pop(-1)
 
 
 # Variables #
