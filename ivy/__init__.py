@@ -51,11 +51,10 @@ class NativeShape:
 
 class Device(str):
     def __new__(cls, dev_str):
-        if dev_str != "":
-            assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
-            if dev_str != "cpu":
-                assert dev_str[3] == ":"
-                assert dev_str[4:].isnumeric()
+        assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
+        if dev_str != "cpu":
+            assert dev_str[3] == ":"
+            assert dev_str[4:].isnumeric()
         return str.__new__(cls, dev_str)
 
 
@@ -75,9 +74,7 @@ class Shape(tuple):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
             shape_tup = tuple(shape_tup)
-        assert builtins.all(
-            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup]
-        )
+        assert builtins.all([isinstance(v, int) for v in shape_tup])
         if ivy.shape_array_mode():
             return ivy.array(shape_tup)
         return tuple.__new__(cls, shape_tup)
