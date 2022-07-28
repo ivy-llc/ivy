@@ -1288,6 +1288,10 @@ def test_frontend_function(
             lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
         )
 
+        #fix for torch not accepting string args for dtype
+        if "dtype" in kwargs_frontend and frontend == 'torch':
+            kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
+
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
         if test_unsupported:
