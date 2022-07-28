@@ -108,7 +108,7 @@ def test_linspace(
 # logspace
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_float_dtypes,
         num_arrays=2,
         min_value=None,
         max_value=None,
