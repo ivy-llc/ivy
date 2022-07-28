@@ -131,7 +131,7 @@ def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
     return np.iinfo(ivy.as_native_dtype(type))
 
 
-def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> np.dtype:
+def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> ivy.Dtype:
     if len(arrays_and_dtypes) <= 1:
         return np.result_type(arrays_and_dtypes)
     result = np.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])

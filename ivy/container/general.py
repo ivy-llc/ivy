@@ -1,4 +1,5 @@
 # global
+from numbers import Number
 from typing import Any, Union, List, Dict, Iterable, Optional
 
 # local
@@ -11,48 +12,141 @@ import ivy
 
 # noinspection PyMissingConstructor
 class ContainerWithGeneral(ContainerBase):
-    def clip_vector_norm(
-        self,
-        max_norm,
-        p,
-        global_norm=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
+    @staticmethod
+    def static_clip_vector_norm(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        max_norm: float,
+        p: float = 2.0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-    ):
-        max_norm_is_container = isinstance(max_norm, ivy.Container)
-        p_is_container = isinstance(p, ivy.Container)
-        if global_norm:
-            if max_norm_is_container or p_is_container:
-                raise Exception(
-                    """global_norm can only be computed for 
-                    scalar max_norm and p_val arguments,"""
-                    "but found {} and {} of type {} and {} respectively".format(
-                        max_norm, p, type(max_norm), type(p)
-                    )
-                )
-            vector_norm = self.vector_norm(p, global_norm=True)
-            ratio = max_norm / vector_norm
-            if ratio < 1:
-                return self.handle_inplace(self * ratio, out)
-            return self.handle_inplace(self.copy(), out)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.clip_vector_norm(
-                    x,
-                    max_norm[kc] if max_norm_is_container else max_norm,
-                    p[kc] if p_is_container else p,
-                )
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.clip_vector_norm. This method
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array
+        max_norm
+            float, the maximum value of the array norm.
+        p
+            optional float, the p-value for computing the p-norm. Default is 2.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the vector norm downscaled to the max norm if needed.
+
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_clip_vector_norm(x, 2.0)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.894, 1.79]),
+            b: ivy.array([0.849, 1.13, 1.41])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "clip_vector_norm",
+            x,
+            max_norm,
+            p,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def clip_vector_norm(
+        self: ivy.Container,
+        max_norm: float,
+        p: float = 2.0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.clip_vector_norm. This method
+        simply wraps the function, and so the docstring for ivy.clip_vector_norm
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        max_norm
+            float, the maximum value of the array norm.
+        p
+            optional float, the p-value for computing the p-norm. Default is 2.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the vector norm downscaled to the max norm if needed.
+
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = x.clip_vector_norm(2.0, 1.0)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.667, 1.33]),
+            b: ivy.array([0.5, 0.667, 0.833])
+        }
+
+        """
+        return self.static_clip_vector_norm(
+            self,
+            max_norm,
+            p,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out=out,
         )
 
@@ -618,6 +712,194 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "to_numpy",
             x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_stable_divide(
+        numerator: ivy.Container,
+        denominator: Union[Number, ivy.Array, ivy.Container],
+        min_denominator: Union[
+            Number, ivy.Array, ivy.NativeArray, ivy.Container
+        ] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stable_divide. This method simply
+        wraps the function, and so the docstring for ivy.stable_divide also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        numerator
+            Container of the numerators of the division.
+        denominator
+            Container of the denominators of the division.
+        min_denominator
+            Container of the minimum denominator to use,
+            use global ivy._MIN_DENOMINATOR by default.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container of elements containing the new items following the numerically
+            stable division.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
+        >>> y = ivy.Container.stable_divide(x, 0.5)
+        >>> print(y)
+        {
+            a: ivy.array([20., 30.]),
+            b: ivy.array([40., 50.])
+        }
+
+        >>> x = ivy.Container(a=1, b=10)
+        >>> y = ivy.asarray([4, 5])
+        >>> z = ivy.Container.stable_divide(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([0.25, 0.2]),
+            b: ivy.array([2.5, 2.])
+        }
+
+        >>> x = ivy.Container(a=1, b=10)
+        >>> y = np.array((4.5, 9))
+        >>> z = ivy.Container.stable_divide(x, y)
+        >>> print(z)
+        {
+            a: array([0.22222222, 0.11111111]),
+            b: array([2.22222222, 1.11111111])
+        }
+
+
+        >>> x = ivy.Container(a=ivy.asarray([1., 2.]), b=ivy.asarray([3., 4.]))
+        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 0.4]))
+        >>> z = ivy.Container.stable_divide(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([2., 0.8]),
+            b: ivy.array([0.857, 10.])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([1., 2.], [3., 4.]),\
+                              b=ivy.asarray([5., 6.], [7., 8.]))
+        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 0.4]))
+        >>> z = ivy.Container.stable_divide(x, y, min_denominator=2)
+        >>> print(z)
+        {
+            a: ivy.array([0.4, 0.444]),
+            b: ivy.array([0.909, 2.5])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "stable_divide",
+            numerator,
+            denominator,
+            min_denominator,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def stable_divide(
+        self,
+        denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+        min_denominator: Union[
+            Number, ivy.Array, ivy.NativeArray, ivy.Container
+        ] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stable_divide. This method
+        simply wraps the function, and so the docstring for ivy.stable_divide
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        denominator
+            Container of the denominators of the division.
+        min_denominator
+            Container of the minimum denominator to use,
+            use global ivy._MIN_DENOMINATOR by default.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of numpy arrays copying all the element of the container
+            ``self``.
+            A container of elements containing the new items following the numerically
+            stable division, using ``self`` as the numerator.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.asarray([3., 6.]), b=ivy.asarray([9., 12.]))
+        >>> y = x.stable_divide(5)
+        >>> print(y)
+        {
+            a: ivy.array([0.6, 1.2]),
+            b: ivy.array([1.8, 2.4])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([[2., 4.], [6., 8.]]),\
+                              b=ivy.asarray([[10., 12.], [14., 16.]]))
+        >>> z = x.stable_divide(2, min_denominator=2)
+        >>> print(z)
+        {
+            a: ivy.array([[0.5, 1.],
+                  [1.5, 2.]]),
+            b: ivy.array([[2.5, 3.],
+                  [3.5, 4.]])
+        }
+
+
+        >>> x = ivy.Container(a=ivy.asarray([3., 6.]), b=ivy.asarray([9., 12.]))
+        >>> y = ivy.Container(a=ivy.asarray([6., 9.]), b=ivy.asarray([12., 15.]))
+        >>> z = x.stable_divide(y)
+        >>> print(z)
+        {
+            a: ivy.array([0.5, 0.667]),
+            b: ivy.array([0.75, 0.8])
+        }
+
+        """
+        return self.static_stable_divide(
+            self,
+            denominator,
+            min_denominator,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

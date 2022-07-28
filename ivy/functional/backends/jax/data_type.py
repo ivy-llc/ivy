@@ -133,7 +133,7 @@ def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
     return jnp.iinfo(ivy.as_native_dtype(type))
 
 
-def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
+def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> ivy.Dtype:
     if len(arrays_and_dtypes) <= 1:
         return jnp.result_type(arrays_and_dtypes)
 
