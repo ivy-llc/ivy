@@ -258,13 +258,13 @@ and passing checks for a commit relevant to your PR by clicking on the ‚ùå or ‚ú
 one or more tests are failing, all tests are passing, the check has just started, respectively)
 icon next to the commit hash.
 
-    .. image:: content/PR_checks.png
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/basics/PR_checks.png?raw=true
        :width: 420
 
 Further, if you click on the details next to a check then you can see the logs for that particular
 test.
 
-    .. image:: content/pr_logs.png
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/basics/pr_logs.png?raw=true
        :width: 420
 
 Also, if you have pushed multiple commits to a PR in a relatively short time, you may want to cancel
@@ -273,7 +273,7 @@ described above and clicking on the `Cancel Workflow` button.
 
 Note that this option might be unavailable depending on the level of access that you have.
 
-    .. image:: content/cancel_workflow.png
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/basics/cancel_workflow.png?raw=true
        :width: 420
 
 Finally, all PRs must give write access to Ivy maintainers of the branch.
