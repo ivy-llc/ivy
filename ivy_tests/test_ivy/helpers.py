@@ -509,6 +509,11 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
 
 
 def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
+    if type(ret_np_flat) != list:
+        ret_np_flat = [ret_np_flat]
+    if type(ret_from_np_flat) != list:
+        ret_from_np_flat = [ret_from_np_flat]
+    assert len(ret_np_flat) == len(ret_from_np_flat)
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
@@ -517,6 +522,84 @@ def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
     else:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
             assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
+
+def args_to_container(array_args):
+    array_args_container = ivy.Container({str(k): v for k, v in enumerate(array_args)})
+    return array_args_container
+
+
+def gradient_test(
+    *,
+    fn_name,
+    all_as_kwargs_np,
+    args_np,
+    kwargs_np,
+    input_dtypes,
+    as_variable_flags,
+    native_array_flags,
+    container_flags,
+    rtol_: float = None,
+    atol_: float = 1e-06,
+    ground_truth_backend: str = "torch",
+):
+    def grad_fn(xs):
+        array_vals = [v for k, v in xs.to_iterator()]
+        arg_array_vals = array_vals[0 : len(args_idxs)]
+        kwarg_array_vals = array_vals[len(args_idxs) :]
+        args_writeable = ivy.copy_nest(args)
+        kwargs_writeable = ivy.copy_nest(kwargs)
+        ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
+        ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
+        return ivy.mean(ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable))
+
+    args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
+        args_np=args_np,
+        kwargs_np=kwargs_np,
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable_flags,
+        native_array_flags=native_array_flags,
+        container_flags=container_flags,
+    )
+    arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
+    kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
+    xs = args_to_container(arg_array_vals + kwarg_array_vals)
+    _, ret_np_flat = get_ret_and_flattened_array(
+        ivy.execute_with_gradients, grad_fn, xs
+    )
+    grads_np_flat = ret_np_flat[1]
+    # compute the return with a Ground Truth backend
+    ivy.set_backend(ground_truth_backend)
+    test_unsupported = check_unsupported_dtype(
+        fn=ivy.__dict__[fn_name],
+        input_dtypes=input_dtypes,
+        all_as_kwargs_np=all_as_kwargs_np,
+    )
+    if test_unsupported:
+        return
+    args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
+        args_np=args_np,
+        kwargs_np=kwargs_np,
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable_flags,
+        native_array_flags=native_array_flags,
+        container_flags=container_flags,
+    )
+    arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
+    kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
+    xs = args_to_container(arg_array_vals + kwarg_array_vals)
+    _, ret_np_from_gt_flat = get_ret_and_flattened_array(
+        ivy.execute_with_gradients, grad_fn, xs
+    )
+    grads_np_from_gt_flat = ret_np_from_gt_flat[1]
+    ivy.unset_backend()
+    # value test
+    value_test(
+        ret_np_flat=grads_np_flat,
+        ret_from_np_flat=grads_np_from_gt_flat,
+        rtol=rtol_,
+        atol=atol_,
+    )
 
 
 def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
@@ -847,6 +930,7 @@ def test_function(
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: bool = True,
+    test_gradients: bool = False,
     ground_truth_backend: str = "numpy",
     device_: str = "cpu",
     **all_as_kwargs_np,
@@ -885,6 +969,8 @@ def test_function(
         absolute tolerance value.
     test_values
         if True, test for the correctness of the resulting values.
+    test_gradients
+        if True, test for the correctness of gradients.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     all_as_kwargs_np
@@ -1111,6 +1197,27 @@ def test_function(
         ivy.unset_backend()
         raise e
     ivy.unset_backend()
+    # gradient test
+    if (
+        test_gradients
+        and not fw == "numpy"
+        and all(as_variable_flags)
+        and not any(container_flags)
+        and not instance_method
+    ):
+        gradient_test(
+            fn_name=fn_name,
+            all_as_kwargs_np=all_as_kwargs_np,
+            args_np=args_np,
+            kwargs_np=kwargs_np,
+            input_dtypes=input_dtypes,
+            as_variable_flags=as_variable_flags,
+            native_array_flags=native_array_flags,
+            container_flags=container_flags,
+            rtol_=rtol_,
+            atol_=atol_,
+        )
+
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_gt
@@ -1284,6 +1391,10 @@ def test_frontend_function(
             kwargs_np,
             lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
         )
+
+        # fix for torch not accepting string args for dtype
+        if "dtype" in kwargs_frontend and frontend == "torch":
+            kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
 
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
@@ -1544,8 +1655,8 @@ def array_and_indices(
     min_dim_size=1,
     max_dim_size=10,
 ):
-    """Generates two arrays x & indices, the values in the indices array are indices of
-    the array x. Draws an integers randomly from the minimum and maximum number of
+    """Generates two arrays x & indices, the values in the indices array are indices
+    of the array x. Draws an integers randomly from the minimum and maximum number of
     positional arguments a given function can take.
 
     Parameters
