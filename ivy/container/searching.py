@@ -1,5 +1,5 @@
 # global
-from typing import Optional
+from typing import Optional, Union
 
 # local
 import ivy
@@ -13,11 +13,11 @@ from ivy.container.base import ContainerBase
 class ContainerWithSearching(ContainerBase):
     @staticmethod
     def static_argmax(
-        x: ivy.Container,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
         *,
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argmax. This method simply
@@ -55,7 +55,7 @@ class ContainerWithSearching(ContainerBase):
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
         *,
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argmax. This method simply
@@ -88,11 +88,11 @@ class ContainerWithSearching(ContainerBase):
 
     @staticmethod
     def static_argmin(
-        x: ivy.Container,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
         *,
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argmin. This method simply
@@ -130,7 +130,7 @@ class ContainerWithSearching(ContainerBase):
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
         *,
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argmin. This method simply
@@ -163,7 +163,9 @@ class ContainerWithSearching(ContainerBase):
         return self.static_argmin(self, axis=axis, keepdims=keepdims, out=out)
 
     @staticmethod
-    def static_nonzero(x: ivy.Container) -> ivy.Container:
+    def static_nonzero(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray]
+    ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.nonzero. This method simply
         wraps the function, and so the docstring for ivy.nonzero also applies
@@ -203,11 +205,11 @@ class ContainerWithSearching(ContainerBase):
 
     @staticmethod
     def static_where(
-        condition: ivy.Container,
-        x: ivy.Container,
-        y: ivy.Container,
+        condition: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *,
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.where. This method simply
@@ -218,9 +220,9 @@ class ContainerWithSearching(ContainerBase):
         ----------
         condition
             input array or container. Should have a boolean data type.
-        x
+        x1
             input array or container. Should have a numeric data type.
-        y
+        x2
             input array or container. Should have a numeric data type.
         out
             optional output container, for writing the result to. It must have a shape
@@ -229,20 +231,20 @@ class ContainerWithSearching(ContainerBase):
         Returns
         -------
         ret
-            a container containing the values of x where condition is True, and y
+            a container containing the values of x1 where condition is True, and x2
             where condition is False.
 
         """
         return ContainerBase.multi_map_in_static_method(
-            "where", condition, x, y, out=out
+            "where", condition, x1, x2, out=out
         )
 
     def where(
         self: ivy.Container,
-        condition: ivy.Container,
-        other: ivy.Container,
+        condition: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        other: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *,
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.where. This method simply
