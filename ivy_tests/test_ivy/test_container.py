@@ -1102,25 +1102,6 @@ def test_container_all_false(device, call):
     assert error_raised
 
 
-def test_container_as_random_uniform(device, call):
-    dict_in = {
-        "a": ivy.array([1.0], device=device),
-        "b": {
-            "c": ivy.array([2.0], device=device),
-            "d": ivy.array([3.0], device=device),
-        },
-    }
-    container = Container(dict_in)
-
-    container_random = container.as_random_uniform()
-    assert (ivy.to_numpy(container_random["a"]) != np.array([1.0]))[0]
-    assert (ivy.to_numpy(container_random.a) != np.array([1.0]))[0]
-    assert (ivy.to_numpy(container_random["b"]["c"]) != np.array([2.0]))[0]
-    assert (ivy.to_numpy(container_random.b.c) != np.array([2.0]))[0]
-    assert (ivy.to_numpy(container_random["b"]["d"]) != np.array([3.0]))[0]
-    assert (ivy.to_numpy(container_random.b.d) != np.array([3.0]))[0]
-
-
 def test_container_clone(device, call):
     dict_in = {
         "a": ivy.array([[1], [2], [3]], device=device),
