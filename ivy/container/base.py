@@ -1622,51 +1622,6 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-    def minimum(
-        self,
-        x2,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        out=None,
-    ):
-        """Computes the elementwise minimum between this container and another container
-        or number.
-
-        Parameters
-        ----------
-        x2
-            The other container or number to compute the minimum against.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays having the minimum values computed.
-
-        """
-        is_container = isinstance(x2, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.minimum(x, x2[kc] if is_container else x2)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
-        )
 
     def maximum(
         self,
@@ -1983,39 +1938,6 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = value
         return ivy.Container(return_dict, **self._config)
 
-    def as_ones(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Return arrays of ones for all nested arrays in the container.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays filled with ones.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.ones_like(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def as_zeros(
         self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
     ):
@@ -2089,54 +2011,6 @@ class ContainerBase(dict, abc.ABC):
 
         return self.map(
             lambda x, kc: _ret_bool(x),
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def as_random_uniform(
-        self,
-        low=0.0,
-        high=1.0,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Return arrays of random uniform values for all nested arrays in the
-        container.
-
-        Parameters
-        ----------
-        low
-            Lower boundary of the output interval. All values generated will be greater
-            than or equal to low. The default value is 0.
-        high
-            Upper boundary of the output interval. All values generated will be less
-            than high. The default value is 1.0.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays filled with random uniform values.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.random_uniform(
-                low, high, x.shape, device=self._ivy.dev(x)
-            )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
             key_chains,
             to_apply,
             prune_unapplied,
