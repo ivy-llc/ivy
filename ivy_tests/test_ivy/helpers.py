@@ -509,11 +509,11 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
 
 
 def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
-    if type(ret_np_flat) != np.ndarray:
-        ret_np_flat = np.asarray(ret_np_flat)
-    if type(ret_from_np_flat) != np.ndarray:
-        ret_from_np_flat = np.asarray(ret_from_np_flat)
-    assert ret_np_flat.shape[0] == ret_from_np_flat.shape[0]
+    if type(ret_np_flat) != list:
+        ret_np_flat = [ret_np_flat]
+    if type(ret_from_np_flat) != list:
+        ret_from_np_flat = [ret_from_np_flat]
+    assert len(ret_np_flat) == len(ret_from_np_flat)
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
@@ -1658,10 +1658,12 @@ def array_and_indices(
     ----------
     last_dim_same_size
         True:
-            The shape of the indices array is the exact same as the shape of the values array.
+            The shape of the indices array is the exact same as the shape of the values
+            array.
         False:
-            The last dimension of the second array is generated from a range of (0 -> dimension size of first array).
-            This results in output shapes such as x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
+            The last dimension of the second array is generated from a range of
+            (0 -> dimension size of first array). This results in output shapes such as
+            x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
     allow_inf
         True: inf values are allowed to be generated in the values array
     min_num_dims
