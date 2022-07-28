@@ -367,7 +367,7 @@ class ContainerWithGeneral(ContainerBase):
         With :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, float('nan')]))
-        >>> y = x.static_has_nans()
+        >>> y = ivy.Container.static_has_nans(x)
         >>> print(y)
         {
             a: false,
