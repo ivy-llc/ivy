@@ -1,8 +1,9 @@
 """Collection of tests for searching functions."""
 
 # Gloabl
+from datetime import timedelta
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, settings
 
 # local
 import ivy.functional.backends.numpy as ivy_np
@@ -106,4 +107,44 @@ def test_argmin(
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=keepdims,
+    )
+
+
+@settings(deadline=timedelta(milliseconds=500))
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_int_dtypes,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="nonzero"),
+    data=st.data(),
+)
+@handle_cmd_line_args
+def test_nonzero(
+    *,
+    data,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="nonzero",
+        x=np.asarray(x, dtype=input_dtype),
     )
