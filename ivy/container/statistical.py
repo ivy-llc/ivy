@@ -10,6 +10,71 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithStatistical(ContainerBase):
+    @staticmethod
+    def static_min(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+        ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.min. 
+        This method simply wraps the function, and so the docstring for 
+        ivy.min also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input array or container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the minimun value of array  ``x``. The
+            returned container must have the same data type as ``x``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
+                            b=ivy.array([5., 6., 7.]))
+        >>> z = ivy.Container.static_min(x)
+        >>> print(z)
+        {
+            a: ivy.array([4.]),
+            b: ivy.array([5.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "min",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+
     def min(
         self: ivy.Container,
         axis: Optional[Union[int, Tuple[int]]] = None,
@@ -53,11 +118,13 @@ class ContainerWithStatistical(ContainerBase):
         Returns
         -------
         ret
-            a container containing the absolute value of each element in ``x``. The
+            a container containing the minimun value of array  ``x``. The
             returned container must have the same data type as ``x``.
 
         Examples
         --------
+        With one :code:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([0., 2.6, 10]),\
                             b=ivy.array([4.5, -7, 0, 9]))
         >>> y = ivy.Container.min(x)

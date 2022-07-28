@@ -260,8 +260,7 @@ def min(
         b: ivy.array(8.)
     }
 
-    >>> x = ivy.Container(a=ivy.array([8, 9, 10]),\
-                          b=ivy.array([30, 19, 3]))
+    >>> x = ivy.Container(a=ivy.array([8, 9, 10]), b=ivy.array([30, 19, 3]))
     >>> z = x.min()
     >>> print(z)  
     {
