@@ -57,6 +57,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ivy.Container static method variant of ivy.cholesky. This method simply wraps
         the function, and so the docstring for ivy.cholesky also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         x
@@ -80,6 +81,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -88,6 +90,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             otherwise, the returned container must contain upper-triangular matrices.
             The returned container must have a floating-point data type determined by
             Type Promotion Rules and must have the same shape as self.
+
         Examples
         --------
         With one :code:`ivy.Container` input:
@@ -139,6 +142,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ivy.Container instance method variant of ivy.cholesky. This method simply wraps
         the function, and so the docstring for ivy.cholesky also applies to this method
         with minimal changes.
+
         Parameters
         ----------
         self
@@ -162,6 +166,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -170,6 +175,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             otherwise, the returned container must contain upper-triangular matrices.
             The returned container must have a floating-point data type determined by
             Type Promotion Rules and must have the same shape as self.
+            
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
