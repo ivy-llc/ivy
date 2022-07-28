@@ -6383,3 +6383,93 @@ class ContainerWithElementwise(ContainerBase):
         return self.static_erf(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
+
+    @staticmethod
+    def static_minimum(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """Computes the elementwise minimum between this container and another container
+        or number.
+
+        Parameters
+        ----------
+        x1
+            Input array containing elements to minimum threshold.
+        x2
+            The other container or number to compute the minimum against.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+            Container object with all sub-arrays having the minimum values computed.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "minimum",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def minimum(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """Computes the elementwise minimum between this container and another container
+        or number.
+
+        Parameters
+        ----------
+        self
+            Input array containing elements to minimum threshold.
+        x2
+            The other container or number to compute the minimum against.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+            Container object with all sub-arrays having the minimum values computed.
+
+        """
+        return self.static_minimum(self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out)
