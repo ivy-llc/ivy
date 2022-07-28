@@ -30,6 +30,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 def test_random_uniform(
     *,
+    data,
     dtype_and_low,
     dtype_and_high,
     dtype,
@@ -87,6 +88,7 @@ def test_random_uniform(
 @handle_cmd_line_args
 def test_random_normal(
     *,
+    data,
     dtype_and_mean,
     dtype_and_std,
     dtype,
@@ -185,6 +187,7 @@ def test_multinomial(everything, device, call):
 @handle_cmd_line_args
 def test_randint(
     *,
+    data,
     dtype_and_low,
     dtype_and_high,
     dtype,

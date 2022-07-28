@@ -30,6 +30,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 def test_linear(
     *,
+    data,
     outer_batch_shape,
     inner_batch_shape,
     num_out_feats,
@@ -126,6 +127,7 @@ def test_dropout(*, data, array_shape, dtype, as_variable, fw, device, call):
 @handle_cmd_line_args
 def test_scaled_dot_product_attention(
     *,
+    data,
     batch_shape,
     num_queries,
     num_keys,
@@ -328,6 +330,7 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
 @handle_cmd_line_args
 def test_conv1d(
     *,
+    data,
     x_f_d_df,
     stride,
     pad,
@@ -433,6 +436,7 @@ def test_conv1d_transpose(
 @handle_cmd_line_args
 def test_conv2d(
     *,
+    data,
     x_f_d_df,
     stride,
     pad,
@@ -484,6 +488,7 @@ def test_conv2d(
 @handle_cmd_line_args
 def test_conv2d_transpose(
     *,
+    data,
     array_shape,
     filter_shape,
     stride,
@@ -606,6 +611,7 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, cal
 @handle_cmd_line_args
 def test_conv3d(
     *,
+    data,
     x_f_d_df,
     stride,
     pad,
@@ -657,6 +663,7 @@ def test_conv3d(
 @handle_cmd_line_args
 def test_conv3d_transpose(
     *,
+    data,
     array_shape,
     filter_shape,
     stride,
@@ -729,6 +736,7 @@ def test_conv3d_transpose(
 @handle_cmd_line_args
 def test_lstm(
     *,
+    data,
     b,
     t,
     input_channel,

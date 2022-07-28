@@ -208,6 +208,7 @@ def _get_dtype_and_vector(draw):
 @handle_cmd_line_args
 def test_vector_to_skew_symmetric_matrix(
     *,
+    data,
     dtype_x,
     as_variable,
     with_out,

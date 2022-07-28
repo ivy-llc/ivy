@@ -82,7 +82,7 @@ def _empty_dir(path, recreate=False):
     data=st.data(),
 )
 @handle_cmd_line_args
-def test_dev(*, array_shape, dtype, as_variable, fw):
+def test_dev(*, data, array_shape, dtype, as_variable, fw):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -119,7 +119,7 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
     data=st.data(),
 )
 @handle_cmd_line_args
-def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
+def test_as_ivy_dev(*, data, array_shape, dtype, as_variable, fw):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -151,7 +151,7 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
     data=st.data(),
 )
 @handle_cmd_line_args
-def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
+def test_as_native_dev(*, data, array_shape, dtype, as_variable, fw, call):
     if fw == "torch" and "int" in dtype:
         return
 
@@ -232,7 +232,7 @@ def test_default_device(device):
 )
 @handle_cmd_line_args
 def test_to_device(
-    *, array_shape, dtype, as_variable, with_out, fw, device, call, stream
+    *, data, array_shape, dtype, as_variable, with_out, fw, device, call, stream
 ):
     if fw == "torch" and "int" in dtype:
         return
@@ -305,7 +305,7 @@ def _axis(draw):
 )
 @handle_cmd_line_args
 def test_split_func_call(
-    *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
+    *, data, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
     if fw == "torch" and "int" in dtype:
         return
@@ -352,7 +352,7 @@ def test_split_func_call(
 )
 @handle_cmd_line_args
 def test_split_func_call_with_cont_input(
-    *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
+    *, data, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
     # Skipping some dtype for certain frameworks
     if (
