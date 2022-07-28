@@ -37,7 +37,7 @@ def min(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
     *,
-    out: Optional[JaxArray] = None,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims, out=out)
 
