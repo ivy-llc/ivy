@@ -733,9 +733,9 @@ def matmul(
     With :code:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[1., 2.],  \
-    ...                       [0., 1.]]) 
+                            [0., 1.]]) 
     >>> y = ivy.native_array([[2., 0.],  \
-    ...                       [0., 3.]])
+                            [0., 3.]])
     >>> z = ivy.matmul(x, y)
     >>> print(z)
     ivy.array([[2., 6.],
@@ -768,35 +768,13 @@ def matmul(
     and :code:`ivy.Array` inputs:
     
     >>> x = ivy.native_array([[1., 2.], \
-    ...                       [0., 3.]])
+                            [0., 3.]])
     >>> y = ivy.array([[1.], \
-    ...                [3.]])
+                        [3.]])
     >>> z = ivy.matmul(x, y)
     >>> print(z)
     ivy.array([[7.],
                [9.]])
-
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance inputs:
-
-    >>> x = ivy.array([1., 4.])
-    >>> y = ivy.array([3., 2.])
-    >>> z = x.matmul(y)
-    >>> print(z)
-    ivy.array(11.)
-
-    With :code:`ivy.Container` instance inputs:
-
-    >>> x = ivy.Container(a=ivy.array([5., 2.]), b=ivy.array([2., 1.]))
-    >>> y = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 2.]))
-    >>> z = x.matmul(y)
-    >>> print(z)
-    {
-        a: ivy.array(39.),
-        b: ivy.array(8.)
-    }
 
     """
     return current_backend(x1).matmul(x1, x2, out=out)
