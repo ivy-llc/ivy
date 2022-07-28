@@ -22,6 +22,7 @@ jobs:
       - name: execute py script # run the run.py to get the latest data
         id: dash
         run: |
+          ls
           cd ivy/automation_tools/tools/pr_tools
           python3 pr_dash.py -all
         env:
