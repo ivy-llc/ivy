@@ -242,7 +242,7 @@ class ContainerWithSearching(ContainerBase):
     def where(
         self: ivy.Container,
         condition: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        other: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
@@ -257,7 +257,7 @@ class ContainerWithSearching(ContainerBase):
             input array or container. Should have a numeric data type.
         condition
             input array or container. Should have a boolean data type.
-        other
+        x2
             input array or container. Should have a numeric data type.
         out
             optional output container, for writing the result to. It must have a shape
@@ -266,8 +266,8 @@ class ContainerWithSearching(ContainerBase):
         Returns
         -------
         ret
-            a container containing the values of self where condition is True, and other
+            a container containing the values of self where condition is True, and x2
             where condition is False.
 
         """
-        return self.static_where(condition, self, other, out=out)
+        return self.static_where(condition, self, x2, out=out)
