@@ -545,10 +545,12 @@ def gradient_test(
 ):
     def grad_fn(xs):
         array_vals = [v for k, v in xs.to_iterator()]
+        arg_array_vals = array_vals[0 : len(args_idxs)]
+        kwarg_array_vals = array_vals[len(args_idxs) :]
         args_writeable = ivy.copy_nest(args)
         kwargs_writeable = ivy.copy_nest(kwargs)
-        ivy.set_nest_at_indices(args_writeable, args_idxs, array_vals)
-        ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, array_vals)
+        ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
+        ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
         return ivy.mean(ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable))
 
     args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
@@ -1201,7 +1203,6 @@ def test_function(
         and not fw == "numpy"
         and all(as_variable_flags)
         and not any(container_flags)
-        and not any(native_array_flags)
         and not instance_method
     ):
         gradient_test(
