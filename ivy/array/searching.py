@@ -105,3 +105,36 @@ class ArrayWithSearching(abc.ABC):
 
         """
         return ivy.nonzero(self)
+
+    def where(
+        self: ivy.Array,
+        condition: ivy.Array,
+        other: ivy.Array,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.where. This method simply
+        wraps the function, and so the docstring for ivy.where also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+        condition
+            Where True, yield self, otherwise yield other.
+        other
+            values from which to choose when condition is False.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with elements from self where condition is True, and elements from
+            other elsewhere.
+
+        """
+        return ivy.where(condition, self, other, out=out)
