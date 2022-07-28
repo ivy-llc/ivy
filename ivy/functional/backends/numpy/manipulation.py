@@ -72,7 +72,8 @@ def permute_dims(
 def reshape(
     x: np.ndarray,
     shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None
+    *,
+    copy: Optional[bool] = None,
 ) -> np.ndarray:
     if copy:
         newarr = x.copy()
