@@ -315,7 +315,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable):
 
 
 def nested_indices_where(
-    nest: Iterable,
+    nest: Union[List, Tuple, Dict],
     fn: Callable,
     check_nests: bool = False,
     to_ignore: Union[type, Tuple[type]] = None,
@@ -343,12 +343,48 @@ def nested_indices_where(
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
-
+    stop_after_n_found
+        to stop after some needed indices are found.
     Returns
     -------
     ret
         A set of indices for the nest where the function evaluated as True.
 
+    Examples
+    --------
+    With :code:`List` input:
+
+    >>> nest = [[[1, 2, 3], 19], [[9, 36, 80], 100]]
+    >>> fn = ivy.sqrt
+    >>> nested_indices = ivy.nested_indices_where(nest, fn)
+    >>> print(nested_indices)
+    [
+        [0, 0, 0], [0, 0, 1],
+        [0, 0, 2], [0, 1],
+        [1, 0, 0], [1, 0, 1],
+        [1, 0, 2], [1, 1]
+    ]
+
+    With :code:`Tuple` input:
+
+    >>> nest = (-5, 9, 2, 0.3, 4.)
+    >>> fn = ivy.log
+    >>> nested_indices = ivy.nested_indices_where(nest, fn, stop_after_n_found=4)
+    >>> print(nested_indices)
+    [[0], [1], [2], [3]]
+
+    With :code:`Dict` input:
+
+    >>> nest={'a': [2., 0.6, -2.], 'b': [1., 4., 1.9], 'c': [9.4]}
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fun)
+    >>> print(nested_indices)
+    [
+        ['a', 0], ['a', 1],
+        ['a', 2], ['b', 0],
+        ['b', 1], ['b', 2],
+        ['c', 0]
+    ]
     """
     to_ignore = ivy.default(to_ignore, ())
     _index = list() if _index is None else _index
