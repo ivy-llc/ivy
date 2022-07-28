@@ -411,9 +411,9 @@ log2.support_native_out = True
 
 @_handle_0_dim_output
 def logaddexp(
-    x1: np.ndarray, 
-    x2: np.ndarray, 
-    *, 
+    x1: np.ndarray,
+    x2: np.ndarray,
+    *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)

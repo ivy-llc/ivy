@@ -476,9 +476,9 @@ abs.support_native_out = True
 
 
 def logaddexp(
-    x1: torch.Tensor, 
-    x2: torch.Tensor, 
-    *, 
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
