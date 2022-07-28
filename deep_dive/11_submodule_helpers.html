@@ -68,6 +68,8 @@
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -175,12 +177,13 @@
     <span class="p">),</span> <span class="s2">&quot;the fill_value and data type are not compatible&quot;</span>
 </pre></div>
 </div>
-<p>In the <cite>full_like</cite> function in <cite>creation.py</cite>, the types of <cite>fill_value</cite> and <cite>dtype</cite>
-has to be verified to avoid errors. This check has to be applied to all backends,
-which means the related code is common and identical. In this case, we can extract
-the code to be a helper function on its own, placed in its related submodule
-(<cite>creation.py</cite> here). In this example, the helper function is named as
-<cite>_assert_fill_value_and_dtype_are_compatible</cite>.</p>
+<p>In the <code class="code docutils literal notranslate"><span class="pre">full_like</span></code> function in <code class="code docutils literal notranslate"><span class="pre">creation.py</span></code>, the types of
+<code class="code docutils literal notranslate"><span class="pre">fill_value</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> has to be verified to avoid errors. This
+check has to be applied to all backends, which means the related code is common
+and identical. In this case, we can extract the code to be a helper function on
+its own, placed in its related submodule (<code class="code docutils literal notranslate"><span class="pre">creation.py</span></code> here). In this
+example, the helper function is named as
+<code class="code docutils literal notranslate"><span class="pre">_assert_fill_value_and_dtype_are_compatible</span></code>.</p>
 <p>Then, we import this submodule-specific helper function to the respective backends,
 where examples for each backend is shown below.</p>
 <p><strong>Jax</strong></p>
@@ -274,12 +277,13 @@ where examples for each backend is shown below.</p>
     <span class="k">return</span> <span class="kc">True</span>
 </pre></div>
 </div>
-<p>In the <cite>function_supported_dtypes</cite> and <cite>function_unsupported_dtypes</cite> functions
-in <cite>data_type.py</cite>, we have to ensure that the attributes <cite>supported_dtypes</cite> and
-<cite>unsupported_dtypes</cite> do not exist for the same backend. However, both of the
-functions only exist in the Ivy <cite>data_type.py</cite> submodule without backend
-implementations. Therefore, the purpose of creating the helper function -
-<cite>_is_valid_dtypes_attributes</cite> in this case is to keep code clean and readable.</p>
+<p>In the <code class="code docutils literal notranslate"><span class="pre">function_supported_dtypes</span></code> and <code class="code docutils literal notranslate"><span class="pre">function_unsupported_dtypes</span></code>
+functions in <code class="code docutils literal notranslate"><span class="pre">data_type.py</span></code>, we have to ensure that the attributes
+<code class="code docutils literal notranslate"><span class="pre">supported_dtypes</span></code> and <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> do not exist for the
+same backend. However, both of the functions only exist in the Ivy
+<code class="code docutils literal notranslate"><span class="pre">data_type.py</span></code> submodule without backend implementations. Therefore, the
+purpose of creating the helper function - <code class="code docutils literal notranslate"><span class="pre">_is_valid_dtypes_attributes</span></code>
+in this case is to keep code clean and readable.</p>
 <p>As the functions and helper exist in the same submodule, we can directly use
 the helper function without importing.</p>
 <p><strong>function_supported_dtypes</strong></p>

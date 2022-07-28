@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="FAQ" href="../faq.html" />
-    <link rel="prev" title="Ivy Tests" href="../deep_dive/15_ivy_tests.html" /> 
+    <link rel="prev" title="Ivy Frontend Tests" href="../deep_dive/17_ivy_frontends_tests.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -218,8 +218,15 @@ including those you did not implement yourself.</p></li>
 frontend functional APIs (see <a class="reference internal" href="../design/ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a>),
 with frontend APIs implemented for:
 <code class="code docutils literal notranslate"><span class="pre">JAX</span></code>, <code class="code docutils literal notranslate"><span class="pre">MXNet</span></code>, <code class="code docutils literal notranslate"><span class="pre">NumPy</span></code>, <code class="code docutils literal notranslate"><span class="pre">TensorFlow</span></code> and <code class="code docutils literal notranslate"><span class="pre">PyTorch</span></code>.</p>
-<p>This task is not <em>quite</em> ready to be engaged with yet,
-more details coming in the next few weeks! 🗓️</p>
+<p>Currently, we have many ToDo list issues
+<a class="reference external" href="https://github.com/unifyai/ivy/issues?page=1&amp;q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22">open</a>
+for this task, which is explained below.</p>
+<p>The general workflow for this task is:</p>
+<ol class="arabic simple">
+<li><p>implement the function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html">Ivy Frontends</a> guide</p></li>
+<li><p>write tests for your function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html">Ivy Frontend Tests</a> guide</p></li>
+<li><p>verify that the tests for your function are passing</p></li>
+</ol>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good understanding of the basics for contributing.</p>
 <p>If you’re ever unsure of how best to proceed,
@@ -232,7 +239,7 @@ or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQ
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../deep_dive/15_ivy_tests.html" class="btn btn-neutral float-left" title="Ivy Tests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../deep_dive/17_ivy_frontends_tests.html" class="btn btn-neutral float-left" title="Ivy Frontend Tests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

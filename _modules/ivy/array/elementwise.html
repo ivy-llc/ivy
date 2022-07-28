@@ -186,6 +186,14 @@
 <span class="sd">            an array containing the inverse hyperbolic cosine</span>
 <span class="sd">            of each element in ``self``.</span>
 <span class="sd">            The returned array must have the same data type as ``self``.</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([2., 10.0, 1.0])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.acosh()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([1.32, 2.99, 0.  ])</span>
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">acosh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -208,6 +216,14 @@
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the inverse cosine of each element in ``self``.</span>
 <span class="sd">            The  returned array must have the same data type as ``self``.</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1.0, 0.0, -0.9])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.acos()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([0.  , 1.57, 2.69])</span>
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -321,6 +337,14 @@
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the inverse tangent of each element in ``self``. The</span>
 <span class="sd">            returned array must have the same data type as ``self``.</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1.0, 0.5, -0.5])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.atan()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([ 0.785,  0.464, -0.464])</span>
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -386,6 +410,14 @@
 <span class="sd">            an array containing the inverse hyperbolic tangent of each element</span>
 <span class="sd">            in ``self``. The returned array must have a floating-point data type</span>
 <span class="sd">            determined by :ref:`type-promotion`.</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([0.0, 0.5, -0.9])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.atanh()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([ 0.   ,  0.549, -1.47 ])</span>
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">atanh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -946,6 +978,15 @@
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the element-wise results. The returned array must</span>
 <span class="sd">            have a data type of ``bool``.</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([2., 5., 15.])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([3., 2., 4.])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1.greater(x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([False,  True,  True])</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -1077,6 +1118,15 @@
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the element-wise results. The returned array</span>
 <span class="sd">            must have a data type of ``bool``.</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([2., 5., 15.])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([3., 2., 4.])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1.less(x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([ True, False, False])</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -1560,23 +1610,40 @@
 <span class="sd">        self</span>
 <span class="sd">            input array. Should have a numeric data type.</span>
 <span class="sd">        out</span>
-<span class="sd">            optional output, for writing the result to. It must have a shape that the</span>
-<span class="sd">            inputs broadcast to.</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            an array containing the rounded result for each element in ``self``.</span>
-<span class="sd">            The returned array must have the same data type as ``self``.</span>
+<span class="sd">            an array containing the rounded result for each element in ``self``. The</span>
+<span class="sd">            returned array must have the same data type as ``self``.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        With :code:`ivy.Array` input:</span>
+<span class="sd">        Using :code:`ivy.Array` instance method:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([1.2, 2.4, 3.6])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([6.3, -8.1, 0.5, -4.2, 6.8])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.round()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        ivy.array([1., 2., 4.])</span>
+<span class="sd">        ivy.array([ 6., -8.,  0., -4.,  7.])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([-94.2, 256.0, 0.0001, -5.5, 36.6])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.round()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([-94., 256., 0., -6., 37.])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([0.23, 3., -1.2])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.zeros(3)</span>
+<span class="sd">        &gt;&gt;&gt; x.round(out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([ 0.,  3., -1.])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[ -1., -67.,  0.,  15.5,  1.], [3, -45, 24.7, -678.5, 32.8]])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.round()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([[-1., -67., 0., 16., 1.],</span>
+<span class="sd">        [3., -45., 25., -678., 33.]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
