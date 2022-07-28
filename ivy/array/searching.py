@@ -108,7 +108,7 @@ class ArrayWithSearching(abc.ABC):
 
     def where(
         self: ivy.Array,
-        condition: ivy.Array,
+        x1: ivy.Array,
         x2: ivy.Array,
         *,
         out: Optional[ivy.Array] = None,
@@ -121,9 +121,9 @@ class ArrayWithSearching(abc.ABC):
         Parameters
         ----------
         self
+            Where True, yield x1, otherwise yield x2.
+        x1
             input array. Should have a numeric data type.
-        condition
-            Where True, yield self, otherwise yield other.
         x2
             values from which to choose when condition is False.
         out
@@ -137,4 +137,4 @@ class ArrayWithSearching(abc.ABC):
             x2 otherwise.
 
         """
-        return ivy.where(condition, self, x2, out=out)
+        return ivy.where(self, x1, x2, out=out)
