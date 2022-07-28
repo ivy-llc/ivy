@@ -12,6 +12,13 @@ import math
 from typing import Union, List
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+cmd_line_args = (
+    "as_variable",
+    "native_array",
+    "with_out",
+    "container",
+    "instance_method",
+)
 
 try:
     import jax.numpy as jnp
@@ -576,32 +583,29 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
     test_unsupported = False
     unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
     supported_devices_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)
-    for i in range(len(unsupported_devices_dtypes_fn['devices'])):
-        if device in unsupported_devices_dtypes_fn['devices'][i]:
+    for i in range(len(unsupported_devices_dtypes_fn["devices"])):
+        if device in unsupported_devices_dtypes_fn["devices"][i]:
             for d in input_dtypes:
-                if d in unsupported_devices_dtypes_fn['dtypes'][i]:
+                if d in unsupported_devices_dtypes_fn["dtypes"][i]:
                     test_unsupported = True
                     break
     if (
         "device" in all_as_kwargs_np
         and "dtype" in all_as_kwargs_np
-        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn['devices']
+        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn["devices"]
     ):
-        index = unsupported_devices_dtypes_fn['devices'].index(
+        index = unsupported_devices_dtypes_fn["devices"].index(
             all_as_kwargs_np["device"]
         )
-        if (
-            all_as_kwargs_np["dtype"]
-            in unsupported_devices_dtypes_fn['dtypes'][index]
-        ):
+        if all_as_kwargs_np["dtype"] in unsupported_devices_dtypes_fn["dtypes"][index]:
             test_unsupported = True
     if test_unsupported:
         return test_unsupported
 
-    for i in range(len(supported_devices_dtypes_fn['devices'])):
-        if device in supported_devices_dtypes_fn['devices'][i]:
+    for i in range(len(supported_devices_dtypes_fn["devices"])):
+        if device in supported_devices_dtypes_fn["devices"][i]:
             for d in input_dtypes:
-                if d not in supported_devices_dtypes_fn['dtypes'][i]:
+                if d not in supported_devices_dtypes_fn["dtypes"][i]:
                     test_unsupported = True
                     break
         else:
@@ -609,17 +613,17 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
         if (
             "device" in all_as_kwargs_np
             and "dtype" in all_as_kwargs_np
-            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn['devices']
+            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn["devices"]
         ):
-            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn['devices']:
+            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn["devices"]:
                 test_unsupported = True
             else:
-                index = supported_devices_dtypes_fn['devices'].index(
+                index = supported_devices_dtypes_fn["devices"].index(
                     all_as_kwargs_np["device"]
                 )
                 if (
                     all_as_kwargs_np["dtype"]
-                    not in supported_devices_dtypes_fn['dtypes'][index]
+                    not in supported_devices_dtypes_fn["dtypes"][index]
                 ):
                     test_unsupported = True
     return test_unsupported
@@ -983,7 +987,7 @@ def test_function(
             fn=fn,
             device=device_,
             input_dtypes=input_dtypes,
-            all_as_kwargs_np=all_as_kwargs_np
+            all_as_kwargs_np=all_as_kwargs_np,
         )
     if test_unsupported:
         try:
@@ -1547,18 +1551,22 @@ def array_and_indices(
     min_dim_size=1,
     max_dim_size=10,
 ):
-    """Generates two arrays x & indices, the values in the indices array are indices of the array x.
-    Draws an integers randomly from the minimum and maximum number of positional
-    arguments a given function can take.
+    """Generates two arrays x & indices, the values in the
+       indices array are indices of the array x.Draws an integers
+       randomly from the minimum and maximum number of positional
+       arguments a given function can take.
 
     Parameters
     ----------
     last_dim_same_size
         True:
-            The shape of the indices array is the exact same as the shape of the values array.
+            The shape of the indices array is the exact same
+            as the shape of the values array.
         False:
-            The last dimension of the second array is generated from a range of (0 -> dimension size of first array).
-            This results in output shapes such as x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
+            The last dimension of the second array is generated
+            from a range of (0 -> dimension size of first array).
+            This results in output shapes such as x = (5,5,5,5,5)
+            & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
     allow_inf
         True: inf values are allowed to be generated in the values array
     min_num_dims
@@ -1571,7 +1579,8 @@ def array_and_indices(
         The maximum size of the dimensions of the arrays.
     Returns
     -------
-    A strategy that can be used in the @given hypothesis decorator which generates arrays of values and indices.
+    A strategy that can be used in the @given hypothesis decorator
+    which generates arrays of values and indices.
 
     Examples
     --------
@@ -2045,10 +2054,11 @@ def num_positional_args(draw, *, fn_name: str = None):
     )
 
 
-def bool_val_flags(cl_arg: Union[bool, None]):
+@st.composite
+def bool_val_flags(draw, cl_arg: Union[bool, None]):
     if cl_arg is not None:
-        return st.booleans().filter(lambda x: x == cl_arg)
-    return st.booleans()
+        return draw(st.booleans().filter(lambda x: x == cl_arg))
+    return draw(st.booleans())
 
 
 def handle_cmd_line_args(test_fn):
@@ -2057,33 +2067,12 @@ def handle_cmd_line_args(test_fn):
         # inspecting for keyword arguments in test function
         for param in inspect.signature(test_fn).parameters.values():
             if param.kind == param.KEYWORD_ONLY:
-                if param.name == "data":
+                if param.name in cmd_line_args:
+                    kwargs[param.name] = data.draw(
+                        bool_val_flags(get_command_line_flags[param.name])
+                    )
+                elif param.name == "data":
                     kwargs["data"] = data
-                elif param.name == "as_variable":
-                    as_variable = data.draw(
-                        bool_val_flags(get_command_line_flags["as-variable"])
-                    )
-                    kwargs["as_variable"] = as_variable
-                elif param.name == "native_array":
-                    native_array = data.draw(
-                        bool_val_flags(get_command_line_flags["native-array"])
-                    )
-                    kwargs["native_array"] = native_array
-                elif param.name == "with_out":
-                    with_out = data.draw(
-                        bool_val_flags(get_command_line_flags["with-out"])
-                    )
-                    kwargs["with_out"] = with_out
-                elif param.name == "instance_method":
-                    instance_method = data.draw(
-                        bool_val_flags(get_command_line_flags["instance-method"])
-                    )
-                    kwargs["instance_method"] = instance_method
-                elif param.name == "container":
-                    container = data.draw(
-                        bool_val_flags(get_command_line_flags["nestable"])
-                    )
-                    kwargs["container"] = container
                 elif param.name == "fw":
                     kwargs["fw"] = fw
                 elif param.name == "device":
