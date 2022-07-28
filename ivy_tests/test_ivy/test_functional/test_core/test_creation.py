@@ -4,6 +4,7 @@
 # global
 import numpy as np
 from hypothesis import given, strategies as st
+from hypothesis import settings 
 
 # local
 import ivy
@@ -11,6 +12,8 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy.functional.backends.numpy as ivy_np
 import hypothesis.extra.numpy as hnp
+from datetime import timedelta
+
 
 
 # native_array
@@ -106,9 +109,10 @@ def test_linspace(
 
 
 # logspace
+@settings(deadline=timedelta(milliseconds=5000))
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_float_dtypes,
         num_arrays=2,
         min_value=None,
         max_value=None,
