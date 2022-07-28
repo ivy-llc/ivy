@@ -53,11 +53,43 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
+
+def gather(
+    self: ivy.Array,
+    indices: Union[ivy.Array, ivy.NativeArray],
+    axis: int = -1,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    ivy.Array instance method variant of ivy.gather. This method simply wraps the
+    function, and so the docstring for ivy.gather also applies to this method
+    with minimal changes.
+
+    Parameters
+    ----------
+    self
+        array, the array from which to gather values.
+    indices
+        array, index array.
+    axis
+        optional int, the axis from which to gather from. Default is -1.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        New array with the values gathered at the specified indices along the specified
+        axis.
+    """
+    return ivy.gather(self._data, indices, axis, out=out)
+
     def gather_nd(
-            self: ivy.Array,
-            indices: Union[ivy.Array, ivy.NativeArray],
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        indices: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
@@ -124,7 +156,7 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.to_numpy(self)
-        
+
     def stable_divide(
         self,
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -185,8 +217,8 @@ class ArrayWithGeneral(abc.ABC):
         ivy.Array instance method variant of ivy.clip_vector_norm. This method simply
         wraps the function, and so the docstring for ivy.clip_vector_norm also applies
         to this method with minimal changes.
-           
-            
+
+
         Parameters
         ----------
         self
@@ -198,12 +230,12 @@ class ArrayWithGeneral(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-            
+
         Returns
         -------
         ret
             An array with the vector norm downscaled to the max norm if needed.
-        
+
         Examples
         --------
         With :code:`ivy.Array` instance method:
