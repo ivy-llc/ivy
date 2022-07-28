@@ -932,10 +932,40 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    With :code: &#39;ivy.Array&#39; inputs:</span>
+
+<span class="sd">    1. Full Matrix</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.], [3., 4.]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
-<span class="sd">    ivy.array(2)</span>
+<span class="sd">    ivy.array(2.)</span>
 
+<span class="sd">    2. Rank Deficient Matrix</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 0.], [0., 0.]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    ivy.array(1.)</span>
+
+<span class="sd">    3. 1 Dimension - rank 1 unless all 0</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 1.])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    ivy.array(1.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    ivy.array(0)</span>
+
+<span class="sd">    With :code: &#39;ivy.NativeArray&#39; inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.], [3., 4.]], [[1., 0.], [0., 0.]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    ivy.array([2., 1.])</span>
+
+<span class="sd">    With :code: &#39;ivy.Container&#39; inputs:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]) ,</span>
+<span class="sd">                            b = ivy.array([[1., 0.], [0., 0.]]))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    {a:ivy.array(2.), b:ivy.array(1.)}</span>
+
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rtol</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
