@@ -2419,8 +2419,7 @@ def less_equal(
     in the standard.
 
     Examples
-    -------------------
-
+    --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.less_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
