@@ -93,7 +93,12 @@ def depthwise_conv2d(
     filters = tf.expand_dims(filters, -1)
     strides = [1, strides, strides, 1]
     dilations = [dilations, dilations]
-    return tf.nn.depthwise_conv2d(x, filters, strides, padding, data_format, dilations)
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)
+    if data_format == "NCHW":
+        return tf.transpose(res, (0, 3, 1, 2))
+    return res
 
 
 # noinspection PyDefaultArgument
