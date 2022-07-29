@@ -39,6 +39,7 @@ def test_docstrings(backend):
         "num_ivy_arrays_on_dev",
         "total_mem_on_dev",
         "used_mem_on_dev",
+        "percent_used_mem_on_dev",
         "function_unsupported_dtypes",
         "randint",
         "unique_counts",
