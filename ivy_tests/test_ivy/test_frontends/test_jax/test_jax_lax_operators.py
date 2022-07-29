@@ -1,4 +1,5 @@
 # global
+import ivy
 import numpy as np
 from hypothesis import given, strategies as st
 
@@ -11,17 +12,17 @@ import ivy.functional.backends.jax as ivy_jax
 # add
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        tuple(
+        available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_jax.valid_float_dtypes))
         ),
-        2,
+        num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.add"
     ),
-    native_array=helpers.list_of_length(st.booleans(), 2),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_jax_lax_add(
     dtype_and_x,
@@ -33,14 +34,14 @@ def test_jax_lax_add(
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        fw,
-        "jax",
-        "lax.add",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_name="lax.add",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -48,7 +49,7 @@ def test_jax_lax_add(
 
 # tan
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_jax.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.tan"
@@ -65,14 +66,14 @@ def test_jax_lax_tan(
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        fw,
-        "jax",
-        "lax.tan",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_name="lax.tan",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -83,11 +84,13 @@ def _arrays_idx_n_dtypes(draw):
     num_dims = draw(st.shared(st.integers(1, 4), key="num_dims"))
     num_arrays = draw(st.shared(st.integers(2, 4), key="num_arrays"))
     common_shape = draw(
-        helpers.lists(st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1)
+        helpers.lists(
+            arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
+        )
     )
-    unique_idx = draw(helpers.integers(0, num_dims - 1))
+    unique_idx = draw(helpers.integers(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
+        helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
     )
     xs = list()
     available_dtypes = tuple(
@@ -126,14 +129,73 @@ def test_jax_lax_concat(
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
-        input_dtypes,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        fw,
-        "jax",
-        "lax.concatenate",
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_name="lax.concatenate",
         operands=xs,
         dimension=unique_idx,
+    )
+
+
+# full
+@st.composite
+def _dtypes(draw):
+    return draw(
+        st.shared(
+            helpers.list_of_length(
+                x=st.sampled_from(ivy_jax.valid_numeric_dtypes), length=1
+            ),
+            key="dtype",
+        )
+    )
+
+
+@st.composite
+def _fill_value(draw):
+    dtype = draw(_dtypes())[0]
+    if ivy.is_uint_dtype(dtype):
+        return draw(st.integers(0, 5))
+    elif ivy.is_int_dtype(dtype):
+        return draw(st.integers(-5, 5))
+    return draw(st.floats(-5, 5))
+
+
+@given(
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    fill_value=_fill_value(),
+    dtypes=_dtypes(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.full"
+    ),
+)
+def test_jax_lax_full(
+    shape,
+    fill_value,
+    dtypes,
+    num_positional_args,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        fw=fw,
+        frontend="jax",
+        fn_name="lax.full",
+        shape=shape,
+        fill_value=fill_value,
+        dtype=dtypes[0],
     )
