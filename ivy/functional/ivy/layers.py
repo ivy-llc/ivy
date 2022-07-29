@@ -532,12 +532,36 @@ def conv1d(
 
     Examples
     --------
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC
     >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
     >>> result = ivy.conv1d(x, filters, (1,), 'SAME', 'NWC', (1,))
     >>> print(result)
     ivy.array([[[0.], [3.], [0.]]])
 
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[[1., 3.], [2., 4.], [5., 7]]])
+    >>> filters = ivy.native_array([[[0., 1.], [1., 0.]]])
+    >>> result = ivy.conv1d(x, filters, strides= (2,), padding='VALID')
+    >>> print(result)
+    ivy.array([[[3., 1.], \
+                [7., 5.]]])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a= ivy.array([[[1.2, 3.1, 4.8], [5.9, 2.2, 3.3],\
+                                       [10.8, 7.6, 4.9], [6.1, 2.2, 9.5]]]), \
+                          b= ivy.array([[[8.8, 7.7, 6.6], [1.1, 2.2, 3.5]]]))
+    >>> filters = ivy.array([[[1., 0., 1.], [0., 1., 0.], [1., 1., 0.]]])
+    >>> result  = ivy.conv1d(x, filters, strides= 3, padding='VALID')
+    >>> print(result)
+    {
+            a: ivy.array([[[6., 7.9, 1.2], \
+                         [15.6, 11.7, 6.1]]]), \
+            b: ivy.array([[[15.4, 14.3, 8.8]]])
+    }
     """
     return current_backend(x).conv1d(
         x, filters, strides, padding, data_format, dilations, out=out
