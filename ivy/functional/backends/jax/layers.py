@@ -89,7 +89,7 @@ def depthwise_conv2d(
         cn = x.shape[-1]
     else:
         cn = x.shape[1]
-    filters = jnp.expand_dims(filters, -1)
+    filters = jnp.expand_dims(filters, -2)
     return jlax.conv_general_dilated(
         x,
         filters,
