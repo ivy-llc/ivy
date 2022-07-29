@@ -4026,6 +4026,21 @@
 <span class="sd">            element in ``x``. The returned array must have a real-valued</span>
 <span class="sd">            floating-point data type determined by :ref:`type-promotion`.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using :code:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, float(&#39;nan&#39;)]),\</span>
+<span class="sd">                              b=ivy.array([-0., -3.9, float(&#39;+inf&#39;)]),\</span>
+<span class="sd">                              c=ivy.array([7.9, 1.1, 1.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_log10(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([-inf, nan]),</span>
+<span class="sd">            b: ivy.array([-inf, nan, inf]),</span>
+<span class="sd">            c: ivy.array([0.898, 0.0414, 0.])</span>
+<span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;log10&quot;</span><span class="p">,</span>
@@ -4076,6 +4091,20 @@
 <span class="sd">            each element in ``self``. The returned array must have a real-valued</span>
 <span class="sd">            floating-point data type determined by :ref:`type-promotion`.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using :code:`ivy.Container` instance method:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, float(&#39;nan&#39;)]), \</span>
+<span class="sd">                              b=ivy.array([-0., -3.9, float(&#39;+inf&#39;)]), \</span>
+<span class="sd">                              c=ivy.array([7.9, 1.1, 1.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.log10(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([-inf, nan]),</span>
+<span class="sd">            b: ivy.array([-inf, nan, inf]),</span>
+<span class="sd">            c: ivy.array([0.898, 0.0414, 0.])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_log10</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
