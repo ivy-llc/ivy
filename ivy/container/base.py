@@ -2245,54 +2245,6 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def einops_reduce(
-        self,
-        pattern,
-        reduction,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        **axes_lengths,
-    ):
-        """Perform einops reduce operation on each sub array in the container.
-
-        Parameters
-        ----------
-        pattern
-            Reduction pattern.
-        reduction
-            One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or
-            callable.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        axes_lengths
-            Any additional specifications for dimensions.
-        **axes_lengths
-
-        Returns
-        -------
-            ivy.Container with each array having einops.reduce applied.
-
-        """
-        return self.map(
-            lambda x, kc: ivy.einops_reduce(x, pattern, reduction, **axes_lengths)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def to_device(
         self,
         device,
