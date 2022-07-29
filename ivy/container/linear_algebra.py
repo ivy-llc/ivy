@@ -1058,7 +1058,42 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-    ):
+    ) -> ivy.Container:
+        """Compute vector p-norm for each array in the container.
+
+        Parameters
+        ----------
+        x
+            input array. Should have a floating-point data type.
+        ord
+            Order of the norm. Default is 2.
+        axis
+            If axis is an integer, it specifies the axis of x along which to compute the
+            vector norms. Default is None, in which case the flattened array is
+            considered.
+        keepdims
+            If this is set to True, the axes which are normed over are left in the
+            result as dimensions with size one. With this option the result will
+            broadcast correctly against the original x. Default is False.
+        global_norm
+            Whether to compute the norm across all the concattenated sub-arrays.
+            Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+            Container object with the vector norms for each sub-array returned.
+
+        """
         return ContainerBase.multi_map_in_static_method(
             "vector_norm",
             x,
@@ -1084,6 +1119,39 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """Compute vector p-norm for each array in the container.
+
+        Parameters
+        ----------
+        ord
+            Order of the norm. Default is 2.
+        axis
+            If axis is an integer, it specifies the axis of x along which to compute the
+            vector norms. Default is None, in which case the flattened array is
+            considered.
+        keepdims
+            If this is set to True, the axes which are normed over are left in the
+            result as dimensions with size one. With this option the result will
+            broadcast correctly against the original x. Default is False.
+        global_norm
+            Whether to compute the norm across all the concattenated sub-arrays.
+            Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+            Container object with the vector norms for each sub-array returned.
+
+        """
         return self.static_vector_norm(
             self,
             axis,
