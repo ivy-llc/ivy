@@ -85,7 +85,10 @@ def depthwise_conv2d(
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    cn = x.shape[-1]
+    if data_format == "NHWC":
+        cn = x.shape[-1]
+    else:
+        cn = x.shape[1]
     filters = jnp.expand_dims(filters, -1)
     return jlax.conv_general_dilated(
         x,
