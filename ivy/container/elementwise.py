@@ -4581,7 +4581,6 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
         >>> y = ivy.Container(a=ivy.array([0,0,1,1,0]), b=ivy.array([1,0,1,1,0]))
         >>> z = x.logical_xor(y)

@@ -269,10 +269,7 @@ def logical_or(
 
 
 def logical_xor(
-    x1: JaxArray,
-    x2: JaxArray,
-    *,
-    out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.logical_xor(x1, x2)
 
