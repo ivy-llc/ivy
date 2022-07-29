@@ -1107,7 +1107,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.log10. This method simply wraps the
         function, and so the docstring for ivy.log10 also applies to this method
         with minimal changes.
-
+        
         Parameters
         ----------
         self
@@ -1122,7 +1122,29 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the evaluated base ``10`` logarithm for each element
             in ``self``. The returned array must have a real-valued
             floating-point data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([4.0, 1, -0.0, -5.0])
+        >>> y = x.log10()
+        >>> print(y)
+        ivy.array([0.602, 0., -inf, nan])
+
+        >>> x = ivy.array([float('nan'), -5.0, -0.0, 1.0, 5.0, float('+inf')])
+        >>> y = x.log10()
+        >>> print(y)
+        ivy.array([nan, nan, -inf, 0., 0.699, inf])
+
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
+                           [+0, -1.0, -5, float('-inf')]])
+        >>> y = x.log10()
+        >>> print(y)
+        ivy.array([[nan, 0., 0.699, inf],
+                   [-inf, nan, nan, nan]])
         """
+
         return ivy.log10(self._data, out=out)
 
     def logaddexp(
