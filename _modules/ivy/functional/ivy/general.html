@@ -2752,14 +2752,8 @@
 <span class="sd">                          b = ivy.array([1, 2]))</span>
 <span class="sd">    &gt;&gt;&gt; print(x.gather(y))</span>
 <span class="sd">    {</span>
-<span class="sd">        a: {</span>
-<span class="sd">            a: ivy.array([0., 1.]),</span>
-<span class="sd">            b: ivy.array([1., 2.])</span>
-<span class="sd">        },</span>
-<span class="sd">        b: {</span>
-<span class="sd">            a: ivy.array([4., 5.]),</span>
-<span class="sd">            b: ivy.array([5., 6.])</span>
-<span class="sd">        }</span>
+<span class="sd">        a: ivy.array([0., 1.]),</span>
+<span class="sd">        b: ivy.array([5., 6.])</span>
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
