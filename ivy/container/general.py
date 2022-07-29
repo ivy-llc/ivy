@@ -928,7 +928,7 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_to_numpy(
-        x: Union[ivy.Array, ivy.NativeArray],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -993,7 +993,7 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def to_numpy(
-        self,
+        self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
