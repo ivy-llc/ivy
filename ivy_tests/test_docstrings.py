@@ -71,7 +71,13 @@ def test_docstrings(backend):
         if k == "Array":
             for method_name in dir(v):
                 method = getattr(ivy.Array, method_name)
-                if method_name in skip_arr_cont or helpers.docstring_examples_run(
+                try:
+                    gradient_incompatible = method.computes_gradients and not backend.supports_gradients
+                except AttributeError:
+                    gradient_incompatible = None
+                if method_name in skip_arr_cont \
+                        or gradient_incompatible \
+                        or helpers.docstring_examples_run(
                     fn=method, from_array=True
                 ):
                     continue
