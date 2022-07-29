@@ -63,7 +63,7 @@ def x_and_weight(draw, dtypes, fn_name):
     q = draw(helpers.array_values(dtype=dtype, shape=q_shape, min_value=0, max_value=1))
     k = draw(helpers.array_values(dtype=dtype, shape=k_shape, min_value=0, max_value=1))
     v = draw(helpers.array_values(dtype=dtype, shape=v_shape, min_value=0, max_value=1))
-    mask = draw(helpers.array_values(dtype=dtype, shape=mask_shape, min_value=0, max_value=1))
+    mask = draw(helpers.array_values(dtype=dtype, shape=mask_shape, min_value=0, max_value=1, safety_factor=2))
 
     t = draw(st.integers(min_value=1, max_value=3))
     _in_ = draw(st.integers(min_value=1, max_value=3))
@@ -244,7 +244,6 @@ def test_scaled_dot_product_attention(
     device,
 ):
     dtype, q, k, v, mask, scale = dtype_q_k_v_mask_scale
-    scale = scale
     as_variable = [as_variable] * 4
     native_array = [native_array] * 4
     container = [container] * 4
