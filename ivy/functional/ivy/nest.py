@@ -10,21 +10,7 @@ import ivy
 
 # Extra #
 # ------#
-def apply_function(
-    fn: Callable,
-    constant: Dict[str, Any] = None,
-    unique: Dict[str, Iterable[Any]] = None,
-    ) -> Callable:
 
-    c = ivy.default(constant, {})
-    u = ivy.default(unique, {})
-
-    def function(*input: Any): 
-        return fn(**dict(**c, **dict(zip(u.keys(), input))))
-
-    outputs = _map(function, *u.values())
-
-    return outputs
 
 def index_nest(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
