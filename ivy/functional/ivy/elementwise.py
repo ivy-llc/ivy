@@ -138,12 +138,10 @@ def acos(
     ret
         an array containing the inverse cosine of each element in x. The returned array
         must have a floating-point data type determined by :ref:`type-promotion`.
-        
+
     Examples
     --------
     With :code:`ivy.Array` input:
-    >>> import ivy
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([0., 1., -1.])
     >>> y = ivy.acos(x)
     >>> print(y)
@@ -173,7 +171,7 @@ def acos(
         b: ivy.array([0., 1.57, 3.14])
     }
 
-    
+
     """
     return ivy.current_backend(x).acos(x, out=out)
 
@@ -214,12 +212,10 @@ def acosh(
         an array containing the inverse hyperbolic cosine of each element in x. The
         returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
-        
+
     Examples
     --------
     With :code:`ivy.Array` input:
-    >>> import ivy
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([1, 2.5, 10])
     >>> y = ivy.acosh(x)
     >>> print(y)
@@ -248,7 +244,7 @@ def acosh(
         b: ivy.array([0., 2.99, 2.48])
     }
 
-    
+
     """
     return ivy.current_backend(x).acosh(x, out=out)
 
@@ -627,8 +623,6 @@ def atan(
     Examples
     --------
     With :code:`ivy.Array` input:
-    >>> import ivy
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.atan(x)
     >>> print(y)
@@ -657,7 +651,7 @@ def atan(
         a: ivy.array([0., -0.785, 0.785]),
         b: ivy.array([0.785, 0., -1.41])
     }
-    
+
     """
     return ivy.current_backend(x).atan(x, out=out)
 
@@ -866,8 +860,6 @@ def atanh(
     Examples
     --------
     With :code:`ivy.Array` input:
-    >>> import ivy
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([0, -0.5])
     >>> y = ivy.atanh(x)
     >>> print(y)

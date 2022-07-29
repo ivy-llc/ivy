@@ -67,7 +67,8 @@ def permute_dims(
 def reshape(
     x: torch.Tensor,
     shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None
+    *,
+    copy: Optional[bool] = None,
 ) -> torch.Tensor:
     if copy:
         newarr = torch.clone(x)
@@ -96,11 +97,10 @@ def squeeze(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
-        dim = x.dim()
-        if dim > 0 and (axis < -dim or dim <= axis):
+        if x.size(dim=axis) > 1:
             raise ValueError(
                 "Expected dimension of size [{}, {}], but found "
-                "dimension size {}".format(-dim, dim, axis)
+                "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
         return torch.squeeze(x, axis)
     if axis is None:
