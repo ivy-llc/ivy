@@ -1211,21 +1211,19 @@ def bitwise_right_shift(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right
-    according to the respective element ``x2_i`` of the input array ``x2``.
+    """
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right according to the respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
-       This operation must be an arithmetic shift (i.e., sign-propagating) and thus
-       equivalent to floor division by a power of two.
+       This operation must be an arithmetic shift (i.e., sign-propagating) and thus equivalent to floor division by a power of two.
 
     Parameters
     ----------
     x1
         first input array. Should have an integer data type.
     x2
-        second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`).
-        Should have an integer data type. Each element must be greater than or equal to
-        0.
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). 
+        Should have an integer data type. Each element must be greater than or equal to ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1233,16 +1231,78 @@ def bitwise_right_shift(
     Returns
     -------
     ret
-        out (array), an array containing the element-wise results.
-        The returned array must have a data type determined by Type Promotion Rules.
+        an array containing the element-wise results. The returned array must have a 
+        data type determined by :ref:`type-promotion`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
-    >>> lhs = ivy.array([5, 2, 3, 1], dtype=ivy.int64)
-    >>> rhs = ivy.array([1, 3, 2, 1], dtype=ivy.int64)
-    >>> y = ivy.bitwise_right_shift(lhs, rhs)
+
+    With :code:`ivy.Array` input:
+
+    >>> a = ivy.array([2, 3, 4])
+    >>> b = ivy.array([0, 1, 2])
+    >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
-    ivy.array([2, 0, 0, 0])
+    ivy.array([2, 1, 1])
+
+    >>> a = ivy.array([32, 40, 55])
+    >>> b = ivy.array([5, 2, 1])
+    >>> ivy.bitwise_right_shift(a, b, out=y)
+    >>> print(y)
+    ivy.array([ 1, 10, 27])
+
+    >>> a = ivy.array([5, 10, 64])
+    >>> b = ivy.array([2])
+    >>> ivy.bitwise_right_shift(a, b, out=a)
+    >>> print(a)
+    ivy.array([ 1, 2, 16])
+
+    With :code: `ivy.NativeArray` input:
+
+    >>> a = ivy.native_array([2, 3, 4])
+    >>> b = ivy.native_array([0, 1, 2])
+    >>> y = ivy.bitwise_right_shift(a, b)
+    >>> print(y)
+    ivy.array([2, 1, 1])
+
+    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> a = ivy.array([32, 40, 55])
+    >>> b = ivy.native_array([5, 2, 1])
+    >>> y = ivy.bitwise_right_shift(a, b)
+    >>> print(y)
+    ivy.array([ 1, 10, 27])
+
+    With one :code:`ivy.Container` input:
+
+    >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+    >>> b = ivy.array([0, 1, 2])
+    >>> y = ivy.bitwise_right_shift(a, b)
+    >>> print(y)
+    {
+        a: ivy.array([2, 1, 1]),
+        b: ivy.array([5, 5, 16])
+    }
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+    >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([2]))
+    >>> y = ivy.bitwise_right_shift(a, b)
+    >>> print(y)
+    {
+        a: ivy.array([2, 1, 1]),
+        b: ivy.array([1, 2, 16])
+    }
     """
     return ivy.current_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
 

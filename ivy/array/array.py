@@ -578,10 +578,43 @@ class Array(
 
     @_native_wrapper
     def __rshift__(self, other):
+        """
+        Examples
+        --------
+
+        With :code:`ivy.Array` instances only:
+
+        >>> a = ivy.array([2, 3, 4])
+        >>> b = ivy.array([0, 1, 2])
+        >>> y = a >> b
+        >>> print(y)
+        ivy.array([2, 1, 1])
+
+        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+        >>> a = ivy.array([5, 10, 64])
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([3]))
+        >>> y = a >> b
+        >>> print(y)
+        {
+            a: ivy.array([5, 5, 16]),
+            b: ivy.array([0, 1, 8])
+        }
+        """
         return ivy.bitwise_right_shift(self._data, other)
 
     @_native_wrapper
     def __rrshift__(self, other):
+        """
+        Examples
+        --------
+
+        >>> a = 32
+        >>> b = ivy.array([0, 1, 2])
+        >>> y = a >> b
+        >>> print(y)
+        ivy.array([32, 16,  8])
+        """
         return ivy.bitwise_right_shift(other, self._data)
 
     # noinspection PyDefaultArgument
