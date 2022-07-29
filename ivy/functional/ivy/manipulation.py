@@ -1,6 +1,7 @@
 # global
 from typing import Union, Optional, Tuple, List, Iterable, Sequence
 from numbers import Number
+from numpy.core.numeric import normalize_axis_tuple
 
 # local
 import ivy
@@ -10,6 +11,23 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+
+
+# Helpers #
+# --------#
+
+
+def _calculate_out_shape(axis, array_shape):
+    if type(axis) not in (tuple, list):
+        axis = (axis,)
+    out_dims = len(axis) + len(array_shape)
+    norm_axis = normalize_axis_tuple(axis, out_dims)
+    shape_iter = iter(array_shape)
+    out_shape = [
+        1 if current_ax in norm_axis else next(shape_iter)
+        for current_ax in range(out_dims)
+    ]
+    return out_shape
 
 
 # Array API Standard #

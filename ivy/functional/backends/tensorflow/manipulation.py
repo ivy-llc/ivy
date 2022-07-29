@@ -3,8 +3,10 @@ import ivy
 import math
 import tensorflow as tf
 from numbers import Number
-from numpy.core.numeric import normalize_axis_tuple
 from typing import Union, Tuple, Optional, List, Sequence
+
+# noinspection PyProtectedMember
+from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 
 # Array API Standard #
@@ -42,15 +44,7 @@ def expand_dims(
     axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
-        if type(axis) not in (tuple, list):
-            axis = (axis,)
-
-        out_dims = len(axis) + len(x.shape)
-        norm_axis = normalize_axis_tuple(axis, out_dims)
-        shape_iter = iter(x.shape)
-        out_shape = [1 if current_ax in norm_axis else next(shape_iter)
-                     for current_ax in range(out_dims)]
-
+        out_shape = _calculate_out_shape(axis, x.shape)
         ret = tf.reshape(x, shape=out_shape)
         return ret
     except tf.errors.InvalidArgumentError as error:

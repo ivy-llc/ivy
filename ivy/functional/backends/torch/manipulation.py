@@ -3,8 +3,10 @@ import ivy
 import torch
 import math
 from numbers import Number
-from numpy.core.numeric import normalize_axis_tuple
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
+
+# noinspection PyProtectedMember
+from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 
 # Array API Standard #
@@ -33,15 +35,7 @@ def expand_dims(
     x: torch.Tensor,
     axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> torch.Tensor:
-    if type(axis) not in (tuple, list):
-        axis = (axis,)
-
-    out_dims = len(axis) + len(x.shape)
-    norm_axis = normalize_axis_tuple(axis, out_dims)
-    shape_iter = iter(x.shape)
-    out_shape = [1 if current_ax in norm_axis else next(shape_iter)
-                 for current_ax in range(out_dims)]
-
+    out_shape = _calculate_out_shape(axis, x.shape)
     # torch.reshape since it can operate on contiguous and non_contiguous tensors
     ret = x.reshape(out_shape)
     return ret

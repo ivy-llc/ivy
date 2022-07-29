@@ -2,7 +2,6 @@
 import mxnet as mx
 import math
 import numpy as np
-from numpy.core.numeric import normalize_axis_tuple
 from typing import Union, Tuple, Optional, List, Sequence
 from ivy.functional.backends.mxnet import (
     _flat_array_to_1_dim_array,
@@ -13,6 +12,9 @@ from ivy.functional.backends.mxnet import (
 
 # local
 import ivy
+
+# noinspection PyProtectedMember
+from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 
 def flip(
@@ -47,15 +49,7 @@ def expand_dims(
     if x.shape == ():
         ret = _flat_array_to_1_dim_array(x)
     else:
-        if type(axis) not in (tuple, list):
-            axis = (axis,)
-
-        out_dims = len(axis) + len(x.shape)
-        norm_axis = normalize_axis_tuple(axis, out_dims)
-        shape_iter = iter(x.shape)
-        out_shape = [1 if current_ax in norm_axis else next(shape_iter)
-                     for current_ax in range(out_dims)]
-
+        out_shape = _calculate_out_shape(axis, x.shape)
         ret = x.reshape(out_shape)
     return ret
 
