@@ -926,6 +926,72 @@ class ContainerWithGeneral(ContainerBase):
             **axes_lengths,
         )
 
+    @staticmethod
+    def static_to_numpy(
+        x: Union[ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.to_numpy. This method simply wraps
+        the function, and so the docstring for ivy.to_numpy also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of numpy arrays copying all the element of the container
+            ``self``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
+                            b=ivy.array([1, -1, 0, 0]))
+        >>> y = ivy.Container.static_to_numpy(x)
+        >>> print(y)
+        {
+            a: array([1, 0, 1, 1], dtype=int32),
+            b: array([1, -1, 0, 0], dtype=int32)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> y = ivy.Container.static_to_numpy(x)
+        >>> print(y)
+        {
+            a: array([1., 0., 0., 1.], dtype=float32),
+            b: array([1, 1, -1, 0], dtype=int32)
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "to_numpy",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
     def to_numpy(
         self,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -992,72 +1058,6 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_to_numpy(
             self, key_chains, to_apply, prune_unapplied, map_sequences
-        )
-
-    @staticmethod
-    def static_to_numpy(
-        x: Union[ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.to_numpy. This method simply wraps
-        the function, and so the docstring for ivy.to_numpy also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        x
-            input container.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            a container of numpy arrays copying all the element of the container
-            ``self``.
-
-        Examples
-        --------
-        With one :code:`ivy.Container` inputs:
-
-        >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
-                            b=ivy.array([1, -1, 0, 0]))
-        >>> y = ivy.Container.static_to_numpy(x)
-        >>> print(y)
-        {
-            a: array([1, 0, 1, 1], dtype=int32),
-            b: array([1, -1, 0, 0], dtype=int32)
-        }
-
-        >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
-                            b=ivy.native_array([1, 1, -1, 0]))
-        >>> y = ivy.Container.static_to_numpy(x)
-        >>> print(y)
-        {
-            a: array([1., 0., 0., 1.], dtype=float32),
-            b: array([1, 1, -1, 0], dtype=int32)
-        }
-
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "to_numpy",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
         )
 
     @staticmethod
