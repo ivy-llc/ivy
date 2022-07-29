@@ -118,6 +118,10 @@ def test_random_normal(
         dtype=dtype,
         device=device,
     )
+    ret = helpers.flatten(ret=ret)
+    ret_gt = helpers.flatten(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert u.dtype == v.dtype
 
 
 @st.composite
@@ -235,25 +239,41 @@ def test_seed(seed_val):
 # shuffle
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+        available_dtypes=ivy_np.valid_float_dtypes,
+        allow_inf=False,
+        min_num_dims=1,
+        min_dim_size=2,
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="shuffle"),
     data=st.data(),
 )
 @handle_cmd_line_args
-def test_shuffle(*, data, dtype_and_x, as_variable, device, call):
-    # smoke test
+def test_shuffle(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
     dtype, x = dtype_and_x
-    x = ivy.array(x, dtype=dtype, device=device)
-    if as_variable:
-        x = ivy.variable(x)
-    ret = ivy.shuffle(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    ivy.seed(0)
-    first_shuffle = call(ivy.shuffle, x)
-    ivy.seed(0)
-    second_shuffle = call(ivy.shuffle, x)
-    assert np.array_equal(first_shuffle, second_shuffle)
+    ret, ret_gt = helpers.test_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        test_values=False,
+        fw=fw,
+        fn_name="shuffle",
+        x=np.asarray(x, dtype=dtype),
+    )
+    ret = helpers.flatten(ret=ret)
+    ret_gt = helpers.flatten(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert ivy.all(ivy.sort(u, 0) == ivy.sort(v, 0))
