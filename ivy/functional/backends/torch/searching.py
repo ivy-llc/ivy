@@ -33,11 +33,19 @@ def argmin(
 argmin.support_native_out = True
 
 
-def nonzero(x: torch.Tensor) -> Tuple[torch.Tensor]:
+def nonzero(
+    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> Tuple[torch.Tensor]:
     return torch.nonzero(x, as_tuple=True)
 
 
-def where(condition: torch.Tensor, x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
+def where(
+    condition: torch.Tensor,
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     promoted_type = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.to(promoted_type)
     x2 = x2.to(promoted_type)

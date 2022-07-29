@@ -31,9 +31,11 @@ def argmin(
 argmin.support_native_out = True
 
 
-def nonzero(x: JaxArray) -> Tuple[JaxArray]:
+def nonzero(x: JaxArray, *, out: Optional[JaxArray] = None) -> Tuple[JaxArray]:
     return jnp.nonzero(x)
 
 
-def where(condition: JaxArray, x1: JaxArray, x2: JaxArray) -> JaxArray:
+def where(
+    condition: JaxArray, x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.where(condition, x1, x2)

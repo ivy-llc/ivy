@@ -33,11 +33,21 @@ def argmin(
 argmin.support_native_out = True
 
 
-def nonzero(x: np.ndarray) -> Tuple[np.ndarray]:
+def nonzero(
+    x: np.ndarray,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> Tuple[np.ndarray]:
     return np.nonzero(x)
 
 
-def where(condition: np.ndarray, x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
+def where(
+    condition: np.ndarray,
+    x1: np.ndarray,
+    x2: np.ndarray,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     dtype = np.promote_types(x1.dtype, x2.dtype)
     x1 = x1.astype(dtype)
     x2 = x2.astype(dtype)
