@@ -39,11 +39,13 @@ def x_and_weight(draw, dtypes, fn_name):
     num_queries = in_features
     num_keys = in_features
     feat_dim = in_features
-    scale = draw(st.floats(
-        min_value=0.10000000149011612,
-        max_value=1,
-        width=64
-    )),
+    scale = draw(
+        st.floats(
+            min_value=0.10000000149011612,
+            max_value=1,
+            width=64
+        )
+    )
 
     x_shape = outer_batch_shape + inner_batch_shape + (in_features,)
     weight_shape = outer_batch_shape + (out_features,) + (in_features,)
@@ -55,7 +57,7 @@ def x_and_weight(draw, dtypes, fn_name):
 
     q_shape = batch_shape + (num_queries,) + (feat_dim,)
     k_shape = batch_shape + (num_keys,) + (feat_dim,)
-    v_shape = batch_shape + (num_queries,) + (feat_dim,)
+    v_shape = batch_shape + (num_keys,) + (feat_dim,)
     mask_shape = batch_shape + (num_queries,) + (num_keys,)
 
     q = draw(helpers.array_values(dtype=dtype, shape=q_shape, min_value=0, max_value=1))
@@ -76,9 +78,9 @@ def x_and_weight(draw, dtypes, fn_name):
 
 # linear
 @given(
-    dtype_x_weight_bias = x_and_weight(
+    dtype_x_weight_bias=x_and_weight(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
-        fn_name= "linear",
+        fn_name="linear",
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=3),
     with_out=st.booleans(),
@@ -198,7 +200,7 @@ def test_dropout(
 
 # # scaled_dot_product_attention
 @given(
-    dtype_q_v_k_scale_mask = x_and_weight(
+    dtype_q_k_v_mask_scale=x_and_weight(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         fn_name="scaled_dot_product_attention",
     ),
@@ -212,7 +214,7 @@ def test_dropout(
 def test_scaled_dot_product_attention(
     *,
     data,
-    dtype_q_v_k_scale_mask,
+    dtype_q_k_v_mask_scale,
     as_variable,
     num_positional_args,
     with_out,
@@ -222,15 +224,16 @@ def test_scaled_dot_product_attention(
     fw,
     device,
 ):
-    dtype, q, v, k, scale, mask = dtype_q_v_k_scale_mask
-    as_variable = [as_variable, as_variable, as_variable]
-    native_array = [native_array, native_array, native_array]
-    container = [container, container, container]
+    dtype, q, k, v, mask, scale = dtype_q_k_v_mask_scale
+    scale = scale
+    as_variable = [as_variable] * 4
+    native_array = [native_array] * 4
+    container = [container] * 4
 
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -241,7 +244,7 @@ def test_scaled_dot_product_attention(
         k=np.asarray(k, dtype=dtype),
         v=np.asarray(v, dtype=dtype),
         scale=scale,
-        mask=mask,
+        mask=np.asarray(mask, dtype=dtype),
     )
 
 

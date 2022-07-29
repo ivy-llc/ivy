@@ -394,6 +394,9 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
+scaled_dot_product_attention.unsupported_dtypes = {'torch': ('float16', )}
+
+
 @to_native_arrays_and_back
 def multi_head_attention(
     x,
