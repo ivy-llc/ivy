@@ -189,3 +189,62 @@ def test_tensorflow_full(
         value=fill_value,
         rtol=1e-05,
     )
+
+#linalg
+
+@st.composite
+def _dtypes(draw):
+    return draw(
+        st.shared(
+            helpers.list_of_length(
+                x=st.sampled_from(ivy_tf.valid_numeric_dtypes), length=1
+            ),
+            key="dtype",
+        )
+    )
+
+
+@st.composite
+def _fill_value(draw):
+    dtype = draw(_dtypes())[0]
+    if ivy.is_uint_dtype(dtype):
+        return draw(st.integers(0, 5))
+    if ivy.is_int_dtype(dtype):
+        return draw(st.integers(-5, 5))
+    return draw(st.floats(-5, 5))
+
+
+@given(
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    fill_value=_fill_value(),
+    dtypes=_dtypes(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.linalg.adjoint"
+    ),
+)
+def test_tensorflow_linalg(
+    shape,
+    fill_value,
+    dtypes,
+    num_positional_args,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        fw=fw,
+        frontend="tensorflow",
+        fn_name="linalg.adjoint",
+        dims=shape,
+        value=fill_value,
+        rtol=1e-05,
+    )
