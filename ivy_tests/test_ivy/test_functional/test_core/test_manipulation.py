@@ -797,7 +797,7 @@ def test_swapaxes(
 @given(
     x_min_n_max=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3
-    ),
+    ).filter(lambda x_min_n_max: x_min_n_max[0][0] == x_min_n_max[0][1] and x_min_n_max[0][1] == x_min_n_max[0][2]),
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
     data=st.data(),
 )
