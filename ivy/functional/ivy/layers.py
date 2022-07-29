@@ -93,7 +93,12 @@ def linear(
 
 @handle_nestable
 def dropout(
-    x, prob, scale=True, dtype=None, *, out: Optional[ivy.Array] = None
+    x:Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    scale: bool = True,
+    dtype: ivy.Dtype=None,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Randomly zeroes some elements of the input tensor with probability p using
     samples from a Bernoulli distribution.
