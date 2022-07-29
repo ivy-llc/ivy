@@ -138,12 +138,10 @@ def acos(
     ret
         an array containing the inverse cosine of each element in x. The returned array
         must have a floating-point data type determined by :ref:`type-promotion`.
-        
+
     Examples
     --------
     With :code:`ivy.Array` input:
-    >>> import ivy
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([0., 1., -1.])
     >>> y = ivy.acos(x)
     >>> print(y)
@@ -173,7 +171,7 @@ def acos(
         b: ivy.array([0., 1.57, 3.14])
     }
 
-    
+
     """
     return ivy.current_backend(x).acos(x, out=out)
 
@@ -214,12 +212,10 @@ def acosh(
         an array containing the inverse hyperbolic cosine of each element in x. The
         returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
-        
+
     Examples
     --------
     With :code:`ivy.Array` input:
-    >>> import ivy
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([1, 2.5, 10])
     >>> y = ivy.acosh(x)
     >>> print(y)
@@ -248,7 +244,7 @@ def acosh(
         b: ivy.array([0., 2.99, 2.48])
     }
 
-    
+
     """
     return ivy.current_backend(x).acosh(x, out=out)
 
@@ -627,8 +623,6 @@ def atan(
     Examples
     --------
     With :code:`ivy.Array` input:
-    >>> import ivy
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.atan(x)
     >>> print(y)
@@ -657,7 +651,7 @@ def atan(
         a: ivy.array([0., -0.785, 0.785]),
         b: ivy.array([0.785, 0., -1.41])
     }
-    
+
     """
     return ivy.current_backend(x).atan(x, out=out)
 
@@ -866,8 +860,6 @@ def atanh(
     Examples
     --------
     With :code:`ivy.Array` input:
-    >>> import ivy
-    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([0, -0.5])
     >>> y = ivy.atanh(x)
     >>> print(y)
@@ -2974,7 +2966,52 @@ def log10(
         ``x``. The returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.ceil.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([4.0, 1, -0.0, -5.0])
+    >>> y = ivy.log10(x)
+    >>> print(y)
+    ivy.array([0.602, 0., -inf, nan])
+
+    >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
+                       [+0, -1.0, -5, float('-inf')]])
+    >>> y = ivy.log10(x)
+    >>> print(y)
+    ivy.array([[nan, 0., 0.699, inf],
+               [-inf, nan, nan, nan]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([5.78, float('-inf')])
+    >>> y = ivy.log10(x)
+    >>> print(y)
+    ivy.array([0.762, nan])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
+                          b=ivy.array([-0., -3.9, float('+inf')]),\
+                          c=ivy.array([7.9, 1.1, 1.]))
+    >>> y = ivy.log10(x)
+    >>> print(y)
+    {
+        a: ivy.array([-inf, nan]),
+        b: ivy.array([-inf, nan, inf]),
+        c: ivy.array([0.898, 0.0414, 0.])
+    }
     """
+
     return ivy.current_backend(x).log10(x, out=out)
 
 
