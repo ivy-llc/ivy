@@ -18,6 +18,7 @@ cmd_line_args = (
     "with_out",
     "container",
     "instance_method",
+    "test_gradients"
 )
 
 try:
