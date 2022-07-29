@@ -2,10 +2,19 @@ Function Wrapping
 =================
 
 .. _`wrapped`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
-.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L412
+.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L340
 .. _`abs`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/functional/ivy/elementwise.py#L2142
-.. _`to_native_arrays_and_back`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L237
-.. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L323
+.. _`creation submodule`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/functional/ivy/creation.py
+.. _`zeros`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/functional/ivy/creation.py#L158
+.. _`asarray`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/functional/ivy/creation.py#L110
+.. _`inputs_to_native_arrays`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L62
+.. _`inputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L104
+.. _`outputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L134
+.. _`to_native_arrays_and_back`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L164
+.. _`infer_dtype`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L176
+.. _`infer_device`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L213
+.. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L250
+.. _`handle_nestable`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L297
 .. _`function wrapping discussion`: https://github.com/unifyai/ivy/discussions/1314
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
@@ -24,6 +33,42 @@ identical logic in every single function independently.
 
 Depending on the function being wrapped, the new function
 might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
+
+Following are some of the wrapping functions currently used:
+
+#.  `inputs_to_native_arrays`_ : This wrapping function converts all :code:`ivy.Array` instances in the arguments
+    to their :code:`ivy.NativeArray` counterparts, based on the :ref:`Backend Setting` before calling the function.
+#.  `inputs_to_ivy_arrays`_ : This wrapping function converts all :code:`ivy.NativeArray` instances in the arguments
+    to their :code:`ivy.Array` counterparts, based on the :ref:`Backend Setting` before calling the function.
+#.  `outputs_to_ivy_arrays`_ : This wrapping function converts all :code:`ivy.NativeArray` instances in the outputs
+    to their :code:`ivy.Array` counterparts, based on the :ref:`Backend Setting` before calling the function.
+#.  `to_native_arrays_and_back`_ : This wrapping function converts all :code:`ivy.Array` instances in the arguments
+    to their :code:`ivy.NativeArray` counterparts, calls the function with those arguments and then converts the 
+    :code:`ivy.NativeArray` instances in the output back to :code:`ivy.Array`. This wrapping function is heavily used because
+    it enables achieving the objective of ensuring that every ivy function could accept an :code:`ivy.Array` and return
+    an :code:`ivy.Array`, making it independent of the :ref:`Backend Setting`.
+#.  `infer_dtype`_ : This wrapping function infers the `dtype` argument to be passed to a function based on the 
+    array arguments passed to it. If :code:`dtype` is explicitly passed to the function, then it is used directly. This
+    wrapping function could be found in functions from the `creation submodule`_ such as `zeros`_ where we then
+    allow the user to not enter the :code:`dtype` argument to such functions.
+#.  `infer_device`_ : Similar to the `infer_dtype`_ wrapping function, the `infer_device`_ function wrapping 
+    infers the :code:`device` argument to be passed to a function based on the first array argument passed to it. This 
+    wrapping function is also used a lot in functions from the `creation submodule`_ such as `asarray`_, where
+    we want to create the `ivy.Array` on the same device as the input array.
+#.  `handle_out_argument`_ : This wrapping function is used in nearly all ivy functions. It enables appropriate
+    handling of the :code:`out` argument of functions. In cases where the backend framework natively supports the :code:`out` 
+    argument for a function, we prefer to use it as it's a more efficient implementation of the :code:`out` argument for 
+    that particular backend framework. But in cases when it isn't supported, we support it anyway with 
+    :ref:`Inplace Updates`.
+#.  `handle_nestable`_ : This wrapping function enables the use of :code:`ivy.Container` arguments in functions and
+    directly calling them through the :code:`ivy` namespace, just like calling a function with :code:`ivy.Array` arguments 
+    instead. Whenever there's a :code:`ivy.Container` argument, this wrapping function defers to the corresponding
+    :ref:`Containers` static method to facilitate the same. As a result, the function can be called by passing
+    an :code:`ivy.Container` to any or all of its arguments.
+
+When calling `_wrap_function`_ during :ref:`Backend Setting`, firstly the attributes of the functions are checked 
+to get all the wrapping functions for a particular functions. Then all the wrapping functions applicable to a
+function are used to wrap the function.
 
 Each of these topics and each associated piece of logic added by the various wrapper functions are covered in more
 detail in the next sections. For now, suffice it to say that they do quite a lot.

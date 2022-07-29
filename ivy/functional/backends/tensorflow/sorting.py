@@ -38,7 +38,7 @@ def argsort(
             ret = tf.argsort(
                 tf.convert_to_tensor(x), axis=axis, direction="ASCENDING", stable=stable
             )
-    return ret
+    return tf.cast(ret, dtype=tf.int64)
 
 
 def sort(
