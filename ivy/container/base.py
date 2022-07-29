@@ -2200,47 +2200,6 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         ).unstack(0, dim_size=dim_size)
 
-    def gather_nd(
-        self,
-        indices,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Gather slices from all container params into a arrays with shape specified by
-        indices.
-
-        Parameters
-        ----------
-        indices
-            Index array.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-array dimensions gathered.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.gather_nd(x, indices)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def einops_rearrange(
         self,
         pattern,
