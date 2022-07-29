@@ -222,7 +222,6 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With one :code:`ivy.Container` input:</span>
-
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1.], [-1., 3.]]), \</span>
 <span class="sd">                              b=ivy.array([[2., 1.], [1., 1.]]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_cholesky(x, &#39;false&#39;)</span>
@@ -233,9 +232,7 @@
 <span class="sd">            b: ivy.array([[1.41, 0.707], </span>
 <span class="sd">                            [0., 0.707]])</span>
 <span class="sd">         }</span>
-
 <span class="sd">        With multiple :code:`ivy.Container` inputs:</span>
-
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1], [-1., 3.]]), \</span>
 <span class="sd">                              b=ivy.array([[2., 1.], [1., 1.]]))</span>
 <span class="sd">        &gt;&gt;&gt; upper = ivy.Container(a=1, b=-1)</span>
@@ -306,7 +303,7 @@
 <span class="sd">            otherwise, the returned container must contain upper-triangular matrices.</span>
 <span class="sd">            The returned container must have a floating-point data type determined by</span>
 <span class="sd">            Type Promotion Rules and must have the same shape as self.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \</span>
@@ -619,6 +616,63 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container static method variant of ivy.matrix_rank.</span>
+<span class="sd">        This method returns the rank (i.e., number of non-zero singular values)</span>
+<span class="sd">        of a matrix (or a stack of matrices).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------        </span>
+<span class="sd">        x</span>
+<span class="sd">            input array or container having shape ``(..., M, N)`` and whose innermost</span>
+<span class="sd">            two dimensions form ``MxN`` matrices. Should have a floating-point data </span>
+<span class="sd">            type.</span>
+<span class="sd">        rtol</span>
+<span class="sd">            relative tolerance for small singular values. Singular values</span>
+<span class="sd">            approximately less than or equal to ``rtol * largest_singular_value`` are</span>
+<span class="sd">            set to zero. If a ``float``, the value is equivalent to a zero-dimensional</span>
+<span class="sd">            array having a floating-point data type determined by :ref:`type-promotion` </span>
+<span class="sd">            (as applied to ``x``) and must be broadcast against each matrix. If an </span>
+<span class="sd">            ``array``, must have a floating-point data type and must be compatible with</span>
+<span class="sd">            ``shape(x)[:-2]`` (see:ref:`broadcasting`). If ``None``, the default value</span>
+<span class="sd">            is ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated</span>
+<span class="sd">            with the floating-point data type determined by :ref:`type-promotion`</span>
+<span class="sd">            (as applied to ``x``).</span>
+<span class="sd">            Default: ``None``.    </span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            a container containing the ranks. The returned array must have a </span>
+<span class="sd">            floating-point data type determined by :ref:`type-promotion` and must have </span>
+<span class="sd">            shape ``(...)`` (i.e., must have a shape equal to ``shape(x)[:-2]``).</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code: `ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \</span>
+<span class="sd">                              b=ivy.array([[1., 0.], [0., 0.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_matrix_rank(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(2.),</span>
+<span class="sd">            b: ivy.array(1.)</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;matrix_rank&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
@@ -640,6 +694,60 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.matrix_rank.</span>
+<span class="sd">        This method returns the rank (i.e., number of non-zero singular values)</span>
+<span class="sd">        of a matrix (or a stack of matrices).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container having shape ``(..., M, N)`` and whose innermost two </span>
+<span class="sd">            dimensions form ``MxN`` matrices. Should have a floating-point data type.</span>
+<span class="sd">        rtol</span>
+<span class="sd">            relative tolerance for small singular values. Singular values approximately</span>
+<span class="sd">            less than or equal to ``rtol * largest_singular_value`` are set to zero. If</span>
+<span class="sd">            a ``float``, the value is equivalent to a zero-dimensional array having a</span>
+<span class="sd">            floating-point data type determined by :ref:`type-promotion` (as applied to</span>
+<span class="sd">            ``x``) and must be broadcast against each matrix. If an ``array``, must have</span>
+<span class="sd">            a floating-point data type and must be compatible with ``shape(x)[:-2]`` </span>
+<span class="sd">            (see :ref:`broadcasting`). If ``None``, the default value is </span>
+<span class="sd">            ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated </span>
+<span class="sd">            with the floating-point data type determined by :ref:`type-promotion`</span>
+<span class="sd">            (as applied to ``x``). Default: ``None``.        </span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.        </span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            a container containing the ranks. The returned array must have a</span>
+<span class="sd">            floating-point data type determined by :ref:`type-promotion` and must have </span>
+<span class="sd">            shape ``(...)`` (i.e., must have a shape equal to ``shape(x)[:-2]``).</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code: `ivy.Container` input:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]), \</span>
+<span class="sd">                                b=ivy.array([[1., 0.], [0., 0.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.matrix_rank()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(2.),</span>
+<span class="sd">            b: ivy.array(1.)</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_matrix_rank</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">rtol</span><span class="p">,</span>

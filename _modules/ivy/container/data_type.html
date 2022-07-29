@@ -775,6 +775,46 @@
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        `ivy.Container` static method variant of `ivy.result_type`. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for `ivy.result_type` also applies to</span>
+<span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container from which to cast.</span>
+<span class="sd">        arrays_and_dtypes</span>
+<span class="sd">            an arbitrary number of input arrays and/or dtypes.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            the dtype resulting from an operation involving the input arrays and dtypes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array([0, 1, 2]), \</span>
+<span class="sd">                              b = ivy.array([3., 4., 5.]))</span>
+<span class="sd">        &gt;&gt;&gt; print(x.a.dtype, x.b.dtype)</span>
+<span class="sd">        int32 float32</span>
+
+<span class="sd">        &gt;&gt;&gt; print(ivy.Container.static_result_type(x, ivy.float64))</span>
+<span class="sd">        {</span>
+<span class="sd">            a: float64,</span>
+<span class="sd">            b: float32</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;result_type&quot;</span><span class="p">,</span>
             <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">,</span>
@@ -792,6 +832,47 @@
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        `ivy.Container` instance method variant of `ivy.result_type`. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for `ivy.result_type` also applies to</span>
+<span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container from which to cast.</span>
+<span class="sd">        arrays_and_dtypes</span>
+<span class="sd">            an arbitrary number of input arrays and/or dtypes.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            the dtype resulting from an operation involving the input arrays and dtypes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array([3, 3, 3]))</span>
+<span class="sd">        &gt;&gt;&gt; print(x.a.dtype)</span>
+<span class="sd">        int32</span>
+
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(b = ivy.float64)</span>
+<span class="sd">        &gt;&gt;&gt; print(x.result_type(y))</span>
+<span class="sd">        {</span>
+<span class="sd">            a: {</span>
+<span class="sd">                b: float64</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_result_type</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">,</span>
