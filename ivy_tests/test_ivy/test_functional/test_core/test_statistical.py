@@ -51,7 +51,6 @@ def statistical_dtype_values(draw, *, function):
 @handle_cmd_line_args
 def test_min(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -86,7 +85,6 @@ def test_min(
 @handle_cmd_line_args
 def test_max(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -121,7 +119,6 @@ def test_max(
 @handle_cmd_line_args
 def test_mean(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -156,7 +153,6 @@ def test_mean(
 @handle_cmd_line_args
 def test_var(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -190,7 +186,6 @@ def test_var(
 @handle_cmd_line_args
 def test_prod(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -226,7 +221,6 @@ def test_prod(
 @handle_cmd_line_args
 def test_sum(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -262,7 +256,6 @@ def test_sum(
 @handle_cmd_line_args
 def test_std(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
