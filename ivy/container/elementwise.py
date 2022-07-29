@@ -3568,6 +3568,30 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        With :code:'ivy.Container' inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 9.2]), b=ivy.array([2., 1.1, 5.5]))
+        >>> x2 = ivy.Container(a=ivy.array([12, 2.2, 4.1]), b=ivy.array([1, 0.7, 3.8]))
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, False, False]),
+            b: ivy.array([False, False, False])
+        }
+
+        With mixed :code:'ivy.Container' and :code:'ivy.Array' inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 9.2]), b=ivy.array([2., 1., 5.5]))
+        >>> x2 = ivy.array([2., 1.1, 5.5])
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([True, True, True])
+        }
+
+
         """
         return self.static_less_equal(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -3898,6 +3922,21 @@ class ContainerWithElementwise(ContainerBase):
             element in ``x``. The returned array must have a real-valued
             floating-point data type determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        Using :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
+                              b=ivy.array([-0., -3.9, float('+inf')]),\
+                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> y = ivy.Container.static_log10(x)
+        >>> print(y)
+        {
+            a: ivy.array([-inf, nan]),
+            b: ivy.array([-inf, nan, inf]),
+            c: ivy.array([0.898, 0.0414, 0.])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "log10",
@@ -3948,6 +3987,20 @@ class ContainerWithElementwise(ContainerBase):
             each element in ``self``. The returned array must have a real-valued
             floating-point data type determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
+                              b=ivy.array([-0., -3.9, float('+inf')]), \
+                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> y = x.log10(x)
+        >>> print(y)
+        {
+            a: ivy.array([-inf, nan]),
+            b: ivy.array([-inf, nan, inf]),
+            c: ivy.array([0.898, 0.0414, 0.])
+        }
         """
         return self.static_log10(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out

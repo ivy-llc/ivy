@@ -101,7 +101,7 @@ def seed(seed_value: int = 0) -> None:
 
 def shuffle(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     batch_size = x.shape[0]
-    return torch.index_select(x, 0, torch.randperm(batch_size, out=out), out=out)
+    return torch.index_select(x, 0, torch.randperm(batch_size), out=out)
 
 
 shuffle.support_native_out = True
