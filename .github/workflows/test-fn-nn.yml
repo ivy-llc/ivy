@@ -2,6 +2,7 @@ name: test-fn-nn
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
+    echo "${{ github.event.pull_request.labels.name }}"
     if: ${{ !contains(github.event.pull_request.labels.name), 'Function Reformatting' }}
     strategy:
       matrix:

@@ -2,6 +2,7 @@ name: test-array-api-tensorflow
 on: [push, pull_request, workflow_dispatch]
 jobs:
   run-tensorflow-array-api-tests:
+    echo "${{ github.event.pull_request.labels.name }}"
     if: ${{ !contains(github.event.pull_request.labels.name), 'Function Reformatting' }}
     runs-on: ubuntu-latest
     steps:
