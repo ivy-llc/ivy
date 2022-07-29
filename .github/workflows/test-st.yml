@@ -1,4 +1,4 @@
-name: test-fn-core
+name: test-st
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
