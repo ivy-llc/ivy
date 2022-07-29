@@ -3806,17 +3806,6 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def dtype(self):
-        """Summary.
-
-        Returns
-        -------
-        ret
-             New datatype container
-
-        """
-        return self.map(lambda x, _: self._ivy.dtype(x))
-
     def with_entries_as_lists(self):
         def to_list(x, _=""):
             try:
