@@ -39,18 +39,7 @@ def statistical_dtype_values(draw, *, function):
             length=size,
         )
     )
-    shape = np.asarray(values, dtype=dtype).shape
-    axis = draw(helpers.get_axis(shape=shape, allow_none=True))
-    return dtype, values, axis
-
-
-@st.composite
-def statistical_correction_values(draw, *, function):
-    correction = draw(
-        st.integers()
-        | st.floats()
-    )
-    return correction
+    return dtype, values
 
 
 # min
@@ -70,9 +59,8 @@ def test_min(
     container,
     instance_method,
     fw,
-    keep_dims,
 ):
-    input_dtype, x, axis = dtype_values_axis
+    input_dtype, x = dtype_and_x
     assume(x)
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -85,8 +73,6 @@ def test_min(
         fw=fw,
         fn_name="min",
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, # axis=axis,
-        keepdims=keep_dims,
     )
 
 
@@ -107,9 +93,8 @@ def test_max(
     container,
     instance_method,
     fw,
-    keep_dims,
 ):
-    input_dtype, x, axis = dtype_values_axis
+    input_dtype, x = dtype_and_x
     assume(x)
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -122,8 +107,6 @@ def test_max(
         fw=fw,
         fn_name="max",
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, # axis=axis,
-        keepdims=keep_dims,
     )
 
 
@@ -144,11 +127,8 @@ def test_mean(
     container,
     instance_method,
     fw,
-    keep_dims,
 ):
-    input_dtype, x, axis = dtype_values_axis
-    if fw == "torch" and (input_dtype in ivy_np.valid_int_dtypes):
-        return  # torch implementation exhibits strange behaviour
+    input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -161,8 +141,6 @@ def test_mean(
         fn_name="mean",
         rtol_=1e-1,
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, # axis=axis,
-        keepdims=keep_dims
     )
 
 
@@ -183,10 +161,8 @@ def test_var(
     container,
     instance_method,
     fw,
-    correction,
-    keep_dims,
 ):
-    input_dtype, x, axis = dtype_values_axis
+    input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -198,9 +174,6 @@ def test_var(
         fw=fw,
         fn_name="var",
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, # axis=axis,
-        correction=correction,
-        keepdims=keep_dims,
     )
 
 
@@ -221,9 +194,8 @@ def test_prod(
     container,
     instance_method,
     fw,
-    keep_dims,
 ):
-    input_dtype, x, axis = dtype_values_axis
+    input_dtype, x = dtype_and_x
     if fw == "torch" and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype)):
         return  # torch implementation exhibits strange behaviour
     helpers.test_function(
@@ -237,8 +209,6 @@ def test_prod(
         fw=fw,
         fn_name="prod",
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, # axis=axis,
-        keepdims=keep_dims,
     )
 
 
@@ -259,9 +229,8 @@ def test_sum(
     container,
     instance_method,
     fw,
-    keep_dims,
 ):
-    input_dtype, x, axis = dtype_values_axis
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -275,8 +244,6 @@ def test_sum(
         fn_name="sum",
         rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, # axis=axis,
-        keepdims=keep_dims,
     )
 
 
@@ -297,10 +264,8 @@ def test_std(
     container,
     instance_method,
     fw,
-    correction,
-    keep_dims,
 ):
-    input_dtype, x, axis = dtype_values_axis
+    input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -314,9 +279,6 @@ def test_std(
         rtol_=1e-2,
         atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
-        axis=None, # axis=axis,
-        correction=correction,
-        keepdims=keep_dims,
     )
 
 
