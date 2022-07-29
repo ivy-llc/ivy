@@ -191,6 +191,7 @@ def depthwise_conv2d(
             )
     return outputs
 
+
 def conv2d_transpose(*_):
     raise Exception("Convolutions not yet implemented for numpy library")
 
