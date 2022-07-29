@@ -623,7 +623,7 @@ class ContainerWithGradients(ContainerBase):
         >>> lr = ivy.Container(a=ivy.array(0.3),\
                                 b=ivy.array(0.1))
         >>> NewWeights = w.gradient_descent_update(dcdw, lr, inplace=False)
-        >>> print(w)
+        >>> print(NewWeights)
             {
                 a: ivy.array([0.85, 1.94, 2.97]),
                 b: ivy.array([3.28, 5.38, 1.81])
