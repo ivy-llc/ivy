@@ -10,22 +10,6 @@ import ivy
 
 # Extra #
 # ------#
-def apply_function(
-    fn: Callable,
-    constant: Dict[str, Any] = None,
-    unique: Dict[str, Iterable[Any]] = None,
-    ) -> Callable:
-
-    c = ivy.default(constant, {})
-    u = ivy.default(unique, {})
-
-    def function(*input: Any): 
-        return fn(**dict(**c, **dict(zip(u.keys(), input))))
-
-    outputs = _map(function, *u.values())
-
-    return outputs
-
 
 def index_nest(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
@@ -511,16 +495,98 @@ def map(
     -------
     ret
         x following the applicable of fn to each of it's iterated items.
+    
+    Examples
+    --------
 
+    With :code:`int` inputs:
+
+    >>> def special_square(x:float) -> float:
+    >>> return np.square(x)
+    >>> results = ivy.map(
+    >>> fn = special_square,
+    >>> constant = None,
+    >>> unique = {'x':[1,2,3]},
+    >>> mean = False)
+    >>> print(results)
+    [1, 4, 9]
+
+    >>> results =  ivy.map(
+    >>> fn = special_square,
+    >>> constant = None,
+    >>> unique = {'x':[0,1,2]},
+    >>> mean = True)
+    >>> print(results)
+    1.6666666666666667
+
+    >>> def special_pow(x:float,y:float) ->float:
+    >>> return np.power(x,y)
+    >>> results = ivy.map(
+    >>> fn = special_pow,
+    >>> constant = {'y':[0,1]},
+    >>> unique = {'x':[1,2,3]},
+    >>> mean = False)
+    >>> print(results)
+    [array([1, 1], dtype=int32), array([1, 2], dtype=int32), array([1, 3], dtype=int32)]
+
+    >>> results = ivy.map(
+    >>> fn = special_pow,
+    >>> constant = {'y':[0,1]},
+    >>> unique = {'x':[1,2,3]},
+    >>> mean = True)
+    >>> print(results)
+    [1. 2.]
+
+    With :code:`float` inputs:
+
+    >>> def linear_model(
+    >>>        w:float,
+    >>>        x:float,
+    >>>        b:float) -> float:
+    >>> return w*x + b
+    >>> results = ivy.map(
+    >>>         fn = linear_model,
+    >>>         constant = {'w':10., 'b':1.},
+    >>>         unique = {'x':[0.,1.,2.]},
+    >>>         mean = False)
+    >>> print(results)
+    [1.0, 11.0, 21.0]
+
+    With :code:`ivy.Array` inputs:
+
+    >>> results = ivy.map(
+    >>> fn = linear_model,
+    >>> constant = {'w':ivy.array([1.,0.,1.]),
+    >>>            'b':ivy.array([0.,10.,100.])},
+    >>> unique = {'x':[ivy.array([0.,1.,0.]),
+    >>>                ivy.array([1.,1.,1.])]},
+    >>> mean = False)
+    >>> print(results)
+    [ivy.array([  0.,  10., 100.]),
+    ivy.array([  1.,  10., 101.])]
+
+    >>> results = ivy.map(
+    >>> fn = linear_model,
+    >>> constant = {'w':ivy.array([1.,0.,1.]),
+    >>>            'b':ivy.array([0.,10.,100.])},
+    >>> unique = {'x':[ivy.array([0.,1.,0.]),
+    >>>               ivy.array([1.,1.,1.])]},
+    >>> mean = True)
+    >>> print(results)
+    ivy.array([  0.5,  10. , 100. ])
     """
-    outputs = apply_function(fn, constant, unique)
-
-    rets = list(outputs)
-
+    c = ivy.default(constant, {})
+    u = ivy.default(unique, {})
+    rets = [
+        r
+        for r in _map(
+            lambda *uv: fn(**dict(**c, **dict(zip(u.keys(), uv)))), *u.values())
+        ]
     if mean:
-        rets = sum(rets) / len(rets)
-
+        return sum(rets) / len(rets)
     return rets
+
+    
 
 
 def nested_map(
