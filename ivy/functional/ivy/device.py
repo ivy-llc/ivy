@@ -477,7 +477,7 @@ def used_mem_on_dev(
 
 def percent_used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice], 
-    process_specific: bool = False
+    process_specific: bool = False,
 ) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
     used RAM is returned.
