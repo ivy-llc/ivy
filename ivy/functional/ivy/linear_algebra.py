@@ -603,9 +603,7 @@ def eigvalsh(
         (..., M) and have the same data type as x.
     
     This function conforms to the `Array API Standard
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-    instances in place of any of the arguments.
+    Both the description and the type hints above assumes an array input for simplicity.
     
         
     Exampels
