@@ -1307,41 +1307,6 @@ def test_container_stop_gradients(device, call):
     assert "b/d" not in container_stopped_grads
 
 
-def test_container_as_variables(device, call):
-    dict_in = {
-        "a": ivy.array(
-            [[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]], device=device
-        ),
-        "b": {
-            "c": ivy.array(
-                [[[8.0, 7.0], [6.0, 5.0]], [[4.0, 3.0], [2.0, 1.0]]], device=device
-            ),
-            "d": ivy.array(
-                [[[2.0, 4.0], [6.0, 8.0]], [[10.0, 12.0], [14.0, 16.0]]], device=device
-            ),
-        },
-    }
-    container = Container(dict_in)
-
-    assert ivy.is_ivy_array(container["a"])
-    assert ivy.is_ivy_array(container.a)
-    assert ivy.is_ivy_array(container["b"]["c"])
-    assert ivy.is_ivy_array(container.b.c)
-    assert ivy.is_ivy_array(container["b"]["d"])
-    assert ivy.is_ivy_array(container.b.d)
-
-    variable_cont = container.as_variables()
-
-    if call is not helpers.np_call:
-        # Numpy does not support variables or gradients
-        assert ivy.is_variable(variable_cont["a"])
-        assert ivy.is_variable(variable_cont.a)
-        assert ivy.is_variable(variable_cont["b"]["c"])
-        assert ivy.is_variable(variable_cont.b.c)
-        assert ivy.is_variable(variable_cont["b"]["d"])
-        assert ivy.is_variable(variable_cont.b.d)
-
-
 def test_container_as_arrays(device, call):
     dict_in = {
         "a": ivy.variable(
