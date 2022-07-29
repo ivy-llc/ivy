@@ -6416,8 +6416,8 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
@@ -6465,12 +6465,14 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
             Container object with all sub-arrays having the minimum values computed.
 
         """
-        return self.static_minimum(self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out)
+        return self.static_minimum(
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )

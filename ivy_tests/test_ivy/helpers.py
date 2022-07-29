@@ -1686,7 +1686,7 @@ def array_and_indices(
         The minimum size of the dimensions of the arrays.
     max_dim_size
         The maximum size of the dimensions of the arrays.
-    
+
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator
