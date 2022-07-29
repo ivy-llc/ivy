@@ -1,7 +1,13 @@
-name: test-fn-activations-jax
+name: test-fn-core-ivy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
+    strategy:
+      matrix:
+        backend: [numpy, jax, tensorflow, torch]
+        module: [test_creation, test_device, test_dtype, test_elementwise, test_general,
+                test_gradients, test_linalg, test_manipulation, test_meta, test_nest,
+                test_random, test_set, test_sorting, test_statistical, test_utility]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -18,8 +24,8 @@ jobs:
             ivy/.hypothesis
           key: ${{ runner.os }}-hypothesis
 
-      - name: Run Activations Tests
+      - name: Run Ivy Tests
         run: |
           cd ivy
           mkdir -p .hypothesis
-          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend jax ivy/ivy_tests/test_ivy/test_functional/test_nn/test_activations.py
+          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend ${{ matrix.backend}} ivy/ivy_tests/test_ivy/test_functional/test_core/${{ matrix.module}}.py
