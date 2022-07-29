@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -148,7 +148,6 @@ def _pop_size_num_samples_replace_n_probs(draw):
 
 # multinomial
 @given(everything=_pop_size_num_samples_replace_n_probs())
-@settings(deadline=None)
 def test_multinomial(everything, device, call):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
     if call is helpers.tf_call and not replace or prob_dtype == "float64":
@@ -187,7 +186,6 @@ def test_multinomial(everything, device, call):
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
     data=st.data(),
 )
-@settings(deadline=None)
 @handle_cmd_line_args
 def test_randint(
     *,
