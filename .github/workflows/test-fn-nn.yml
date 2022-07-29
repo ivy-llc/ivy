@@ -2,6 +2,7 @@ name: test-fn-nn
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
+    if: ${{ !contains(github.event.pull_request.labels) }}
     strategy:
       matrix:
         backend: [numpy, jax, tensorflow, torch]

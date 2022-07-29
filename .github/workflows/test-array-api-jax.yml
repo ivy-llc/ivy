@@ -2,6 +2,7 @@ name: test-array-api-jax
 on: [push, pull_request, workflow_dispatch]
 jobs:
   run-jax-array-api-tests:
+    if: ${{ !contains(github.event.pull_request.labels) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
