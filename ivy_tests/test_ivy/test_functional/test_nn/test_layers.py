@@ -36,6 +36,14 @@ def x_and_weight(draw, dtypes, fn_name):
     in_features = draw(st.integers(min_value=1, max_value=3))
     out_features = draw(st.integers(min_value=1, max_value=3))
 
+    x_shape = outer_batch_shape + inner_batch_shape + (in_features,)
+    weight_shape = outer_batch_shape + (out_features,) + (in_features,)
+    bias_shape = outer_batch_shape + (out_features,)
+
+    x = draw(helpers.array_values(dtype=dtype, shape=x_shape, min_value=0, max_value=1))
+    weight = draw(helpers.array_values(dtype=dtype, shape=weight_shape, min_value=0, max_value=1))
+    bias = draw(helpers.array_values(dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
+
     num_queries = in_features
     num_keys = in_features
     feat_dim = in_features
@@ -47,14 +55,6 @@ def x_and_weight(draw, dtypes, fn_name):
         )
     )
 
-    x_shape = outer_batch_shape + inner_batch_shape + (in_features,)
-    weight_shape = outer_batch_shape + (out_features,) + (in_features,)
-    bias_shape = outer_batch_shape + (out_features,)
-
-    x = draw(helpers.array_values(dtype=dtype, shape=x_shape, min_value=0, max_value=1))
-    weight = draw(helpers.array_values(dtype=dtype, shape=weight_shape, min_value=0, max_value=1))
-    bias = draw(helpers.array_values(dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
-
     q_shape = batch_shape + (num_queries,) + (feat_dim,)
     k_shape = batch_shape + (num_keys,) + (feat_dim,)
     v_shape = batch_shape + (num_keys,) + (feat_dim,)
@@ -65,15 +65,37 @@ def x_and_weight(draw, dtypes, fn_name):
     v = draw(helpers.array_values(dtype=dtype, shape=v_shape, min_value=0, max_value=1))
     mask = draw(helpers.array_values(dtype=dtype, shape=mask_shape, min_value=0, max_value=1))
 
+    t = draw(st.integers(min_value=1, max_value=3))
+    _in_ = draw(st.integers(min_value=1, max_value=3))
+    _out_ = draw(st.integers(min_value=1, max_value=3))
+
+    x_lstm_shape = batch_shape + (t,) + (_in_,)
+    init_h_shape = batch_shape + (_out_,)
+    init_c_shape = init_h_shape
+    kernel_shape = (_in_,) + 4 * (_out_,)
+    recurrent_kernel_shape = (_out_,) + 4 * (_out_,)
+    bias_shape = 4 * (_out_,)
+    recurrent_bias_shape = bias_shape
+
+    x_lstm = draw(helpers.array_values(dtype=dtype, shape=x_lstm_shape, min_value=0, max_value=1))
+    init_h = draw(helpers.array_values(dtype=dtype, shape=init_h_shape, min_value=0, max_value=1))
+    init_c = draw(helpers.array_values(dtype=dtype, shape=init_c_shape, min_value=0, max_value=1))
+    kernel = draw(helpers.array_values(dtype=dtype, shape=kernel_shape, min_value=0, max_value=1))
+    recurrent_kernel = draw(helpers.array_values(dtype=dtype, shape=recurrent_kernel_shape, min_value=0, max_value=1))
+    bias = draw(helpers.array_values(dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
+    recurrent_bias = draw(helpers.array_values(dtype=dtype, shape=recurrent_bias_shape, min_value=0, max_value=1))
+
+    # x_feat_dim = feat_dim
+    # num_heads = num_keys
+    #
+    # x_mha_shape = q
 
     if fn_name == "linear":
         return dtype, x, weight, bias
     if fn_name == "scaled_dot_product_attention":
         return dtype, q, k, v, mask, scale
-
-
-
-
+    if fn_name == "lstm_update":
+        return dtype, x_lstm ,init_h, init_c, kernel, recurrent_kernel, bias , recurrent_bias
 
 
 # linear
@@ -82,7 +104,6 @@ def x_and_weight(draw, dtypes, fn_name):
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         fn_name="linear",
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=3),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
     data=st.data(),
@@ -146,7 +167,6 @@ def test_linear(
         width=64
     ),
     scale=st.booleans(),
-    as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="dropout"),
     native_array=st.booleans(),
@@ -204,7 +224,6 @@ def test_dropout(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         fn_name="scaled_dot_product_attention",
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=3),
     num_positional_args=helpers.num_positional_args(
         fn_name="scaled_dot_product_attention"
     ),
@@ -796,11 +815,10 @@ def test_conv3d_transpose(
 
 # lstm
 @given(
-    b=helpers.lists(arg=st.integers(1, 5), min_size=4, max_size=4),
-    t=st.integers(min_value=1, max_value=5),
-    input_channel=st.integers(min_value=1, max_value=5),
-    hidden_channel=st.integers(min_value=1, max_value=5),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype_lstm = x_and_weight(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        fn_name= "lstm_update",
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
     data=st.data(),
 )
@@ -808,11 +826,7 @@ def test_conv3d_transpose(
 def test_lstm(
     *,
     data,
-    b,
-    t,
-    input_channel,
-    hidden_channel,
-    dtype,
+    dtype_lstm,
     as_variable,
     num_positional_args,
     native_array,
@@ -821,28 +835,11 @@ def test_lstm(
     fw,
     device,
 ):
-    dtype = [dtype] * 7
-
-    # smoke test
-    if fw == "torch" and device == "cpu" and "float16" in dtype:
-        # "sigmoid_cpu" not implemented for 'Half'
-        return
-
-    x = np.random.uniform(size=b + [t] + [input_channel]).astype(dtype[0])
-    init_h = np.ones(b + [hidden_channel]).astype(dtype[1])
-    init_c = np.ones(b + [hidden_channel]).astype(dtype[2])
-
-    kernel = (
-        np.array(np.ones([input_channel, 4 * hidden_channel])).astype(dtype[3]) * 0.5
-    )
-
-    recurrent_kernel = (
-        np.array(np.ones([hidden_channel, 4 * hidden_channel])).astype(dtype[4]) * 0.5
-    )
-
-    bias = np.random.uniform(size=[4 * hidden_channel]).astype(dtype[5])
-
-    recurrent_bias = np.random.uniform(size=[4 * hidden_channel]).astype(dtype[6])
+    #dtype = [dtype] * 7
+    dtype, x_lstm, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias = dtype_lstm
+    as_variable = [as_variable] * 7
+    native_array = [native_array] * 7
+    container = [container] * 7
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -854,11 +851,11 @@ def test_lstm(
         instance_method=instance_method,
         fw=fw,
         fn_name="lstm_update",
-        x=x,
-        init_h=init_h,
-        init_c=init_c,
-        kernel=kernel,
-        recurrent_kernel=recurrent_kernel,
-        bias=bias,
-        recurrent_bias=recurrent_bias,
+        x=np.asarray(x_lstm, dtype=dtype),
+        init_h=np.asarray(init_h, dtype=dtype),
+        init_c=np.asarray(init_c, dtype=dtype),
+        kernel=np.asarray(kernel, dtype=dtype),
+        recurrent_kernel=np.asarray(recurrent_kernel, dtype=dtype),
+        bias=np.asarray(bias, dtype=dtype),
+        recurrent_bias=np.asarray(recurrent_bias, dtype=dtype),
     )
