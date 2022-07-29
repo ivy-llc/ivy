@@ -182,26 +182,45 @@ def depthwise_conv2d(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+
     filter_shape = list(filters.shape[0:2])
     dims_in = filters.shape[-1]
     filters = torch.unsqueeze(filters, -1)
     filters = filters.permute(2, 3, 0, 1)
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    if padding == "VALID":
-        padding_list: List[int] = [0, 0]
-    elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
-    else:
+    x_shape = list(x.shape[2:])
+    if padding == "SAME":
+        if x_shape[1] % strides[1] == 0:
+            pad_w = max(filter_shape[1] - strides[1], 0)
+        else:
+            pad_w = max(filter_shape[1] - (x_shape[1] % strides[1]), 0)
+
+        if x_shape[0] % strides[0] == 0:
+            pad_h = max(filter_shape[0] - strides[0], 0)
+        else:
+            pad_h = max(filter_shape[0] - (x_shape[0] % strides[0]), 0)
+        x = torch.nn.functional.pad(
+            x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
+        )
+
+    elif padding != "VALID":
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
     # noinspection PyArgumentEqualDefault
     res = torch.nn.functional.conv2d(
-        x, filters, None, strides, padding_list, dilations, dims_in
+        x, filters, None, strides, "valid", dilations, dims_in
     )
-    return res.permute(0, 2, 3, 1)
+    if data_format == "NHWC":
+        return res.permute(0, 2, 3, 1)
+    return res
+
+
+depthwise_conv2d.unsupported_dtypes = ('float16', )
 
 
 # noinspection PyUnresolvedReferences
