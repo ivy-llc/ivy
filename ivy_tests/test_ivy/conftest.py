@@ -27,11 +27,11 @@ TEST_CALL_METHODS: Dict[str, callable] = {
     "mxnet": helpers.mx_call,
 }
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
-    "as-variable": None,
-    "native-array": None,
-    "with-out": None,
-    "nestable": None,
-    "instance-method": None,
+    "as_variable": None,
+    "native_array": None,
+    "with_out": None,
+    "container": None,
+    "instance_method": None,
 }
 MAP_BOOL_FLAGS: Dict[str, bool] = {
     "true": True,
@@ -140,11 +140,11 @@ def get_command_line_flags(request) -> Dict[str, bool]:
 
     # mapping command line arguments, first element of the tuple is
     # the --skip flag, and the second is the --with flag
-    CONFIG_DICT["as-variable"] = (MAP_BOOL_FLAGS[a_v_f_s], MAP_BOOL_FLAGS[a_v_f_w])
-    CONFIG_DICT["native-array"] = (MAP_BOOL_FLAGS[n_f_s], MAP_BOOL_FLAGS[n_f_w])
-    CONFIG_DICT["with-out"] = (MAP_BOOL_FLAGS[o_f_s], MAP_BOOL_FLAGS[o_f_w])
-    CONFIG_DICT["nestable"] = (MAP_BOOL_FLAGS[n_s], MAP_BOOL_FLAGS[n_w])
-    CONFIG_DICT["instance-method"] = (MAP_BOOL_FLAGS[i_m_f_s], MAP_BOOL_FLAGS[i_m_f_w])
+    CONFIG_DICT["as_variable"] = (MAP_BOOL_FLAGS[a_v_f_s], MAP_BOOL_FLAGS[a_v_f_w])
+    CONFIG_DICT["native_array"] = (MAP_BOOL_FLAGS[n_f_s], MAP_BOOL_FLAGS[n_f_w])
+    CONFIG_DICT["with_out"] = (MAP_BOOL_FLAGS[o_f_s], MAP_BOOL_FLAGS[o_f_w])
+    CONFIG_DICT["container"] = (MAP_BOOL_FLAGS[n_s], MAP_BOOL_FLAGS[n_w])
+    CONFIG_DICT["instance_method"] = (MAP_BOOL_FLAGS[i_m_f_s], MAP_BOOL_FLAGS[i_m_f_w])
 
     # final mapping for hypothesis value generation
     for k, v in CONFIG_DICT.items():
