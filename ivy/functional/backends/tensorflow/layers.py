@@ -83,17 +83,23 @@ conv2d_transpose.unsupported_devices = ("cpu",)
 def depthwise_conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
-    strides: int,
+    strides: Union[int, Tuple[int, int]],
     padding: Union[str, List[int]],
     data_format: str = "NHWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int, int]] = 1,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filters = tf.expand_dims(filters, -1)
-    strides = [1, strides, strides, 1]
-    dilations = [dilations, dilations]
-    return tf.nn.depthwise_conv2d(x, filters, strides, padding, data_format, dilations)
+    strides = [1, strides[0], strides[1], 1]
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)
+    if data_format == "NCHW":
+        return tf.transpose(res, (0, 3, 1, 2))
+    return res
 
 
 # noinspection PyDefaultArgument
