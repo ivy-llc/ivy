@@ -744,7 +744,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, s
     >>> xType = ivy.native_uint16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
-    uint16
+    <dtype:'uint16'>
 
     With :code:`str` input:
 
