@@ -1,7 +1,8 @@
+from typing import Optional, Tuple
+
 import jax.numpy as jnp
 
 from ivy.functional.backends.jax import JaxArray
-from typing import Optional, Tuple
 
 
 def argmax(
@@ -34,7 +35,5 @@ def nonzero(x: JaxArray) -> Tuple[JaxArray]:
     return jnp.nonzero(x)
 
 
-def where(
-    condition: JaxArray, x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None
-) -> JaxArray:
+def where(condition: JaxArray, x1: JaxArray, x2: JaxArray) -> JaxArray:
     return jnp.where(condition, x1, x2)
