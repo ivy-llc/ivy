@@ -1234,25 +1234,6 @@ def test_container_einops_rearrange(device, call):
     )
 
 
-def test_container_einops_reduce(device, call):
-    dict_in = {
-        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
-        "b": {
-            "c": ivy.array([[5.0, 10.0, 15.0, 20.0]], device=device),
-            "d": ivy.array([[10.0, 9.0, 8.0, 7.0]], device=device),
-        },
-    }
-    container = Container(dict_in)
-
-    container_reduced = container.einops_reduce("b n -> b", "mean")
-    assert np.allclose(ivy.to_numpy(container_reduced["a"]), np.array([1.5]))
-    assert np.allclose(ivy.to_numpy(container_reduced.a), np.array([1.5]))
-    assert np.allclose(ivy.to_numpy(container_reduced["b"]["c"]), np.array([12.5]))
-    assert np.allclose(ivy.to_numpy(container_reduced.b.c), np.array([12.5]))
-    assert np.allclose(ivy.to_numpy(container_reduced["b"]["d"]), np.array([8.5]))
-    assert np.allclose(ivy.to_numpy(container_reduced.b.d), np.array([8.5]))
-
-
 def test_container_to_device(device, call):
     dict_in = {
         "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
