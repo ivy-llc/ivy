@@ -3,7 +3,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   run-torch-array-api-tests:
-    if: ${{ !contains(github.event.pull_request.labels) }}
+    if: ${{ !contains(github.event.pull_request.labels.name), 'Function Reformatting' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy

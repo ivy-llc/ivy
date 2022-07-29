@@ -2,7 +2,7 @@ name: test-fn-core
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
-    if: ${{ !contains(github.event.pull_request.labels) }}
+    if: ${{ !contains(github.event.pull_request.labels.name), 'Function Reformatting' }}
     strategy:
       matrix:
         backend: [numpy, jax, tensorflow, torch]
