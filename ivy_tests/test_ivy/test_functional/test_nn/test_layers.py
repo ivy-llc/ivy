@@ -170,8 +170,8 @@ def test_dropout(
 ):
 
     dtype, x = dtype_and_x
-
-    helpers.test_function(
+    x = np.asarray(x, dtype=dtype)
+    ret = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -182,11 +182,15 @@ def test_dropout(
         fw=fw,
         fn_name="dropout",
         test_values=False,
-        x=np.asarray(x, dtype=dtype),
+        x=x,
         prob=prob,
         scale=scale,
         dtype=dtype,
     )
+    ret = helpers.flatten(ret=ret)
+    for u in ret:
+        # cardinality test
+        assert u.shape == x.shape
 
 
 # Attention #
