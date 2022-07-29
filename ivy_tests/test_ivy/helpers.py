@@ -12,6 +12,13 @@ import math
 from typing import Union, List
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+cmd_line_args = (
+    "as_variable",
+    "native_array",
+    "with_out",
+    "container",
+    "instance_method",
+)
 
 try:
     import jax.numpy as jnp
@@ -509,6 +516,11 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
 
 
 def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
+    if type(ret_np_flat) != list:
+        ret_np_flat = [ret_np_flat]
+    if type(ret_from_np_flat) != list:
+        ret_from_np_flat = [ret_from_np_flat]
+    assert len(ret_np_flat) == len(ret_from_np_flat)
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
@@ -517,6 +529,84 @@ def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
     else:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
             assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+
+
+def args_to_container(array_args):
+    array_args_container = ivy.Container({str(k): v for k, v in enumerate(array_args)})
+    return array_args_container
+
+
+def gradient_test(
+    *,
+    fn_name,
+    all_as_kwargs_np,
+    args_np,
+    kwargs_np,
+    input_dtypes,
+    as_variable_flags,
+    native_array_flags,
+    container_flags,
+    rtol_: float = None,
+    atol_: float = 1e-06,
+    ground_truth_backend: str = "torch",
+):
+    def grad_fn(xs):
+        array_vals = [v for k, v in xs.to_iterator()]
+        arg_array_vals = array_vals[0 : len(args_idxs)]
+        kwarg_array_vals = array_vals[len(args_idxs) :]
+        args_writeable = ivy.copy_nest(args)
+        kwargs_writeable = ivy.copy_nest(kwargs)
+        ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
+        ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
+        return ivy.mean(ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable))
+
+    args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
+        args_np=args_np,
+        kwargs_np=kwargs_np,
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable_flags,
+        native_array_flags=native_array_flags,
+        container_flags=container_flags,
+    )
+    arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
+    kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
+    xs = args_to_container(arg_array_vals + kwarg_array_vals)
+    _, ret_np_flat = get_ret_and_flattened_array(
+        ivy.execute_with_gradients, grad_fn, xs
+    )
+    grads_np_flat = ret_np_flat[1]
+    # compute the return with a Ground Truth backend
+    ivy.set_backend(ground_truth_backend)
+    test_unsupported = check_unsupported_dtype(
+        fn=ivy.__dict__[fn_name],
+        input_dtypes=input_dtypes,
+        all_as_kwargs_np=all_as_kwargs_np,
+    )
+    if test_unsupported:
+        return
+    args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
+        args_np=args_np,
+        kwargs_np=kwargs_np,
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable_flags,
+        native_array_flags=native_array_flags,
+        container_flags=container_flags,
+    )
+    arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
+    kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
+    xs = args_to_container(arg_array_vals + kwarg_array_vals)
+    _, ret_np_from_gt_flat = get_ret_and_flattened_array(
+        ivy.execute_with_gradients, grad_fn, xs
+    )
+    grads_np_from_gt_flat = ret_np_from_gt_flat[1]
+    ivy.unset_backend()
+    # value test
+    value_test(
+        ret_np_flat=grads_np_flat,
+        ret_from_np_flat=grads_np_from_gt_flat,
+        rtol=rtol_,
+        atol=atol_,
+    )
 
 
 def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
@@ -576,32 +666,29 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
     test_unsupported = False
     unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
     supported_devices_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)
-    for i in range(len(unsupported_devices_dtypes_fn['devices'])):
-        if device in unsupported_devices_dtypes_fn['devices'][i]:
+    for i in range(len(unsupported_devices_dtypes_fn["devices"])):
+        if device in unsupported_devices_dtypes_fn["devices"][i]:
             for d in input_dtypes:
-                if d in unsupported_devices_dtypes_fn['dtypes'][i]:
+                if d in unsupported_devices_dtypes_fn["dtypes"][i]:
                     test_unsupported = True
                     break
     if (
         "device" in all_as_kwargs_np
         and "dtype" in all_as_kwargs_np
-        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn['devices']
+        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn["devices"]
     ):
-        index = unsupported_devices_dtypes_fn['devices'].index(
+        index = unsupported_devices_dtypes_fn["devices"].index(
             all_as_kwargs_np["device"]
         )
-        if (
-            all_as_kwargs_np["dtype"]
-            in unsupported_devices_dtypes_fn['dtypes'][index]
-        ):
+        if all_as_kwargs_np["dtype"] in unsupported_devices_dtypes_fn["dtypes"][index]:
             test_unsupported = True
     if test_unsupported:
         return test_unsupported
 
-    for i in range(len(supported_devices_dtypes_fn['devices'])):
-        if device in supported_devices_dtypes_fn['devices'][i]:
+    for i in range(len(supported_devices_dtypes_fn["devices"])):
+        if device in supported_devices_dtypes_fn["devices"][i]:
             for d in input_dtypes:
-                if d not in supported_devices_dtypes_fn['dtypes'][i]:
+                if d not in supported_devices_dtypes_fn["dtypes"][i]:
                     test_unsupported = True
                     break
         else:
@@ -609,17 +696,17 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
         if (
             "device" in all_as_kwargs_np
             and "dtype" in all_as_kwargs_np
-            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn['devices']
+            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn["devices"]
         ):
-            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn['devices']:
+            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn["devices"]:
                 test_unsupported = True
             else:
-                index = supported_devices_dtypes_fn['devices'].index(
+                index = supported_devices_dtypes_fn["devices"].index(
                     all_as_kwargs_np["device"]
                 )
                 if (
                     all_as_kwargs_np["dtype"]
-                    not in supported_devices_dtypes_fn['dtypes'][index]
+                    not in supported_devices_dtypes_fn["dtypes"][index]
                 ):
                     test_unsupported = True
     return test_unsupported
@@ -850,6 +937,7 @@ def test_function(
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: bool = True,
+    test_gradients: bool = False,
     ground_truth_backend: str = "numpy",
     device_: str = "cpu",
     **all_as_kwargs_np,
@@ -888,6 +976,8 @@ def test_function(
         absolute tolerance value.
     test_values
         if True, test for the correctness of the resulting values.
+    test_gradients
+        if True, test for the correctness of gradients.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     all_as_kwargs_np
@@ -983,7 +1073,7 @@ def test_function(
             fn=fn,
             device=device_,
             input_dtypes=input_dtypes,
-            all_as_kwargs_np=all_as_kwargs_np
+            all_as_kwargs_np=all_as_kwargs_np,
         )
     if test_unsupported:
         try:
@@ -1114,6 +1204,27 @@ def test_function(
         ivy.unset_backend()
         raise e
     ivy.unset_backend()
+    # gradient test
+    if (
+        test_gradients
+        and not fw == "numpy"
+        and all(as_variable_flags)
+        and not any(container_flags)
+        and not instance_method
+    ):
+        gradient_test(
+            fn_name=fn_name,
+            all_as_kwargs_np=all_as_kwargs_np,
+            args_np=args_np,
+            kwargs_np=kwargs_np,
+            input_dtypes=input_dtypes,
+            as_variable_flags=as_variable_flags,
+            native_array_flags=native_array_flags,
+            container_flags=container_flags,
+            rtol_=rtol_,
+            atol_=atol_,
+        )
+
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_gt
@@ -1287,6 +1398,10 @@ def test_frontend_function(
             kwargs_np,
             lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
         )
+
+        # fix for torch not accepting string args for dtype
+        if "dtype" in kwargs_frontend and frontend == "torch":
+            kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
 
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
@@ -1547,18 +1662,20 @@ def array_and_indices(
     min_dim_size=1,
     max_dim_size=10,
 ):
-    """Generates two arrays x & indices, the values in the indices array are indices of the array x.
-    Draws an integers randomly from the minimum and maximum number of positional
-    arguments a given function can take.
+    """Generates two arrays x & indices, the values in the indices array are indices
+    of the array x. Draws an integers randomly from the minimum and maximum number of
+    positional arguments a given function can take.
 
     Parameters
     ----------
     last_dim_same_size
         True:
-            The shape of the indices array is the exact same as the shape of the values array.
+            The shape of the indices array is the exact same as the shape of the values
+            array.
         False:
-            The last dimension of the second array is generated from a range of (0 -> dimension size of first array).
-            This results in output shapes such as x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
+            The last dimension of the second array is generated from a range of
+            (0 -> dimension size of first array). This results in output shapes such as
+            x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
     allow_inf
         True: inf values are allowed to be generated in the values array
     min_num_dims
@@ -1569,9 +1686,11 @@ def array_and_indices(
         The minimum size of the dimensions of the arrays.
     max_dim_size
         The maximum size of the dimensions of the arrays.
+
     Returns
     -------
-    A strategy that can be used in the @given hypothesis decorator which generates arrays of values and indices.
+    A strategy that can be used in the @given hypothesis decorator
+    which generates arrays of values and indices.
 
     Examples
     --------
@@ -2045,10 +2164,11 @@ def num_positional_args(draw, *, fn_name: str = None):
     )
 
 
-def bool_val_flags(cl_arg: Union[bool, None]):
+@st.composite
+def bool_val_flags(draw, cl_arg: Union[bool, None]):
     if cl_arg is not None:
-        return st.booleans().filter(lambda x: x == cl_arg)
-    return st.booleans()
+        return draw(st.booleans().filter(lambda x: x == cl_arg))
+    return draw(st.booleans())
 
 
 def handle_cmd_line_args(test_fn):
@@ -2056,40 +2176,18 @@ def handle_cmd_line_args(test_fn):
     def new_fn(data, get_command_line_flags, fw, device, call, *args, **kwargs):
         # inspecting for keyword arguments in test function
         for param in inspect.signature(test_fn).parameters.values():
-            if param.kind == param.KEYWORD_ONLY:
-                if param.name == "data":
-                    kwargs["data"] = data
-                elif param.name == "as_variable":
-                    as_variable = data.draw(
-                        bool_val_flags(get_command_line_flags["as-variable"])
-                    )
-                    kwargs["as_variable"] = as_variable
-                elif param.name == "native_array":
-                    native_array = data.draw(
-                        bool_val_flags(get_command_line_flags["native-array"])
-                    )
-                    kwargs["native_array"] = native_array
-                elif param.name == "with_out":
-                    with_out = data.draw(
-                        bool_val_flags(get_command_line_flags["with-out"])
-                    )
-                    kwargs["with_out"] = with_out
-                elif param.name == "instance_method":
-                    instance_method = data.draw(
-                        bool_val_flags(get_command_line_flags["instance-method"])
-                    )
-                    kwargs["instance_method"] = instance_method
-                elif param.name == "container":
-                    container = data.draw(
-                        bool_val_flags(get_command_line_flags["nestable"])
-                    )
-                    kwargs["container"] = container
-                elif param.name == "fw":
-                    kwargs["fw"] = fw
-                elif param.name == "device":
-                    kwargs["device"] = device
-                elif param.name == "call":
-                    kwargs["call"] = call
+            if param.name in cmd_line_args:
+                kwargs[param.name] = data.draw(
+                    bool_val_flags(get_command_line_flags[param.name])
+                )
+            elif param.name == "data":
+                kwargs["data"] = data
+            elif param.name == "fw":
+                kwargs["fw"] = fw
+            elif param.name == "device":
+                kwargs["device"] = device
+            elif param.name == "call":
+                kwargs["call"] = call
         return test_fn(*args, **kwargs)
 
     return new_fn
