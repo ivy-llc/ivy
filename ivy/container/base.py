@@ -1622,7 +1622,6 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-
     def maximum(
         self,
         x2,

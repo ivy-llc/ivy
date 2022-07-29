@@ -77,7 +77,7 @@ def conv2d_transpose(
     )
 
 
-conv2d_transpose.unsupported_devices = ('cpu',)
+conv2d_transpose.unsupported_devices = ("cpu",)
 
 
 def depthwise_conv2d(
@@ -108,8 +108,9 @@ def conv3d(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ):
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
-    dilations = [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations)\
-                + [1]
+    dilations = (
+        [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
+    )
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
     res = tf.nn.conv3d(x, filters, strides, padding, "NDHWC", dilations)
@@ -118,7 +119,7 @@ def conv3d(
     return res
 
 
-conv3d.unsupported_device = ("cpu", )
+conv3d.unsupported_device = ("cpu",)
 
 
 def conv3d_transpose(

@@ -281,7 +281,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse cosine of each element in ``x``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
-            
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -1.]))
@@ -341,7 +341,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse cosine of each element in ``self``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
-            
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -1.]))
@@ -755,7 +755,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of each element in ``x``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
-        
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
@@ -816,7 +816,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse tangent of each element in ``x``.
             The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
-        
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
@@ -826,7 +826,7 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([0., -0.785, 0.785]),
             b: ivy.array([0.785, 0., -1.41])
         }
-        
+
         """
         return self.static_atan(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -1023,7 +1023,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse hyperbolic tangent of each
             element in ``x``. The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
-            
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0, 0.5, -0.5]), b=ivy.array([0., 0.2, 0.9]))
@@ -1084,7 +1084,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the inverse hyperbolic tangent of each element
             in ``self``. The returned container must have a floating-point
             data type determined by :ref:`type-promotion`.
-            
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0, 0.5, -0.5]), b=ivy.array([0., 0.2, 0.9]))
@@ -3452,7 +3452,8 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
-                Examples
+        
+        Examples
         --------
         >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
                               b=ivy.array([2, 3, 4]))
@@ -6415,8 +6416,8 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
@@ -6464,12 +6465,14 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
             Container object with all sub-arrays having the minimum values computed.
 
         """
-        return self.static_minimum(self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out)
+        return self.static_minimum(
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )

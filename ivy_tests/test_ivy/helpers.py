@@ -1392,8 +1392,8 @@ def test_frontend_function(
             lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
         )
 
-        #fix for torch not accepting string args for dtype
-        if "dtype" in kwargs_frontend and frontend == 'torch':
+        # fix for torch not accepting string args for dtype
+        if "dtype" in kwargs_frontend and frontend == "torch":
             kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
 
         # compute the return via the frontend framework
@@ -1679,6 +1679,7 @@ def array_and_indices(
         The minimum size of the dimensions of the arrays.
     max_dim_size
         The maximum size of the dimensions of the arrays.
+
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator which generates
