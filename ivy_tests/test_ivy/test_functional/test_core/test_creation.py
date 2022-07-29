@@ -4,12 +4,15 @@
 # global
 import numpy as np
 from hypothesis import given, strategies as st
+from hypothesis import settings
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy.functional.backends.numpy as ivy_np
 import hypothesis.extra.numpy as hnp
+from datetime import timedelta
 
 
 # native_array
@@ -24,12 +27,12 @@ import hypothesis.extra.numpy as hnp
         max_dim_size=10,
         shared_dtype=True,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="native_array"),
-    native_array=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_native_array(
+    *,
     dtype_and_x,
     as_variable,
     num_positional_args,
@@ -72,8 +75,11 @@ def test_native_array(
     num=st.integers(1, 5),
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="linspace"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_linspace(
+    *,
     dtype_and_start_stop,
     num,
     axis,
@@ -102,9 +108,10 @@ def test_linspace(
 
 
 # logspace
+@settings(deadline=timedelta(milliseconds=5000))
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_float_dtypes,
         num_arrays=2,
         min_value=None,
         max_value=None,
@@ -119,8 +126,11 @@ def test_linspace(
     base=st.floats(min_value=0.1, max_value=10.0),
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="logspace"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_logspace(
+    *,
     dtype_and_start_stop,
     num,
     base,
@@ -159,9 +169,11 @@ def test_logspace(
     step=st.integers(-50, 50).filter(lambda x: True if x != 0 else False),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="arange"),
-    with_out=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_arange(
+    *,
     start,
     stop,
     step,
@@ -199,11 +211,12 @@ def test_arange(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="asarray"),
-    native_array=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_asarray(
+    *,
     dtype_and_x,
     device,
     as_variable,
@@ -239,22 +252,22 @@ def test_asarray(
         max_dim_size=10,
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="empty"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_empty(
+    *,
     shape,
     dtype,
     device,
-    with_out,
     num_positional_args,
     fw,
 ):
-
-    helpers.test_function(
+    ret = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=False,
         container_flags=False,
@@ -264,7 +277,13 @@ def test_empty(
         shape=shape,
         dtype=dtype,
         device=device,
+        test_values=False,
     )
+    if not ivy.exists(ret):
+        return
+    res, res_np = ret
+    assert res.shape == res_np.shape
+    assert res.dtype == res_np.dtype
 
 
 # empty_like
@@ -277,13 +296,12 @@ def test_empty(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="empty_like"),
-    native_array=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_empty_like(
+    *,
     dtype_and_x,
     device,
     as_variable,
@@ -294,7 +312,7 @@ def test_empty_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_function(
+    ret = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -307,7 +325,13 @@ def test_empty_like(
         x=np.asarray(x),
         dtype=dtype,
         device=device,
+        test_values=False,
     )
+    if not ivy.exists(ret):
+        return
+    res, res_np = ret
+    assert res.shape == res_np.shape
+    assert res.dtype == res_np.dtype
 
 
 # eye
@@ -319,11 +343,12 @@ def test_empty_like(
         st.integers(min_value=1, max_value=10), min_size=1, max_size=2
     ),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="eye"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_eye(
+    *,
     n_rows,
     n_cols,
     k,
@@ -365,13 +390,12 @@ def test_eye(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="from_dlpack"),
-    native_array=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_from_dlpack(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -428,10 +452,12 @@ def _fill_value(draw):
     ),
     fill_value=_fill_value(),
     dtypes=_dtypes(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="full"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_full(
+    *,
     shape,
     fill_value,
     dtypes,
@@ -476,13 +502,12 @@ def _dtype_and_values(draw):
 @given(
     dtype_and_x=_dtype_and_values(),
     fill_value=_fill_value(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="full_like"),
-    native_array=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_full_like(
+    *,
     dtype_and_x,
     device,
     as_variable,
@@ -528,8 +553,11 @@ dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="dtyp
     ),
     indexing=st.sampled_from(["xy", "ij"]),
     dtype=dtype_shared,
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_meshgrid(
+    *,
     arrays,
     indexing,
     dtype,
@@ -554,7 +582,7 @@ def test_meshgrid(
         fw=fw,
         fn_name="meshgrid",
         **kw,
-        indexing=indexing
+        indexing=indexing,
     )
 
 
@@ -568,10 +596,12 @@ def test_meshgrid(
         max_dim_size=10,
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="ones"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_ones(
+    *,
     shape,
     dtype,
     with_out,
@@ -605,13 +635,12 @@ def test_ones(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="ones_like"),
-    native_array=st.booleans(),
-    instance_method=st.booleans(),
+    num_positional_args=st.integers(0, 1),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_ones_like(
+    *,
     dtype_and_x,
     device,
     as_variable,
@@ -649,13 +678,12 @@ def test_ones_like(
         max_dim_size=10,
     ),
     k=st.integers(-10, 10),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="tril"),
-    native_array=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_tril(
+    *,
     dtype_and_x,
     k,
     as_variable,
@@ -693,13 +721,12 @@ def test_tril(
         max_dim_size=10,
     ),
     k=st.integers(-10, 10),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="triu"),
-    native_array=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_triu(
+    *,
     dtype_and_x,
     k,
     as_variable,
@@ -736,10 +763,12 @@ def test_triu(
         max_dim_size=10,
     ),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="zeros"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_zeros(
+    *,
     shape,
     dtype,
     device,
@@ -773,13 +802,12 @@ def test_zeros(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="zeros_like"),
-    native_array=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_zeros_like(
+    *,
     dtype_and_x,
     device,
     as_variable,
