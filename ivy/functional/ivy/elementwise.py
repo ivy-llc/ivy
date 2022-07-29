@@ -2444,30 +2444,6 @@ def less_equal(
     >>> print(x)
     ivy.array([[[1.],[0.],[1.]]])
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.native_array([4, 5, 0])
-    >>> z = ivy.less_equal(x, y)
-    >>> print(z)
-    ivy.array([True, True,  False])
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-
-    >>> x = ivy.array([[5.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                           b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = ivy.less_equal(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([[False, True, True],
-                      [False, True, True],
-                      [True, True, True]]),
-        b: ivy.array([[False, True, True],
-                      [True, True, True],
-                      [True, True, True]])
-    }
-
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
