@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Any, Union, List, Dict, Iterable, Optional
+from typing import Any, Union, List, Dict, Iterable, Optional, Callable
 
 # local
 from ivy.container.base import ContainerBase
