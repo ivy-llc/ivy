@@ -6600,7 +6600,99 @@
 <span class="sd">            Container object with all sub-arrays having the minimum values computed.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_minimum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_minimum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ContainerWithElementwise.static_maximum"><a class="viewcode-back" href="../../../data_classes/container/elementwise/ContainerWithElementwise.html#ivy.container.elementwise.ContainerWithElementwise.static_maximum">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_maximum</span><span class="p">(</span>
+        <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Computes the elementwise maximum between this container and another container</span>
+<span class="sd">        or number.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x1</span>
+<span class="sd">            Input array containing elements to maximum threshold.</span>
+<span class="sd">        x2</span>
+<span class="sd">            The other container or number to compute the maximum against.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">            inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            Container object with all sub-arrays having the maximum values computed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+            <span class="s2">&quot;maximum&quot;</span><span class="p">,</span>
+            <span class="n">x1</span><span class="p">,</span>
+            <span class="n">x2</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerWithElementwise.maximum"><a class="viewcode-back" href="../../../data_classes/container/elementwise/ContainerWithElementwise.html#ivy.container.elementwise.ContainerWithElementwise.maximum">[docs]</a>    <span class="k">def</span> <span class="nf">maximum</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Computes the elementwise maximum between this container and another container</span>
+<span class="sd">        or number.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input array containing elements to maximum threshold.</span>
+<span class="sd">        x2</span>
+<span class="sd">            The other container or number to compute the maximum against.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">            inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            Container object with all sub-arrays having the maximum values computed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_maximum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
