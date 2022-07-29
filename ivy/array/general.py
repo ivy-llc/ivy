@@ -123,6 +123,39 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.gather_nd(self, indices, out=out)
 
+    def einops_rearrange(
+        self: ivy.Array,
+        pattern: str,
+        *,
+        out: Optional[ivy.Array] = None,
+        **axes_lengths: Dict[str, int],
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.einops_rearrange.
+        This method simply wraps the function, and so the docstring
+        for ivy.einops_rearrange also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to be re-arranged.
+        pattern
+            Rearrangement pattern.
+        axes_lengths
+            Any additional specifications for dimensions.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New array with einops.rearrange having been applied.
+
+        """
+        return ivy.einops_rearrange(self._data, pattern, out=out, **axes_lengths)
+
     def einops_reduce(
         self: ivy.Array,
         pattern: str,
