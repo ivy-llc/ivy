@@ -105,14 +105,68 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     Parameters
     ----------
     arrays
-        an arbitrary number of to-be broadcasted arrays.
+        an arbitrary number of arrays to-be broadcasted.
+        Each array must have the same shape. Each array must have the same dtype as its
+        corresponding input array.
 
     Returns
     -------
     ret
-        Each array must have the same shape. Each array must have the same dtype as its
-        corresponding input array.
+        A list containing broadcasted arrays of type `ivy.Array`
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> y = ivy.broadcast_arrays(x1, x2)
+    >>> print(y)
+    [ivy.array([1, 2, 3]), ivy.array([4, 5, 6])]
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([0.3, 4.3])
+    >>> x2 = ivy.native_array([3.1, 5])
+    >>> x3 = ivy.native_array([2, 0])
+    >>> y = ivy.broadcast_arrays(x1, x2, x3)
+    [ivy.array([0.3, 4.3]), ivy.array([3.1, 5.]), ivy.array([2, 0])]
+
+    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.array([1, 2])
+    >>> x2 = ivy.native_array([0.3, 4.3])
+    >>> y = ivy.broadcast_arrays(x1, x2)
+    >>> print(y)
+    [ivy.array([1, 2]), ivy.array([0.3, 4.3])]
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([3, 1]), b=ivy.zeros(2))
+    >>> x2 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
+    >>> y = ivy.broadcast_arrays(x1, x2)
+    >>> print(y)
+    [{
+        a: ivy.array([3, 1]),
+        b: ivy.array([0., 0.])
+    }, {
+        a: ivy.array([4, 5]),
+        b: ivy.array([2, -1])
+    }]
+
+    With mixed :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.zeros(2)
+    >>> x2 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
+    >>> y = ivy.broadcast_arrays(x1, x2)
+    >>> print(y)
+    [{
+        a: ivy.array([0., 0.]),
+        b: ivy.array([0., 0.])
+    }, {
+        a: ivy.array([4, 5]),
+        b: ivy.array([2, -1])
+    }]
     """
     return current_backend(arrays[0]).broadcast_arrays(*arrays)
 
@@ -231,26 +285,26 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
     -------
     ret
         an object having the followng attributes:
-    
+
         - **bits**: *int*
-    
+
           number of bits occupied by the floating-point data type.
-    
+
         - **eps**: *float*
-    
+
           difference between 1.0 and the next smallest representable floating-point
           number larger than 1.0 according to the IEEE-754 standard.
-    
+
         - **max**: *float*
-    
+
           largest representable number.
-    
+
         - **min**: *float*
-    
+
           smallest representable number.
-    
+
         - **smallest_normal**: *float*
-    
+
           smallest positive floating-point number with full precision.
 
     This function conforms to the `Array API Standard
@@ -326,12 +380,99 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
     -------
     ret
         a class with that encapsules the following attributes:
+
         - **bits**: *int*
+
           number of bits occupied by the type.
+
         - **max**: *int*
+
           largest representable number.
+
         - **min**: *int*
+
           smallest representable number.
+    
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.iinfo.html>`_ # noqa
+    in the standard.
+
+    Examples
+    --------
+    With :code:`ivy.Dtype` input:
+
+    >>> ivy.iinfo(ivy.int32)
+    iinfo(min=-2147483648, max=2147483647, dtype=int32)
+
+    >>> ivy.iinfo(ivy.uint64)
+    iinfo(min=0, max=18446744073709551615, dtype=uint64)
+
+    With :code:`str` input:
+
+    >>> ivy.iinfo('int32')
+    iinfo(min=-2147483648, max=2147483647, dtype=int32)
+
+    >>> ivy.iinfo('int64')
+    iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([13,21,34]) 
+    >>> ivy.iinfo(x)
+    iinfo(min=-2147483648, max=2147483647, dtype=int32)
+
+    >>> x = ivy.array([13,21,34], dtype=ivy.int8)
+    >>> ivy.iinfo(x)
+    iinfo(min=-128, max=127, dtype=int8)
+    
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([7,84,314], dtype=ivy.int16)
+    >>> ivy.iinfo(x)
+    iinfo(min=-32768, max=32767, dtype=int16)
+    
+    >>> x = ivy.native_array([7,84,314], dtype=ivy.int64)
+    >>> ivy.iinfo(x)
+    iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)
+
+    With :code:`ivy.Container` input:
+
+    >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16), \
+                          y=ivy.array([76,-81,16], dtype=ivy.int32))
+    >>> ivy.iinfo(c)
+    {
+        x: iinfo(min=-32768, max=32767, dtype=int16),
+        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
+    }
+
+    >>> c = ivy.Container(x=ivy.array([0,1800,89], dtype=ivy.uint16), \
+                          y=ivy.array([76,81,16], dtype=ivy.uint32))
+    >>> ivy.iinfo(c)
+    {
+        x: iinfo(min=0, max=65535, dtype=uint16),
+        y: iinfo(min=0, max=4294967295, dtype=uint32)
+    }
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([109,8400,14], dtype=ivy.int32)
+    >>> x.iinfo()
+    iinfo(min=-2147483648, max=2147483647, dtype=int32)
+
+    >>> x = ivy.array([-119,122,14], dtype=ivy.int8))
+    >>> x.iinfo()
+    iinfo(min=-128, max=127, dtype=int8)
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16), \
+                          y=ivy.array([76,-81,16], dtype=ivy.int32))
+    >>> c.iinfo()
+    {
+        x: iinfo(min=-32768, max=32767, dtype=int16),
+        y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
+    }
 
     """
     return current_backend(None).iinfo(type)
@@ -342,7 +483,8 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
-    """Returns the dtype that results from applying the type promotion rules (see
+    """
+    Returns the dtype that results from applying the type promotion rules (see
     :ref:`type-promotion`) to the arguments.
 
     .. note::
@@ -359,6 +501,42 @@ def result_type(
     ret
         the dtype resulting from an operation involving the input arrays and dtypes.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.result_type.html>`_ # noqa
+    in the standard.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([3, 4, 5])
+    >>> y = ivy.array([3., 4., 5.])
+    >>> print(ivy.result_type(x, y))
+    float64
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([3., 4, 7.5])
+    >>> y = ivy.native_array([3, 4, 7])
+    >>> print(ivy.result_type(x, y))
+    float64
+
+    With :code:`ivy.Dtype` input:
+
+    >>> print(ivy.result_type(ivy.uint8, ivy.uint64))
+    uint64
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([3, 4, 5]))
+    >>> print(x.a.dtype)
+    int32
+
+    >>> print(ivy.result_type(x, ivy.float64))
+    {
+        a: float64
+    }
     """
     return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 
@@ -435,7 +613,7 @@ class DefaultUintDtype:
         return self
 
 
-def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
+def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str]) -> int:
     """Get the number of bits used for representing the input data type.
 
     Parameters
@@ -448,6 +626,31 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
     ret
         The number of bits used to represent the data type.
 
+    Examples
+    --------
+    With :code:`ivy.Dtype` inputs:
+
+    >>> x = ivy.dtype_bits(ivy.float32)
+    >>> print(x)
+    32
+
+    >>> x = ivy.dtype_bits('int64')
+    >>> print(x)
+    64
+
+    >>> x = ivy.dtype_bits(ivy.uint16)
+    >>> print(x)
+    16
+
+    With :code:`ivy.NativeDtype` inputs:
+
+    >>> x = ivy.dtype_bits(ivy.native_int8)
+    >>> print(x)
+    8
+
+    >>> x = ivy.dtype_bits(ivy.native_bool)
+    >>> print(x)
+    1
     """
     return current_backend(dtype_in).dtype_bits(dtype_in)
 
@@ -526,7 +729,7 @@ def default_float_dtype(
     input=None,
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
     as_native: Optional[bool] = None,
-) -> Union[ivy.Dtype, str]:
+) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
     """Summary.
 
     Parameters
@@ -555,7 +758,7 @@ def default_float_dtype(
         if ivy.is_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
-            ret = input.dtype
+            ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_indices_where(input, lambda x: _check_float64(x)):
                 ret = ivy.float64
@@ -675,7 +878,7 @@ def default_int_dtype(
         if ivy.is_array(input):
             ret = ivy.dtype(input)
         elif isinstance(input, np.ndarray):
-            ret = input.dtype
+            ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_indices_where(
                 input, lambda x: x > 9223372036854775807 and x != ivy.inf
@@ -804,6 +1007,7 @@ def default_uint_dtype(
     return ivy.UintDtype(ivy.as_ivy_dtype(ret))
 
 
+@handle_nestable
 def dtype(
     x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
@@ -967,8 +1171,9 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
 
 
 def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
-    """Determines whether the provided data type is not support by the current
-    framework.
+    """
+    Determines whether the provided data type is not support by
+    the current framework.
 
     Parameters
     ----------
@@ -980,6 +1185,25 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]) -> bool:
     ret
         Boolean, whether the data-type string is un-supported.
 
+    Examples
+    --------
+    >>> ivy.invalid_dtype(dtype_in = None)
+    False
+
+    >>> ivy.invalid_dtype(dtype_in = 'uint64')
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = ivy.float64)
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = 'float32')
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = ivy.native_int16)
+    True
+
+    >>> ivy.invalid_dtype(dtype_in = 'native_int16')
+    True
     """
     if dtype_in is None:
         return False

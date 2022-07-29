@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 
+
 # Extra #
 # ------#
 
@@ -86,12 +87,43 @@ def with_grads(with_grads: bool = None) -> bool:
 
 
 # noinspection PyShadowingNames
-def set_with_grads(with_grads):
-    """Summary.
+def set_with_grads(with_grads: bool):
+    """
+    Enter a nested code space where gradients are computed. This method
+    adds the with_grads component to the global list with_grads_stack
 
     Parameters
     ----------
     with_grads
+        Boolean value denoting whether the current code block has gradient
+        computation enabled or not.
+        'True' or 'False' or 'None' (Default value = None)
+
+    Returns
+    -------
+    ret
+        If with_grads is boolean, it returns the boolean value representing
+        if gradient computation is enabled or not.
+        If with_grads is None, it returns the last element in the with_grads_stack
+        representing the parent of the current nested code block. If with_grads_stack
+        is empty, it returns True by default.
+        If with_grads is neither None nor boolean, it will raise an AssertionError
+
+    Examples
+    --------
+    >>> ivy.set_with_grads(True)
+    >>> print(ivy.with_grads(with_grads=None))
+    True
+
+    >>> ivy.set_with_grads(False)
+    >>> print(ivy.with_grads(with_grads=None))
+    False
+
+    >>> print(ivy.with_grads(with_grads=True))
+    True
+
+    >>> print(ivy.with_grads(with_grads=False))
+    False
 
     """
     assert with_grads in [True, False]
@@ -100,7 +132,7 @@ def set_with_grads(with_grads):
 
 
 def unset_with_grads():
-    """"""
+
     global with_grads_stack
     if with_grads_stack:
         with_grads_stack.pop(-1)
@@ -124,6 +156,37 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     ret
         An ivy variable, supporting gradient computation.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> ivy.set_backend('torch')
+    >>> x = ivy.array([1., 0.3, -4.5])
+    >>> y = ivy.variable(x)
+    >>> y
+    ivy.array([ 1. ,  0.3, -4.5])
+    >>> ivy.unset_backend()
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> ivy.set_backend('jax')
+    >>> x = ivy.native_array([0.2, 2., 3.])
+    >>> y = ivy.variable(x)
+    >>> y
+    ivy.array([0.2, 2., 3.])
+    >>> ivy.unset_backend()
+
+    With :code:`ivy.Container` input:
+
+    >>> ivy.set_backend('tensorflow')
+    >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.2, 4.]))
+    >>> y = ivy.variable(x)
+    >>> y
+    {
+        a: ivy.array([1., 2.]),
+        b: ivy.array([-0.2, 4.])
+    }
+    >>> ivy.unset_backend()
     """
     return current_backend(x).variable(x)
 
@@ -269,7 +332,6 @@ def stop_gradient(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def execute_with_gradients(func, xs, retain_grads=False):
     """Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned

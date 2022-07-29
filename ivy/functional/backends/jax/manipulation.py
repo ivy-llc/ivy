@@ -1,7 +1,7 @@
 # global
 import math
 import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import Union, Tuple, Optional, List, Sequence, Iterable
 from numbers import Number
 
 # local
@@ -38,15 +38,9 @@ def expand_dims(
     x: JaxArray, axis: int = 0, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     try:
-        ret = jnp.expand_dims(x, axis)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        return ret
+        return jnp.expand_dims(x, axis)
     except ValueError as error:
         raise IndexError(error)
-
-
-expand_dims.support_native_out = True
 
 
 def flip(
@@ -69,12 +63,13 @@ def permute_dims(
 def reshape(
     x: JaxArray,
     shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None,
     *,
-    out: Optional[JaxArray] = None,
+    copy: Optional[bool] = None,
 ) -> JaxArray:
-    ret = jnp.reshape(x, shape)
-    return ret
+    if copy:
+        newarr = jnp.copy(x)
+        return jnp.reshape(newarr, shape)
+    return jnp.reshape(x, shape)
 
 
 def roll(
@@ -153,11 +148,12 @@ def split(
 
 def repeat(
     x: JaxArray,
-    repeats: Union[int, List[int]],
+    repeats: Union[int, Iterable[int]],
     axis: int = None,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+
     ret = jnp.repeat(x, repeats, axis)
     return ret
 

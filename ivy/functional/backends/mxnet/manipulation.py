@@ -2,7 +2,7 @@
 import mxnet as mx
 import math
 import numpy as np
-from typing import Union, Tuple, Optional, List
+from typing import Sequence, Union, Tuple, Optional, List
 from ivy.functional.backends.mxnet import (
     _flat_array_to_1_dim_array,
     _handle_flat_arrays_in_out,
@@ -85,7 +85,15 @@ def squeeze(
     return ret
 
 
-reshape = lambda x, new_shape: x.reshape(new_shape)
+def reshape(
+    x: mx.nd.NDArray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None
+) -> mx.nd.NDArray:
+    if copy:
+        newarr = x.copy()
+        return newarr.reshape(shape)
+    return x.reshape(shape)
 
 
 @_handle_flat_arrays_in_out

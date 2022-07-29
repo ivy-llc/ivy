@@ -39,10 +39,12 @@ def test_docstrings(backend):
         "num_ivy_arrays_on_dev",
         "total_mem_on_dev",
         "used_mem_on_dev",
+        "percent_used_mem_on_dev",
         "function_unsupported_dtypes",
         "randint",
         "unique_counts",
         "unique_all",
+        "total_mem_on_dev",
     ]
     # the temp skip list consists of function which have an issue with their
     # implementation
@@ -61,9 +63,10 @@ def test_docstrings(backend):
         "cross_entropy",
         "depthwise_conv2d",
     ]
+    currently_being_worked_on = []
 
     # comment out the line below in future to check for the functions in temp skip list
-    to_skip += skip_list_temp
+    to_skip += skip_list_temp + currently_being_worked_on
 
     for k, v in ivy.__dict__.copy().items():
         if k == "Array":
