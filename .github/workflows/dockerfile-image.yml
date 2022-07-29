@@ -4,13 +4,12 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    types: [labeled]
+    types: [reopened]
     branches: [ "master" ]
 
 jobs:
 
   build:
-    if: ${{ github.event.label.name == ''}}
     runs-on: ubuntu-20.04
 
     steps:
