@@ -2791,6 +2791,133 @@ def isnan(
         ``NaN`` and ``False`` otherwise. The returned array should have a data type of
         ``bool``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isnan.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([False, False, False])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[False, False, False]])
+
+    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[[False], 
+                [False],
+                [False]]])
+
+    >>> x = ivy.array([[-math.nan, np.nan, 0.0]])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[ True,  True, False]])
+
+    >>> x = ivy.array([[-math.nan, np.inf, np.nan, 0.0]])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[ True, False,  True, False]])
+
+    >>> x = ivy.zeros((3, 3))
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[False, False, False],
+       [False, False, False],
+       [False, False, False]])
+    
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[False],
+        [False],
+        [True]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
+                          b=ivy.array([math.nan, 3.3, -4.2]))
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+    
+    
+    Instance Method Examples
+    ------------------------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1, 2, 3])
+    >>> x.isnan()
+    ivy.array([False, False, False])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> x.isnan()
+    ivy.array([[False, False, False]])
+
+    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+    >>> x.isnan()
+    ivy.array([[[False],
+            [False],
+            [False]]])
+
+    >>> x = ivy.array([[-math.nan, np.nan, 0.0]])
+    >>> x.isnan()
+    ivy.array([[ True, True, False]])
+
+    >>> x = ivy.array([[-math.nan, np.inf, np.nan, 0.0]])
+    >>> x.isnan()
+    ivy.array([[ True, False,  True, False]])
+
+    >>> x = ivy.zeros((3, 3))
+    >>> x.isnan()
+    ivy.array([[False, False, False],
+        [False, False, False],
+        [False, False, False]])
+    
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
+    >>> x.isnan()
+    ivy.array([[False],
+        [False],
+        [True]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
+        b=ivy.array([math.nan, 3.3, -4.2]))
+    >>> x.isnan()
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+
+    Container Static Method Examples
+    ------------------------
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
+                          b=ivy.array([math.nan, 3.3, -4.2]))
+    >>> z = ivy.Container.static_isnan(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+    
     """
     return ivy.current_backend(x).isnan(x, out=out)
 
