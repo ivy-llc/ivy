@@ -11,38 +11,15 @@ jobs:
           persist-credentials: false
           submodules: "recursive"
 
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
+      - name: Cache hypothesis
+        uses: actions/cache@v3
         with:
-          workflow: test-fn-searching-torch.yml
-          name: hypothesis_fn_act_torch_zip
           path: |
-            ivy/.hypothesis/
-
-      - name: Unzip Hypothesis Examples
-        run: |
-          cd ivy/.hypothesis
-          unzip examples.zip
-          rm examples.zip
+            ivy/.hypothesis
+          key: ${{ runner.os }}-hypothesis
 
       - name: Run Searching Tests
         run: |
           cd ivy
           mkdir -p .hypothesis
-          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend torch ivy/ivy_tests/test_ivy/test_functional/test_nn/test_searching.py
-
-      - name: Zip Hypothesis Examples
-        run: |
-          cd ivy/.hypothesis
-          zip -r examples.zip examples
-
-      - name: Upload hypothesis
-        uses: actions/upload-artifact@v3
-        with:
-          name: hypothesis_fn_act_torch_zip
-          path: |
-            ivy/.hypothesis/examples.zip
-
-      - name: Check on failures
-        if: steps.tests.outcome != 'success'
-        run: exit 1
+          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend torch ivy/ivy_tests/test_ivy/test_functional/test_core/test_searching.py
