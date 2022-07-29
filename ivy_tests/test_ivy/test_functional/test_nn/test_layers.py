@@ -181,6 +181,7 @@ def test_dropout(
         instance_method=instance_method,
         fw=fw,
         fn_name="dropout",
+        test_values=False,
         x=np.asarray(x, dtype=dtype),
         prob=prob,
         scale=scale,
