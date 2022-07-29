@@ -120,12 +120,12 @@ class ContainerWithManipulation(ContainerBase):
     def static_reshape(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -192,23 +192,23 @@ class ContainerWithManipulation(ContainerBase):
             "reshape",
             x,
             shape,
-            copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            copy=copy,
             out=out,
         )
-        
+
     def reshape(
         self: ivy.Container,
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -267,13 +267,13 @@ class ContainerWithManipulation(ContainerBase):
         return self.static_reshape(
             self,
             shape,
-            copy,
             key_chains,
             to_apply,
             prune_unapplied,
             map_sequences,
+            copy=copy,
             out=out,
-        ) 
+        )
 
     @staticmethod
     def static_roll(
