@@ -191,7 +191,6 @@ def cross(
 
     Examples
     --------
-
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([1., 0., 0.])
