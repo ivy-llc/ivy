@@ -5,6 +5,8 @@ Open Tasks
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
+.. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html
+.. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -80,7 +82,7 @@ Some common important tasks are:
 #. add the correct :ref:`Docstrings` to every function **and** its *relevant methods*,
    including those you did not implement yourself.
 #. add thorough :ref:`Docstring Examples` for every function **and** its
-   *relevant methods*
+   *relevant methods* and ensure they pass the docstring tests.
 
 Frontend APIs
 -------------
@@ -90,8 +92,15 @@ frontend functional APIs (see :ref:`Ivy as a Transpiler`),
 with frontend APIs implemented for:
 :code:`JAX`, :code:`MXNet`, :code:`NumPy`, :code:`TensorFlow` and :code:`PyTorch`.
 
-This task is not *quite* ready to be engaged with yet,
-more details coming in the next few weeks! 🗓️
+Currently, we have many ToDo list issues
+`open <https://github.com/unifyai/ivy/issues?page=1&q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22>`_
+for this task, which is explained below.
+
+The general workflow for this task is:
+
+#. implement the function by following the `Ivy Frontends`_ guide
+#. write tests for your function by following the `Ivy Frontend Tests`_ guide
+#. verify that the tests for your function are passing
 
 **Round Up**
 

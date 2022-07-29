@@ -7,19 +7,18 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # relu
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="relu"),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-    native_array=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_relu(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -47,15 +46,13 @@ def test_relu(
 # leaky_relu
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    native_array=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     alpha=st.floats(width=16),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_leaky_relu(
+    *,
     dtype_and_x,
     alpha,
     as_variable,
@@ -86,15 +83,13 @@ def test_leaky_relu(
 # gelu
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gelu"),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-    native_array=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_gelu(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -126,14 +121,12 @@ def test_gelu(
 # tanh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="tanh"),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-    native_array=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_tanh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -161,14 +154,12 @@ def test_tanh(
 # sigmoid
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-    native_array=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_sigmoid(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -198,15 +189,13 @@ def test_sigmoid(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     axis=st.integers(-1, 0),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-    native_array=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_softmax(
+    *,
     dtype_and_x,
     as_variable,
     axis,
@@ -238,14 +227,12 @@ def test_softmax(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-    native_array=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_softplus(
+    *,
     dtype_and_x,
     as_variable,
     with_out,

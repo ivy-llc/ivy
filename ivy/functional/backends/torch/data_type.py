@@ -116,7 +116,7 @@ def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
     return torch.iinfo(ivy.as_native_dtype(type))
 
 
-def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> torch.dtype:
+def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dtype:
     input = []
     for val in arrays_and_dtypes:
         torch_val = as_native_dtype(val)
