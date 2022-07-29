@@ -88,9 +88,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
         axis
-            the axis (dimension) of x1 and x2 containing the vectors for which to compute 
-            (default: -1) the cross product.vIf set to -1, the function computes the 
-            cross product for vectors defined by the last axis (dimension). Default: -1.
+            the axis (dimension) of x1 and x2 containing the vectors for which to 
+            compute (default: -1) the cross product.vIf set to -1, the function 
+            computes the cross product for vectors defined by the last axis (dimension).
+            Default: -1.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -98,8 +99,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise products. The returned array must have a
-            data type determined by :ref:`type-promotion`.
+            an array containing the element-wise products. The returned array must 
+            have a data type determined by :ref:`type-promotion`.
             
         Examples
         --------
