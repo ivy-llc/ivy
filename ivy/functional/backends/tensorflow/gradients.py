@@ -4,7 +4,7 @@ signature.
 
 # global
 import tensorflow as tf
-from typing import Union, Optional
+from typing import Union, Optional, Callable
 
 # local
 import ivy
@@ -54,3 +54,10 @@ def stop_gradient(
     if is_var and preserve_type:
         return variable(x)
     return x
+
+
+def jac(func: Callable, x: Union[tf.Tensor, tf.Variable]):
+    with tf.GradientTape() as tape:
+        tape.watch(x)
+        y = func(x)
+    return tape.jacobian(y, x)

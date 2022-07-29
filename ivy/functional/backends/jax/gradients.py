@@ -6,7 +6,7 @@ import jax.lax as jlax
 import jaxlib
 from jaxlib.xla_extension import Buffer
 from ivy.functional.backends.jax import JaxArray
-from typing import Optional
+from typing import Optional, Callable
 
 
 # local
@@ -58,3 +58,7 @@ def stop_gradient(
     x: JaxArray, preserve_type: bool = True, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jlax.stop_gradient(x)
+
+
+def jac(func: Callable, x: JaxArray):
+    return jax.jacfwd(func)(x)

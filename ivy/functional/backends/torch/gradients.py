@@ -3,7 +3,7 @@
 # global
 import torch
 import warnings
-from typing import Optional
+from typing import Optional, Callable
 
 # local
 import ivy
@@ -73,3 +73,7 @@ def stop_gradient(
                 x.grad.data.zero_()
         return x
     return x.detach()
+
+
+def jac(func: Callable, x: torch.tensor):
+    return torch.autograd.functional.jacobian(func, x)

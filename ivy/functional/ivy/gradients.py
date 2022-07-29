@@ -779,3 +779,38 @@ def lamb_update(
     r = ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
     lr = r * lr
     return ivy.optimizer_update(w, eff_grads, lr, inplace, stop_gradients), mw, vw
+
+
+@to_native_arrays_and_back
+@handle_nestable
+def jac(func, x):
+    """Call function func with input of xs variables, and return func's Jacobian partial
+    derivatives.
+
+    Parameters
+    ----------
+    func
+        Function for which we compute the gradients of the output with respect to xs
+        input.
+    x
+        Variables for which to compute the function gradients with respective to.
+
+    Returns
+    -------
+    ret
+        the Jacobian matrix
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> def f(a):
+    >>>     return ivy.array([a[0], 5*a[2], 4*a[1]**2 - 2*a[2]])
+    >>> jacobian = jac(f, x)
+    >>> print(jacobian)
+    (ivy.array([[1., 0., 0.],
+        [0., 0., 5.],
+        [0., 16., -2.]])
+    """
+    return current_backend(x).jac(func, x)

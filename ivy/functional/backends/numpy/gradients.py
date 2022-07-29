@@ -43,3 +43,11 @@ def stop_gradient(x, preserve_type=True, *, out=None):
         "has no effect on the array, as gradients are not supported in the first place."
     )
     return x
+
+
+def jac(func, xs):
+    logging.warning(
+        "NumPy does not support autograd, 'jac'"
+        "returns None in place of function gradients."
+    )
+    return None
