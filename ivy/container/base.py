@@ -2314,52 +2314,6 @@ class ContainerBase(dict, abc.ABC):
             alphabetical_keys=False,
         )
 
-    def to_numpy(
-        self,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        update_backend=True,
-    ):
-        """Converts all nested ivy arrays to numpy arrays.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        update_backend
-            Whether to update the ivy backend of the returned container to numpy.
-            Default is True.
-
-        Returns
-        -------
-            container with each ivy array converted to a numpy array.
-
-        """
-        import ivy.functional.backends.numpy
-
-        ret = self.map(
-            lambda x, kc: self._ivy.to_numpy(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-        if update_backend:
-            ret.set_ivy_backend(ivy.get_backend("numpy"))
-        return ret
-
     def from_numpy(
         self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
     ):

@@ -1432,47 +1432,6 @@ def test_container_size_ordered_arrays(device, call):
         assert np.allclose(ivy.to_numpy(v), arr)
 
 
-def test_container_to_numpy(device, call):
-    dict_in = {
-        "a": ivy.variable(
-            ivy.array(
-                [[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]], device=device
-            )
-        ),
-        "b": {
-            "c": ivy.variable(
-                ivy.array(
-                    [[[8.0, 7.0], [6.0, 5.0]], [[4.0, 3.0], [2.0, 1.0]]], device=device
-                )
-            ),
-            "d": ivy.variable(
-                ivy.array(
-                    [[[2.0, 4.0], [6.0, 8.0]], [[10.0, 12.0], [14.0, 16.0]]],
-                    device=device,
-                )
-            ),
-        },
-    }
-    container = Container(dict_in)
-
-    # before conversion
-    assert ivy.is_ivy_array(container["a"])
-    assert ivy.is_ivy_array(container.a)
-    assert ivy.is_ivy_array(container["b"]["c"])
-    assert ivy.is_ivy_array(container.b.c)
-    assert ivy.is_ivy_array(container["b"]["d"])
-    assert ivy.is_ivy_array(container.b.d)
-
-    # after conversion
-    container_to_numpy = container.to_numpy()
-    assert isinstance(container_to_numpy["a"], np.ndarray)
-    assert isinstance(container_to_numpy.a, np.ndarray)
-    assert isinstance(container_to_numpy["b"]["c"], np.ndarray)
-    assert isinstance(container_to_numpy.b.c, np.ndarray)
-    assert isinstance(container_to_numpy["b"]["d"], np.ndarray)
-    assert isinstance(container_to_numpy.b.d, np.ndarray)
-
-
 def test_container_from_numpy(device, call):
     dict_in = {
         "a": np.array([[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]]),
