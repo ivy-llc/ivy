@@ -84,7 +84,7 @@ class ArrayWithManipulation(abc.ABC):
                    [3., 4., 5.]])
 
         """
-        return ivy.reshape(self._data, shape, copy, out=out)
+        return ivy.reshape(self._data, shape, copy=copy, out=out)
 
     def permute_dims(
         self: ivy.Array,
