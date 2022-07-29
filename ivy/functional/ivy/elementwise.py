@@ -2791,6 +2791,133 @@ def isnan(
         ``NaN`` and ``False`` otherwise. The returned array should have a data type of
         ``bool``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isnan.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([False, False, False])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[False, False, False]])
+
+    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[[False], 
+                [False],
+                [False]]])
+
+    >>> x = ivy.array([[-math.nan, np.nan, 0.0]])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[ True,  True, False]])
+
+    >>> x = ivy.array([[-math.nan, np.inf, np.nan, 0.0]])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[ True, False,  True, False]])
+
+    >>> x = ivy.zeros((3, 3))
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[False, False, False],
+       [False, False, False],
+       [False, False, False]])
+    
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    ivy.array([[False],
+        [False],
+        [True]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
+                          b=ivy.array([math.nan, 3.3, -4.2]))
+    >>> z = ivy.isnan(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+    
+    
+    Instance Method Examples
+    ------------------------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1, 2, 3])
+    >>> x.isnan()
+    ivy.array([False, False, False])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> x.isnan()
+    ivy.array([[False, False, False]])
+
+    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+    >>> x.isnan()
+    ivy.array([[[False],
+            [False],
+            [False]]])
+
+    >>> x = ivy.array([[-math.nan, np.nan, 0.0]])
+    >>> x.isnan()
+    ivy.array([[ True, True, False]])
+
+    >>> x = ivy.array([[-math.nan, np.inf, np.nan, 0.0]])
+    >>> x.isnan()
+    ivy.array([[ True, False,  True, False]])
+
+    >>> x = ivy.zeros((3, 3))
+    >>> x.isnan()
+    ivy.array([[False, False, False],
+        [False, False, False],
+        [False, False, False]])
+    
+    With :code:`ivy.NativeArray` inputs:
+    
+    >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
+    >>> x.isnan()
+    ivy.array([[False],
+        [False],
+        [True]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
+        b=ivy.array([math.nan, 3.3, -4.2]))
+    >>> x.isnan()
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+
+    Container Static Method Examples
+    ------------------------
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
+                          b=ivy.array([math.nan, 3.3, -4.2]))
+    >>> z = ivy.Container.static_isnan(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+    
     """
     return ivy.current_backend(x).isnan(x, out=out)
 
@@ -2966,7 +3093,52 @@ def log10(
         ``x``. The returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.ceil.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([4.0, 1, -0.0, -5.0])
+    >>> y = ivy.log10(x)
+    >>> print(y)
+    ivy.array([0.602, 0., -inf, nan])
+
+    >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],\
+                       [+0, -1.0, -5, float('-inf')]])
+    >>> y = ivy.log10(x)
+    >>> print(y)
+    ivy.array([[nan, 0., 0.699, inf],
+               [-inf, nan, nan, nan]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([5.78, float('-inf')])
+    >>> y = ivy.log10(x)
+    >>> print(y)
+    ivy.array([0.762, nan])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
+                          b=ivy.array([-0., -3.9, float('+inf')]),\
+                          c=ivy.array([7.9, 1.1, 1.]))
+    >>> y = ivy.log10(x)
+    >>> print(y)
+    {
+        a: ivy.array([-inf, nan]),
+        b: ivy.array([-inf, nan, inf]),
+        c: ivy.array([0.898, 0.0414, 0.])
+    }
     """
+
     return ivy.current_backend(x).log10(x, out=out)
 
 
