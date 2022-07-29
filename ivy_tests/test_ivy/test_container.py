@@ -1200,40 +1200,6 @@ def test_container_split(device, call):
         assert np.array_equal(ivy.to_numpy(cont.b.d)[0], np.array([bd]))
 
 
-def test_container_einops_rearrange(device, call):
-    dict_in = {
-        "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
-        "b": {
-            "c": ivy.array([[5.0, 10.0, 15.0, 20.0]], device=device),
-            "d": ivy.array([[10.0, 9.0, 8.0, 7.0]], device=device),
-        },
-    }
-    container = Container(dict_in)
-
-    container_rearranged = container.einops_rearrange("b n -> n b")
-    assert np.allclose(
-        ivy.to_numpy(container_rearranged["a"]), np.array([[0.0], [1.0], [2.0], [3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_rearranged.a), np.array([[0.0], [1.0], [2.0], [3.0]])
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_rearranged["b"]["c"]),
-        np.array([[5.0], [10.0], [15.0], [20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_rearranged.b.c),
-        np.array([[5.0], [10.0], [15.0], [20.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_rearranged["b"]["d"]),
-        np.array([[10.0], [9.0], [8.0], [7.0]]),
-    )
-    assert np.allclose(
-        ivy.to_numpy(container_rearranged.b.d), np.array([[10.0], [9.0], [8.0], [7.0]])
-    )
-
-
 def test_container_to_device(device, call):
     dict_in = {
         "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
