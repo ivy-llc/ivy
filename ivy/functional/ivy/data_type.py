@@ -708,10 +708,12 @@ def _check_float64(input) -> bool:
 # noinspection PyShadowingBuiltins
 def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, str]:
     """Determines the closest valid datatype to the datatype passed as input.
+
     Parameters
     ----------
     type
         The data type for which to check the closest valid type for.
+
     Returns
     -------
     ret
