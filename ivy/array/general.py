@@ -1,7 +1,7 @@
 # global
 import abc
 from numbers import Number
-from typing import Any, Iterable, Union, Optional, Dict
+from typing import Any, Iterable, Union, Optional, Dict, Callable
 
 # ToDo: implement all methods here as public instance methods
 
@@ -122,6 +122,44 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array(2)
         """
         return ivy.gather_nd(self, indices, out=out)
+
+    def einops_reduce(
+        self: ivy.Array,
+        pattern: str,
+        reduction: Union[str, Callable],
+        *,
+        out: Optional[ivy.Array] = None,
+        **axes_lengths: Dict[str, int],
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.einops_reduce. This method simply
+        wraps the function, and so the docstring for ivy.einops_reduce also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to be reduced.
+        pattern
+            Reduction pattern.
+        reduction
+            One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or
+            callable.
+        axes_lengths
+            Any additional specifications for dimensions.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New array with einops.reduce having been applied.
+
+        """
+        return ivy.einops_reduce(
+            self._data, pattern, reduction, out=out, **axes_lengths
+        )
 
     def einops_repeat(
         self: ivy.Array,
