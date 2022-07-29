@@ -14,27 +14,82 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # Linear #
 # -------#
 
+@st.composite
+def x_and_weight(draw, dtypes, fn_name):
+    dtype = draw(dtypes)
+    outer_batch_shape = draw(
+        st.tuples(
+            st.integers(3, 5),
+            st.integers(1, 3),
+            st.integers(1, 3),
+        )
+    )
+    inner_batch_shape = draw(
+        st.tuples(
+            st.integers(3, 5),
+            st.integers(1, 3),
+            st.integers(1, 3),
+        )
+    )
+    batch_shape = inner_batch_shape
+
+    in_features = draw(st.integers(min_value=1, max_value=3))
+    out_features = draw(st.integers(min_value=1, max_value=3))
+
+    num_queries = in_features
+    num_keys = in_features
+    feat_dim = in_features
+    scale = draw(st.floats(
+        min_value=0.10000000149011612,
+        max_value=1,
+        width=64
+    )),
+
+    x_shape = outer_batch_shape + inner_batch_shape + (in_features,)
+    weight_shape = outer_batch_shape + (out_features,) + (in_features,)
+    bias_shape = outer_batch_shape + (out_features,)
+
+    x = draw(helpers.array_values(dtype=dtype, shape=x_shape, min_value=0, max_value=1))
+    weight = draw(helpers.array_values(dtype=dtype, shape=weight_shape, min_value=0, max_value=1))
+    bias = draw(helpers.array_values(dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
+
+    q_shape = batch_shape + (num_queries,) + (feat_dim,)
+    k_shape = batch_shape + (num_keys,) + (feat_dim,)
+    v_shape = batch_shape + (num_queries,) + (feat_dim,)
+    mask_shape = batch_shape + (num_queries,) + (num_keys,)
+
+    q = draw(helpers.array_values(dtype=dtype, shape=q_shape, min_value=0, max_value=1))
+    k = draw(helpers.array_values(dtype=dtype, shape=k_shape, min_value=0, max_value=1))
+    v = draw(helpers.array_values(dtype=dtype, shape=v_shape, min_value=0, max_value=1))
+    mask = draw(helpers.array_values(dtype=dtype, shape=mask_shape, min_value=0, max_value=1))
+
+
+    if fn_name == "linear":
+        return dtype, x, weight, bias
+    if fn_name == "scaled_dot_product_attention":
+        return dtype, q, k, v, mask, scale
+
+
+
+
+
 
 # linear
 @given(
-    outer_batch_shape=helpers.lists(arg=st.integers(2, 5), min_size=1, max_size=3),
-    inner_batch_shape=helpers.lists(arg=st.integers(2, 5), min_size=1, max_size=3),
-    num_out_feats=st.integers(min_value=1, max_value=5),
-    num_in_feats=st.integers(min_value=1, max_value=5),
-    dtype=helpers.list_of_length(
-        x=st.sampled_from(ivy_np.valid_float_dtypes), length=3
+    dtype_x_weight_bias = x_and_weight(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        fn_name= "linear",
     ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=3),
+    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_linear(
     *,
-    outer_batch_shape,
-    inner_batch_shape,
-    num_out_feats,
-    num_in_feats,
-    dtype,
+    data,
+    dtype_x_weight_bias,
     as_variable,
     with_out,
     num_positional_args,
@@ -45,13 +100,10 @@ def test_linear(
     device,
 ):
 
-    x = np.random.uniform(
-        size=outer_batch_shape + inner_batch_shape + [num_in_feats]
-    ).astype(dtype[0])
-    weight = np.random.uniform(
-        size=outer_batch_shape + [num_out_feats] + [num_in_feats]
-    ).astype(dtype[1])
-    bias = np.random.uniform(size=weight.shape[:-1]).astype(dtype[2])
+    dtype, x, weight, bias = dtype_x_weight_bias
+    as_variable = [as_variable, as_variable, as_variable]
+    native_array = [native_array, native_array, native_array]
+    container = [container, container, container]
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -64,9 +116,9 @@ def test_linear(
         fw=fw,
         fn_name="linear",
         rtol_=1e-03,
-        x=x,
-        weight=weight,
-        bias=bias,
+        x=np.asarray(x, dtype=dtype),
+        weight=np.asarray(weight, dtype=dtype),
+        bias=np.asarray(bias, dtype=dtype),
     )
 
 
@@ -75,32 +127,65 @@ def test_linear(
 
 # dropout
 @given(
-    array_shape=helpers.lists(
-        arg=st.integers(1, 3),
-        min_size="num_dims",
-        max_size="num_dims",
-        size_bounds=[1, 3],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        min_value=0,
+        max_value=50,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     data=st.data(),
+    prob=st.floats(
+        min_value=0.10000000149011612,
+        max_value=1,
+        width=64
+    ),
+    scale=st.booleans(),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="dropout"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
 @handle_cmd_line_args
-def test_dropout(*, data, array_shape, dtype, as_variable, fw, device, call):
-    if (fw == "tensorflow" or fw == "torch") and "int" in dtype:
-        return
-    x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
-    x = ivy.asarray(x)
-    if as_variable:
-        x = ivy.variable(x)
-    # smoke test
-    ret = ivy.dropout(x, 0.9)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    ivy.seed(0)
-    assert np.min(call(ivy.dropout, x, 0.9)) == 0.0
+def test_dropout(
+    *,
+    data,
+    dtype_and_x,
+    prob,
+    scale,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+
+    dtype, x = dtype_and_x
+
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="dropout",
+        x=np.asarray(x, dtype=dtype),
+        prob=prob,
+        scale=scale,
+        dtype=dtype,
+    )
 
 
 # Attention #
@@ -108,16 +193,11 @@ def test_dropout(*, data, array_shape, dtype, as_variable, fw, device, call):
 
 # # scaled_dot_product_attention
 @given(
-    batch_shape=helpers.lists(
-        arg=st.integers(1, 3),
-        min_size="num_dims",
-        max_size="num_dims",
-        size_bounds=[1, 3],
+    dtype_q_v_k_scale_mask = x_and_weight(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        fn_name="scaled_dot_product_attention",
     ),
-    num_queries=st.integers(min_value=1, max_value=5),
-    num_keys=st.integers(min_value=1, max_value=5),
-    feat_dim=st.integers(min_value=1, max_value=5),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=3),
     num_positional_args=helpers.num_positional_args(
         fn_name="scaled_dot_product_attention"
     ),
@@ -126,11 +206,8 @@ def test_dropout(*, data, array_shape, dtype, as_variable, fw, device, call):
 @handle_cmd_line_args
 def test_scaled_dot_product_attention(
     *,
-    batch_shape,
-    num_queries,
-    num_keys,
-    feat_dim,
-    dtype,
+    data,
+    dtype_q_v_k_scale_mask,
     as_variable,
     num_positional_args,
     with_out,
@@ -140,22 +217,10 @@ def test_scaled_dot_product_attention(
     fw,
     device,
 ):
-
-    dtype = [dtype] * 5
-    if fw == "torch" and "float16" in dtype:
-        return
-    q = np.random.uniform(size=batch_shape + [num_queries] + [feat_dim]).astype(
-        dtype[0]
-    )
-    k = np.random.uniform(size=batch_shape + [num_keys] + [feat_dim]).astype(dtype[1])
-    v = np.random.uniform(size=batch_shape + [num_keys] + [feat_dim]).astype(dtype[2])
-    mask = np.random.uniform(size=batch_shape + [num_queries] + [num_keys]).astype(
-        dtype[3]
-    )
-    scale = np.random.uniform(size=[1]).astype(dtype[4])
-    as_variable = [as_variable for i in range(5)]
-    native_array = [native_array for i in range(5)]
-    container = [container for i in range(5)]
+    dtype, q, v, k, scale, mask = dtype_q_v_k_scale_mask
+    as_variable = [as_variable, as_variable, as_variable]
+    native_array = [native_array, native_array, native_array]
+    container = [container, container, container]
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -167,9 +232,9 @@ def test_scaled_dot_product_attention(
         instance_method=instance_method,
         fw=fw,
         fn_name="scaled_dot_product_attention",
-        q=q,
-        k=k,
-        v=v,
+        q=np.asarray(q, dtype=dtype),
+        k=np.asarray(k, dtype=dtype),
+        v=np.asarray(v, dtype=dtype),
         scale=scale,
         mask=mask,
     )
@@ -328,6 +393,7 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
 @handle_cmd_line_args
 def test_conv1d(
     *,
+    data,
     x_f_d_df,
     stride,
     pad,
@@ -433,6 +499,7 @@ def test_conv1d_transpose(
 @handle_cmd_line_args
 def test_conv2d(
     *,
+    data,
     x_f_d_df,
     stride,
     pad,
@@ -484,6 +551,7 @@ def test_conv2d(
 @handle_cmd_line_args
 def test_conv2d_transpose(
     *,
+    data,
     array_shape,
     filter_shape,
     stride,
@@ -606,6 +674,7 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, cal
 @handle_cmd_line_args
 def test_conv3d(
     *,
+    data,
     x_f_d_df,
     stride,
     pad,
@@ -657,6 +726,7 @@ def test_conv3d(
 @handle_cmd_line_args
 def test_conv3d_transpose(
     *,
+    data,
     array_shape,
     filter_shape,
     stride,
@@ -729,6 +799,7 @@ def test_conv3d_transpose(
 @handle_cmd_line_args
 def test_lstm(
     *,
+    data,
     b,
     t,
     input_channel,
