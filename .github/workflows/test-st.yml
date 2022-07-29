@@ -1,7 +1,11 @@
-name: test-st-layers-torch
+name: test-fn-core
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
+    strategy:
+      matrix:
+        backend: [numpy, jax, tensorflow, torch]
+        module: [test_activations, test_converters, test_layers, test_modules, test_norms, test_optimizers]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -18,8 +22,8 @@ jobs:
             ivy/.hypothesis
           key: ${{ runner.os }}-hypothesis
 
-      - name: Run Layers Tests
+      - name: Run Ivy Functional NN Tests
         run: |
           cd ivy
           mkdir -p .hypothesis
-          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend torch ivy/ivy_tests/test_ivy/test_stateful/test_layers.py
+          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend ${{ matrix.backend}} ivy/ivy_tests/test_ivy/test_stateful/${{ matrix.module}}.py

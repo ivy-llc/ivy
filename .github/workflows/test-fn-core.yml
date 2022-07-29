@@ -1,4 +1,4 @@
-name: test-fn-core-ivy
+name: test-fn-core
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
@@ -24,7 +24,7 @@ jobs:
             ivy/.hypothesis
           key: ${{ runner.os }}-hypothesis
 
-      - name: Run Ivy Tests
+      - name: Run Ivy Functional Core Tests
         run: |
           cd ivy
           mkdir -p .hypothesis
