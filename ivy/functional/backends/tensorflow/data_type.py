@@ -120,7 +120,7 @@ def broadcast_to(
 
 
 def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bool:
-    if isinstance(from_, tf.Tensor):
+    if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
         from_ = from_.dtype
     from_str = str(from_)
     to_str = str(to)
@@ -156,7 +156,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
 
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
-) -> tf.DType:
+) -> ivy.Dtype:
     if len(arrays_and_dtypes) <= 1:
         return tf.experimental.numpy.result_type(arrays_and_dtypes)
 
