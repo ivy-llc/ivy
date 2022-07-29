@@ -224,12 +224,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
         axis
-            the axis (dimension) of x1 and x2 containing the vectors for which to compute 
-            (default: -1) the cross product.vIf set to -1, the function computes the 
-            cross product for vectors defined by the last axis (dimension). Default: -1.
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            the axis (dimension) of x1 and x2 containing the vectors for which to 
+            compute the cross product.vIf set to -1, the function computes the 
+            cross product for vectors defined by the last axis (dimension). 
+            Default: -1.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -247,8 +245,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            an array containing the element-wise products. The returned array must have a
-            data type determined by :ref:`type-promotion`.
+            an array containing the element-wise products. The returned array must have
+            a data type determined by :ref:`type-promotion`.
             
         Examples
         --------
@@ -304,18 +302,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
         
         Parameters
         ----------
-        x1
+        self
             first input array. Should have a numeric data type.
         x2
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
         axis
-            the axis (dimension) of x1 and x2 containing the vectors for which to compute 
-            (default: -1) the cross product.vIf set to -1, the function computes the 
-            cross product for vectors defined by the last axis (dimension). Default: -1.
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            the axis (dimension) of x1 and x2 containing the vectors for which to 
+            compute (default: -1) the cross product.vIf set to -1, the function 
+            computes the cross product for vectors defined by the last axis (dimension).
+            Default: -1.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -333,8 +329,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            an array containing the element-wise products. The returned array must have a
-            data type determined by :ref:`type-promotion`.
+            an array containing the element-wise products. The returned array must have 
+            a data type determined by :ref:`type-promotion`.
         
         Examples
         --------
