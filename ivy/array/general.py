@@ -1,7 +1,7 @@
 # global
 import abc
 from numbers import Number
-from typing import Any, Iterable, Union, Optional
+from typing import Any, Iterable, Union, Optional, Dict
 
 # ToDo: implement all methods here as public instance methods
 
@@ -122,6 +122,38 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array(2)
         """
         return ivy.gather_nd(self, indices, out=out)
+
+    def einops_repeat(
+        self: ivy.Array,
+        pattern: str,
+        *,
+        out: Optional[ivy.Array] = None,
+        **axes_lengths: Dict[str, int],
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.einops_repeat. This method simply
+        wraps the function, and so the docstring for ivy.einops_repeat also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to be repeated.
+        pattern
+            Rearrangement pattern.
+        axes_lengths
+            Any additional specifications for dimensions.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New array with einops.repeat having been applied.
+
+        """
+        return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
 
     def to_numpy(self: ivy.Array):
         """
