@@ -27,11 +27,11 @@ TEST_CALL_METHODS: Dict[str, callable] = {
     "mxnet": helpers.mx_call,
 }
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
-    "as-variable": None,
-    "native-array": None,
-    "with-out": None,
-    "nestable": None,
-    "instance-method": None,
+    "as_variable": None,
+    "native_array": None,
+    "with_out": None,
+    "container": None,
+    "instance_method": None,
 }
 MAP_BOOL_FLAGS: Dict[str, bool] = {
     "true": True,
