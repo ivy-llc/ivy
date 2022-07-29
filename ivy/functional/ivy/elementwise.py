@@ -2418,7 +2418,7 @@ def less_equal(
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
     in the standard.
 
-     Examples
+    Examples
     -------------------
 
     With :code:`ivy.Array` input:

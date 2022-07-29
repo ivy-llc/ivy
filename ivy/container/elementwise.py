@@ -3587,7 +3587,7 @@ class ContainerWithElementwise(ContainerBase):
         >>> y = x1.less_equal(x2)
         >>> print(y)
         {
-            a: ivy.array([False, False, False])
+            a: ivy.array([False, False, False]),
             b: ivy.array([True, True, True])
         }
 
