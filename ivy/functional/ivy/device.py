@@ -7,7 +7,7 @@ import abc
 import math
 import psutil
 import nvidia_smi
-from typing import Optional
+from typing import Optional, Tuple
 
 # noinspection PyUnresolvedReferences
 try:
@@ -476,7 +476,8 @@ def used_mem_on_dev(
 
 
 def percent_used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], process_specific: bool = False
+    device: Union[ivy.Device, ivy.NativeDevice], 
+    process_specific: bool = False,
 ) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
     used RAM is returned.
@@ -494,6 +495,21 @@ def percent_used_mem_on_dev(
     ret
         The percentage used memory on the device.
 
+    Examples
+    --------
+    >>> x = ivy.percent_used_mem_on_dev(device = "cpu", process_specific = False)
+    >>> print(x)
+    94.036902561555
+
+    >>> x = ivy.percent_used_mem_on_dev(device = "cpu", process_specific = True)
+    >>> print(x)
+    0.7024003467681645
+
+    >>> x = ivy.as_native_dev("gpu:0")
+    >>> y = ivy.percent_used_mem_on_dev(device = x, process_specific = False)
+    >>> print(y)
+    0.7095597456708771
+    
     """
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
@@ -999,23 +1015,114 @@ def split_func_call(
     return ret[0] if len(ret) == 1 else ret
 
 
+def _is_valid_devices_attributes(fn: Callable) -> bool:
+    if hasattr(fn, "supported_devices") and hasattr(fn, "unsupported_devices"):
+        fn_supported_devices = fn.supported_devices
+        fn_unsupported_devices = fn.unsupported_devices
+        if isinstance(fn_supported_devices, dict):
+            if isinstance(fn_unsupported_devices, dict):
+                backend_str = ivy.current_backend_str()
+                if (
+                    backend_str in fn_supported_devices
+                    and backend_str in fn_unsupported_devices
+                ):
+                    return False
+        else:
+            if isinstance(fn_unsupported_devices, tuple):
+                return False
+    return True
+
+
+@handle_nestable
+def function_unsupported_devices(fn: Callable) -> Tuple:
+    """Returns the unsupported devices of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported device attribute
+
+    Returns
+    -------
+    ret
+        The unsupported devices of the function
+    """
+    if not _is_valid_devices_attributes(fn):
+        raise Exception(
+            "supported_devices and unsupported_devices attributes cannot both \
+             exist in a particular backend"
+        )
+    unsupported_devices = ()
+    if hasattr(fn, "unsupported_devices"):
+        fn_unsupported_devices = fn.unsupported_devices
+        if isinstance(fn_unsupported_devices, dict):
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_unsupported_devices:
+                unsupported_devices += fn_unsupported_devices[backend_str]
+            if "all" in fn_unsupported_devices:
+                unsupported_devices += fn_unsupported_devices["all"]
+        else:
+            unsupported_devices += fn_unsupported_devices
+    return tuple(set(unsupported_devices))
+
+
+@handle_nestable
+def function_supported_devices(fn: Callable) -> Tuple:
+    """Returns the supported devices of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the supported device attribute
+
+    Returns
+    -------
+    ret
+        The supported devices of the function
+    """
+    if not _is_valid_devices_attributes(fn):
+        raise Exception(
+            "supported_devices and unsupported_devices attributes cannot both \
+             exist in a particular backend"
+        )
+    supported_devices = tuple()
+    if hasattr(fn, "supported_devices"):
+        fn_supported_devices = fn.supported_devices
+        if isinstance(fn_supported_devices, dict):
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_supported_devices:
+                supported_devices += fn_supported_devices[backend_str]
+            if "all" in fn_supported_devices:
+                supported_devices += fn_supported_devices["all"]
+        else:
+            supported_devices += fn_supported_devices
+    return tuple(set(supported_devices))
+
+
 # Profiler #
 
 
 class Profiler(abc.ABC):
-    """"""
+    """The profiler class is used to profile the execution of some code.
 
-    def __init__(self, save_dir):
+    Parameters
+    ----------
+    save_dir
+        The directory to save the profile data to.
+
+    """
+
+    def __init__(self, save_dir: str):
         self._save_dir = save_dir
 
     @abc.abstractmethod
     def start(self):
-        """"""
+        """Start the profiler. This should be called before the code to be profiled."""
         raise NotImplementedError
 
     @abc.abstractmethod
     def stop(self):
-        """"""
+        """Stop the profiler. This should be called after the code to be profiled."""
         raise NotImplementedError
 
     @abc.abstractmethod
