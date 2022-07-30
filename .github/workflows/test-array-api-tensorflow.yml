@@ -1,6 +1,5 @@
 name: test-array-api-tensorflow
 on:
-  push:
   workflow_run:
     workflows: [Label Checker]
     types: [completed]
