@@ -6,9 +6,7 @@ on:
 jobs:
   pull_request_assigners:
     name: Issue comment
-    if: ${{ github.event.pull_request }}
-     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checks
         uses: actions/checkout@v2
