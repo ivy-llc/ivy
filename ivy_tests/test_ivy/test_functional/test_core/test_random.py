@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -148,11 +148,12 @@ def _pop_size_num_samples_replace_n_probs(draw):
 
 # multinomial
 @given(everything=_pop_size_num_samples_replace_n_probs())
-def test_multinomial(everything, device, call):
+def test_multinomial(everything, device, call, fw):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
-    if call is helpers.tf_call and not replace or prob_dtype == "float64":
-        # tenosorflow does not support multinomial without replacement
-        return
+
+    # tensorflow does not support multinomial without replacement
+    assume(not (fw == "tensorflow" and not replace or prob_dtype == "float64"))
+
     # smoke test
     probs = (
         ivy.array(probs, dtype=prob_dtype, device=device)
