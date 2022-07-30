@@ -158,7 +158,62 @@ def set_nest_at_index(
         ivy.set_nest_at_index(nest[index[0]], index[1:], value)
 
 
-def insert_into_nest_at_index(nest: Iterable, index: Tuple, value):
+def insert_into_nest_at_index(
+    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, List], 
+    index: Tuple[int], 
+    value: Any
+):
+    
+    """insert a value to a nested item at a specified index.
+
+    Parameters
+    ----------
+    nest
+        The nested object to insert the value to.
+    index
+        An iterable object of indices for the index at which to insert.
+    value
+        The new value to be inserted into the nested object.
+        
+     Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([[1., 3.], [4., 6.]])
+    >>> index = (1, 1)
+    >>> value = 2.
+    >>> ivy.insert_into_nest_at_index(x, index, value)
+    >>> print(x)
+    ivy.array([[1., 3.], [4., 2.]])
+
+    >>> x = ivy.array([1., 2., 3., 4., 6., 8.])
+    >>> index = [3]
+    >>> value = (5.)
+    >>> ivy.insert_into_nest_at_index(x, index, value)
+    >>> print(x)
+    ivy.array([1., 2., 3., 5., 6., 8.])
+    
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+    >>> index = ('b', 1)
+    >>> value = 1
+    >>> ivy.insert_into_nest_at_index(x, index, value)
+    >>> print(x)
+    {\
+    a: ivy.array([1, 2, 3]),\
+    b: ivy.array([4, 1, 6])\
+    }\
+    
+    With :code:`list` inputs:
+    >>> x = [['a', 'b', 'c'], \
+             ['d', 'e', 'f'], \
+             ['g', 'h', 'i']]
+    >>> index = (1, 0)
+    >>> value = 'k'
+    >>> ivy.insert_into_nest_at_index(x, index, value)
+    >>> print(x)
+    [['a','b','c'],['k', 'd','e','f'], ['g', 'h', 'i']]
+    
+    """
     if len(index) == 1:
         idx = index[0]
         if isinstance(nest, list):
@@ -166,7 +221,7 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value):
         else:
             nest[index[0]] = value
     else:
-        insert_into_nest_at_index(nest[index[0]], index[1:], value)
+        ivy.insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
 def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable):
