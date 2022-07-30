@@ -581,6 +581,16 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([0., 0.524, 1.57]),
             b: ivy.array([nan, 0.927, nan])
         }
+        
+        >>> x = ivy.Container(a=ivy.array([12., 1.5, 0.]),\
+                              b=ivy.array([-0.85, 0.6, 0.3]))
+        >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
+        >>> x.asin(out=y)
+        >>> print(y)
+        {
+            a: ivy.array([nan, nan, 0.]),
+            b: ivy.array([-1.02, 0.644, 0.305])
+        }
         """
         return self.static_asin(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
