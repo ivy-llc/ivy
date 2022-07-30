@@ -1937,8 +1937,10 @@ def set_min_base(val: float) -> None:
 
 
 def stable_divide(
-    numerator: Any, denominator: Any, min_denominator: float = None
-) -> Any:
+    numerator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+    denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+    min_denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container] = None,
+) -> Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]:
     """Divide the numerator by the denominator, with min denominator added to the
     denominator for numerical stability.
 
@@ -1955,6 +1957,70 @@ def stable_divide(
     -------
     ret
         The new item following the numerically stable division.
+
+    Examples
+    --------
+    With :code:`int` input:
+    >>> x = ivy.stable_divide(1, 2)
+    >>> print(x)
+    0.49999999999975
+
+    >>> x = ivy.stable_divide(1, 4, min_denominator=1)
+    >>> print(x)
+    0.2
+
+    With :code:`float` input:
+    >>> x = ivy.stable_divide(5.0, 3.33)
+    >>> print(x)
+    1.5015015015010504
+
+    With :code:`complex` input:
+    >>> x = ivy.stable_divide(1+1j, 1-1j)
+    >>> print(x)
+    (5.000444502911705e-13+0.9999999999995j)
+
+    With :code:`ivy.Array` input:
+    >>> x = ivy.asarray([[10., 20., 30.],\
+                        [40., 50., 60.]])
+    >>> y = ivy.stable_divide(x, 10.)
+    >>> print(y)
+    ivy.array([[1., 2., 3.],
+              [4., 5., 6.]])
+
+
+    >>> x = ivy.asarray([1,2,3])
+    >>> y = np.array((1., 3., 5.))
+    >>> z = ivy.stable_divide(x, y)
+    >>> print(z)
+    ivy.array([1.   , 0.667, 0.6  ])
+
+    >>> x = ivy.asarray([1., 2., 4.])
+    >>> y = ivy.asarray([1., 0.5, 0.25])
+    >>> z = ivy.asarray([0.01, 0.02, 0.03])
+    >>> w = ivy.stable_divide(x, y, min_denominator=z)
+    >>> print(w)
+    ivy.array([ 0.99,  3.85, 14.3 ])
+
+    With :code:`ivy.Container` input
+    >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
+    >>> y = ivy.stable_divide(x, 0.5)
+    >>> print(y)
+    {
+        a: ivy.array([20., 30.]),
+        b: ivy.array([40., 50.])
+    }
+
+
+    >>> x = ivy.Container(a=ivy.asarray([1., 2.]), b=ivy.asarray([3., 4.]))
+    >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 0.4]))
+    >>> z = ivy.stable_divide(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([2., 0.8]),
+        b: ivy.array([0.857, 10.])
+    }
+
+
 
     """
     # noinspection PyProtectedMember
@@ -1978,6 +2044,7 @@ def stable_pow(base: Any, exponent: Any, min_base: float = None) -> Any:
     -------
     ret
         The new item following the numerically stable division.
+
 
     """
     # noinspection PyProtectedMember
@@ -2557,14 +2624,8 @@ def gather(
                           b = ivy.array([1, 2]))
     >>> print(x.gather(y))
     {
-        a: {
-            a: ivy.array([0., 1.]),
-            b: ivy.array([1., 2.])
-        },
-        b: {
-            a: ivy.array([4., 5.]),
-            b: ivy.array([5., 6.])
-        }
+        a: ivy.array([0., 1.]),
+        b: ivy.array([5., 6.])
     }
     """
     return current_backend(params).gather(params, indices, axis, out=out)

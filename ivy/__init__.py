@@ -121,6 +121,8 @@ _MIN_BASE = 1e-5
 import threading
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
+from .array import conversions as arr_conversions
+from .container import conversions as cont_conversions
 from .container import (
     ContainerBase,
     Container,
@@ -176,6 +178,7 @@ add_ivy_array_instance_methods(
     Array,
     [
         activations,
+        arr_conversions,
         creation,
         data_type,
         device,
@@ -200,6 +203,7 @@ add_ivy_container_instance_methods(
     Container,
     [
         activations,
+        cont_conversions,
         creation,
         data_type,
         device,
@@ -225,6 +229,7 @@ add_ivy_container_instance_methods(
     Container,
     [
         activations,
+        cont_conversions,
         creation,
         data_type,
         device,
