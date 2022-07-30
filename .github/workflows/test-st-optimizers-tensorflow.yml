@@ -1,7 +1,6 @@
 name: test-st-optimizers-tensorflow
 on:
   push:
-  pull_request:
   workflow_run:
     workflows: [Label Checker]
     types: [completed]

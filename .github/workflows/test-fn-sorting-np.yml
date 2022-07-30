@@ -1,7 +1,6 @@
 name: test-fn-sorting-numpy
 on:
   push:
-  pull_request:
   workflow_run:
     workflows: [Label Checker]
     types: [completed]
