@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "master" ]
   workflow_run:
-    workflows: [check_labels]
+    workflows: [Check Labels]
     types: [ completed ]
 
 jobs:
