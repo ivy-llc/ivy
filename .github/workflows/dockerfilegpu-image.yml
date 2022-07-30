@@ -6,9 +6,8 @@ on:
     types: [ completed ]
 
 jobs:
-  on-success:
-
   build:
+  on-success:
     runs-on: ubuntu-20.04
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
