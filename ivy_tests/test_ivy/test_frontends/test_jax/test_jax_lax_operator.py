@@ -8,7 +8,7 @@ import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.jax as ivy_jax
 
 
-# subtract
+# divide
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -19,11 +19,11 @@ import ivy.functional.backends.jax as ivy_jax
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.lax.subtract"
+        fn_name="ivy.functional.frontends.jax.lax.divide"
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-def test_jax_lax_subtract(
+def test_jax_lax_divide(
     dtype_and_x,
     as_variable,
     num_positional_args,
@@ -40,7 +40,7 @@ def test_jax_lax_subtract(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.subtract",
+        fn_name="lax.divide",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
