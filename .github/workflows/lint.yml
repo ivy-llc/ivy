@@ -1,6 +1,9 @@
 name: lint
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+    types: [labeled, synchronize]
 
 jobs:
   check-formatting:
