@@ -8,7 +8,7 @@ import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.jax as ivy_jax
 
 
-# add
+# subtract
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -19,11 +19,11 @@ import ivy.functional.backends.jax as ivy_jax
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.numpy.add"
+        fn_name="ivy.functional.frontends.jax.lax.subtract"
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-def test_jax_numpy_add(
+def test_jax_lax_subtract(
     dtype_and_x,
     as_variable,
     num_positional_args,
@@ -40,21 +40,21 @@ def test_jax_numpy_add(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="numpy.add",
+        fn_name="lax.subtract",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
-# tan
+# cos
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.numpy.tan"
+        fn_name="ivy.functional.frontends.jax.lax.cos"
     ),
     native_array=st.booleans(),
 )
-def test_jax_numpy_tan(
+def test_jax_lax_cos(
     dtype_and_x,
     as_variable,
     num_positional_args,
@@ -71,7 +71,7 @@ def test_jax_numpy_tan(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="numpy.tan",
+        fn_name="lax.cos",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -113,11 +113,11 @@ def _arrays_idx_n_dtypes(draw):
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.numpy.concatenate"
+        fn_name="ivy.functional.frontends.jax.lax.concatenate"
     ),
     native_array=helpers.array_bools(),
 )
-def test_jax_numpy_concat(
+def test_jax_lax_concat(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
     num_positional_args,
@@ -134,7 +134,7 @@ def test_jax_numpy_concat(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="numpy.concatenate",
+        fn_name="lax.concatenate",
         operands=xs,
         dimension=unique_idx,
     )
