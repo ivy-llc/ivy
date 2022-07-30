@@ -1,7 +1,5 @@
 name: test-fn-set-numpy
 on:
-  push:
-  pull_request:
   workflow_run:
     workflows: [check-labels]
     types: [completed]

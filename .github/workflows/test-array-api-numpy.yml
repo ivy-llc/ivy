@@ -1,7 +1,5 @@
 name: test-array-api-numpy
 on:
-  push:
-  pull_request:
   workflow_run:
     workflows: [check-labels]
     types: [completed]

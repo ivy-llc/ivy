@@ -1,7 +1,5 @@
 name: test-fn-gradients-tensorflow
 on:
-  push:
-  pull_request:
   workflow_run:
     workflows: [check-labels]
     types: [completed]

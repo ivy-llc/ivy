@@ -1,7 +1,5 @@
 name: test-st-activations-torch
 on:
-  push:
-  pull_request:
   workflow_run:
     workflows: [check-labels]
     types: [completed]
