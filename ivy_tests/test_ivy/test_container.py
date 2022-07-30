@@ -2941,24 +2941,6 @@ def test_container_identical_array_shapes(device, call):
     assert not ivy.Container.identical([container0, container1, container2])
 
 
-def test_container_dtype(device, call):
-    dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2.0], device=device), "d": ivy.array([3], device=device)},
-    }
-    container = Container(dict_in)
-    dtype_container = container.dtype()
-    for (key, value), expected_value in zip(
-        dtype_container.to_iterator(),
-        [
-            ivy.array([1], device=device).dtype,
-            ivy.array([2.0], device=device).dtype,
-            ivy.array([3], device=device).dtype,
-        ],
-    ):
-        assert value == expected_value
-
-
 def test_container_with_entries_as_lists(device, call):
     if call in [helpers.tf_graph_call]:
         # to_list() requires eager execution
