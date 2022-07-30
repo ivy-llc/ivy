@@ -8,7 +8,7 @@ import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
-# tan
+# sin
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -16,11 +16,11 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
     as_variable=helpers.array_bools(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.arctanh"
+        fn_name="ivy.functional.frontends.numpy.sin"
     ),
     native_array=helpers.array_bools(),
 )
-def test_numpy_tan(
+def test_numpy_sin(
     dtype_and_x,
     dtype,
     where,
@@ -46,7 +46,7 @@ def test_numpy_tan(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="arctanh",
+        fn_name="sin",
         x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
