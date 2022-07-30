@@ -2,7 +2,7 @@ name: test-fn-sorting-numpy
 on:
   push:
   pull_request:
-    types: [labeled]
+    types: [labeled, edited]
 jobs:
   run-nightly-tests:
     if: ${{ github.event.label.name == 'with CI' }}

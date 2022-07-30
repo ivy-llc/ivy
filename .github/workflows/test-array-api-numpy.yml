@@ -2,7 +2,7 @@ name: test-array-api-numpy
 on:
   push:
   pull_request:
-    types: [labeled]
+    types: [labeled, edited]
   workflow_dispatch:
 
 jobs:
