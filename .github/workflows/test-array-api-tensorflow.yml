@@ -8,15 +8,18 @@ jobs:
   run-tensorflow-array-api-tests:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - run: git branch
+      - run: env
+
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.workflow_run.head_branch }}
           path: ivy
           persist-credentials: false
           submodules: 'recursive'
-      - run: git branch
-      - run: env
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
