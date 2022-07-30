@@ -462,7 +462,7 @@ def test_as_ivy_dtype(
 ):
     res = ivy.as_ivy_dtype(input_dtype)
     if isinstance(input_dtype, str):
-        assert isinstance(res, ivy.NativeDtype)
+        assert isinstance(res, str)
         return
 
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(
