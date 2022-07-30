@@ -6,8 +6,8 @@ on:
 jobs:
   run-tensorflow-array-api-tests:
   on-success:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
