@@ -10,23 +10,23 @@ from ivy.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class ContainerWithDevice(ContainerBase):
     @staticmethod
-    def static_dev(x: ivy.Container) -> ivy.Container:
+    def static_dev(x: ivy.Container, as_native: bool = False) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.dev. This method simply
         wraps the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
 
         """
-        return ContainerBase.multi_map_in_static_method("dev", x)
+        return ContainerBase.multi_map_in_static_method("dev", x, as_native=as_native)
 
-    def dev(self: ivy.Container) -> ivy.Container:
+    def dev(self: ivy.Container, as_native: bool = False) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.dev. This method simply
         wraps the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
 
         """
-        return self.static_dev(self)
+        return self.static_dev(self, as_native=as_native)
 
     @staticmethod
     def static_to_device(

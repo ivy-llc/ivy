@@ -51,10 +51,11 @@ class NativeShape:
 
 class Device(str):
     def __new__(cls, dev_str):
-        assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
-        if dev_str != "cpu":
-            assert dev_str[3] == ":"
-            assert dev_str[4:].isnumeric()
+        if dev_str != "":
+            assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
+            if dev_str != "cpu":
+                assert dev_str[3] == ":"
+                assert dev_str[4:].isnumeric()
         return str.__new__(cls, dev_str)
 
 
@@ -66,12 +67,17 @@ class Dtype(str):
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
-        assert isinstance(shape_tup, (int, list, tuple, ivy.NativeShape))
+        valid_types = (int, list, tuple)
+        if len(backend_stack) != 0:
+            valid_types += (ivy.NativeShape,)
+        assert isinstance(shape_tup, valid_types)
         if isinstance(shape_tup, int):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
             shape_tup = tuple(shape_tup)
-        assert builtins.all([isinstance(v, int) for v in shape_tup])
+        assert builtins.all(
+            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup]
+        )
         if ivy.shape_array_mode():
             return ivy.array(shape_tup)
         return tuple.__new__(cls, shape_tup)
@@ -115,6 +121,8 @@ _MIN_BASE = 1e-5
 import threading
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
+from .array import conversions as arr_conversions
+from .container import conversions as cont_conversions
 from .container import (
     ContainerBase,
     Container,
@@ -170,6 +178,7 @@ add_ivy_array_instance_methods(
     Array,
     [
         activations,
+        arr_conversions,
         creation,
         data_type,
         device,
@@ -194,6 +203,7 @@ add_ivy_container_instance_methods(
     Container,
     [
         activations,
+        cont_conversions,
         creation,
         data_type,
         device,
@@ -219,6 +229,7 @@ add_ivy_container_instance_methods(
     Container,
     [
         activations,
+        cont_conversions,
         creation,
         data_type,
         device,

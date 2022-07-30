@@ -76,8 +76,8 @@ def prod(
     x: torch.Tensor,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: torch.dtype = None,
-    keepdims: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
@@ -166,8 +166,6 @@ def sum(
             dtype = torch.uint8
         elif x.dtype in [torch.int32, torch.int64]:
             dtype = torch.int64
-        elif x.dtype == torch.float16:
-            dtype = torch.float32
 
     dtype = ivy.as_native_dtype(dtype)
 
@@ -189,9 +187,6 @@ def sum(
                 dtype=dtype,
             )
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
-
-
-sum.support_native_out = True
 
 
 def var(
