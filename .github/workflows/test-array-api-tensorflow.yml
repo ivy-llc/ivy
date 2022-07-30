@@ -5,10 +5,10 @@ on:
   workflow_run:
     workflows: [Label Checker]
     types: [completed]
+
 jobs:
   run-tensorflow-array-api-tests:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - run: echo 'The triggering workflow passed'
       - name: Checkout 🛎️Ivy
