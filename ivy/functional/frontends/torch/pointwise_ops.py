@@ -26,3 +26,9 @@ def sin(input, *, out=None):
 
 sin.unsupported_dtypes= ("float16",)
 
+
+def acos(input, *, out=None):
+    return ivy.acos(input, out=out)
+
+acos.unsupported_dtypes= ("float16",)
+
