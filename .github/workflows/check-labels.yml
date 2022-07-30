@@ -18,3 +18,4 @@ jobs:
         with:
           one_of: with CI
           repo_token: ${{ secrets.GITHUB_TOKEN }}
+          run: echo ${{ github.event.workflow_run.conclusion}}
