@@ -2,11 +2,12 @@ name: test-array-api-tensorflow
 on:
   push:
   pull_request:
-    types: [reopened]
+    types: [labeled]
   workflow_dispatch:
 
 jobs:
   run-tensorflow-array-api-tests:
+    if: ${{ github.event.label.name == 'with CI' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy

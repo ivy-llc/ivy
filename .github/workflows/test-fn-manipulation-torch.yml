@@ -1,7 +1,11 @@
 name: test-fn-manipulation-torch
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+    types: [labeled]
 jobs:
   run-nightly-tests:
+    if: ${{ github.event.label.name == 'with CI' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
