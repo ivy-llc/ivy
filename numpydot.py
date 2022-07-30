@@ -13,28 +13,21 @@ I recommend you to check the results comparing with numpy.dot.
 
 You can find the numpy.dot utilities from the following link:
     https://www.sharpsightlabs.com/blog/numpy-dot/
-
 """
 # # These are some variables:
 # a = 2
 # b = 3
-
 # c = [4]
 # d = [5]
-
 # e = [2, 4, 3]
 # f = [4, 5, 6]
-
-
 # g = [[1,2,3],[4,5,6]]
 # h = [[1,2,3],[4,5,6],[7,8,9]]
 # i = [[1,2,3,4],[4,5,6,7],[7,8,9,10]]
 
-def numpydot(x1, x2):
-    
+def numpydot(x1, x2):    
     if type(x1) != list and type(x2) != list:
-        ret = x1*x2
-        
+        ret = x1*x2        
     elif type(x1) != list and type(x2) == list and type(x2[0]) != list:
         outer = []
         for i in range(len(x2)):
@@ -44,9 +37,7 @@ def numpydot(x1, x2):
         outer = []
         for i in range(len(x1)):
             outer.append(x2*x1[i])
-        ret = outer
-        
-        
+        ret = outer     
     elif type(x1) != list and type(x2) == list and type(x2[0]) == list:
         outer = []
         for i in range(len(x2)):
@@ -62,13 +53,9 @@ def numpydot(x1, x2):
             for j in range(len(x1[0])):
                inner.append(x2*x1[i][j])
             outer.append(inner)
-        ret = outer
-    
-    
+        ret = outer   
     elif type(x1) == list and type(x2) == list and type(x1[0])!=list and type(x2[0]) != list and len(x1) == len(x2):
         ret = sum(i*j for i, j in zip(x1, x2))  
-        
-        
     elif type(x1[0]) != list and type(x2[0]) == list and len(x1)==len(x2):
         outer = []
         for i in range(len(x2[0])): 
@@ -76,8 +63,7 @@ def numpydot(x1, x2):
             for j in range(len(x1)): 
                 total += x1[j] * x2[j][i]
             outer.append(total)
-            ret = outer
-            
+            ret = outer  
     elif type(x2[0]) != list and type(x1[0]) == list and len(x2)==len(x1[0]):
         outer = []
         for i in range(len(x1)): 
@@ -86,8 +72,6 @@ def numpydot(x1, x2):
                 total += x2[j] * x1[i][j]
             outer.append(total)
             ret = outer
-            
-        
     elif type(x1[0]) == list and type(x2[0]) == list and  len(x1[0]) == len(x2):
         outer = []
         for i in range(len(x1)): 
@@ -99,10 +83,7 @@ def numpydot(x1, x2):
                 inner.append(total)
             outer.append(inner)
             ret = outer
-    
     return ret
-
-
 # print(numpydot(a,i),"\n")
 
 
