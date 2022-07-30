@@ -6,7 +6,7 @@ on:
     workflows: [Label Checker]
     types: [completed]
 jobs:
-  on-success:
+  run-tensorflow-array-api-tests:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
