@@ -132,10 +132,10 @@ def set_with_grads(with_grads: bool):
 
 
 def unset_with_grads():
-   
+
     global with_grads_stack
     if with_grads_stack:
-         with_grads_stack.pop(-1)
+        with_grads_stack.pop(-1)
 
 
 # Variables #
