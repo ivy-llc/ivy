@@ -11,9 +11,12 @@ jobs:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
         with:
+          ref: ${{ github.event.workflow_run.head_branch }}
           path: ivy
           persist-credentials: false
           submodules: 'recursive'
+      - run: git branch
+      - run: env
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
