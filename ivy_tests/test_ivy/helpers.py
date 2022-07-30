@@ -10,6 +10,7 @@ import inspect
 import numpy as np
 import math
 from typing import Union, List
+from hypothesis import assume
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 cmd_line_args = (
@@ -1368,8 +1369,8 @@ def test_frontend_function(
             # these backends do not always support native inplace updates
             assert ret.data is out.data
 
-    if "bfloat16" in input_dtypes:
-        return  # bfloat16 is not supported by numpy
+    # bfloat16 is not supported by numpy
+    assume(not("bfloat16" in input_dtypes))
 
     # create NumPy args
     args_np = ivy.nested_map(
