@@ -7,7 +7,7 @@ on:
 
 jobs:
   run-tensorflow-array-api-tests:
-    if: ${{ github.event.label.name == 'with CI' }}
+    
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy

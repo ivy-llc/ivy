@@ -5,7 +5,7 @@ on:
     types: [labeled, edited]
 jobs:
   run-nightly-tests:
-    if: ${{ github.event.label.name == 'with CI' }}
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
