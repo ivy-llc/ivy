@@ -1,4 +1,4 @@
-name: Check Labels
+name: check-labels
 on:
   pull_request:
     types:
