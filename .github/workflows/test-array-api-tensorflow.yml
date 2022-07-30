@@ -1,7 +1,7 @@
 name: test-array-api-tensorflow
 on:
   workflow_run:
-    workflows: [Label Checker]
+    workflows: ["Label Checker"]
     types: [completed]
 
 jobs:
