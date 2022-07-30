@@ -154,7 +154,8 @@ class ArrayWithElementwise(abc.ABC):
 
         >>> x = ivy.array([-3., -0.9, 1.5, 2.8])
         >>> y = ivy.zeros(4)
-        >>> print(x.asin(out=y))
+        >>> x.asin(out=y)
+        >>> print(y)
         ivy.array([nan, -1.12, nan, nan])
         """
         return ivy.asin(self._data, out=out)
