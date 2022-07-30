@@ -1,4 +1,4 @@
-name: Run CI
+name: run-label-checks
 on:
   pull_request:
     types:
