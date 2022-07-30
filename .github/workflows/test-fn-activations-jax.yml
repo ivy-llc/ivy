@@ -2,10 +2,13 @@ name: test-fn-activations-jax
 on:
   push:
   pull_request:
-    types: [labeled, synchronize]
+  workflow_run:
+    workflows: [check-labels]
+    types: [completed]
 jobs:
   run-nightly-tests:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
