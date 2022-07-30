@@ -122,7 +122,7 @@ def test_copy_array(dtype_and_x, device, call, fw):
     assume(not (fw == "torch" and dtype in ["uint16", "uint32", "uint64"]))
 
     # mxnet does not support int16
-    assume(not (call in [helpers.mx_call] and dtype == "int16"))
+    assume(not (fw == "mxnet" and dtype == "int16"))
 
     # smoke test
     x = ivy.array(x, dtype=dtype, device=device)
@@ -136,7 +136,7 @@ def test_copy_array(dtype_and_x, device, call, fw):
     assert id(x) != id(ret)
     # compilation test
     # pytorch scripting does not support numpy conversion
-    assume(not (call in [helpers.torch_call]))
+    assume(not (fw == "torch"))
 
 
 # array_equal
@@ -164,7 +164,7 @@ def test_array_equal(x0_n_x1_n_res, device, call, fw):
     # bool for broadcast_equal method used
     assume(
         not (
-            call in [helpers.mx_call]
+            fw == "mxnet"
             and (dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"])
         )
     )
@@ -235,9 +235,9 @@ def test_to_numpy(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
     # torch does not support those dtypes
-    assume(not (call in [helpers.mx_call] and dtype == "int16"))
+    assume(not (fw == "mxnet" and dtype == "int16"))
     # mxnet does not support int16
-    assume(not (call in [helpers.tf_graph_call]))
+    assume(not (fw == "tensorflow"))
     # to_numpy() requires eager execution
     # smoke test
     ret = ivy.to_numpy(ivy.array(object_in, dtype=dtype, device=device))
@@ -249,7 +249,7 @@ def test_to_numpy(x0_n_x1_n_res, device, call, fw):
     helpers.assert_all_close(ret, np.array(object_in).astype(dtype))
     # compilation test
     # pytorch scripting does not support numpy conversion
-    assume(not (call in [helpers.torch_call]))
+    assume(not (fw == "torch"))
 
 
 # to_scalar
@@ -260,9 +260,9 @@ def test_to_numpy(x0_n_x1_n_res, device, call, fw):
 def test_to_scalar(object_in, dtype, device, call, fw):
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
     # torch does not support those dtypes
-    assume(not (call in [helpers.mx_call] and dtype == "int16"))
+    assume(not (fw == "mxnet" and dtype == "int16"))
     # mxnet does not support int16
-    assume(not (call in [helpers.tf_graph_call]))
+    assume(not (fw == "tensorflow"))
     # to_scalar() requires eager execution
     # smoke test
     ret = ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device))
@@ -273,7 +273,7 @@ def test_to_scalar(object_in, dtype, device, call, fw):
     assert ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device)) == true_val
     # compilation test
     # pytorch scripting does not support scalar conversion
-    assume(not (call in [helpers.torch_call]))
+    assume(not (fw == "torch"))
 
 
 # to_list
@@ -281,7 +281,7 @@ def test_to_scalar(object_in, dtype, device, call, fw):
 def test_to_list(x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
     assume(dtype in ivy.valid_dtypes)
-    assume(not (call in [helpers.tf_graph_call]))
+    assume(not (fw == "tensorflow"))
     # to_list() requires eager execution
     # smoke test
     arr = ivy.array(object_in, dtype=dtype, device=device)
@@ -302,7 +302,7 @@ def test_to_list(x0_n_x1_n_res, device, call, fw):
     )
     # compilation test
     # pytorch scripting does not support list conversion
-    assume(not (call in [helpers.torch_call]))
+    assume(not (fw == "torch"))
 
 
 # shape
@@ -342,7 +342,7 @@ def test_shape(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
     )
     # compilation test
     # pytorch scripting does not support Union
-    assume(not (call in [helpers.torch_call]))
+    assume(not (fw == "torch"))
 
 
 # get_num_dims
@@ -381,7 +381,7 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
     )
     # compilation test
     # pytorch scripting does not support Union
-    assume(not (call in [helpers.torch_call]))
+    assume(not (fw == "torch"))
 
 
 # clip_vector_norm

@@ -174,7 +174,7 @@ def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
             assert ret == device
         # compilation test
         # pytorch scripting does not handle converting string to device
-        assume(not (call is helpers.torch_call))
+        assume(not (fw == "torch"))
 
 
 # memory_on_dev

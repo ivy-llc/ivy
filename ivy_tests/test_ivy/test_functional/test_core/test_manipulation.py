@@ -866,11 +866,7 @@ def test_split(*, data, x_n_noss_n_axis_n_wr, dtype, tensor_fn, device, call, fw
 
     # mxnet does not support 0-dimensional variables
     assume(
-        not (
-            isinstance(x, Number)
-            and tensor_fn == helpers.var_fn
-            and call is helpers.mx_call
-        )
+        not (isinstance(x, Number) and tensor_fn == helpers.var_fn and fw == "mxnet")
     )
 
     x = tensor_fn(x, dtype=dtype, device=device)
