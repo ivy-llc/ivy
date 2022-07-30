@@ -14,33 +14,33 @@ jobs:
         with:
           one_of: with CI
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout 🛎️Ivy
-        uses: actions/checkout@v2
-        with:
-          path: ivy
-          persist-credentials: false
-          submodules: 'recursive'
+        - name: Checkout 🛎️Ivy
+          uses: actions/checkout@v2
+          with:
+            path: ivy
+            persist-credentials: false
+            submodules: 'recursive'
 
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: test-array-api-torch.yml
-          name: hypothesis_torch_zip
-          path: |
-            ivy/.hypothesis/
+        - name: Download artifact
+          uses: dawidd6/action-download-artifact@v2
+          with:
+            workflow: test-array-api-torch.yml
+            name: hypothesis_torch_zip
+            path: |
+              ivy/.hypothesis/
       
-      - name: Unzip Hypothesis Examples
-        run: |
-          cd ivy/.hypothesis
-          unzip examples.zip
-          rm examples.zip
+        - name: Unzip Hypothesis Examples
+          run: |
+            cd ivy/.hypothesis
+            unzip examples.zip
+            rm examples.zip
             
-      - name: Run Torch Tests
-        id: tests
-        run: |
-          cd ivy
-          ./test_array_api.sh torch
-        continue-on-error: true
+        - name: Run Torch Tests
+          id: tests
+          run: |
+            cd ivy
+            ./test_array_api.sh torch
+          continue-on-error: true
         
       - name: Zip Hypothesis Examples
         run: |
