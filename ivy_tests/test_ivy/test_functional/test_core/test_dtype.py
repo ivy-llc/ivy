@@ -399,6 +399,7 @@ def test_iinfo(
         type=type,
         test_values=False,
     )
+
     if not ivy.exists(ret):
         return
     mach_lims, mach_lims_np = ret
@@ -463,6 +464,7 @@ def test_as_ivy_dtype(
     if isinstance(input_dtype, str):
         assert isinstance(res, str)
         return
+
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(
         input_dtype, str
     ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
@@ -491,6 +493,7 @@ def test_as_native_dtype(
     if isinstance(input_dtype, ivy.NativeDtype):
         assert isinstance(res, ivy.NativeDtype)
         return
+
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(
         input_dtype, str
     ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
