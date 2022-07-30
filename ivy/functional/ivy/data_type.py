@@ -726,7 +726,6 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, s
 
     Examples
     --------
-
     With :code:`ivy.Dtype` input:
 
     >>> xType = ivy.float16
