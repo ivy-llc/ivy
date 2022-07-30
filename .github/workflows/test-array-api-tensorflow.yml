@@ -8,7 +8,6 @@ jobs:
   run-tensorflow-array-api-tests:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.event.workflow_run.conclusion}}
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
         with:
