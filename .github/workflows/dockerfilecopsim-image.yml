@@ -11,6 +11,7 @@ on:
 
 
 jobs:
+  on-success:
 
   build:
     runs-on: ubuntu-20.04
