@@ -2,7 +2,7 @@ name: test-array-api-tensorflow
 on:
   push:
   pull_request:
-    types: [labeled, review_requested]
+    types: [labeled]
   workflow_dispatch:
 
 jobs:
@@ -10,6 +10,11 @@ jobs:
     
     runs-on: ubuntu-latest
     steps:
+      - name: Label Checker
+        uses: NathanielHill/check-pr-label-action@v4.0.0
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'with CI'
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
         with:

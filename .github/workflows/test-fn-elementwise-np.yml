@@ -2,12 +2,17 @@ name: test-fn-elementwise-numpy
 on:
   push:
   pull_request:
-    types: [labeled, review_requested]
+    types: [labeled]
 jobs:
   run-nightly-tests:
     
     runs-on: ubuntu-latest
     steps:
+      - name: Label Checker
+        uses: NathanielHill/check-pr-label-action@v4.0.0
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'with CI'
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
         with:
