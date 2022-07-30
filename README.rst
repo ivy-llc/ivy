@@ -126,7 +126,7 @@ You can immediately use Ivy to train a neural network, using your favorite frame
             x = ivy.relu(self.linear0(x))
             return ivy.sigmoid(self.linear1(x))
 
-    ivy.set_backend('torch')  # change to any backend!
+    ivy.set_framework('torch')  # change to any backend!
     model = MyModel()
     optimizer = ivy.Adam(1e-4)
     x_in = ivy.array([1., 2., 3.])
