@@ -33,3 +33,12 @@ def sort(
     if descending:
         ret = np.asarray((np.flip(ret, axis)))
     return ret
+
+
+def searchsorted(
+        x1: np.ndarray,
+        x2: np.ndarray,
+        side="left",
+        out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.searchsorted(x1, x2, side=side)
