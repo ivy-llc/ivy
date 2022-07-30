@@ -39,6 +39,7 @@ def test_docstrings(backend):
         "num_ivy_arrays_on_dev",
         "total_mem_on_dev",
         "used_mem_on_dev",
+        "percent_used_mem_on_dev",
         "function_unsupported_dtypes",
         "randint",
         "unique_counts",
@@ -60,7 +61,6 @@ def test_docstrings(backend):
     # skip list for array and container docstrings
     skip_arr_cont = [
         "cross_entropy",
-        "depthwise_conv2d",
     ]
     currently_being_worked_on = []
 
