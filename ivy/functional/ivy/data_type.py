@@ -1676,3 +1676,30 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
     if dtype_in is None:
         return True
     return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
+
+def dtype_to_str(
+    x: Union[ivy.Array, ivy.NativeArray],
+    as_native: bool = False,
+) -> str:
+    """Get the data type of an array x and retunr it into a string format`
+
+    Parameters
+    ----------
+    x
+        array hich to get the data type.
+
+    Returns
+    -------
+    ret
+        Data type of the array in a string format.
+
+    Examples
+    --------
+    >>> x = ivy.array([1., 2.])
+    >>> y = ivy.dtype_to_str(x)
+    >>> print(y)
+    float64
+    """
+    y=str(ivy.dtype(x))
+
+    return current_backend(y).dtype(y)
