@@ -30,3 +30,15 @@ def sort(
 
 
 sort.support_native_out = True
+
+
+
+def searchsorted(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    side="left",
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+
+    return torch.searchsorted(x1, x2, side=side)
