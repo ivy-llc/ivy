@@ -2,11 +2,12 @@ name: test-array-api-numpy
 on:
   push:
   pull_request:
-    types: [labeled, review_requested]
+    types: [labeled, edited]
   workflow_dispatch:
 
 jobs:
   run-numpy-array-api-tests:
+    if: ${{ github.event.label.name == 'with CI' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
