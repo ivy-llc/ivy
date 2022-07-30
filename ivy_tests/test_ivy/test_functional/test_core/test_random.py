@@ -148,11 +148,11 @@ def _pop_size_num_samples_replace_n_probs(draw):
 
 # multinomial
 @given(everything=_pop_size_num_samples_replace_n_probs())
-def test_multinomial(everything, device, call):
+def test_multinomial(everything, device, call, fw):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
 
     # tensorflow does not support multinomial without replacement
-    assume(not (call is helpers.tf_call and not replace or prob_dtype == "float64"))
+    assume(not (fw == "tensorflow" and not replace or prob_dtype == "float64"))
 
     # smoke test
     probs = (

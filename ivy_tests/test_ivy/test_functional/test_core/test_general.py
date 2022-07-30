@@ -204,7 +204,7 @@ def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
     # torch does not support those dtypes
     assume(
         not (
-            call in [helpers.mx_call]
+            fw == "mxnet"
             and (dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"])
         )
     )
