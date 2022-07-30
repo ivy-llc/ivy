@@ -1,5 +1,10 @@
 name: test-st-layers-tensorflow
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_run:
+    workflows: [Label Checker]
+    types: [completed]
 jobs:
   run-nightly-tests:
     runs-on: ubuntu-latest
