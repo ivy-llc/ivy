@@ -1,10 +1,6 @@
 name: Build Dockerfile
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
   workflow_run:
     workflows: [check-labels]
     types: [ completed ]
