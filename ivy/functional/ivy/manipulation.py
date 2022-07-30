@@ -342,8 +342,8 @@ def permute_dims(
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None,
     *,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.

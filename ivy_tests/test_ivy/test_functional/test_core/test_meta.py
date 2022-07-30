@@ -3,7 +3,7 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import given, assume, settings, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -27,7 +27,6 @@ import ivy_tests.test_ivy.helpers as helpers
     num_tasks=st.integers(1, 2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
-@settings(deadline=None)
 def test_fomaml_step_unique_vars(
     device,
     call,
@@ -175,7 +174,6 @@ def test_fomaml_step_unique_vars(
     num_tasks=st.integers(1, 2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
-@settings(deadline=None)
 def test_fomaml_step_shared_vars(
     device,
     call,
@@ -342,7 +340,6 @@ def test_fomaml_step_shared_vars(
     num_tasks=st.integers(1, 2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
-@settings(deadline=None)
 def test_fomaml_step_overlapping_vars(
     device,
     call,

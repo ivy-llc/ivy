@@ -861,7 +861,7 @@ def test_default_int_dtype(input, int_dtype, as_native):
 
 
 @st.composite
-def dtytes_list(draw):
+def dtypes_list(draw):
     num = draw(st.one_of(st.integers(min_value=1, max_value=5)))
     return draw(
         st.lists(
@@ -873,7 +873,7 @@ def dtytes_list(draw):
 
 
 # function_unsupported_dtypes
-@given(supported_dtypes=dtytes_list())
+@given(supported_dtypes=dtypes_list())
 def test_function_supported_dtypes(
     supported_dtypes,
 ):
@@ -887,7 +887,7 @@ def test_function_supported_dtypes(
 
 
 # function_unsupported_dtypes
-@given(unsupported_dtypes=dtytes_list())
+@given(unsupported_dtypes=dtypes_list())
 def test_function_unsupported_dtypes(
     unsupported_dtypes,
 ):

@@ -63,7 +63,8 @@ def permute_dims(
 def reshape(
     x: JaxArray,
     shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None
+    *,
+    copy: Optional[bool] = None,
 ) -> JaxArray:
     if copy:
         newarr = jnp.copy(x)
