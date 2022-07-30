@@ -1,0 +1,4 @@
+torch-scatter==2.0.9 # mod_name=torch_scatter
+#mxnet required to be built froms source
+scipy==1.8.1
+dm-haiku==0.0.6 # mod_name=haiku
