@@ -4,6 +4,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
+    types: [labeled, synchronize]
     branches: [ "master" ]
 
 jobs:
