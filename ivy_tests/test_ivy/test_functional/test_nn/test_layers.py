@@ -238,7 +238,7 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                     st.integers(min_value=min_x_width, max_value=100),
                 )
             )
-    elif type == "2d" or type == 'depthwise':
+    elif type == "2d" or type == "depthwise":
         if type == "depthwise":
             filter_shape = draw(
                 st.tuples(
@@ -680,7 +680,8 @@ def test_conv3d_transpose(
     # tf conv3d transpose does not work when CUDA is installed, but array is on CPU
     assume(not (fw == "tensorflow" and "cpu" in device))
 
-    # numpy and jax do not yet support 3d transpose convolutions, and mxnet only supports with CUDNN
+    # numpy and jax do not yet support 3d transpose convolutions,
+    # and mxnet only supports with CUDNN
     assume(not (fw in ["numpy", "jax"]))
 
     # mxnet only supports 3d transpose convolutions with CUDNN

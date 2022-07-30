@@ -1,7 +1,6 @@
 """Collection of tests for manipulation functions."""
 
 # global
-import pytest
 import numpy as np
 import math
 from numbers import Number
