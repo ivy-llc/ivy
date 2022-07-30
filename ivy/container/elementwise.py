@@ -505,11 +505,21 @@ class ContainerWithElementwise(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([0., -0.5, -1.]),\
                               b=ivy.array([0.1, 0.8, 2.]))
-        >>> y = x.asin()
+        >>> y = ivy.Container.static_asin()
         >>> print(y)
         {
             a: ivy.array([0., -0.524, -1.57]),
             b: ivy.array([0.1, 0.927, nan])
+        }
+        
+        >>> x = ivy.Container(a=ivy.array([0.4, 0.9, -0.9]),\
+                              b=ivy.array([[4, -3, -0.2]))
+        >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
+        >>> ivy.Container.static_asin(out=y)
+        >>> print(y)
+        {
+            a: ivy.array([0.412, 1.12, -1.12]),
+            b: ivy.array([nan, nan, -0.201])
         }
         """
         return ContainerBase.multi_map_in_static_method(
