@@ -8,7 +8,8 @@ on:
   workflow_dispatch:
 jobs:
   run-jax-array-api-tests:
-    runs-on: ubuntu-latest
+     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2

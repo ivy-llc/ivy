@@ -8,6 +8,8 @@ on:
 jobs:
   run-nightly-tests:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2

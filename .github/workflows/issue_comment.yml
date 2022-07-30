@@ -8,7 +8,8 @@ jobs:
   issue_commented:
     name: Issue comment
     if: ${{ !github.event.issue.pull_request }}
-    runs-on: ubuntu-latest
+     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checks
         uses: actions/checkout@v2

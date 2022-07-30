@@ -13,6 +13,7 @@ jobs:
   check_labels:
     name: Check labels
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: docker://agilepathway/pull-request-label-checker:latest
         with:

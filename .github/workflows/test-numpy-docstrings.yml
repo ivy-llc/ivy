@@ -2,7 +2,8 @@ name: test-numpy-style-docstrings
 on: [push,pull_request]
 jobs:
   run-docstring-tests:
-    runs-on: ubuntu-latest
+     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v3
