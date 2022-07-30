@@ -354,9 +354,9 @@ def nested_indices_where(
     --------
     With :code:`List` input:
 
-    >>> nest = [[[1, 2, 3], 19], [[9, 36, 80], 100]]
-    >>> fn = ivy.sqrt
-    >>> nested_indices = ivy.nested_indices_where(nest, fn)
+    >>> nest = [[[1, -2, 3], 19], [[9, -36, 80], -10.19]]
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
     >>> print(nested_indices)
     [
         [0, 0, 0], [0, 0, 1],
@@ -365,19 +365,20 @@ def nested_indices_where(
         [1, 0, 2], [1, 1]
     ]
 
+
     With :code:`Tuple` input:
 
-    >>> nest = (-5, 9, 2, 0.3, 4.)
-    >>> fn = ivy.log
-    >>> nested_indices = ivy.nested_indices_where(nest, fn, stop_after_n_found=4)
+    >>> nest = ([-5, 9, 2], [0.3, 4.])
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun, stop_after_n_found=4)
     >>> print(nested_indices)
-    [[0], [1], [2], [3]]
+    [[0, 0], [0, 1], [0, 2], [1, 0]]
 
     With :code:`Dict` input:
 
     >>> nest={'a': [2., 0.6, -2.], 'b': [1., 4., 1.9], 'c': [9.4]}
     >>> fun = ivy.abs
-    >>> nested_indices = ivy.nested_indices_where(nest, fun)
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
     >>> print(nested_indices)
     [
         ['a', 0], ['a', 1],
