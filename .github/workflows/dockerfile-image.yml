@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          one_of: with CI
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/checkout@v3
     - name: Build Dockerfile
       run: docker build . --file Dockerfile --tag unifyai/ivy:$(date +%s)

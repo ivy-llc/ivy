@@ -9,6 +9,10 @@ jobs:
     if: ${{ github.event.discussion.category.name == 'Ongoing' }}
     runs-on: ubuntu-latest
     steps:
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          one_of: with CI
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checks
         uses: actions/checkout@v2
         with:

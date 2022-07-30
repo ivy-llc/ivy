@@ -8,6 +8,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          one_of: with CI
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
         with:
