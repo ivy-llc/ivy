@@ -93,3 +93,79 @@ def test_torch_tan(
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
+
+#cos
+@given(
+        dtype_and_x=helpers.dtype_and_values(
+            tuple(
+                set(ivy_np.valid_float_dtypes).intersection(
+                    set(ivy_torch.valid_float_dtypes)
+                )
+            )
+        ),
+        as_variable = st.booleans(),
+        with_out = st.booleans(),
+        num_positional_args = helpers.num_positional_args(fn_name="functional.frontends.torch.cos"),
+        native_array=st.booleans(),
+
+)
+def test_torch_cos(
+        dtype_and_x,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
+):
+    input_dtype,x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
+        'torch',
+        'cos',
+        input = np.asarray(x,dtype=input_dtype),
+        out = None,
+
+    )
+
+#sin
+@given(
+        dtype_and_x=helpers.dtype_and_values(
+            tuple(
+                set(ivy_np.valid_float_dtypes).intersection(
+                    set(ivy_torch.valid_float_dtypes)
+                )
+            )
+        ),
+        as_variable = st.booleans(),
+        with_out = st.booleans(),
+        num_positional_args = helpers.num_positional_args(fn_name="functional.frontends.torch.sin"),
+        native_array=st.booleans(),
+
+)
+def test_torch_sin(
+        dtype_and_x,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
+):
+    input_dtype,x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtype,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
+        'torch',
+        'sin',
+        input = np.asarray(x,dtype=input_dtype),
+        out = None,
+
+    )

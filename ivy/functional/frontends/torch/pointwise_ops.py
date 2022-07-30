@@ -14,3 +14,15 @@ def tan(input, *, out=None):
 
 
 tan.unsupported_dtypes = ("float16",)
+
+
+def cos(input, *, out=None):
+    return ivy.cos(input, out=out)
+
+cos.unsupported_dtypes = ("float16",)
+
+def sin(input, *, out=None):
+    return ivy.sin(input, out=out)
+
+sin.unsupported_dtypes= ("float16",)
+
