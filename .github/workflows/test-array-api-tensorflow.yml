@@ -1,7 +1,13 @@
 name: test-array-api-tensorflow
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+  workflow_run:
+    workflows: [Label Checker]
 jobs:
   run-tensorflow-array-api-tests:
+  on-success:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -10,6 +16,9 @@ jobs:
           path: ivy
           persist-credentials: false
           submodules: 'recursive'
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - run: git branch
+      - run: env
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
