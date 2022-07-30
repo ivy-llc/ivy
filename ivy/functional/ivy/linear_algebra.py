@@ -533,9 +533,7 @@ def diagonal(
 @handle_out_argument
 @handle_nestable
 def eigh(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -806,10 +804,40 @@ def matrix_rank(
 
     Examples
     --------
+    With :code: 'ivy.Array' inputs:
+
+    1. Full Matrix
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> ivy.matrix_rank(x)
-    ivy.array(2)
+    ivy.array(2.)
 
+    2. Rank Deficient Matrix
+    >>> x = ivy.array([[1., 0.], [0., 0.]])
+    >>> ivy.matrix_rank(x)
+    ivy.array(1.)
+
+    3. 1 Dimension - rank 1 unless all 0
+    >>> x = ivy.array([[1., 1.])
+    >>> ivy.matrix_rank(x)
+    ivy.array(1.)
+
+    >>> x = ivy.array([[0., 0.])
+    >>> ivy.matrix_rank(x)
+    ivy.array(0)
+
+    With :code: 'ivy.NativeArray' inputs:
+
+    >>> x = ivy.native_array([[1., 2.], [3., 4.]], [[1., 0.], [0., 0.]])
+    >>> ivy.matrix_rank(x)
+    ivy.array([2., 1.])
+
+    With :code: 'ivy.Container' inputs:
+    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]) ,
+                            b = ivy.array([[1., 0.], [0., 0.]]))
+    >>> ivy.matrix_rank(x)
+    {a:ivy.array(2.), b:ivy.array(1.)}
+
+    
     """
     return current_backend(x).matrix_rank(x, rtol, out=out)
 
@@ -1177,6 +1205,90 @@ def svdvals(
         array with shape ``(..., K)`` that contains the vector(s) of singular values of
         length ``K``, where K = min(M, N). The values are sorted in descending order by
         magnitude.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[5.0, 7.0], [4.0, 3.0]])
+    >>> S = ivy.svdvals(x)
+    >>> print(S.shape)
+    (2,)
+
+    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
+
+    >>> _, SS, _ = ivy.svd(x)
+    >>> print(SS.shape)
+    (2,)
+
+    >>> error = (SS - S).abs()
+    >>> print(error)
+    ivy.array([0., 0.])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],\
+                              [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
+    >>> print(x.shape)
+    torch.Size([4, 3])
+
+    >>> S = ivy.svdvals(x)
+    >>> print(S)
+    ivy.array([10.3, 1.16, 0.615])
+
+    >>> _, SS, _ = ivy.svd(x)
+    >>> print(SS)
+    ivy.array([10.3, 1.16, 0.615])
+
+    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
+
+    >>> error = (SS - S).abs()
+    >>> print(error)
+    ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[2.0, 3.0], [3.0, 4.0],\
+                                       [1.0, 3.0], [3.0, 5.0]]),\
+                          b=ivy.array([[7.0, 1.0, 2.0, 3.0],\
+                                       [2.0, 5.0, 3.0, 4.0],\
+                                       [2.0, 6.0, 1.0, 3.0],\
+                                       [3.0, 4.0, 5.0, 9.0]]))
+    >>> y = ivy.svdvals(x)
+    >>> print(y)
+    {
+        a: ivy.array([9.01, 0.866]),
+        b: ivy.array([15.8, 5.56, 4.17, 0.864])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[8.0, 3.0], [2.0, 3.0],\
+                       [2.0, 1.0], [3.0, 4.0],\
+                       [4.0, 1.0], [5.0, 6.0]])
+    >>> y = x.svdvals()
+    >>> print(y)
+    ivy.array([13.4, 3.88])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([[2.0, 3.0, 6.0], [5.0, 3.0, 4.0],\
+                                       [1.0, 7.0, 3.0], [3.0, 2.0, 5.0]]),\
+                          b=ivy.array([[7.0, 1.0, 2.0, 3.0, 9.0],\
+                                       [2.0, 5.0, 3.0, 4.0, 10.0],\
+                                       [2.0, 11.0, 6.0, 1.0, 3.0],\
+                                       [8.0, 3.0, 4.0, 5.0, 9.0]]))
+    >>> y = x.svdvals()
+    >>> print(y)
+    {
+        a: ivy.array([13., 4.64, 2.55]),
+        b: ivy.array([23.2, 10.4, 4.31, 1.36])
+    }
+
 
     """
     return current_backend(x).svdvals(x, out=out)
