@@ -2,7 +2,7 @@ name: test-activations-torch
 on:
   push:
   pull_request:
-    types: [labeled, edited]
+    types: [labeled, review_requested]
 jobs:
   run-nightly-tests:
     
