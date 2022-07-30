@@ -1,4 +1,4 @@
-name: run-label-checks
+name: check-labels
 on:
   pull_request:
     types:
