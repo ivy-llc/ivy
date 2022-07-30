@@ -158,7 +158,7 @@ def set_nest_at_index(
         ivy.set_nest_at_index(nest[index[0]], index[1:], value)
 
 def insert_into_nest_at_index(
-    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, List], 
+    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, List, Dict], 
     index: Tuple[int], 
     value: Any
 ):
@@ -211,6 +211,17 @@ def insert_into_nest_at_index(
     >>> ivy.insert_into_nest_at_index(x, index, value)
     >>> print(x)
     [['a','b','c'],['k', 'd','e','f'], ['g', 'h', 'i']]
+    
+    With :code:`Dict` input:
+    >>> x = {'a':ivy.array([1, 2, 3]), 'b': ivy.array([4, 5, 6]))
+    >>> index = ('b', )
+    >>> value = [1, 2, 4]
+    >>> ivy.insert_into_nest_at_index(x, index, value)
+    >>> print(x)
+    {\
+    'a': ivy.array([1, 2, 3]),\
+    'b': [1, 2, 4]\
+    }\
     
     """
     if len(index) == 1:
