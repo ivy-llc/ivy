@@ -17,7 +17,24 @@ class ArrayWithSorting(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.argsort(self._data, axis, descending, stable, out=out)
+        """
+        ivy.Array instance method variant of ivy.argsort. This method simply wraps the
+        function, and so the docstring for ivy.argsort also applies to this method
+        with minimal changes.
         
+        Examples
+        --------
+        >>> x = ivy.array([1, 5, 2])
+        >>> y = x.argsort(-1, True, False)
+        >>> print(y)
+        ivy.array([1, 2, 0])
+        
+        >>> x = ivy.array([9.6, 2.7, 5.2])
+        >>> y = x.argsort(-1, True, False)
+        >>> print(y)
+        ivy.array([0, 2, 1])
+        
+        """
     def sort(
         self: ivy.Array,
         axis: int = -1,
