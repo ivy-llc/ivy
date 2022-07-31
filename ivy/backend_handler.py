@@ -119,7 +119,7 @@ def current_backend(*args, **kwargs):
     >>> import numpy as np
     >>> x = np.array([2.0])
     >>> print(ivy.current_backend(x))
-    <module 'ivy.functional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
+    <module 'ivy.fufnctional.backends.numpy' from '/ivy/ivy/functional/backends/numpy/__init__.py'>   # noqa
 
     The global backend set in set_backend has priority over any arguments
     passed to current_backend:
@@ -243,6 +243,8 @@ def get_backend(backend: Optional[str] = None):
     # otherwise `backend` argument will be used
     if backend is None:
         backend = ivy.current_backend()
+        if not backend_stack:
+            return ""
     elif isinstance(backend, str):
         backend = importlib.import_module(_backend_dict[backend])
     for k, v in ivy_original_dict.items():
