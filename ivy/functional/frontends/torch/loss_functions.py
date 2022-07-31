@@ -1,12 +1,12 @@
 import ivy
 
-def _get_reduction_func(reduction):
+
+def _get_reduction_func(reduction):    
     if reduction == 'none':
         ret = lambda x : x
     elif reduction == 'mean':
         ret = ivy.mean
     elif reduction == 'elementwise_mean':
-        ivy.warn("reduction='elementwise_mean' is deprecated, please use reduction='mean' instead.")
         ret = ivy.mean
     elif reduction == 'sum':
         ret = ivy.sum
@@ -14,35 +14,33 @@ def _get_reduction_func(reduction):
         raise ValueError("{} is not a valid value for reduction".format(reduction))
     return ret
 
-def _legacy_get_string(size_average, reduce, emit_warning = True):
-    warning = "size_average and reduce args will be deprecated, please use reduction='{}' instead."
 
+def _legacy_get_string(size_average, reduce):
     if size_average is None:
         size_average = True
     if reduce is None:
         reduce = True
-
     if size_average and reduce:
         ret = 'mean'
     elif reduce:
         ret = 'sum'
     else:
         ret = 'none'
-    if emit_warning:
-        ivy.warn(warning.format(ret))
     return ret
 
-def _get_reduction(reduction, size_average=None, reduce=None, emit_warning = True):
+
+def _get_reduction(reduction, 
+                   size_average=None, 
+                   reduce=None):
     if size_average is not None or reduce is not None:
-        return _get_reduction_func(_legacy_get_string(size_average, reduce, emit_warning))
+        return _get_reduction_func(_legacy_get_string(size_average, reduce))
     else:
         return _get_reduction_func(reduction)
 
-def add(input, other, *, alpha=1, out=None): pass
     
 def binary_cross_entropy(
     input, 
-    target,
+    target, 
     weight=None, 
     size_average=None, 
     reduce=None, 
@@ -52,8 +50,9 @@ def binary_cross_entropy(
     result = ivy.binary_cross_entropy(target, input, epsilon=0.0)
     
     if weight is not None:
-        result = ivy.multiply(weight,result)
+        result = ivy.multiply(weight, result)
     result = reduction(result)
     return result
+
 
 binary_cross_entropy.unsupported_dtypes = ("float16",)
