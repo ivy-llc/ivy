@@ -2100,7 +2100,14 @@ def queue_timeout():
 
 
 def tmp_dir():
-    """"""
+    """Get the path for directory that saves temporary files from global variable TMP_DIR.
+    
+    Returns
+    -------
+    ret
+        The path of directory that saves temporary files.
+    
+    """
     return TMP_DIR
 
 
