@@ -6,7 +6,6 @@ from hypothesis import given, strategies as st
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @given(
@@ -39,7 +38,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_dim_size=2, 
     ), 
     dtype_and_weight=helpers.dtype_and_values(
-                available_dtypes=tuple(
+        available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)
             ).difference(("float64",))
