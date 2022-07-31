@@ -25,3 +25,8 @@ def fill(dims, value, name="full"):
 
 
 fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def divide(x, y, name=None):
+    return ivy.divide(x, y)
+
