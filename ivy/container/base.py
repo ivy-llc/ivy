@@ -1844,76 +1844,6 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def shuffle(
-        self,
-        seed_value=None,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        key_chain="",
-    ):
-        """Shuffle entries in all sub-arrays, such that they are still aligned along
-        axis 0.
-
-        Parameters
-        ----------
-        seed_value
-            random seed to use for array shuffling (Default value = None)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        key_chain
-            Chain of keys for this dict entry (Default value = '')
-
-        """
-        return_dict = dict()
-        if seed_value is None:
-            seed_value = self._ivy.to_numpy(
-                self._ivy.random.randint(0, 1000, ())
-            ).item()
-        for key, value in self.items():
-            this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
-            if isinstance(value, ivy.Container):
-                ret = value.shuffle(
-                    seed_value,
-                    key_chains,
-                    to_apply,
-                    prune_unapplied,
-                    map_sequences,
-                    this_key_chain,
-                )
-                if ret:
-                    return_dict[key] = ret
-            elif isinstance(value, (list, tuple)) and map_sequences:
-
-                def _shuffle(v):
-                    self._ivy.seed(seed_value)
-                    return self._ivy.shuffle(v)
-
-                ret = ivy.nested_map(value, _shuffle)
-                if ret:
-                    return_dict[key] = ret
-            else:
-                if key_chains is not None:
-                    if (this_key_chain in key_chains and not to_apply) or (
-                        this_key_chain not in key_chains and to_apply
-                    ):
-                        if prune_unapplied:
-                            continue
-                        return_dict[key] = value
-                        continue
-                self._ivy.seed(seed_value)
-                return_dict[key] = self._ivy.shuffle(value)
-        return ivy.Container(return_dict, **self._config)
-
     def slice_via_key(self, slice_key):
         """Get slice of container, based on key.
 
@@ -3724,17 +3654,6 @@ class ContainerBase(dict, abc.ABC):
         if inplace:
             return
         return ret
-
-    def dtype(self):
-        """Summary.
-
-        Returns
-        -------
-        ret
-             New datatype container
-
-        """
-        return self.map(lambda x, _: self._ivy.dtype(x))
 
     def with_entries_as_lists(self):
         def to_list(x, _=""):
