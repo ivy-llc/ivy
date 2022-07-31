@@ -1302,9 +1302,75 @@ def clip_matrix_norm(
     ret
         An array with the matrix norm downscaled to the max norm if needed.
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[0., 1., 2.]])
+    >>> y = ivy.clip_matrix_norm(x, 2.0)
+    >>> print(y)
+    ivy.array([[0.   , 0.894, 1.79 ]])
+
+    >>> x = ivy.array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])
+    >>> y = ivy.clip_matrix_norm(x, 3.0, 1.0)
+    >>> print(y)
+    ivy.array([[ 0.0353, -0.424 ,  1.31  ],
+               [ 0.    ,  2.58  , -0.176 ]])
+
+    >>> x = ivy.array([[[5., 4.], [-2., 6.]], \
+                       [[3., 7.], [0., -5.]]])
+    >>> y = ivy.empty((2, 2, 2))
+    >>> ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)
+    >>> print(y)
+    ivy.array([[[ 0.339,  0.271],
+                [-0.135,  0.406]],
+               [[ 0.168,  0.391],
+                [ 0.   , -0.279]]])
+
+    >>> x = ivy.array([[0., 1.], \
+                       [2., 3.]])
+    >>> ivy.clip_matrix_norm(x, 5.0, 1.0, out=x)
+    >>> print(x)
+    ivy.array([[0., 1.],
+               [2., 3.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[0., 1., 2.]])
+    >>> y = ivy.clip_matrix_norm(x, 2.0)
+    >>> print(y)
+    ivy.array([[0.   , 0.894, 1.79 ]])
+
+    >>> x = ivy.native_array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])
+    >>> y = ivy.clip_matrix_norm(x, 3.0, 1.0)
+    >>> print(y)
+    ivy.array([[ 0.0353, -0.424 ,  1.31  ],
+               [ 0.    ,  2.58  , -0.176 ]])
+
+    >>> x = ivy.native_array([[[5., 4.], [-2., 6.]], \
+                       [[3., 7.], [0., -5.]]])
+    >>> y = ivy.empty((2, 2, 2))
+    >>> ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)
+    >>> print(y)
+    ivy.array([[[ 0.339,  0.271],
+                [-0.135,  0.406]],
+               [[ 0.168,  0.391],
+                [ 0.   , -0.279]]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
+                          b=ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.clip_matrix_norm(x, 2.0)
+    >>> print(y)
+    {
+        a: ivy.array([[0., 0.894, 1.79]]),
+        b: ivy.array([[0.849, 1.13, 1.41]])
+    }
     """
     norms = ivy.matrix_norm(x, p, keepdims=True)
-    ratios = ivy.maximum(ivy.stable_divide(max_norm, norms), 1.0)
+    ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
 
 
@@ -2948,9 +3014,8 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
 
 
 def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
-    if (
-        hasattr(fn, "unsupported_device_and_dtype")
-        and hasattr(fn, "supported_device_and_dtype")
+    if hasattr(fn, "unsupported_device_and_dtype") and hasattr(
+        fn, "supported_device_and_dtype"
     ):
         fn_unsupported_device_and_dtype = fn.unsupported_device_and_dtype
         fn_supported_device_and_dtype = fn.supported_device_and_dtype
@@ -2991,31 +3056,32 @@ def function_unsupported_devices_and_dtypes(fn: Callable) -> Dict:
              attributes cannot both exist in a particular backend"
         )
 
-    unsupported_devices_dtype = {'devices': (), 'dtypes': ()}
+    unsupported_devices_dtype = {"devices": (), "dtypes": ()}
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_devices_dtypes = fn.unsupported_device_and_dtype
         if isinstance(fn_unsupported_devices_dtypes, dict):
             backend_str = ivy.current_backend_str()
             if backend_str in fn_unsupported_devices_dtypes:
-                fn_unsupported_devices_dtypes = \
-                    fn_unsupported_devices_dtypes[backend_str]
+                fn_unsupported_devices_dtypes = fn_unsupported_devices_dtypes[
+                    backend_str
+                ]
 
             elif "devices" not in fn_unsupported_devices_dtypes:
                 return unsupported_devices_dtype
 
             keys = list(fn_unsupported_devices_dtypes.keys())
-            if 'dtypes' in keys and 'devices' in keys:
-                unsupported_devices_dtype['devices'] += \
-                    fn_unsupported_devices_dtypes['devices']
+            if "dtypes" in keys and "devices" in keys:
+                unsupported_devices_dtype["devices"] += fn_unsupported_devices_dtypes[
+                    "devices"
+                ]
 
-                if (
-                    isinstance(fn_unsupported_devices_dtypes['dtypes'][0], tuple)
-                ):
-                    for dtypes in fn_unsupported_devices_dtypes['dtypes']:
-                        unsupported_devices_dtype['dtypes'] += (dtypes, )
+                if isinstance(fn_unsupported_devices_dtypes["dtypes"][0], tuple):
+                    for dtypes in fn_unsupported_devices_dtypes["dtypes"]:
+                        unsupported_devices_dtype["dtypes"] += (dtypes,)
                 else:
-                    unsupported_devices_dtype['dtypes'] += \
-                        (fn_unsupported_devices_dtypes['dtypes'], )
+                    unsupported_devices_dtype["dtypes"] += (
+                        fn_unsupported_devices_dtypes["dtypes"],
+                    )
             else:
                 raise Exception(
                     "'unsupported_device_and_dtype' attr must have keys \
@@ -3050,29 +3116,28 @@ def function_supported_devices_and_dtypes(fn: Callable) -> Dict:
              attributes cannot both exist in a particular backend"
         )
 
-    supported_devices_dtype = {'devices': (), 'dtypes': ()}
+    supported_devices_dtype = {"devices": (), "dtypes": ()}
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_devices_dtypes = fn.supported_device_and_dtype
         if isinstance(fn_supported_devices_dtypes, dict):
             backend_str = ivy.current_backend_str()
             if backend_str in fn_supported_devices_dtypes:
-                fn_supported_devices_dtypes = \
-                    fn_supported_devices_dtypes[backend_str]
+                fn_supported_devices_dtypes = fn_supported_devices_dtypes[backend_str]
             elif "devices" not in fn_supported_devices_dtypes:
                 return supported_devices_dtype
             keys = list(fn_supported_devices_dtypes.keys())
-            if 'dtypes' in keys and 'devices' in keys:
-                supported_devices_dtype['devices'] += \
-                    fn_supported_devices_dtypes['devices']
+            if "dtypes" in keys and "devices" in keys:
+                supported_devices_dtype["devices"] += fn_supported_devices_dtypes[
+                    "devices"
+                ]
 
-                if (
-                    isinstance(fn_supported_devices_dtypes['dtypes'][0], tuple)
-                ):
-                    for dtypes in fn_supported_devices_dtypes['dtypes']:
-                        supported_devices_dtype['dtypes'] += dtypes
+                if isinstance(fn_supported_devices_dtypes["dtypes"][0], tuple):
+                    for dtypes in fn_supported_devices_dtypes["dtypes"]:
+                        supported_devices_dtype["dtypes"] += dtypes
                 else:
-                    supported_devices_dtype['dtypes'] += \
-                        (fn_supported_devices_dtypes['dtypes'], )
+                    supported_devices_dtype["dtypes"] += (
+                        fn_supported_devices_dtypes["dtypes"],
+                    )
             else:
                 raise Exception(
                     "'supported_device_and_dtype' attr must have keys \
