@@ -24,4 +24,16 @@ def fill(dims, value, name="full"):
     return ivy.full(dims, value)
 
 
+def random_normal(
+    mean,
+    std,
+    shape,
+    *,
+    dtype,
+    device,
+    out
+):
+    return ivy.random_normal(mean, std, shape, dtype, device, out)
+
+
 fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
