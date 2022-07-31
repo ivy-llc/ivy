@@ -269,6 +269,15 @@ def vector_norm(
     return ret
 
 
+def fft(
+    x: np.ndarray,
+    n: Optional[int] = None,
+    axis: Optional[int] = -1,
+    norm: Optional[str] = None
+) -> np.ndarray:
+    return np.fft.fft(a=x, n=n, axis=axis, norm=norm)
+
+
 # Extra #
 # ------#
 
