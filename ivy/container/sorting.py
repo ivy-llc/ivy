@@ -59,6 +59,58 @@ class ContainerWithSorting(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+    
+        """
+        ivy.Container instance method variant of ivy.argsort. This method simply wraps the
+        function, and so the docstring for ivy.argsort also applies to this method
+        with minimal changes.
+        
+        Examples
+        --------
+        With: code:`ivy.Container` inputs:
+        
+        >>> x = ivy.Container(a=ivy.array([7, 2, 1]),\
+                              b=ivy.array([3, 2]))
+        >>> y = x.argsort(-1, True, False)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 0]),
+            b: ivy.array([1, 0])
+        }
+        
+        >>> x = ivy.Container(a=ivy.array([7, 2, 1]),\
+                              b=ivy.array([[3, 2], [7, 0.2]]))
+        >>> y = x.argsort(-1, True, False)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 0]),
+            b: ivy.array([[1, 0]],[1,0]])
+        }
+        
+        With: code:`ivy.Container` inputs:
+        
+        >>> x = ivy.Container(a=ivy.array([2, 5, 1]),\
+                              b=ivy.array([1, 5], [.2,.1]))
+        >>> y = x.argsort(-1, True, False)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 0]),
+            b: ivy.array([[0, 1],\
+                            [1,0]])
+        }
+        
+        >>> x = ivy.Container(a=ivy.native_array([2, 5, 1]),\
+                              b=ivy.array([1, 5], [.2,.1]))
+        >>> y = x.argsort(-1, True, False)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 0]),
+            b: ivy.array([[0, 1],\
+                            [1,0]])
+        }
+        
+        """
+
 
     @staticmethod
     def static_sort(
