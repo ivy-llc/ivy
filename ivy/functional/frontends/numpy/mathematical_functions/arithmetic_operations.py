@@ -24,3 +24,15 @@ def add(
 
 
 add.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def vdot(
+    a,
+    b,
+    /,
+):
+    ret = ivy.multiply(a, b).sum()
+    return ret
+
+
+vdot.unsupported_dtypes = {"torch": ("float16",)}
