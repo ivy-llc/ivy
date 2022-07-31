@@ -489,8 +489,9 @@ def vector_norm(
         ret = tn_normalized_vector
     return ret
 
-def l1_l2 (
-    l1: float, 
+
+def l1_l2(
+    l1: float,
     l2: float
 ) -> tf.keras.regularizers.L1L2:
     return tf.keras.regularizers.l1_l2(l1, l2)
