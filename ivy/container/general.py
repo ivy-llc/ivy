@@ -368,6 +368,31 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with the values gathered at the specified indices along
             the specified axis.
+        
+        
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([4., 5., 6.]))
+        >>> y = ivy.array([0, 1])
+        >>> print(ivy.static_gather(x, y))
+        >>> print(z)
+        {
+            a: ivy.array(0., 1.),
+            b: ivy.array(4., 5.)
+        }
+        With multiple :code:`ivy.Container` inputs:
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([4., 5., 6.]))
+        >>> y = ivy.Container(a=ivy.array([0, 1]), \
+                              b=ivy.array([1, 2]))
+        >>> y = ivy.Container.static_gather(x, y)
+        >>> print(y)
+        {
+                a: ivy.array([0., 1.]),
+                b: ivy.array(5., 6.)
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "gather",
@@ -423,6 +448,19 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with the values gathered at the specified indices along
             the specified axis.
+            
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                              b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([0,1]),\
+                              b=ivy.array([1,2]))
+        >>> z = x.gather(y)
+        >>> print(z)
+        {
+            a: ivy.array(1, 2),
+            b: ivy.array(3. 4)
+        }
         """
         return self.static_gather(
             self,
