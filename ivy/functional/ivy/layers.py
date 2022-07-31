@@ -843,9 +843,9 @@ def depthwise_conv2d(
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC
-    >>> a = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
-    >>> b = ivy.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]).unsqueeze(-1) / 9.0
+    >>> x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC
+    >>> a = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(-1)
+    >>> b = ivy.array([[1., 1., 1.], [1., 1., 1.], [1., 1., 1.]]).expand_dims(-1) / 9.0
     >>> filters = ivy.Container(a = a, b = b)
     >>> y = ivy.depthwise_conv2d(x, filters, strides=1, padding='VALID', dilations=2)
     >>> print(y)
@@ -863,10 +863,10 @@ def depthwise_conv2d(
     With a mix of :code:`ivy.Array`, code:`ivy.NativeArray`
     and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC
-    >>> y = ivy.native_array(ivy.eye(6, 6, 1).view(1, 6, 6, 1))
+    >>> x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC
+    >>> y = ivy.native_array(ivy.eye(6, 6).reshape((1, 6, 6, 1)))
     >>> inp = ivy.Container(x = x, y = y)
-    >>> filter = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
+    >>> filter = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(-1)
     >>> y = ivy.depthwise_conv2d(inp, filter, strides=1, padding='VALID', dilations=2)
     >>> print(y)
     {

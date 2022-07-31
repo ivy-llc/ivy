@@ -3,7 +3,7 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -328,15 +328,24 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                     st.integers(min_value=min_x_width, max_value=100),
                 )
             )
-    elif type == "2d":
-        filter_shape = draw(
-            st.tuples(
-                st.integers(3, 5),
-                st.integers(3, 5),
-                st.integers(1, 3),
-                st.integers(1, 3),
+    elif type == "2d" or type == "depthwise":
+        if type == "depthwise":
+            filter_shape = draw(
+                st.tuples(
+                    st.integers(3, 5),
+                    st.integers(3, 5),
+                    st.integers(1, 3),
+                )
             )
-        )
+        else:
+            filter_shape = draw(
+                st.tuples(
+                    st.integers(3, 5),
+                    st.integers(3, 5),
+                    st.integers(1, 3),
+                    st.integers(1, 3),
+                )
+            )
 
         min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
@@ -350,8 +359,6 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                     st.integers(d_in, d_in),
                 )
             )
-            # print("x_shape")
-            # print(x_shape)
         else:
             x_shape = draw(
                 st.tuples(
@@ -594,15 +601,15 @@ def test_conv2d_transpose(
     fw,
     device,
 ):
-    if fw == "tensorflow" and "cpu" in device:
-        # tf conv2d transpose does not work when CUDA is installed, but array is on CPU
-        return
-    if fw in ["numpy", "jax"]:
-        # numpy and jax do not yet support conv2d_transpose
-        return
-    if fw == "torch" and ("16" in dtype[0] or "16" in dtype[1]):
-        # not implemented for Half
-        return
+    # tf conv2d transpose does not work when CUDA is installed, but array is on CPU
+    assume(not (fw == "tensorflow" and "cpu" in device))
+
+    # numpy and jax do not yet support conv2d_transpose
+    assume(not (fw in ["numpy", "jax"]))
+
+    # not implemented for Half
+    assume(not (fw == "torch" and ("16" in dtype[0] or "16" in dtype[1])))
+
     x = np.random.uniform(size=array_shape).astype(dtype[0])
     x = np.expand_dims(x, (-1))
     filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
@@ -631,57 +638,53 @@ def test_conv2d_transpose(
 
 
 # depthwise_conv2d
-@pytest.mark.parametrize(
-    "x_n_filters_n_pad_n_res",
-    [
-        (
-            [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-            [[[0.0], [1.0], [0.0]], [[1.0], [1.0], [1.0]], [[0.0], [1.0], [0.0]]],
-            "SAME",
-            [[[[0.0], [3.0], [0.0]], [[3.0], [3.0], [3.0]], [[0.0], [3.0], [0.0]]]],
-        ),
-        (
-            [
-                [[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]
-                for _ in range(5)
-            ],
-            [[[0.0], [1.0], [0.0]], [[1.0], [1.0], [1.0]], [[0.0], [1.0], [0.0]]],
-            "SAME",
-            [
-                [[[0.0], [3.0], [0.0]], [[3.0], [3.0], [3.0]], [[0.0], [3.0], [0.0]]]
-                for _ in range(5)
-            ],
-        ),
-        (
-            [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-            [[[0.0], [1.0], [0.0]], [[1.0], [1.0], [1.0]], [[0.0], [1.0], [0.0]]],
-            "VALID",
-            [[[[3.0]]]],
-        ),
-    ],
+@given(
+    x_f_d_df=x_and_filters(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        data_format=st.sampled_from(["NHWC", "NCHW"]),
+        type="depthwise",
+    ),
+    stride=st.integers(min_value=1, max_value=4),
+    pad=st.sampled_from(["VALID", "SAME"]),
+    num_positional_args=helpers.num_positional_args(fn_name="depthwise_conv2d"),
+    data=st.data(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
-        # tf depthwise conv2d does not work when CUDA is installed, but array is on CPU
-        pytest.skip()
-    # smoke test
-    if call in [helpers.np_call, helpers.jnp_call]:
-        # numpy and jax do not yet support depthwise 2d convolutions
-        pytest.skip()
-    x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype=dtype, device=device)
-    filters = tensor_fn(filters, dtype=dtype, device=device)
-    true_res = tensor_fn(true_res, dtype=dtype, device=device)
-    ret = ivy.depthwise_conv2d(x, filters, 1, padding)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_res.shape
-    # value test
-    assert np.allclose(
-        call(ivy.depthwise_conv2d, x, filters, 1, padding), ivy.to_numpy(true_res)
+@handle_cmd_line_args
+def test_depthwise_conv2d(
+    *,
+    x_f_d_df,
+    stride,
+    pad,
+    num_positional_args,
+    as_variable,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+
+    dtype, x, filters, dilations, data_format = x_f_d_df
+    dtype = [dtype] * 2
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="depthwise_conv2d",
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
+        strides=stride,
+        padding=pad,
+        data_format=data_format,
+        dilations=dilations,
     )
 
 
@@ -769,20 +772,19 @@ def test_conv3d_transpose(
     fw,
     device,
 ):
-    if fw == "tensorflow" and "cpu" in device:
-        # tf conv3d transpose does not work when CUDA is installed, but array is on CPU
-        return
-    # smoke test
-    if fw in ["numpy", "jax"]:
-        # numpy and jax do not yet support 3d transpose convolutions, and mxnet only
-        # supports with CUDNN
-        return
-    if fw == "mxnet" and "cpu" in device:
-        # mxnet only supports 3d transpose convolutions with CUDNN
-        return
-    if fw == "torch" and ("16" in dtype[0] or "16" in dtype[1]):
-        # not implemented for half
-        return
+    # tf conv3d transpose does not work when CUDA is installed, but array is on CPU
+    assume(not (fw == "tensorflow" and "cpu" in device))
+
+    # numpy and jax do not yet support 3d transpose convolutions,
+    # and mxnet only supports with CUDNN
+    assume(not (fw in ["numpy", "jax"]))
+
+    # mxnet only supports 3d transpose convolutions with CUDNN
+    assume(not (fw == "mxnet" and "cpu" in device))
+
+    # not implemented for half
+    assume(not (fw == "torch" and ("16" in dtype[0] or "16" in dtype[1])))
+
     x = np.random.uniform(size=array_shape).astype(dtype[0])
     x = np.expand_dims(x, (-1))
     filters = np.random.uniform(
