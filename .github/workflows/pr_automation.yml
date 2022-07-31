@@ -5,6 +5,8 @@ on:
 
 jobs:
   pull_request_assigners:
+    name: Issue comment
+    if: ${{ github.event.pull_request }}
     runs-on: ubuntu-latest
     steps:
       - name: Checks
