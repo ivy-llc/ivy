@@ -58,13 +58,13 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         axis: int = -1,
         *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.gather. This method simply wraps the
         function, and so the docstring for ivy.gather also applies to this method
         with minimal changes.
-
+        
         Parameters
         ----------
         self
@@ -73,16 +73,50 @@ class ArrayWithGeneral(abc.ABC):
             array, index array.
         axis
             optional int, the axis from which to gather from. Default is -1.
+        device
+            optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1',
+            'cpu' etc. Same as x if None.
         out
             optional output array, for writing the result to.
-
+            
         Returns
         -------
         ret
-            New array with the values gathered at the specified indices along
-            the specified axis.
+            New array with the values gathered at the specified indices along the specified axis.
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+        instances in place of any of the arguments.
+        
+        Examples
+        --------
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = ivy.array([0, 1])
+        >>> print(ivy.gather(x, y))
+        ivy.array([0., 1.])
+        >>> x = ivy.array([[0., 1., 2.], \
+                            [3., 4., 5.]])
+        >>> y = ivy.array([[0, 1], \
+                            [1, 2]])
+        >>> z = ivy.array([[0., 0.], \
+                            [0., 0.]])
+        >>> ivy.gather(x, y, out=z)
+        >>> print(z)
+        ivy.array([[0., 1.],
+                    [4., 5.]])
+    
+        >>> x = ivy.array([[[0., 1.], [2., 3.]], \
+                            [[4., 5.], [6., 7.]], \
+                            [[8., 9.], [10., 11.]]])
+        >>> y = ivy.array([[[0, 1]], \
+                            [[1, 2]], \
+                            [[2, 0]]])
+        >>> x.gather(x, y, axis=0, out=x)
+        >>> print(x)
+        ivy.array([[[ 0., 5.], [ 2., 7.]], \
+                    [[ 4., 9.], [ 6., 11.]], \
+                    [[ 8., 1.], [10., 3.]]])
         """
-        return ivy.gather(self._data, indices, axis, out=out)
+        return ivy.gather(self, indices, axis, out=out)
 
     def gather_nd(
         self: ivy.Array,
