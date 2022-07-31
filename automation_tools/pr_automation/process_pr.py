@@ -8,6 +8,9 @@ class Process_pr:
         self.__pr_number = pr_number
         self.__pr_author = pr_author
 
+    def get_token(self):
+        return self.__token
+
     def author(self):
         return self.__pr_author
 
@@ -28,7 +31,8 @@ class Process_pr:
         # --add-reviewer "{ivy_intern}"
         # Need to find a way how to overcome the permissions for GH Actions
         self.command(
-            f'gh pr edit {self.pr_number()} --add-assignee "{ivy_intern}"',
+            f'gh pr edit {self.pr_number()} --add-assignee "{ivy_intern}"\
+            --add-reviewer "{ivy_intern}"',
             save_output=False,
         )
         print(f"[+] {ivy_intern} was assigned to PR {self.pr_number()}")
@@ -40,7 +44,8 @@ class Process_pr:
         # --add-reviewer "{random_intern}"
         # Need to find a way how to overcome the permissions for GH Actions
         self.command(
-            f'gh pr edit {self.pr_number()} --add-assignee "{random_intern}"',
+            f'gh pr edit {self.pr_number()} --add-assignee "{random_intern}"\
+            --add-reviewer "{random_intern}"',
             save_output=False,
         )
         print(f"[+] {random_intern} was assigned to PR {self.pr_number()}")
