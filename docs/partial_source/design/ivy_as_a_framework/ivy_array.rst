@@ -145,7 +145,7 @@ Now, with :code:`ivy.Array` instances, our code will run without error, regardle
 The same logic applies to all python operators. For example, if :code:`x` and :code:`y` are both :code:`ivy.NativeArray` instances then the following code **might** execute identically for all backend frameworks:
 
 .. code-block:: python
-
+" you can define simple function"
     x = ivy.some_method(...)
     y = ivy.some_method(...)
     z = ((x + y) * 3) ** 0.5
