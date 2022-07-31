@@ -199,3 +199,34 @@ def test_jax_lax_full(
         fill_value=fill_value,
         dtype=dtypes[0],
     )
+
+
+@given(
+    x=helpers.integers(),
+    y=helpers.integers(),
+    as_variable=helpers.list_of_length(x=st.floats(), length=2),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.max"
+    ),
+    native_array=helpers.list_of_length(x=st.floats(), length=2),
+)
+def test_jax_lax_max(
+    x,
+    y,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.valid_numeric_dtypes],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_name="lax.max",
+        x=x,
+        y=y,
+    )
