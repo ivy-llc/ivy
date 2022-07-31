@@ -584,7 +584,6 @@ def set_warning_level(warn_level):
 
 
 def unset_warning_level():
-    """"""
     global warning_level_stack
     if warning_level_stack:
         warning_level_stack.pop(-1)
