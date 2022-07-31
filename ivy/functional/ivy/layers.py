@@ -1166,3 +1166,6 @@ def lstm_update(
         hts_list.append(ivy.expand_dims(ht, -2))
 
     return ivy.concat(hts_list, -2), ct
+
+
+lstm_update.unsupported_dtypes = {'torch': ('float16', )}

@@ -72,9 +72,9 @@ def x_and_weight(draw, dtypes, fn_name):
     x_lstm_shape = batch_shape + (t,) + (_in_,)
     init_h_shape = batch_shape + (_out_,)
     init_c_shape = init_h_shape
-    kernel_shape = (_in_,) + 4 * (_out_,)
-    recurrent_kernel_shape = (_out_,) + 4 * (_out_,)
-    bias_shape = 4 * (_out_,)
+    kernel_shape = (_in_,) + (4 * _out_,)
+    recurrent_kernel_shape = (_out_,) + (4 * _out_,)
+    bias_shape = (4 * _out_,)
     recurrent_bias_shape = bias_shape
 
     x_lstm = draw(helpers.array_values(dtype=dtype, shape=x_lstm_shape, min_value=0, max_value=1))
@@ -82,7 +82,7 @@ def x_and_weight(draw, dtypes, fn_name):
     init_c = draw(helpers.array_values(dtype=dtype, shape=init_c_shape, min_value=0, max_value=1))
     kernel = draw(helpers.array_values(dtype=dtype, shape=kernel_shape, min_value=0, max_value=1))
     recurrent_kernel = draw(helpers.array_values(dtype=dtype, shape=recurrent_kernel_shape, min_value=0, max_value=1))
-    bias = draw(helpers.array_values(dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
+    lstm_bias = draw(helpers.array_values(dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
     recurrent_bias = draw(helpers.array_values(dtype=dtype, shape=recurrent_bias_shape, min_value=0, max_value=1))
 
     # x_feat_dim = feat_dim
@@ -95,7 +95,7 @@ def x_and_weight(draw, dtypes, fn_name):
     if fn_name == "scaled_dot_product_attention":
         return dtype, q, k, v, mask, scale
     if fn_name == "lstm_update":
-        return dtype, x_lstm ,init_h, init_c, kernel, recurrent_kernel, bias , recurrent_bias
+        return dtype, x_lstm,init_h, init_c, kernel, recurrent_kernel, lstm_bias, recurrent_bias
 
 
 # linear
@@ -814,7 +814,7 @@ def test_conv3d_transpose(
 
 # lstm
 @given(
-    dtype_lstm = x_and_weight(
+    dtype_lstm=x_and_weight(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         fn_name= "lstm_update",
     ),
@@ -834,7 +834,6 @@ def test_lstm(
     fw,
     device,
 ):
-    #dtype = [dtype] * 7
     dtype, x_lstm, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias = dtype_lstm
     as_variable = [as_variable] * 7
     native_array = [native_array] * 7
