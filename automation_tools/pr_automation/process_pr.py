@@ -8,9 +8,6 @@ class Process_pr:
         self.__pr_number = pr_number
         self.__pr_author = pr_author
 
-    def get_token(self):
-        return self.__token
-
     def author(self):
         return self.__pr_author
 
