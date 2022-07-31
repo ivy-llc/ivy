@@ -85,10 +85,6 @@ class ArrayWithGeneral(abc.ABC):
             New array with the values gathered at the specified indices along
             the specified axis.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-        instances in place of any of the arguments.
-
         Examples
         --------
         >>> x = ivy.array([0., 1., 2.])
