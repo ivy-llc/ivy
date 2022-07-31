@@ -4524,6 +4524,30 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.array([0,0,1,1,0])
+        >>> y = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
+        >>> z = ivy.Container.static_logical_xor(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([True, False, True, False, False]),
+            b: ivy.array([True, False, False, True, False])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
+        >>> y = ivy.Container(a=ivy.array([0,0,1,1,0]), b=ivy.array([1,0,1,1,0]))
+        >>> z = ivy.Container.static_logical_xor(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([True, False, True, False, False]),
+            b: ivy.array([False, False, False, True, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "logical_xor",
@@ -4578,6 +4602,17 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
+        >>> y = ivy.Container(a=ivy.array([0,0,1,1,0]), b=ivy.array([1,0,1,1,0]))
+        >>> z = x.logical_xor(y)
+        >>> print(z)
+        {
+            a: ivy.array([True, False, True, False, False]),
+            b: ivy.array([False, False, False, True, False])
+        }
         """
         return self.static_logical_xor(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
