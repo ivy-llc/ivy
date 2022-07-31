@@ -64,7 +64,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.Array instance method variant of ivy.gather. This method simply wraps the
         function, and so the docstring for ivy.gather also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -78,21 +78,24 @@ class ArrayWithGeneral(abc.ABC):
             'cpu' etc. Same as x if None.
         out
             optional output array, for writing the result to.
-            
+
         Returns
         -------
         ret
-            New array with the values gathered at the specified indices along the specified axis.
+            New array with the values gathered at the specified indices along
+            the specified axis.
+
         Both the description and the type hints above assumes an array input for simplicity,
         but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
         instances in place of any of the arguments.
-        
+
         Examples
         --------
         >>> x = ivy.array([0., 1., 2.])
         >>> y = ivy.array([0, 1])
         >>> print(ivy.gather(x, y))
         ivy.array([0., 1.])
+
         >>> x = ivy.array([[0., 1., 2.], \
                             [3., 4., 5.]])
         >>> y = ivy.array([[0, 1], \
@@ -103,7 +106,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(z)
         ivy.array([[0., 1.],
                     [4., 5.]])
-    
+
         >>> x = ivy.array([[[0., 1.], [2., 3.]], \
                             [[4., 5.], [6., 7.]], \
                             [[8., 9.], [10., 11.]]])
