@@ -156,34 +156,25 @@ Calling the different backend files explicitly would work okay, but it would mea
             x, axis=axis, dtype=dtype, keepdims=keepdims, out=out
         )
 
-Ivy sets numpy implicitly as the default backend until the user explicitly sets a different backend or unsets.
+Implicitly, Ivy sets numpy as the default backend or operates with the backend corresponding to the specified data inputs
+until the user explicitly sets a different backend. The examples can be seeen below:
 
 
-+----------------------------------------+-----------------------------------------+
-|                                        |                                         |
-|.. code-block:: python                  |.. code-block:: python                   |
-|                                        |                                         |
-|   # implicit                           |   # explicit                            |
-|   import ivy                           |   import ivy                            |
-|   import torch                         |   import torch                          |
-|                                        |                                         |
-|   a = torch.ones((1, ))                |   a = torch.ones((1,))                  |
-|   b = torch.zeros((1,))                |   b = torch.zeros((1,))                 |
-|                                        |                                         |
-|   print(ivy.current_framework())       |   print(ivy.current_framework())        |
-|   -> 'No backed framework selected'    |   -> 'No backed framework selected'     |
-|                                        |                                         |
-|                                        |   ivy.set_framework('torch')            |
-|                                        |                                         |
-|   # ivy/api/core/general.py            |   # ivy/backends/torch/core/general.py  |
-|   c = ivy.concatenate([a, b], 0)       |   c = ivy.concatenate([a, b], 0)        |
-|                                        |                                         |
-|   print(type(c))                       |   print(type(c))                        |
-|   -> <class 'torch.Tensor'>            |   -> <class 'torch.Tensor'>             |
-|                                        |                                         |
-|   print(ivy.current_framework())       |   print(ivy.current_framework())        |
-|   -> 'No backed framework selected'    |   -> <module 'ivy.backends.torch'>      |
-+----------------------------------------+-----------------------------------------+
++----------------------------------------+----------------------------------------------------+
+|                                        |                                                    |
+|.. code-block:: python                  |.. code-block:: python                              |
+|                                        |                                                    |
+|   # implicit                           |   # explicit                                       |
+|   import ivy                           |   import ivy                                       |
+|   x = ivy.array([1, 2, 3])             |   ivy.set_backend("jax")                           |
+|   (type(ivy.to_native(x)))             |                                                    |
+|   # -> <class 'numpy.ndarray'>         |   z = ivy.array([1, 2, 3]))                        |
+|                                        |   type(ivy.to_native(z))                           |
+|   import torch                         |   # ->  <class 'jaxlib.xla_extension.DeviceArray'> |
+|   t = torch.tensor([23,42, -1])        |                                                    |
+|   type(ivy.to_native(ivy.sum(t)))      |                                                    |
+|   # -> <class 'torch.Tensor'>          |                                                    |
++----------------------------------------+----------------------------------------------------+
 
 This implicit framework selection, and the use of a shared global ivy namespace for all backends, are both made possible via the framework handler.
 
