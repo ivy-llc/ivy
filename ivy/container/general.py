@@ -462,13 +462,13 @@ class ContainerWithGeneral(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
                               b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([0,1]),\
-                              b=ivy.array([1,2]))
+        >>> y = ivy.Container(a=ivy.array([0, 1]),\
+                              b=ivy.array([1, 2]))
         >>> z = x.gather(y)
         >>> print(z)
         {
-            a: ivy.array(1, 2),
-            b: ivy.array(3. 4)
+            a: ivy.array([1, 2]),
+            b: ivy.array([3, 4])
         }
         """
         return self.static_gather(
