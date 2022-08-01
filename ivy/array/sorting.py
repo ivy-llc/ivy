@@ -16,8 +16,23 @@ class ArrayWithSorting(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.argsort(self._data, axis, descending, stable, out=out)
         """
+        Parameters
+        ----------
+        self 
+            input array.
+        axis
+            axis along which to sort. If set to ``-1``, the function must sort along the last axis. Default: ``-1``.
+        descending
+            sort order. If ``True``, the returned indices sort ``x`` in descending order (by value). If ``False``, the returned indices sort ``x`` in ascending order (by value). Default: ``False``.
+        stable
+            sort stability. If ``True``, the returned indices must maintain the relative order of ``x`` values which compare as equal. If ``False``, the returned indices may or may not maintain the relative order of ``x`` values which compare as equal (i.e., the relative order of ``x`` values which compare as equal is implementation-dependent). Default: ``True``.
+        
+        Returns
+        -------
+        out 
+            an array of indices. The returned array must have the same shape as ``x``. The returned array must have the default array index data type.
+     
         ivy.Array instance method variant of ivy.argsort. This method simply wraps the
         function, and so the docstring for ivy.argsort also applies to this method
         with minimal changes.
@@ -35,6 +50,8 @@ class ArrayWithSorting(abc.ABC):
         ivy.array([0, 2, 1])
         
         """
+        return ivy.argsort(self._data, axis, descending, stable, out=out)
+       
     def sort(
         self: ivy.Array,
         axis: int = -1,
