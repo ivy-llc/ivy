@@ -1030,6 +1030,35 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :code:'ivy.Array' inputs:
+
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([2, 2, 1])
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        ivy.array([True, True, False])
+
+        With mixed :code:'ivy.Array' and :code:'ivy.NativeArray' inputs:
+
+        >>> x1 = ivy.array([2.5, 3.3, 9.24])
+        >>> x2 = ivy.native_array([2.5, 1.1, 9.24])
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        ivy.array([True, False, True])
+
+        With mixed :code:'ivy.Container' and :code:'ivy.Array' inputs:
+
+        >>> x1 = ivy.array([3., 1., 0.8])
+        >>> x2 = ivy.Container(a=ivy.array([2., 1., 0.7]), b=ivy.array([3., 0.6, 1.2]))
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, True])
+        }
         """
         return ivy.less_equal(self._data, x2, out=out)
 
@@ -1038,6 +1067,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.log. This method simply wraps the
         function, and so the docstring for ivy.log also applies to this method
         with minimal changes.
+
 
         Parameters
         ----------
@@ -1058,10 +1088,9 @@ class ArrayWithElementwise(abc.ABC):
 
     def log1p(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.log1p.
+       ivy.Array instance method variant of ivy.log1p.
         This method simply wraps the function, and so the docstring
         for ivy.log1p also applies to this method with minimal changes.
-
         Parameters
         ----------
         self
@@ -1069,13 +1098,26 @@ class ArrayWithElementwise(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
-
         Returns
         -------
         ret
             an array containing the evaluated result for each element in ``self``.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+
+        >>> x = ivy.array([1 , 2 ,3 ])
+        >>> y = x.log1p()
+        >>> print(y)
+        ivy.array([0.693, 1.1  , 1.39 ])
+
+        >>> x = ivy.array([0.1 , .001 ])
+        >>> x.log1p( out = x)
+        >>> print(x)
+        ivy.array([0.0953, 0.001 ])
+
         """
         return ivy.log1p(self._data, out=out)
 
@@ -1301,6 +1343,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([True, False, True, False])
+        >>> y = ivy.array([True, True, False, False])
+        >>> z = x.logical_xor(y)
+        >>> print(z)
+        ivy.array([False,  True,  True, False])
         """
         return ivy.logical_xor(self._data, x2, out=out)
 

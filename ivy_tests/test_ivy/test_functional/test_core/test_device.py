@@ -12,7 +12,7 @@ import numpy as np
 import nvidia_smi
 import psutil
 import pytest
-from hypothesis import strategies as st, given
+from hypothesis import strategies as st, given, assume
 
 # local
 import ivy
@@ -83,9 +83,8 @@ def _empty_dir(path, recreate=False):
 )
 @handle_cmd_line_args
 def test_dev(*, array_shape, dtype, as_variable, fw):
-    if fw == "torch" and "int" in dtype:
-        return
 
+    assume(not (fw == "torch" and "int" in dtype))
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
     for device in _get_possible_devices():
@@ -120,8 +119,8 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
 )
 @handle_cmd_line_args
 def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
-    if fw == "torch" and "int" in dtype:
-        return
+
+    assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
@@ -152,8 +151,8 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
 )
 @handle_cmd_line_args
 def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
-    if fw == "torch" and "int" in dtype:
-        return
+
+    assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
@@ -174,9 +173,8 @@ def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
         else:
             assert ret == device
         # compilation test
-        if call is helpers.torch_call:
-            # pytorch scripting does not handle converting string to device
-            return
+        # pytorch scripting does not handle converting string to device
+        assume(not (fw == "torch"))
 
 
 # memory_on_dev
@@ -234,8 +232,7 @@ def test_default_device(device):
 def test_to_device(
     *, array_shape, dtype, as_variable, with_out, fw, device, call, stream
 ):
-    if fw == "torch" and "int" in dtype:
-        return
+    assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
     x = ivy.asarray(x)
@@ -257,9 +254,8 @@ def test_to_device(
         assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
 
         # check if native arrays are the same
-        if ivy.current_backend_str() in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            return
+        # these backends do not support native inplace updates
+        assume(not (fw in ["tensorflow", "jax"]))
 
         assert x_on_dev.data is out.data
 
@@ -307,8 +303,7 @@ def _axis(draw):
 def test_split_func_call(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
-    if fw == "torch" and "int" in dtype:
-        return
+    assume(not (fw == "torch" and "int" in dtype))
 
     # inputs
     shape = tuple(array_shape)
@@ -355,12 +350,14 @@ def test_split_func_call_with_cont_input(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
     # Skipping some dtype for certain frameworks
-    if (
-        (fw == "torch" and "int" in dtype)
-        or (fw == "numpy" and "float16" in dtype)
-        or (fw == "tensorflow" and "u" in dtype)
-    ):
-        return
+    assume(
+        not (
+            (fw == "torch" and "int" in dtype)
+            or (fw == "numpy" and "float16" in dtype)
+            or (fw == "tensorflow" and "u" in dtype)
+        )
+    )
+
     shape = tuple(array_shape)
     x1 = np.random.uniform(size=shape).astype(dtype)
     x2 = np.random.uniform(size=shape).astype(dtype)
