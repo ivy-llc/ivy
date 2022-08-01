@@ -50,10 +50,8 @@ class ArrayWithSorting(abc.ABC):
         self: ivy.Array,
         x2: ivy.Array, 
         side= "left",
-        axis: int = -1,
-        descending: bool = False,
-        stable: bool = True,
+        sorter= None,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.searchsorted(self.data, x2, side=side, axis, descending, stable, out=out)
+        return ivy.searchsorted(self.data, x2, side=side, sorter= None, out=out)
