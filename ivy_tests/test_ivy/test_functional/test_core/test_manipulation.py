@@ -308,16 +308,41 @@ def _roll_helper(draw):
 
 # roll
 @given(
-    dtype_array_shift_axis=_roll_helper(),
-    as_variable=st.booleans(),
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1),
+            key='value_shape'
+        ),
+    ),
+    shift=helpers.dtype_and_values(
+        available_dtypes=[ivy.int32, ivy.int64],
+        max_num_dims=1,
+        min_dim_size=st.shared(st.integers(1, 2147483647), key='shift_length'),
+        max_dim_size=st.shared(st.integers(1, 2147483647), key='shift_length')
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1),
+            key='value_shape'
+        ),
+        unique=False,
+        min_size=st.shared(st.integers(1, 2147483647), key='shift_length'),
+        max_size=st.shared(st.integers(1, 2147483647), key='shift_length')
+    ),
+    as_variable=helpers.array_bools(num_arrays=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="roll"),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    native_array=helpers.array_bools(num_arrays=2),
+    container=helpers.array_bools(num_arrays=2),
     instance_method=st.booleans(),
 )
 def test_roll(
-    dtype_array_shift_axis,
+    dtype_value,
+    shift,
+    axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -327,11 +352,26 @@ def test_roll(
     fw,
 ):
 
-    dtype, array, shift, axis = dtype_array_shift_axis
+    value_dtype, value = dtype_value
+
+    if fw in ['tensorflow', 'torch']:
+        #Tensor and Torch requires shift to be passed as a tuple not a list/tensor
+        shift = tuple(shift[1]) if not isinstance(shift[1], int) else shift[1]
+
+        as_variable = as_variable[0]
+        native_array = native_array[0]
+        container = container[0]
+        dtypes = value_dtype
+    else:
+        shift_dtype, shift = shift
+        shift = np.asarray(shift,dtype=shift_dtype)
+        dtypes = [value_dtype, shift_dtype]
+
+    print(shift, axis)
 
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -340,7 +380,7 @@ def test_roll(
         instance_method=instance_method,
         fw=fw,
         fn_name="roll",
-        x=np.asarray(array,dtype=dtype),
+        x=np.asarray(value,dtype=value_dtype),
         shift=shift,
         axis=axis,
     )
@@ -411,9 +451,10 @@ def _stack_helper(draw):
     )))
     axis = draw(st.integers(min_value=-len(shape), max_value=len(shape)))
     num_arrays = draw(st.shared(st.integers(1, 3), key="num_arrays"))
+    dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
     dtypes_arrays = draw(st.lists(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_dtypes,
+            available_dtypes=[dtype],
             shape=shape
         ),
         min_size=num_arrays,
@@ -474,58 +515,54 @@ def test_stack(
 
 @st.composite
 def _repeat_helper(draw):
-    dtype, value, shape = draw(helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
-        ret_shape=True,
-        min_num_dims=1
-    ))
+    shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key='value_shape'))
+    axis = draw(st.shared(
+        st.one_of(
+            st.none(),
+            helpers.get_axis(
+                shape=shape,
+                max_size=1))
+        , key='axis'))
 
+    if not isinstance(axis,int) and axis is not None:
+        axis = axis[0]
 
-    axis = draw(st.one_of(st.none(), st.integers(0, len(shape)-1)))
-
-    if draw(st.shared(st.integers(1, 2), key="repeat_is_list")) == 2:
-        # If generating a list
-        repeat_size = draw(st.one_of(
-            st.just(1),
-            st.just(len(np.asarray(value, dtype=dtype).flatten()) if axis is None else shape[axis])))
-
-
-        repeat = draw(helpers.dtype_and_values(
+    repeat_shape=(draw(st.one_of(st.just(1), st.just(shape[axis]))),) if axis is not None else (1,)
+    repeat=draw(
+        helpers.dtype_and_values(
             available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
-            shape=(repeat_size,),
+            shape=repeat_shape,
             min_value=0,
             max_value=100
-        ))
-    else:
-        # generating an int
-        repeat = draw(helpers.dtype_and_values(
-            available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
-            shape=(1,),
-            min_value=0,
-            max_value=100
-        ))[1][0]
-    int_dtypes = ivy_np.valid_int_dtypes
-    return (dtype, value), axis, repeat
+        )
+    )
+    return repeat
+
 # repeat
 @given(
-    dtype_value_axis_repeat=_repeat_helper(),
-    repeat_is_list=st.shared(st.integers(1, 2), key="repeat_is_list"),
-    as_variable=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 2), key="repeat_is_list")
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes,
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key='value_shape')
     ),
+    axis=st.shared(
+        st.one_of(
+            st.none(),
+            helpers.get_axis(
+                shape=st.shared(helpers.get_shape(min_num_dims=1), key='value_shape'),
+                max_size=1))
+        ,key='axis'),
+    repeat=st.one_of(st.integers(1, 100), _repeat_helper()),
+    as_variable=helpers.array_bools(num_arrays=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="repeat"),
-    native_array=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 2), key="repeat_is_list")
-    ),
-    container=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 2), key="repeat_is_list")
-    ),
+    native_array=helpers.array_bools(num_arrays=2),
+    container=helpers.array_bools(num_arrays=2),
     instance_method=st.booleans(),
 )
 def test_repeat(
-    dtype_value_axis_repeat,
-    repeat_is_list,
+    dtype_value,
+    axis,
+    repeat,
     as_variable,
     with_out,
     num_positional_args,
@@ -535,15 +572,21 @@ def test_repeat(
     fw,
 ):
 
-    dtype_value, axis, repeat = dtype_value_axis_repeat
-
     dtype, value = dtype_value
     value = np.asarray(value, dtype=dtype)
 
-    if repeat_is_list == 2:
+    if not isinstance(repeat, int):
         repeat_dtype, repeat_list = repeat
         repeat = np.asarray(repeat_list, dtype=repeat_dtype)
         dtype = [dtype, repeat_dtype]
+    else:
+        as_variable = as_variable[0]
+        native_array = native_array[0]
+        container = container[0]
+
+    if not isinstance(axis,int) and axis is not None:
+        axis = axis[0]
+
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -772,13 +815,13 @@ def test_swapaxes(
 # clip
 @given(
     x_min_n_max=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
     ),
-    as_variable=st.booleans(),
+    as_variable=helpers.array_bools(num_arrays=3),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
-    native_array=st.booleans(),
-    container=st.booleans(),
+    native_array=helpers.array_bools(num_arrays=3),
+    container=helpers.array_bools(num_arrays=3),
     instance_method=st.booleans(),
 )
 def test_clip(
@@ -797,6 +840,7 @@ def test_clip(
     max_val_raw = np.array(max_val_list, dtype=max_dtype)
     min_val = np.asarray(np.minimum(min_val_raw, max_val_raw))
     max_val = np.asarray(np.maximum(min_val_raw, max_val_raw))
+
     helpers.test_function(
         input_dtypes=[x_dtype, min_dtype, max_dtype],
         as_variable_flags=as_variable,
@@ -812,43 +856,62 @@ def test_clip(
         x_max=max_val,
     )
 
+@st.composite
+def _split_helper(draw):
+    noss_type = draw(st.shared(st.integers(1, 3), key="noss_type"))
 
-# split
+    shape = draw(st.shared(
+        helpers.get_shape(min_num_dims=1),
+        key='value_shape'))
+
+    axis = draw(helpers.get_axis(
+        shape=shape)
+    )
+
+    if not isinstance(axis, int):
+        axis = axis[0]
+
+    if noss_type == 1:
+        return None
+    elif noss_type == 2:
+        factors = []
+        for i in range(1, shape[axis]+1):
+            if shape[axis] % i == 0:
+                factors.append(i)
+        return draw(st.sampled_from(factors))
+
+    noss_dtype = draw(st.sampled_from(ivy_np.valid_int_dtypes))
+    num_or_size_splits = []
+    while sum(num_or_size_splits) < shape[axis]:
+        split_value = draw(helpers.array_values(
+            dtype=noss_dtype,
+            shape=(1,),
+            min_value=0,
+            max_value=shape[axis] - sum(num_or_size_splits)))
+        num_or_size_splits.append(split_value[0])
+
+    return noss_dtype, num_or_size_splits
+
 @given(
     noss_type=st.shared(st.integers(1,3), key="noss_type"),
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
         shape=st.shared(
-            helpers.get_shape(),
-            key='shape')
+            helpers.get_shape(min_num_dims=1),
+            key='value_shape'),
     ),
-    num_or_size_splits=st.one_of(
-        helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_int_dtypes,
-            min_num_dims=1,
-            max_num_dims=1
-        )
-    ),
-    axis=helpers.get_axis(
-            shape=st.shared(
-            helpers.get_shape(),
-            key='shape')
+    axis = helpers.get_axis(
+        shape=st.shared(
+        helpers.get_shape(min_num_dims=1),
+        key='value_shape')
         ),
+    num_or_size_splits=_split_helper(),
     with_remainder=st.booleans(),
-    as_variable=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1,3), key="noss_type").map(
-            lambda noss_type: noss_type if noss_type == 1 else noss_type - 1)
-    ),
-    with_out=st.booleans(),
+    as_variable=st.booleans(),
+    with_out=st.just(False),
     num_positional_args=helpers.num_positional_args(fn_name="split"),
-    native_array=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1,3), key="noss_type").map(
-            lambda noss_type: noss_type if noss_type == 1 else noss_type - 1)
-    ),
-    container=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1,3), key="noss_type").map(
-            lambda noss_type: noss_type if noss_type == 1 else noss_type - 1)
-    ),
+    native_array=st.booleans(),
+    container=st.booleans(),
     instance_method=st.booleans(),
 )
 def test_split(
@@ -866,15 +929,15 @@ def test_split(
     fw,):
 
     dtype, value = dtype_value
+    x = np.asarray(value, dtype=dtype)
+
+    if not isinstance(axis, int):
+        axis = axis[0]
 
     if noss_type == 3:
-        noss_type = num_or_size_splits[0]
-        num_or_size_splits = np.asarray(num_or_size_splits[1], dtype=noss_type)
-        dtype=[dtype, noss_type]
-    elif noss_type == 2:
-        num_or_size_splits = [1][0]
-    else:
-        num_or_size_splits = None
+        num_or_size_splits = num_or_size_splits[1]
+    elif noss_type == 1 and fw == 'tensorflow':
+        num_or_size_splits = 1
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -886,7 +949,7 @@ def test_split(
         instance_method=instance_method,
         fw=fw,
         fn_name="split",
-        x=np.asarray(value, dtype=dtype),
+        x=x,
         num_or_size_splits=num_or_size_splits,
         axis=axis,
         with_remainder=with_remainder
