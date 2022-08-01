@@ -315,7 +315,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable):
 
 
 def nested_indices_where(
-    nest: Union[List, Tuple, Dict],
+    nest: Iterable,
     fn: Callable,
     check_nests: bool = False,
     to_ignore: Union[type, Tuple[type]] = None,
@@ -345,6 +345,7 @@ def nested_indices_where(
         stack. Used internally, do not set manually.
     stop_after_n_found
         to stop after some needed indices are found.
+
     Returns
     -------
     ret
