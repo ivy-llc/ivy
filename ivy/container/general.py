@@ -397,7 +397,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> print(y)
         {
                 a: ivy.array([0., 1.]),
-                b: ivy.array(5., 6.)
+                b: ivy.array([5., 6.])
         }
         """
         return ContainerBase.multi_map_in_static_method(
