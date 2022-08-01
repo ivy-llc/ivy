@@ -48,7 +48,7 @@ def asarray(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if isinstance(object_in, ivy.NativeArray) and (dtype != "bool" and dtype==None):
+    if isinstance(object_in, ivy.NativeArray) and (dtype != "bool" and dtype == None):
         dtype = object_in.dtype
     elif (
         isinstance(object_in, (list, tuple, dict))

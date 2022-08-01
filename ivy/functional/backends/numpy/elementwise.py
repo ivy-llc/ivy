@@ -13,7 +13,7 @@ except (ImportError, ModuleNotFoundError):
 
 
 def _cast_for_binary_op(x1, x2):
-    return ivy.promote_types_of_inputs(x1,x2)
+    return ivy.promote_types_of_inputs(x1, x2)
     # if isinstance(x1, np.ndarray):
     #     if isinstance(x2, np.ndarray):
     #         promoted_type = np.promote_types(x1.dtype, x2.dtype)
@@ -238,7 +238,7 @@ def divide(
         ret = np.divide(x1, x2).astype(x1.dtype)
         return ret
     else:
-        ret = np.divide(x1, x2).astype('float32')
+        ret = np.divide(x1, x2).astype("float32")
         return ret
 
 
@@ -428,10 +428,7 @@ logaddexp.support_native_out = True
 
 @_handle_0_dim_output
 def logical_and(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    *,
-    out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.logical_and(x1, x2, out=out)
 
@@ -650,9 +647,9 @@ def erf(x, *, out: Optional[np.ndarray] = None):
         raise Exception(
             "scipy must be installed in order to call ivy.erf with a numpy backend."
         )
-    ret=_erf(x, out=out)
-    if hasattr(x,'dtype'):
-        ret=np.asarray(_erf(x, out=out),dtype=x.dtype)
+    ret = _erf(x, out=out)
+    if hasattr(x, "dtype"):
+        ret = np.asarray(_erf(x, out=out), dtype=x.dtype)
     return ret
 
 

@@ -1755,7 +1755,7 @@ def promote_types_of_inputs(
 ) -> Any:
     try:
         x1, x2 = ivy.to_ivy(x1), ivy.to_ivy(x2)
-        if hasattr(x1, '_dtype') and hasattr(x2,'_dtype'):
+        if hasattr(x1, "_dtype") and hasattr(x2, "_dtype"):
             promoted = promote_types(x1._dtype, x2._dtype)
             x1 = ivy.asarray(x1, dtype=promoted)
             x2 = ivy.asarray(x2, dtype=promoted)

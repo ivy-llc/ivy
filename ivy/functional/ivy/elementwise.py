@@ -3378,7 +3378,7 @@ def logical_not(
     ivy.array([False,  True, False, False])
 
     With :code:`ivy.Container` input:
-    
+
     >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
     >>> x.logical_not()
     {
@@ -3466,7 +3466,7 @@ def logical_xor(
     ret
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
-    
+
     Examples
     --------
     With :code:`ivy.Array` inputs:
@@ -3485,7 +3485,7 @@ def logical_xor(
             [False],
             [False],
             [False]]])
-    
+
     >>> x = ivy.array([[[1], [2], [3], [4]]])
     >>> y = ivy.array([4, 5, 6, 7])
     >>> z = ivy.logical_xor(x,y)
@@ -3494,7 +3494,7 @@ def logical_xor(
             [False, False, False, False],
             [False, False, False, False],
             [False, False, False, False]]])
-    
+
     With :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))

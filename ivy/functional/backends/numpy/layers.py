@@ -13,7 +13,7 @@ def conv1d(
     data_format: str = "NWC",
     dilations: int = 1,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, tuple):
         strides = strides[0]
@@ -52,7 +52,7 @@ def conv2d(
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, int):
         strides = (strides, strides)
@@ -181,14 +181,7 @@ def depthwise_conv2d(
         if data_format == "NHWC":
             outputs = np.append(outputs, output, axis=-1)
         else:
-            outputs = np.append(
-                outputs,
-                np.transpose(
-                    output,
-                    (0, 3, 1, 2)
-                ),
-                axis=1
-            )
+            outputs = np.append(outputs, np.transpose(output, (0, 3, 1, 2)), axis=1)
     return outputs
 
 
@@ -218,21 +211,21 @@ def conv3d(
             filters,
             [i for i in range(1, filters.shape[1])] * (dilations[1] - 1),
             values=0,
-            axis=1
+            axis=1,
         )
     if dilations[0] > 1:
         filters = np.insert(
             filters,
             [i for i in range(1, filters.shape[0])] * (dilations[0] - 1),
             values=0,
-            axis=0
+            axis=0,
         )
     if dilations[2] > 1:
         filters = np.insert(
             filters,
             [i for i in range(1, filters.shape[2])] * (dilations[2] - 1),
             values=0,
-            axis=2
+            axis=2,
         )
 
     filter_shape = filters.shape[0:3]
@@ -284,7 +277,7 @@ def conv3d(
         x.strides[1],
         x.strides[2],
         x.strides[3],
-        x.strides[4]
+        x.strides[4],
     )
     # B x OD X OH x OW x KH x KW x I
     sub_matrices = np.lib.stride_tricks.as_strided(

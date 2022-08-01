@@ -16,22 +16,18 @@ def _cast_for_bitwise_op(x1, x2):
 
 
 def _cast_for_binary_op(x1, x2):
-    return ivy.promote_types_of_inputs(x1,x2)
+    return ivy.promote_types_of_inputs(x1, x2)
 
 
 def abs(x: Union[float, JaxArray], *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.absolute(x)
 
 
-def acos(
-    x: JaxArray
-) -> JaxArray:
+def acos(x: JaxArray) -> JaxArray:
     return jnp.arccos(x)
 
 
-def acosh(
-    x: JaxArray
-) -> JaxArray:
+def acosh(x: JaxArray) -> JaxArray:
     return jnp.arccosh(x)
 
 
@@ -52,9 +48,7 @@ def asinh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsinh(x)
 
 
-def atan(
-    x: JaxArray
-) -> JaxArray:
+def atan(x: JaxArray) -> JaxArray:
     return jnp.arctan(x)
 
 
@@ -63,9 +57,7 @@ def atan2(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxA
     return jnp.arctan2(x1, x2)
 
 
-def atanh(
-    x: JaxArray
-) -> JaxArray:
+def atanh(x: JaxArray) -> JaxArray:
     return jnp.arctanh(x)
 
 
@@ -151,7 +143,7 @@ def divide(
         ret = jax.numpy.divide(x1, x2).astype(x1.dtype)
         return ret
     else:
-        ret = jax.numpy.divide(x1, x2).astype('float32')
+        ret = jax.numpy.divide(x1, x2).astype("float32")
         return ret
 
 
@@ -190,10 +182,7 @@ def floor_divide(
     return jax.numpy.floor_divide(x1, x2)
 
 
-def greater(
-    x1: Union[float, JaxArray], 
-    x2: Union[float, JaxArray]
-) -> JaxArray:
+def greater(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.greater(x1, x2)
 
 
@@ -218,10 +207,7 @@ def isnan(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isnan(x)
 
 
-def less(
-    x1: Union[float, JaxArray], 
-    x2: Union[float, JaxArray]
-) -> JaxArray:
+def less(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.less(x1, x2)
 
 

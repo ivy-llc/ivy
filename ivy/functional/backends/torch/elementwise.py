@@ -14,11 +14,11 @@ def _cast_for_unary_op(x):
 
 def _cast_for_binary_op(x1, x2, clamp=False):
     if clamp:
-        x1,x2 = ivy.promote_types_of_inputs(x1,x2)
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
     else:
-        x1,x2 = ivy.promote_types_of_inputs(x1,x2)
-    return ivy.promote_types_of_inputs(x1,x2)
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return ivy.promote_types_of_inputs(x1, x2)
 
 
 def add(
@@ -306,10 +306,7 @@ logical_xor.support_native_out = True
 
 
 def logical_and(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    *,
-    out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.logical_and(x1.type(torch.bool), x2.type(torch.bool), out=out)
 

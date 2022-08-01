@@ -10,7 +10,7 @@ import ivy
 
 
 def _cast_for_binary_op(x1, x2):
-    return ivy.promote_types_of_inputs(x1,x2)
+    return ivy.promote_types_of_inputs(x1, x2)
 
 
 def abs(
@@ -24,15 +24,11 @@ def abs(
         return tf.abs(x)
 
 
-def acos(
-    x: Union[tf.Tensor, tf.Variable]
-) -> Union[tf.Tensor, tf.Variable]:
+def acos(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.acos(x)
 
 
-def acosh(
-    x: Union[tf.Tensor, tf.Variable]
-) -> Union[tf.Tensor, tf.Variable]:
+def acosh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.acosh(x)
 
 
@@ -58,9 +54,7 @@ def asinh(
     return tf.asinh(x)
 
 
-def atan(
-    x: Union[tf.Tensor, tf.Variable]
-) -> Union[tf.Tensor, tf.Variable]:
+def atan(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.atan(x)
 
 
@@ -74,9 +68,7 @@ def atan2(
     return tf.math.atan2(x1, x2)
 
 
-def atanh(
-    x: Union[tf.Tensor, tf.Variable]
-) -> Union[tf.Tensor, tf.Variable]:
+def atanh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.atanh(x)
 
 
@@ -177,10 +169,10 @@ def divide(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     if ivy.is_array(x1):
-        ret=tf.cast(tf.experimental.numpy.divide(x1, x2),x1.dtype)
+        ret = tf.cast(tf.experimental.numpy.divide(x1, x2), x1.dtype)
         return ret
     else:
-        ret= tf.cast(tf.experimental.numpy.divide(x1, x2),'float32')
+        ret = tf.cast(tf.experimental.numpy.divide(x1, x2), "float32")
         return ret
 
 
@@ -233,8 +225,7 @@ def floor_divide(
 
 
 def greater(
-    x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable]
+    x1: Union[float, tf.Tensor, tf.Variable], x2: Union[float, tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.greater(x1, x2)
@@ -278,8 +269,7 @@ def isnan(
 
 
 def less(
-    x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable]
+    x1: Union[float, tf.Tensor, tf.Variable], x2: Union[float, tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.less(x1, x2)
