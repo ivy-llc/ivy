@@ -24,7 +24,7 @@ class ArrayWithManipulation(abc.ABC):
 
     def split(
         self: ivy.Array,
-        num_or_size_splits: Optional[int] = None,
+        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
         axis: int = 0,
         with_remainder: bool = False,
     ) -> List[ivy.Array]:
