@@ -847,6 +847,39 @@
 <span class="sd">    ret</span>
 <span class="sd">        The closest valid data type as a native ivy.Dtype</span>
 
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Dtype` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; xType = ivy.float16</span>
+<span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
+<span class="sd">    &gt;&gt;&gt; print(yType)</span>
+<span class="sd">    float16</span>
+
+<span class="sd">    &gt;&gt;&gt; xType = ivy.int8</span>
+<span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
+<span class="sd">    &gt;&gt;&gt; print(yType)</span>
+<span class="sd">    int8</span>
+
+<span class="sd">    With :code:`ivy.Native_dtype` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; xType = ivy.native_uint16</span>
+<span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
+<span class="sd">    &gt;&gt;&gt; print(yType)</span>
+<span class="sd">    &lt;dtype:&#39;uint16&#39;&gt;</span>
+
+<span class="sd">    With :code:`str` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; xType = &#39;int32&#39;</span>
+<span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
+<span class="sd">    &gt;&gt;&gt; print(yType)</span>
+<span class="sd">    int32</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
 

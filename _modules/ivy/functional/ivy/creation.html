@@ -1110,14 +1110,56 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; shape = (2,2)</span>
-<span class="sd">    &gt;&gt;&gt; fill_value = 10</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.full(shape, fill_value)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[10, 10],</span>
-<span class="sd">           [10, 10]])</span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With :code:`ivy.Shape` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; shape = ivy.Shape((2,2))</span>
+<span class="sd">    &gt;&gt;&gt; fill_value = 8.6</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.full(shape, fill_value)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[8.6, 8.6],</span>
+<span class="sd">               [8.6, 8.6]])</span>
+
+<span class="sd">    With :code:`ivy.NativeShape` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; shape = ivy.NativeShape((2, 2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; fill_value = True</span>
+<span class="sd">    &gt;&gt;&gt; dtype = ivy.bool</span>
+<span class="sd">    &gt;&gt;&gt; device = ivy.Device(&#39;cpu&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.full(shape, fill_value, dtype=dtype, device=device)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[[True,  True],</span>
+<span class="sd">                [True,  True]],</span>
+<span class="sd">               [[True,  True],</span>
+<span class="sd">                [True,  True]]])</span>
+
+<span class="sd">    With :code:`ivy.NativeDevice` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; shape = ivy.NativeShape((1, 2))</span>
+<span class="sd">    &gt;&gt;&gt; fill_value = 0.68</span>
+<span class="sd">    &gt;&gt;&gt; dtype = ivy.float64</span>
+<span class="sd">    &gt;&gt;&gt; device = ivy.NativeDevice(&#39;cpu&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.full(shape, fill_value, dtype=dtype, device=device)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[0.68, 0.68]])</span>
+
+<span class="sd">    With :code:&#39;ivy.Container&#39; input:</span>
+
+<span class="sd">    &gt;&gt;&gt; shape = ivy.Container(a=ivy.NativeShape((2, 1)), b=ivy.Shape((2, 1, 2)))</span>
+<span class="sd">    &gt;&gt;&gt; fill_value = ivy.Container(a=0.99, b=False)</span>
+<span class="sd">    &gt;&gt;&gt; dtype = ivy.Container(a=ivy.float64, b=ivy.bool)</span>
+<span class="sd">    &gt;&gt;&gt; device = ivy.Container(a=ivy.NativeDevice(&#39;cpu&#39;), b=ivy.Device(&#39;cpu&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.full(shape, fill_value, dtype=dtype, device=device)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[0.99],</span>
+<span class="sd">                      [0.99]]),</span>
+<span class="sd">        b: ivy.array([[[False, False]],</span>
+<span class="sd">                      [[False, False]]])</span>
+<span class="sd">    }</span>
+
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
