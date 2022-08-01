@@ -19,7 +19,7 @@ cmd_line_args = (
     "with_out",
     "container",
     "instance_method",
-    "test_gradients"
+    "test_gradients",
 )
 
 try:
@@ -1370,7 +1370,7 @@ def test_frontend_function(
             assert ret.data is out.data
 
     # bfloat16 is not supported by numpy
-    assume(not("bfloat16" in input_dtypes))
+    assume(not ("bfloat16" in input_dtypes))
 
     # create NumPy args
     args_np = ivy.nested_map(
@@ -1404,8 +1404,8 @@ def test_frontend_function(
         # change ivy dtypes to native dtypes
         if "dtype" in kwargs_frontend:
             kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
-        
-        #change ivy device to native devices
+
+        # change ivy device to native devices
         if "device" in kwargs_frontend:
             kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
 
