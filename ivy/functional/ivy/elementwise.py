@@ -3323,6 +3323,7 @@ def logical_not(
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
+
     >>> x=ivy.array([1,0,1,1,0])
     >>> y=ivy.logical_not(x)
     >>> print(y)
@@ -3334,6 +3335,7 @@ def logical_not(
     ivy.array([False, True, False, False])
 
     With :code:`ivy.NativeArray` input:
+
     >>> x=ivy.native_array([1,0,1,1,0])
     >>> y=ivy.logical_not(x)
     >>> print(y)
@@ -3345,6 +3347,7 @@ def logical_not(
     ivy.array([False, True, False, False])
 
     With :code:`ivy.Container` input:
+
     >>> x=ivy.Container(a=ivy.array([1,0,1,1]), b=ivy.array([1,0,8,9]))
     >>> y=ivy.logical_not(x)
     >>> print(y)
@@ -3365,6 +3368,7 @@ def logical_not(
     ------------------------
 
     With :code:`ivy.Array` input:
+
     >>> x=ivy.array([0,1,1,0])
     >>> x.logical_not()
     ivy.array([ True, False, False,  True])
@@ -3374,6 +3378,7 @@ def logical_not(
     ivy.array([False,  True, False, False])
 
     With :code:`ivy.Container` input:
+    
     >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
     >>> x.logical_not()
     {
@@ -3461,7 +3466,56 @@ def logical_xor(
     ret
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
+    
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
 
+    >>> x = ivy.array([1,0,1,1,0])
+    >>> y = ivy.array([1,0,1,1,0])
+    >>> z = ivy.logical_xor(x,y)
+    >>> print(z)
+    ivy.array([False, False, False, False, False])
+
+    >>> x = ivy.array([[[1], [2], [3], [4]]])
+    >>> y = ivy.array([[[4], [5], [6], [7]]])
+    >>> z = ivy.logical_xor(x,y)
+    >>> print(z)
+    ivy.array([[[False],
+            [False],
+            [False],
+            [False]]])
+    
+    >>> x = ivy.array([[[1], [2], [3], [4]]])
+    >>> y = ivy.array([4, 5, 6, 7])
+    >>> z = ivy.logical_xor(x,y)
+    >>> print(z)
+    ivy.array([[[False, False, False, False],
+            [False, False, False, False],
+            [False, False, False, False],
+            [False, False, False, False]]])
+    
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
+    >>> y = ivy.Container(a=ivy.array([0,0,1,1,0]), b=ivy.array([1,0,1,1,0]))
+    >>> z = ivy.logical_xor(x,y)
+    >>> print(z)
+    {
+    a: ivy.array([True, False, True, False, False]),
+    b: ivy.array([False, False, False, True, False])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
+    >>> y = ivy.array([0,0,1,1,0])
+    >>> z = ivy.logical_xor(x,y)
+    >>> print(z)
+    {
+    a: ivy.array([True, False, True, False, False]),
+    b: ivy.array([True, False, False, True, False])
+    }
     """
     return ivy.current_backend(x1, x2).logical_xor(x1, x2, out=out)
 

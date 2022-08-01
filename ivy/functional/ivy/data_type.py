@@ -720,6 +720,39 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, s
     ret
         The closest valid data type as a native ivy.Dtype
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
+
+    Examples
+    --------
+    With :code:`ivy.Dtype` input:
+
+    >>> xType = ivy.float16
+    >>> yType = ivy.closest_valid_dtype(xType)
+    >>> print(yType)
+    float16
+
+    >>> xType = ivy.int8
+    >>> yType = ivy.closest_valid_dtype(xType)
+    >>> print(yType)
+    int8
+
+    With :code:`ivy.Native_dtype` inputs:
+
+    >>> xType = ivy.native_uint16
+    >>> yType = ivy.closest_valid_dtype(xType)
+    >>> print(yType)
+    <dtype:'uint16'>
+
+    With :code:`str` input:
+
+    >>> xType = 'int32'
+    >>> yType = ivy.closest_valid_dtype(xType)
+    >>> print(yType)
+    int32
+
     """
     return current_backend(type).closest_valid_dtype(type)
 
