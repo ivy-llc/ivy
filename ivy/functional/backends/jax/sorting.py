@@ -24,7 +24,7 @@ def argsort(
 
 
 def sort(
-    x:  JaxArray,
+    x: JaxArray,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
