@@ -14,6 +14,7 @@ from hypothesis import settings
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
@@ -45,14 +46,13 @@ def _arrays_idx_n_dtypes(draw):
 # concat
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="concat"),
-    native_array=helpers.array_bools(),
-    container=helpers.array_bools(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_concat(
+    *,
+    data,
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
     with_out,
@@ -114,8 +114,12 @@ def _dtype_values_axis(draw,min_value=None,max_value=None):
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_expand_dims(
+    *,
+    data,
     dtype_array_axis,
     as_variable,
     with_out,
@@ -151,8 +155,12 @@ def test_expand_dims(
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_flip(
+    *,
+    data,
     dtype_array_axis,
     as_variable,
     with_out,
@@ -198,8 +206,12 @@ def _dtype_array_permutation(draw):
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_permute_dims(
+    *,
+    data,
     dtype_array_permutation,
     as_variable,
     with_out,
@@ -245,8 +257,12 @@ def _array_dtype_reshape(draw):
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_reshape(
+    *,
+    data,
     array_dtype_reshape,
     as_variable,
     with_out,
@@ -338,8 +354,12 @@ def _roll_helper(draw):
     native_array=helpers.array_bools(num_arrays=2),
     container=helpers.array_bools(num_arrays=2),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_roll(
+    *,
+    data,
     dtype_value,
     shift,
     axis,
@@ -415,8 +435,12 @@ def _squeeze_helper(draw):
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_squeeze(
+    *,
+    data,
     dtype_values_axis,
     as_variable,
     with_out,
@@ -476,8 +500,12 @@ def _stack_helper(draw):
         num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
     ),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_stack(
+    *,
+    data,
     dtypes_arrays_axis,
     as_variable,
     with_out,
@@ -558,8 +586,12 @@ def _repeat_helper(draw):
     native_array=helpers.array_bools(num_arrays=2),
     container=helpers.array_bools(num_arrays=2),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_repeat(
+    *,
+    data,
     dtype_value,
     axis,
     repeat,
@@ -631,9 +663,13 @@ def _tile_helper(draw):
     container=helpers.array_bools(
         num_arrays=2
     ),
-    instance_method=st.booleans()
+    instance_method=st.booleans(),
+    data = st.data(),
 )
+@handle_cmd_line_args
 def test_tile(
+    *,
+    data,
     dtype_value_repeat,
     as_variable,
     with_out,
@@ -687,11 +723,12 @@ def _pad_helper(draw):
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_constant_pad(
+    *,
+    data,
     dtype_value_pad_width_constant,
     as_variable,
     with_out,
@@ -728,8 +765,12 @@ def test_constant_pad(
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_zero_pad(
+    *,
+    data,
     dtype_value_pad_width,
     as_variable,
     with_out,
@@ -781,8 +822,12 @@ def test_zero_pad(
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_swapaxes(
+    *,
+    data,
     dtype_value,
     axis0,
     axis1,
@@ -823,8 +868,12 @@ def test_swapaxes(
     native_array=helpers.array_bools(num_arrays=3),
     container=helpers.array_bools(num_arrays=3),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_clip(
+    *,
+    data,
     x_min_n_max,
     as_variable,
     with_out,
@@ -913,8 +962,12 @@ def _split_helper(draw):
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_split(
+    *,
+    data,
     noss_type,
     dtype_value,
     num_or_size_splits,
