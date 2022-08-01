@@ -28,8 +28,10 @@ class ArrayWithManipulation(abc.ABC):
         axis: int = 0,
         with_remainder: bool = False,
     ) -> List[ivy.Array]:
-        """Splits a container into multiple sub-containers, by splitting their
-        constituent arrays.
+        """
+        ivy.Array instance method variant of ivy.split. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
