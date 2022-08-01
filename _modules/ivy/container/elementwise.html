@@ -3696,30 +3696,6 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results. The returned container</span>
 <span class="sd">            must have a data type of ``bool``.</span>
-
-<span class="sd">        With :code:&#39;ivy.Container&#39; inputs:</span>
-
-<span class="sd">        &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([12, 3.5, 9.2]), b=ivy.array([2., 1.1, 5.5]))</span>
-<span class="sd">        &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([12, 2.2, 4.1]), b=ivy.array([1, 0.7, 3.8]))</span>
-<span class="sd">        &gt;&gt;&gt; y = x1.less_equal(x2)</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, False]),</span>
-<span class="sd">            b: ivy.array([False, False, False])</span>
-<span class="sd">        }</span>
-
-<span class="sd">        With mixed :code:&#39;ivy.Container&#39; and :code:&#39;ivy.Array&#39; inputs:</span>
-
-<span class="sd">        &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([12., 3.5, 9.2]), b=ivy.array([2., 1., 5.5]))</span>
-<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([2., 1.1, 5.5])</span>
-<span class="sd">        &gt;&gt;&gt; y = x1.less_equal(x2)</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, False, False]),</span>
-<span class="sd">            b: ivy.array([True, True, True])</span>
-<span class="sd">        }</span>
-
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_less_equal</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -3852,31 +3828,13 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the evaluated result for each element in ``x``.</span>
 <span class="sd">            The returned array must have a real-valued floating-point data type</span>
 <span class="sd">            determined by :ref:`type-promotion`.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_log1p(x)</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([0., 0.693, 1.1]),</span>
-<span class="sd">            b: ivy.array([1.39, 1.61, 1.81])</span>
-<span class="sd">        }</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.]), b=ivy.array([ 4., 5.1]))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_log1p(x , out = x)</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([0., 0.693, 1.1]),</span>
-<span class="sd">            b: ivy.array([1.39, 1.61, 1.81])</span>
-<span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
@@ -3927,17 +3885,6 @@
 <span class="sd">            a container containing the evaluated result for each element in ``self``.</span>
 <span class="sd">            The returned array must have a real-valued floating-point data type</span>
 <span class="sd">            determined by :ref:`type-promotion`.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),\</span>
-<span class="sd">                            b=ivy.array([4.5, 5.3, 2.3]))</span>
-<span class="sd">        &gt;&gt;&gt; y = x.log1p()</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([0.956, 1.28, 1.5]),</span>
-<span class="sd">            b: ivy.array([1.7, 1.84, 1.19])</span>
-<span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_log1p</span><span class="p">(</span>
@@ -4333,14 +4280,15 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([True, False, False, False])</span>
 <span class="sd">        }</span>
+
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([False, True, False, False])</span>
 <span class="sd">        }</span>
+
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, False, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">            ivy.array([False, False, False, False])</span>
+
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([True, False, True]),</span>
@@ -4423,14 +4371,15 @@
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([True, False, False, False])</span>
 <span class="sd">        }</span>
+
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([False, True, False, False])</span>
 <span class="sd">        }</span>
+
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, False, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">        ivy.array([False, False, False, False])</span>
+
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([True, False, True]),</span>
@@ -4679,30 +4628,6 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results. The returned container</span>
 <span class="sd">            must have a data type of ``bool``.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        With one :code:`ivy.Container` input:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([0,0,1,1,0])</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))</span>
-<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_logical_xor(x, y)</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, True, False, False]),</span>
-<span class="sd">            b: ivy.array([True, False, False, True, False])</span>
-<span class="sd">        }</span>
-
-<span class="sd">        With multiple :code:`ivy.Container` inputs:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0,0,1,1,0]), b=ivy.array([1,0,1,1,0]))</span>
-<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_logical_xor(x, y)</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, True, False, False]),</span>
-<span class="sd">            b: ivy.array([False, False, False, True, False])</span>
-<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;logical_xor&quot;</span><span class="p">,</span>
@@ -4757,17 +4682,6 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results. The returned container</span>
 <span class="sd">            must have a data type of ``bool``.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0,0,1,1,0]), b=ivy.array([1,0,1,1,0]))</span>
-<span class="sd">        &gt;&gt;&gt; z = x.logical_xor(y)</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, True, False, False]),</span>
-<span class="sd">            b: ivy.array([False, False, False, True, False])</span>
-<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_logical_xor</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
