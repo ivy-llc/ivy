@@ -24,7 +24,7 @@ def argsort(
 
 
 def sort(
-    x: JaxArray,
+    x:  JaxArray,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
@@ -41,8 +41,8 @@ def sort(
 
 
 def searchsorted(
-    x1:JaxArray,
-    x2:JaxArray,
+    x1: JaxArray,
+    x2: JaxArray,
     side="left",
     *,
     out: Optional[JaxArray] = None
