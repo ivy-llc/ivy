@@ -5,6 +5,9 @@ import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.manipulation import _calculate_out_shape
+
 
 # Array API Standard #
 # -------------------#
@@ -29,9 +32,12 @@ concat.support_native_out = True
 
 
 def expand_dims(
-    x: torch.Tensor, axis: int = 0, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> torch.Tensor:
-    ret = torch.unsqueeze(x, axis)
+    out_shape = _calculate_out_shape(axis, x.shape)
+    # torch.reshape since it can operate on contiguous and non_contiguous tensors
+    ret = x.reshape(out_shape)
     return ret
 
 
@@ -67,12 +73,13 @@ def permute_dims(
 def reshape(
     x: torch.Tensor,
     shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None,
     *,
-    out: Optional[torch.Tensor] = None,
+    copy: Optional[bool] = None,
 ) -> torch.Tensor:
-    ret = torch.reshape(x, shape)
-    return ret
+    if copy:
+        newarr = torch.clone(x)
+        return torch.reshape(newarr, shape)
+    return torch.reshape(x, shape)
 
 
 def roll(
@@ -96,11 +103,10 @@ def squeeze(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
-        dim = x.dim()
-        if dim > 0 and (axis < -dim or dim <= axis):
+        if x.size(dim=axis) > 1:
             raise ValueError(
                 "Expected dimension of size [{}, {}], but found "
-                "dimension size {}".format(-dim, dim, axis)
+                "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
         return torch.squeeze(x, axis)
     if axis is None:

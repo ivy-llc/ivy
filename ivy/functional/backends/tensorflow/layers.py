@@ -77,23 +77,29 @@ def conv2d_transpose(
     )
 
 
-conv2d_transpose.unsupported_devices = ('cpu',)
+conv2d_transpose.unsupported_devices = ("cpu",)
 
 
 def depthwise_conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
-    strides: int,
+    strides: Union[int, Tuple[int, int]],
     padding: Union[str, List[int]],
     data_format: str = "NHWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int, int]] = 1,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filters = tf.expand_dims(filters, -1)
-    strides = [1, strides, strides, 1]
-    dilations = [dilations, dilations]
-    return tf.nn.depthwise_conv2d(x, filters, strides, padding, data_format, dilations)
+    strides = [1, strides[0], strides[1], 1]
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)
+    if data_format == "NCHW":
+        return tf.transpose(res, (0, 3, 1, 2))
+    return res
 
 
 # noinspection PyDefaultArgument
@@ -107,14 +113,19 @@ def conv3d(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ):
-    strides = [1] * 2 + ([strides] * 3 if isinstance(strides, int) else strides)
-    dilations = [1] * 2 + ([dilations] * 3 if isinstance(dilations, int) else dilations)
+    strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
+    dilations = (
+        [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
+    )
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
     res = tf.nn.conv3d(x, filters, strides, padding, "NDHWC", dilations)
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
+
+
+conv3d.unsupported_device = ("cpu",)
 
 
 def conv3d_transpose(

@@ -5,6 +5,9 @@ import tensorflow as tf
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.manipulation import _calculate_out_shape
+
 
 # Array API Standard #
 # -------------------#
@@ -38,12 +41,11 @@ def concat(
 
 def expand_dims(
     x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
-        ret = tf.expand_dims(x, axis)
+        out_shape = _calculate_out_shape(axis, x.shape)
+        ret = tf.reshape(x, shape=out_shape)
         return ret
     except tf.errors.InvalidArgumentError as error:
         raise IndexError(error)
@@ -86,10 +88,12 @@ def reshape(
     x: Union[tf.Tensor, tf.Variable],
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.reshape(x, shape)
-    return ret
+    if copy:
+        newarr = tf.experimental.numpy.copy(x)
+        return tf.reshape(newarr, shape)
+    return tf.reshape(x, shape)
 
 
 def roll(

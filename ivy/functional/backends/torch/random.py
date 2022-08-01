@@ -3,11 +3,14 @@
 # global
 import torch
 from typing import Optional, Union, Sequence
-import numbers
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _randint_check_dtype_and_bound,
+    _check_valid_scale,
+)
 
 # Extra #
 # ------#
@@ -32,19 +35,15 @@ def random_normal(
     std: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
+    dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(mean, numbers.Number) and isinstance(std, numbers.Number):
-        ret = torch.normal(mean, std, ivy.default(shape, ()), out=out)
-    else:
-        assert shape is None, (
-            "can only provide explicit shape if mean and std are " "both scalar values"
-        )
-        ret = torch.normal(mean, std, out=out)
-    if ret.device == device:
-        return ret
-    return ret.to(device)
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
+    if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
+        return torch.normal(mean, std, shape, out=out).to(device)
+    return torch.normal(mean, std, out=out).to(device)
 
 
 random_normal.support_native_out = True
@@ -82,22 +81,16 @@ def randint(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: torch.device,
+    dtype: Optional[Union[torch.dtype, ivy.Dtype]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    zero_dim = len(shape) == 0
-    if zero_dim:
-        shape = [1]
-    ret = torch.rand(*shape, out=out, dtype=torch.float64, device=device)
-    ret = torch.mul(ret, high - low, out=out)
-    ret = torch.add(ret, low, out=out)
-    ret = ret.to(ivy.default_int_dtype(as_native=True))
-    ret = torch.clamp(ret, low, high - 1)
-    if zero_dim:
-        return ret.reshape(())
-    return ret
-
-
-randint.support_native_out = True
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    _randint_check_dtype_and_bound(low, high, dtype)
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    rand_range = high - low
+    return torch.rand(shape, device=device).to(dtype) * rand_range + low
 
 
 def seed(seed_value: int = 0) -> None:
@@ -108,7 +101,7 @@ def seed(seed_value: int = 0) -> None:
 
 def shuffle(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     batch_size = x.shape[0]
-    return torch.index_select(x, 0, torch.randperm(batch_size, out=out), out=out)
+    return torch.index_select(x, 0, torch.randperm(batch_size), out=out)
 
 
 shuffle.support_native_out = True
