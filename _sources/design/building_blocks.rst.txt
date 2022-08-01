@@ -16,40 +16,70 @@ There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy
 
 .. code-block:: python
 
-   # ivy/functional/backends/jax/elementwise.py:
-   def clip(x, x_min, x_max):
-       return jax.numpy.clip(x, x_min, x_max)
+   # ivy/functional/backends/jax/manipulation.py:
+    def stack(
+        x: Union[Tuple[JaxArray], List[JaxArray]],
+        axis: Optional[int] = None,
+        *,
+        out: Optional[JaxArray] = None,
+    ) -> JaxArray:
+        if axis is None:
+            axis = 0
+        ret = jnp.stack(x, axis=axis)
+        return ret
+
 .. code-block:: python
 
-   # ivy/functional/backends/mxnet/elementwise.py:
-   def clip(x, x_min, x_max):
-       return mxnet.nd.clip(x, x_min, x_max)
+   # ivy/functional/backends/numpy/manipulation.py:
+    def stack(
+        x: Union[Tuple[np.ndarray], List[np.ndarray]],
+        axis: Optional[int] = 0,
+        *,
+        out: Optional[np.ndarray] = None,
+    ) -> np.ndarray:
+        return np.stack(x, axis, out=out)
+
 .. code-block:: python
 
-   # ivy/functional/backends/numpy/elementwise.py:
-   def clip(x, x_min, x_max):
-       return numpy.clip(x, x_min, x_max)
+   # ivy/functional/backends/tensorflow/manipulation.py:
+    def stack(
+        x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
+        axis: Optional[int] = 0,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        ret = tf.experimental.numpy.stack(x, axis)
+        return ret
+
 .. code-block:: python
 
-   # ivy/functional/backends/tensorflow/elementwise.py:
-   def clip(x, x_min, x_max):
-       return tensorflow.clip_by_value(x, x_min, x_max)
-.. code-block:: python
+   # ivy/functional/backends/torch/manipulation.py:
+    def stack(
+        x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+        axis: Optional[int] = 0,
+        *,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        ret = torch.stack(x, axis, out=out)
+        return ret
 
-   # ivy/functional/backends/torch/elementwise.py:
-   def clip(x, x_min, x_max):
-       return torch.clamp(x, x_min, x_max)
-
-For NumPy, MXNet, and JAX there are no changes at all in this case, and for TensorFlow and PyTorch there is just a simple name change.
+There were no changes required for this function except a minor axis check for JAX.
 
 For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch, MXNet and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
 
 .. code-block:: python
 
    # ivy/functional/backends/tensorflow/creation.py:
-   def logspace(start, stop, num, base=10., axis=None, dev=None):
-       power_seq = linspace(start, stop, num, axis, default_device(dev))
-       return base ** power_seq
+    def logspace(
+        start: Union[tf.Tensor, tf.Variable, int],
+        stop: Union[tf.Tensor, tf.Variable, int],
+        num: int,
+        base: float = 10.0,
+        axis: Optional[int] = None,
+        *,
+        dtype: tf.DType,
+        device: str,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        power_seq = ivy.linspace(start, stop, num, axis, dtype=dtype, device=device)
+        return base**power_seq
 
 Ivy Functional API ✅
 ------------------
@@ -61,60 +91,90 @@ Calling the different backend files explicitly would work okay, but it would mea
 .. code-block:: python
 
    # ivy/functional/ivy/elementwise.py:
-   def clip(x: Union[ivy.Array, ivy.NativeArray],
-         x_min: Union[Number, ivy.Array, ivy.NativeArray],
-         x_max: Union[Number, ivy.Array, ivy.NativeArray],
-         f: ivy.Framework = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
+    @to_native_arrays_and_back
+    @handle_out_argument
+    @handle_nestable
+    def prod(
+        x: Union[ivy.Array, ivy.NativeArray],
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """Calculates the product of input array x elements.
+
+        x
+            input array. Should have a numeric data type.
+        axis
+            axis or axes along which products must be computed. By default, the product must
+            be computed over the entire array. If a tuple of integers, products must be
+            computed over multiple axes. Default: None.
+        keepdims
+            bool, if True, the reduced axes (dimensions) must be included in the result as
+            singleton dimensions, and, accordingly, the result must be compatible with the
+            input array (see Broadcasting). Otherwise, if False, the reduced axes
+            (dimensions) must not be included in the result. Default: False.
+        dtype
+            data type of the returned array. If None,
+            if the default data type corresponding to the data type “kind” (integer or
+            floating-point) of x has a smaller range of values than the data type of x
+            (e.g., x has data type int64 and the default data type is int32, or x has data
+            type uint64 and the default data type is int64), the returned array must have
+            the same data type as x. if x has a floating-point data type, the returned array
+            must have the default floating-point data type. if x has a signed integer data
+            type (e.g., int16), the returned array must have the default integer data type.
+            if x has an unsigned integer data type (e.g., uint16), the returned array must
+            have an unsigned integer data type having the same number of bits as the default
+            integer data type (e.g., if the default integer data type is int32, the returned
+            array must have a uint32 data type). If the data type (either specified or
+            resolved) differs from the data type of x, the input array should be cast to the
+            specified data type before computing the product. Default: None.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            array,  if the product was computed over the entire array, a zero-dimensional
+            array containing the product; otherwise, a non-zero-dimensional array containing
+            the products. The returned array must have a data type as described by the dtype
+            parameter above.
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> z = ivy.prod(x)
+        >>> print(z)
+        ivy.array(6)
+
+        >>> x = ivy.array([1, 0, 3])
+        >>> z = ivy.prod(x)
+        >>> print(z)
+        ivy.array(0)
+
         """
-        Clips (limits) the values in an array.
-        Given an interval, values outside the interval are clipped
-        to the interval edges (element-wise). For example, if an
-        interval of [0, 1] is specified, values smaller than 0
-        become 0,and values larger than 1 become 1.
+        return current_backend(x).prod(
+            x, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+        )
 
-        :param x: Input array containing elements to clip.
-        :type x: array
-        :param x_min: Minimum value.
-        :type x_min: scalar or array
-        :param x_max: Maximum value.
-        :type x_max: scalar or array
-        :param f: ML framework. Inferred from inputs if None.
-        :type f: ml_framework, optional
-        :return: An array with the elements of x, but where values
-            < x_min are replaced with x_min, and those > x_max with
-            x_max.
-        """
-        return ivy.current_framework(x, f=f).clip(x, x_min, x_max)
-
-Furthermore, this :code:`ivy.api` submodule enables implicit framework selection, where a function can be called before a backend framework is explicitly set, and the backend framework is then inferred automatically by checking the input types to the function.
+Implicitly, Ivy sets numpy as the default backend or operates with the backend corresponding to the specified data inputs
+until the user explicitly sets a different backend. The examples can be seeen below:
 
 
-+----------------------------------------+-----------------------------------------+
-|                                        |                                         |
-|.. code-block:: python                  |.. code-block:: python                   |
-|                                        |                                         |
-|   # implicit                           |   # explicit                            |
-|   import ivy                           |   import ivy                            |
-|   import torch                         |   import torch                          |
-|                                        |                                         |
-|   a = torch.ones((1, ))                |   a = torch.ones((1,))                  |
-|   b = torch.zeros((1,))                |   b = torch.zeros((1,))                 |
-|                                        |                                         |
-|   print(ivy.current_framework())       |   print(ivy.current_framework())        |
-|   -> 'No backed framework selected'    |   -> 'No backed framework selected'     |
-|                                        |                                         |
-|                                        |   ivy.set_framework('torch')            |
-|                                        |                                         |
-|   # ivy/api/core/general.py            |   # ivy/backends/torch/core/general.py  |
-|   c = ivy.concatenate([a, b], 0)       |   c = ivy.concatenate([a, b], 0)        |
-|                                        |                                         |
-|   print(type(c))                       |   print(type(c))                        |
-|   -> <class 'torch.Tensor'>            |   -> <class 'torch.Tensor'>             |
-|                                        |                                         |
-|   print(ivy.current_framework())       |   print(ivy.current_framework())        |
-|   -> 'No backed framework selected'    |   -> <module 'ivy.backends.torch'>      |
-+----------------------------------------+-----------------------------------------+
++----------------------------------------+----------------------------------------------------+
+|                                        |                                                    |
+|.. code-block:: python                  |.. code-block:: python                              |
+|                                        |                                                    |
+|   # implicit                           |   # explicit                                       |
+|   import ivy                           |   import ivy                                       |
+|   x = ivy.array([1, 2, 3])             |   ivy.set_backend("jax")                           |
+|   (type(ivy.to_native(x)))             |                                                    |
+|   # -> <class 'numpy.ndarray'>         |   z = ivy.array([1, 2, 3]))                        |
+|                                        |   type(ivy.to_native(z))                           |
+|   import torch                         |   # ->  <class 'jaxlib.xla_extension.DeviceArray'> |
+|   t = torch.tensor([23,42, -1])        |                                                    |
+|   type(ivy.to_native(ivy.sum(t)))      |                                                    |
+|   # -> <class 'torch.Tensor'>          |                                                    |
++----------------------------------------+----------------------------------------------------+
 
 This implicit framework selection, and the use of a shared global ivy namespace for all backends, are both made possible via the framework handler.
 

@@ -148,37 +148,64 @@
 <h2>Backend Functional APIs ✅<a class="headerlink" href="#backend-functional-apis" title="Permalink to this heading"></a></h2>
 <p>The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy <strong>wraps</strong> the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function <code class="code docutils literal notranslate"><span class="pre">ivy.clip</span></code> as an example.</p>
 <p>There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy, and so we implement the <code class="code docutils literal notranslate"><span class="pre">clip</span></code> method once for each backend, each in separate backend files like so:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/jax/elementwise.py:</span>
-<span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/jax/manipulation.py:</span>
+ <span class="k">def</span> <span class="nf">stack</span><span class="p">(</span>
+     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">JaxArray</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">JaxArray</span><span class="p">]],</span>
+     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+     <span class="o">*</span><span class="p">,</span>
+     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">JaxArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+ <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JaxArray</span><span class="p">:</span>
+     <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+         <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span>
+     <span class="n">ret</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/mxnet/elementwise.py:</span>
-<span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">mxnet</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/numpy/manipulation.py:</span>
+ <span class="k">def</span> <span class="nf">stack</span><span class="p">(</span>
+     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
+     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+     <span class="o">*</span><span class="p">,</span>
+     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+ <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/numpy/elementwise.py:</span>
-<span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/tensorflow/manipulation.py:</span>
+ <span class="k">def</span> <span class="nf">stack</span><span class="p">(</span>
+     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]],</span>
+     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+ <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+     <span class="n">ret</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/tensorflow/elementwise.py:</span>
-<span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">clip_by_value</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/torch/manipulation.py:</span>
+ <span class="k">def</span> <span class="nf">stack</span><span class="p">(</span>
+     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]],</span>
+     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+     <span class="o">*</span><span class="p">,</span>
+     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+ <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+     <span class="n">ret</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/torch/elementwise.py:</span>
-<span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>For NumPy, MXNet, and JAX there are no changes at all in this case, and for TensorFlow and PyTorch there is just a simple name change.</p>
+<p>There were no changes required for this function except a minor axis check for JAX.</p>
 <p>For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch, MXNet and NumPy all have a <code class="code docutils literal notranslate"><span class="pre">logspace</span></code> method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/tensorflow/creation.py:</span>
-<span class="k">def</span> <span class="nf">logspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">power_seq</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">default_device</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">base</span> <span class="o">**</span> <span class="n">power_seq</span>
+ <span class="k">def</span> <span class="nf">logspace</span><span class="p">(</span>
+     <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+     <span class="n">stop</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+     <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+     <span class="n">base</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span>
+     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+     <span class="o">*</span><span class="p">,</span>
+     <span class="n">dtype</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">DType</span><span class="p">,</span>
+     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+ <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+     <span class="n">power_seq</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+     <span class="k">return</span> <span class="n">base</span><span class="o">**</span><span class="n">power_seq</span>
 </pre></div>
 </div>
 </section>
@@ -187,83 +214,100 @@
 <p>Calling the different backend files explicitly would work okay, but it would mean we need to <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.torch</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a PyTorch backend or <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.tensorflow</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework(‘torch’)</span></code> for example.</p>
 <p><code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The <code class="code docutils literal notranslate"><span class="pre">clip</span></code> function is shown below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/ivy/elementwise.py:</span>
-<span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-      <span class="n">x_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-      <span class="n">x_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-      <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-     <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">     Clips (limits) the values in an array.</span>
-<span class="sd">     Given an interval, values outside the interval are clipped</span>
-<span class="sd">     to the interval edges (element-wise). For example, if an</span>
-<span class="sd">     interval of [0, 1] is specified, values smaller than 0</span>
-<span class="sd">     become 0,and values larger than 1 become 1.</span>
+ <span class="nd">@to_native_arrays_and_back</span>
+ <span class="nd">@handle_out_argument</span>
+ <span class="nd">@handle_nestable</span>
+ <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
+     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+     <span class="o">*</span><span class="p">,</span>
+     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+ <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+     <span class="sd">&quot;&quot;&quot;Calculates the product of input array x elements.</span>
 
-<span class="sd">     :param x: Input array containing elements to clip.</span>
-<span class="sd">     :type x: array</span>
-<span class="sd">     :param x_min: Minimum value.</span>
-<span class="sd">     :type x_min: scalar or array</span>
-<span class="sd">     :param x_max: Maximum value.</span>
-<span class="sd">     :type x_max: scalar or array</span>
-<span class="sd">     :param f: ML framework. Inferred from inputs if None.</span>
-<span class="sd">     :type f: ml_framework, optional</span>
-<span class="sd">     :return: An array with the elements of x, but where values</span>
-<span class="sd">         &lt; x_min are replaced with x_min, and those &gt; x_max with</span>
-<span class="sd">         x_max.</span>
+<span class="sd">     x</span>
+<span class="sd">         input array. Should have a numeric data type.</span>
+<span class="sd">     axis</span>
+<span class="sd">         axis or axes along which products must be computed. By default, the product must</span>
+<span class="sd">         be computed over the entire array. If a tuple of integers, products must be</span>
+<span class="sd">         computed over multiple axes. Default: None.</span>
+<span class="sd">     keepdims</span>
+<span class="sd">         bool, if True, the reduced axes (dimensions) must be included in the result as</span>
+<span class="sd">         singleton dimensions, and, accordingly, the result must be compatible with the</span>
+<span class="sd">         input array (see Broadcasting). Otherwise, if False, the reduced axes</span>
+<span class="sd">         (dimensions) must not be included in the result. Default: False.</span>
+<span class="sd">     dtype</span>
+<span class="sd">         data type of the returned array. If None,</span>
+<span class="sd">         if the default data type corresponding to the data type “kind” (integer or</span>
+<span class="sd">         floating-point) of x has a smaller range of values than the data type of x</span>
+<span class="sd">         (e.g., x has data type int64 and the default data type is int32, or x has data</span>
+<span class="sd">         type uint64 and the default data type is int64), the returned array must have</span>
+<span class="sd">         the same data type as x. if x has a floating-point data type, the returned array</span>
+<span class="sd">         must have the default floating-point data type. if x has a signed integer data</span>
+<span class="sd">         type (e.g., int16), the returned array must have the default integer data type.</span>
+<span class="sd">         if x has an unsigned integer data type (e.g., uint16), the returned array must</span>
+<span class="sd">         have an unsigned integer data type having the same number of bits as the default</span>
+<span class="sd">         integer data type (e.g., if the default integer data type is int32, the returned</span>
+<span class="sd">         array must have a uint32 data type). If the data type (either specified or</span>
+<span class="sd">         resolved) differs from the data type of x, the input array should be cast to the</span>
+<span class="sd">         specified data type before computing the product. Default: None.</span>
+<span class="sd">     out</span>
+<span class="sd">         optional output array, for writing the result to.</span>
+
+<span class="sd">     Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">     ret</span>
+<span class="sd">         array,  if the product was computed over the entire array, a zero-dimensional</span>
+<span class="sd">         array containing the product; otherwise, a non-zero-dimensional array containing</span>
+<span class="sd">         the products. The returned array must have a data type as described by the dtype</span>
+<span class="sd">         parameter above.</span>
+
+<span class="sd">     &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">     &gt;&gt;&gt; z = ivy.prod(x)</span>
+<span class="sd">     &gt;&gt;&gt; print(z)</span>
+<span class="sd">     ivy.array(6)</span>
+
+<span class="sd">     &gt;&gt;&gt; x = ivy.array([1, 0, 3])</span>
+<span class="sd">     &gt;&gt;&gt; z = ivy.prod(x)</span>
+<span class="sd">     &gt;&gt;&gt; print(z)</span>
+<span class="sd">     ivy.array(0)</span>
+
 <span class="sd">     &quot;&quot;&quot;</span>
-     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span>
+     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span>
+         <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+     <span class="p">)</span>
 </pre></div>
 </div>
-<p>Furthermore, this <code class="code docutils literal notranslate"><span class="pre">ivy.api</span></code> submodule enables implicit framework selection, where a function can be called before a backend framework is explicitly set, and the backend framework is then inferred automatically by checking the input types to the function.</p>
+<p>Implicitly, Ivy sets numpy as the default backend or operates with the backend corresponding to the specified data inputs
+until the user explicitly sets a different backend. The examples can be seeen below:</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 49%" />
-<col style="width: 51%" />
+<col style="width: 43%" />
+<col style="width: 57%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span># implicit
-import ivy
-import torch
+<tr class="row-odd"><td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># implicit</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+<span class="c1"># -&gt; &lt;class &#39;numpy.ndarray&#39;&gt;</span>
 
-a = torch.ones((1, ))
-b = torch.zeros((1,))
-
-print(ivy.current_framework())
--&gt; &#39;No backed framework selected&#39;
-
-
-
-# ivy/api/core/general.py
-c = ivy.concatenate([a, b], 0)
-
-print(type(c))
--&gt; &lt;class &#39;torch.Tensor&#39;&gt;
-
-print(ivy.current_framework())
--&gt; &#39;No backed framework selected&#39;
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">23</span><span class="p">,</span><span class="mi">42</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">type</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span>
+<span class="c1"># -&gt; &lt;class &#39;torch.Tensor&#39;&gt;</span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span># explicit
-import ivy
-import torch
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># explicit</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span>
 
-a = torch.ones((1,))
-b = torch.zeros((1,))
-
-print(ivy.current_framework())
--&gt; &#39;No backed framework selected&#39;
-
-ivy.set_framework(&#39;torch&#39;)
-
-# ivy/backends/torch/core/general.py
-c = ivy.concatenate([a, b], 0)
-
-print(type(c))
--&gt; &lt;class &#39;torch.Tensor&#39;&gt;
-
-print(ivy.current_framework())
--&gt; &lt;module &#39;ivy.backends.torch&#39;&gt;
+<span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="nb">type</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+<span class="c1"># -&gt;  &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt;</span>
 </pre></div>
 </div>
 </td>
