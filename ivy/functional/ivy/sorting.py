@@ -220,8 +220,7 @@ def searchsorted(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
-
-     """Returns the indices of the inserted elements in a sorted array.
+    """Returns the indices of the inserted elements in a sorted array.
 
      Parameters
      ----------
