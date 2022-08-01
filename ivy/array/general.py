@@ -292,6 +292,24 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_numpy(self)
 
+    def to_list(self: ivy.Array):
+        """
+        ivy.Array instance method variant of ivy.to_list. This method simply wraps
+        the function, and so the docstring for ivy.to_list also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+
+        Returns
+        -------
+        ret
+            A list representation of the input array ``x``.
+        """
+        return ivy.to_list(self)
+
     def stable_divide(
         self,
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
