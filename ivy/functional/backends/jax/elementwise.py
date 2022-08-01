@@ -4,6 +4,7 @@ import jax.numpy as jnp
 from typing import Union, Optional
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -15,10 +16,7 @@ def _cast_for_bitwise_op(x1, x2):
 
 
 def _cast_for_binary_op(x1, x2):
-    if not isinstance(x1, (int, float)):
-        if isinstance(x2, (int, float)):
-            x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return x1, x2
+    return ivy.promote_types_of_inputs(x1,x2)
 
 
 def abs(x: Union[float, JaxArray], *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -148,7 +146,13 @@ def divide(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.divide(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    if ivy.is_array(x1):
+        ret = jax.numpy.divide(x1, x2).astype(x1.dtype)
+        return ret
+    else:
+        ret = jax.numpy.divide(x1, x2).astype('float32')
+        return ret
 
 
 def equal(
@@ -183,7 +187,7 @@ def floor_divide(
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return jnp.floor_divide(x1, x2)
+    return jax.numpy.floor_divide(x1, x2)
 
 
 def greater(

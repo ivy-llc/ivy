@@ -2,7 +2,7 @@
 import math
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, List, Optional, Callable
+from typing import Union, Tuple, List, Optional, Callable, Any
 
 # local
 import ivy
@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_arrays,
     handle_nestable,
+    inputs_to_ivy_arrays,
 )
 
 
@@ -1713,3 +1714,19 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
     if dtype_in is None:
         return True
     return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
+
+
+def promote_types_of_inputs(
+    x1: Any,
+    x2: Any,
+) -> Any:
+    try:
+        x1, x2 = ivy.to_ivy(x1), ivy.to_ivy(x2)
+        if hasattr(x1, '_dtype') and hasattr(x2,'_dtype'):
+            promoted = promote_types(x1._dtype, x2._dtype)
+            x1 = ivy.asarray(x1, dtype=promoted)
+            x2 = ivy.asarray(x2, dtype=promoted)
+        x1, x2 = ivy.to_native(x1), ivy.to_native(x2)
+        return x1, x2
+    except:
+        raise

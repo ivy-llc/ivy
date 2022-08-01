@@ -10,16 +10,7 @@ import ivy
 
 
 def _cast_for_binary_op(x1, x2):
-    if isinstance(x1, Tensor):
-        if isinstance(x2, Tensor):
-            promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-            x1 = tf.cast(x1, promoted_type)
-            x2 = tf.cast(x2, promoted_type)
-        else:
-            x2 = tf.constant(x2, dtype=x1.dtype)
-    elif isinstance(x2, Tensor):
-        x1 = tf.constant(x1, dtype=x2.dtype)
-    return x1, x2
+    return ivy.promote_types_of_inputs(x1,x2)
 
 
 def abs(
@@ -185,7 +176,12 @@ def divide(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.experimental.numpy.divide(x1, x2)
+    if ivy.is_array(x1):
+        ret=tf.cast(tf.experimental.numpy.divide(x1, x2),x1.dtype)
+        return ret
+    else:
+        ret= tf.cast(tf.experimental.numpy.divide(x1, x2),'float32')
+        return ret
 
 
 def equal(
@@ -229,7 +225,7 @@ def floor_divide(
     if (not np.all(x2)) or (np.any(x2) == -0):  # check for division by zero
         ret = np.floor_divide(x1, x2)
     else:
-        ret = tf.math.floordiv(x1, x2)
+        ret = tf.experimental.numpy.floor_divide(x1, x2)
 
     if (any(isinf(x1)) and any(isfinite(x2))) or (any(isfinite(x1)) and any(isinf(x2))):
         return ivy.full_like(ret, floor(divide(x1, x2)), dtype=ret.dtype)
