@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List, Any
+from typing import Optional, Tuple, Union, List, Any, Callable
 
 # local
 import ivy
@@ -398,20 +398,20 @@ scaled_dot_product_attention.unsupported_dtypes = {'torch': ('float16', )}
 
 
 def multi_head_attention(
-    x,
+    x: Union[ivy.Array, ivy.NativeArray],
     scale,
     num_heads,
-    context=None,
-    mask=None,
-    to_q_fn=None,
-    to_kv_fn=None,
-    to_out_fn=None,
+    context: Union[ivy.Array, ivy.NativeArray] = None,
+    mask: Union[ivy.Array, ivy.NativeArray] = None,
+    to_q_fn: Callable = None,
+    to_kv_fn: Callable = None,
+    to_out_fn: Callable = None,
     to_q_v=None,
     to_kv_v=None,
     to_out_v=None,
     *,
-    out: Optional[ivy.Array] = None,
-):
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies multi-head attention to inputs x.
 
     Parameters
@@ -493,6 +493,9 @@ def multi_head_attention(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+
+multi_head_attention.unsupported_dtypes = {"torch": ("float16", )}
 
 
 # Convolutions #

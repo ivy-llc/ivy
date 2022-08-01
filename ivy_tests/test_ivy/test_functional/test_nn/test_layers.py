@@ -18,6 +18,54 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @st.composite
 def x_and_weight(draw, dtypes, fn_name):
     dtype = draw(dtypes)
+    if fn_name == "multi_head_attention":
+        batch_shape = draw(
+            st.tuples(
+                st.integers(1, 3),
+                st.integers(1, 3),
+            )
+        )
+        num_queries = draw(st.integers(min_value=1, max_value=3))
+        feat_dim = draw(st.integers(min_value=1, max_value=3))
+        num_heads = draw(st.integers(min_value=1, max_value=3))
+        num_keys = draw(st.integers(min_value=1, max_value=3))
+
+        x_mha_shape = (num_queries,) + (feat_dim * num_heads,)
+        context_shape = (num_keys,) + (2 * feat_dim * num_heads,)
+        mask_shape = (num_queries,) + (num_keys,)
+        scale = draw(
+            st.floats(
+                min_value=0.1,
+                max_value=1,
+                width=64
+            )
+        )
+        x_mha = draw(
+            helpers.array_values(
+                dtype=dtype,
+                shape=x_mha_shape,
+                min_value=0,
+                max_value=1
+            )
+        )
+        context = draw(
+            helpers.array_values(
+                dtype=dtype,
+                shape=context_shape,
+                min_value=0,
+                max_value=1
+            )
+        )
+        mask = draw(
+            helpers.array_values(
+                dtype=dtype,
+                shape=mask_shape,
+                min_value=0,
+                max_value=1,
+                safety_factor=2
+            )
+        )
+        return dtype, x_mha, scale, num_heads, context, mask
     outer_batch_shape = draw(
         st.tuples(
             st.integers(3, 5),
@@ -95,61 +143,57 @@ def x_and_weight(draw, dtypes, fn_name):
             dtype=dtype,
             shape=x_lstm_shape,
             min_value=0,
-            max_value=1))
+            max_value=1
+        )
+    )
     init_h = draw(
         helpers.array_values(
             dtype=dtype,
             shape=init_h_shape,
             min_value=0,
-            max_value=1))
+            max_value=1
+        )
+    )
     init_c = draw(
         helpers.array_values(
             dtype=dtype,
             shape=init_c_shape,
             min_value=0,
-            max_value=1))
+            max_value=1
+        )
+    )
     kernel = draw(
         helpers.array_values(
             dtype=dtype,
             shape=kernel_shape,
             min_value=0,
-            max_value=1))
+            max_value=1
+        )
+    )
     recurrent_kernel = draw(
         helpers.array_values(
             dtype=dtype,
             shape=recurrent_kernel_shape,
             min_value=0,
-            max_value=1))
+            max_value=1
+        )
+    )
     lstm_bias = draw(
         helpers.array_values(
             dtype=dtype,
             shape=bias_shape,
             min_value=0,
-            max_value=1))
+            max_value=1
+        )
+    )
     recurrent_bias = draw(
         helpers.array_values(
             dtype=dtype,
             shape=recurrent_bias_shape,
             min_value=0,
-            max_value=1))
-
-    num_heads = num_keys
-
-    x_mha_shape = batch_shape + (num_queries,) + (feat_dim * num_heads,)
-    context_shape = batch_shape + (num_keys,) + (2 * feat_dim * num_heads,)
-
-    x_mha = draw(
-        helpers.array_values(
-            dtype=dtype,
-            shape=x_mha_shape,
-            min_value=0,
-            max_value=1))
-    context = draw(
-        helpers.array_values(
-            dtype=dtype,
-            shape=context_shape,
-            min_value=0,
-            max_value=1))
+            max_value=1
+        )
+    )
 
 
     if fn_name == "linear":
@@ -159,8 +203,7 @@ def x_and_weight(draw, dtypes, fn_name):
     if fn_name == "lstm_update":
         return dtype, x_lstm, init_h, init_c, kernel, \
             recurrent_kernel, lstm_bias, recurrent_bias
-    if fn_name == "multi_head_attention":
-        return dtype, x_mha, scale, num_heads, context, mask
+
 
 
 # linear
@@ -333,15 +376,14 @@ def test_scaled_dot_product_attention(
 
 # multi_head_attention
 @given(
+
     dtype_mha=x_and_weight(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         fn_name="multi_head_attention",
     ),
-    to_q_fn=st.functions(like=lambda x, v: x),
     num_positional_args=helpers.num_positional_args(
         fn_name="multi_head_attention"
     ),
-    with_out=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -349,7 +391,6 @@ def test_multi_head_attention(
     *,
     data,
     dtype_mha,
-    to_q_fn,
     as_variable,
     num_positional_args,
     with_out,
@@ -363,6 +404,7 @@ def test_multi_head_attention(
     as_variable = [as_variable] * 3
     native_array = [native_array] * 3
     container = [container] * 3
+    to_q_fn = lambda x_, v: x_
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -375,8 +417,9 @@ def test_multi_head_attention(
         fw=fw,
         fn_name="multi_head_attention",
         x=np.asarray(x_mha, dtype=dtype),
-        context=np.asarray(context, dtype=dtype),
         scale=scale,
+        num_heads=num_heads,
+        context=np.asarray(context, dtype=dtype),
         mask=np.asarray(mask, dtype=dtype),
         to_q_fn=to_q_fn,
         to_kv_fn=to_q_fn,
