@@ -9,6 +9,7 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # Linear #
 # -------#
@@ -23,14 +24,13 @@ import ivy.functional.backends.numpy as ivy_np
     dtype=helpers.list_of_length(
         x=st.sampled_from(ivy_np.valid_float_dtypes), length=3
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=3),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=3),
-    container=helpers.list_of_length(x=st.booleans(), length=3),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_linear(
+    *,
+    data,
     outer_batch_shape,
     inner_batch_shape,
     num_out_feats,
@@ -83,9 +83,10 @@ def test_linear(
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
+    data=st.data(),
 )
-def test_dropout(array_shape, dtype, as_variable, fw, device, call):
+@handle_cmd_line_args
+def test_dropout(*, data, array_shape, dtype, as_variable, fw, device, call):
     if (fw == "tensorflow" or fw == "torch") and "int" in dtype:
         return
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
@@ -118,16 +119,15 @@ def test_dropout(array_shape, dtype, as_variable, fw, device, call):
     num_keys=st.integers(min_value=1, max_value=5),
     feat_dim=st.integers(min_value=1, max_value=5),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=5),
     num_positional_args=helpers.num_positional_args(
         fn_name="scaled_dot_product_attention"
     ),
-    with_out=st.booleans(),
-    native_array=helpers.list_of_length(x=st.booleans(), length=5),
-    container=helpers.list_of_length(x=st.booleans(), length=5),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_scaled_dot_product_attention(
+    *,
+    data,
     batch_shape,
     num_queries,
     num_keys,
@@ -155,6 +155,9 @@ def test_scaled_dot_product_attention(
         dtype[3]
     )
     scale = np.random.uniform(size=[1]).astype(dtype[4])
+    as_variable = [as_variable for i in range(5)]
+    native_array = [native_array for i in range(5)]
+    container = [container for i in range(5)]
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -321,13 +324,13 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
     ),
     stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv1d"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_conv1d(
+    *,
+    data,
     x_f_d_df,
     stride,
     pad,
@@ -341,7 +344,9 @@ def test_conv1d(
 ):
     dtype, x, filters, dilations, data_format = x_f_d_df
     dtype = [dtype] * 2
-
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -425,13 +430,13 @@ def test_conv1d_transpose(
     ),
     stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_conv2d(
+    *,
+    data,
     x_f_d_df,
     stride,
     pad,
@@ -477,13 +482,13 @@ def test_conv2d(
     dtype=helpers.list_of_length(
         x=st.sampled_from(ivy_np.valid_float_dtypes), length=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_conv2d_transpose(
+    *,
+    data,
     array_shape,
     filter_shape,
     stride,
@@ -514,6 +519,7 @@ def test_conv2d_transpose(
     filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
         dtype[1]
     )
+
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -599,13 +605,13 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, cal
     ),
     stride=st.integers(min_value=1, max_value=4),
     pad=st.sampled_from(["VALID", "SAME"]),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_conv3d(
+    *,
+    data,
     x_f_d_df,
     stride,
     pad,
@@ -651,13 +657,13 @@ def test_conv3d(
     dtype=helpers.list_of_length(
         x=st.sampled_from(ivy_np.valid_float_dtypes), length=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d_transpose"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_conv3d_transpose(
+    *,
+    data,
     array_shape,
     filter_shape,
     stride,
@@ -693,6 +699,7 @@ def test_conv3d_transpose(
     filters = np.random.uniform(
         size=(filter_shape, filter_shape, filter_shape, 1, 1)
     ).astype(dtype[1])
+
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -723,13 +730,13 @@ def test_conv3d_transpose(
     input_channel=st.integers(min_value=1, max_value=5),
     hidden_channel=st.integers(min_value=1, max_value=5),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=7),
     num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=7),
-    container=helpers.list_of_length(x=st.booleans(), length=7),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_lstm(
+    *,
+    data,
     b,
     t,
     input_channel,
