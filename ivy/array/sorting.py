@@ -48,7 +48,7 @@ class ArrayWithSorting(abc.ABC):
     
     def searchsorted(  
         self: ivy.Array,
-        x2: ivy.Array, 
+        x2: Union[ivy.Array, ivy.NativeArray], 
         side="left",
         sorter=None,
         *,
