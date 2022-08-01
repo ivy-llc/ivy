@@ -38,8 +38,8 @@ def sort(
 def searchsorted(
     x1: np.ndarray,
     x2: np.ndarray,
-    side= "left",
-    sorter= None,
+    side="left",
+    sorter=None,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:   
-    return np.searchsorted(x1, x2,side=side, sorter=None)
+    return np.searchsorted(x1, x2, side=side, sorter=None)
