@@ -48,10 +48,10 @@ class ArrayWithSorting(abc.ABC):
     
     def searchsorted(  
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray], 
+        v: Union[ivy.Array, ivy.NativeArray], 
         side="left",
         sorter=None,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.searchsorted(self.data, x2, side=side, sorter=None, out=out)
+        return ivy.searchsorted(self.data, v, side=side, sorter=None, out=out)
