@@ -34,11 +34,11 @@ sort.support_native_out = True
 
 def searchsorted(
     x1: torch.Tensor,
-    x2: torch.Tensor,
+    v: torch.Tensor,
     side="left",
     sorter=None,
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
 
-    return torch.searchsorted(x1, x2, side=side, sorter=None)
+    return torch.searchsorted(x1, v, side=side, sorter=None)
