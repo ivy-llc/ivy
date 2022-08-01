@@ -211,23 +211,14 @@ def sort(
     
     
 @to_native_arrays_and_back
-
 @handle_out_argument
-
 @handle_nestable
-
 def searchsorted(
-
-        x1: Union[ivy.Array, ivy.NativeArray],
-
-        x2: Union[ivy.Array, ivy.NativeArray],
-
-        side="left",
-
-        *,
-
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
-
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    side="left",
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
 
      """Returns the indices of the inserted elements in a sorted array.
