@@ -175,28 +175,30 @@ def mean(
             Examples
     --------
     With :code:`ivy.Array` input:
-    >>> x = ivy.array([5, 6, 7])
+
+    >>> x = ivy.array([5., 6., 7.])
     >>> y = x.mean()
     >>> print(y)
     ivy.array(6.)
 
-    >>> x = ivy.array([4, 5, 7])
+    >>> x = ivy.array([4., 5.1, 7.1])
     >>> z = ivy.array([0,0,0])
     >>> y = ivy.mean(x, out=z)
     >>> print(z)
-    ivy.array(5.33333333)
+    ivy.array(5.4)
 
-    >>> x = ivy.array([[1,2,4],[6,8, 12]])
+    >>> x = ivy.array([[1.,2.,4.],[6.,8., 12.]])
     >>> y = ivy.mean(x, 0, True)
     >>> print(y)
     ivy.array([[3.5, 5. , 8. ]])
 
-    >>> x = ivy.native_array([[1,2,4],[6,8, 12]])
+    >>> x = ivy.native_array([[1.,2.,4.],[6.,8., 12.]])
     >>> y = ivy.mean(x)
     >>> print(y)
     ivy.array(5.5)
 
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
                           b=ivy.array([7., 8., 9.]))
     >>> y = ivy.mean(x)
@@ -205,8 +207,8 @@ def mean(
         a: ivy.array(5.),
         b: ivy.array(8.)
     }
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                          b=ivy.array([2, 3, 4]))
+    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                          b=ivy.array([2., 3., 4.]))
     >>> z = x.mean()
     >>> print(z)
     {
