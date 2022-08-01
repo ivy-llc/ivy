@@ -71,7 +71,8 @@ def x_and_weight(draw, dtypes, fn_name):
     v = draw(helpers.array_values
              (dtype=dtype, shape=v_shape, min_value=0, max_value=1))
     mask = draw(helpers.array_values
-                (dtype=dtype, shape=mask_shape, min_value=0, max_value=1, safety_factor=2))
+                (dtype=dtype, shape=mask_shape, min_value=0,
+                 max_value=1, safety_factor=2))
 
     t = draw(st.integers(min_value=1, max_value=3))
     _in_ = draw(st.integers(min_value=1, max_value=3))
@@ -86,19 +87,19 @@ def x_and_weight(draw, dtypes, fn_name):
     recurrent_bias_shape = bias_shape
 
     x_lstm = draw(helpers.array_values
-                  (dtype=dtype, shape=x_lstm_shape, min_value=0, max_value=1))
+                 (dtype=dtype, shape=x_lstm_shape, min_value=0, max_value=1))
     init_h = draw(helpers.array_values
-                  (dtype=dtype, shape=init_h_shape, min_value=0, max_value=1))
+                 (dtype=dtype, shape=init_h_shape, min_value=0, max_value=1))
     init_c = draw(helpers.array_values
-                  (dtype=dtype, shape=init_c_shape, min_value=0, max_value=1))
+                 (dtype=dtype, shape=init_c_shape, min_value=0, max_value=1))
     kernel = draw(helpers.array_values
-                  (dtype=dtype, shape=kernel_shape, min_value=0, max_value=1))
+                 (dtype=dtype, shape=kernel_shape, min_value=0, max_value=1))
     recurrent_kernel = draw(helpers.array_values
-                  (dtype=dtype, shape=recurrent_kernel_shape, min_value=0, max_value=1))
+                           (dtype=dtype, shape=recurrent_kernel_shape, min_value=0, max_value=1))
     lstm_bias = draw(helpers.array_values
-                  (dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
+                    (dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
     recurrent_bias = draw(helpers.array_values
-                  (dtype=dtype, shape=recurrent_bias_shape, min_value=0, max_value=1))
+                         (dtype=dtype, shape=recurrent_bias_shape, min_value=0, max_value=1))
 
     num_heads = num_keys
 
@@ -110,7 +111,8 @@ def x_and_weight(draw, dtypes, fn_name):
     if fn_name == "scaled_dot_product_attention":
         return dtype, q, k, v, mask, scale
     if fn_name == "lstm_update":
-        return dtype, x_lstm, init_h, init_c, kernel, recurrent_kernel, lstm_bias, recurrent_bias
+        return dtype, x_lstm, init_h, init_c, kernel, \
+               recurrent_kernel, lstm_bias, recurrent_bias
     if fn_name == "multi_head_attention":
         return dtype, x_mha, scale, num_heads, context, mask
 
@@ -289,9 +291,9 @@ def test_scaled_dot_product_attention(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         fn_name="multi_head_attention",
     ),
-    to_q_fn = st.functions(like=lambda x, v: x),
-    to_kv_fn = st.functions(like=lambda x, v: x),
-    to_out_fn = st.functions(like=lambda x, v: x),
+    to_q_fn=st.functions(like=lambda x, v: x),
+    to_kv_fn=st.functions(like=lambda x, v: x),
+    to_out_fn=st.functions(like=lambda x, v: x),
     with_out=st.booleans(),
     data=st.data(),
 )
@@ -856,7 +858,7 @@ def test_conv3d_transpose(
 @given(
     dtype_lstm=x_and_weight(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
-        fn_name= "lstm_update",
+        fn_name="lstm_update",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
     data=st.data(),
