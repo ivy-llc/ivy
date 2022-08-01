@@ -24,3 +24,20 @@ def add(
 
 
 add.unsupported_dtypes = {"torch": ("float16",)}
+
+def matrix_mean(a,
+               axis=None,
+               dtype=None,
+               out=None,
+               keepdims=np._NoValue,
+               *,
+               where=np._NoValue):
+    if len(a)==0:
+        return "NaN"
+    try:
+        res = ivy.mean(a, axis, dtype, out, keepdims, where)
+        return res
+    except:
+        print("An exception occurred")
+        
+add.unsupported_dtypes = {"torch": ("float16",)}
