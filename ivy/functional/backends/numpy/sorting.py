@@ -42,5 +42,4 @@ def searchsorted(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.searchsorted(x1, x2, side=side)
