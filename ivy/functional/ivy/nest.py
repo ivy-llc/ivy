@@ -583,16 +583,11 @@ def map(
         r
         for r in _map(
             lambda *uv: fn(**dict(**c, **dict(zip(u.keys(), uv)))), *u.values())
-        ]
-
- 
+    ]
     if mean:
         rets = sum(rets) / len(rets)
 
     return rets
-
-    
-
 
 def nested_map(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
