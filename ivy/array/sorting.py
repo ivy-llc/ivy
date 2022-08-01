@@ -17,6 +17,10 @@ class ArrayWithSorting(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
+        ivy.Array instance method variant of ivy.argsort. This method simply wraps the
+        function, and so the docstring for ivy.argsort also applies to this method
+        with minimal changes.
+        
         Parameters
         ----------
         self 
@@ -32,10 +36,6 @@ class ArrayWithSorting(abc.ABC):
         -------
         out 
             an array of indices. The returned array must have the same shape as ``x``. The returned array must have the default array index data type.
-     
-        ivy.Array instance method variant of ivy.argsort. This method simply wraps the
-        function, and so the docstring for ivy.argsort also applies to this method
-        with minimal changes.
         
         Examples
         --------
