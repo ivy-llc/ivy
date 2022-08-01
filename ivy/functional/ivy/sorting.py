@@ -216,8 +216,8 @@ def sort(
 def searchsorted(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    side= "left",
-    sorter= None,
+    side="left",
+    sorter=None,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
