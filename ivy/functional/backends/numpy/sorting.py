@@ -39,6 +39,7 @@ def searchsorted(
     x1: np.ndarray,
     x2: np.ndarray,
     side="left",
+    sorter=None,
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
