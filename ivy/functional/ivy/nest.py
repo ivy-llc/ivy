@@ -683,42 +683,35 @@ def nested_multi_map(
     """
     nest0 = None
     for nest in nests:
-        if isinstance(nest, (tuple, list, dict, ivy.Array, ivy.NativeArray)):
+        if isinstance(nest, (tuple, list, dict)):
             nest0 = nest
             break
-    if nest0 is None:
-        nest0 = nests
-    is_dict = isinstance(nest0, dict)
     return_list = list()
-    for index, val in enumerate(nest0):
-        if is_dict:
-            values = [
-                nest[index]
-                if isinstance(nest, (tuple, list, ivy.Array, ivy.NativeArray))
-                else nest[val]
-                if isinstance(nest, dict)
-                else nest
-                for nest in nests
-            ]
-        else:
-            values = [
-                nest[index]
-                if isinstance(nest, (tuple, list, ivy.Array, ivy.NativeArray))
-                else nest[list(nest)[index]]
-                if isinstance(nest, dict)
-                else nest
-                for nest in nests
-            ]
-        value0 = values[0]
-        this_key_chain = (
-            str(index) if key_chain == "" else (key_chain + "/" + str(index))
-        )
-        is_nest = [
-            isinstance(x, (tuple, list, dict))
-            or (isinstance(x, (ivy.Array, ivy.NativeArray)) and ivy.get_num_dims(x) > 0)
-            for x in values
-        ]
-        if any(is_nest):
+    if nest0 is not None:
+        is_dict = isinstance(nest0, dict)
+        for index, val in enumerate(nest0):
+            if is_dict:
+                values = [
+                    nest[index]
+                    if isinstance(nest, (tuple, list))
+                    else nest[val]
+                    if isinstance(nest, dict)
+                    else nest
+                    for nest in nests
+                ]
+            else:
+                values = [
+                    nest[index]
+                    if isinstance(nest, (tuple, list))
+                    else nest[list(nest)[index]]
+                    if isinstance(nest, dict)
+                    else nest
+                    for nest in nests
+                ]
+            value0 = values[0]
+            this_key_chain = (
+                str(index) if key_chain == "" else (key_chain + "/" + str(index))
+            )
             ret = ivy.nested_multi_map(
                 func,
                 values,
@@ -727,32 +720,38 @@ def nested_multi_map(
                 prune_unapplied,
                 this_key_chain,
                 config,
-                False,
+                to_ivy,
             )
-            if ivy.is_array(ret):
-                return_list.insert(index, ivy.to_list(ret))
+            if to_ivy:
+                if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+                    return_list.insert(index, ivy.array(ivy.to_list(ret)))
+                else:
+                    return_list.insert(index, ret)
             else:
                 return_list.insert(index, ret)
-        else:
-            if key_chains is not None:
-                if (this_key_chain in key_chains and not to_apply) or (
-                    this_key_chain not in key_chains and to_apply
-                ):
-                    if prune_unapplied:
-                        continue
-                    if ivy.is_array(value0):
-                        return_list.insert(index, ivy.to_list(value0))
-                    else:
-                        return_list.insert(index, value0)
-                    continue
-            ret = func(values, this_key_chain)
-            if ivy.is_array(ret):
-                return_list.insert(index, ivy.to_list(ret))
-            else:
-                return_list.insert(index, ret)
-
-    # noinspection PyProtectedMember
-    if to_ivy:
-        return ivy.array(return_list)
     else:
-        return return_list
+        values = nests
+        this_key_chain = key_chain
+        if key_chains is not None:
+            if (this_key_chain in key_chains and not to_apply) or (
+                this_key_chain not in key_chains and to_apply
+            ):
+                if prune_unapplied:
+                    return return_list
+                if ivy.is_array(value0):
+                    if to_ivy:
+                        return_list.append(value0)
+                    else:
+                        return_list.append(ivy.array(value0))
+                else:
+                    return_list.append(value0)
+                return return_list
+        ret = func(values, this_key_chain)
+        if to_ivy:
+            if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+                return ret
+            else:
+                return ivy.array(ret)
+        else:
+            return ret
+    return return_list
