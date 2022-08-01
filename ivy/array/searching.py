@@ -6,9 +6,6 @@ from typing import Optional, Union
 import ivy
 
 
-# ToDo: implement all methods here as public instance methods
-
-
 class ArrayWithSearching(abc.ABC):
     def argmax(
         self: ivy.Array,
@@ -46,7 +43,7 @@ class ArrayWithSearching(abc.ABC):
             the default array index data type.
 
         """
-        return ivy.argmax(self, axis=axis, keepdims=keepdims, out=out)
+        return ivy.argmax(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def argmin(
         self: ivy.Array,
@@ -85,7 +82,7 @@ class ArrayWithSearching(abc.ABC):
             axis.
 
         """
-        return ivy.argmin(self, axis=axis, keepdims=keepdims, out=out)
+        return ivy.argmin(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def nonzero(self: ivy.Array):
         """
@@ -104,7 +101,7 @@ class ArrayWithSearching(abc.ABC):
             Array containing the indices of the non-zero values.
 
         """
-        return ivy.nonzero(self)
+        return ivy.nonzero(self._data)
 
     def where(
         self: ivy.Array,
@@ -137,4 +134,4 @@ class ArrayWithSearching(abc.ABC):
             x2 otherwise.
 
         """
-        return ivy.where(self, x1, x2, out=out)
+        return ivy.where(self._data, x1._data, x2._data, out=out)
