@@ -13,7 +13,7 @@ from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 # local
 import ivy
 from ivy.functional.ivy.device import dev
-from ivy.backend_handler import current_backend
+from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
     infer_device,
     inputs_to_native_arrays,
@@ -1775,8 +1775,8 @@ def current_backend_str() -> Union[str, None]:
 
     """
     fw = current_backend()
-    if fw is None:
-        return None
+    if not backend_stack:
+        return ""
     return fw.current_backend_str()
 
 
@@ -2624,14 +2624,8 @@ def gather(
                           b = ivy.array([1, 2]))
     >>> print(x.gather(y))
     {
-        a: {
-            a: ivy.array([0., 1.]),
-            b: ivy.array([1., 2.])
-        },
-        b: {
-            a: ivy.array([4., 5.]),
-            b: ivy.array([5., 6.])
-        }
+        a: ivy.array([0., 1.]),
+        b: ivy.array([5., 6.])
     }
     """
     return current_backend(params).gather(params, indices, axis, out=out)
@@ -2948,9 +2942,8 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
 
 
 def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
-    if (
-        hasattr(fn, "unsupported_device_and_dtype")
-        and hasattr(fn, "supported_device_and_dtype")
+    if hasattr(fn, "unsupported_device_and_dtype") and hasattr(
+        fn, "supported_device_and_dtype"
     ):
         fn_unsupported_device_and_dtype = fn.unsupported_device_and_dtype
         fn_supported_device_and_dtype = fn.supported_device_and_dtype
@@ -2991,31 +2984,32 @@ def function_unsupported_devices_and_dtypes(fn: Callable) -> Dict:
              attributes cannot both exist in a particular backend"
         )
 
-    unsupported_devices_dtype = {'devices': (), 'dtypes': ()}
+    unsupported_devices_dtype = {"devices": (), "dtypes": ()}
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_devices_dtypes = fn.unsupported_device_and_dtype
         if isinstance(fn_unsupported_devices_dtypes, dict):
             backend_str = ivy.current_backend_str()
             if backend_str in fn_unsupported_devices_dtypes:
-                fn_unsupported_devices_dtypes = \
-                    fn_unsupported_devices_dtypes[backend_str]
+                fn_unsupported_devices_dtypes = fn_unsupported_devices_dtypes[
+                    backend_str
+                ]
 
             elif "devices" not in fn_unsupported_devices_dtypes:
                 return unsupported_devices_dtype
 
             keys = list(fn_unsupported_devices_dtypes.keys())
-            if 'dtypes' in keys and 'devices' in keys:
-                unsupported_devices_dtype['devices'] += \
-                    fn_unsupported_devices_dtypes['devices']
+            if "dtypes" in keys and "devices" in keys:
+                unsupported_devices_dtype["devices"] += fn_unsupported_devices_dtypes[
+                    "devices"
+                ]
 
-                if (
-                    isinstance(fn_unsupported_devices_dtypes['dtypes'][0], tuple)
-                ):
-                    for dtypes in fn_unsupported_devices_dtypes['dtypes']:
-                        unsupported_devices_dtype['dtypes'] += (dtypes, )
+                if isinstance(fn_unsupported_devices_dtypes["dtypes"][0], tuple):
+                    for dtypes in fn_unsupported_devices_dtypes["dtypes"]:
+                        unsupported_devices_dtype["dtypes"] += (dtypes,)
                 else:
-                    unsupported_devices_dtype['dtypes'] += \
-                        (fn_unsupported_devices_dtypes['dtypes'], )
+                    unsupported_devices_dtype["dtypes"] += (
+                        fn_unsupported_devices_dtypes["dtypes"],
+                    )
             else:
                 raise Exception(
                     "'unsupported_device_and_dtype' attr must have keys \
@@ -3050,29 +3044,28 @@ def function_supported_devices_and_dtypes(fn: Callable) -> Dict:
              attributes cannot both exist in a particular backend"
         )
 
-    supported_devices_dtype = {'devices': (), 'dtypes': ()}
+    supported_devices_dtype = {"devices": (), "dtypes": ()}
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_devices_dtypes = fn.supported_device_and_dtype
         if isinstance(fn_supported_devices_dtypes, dict):
             backend_str = ivy.current_backend_str()
             if backend_str in fn_supported_devices_dtypes:
-                fn_supported_devices_dtypes = \
-                    fn_supported_devices_dtypes[backend_str]
+                fn_supported_devices_dtypes = fn_supported_devices_dtypes[backend_str]
             elif "devices" not in fn_supported_devices_dtypes:
                 return supported_devices_dtype
             keys = list(fn_supported_devices_dtypes.keys())
-            if 'dtypes' in keys and 'devices' in keys:
-                supported_devices_dtype['devices'] += \
-                    fn_supported_devices_dtypes['devices']
+            if "dtypes" in keys and "devices" in keys:
+                supported_devices_dtype["devices"] += fn_supported_devices_dtypes[
+                    "devices"
+                ]
 
-                if (
-                    isinstance(fn_supported_devices_dtypes['dtypes'][0], tuple)
-                ):
-                    for dtypes in fn_supported_devices_dtypes['dtypes']:
-                        supported_devices_dtype['dtypes'] += dtypes
+                if isinstance(fn_supported_devices_dtypes["dtypes"][0], tuple):
+                    for dtypes in fn_supported_devices_dtypes["dtypes"]:
+                        supported_devices_dtype["dtypes"] += dtypes
                 else:
-                    supported_devices_dtype['dtypes'] += \
-                        (fn_supported_devices_dtypes['dtypes'], )
+                    supported_devices_dtype["dtypes"] += (
+                        fn_supported_devices_dtypes["dtypes"],
+                    )
             else:
                 raise Exception(
                     "'supported_device_and_dtype' attr must have keys \

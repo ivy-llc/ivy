@@ -5,6 +5,9 @@ import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.manipulation import _calculate_out_shape
+
 
 # Array API Standard #
 # -------------------#
@@ -29,9 +32,12 @@ concat.support_native_out = True
 
 
 def expand_dims(
-    x: torch.Tensor, axis: int = 0, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> torch.Tensor:
-    ret = torch.unsqueeze(x, axis)
+    out_shape = _calculate_out_shape(axis, x.shape)
+    # torch.reshape since it can operate on contiguous and non_contiguous tensors
+    ret = x.reshape(out_shape)
     return ret
 
 
