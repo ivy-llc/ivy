@@ -541,25 +541,25 @@ def map(
     With :code:`int` inputs:
 
     >>> def special_square(x:float) -> float:
-    >>> return np.square(x)
+    >>>     return np.square(x)
     >>> results = ivy.map(
     >>> fn = special_square,
     >>> constant = None,
-    >>> unique = {'x':[1,2,3]},
-    >>> mean = False)
+    >>> unique = {'x' : [1,2,3]},\
+    >>>          mean = False)
     >>> print(results)
     [1, 4, 9]
 
-    >>> results =  ivy.map(
-    >>> fn = special_square,
-    >>> constant = None,
-    >>> unique = {'x':[0,1,2]},
-    >>> mean = True)
+    >>> results = ivy.map( \
+    >>>     fn = special_square, \
+    >>>     constant = None, \
+    >>>     unique = {'x':[0,1,2]},\
+    >>>     mean = True)
     >>> print(results)
     1.6666666666666667
 
     >>> def special_pow(x:float,y:float) ->float:
-    >>> return np.power(x,y)
+    >>>     return np.power(x,y)
     >>> results = ivy.map(
     >>> fn = special_pow,
     >>> constant = {'y':[0,1]},
@@ -582,7 +582,7 @@ def map(
     >>>        w:float,
     >>>        x:float,
     >>>        b:float) -> float:
-    >>> return w*x + b
+    >>>     return w*x + b
     >>> results = ivy.map(
     >>>         fn = linear_model,
     >>>         constant = {'w':10., 'b':1.},
@@ -606,7 +606,7 @@ def map(
 
     >>> results = ivy.map(
     >>> fn = linear_model,
-    >>> constant = {'w':ivy.array([1.,0.,1.]),
+    >>> constant = {'w':ivy.array([1.,0.,1.]), 
     >>>            'b':ivy.array([0.,10.,100.])},
     >>> unique = {'x':[ivy.array([0.,1.,0.]),
     >>>               ivy.array([1.,1.,1.])]},
@@ -626,6 +626,7 @@ def map(
         rets = sum(rets) / len(rets)
 
     return rets
+
 
 def nested_map(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
