@@ -135,8 +135,22 @@ def x_and_weight(draw, dtypes, fn_name):
 
     num_heads = num_keys
 
-    x_mha = q
-    context = k
+    x_mha_shape = batch_shape + (num_queries,) + (feat_dim * num_heads,)
+    context_shape = batch_shape + (num_keys,) + (2 * feat_dim * num_heads,)
+
+    x_mha = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=x_mha_shape,
+            min_value=0,
+            max_value=1))
+    context = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=context_shape,
+            min_value=0,
+            max_value=1))
+
 
     if fn_name == "linear":
         return dtype, x, weight, bias
@@ -324,15 +338,18 @@ def test_scaled_dot_product_attention(
         fn_name="multi_head_attention",
     ),
     to_q_fn=st.functions(like=lambda x, v: x),
-    to_kv_fn=st.functions(like=lambda x, v: x),
-    to_out_fn=st.functions(like=lambda x, v: x),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="multi_head_attention"
+    ),
     with_out=st.booleans(),
     data=st.data(),
 )
+@handle_cmd_line_args
 def test_multi_head_attention(
     *,
     data,
     dtype_mha,
+    to_q_fn,
     as_variable,
     num_positional_args,
     with_out,
@@ -361,6 +378,9 @@ def test_multi_head_attention(
         context=np.asarray(context, dtype=dtype),
         scale=scale,
         mask=np.asarray(mask, dtype=dtype),
+        to_q_fn=to_q_fn,
+        to_kv_fn=to_q_fn,
+        to_out_fn=to_q_fn,
     )
 
 
