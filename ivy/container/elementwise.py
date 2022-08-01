@@ -5714,7 +5714,7 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an array containing the tangent of each element in ``self``.
+            a container containing the tangent of each element in ``self``.
             The return must have a floating-point data type determined
             by :ref:`type-promotion`.
 
@@ -5769,7 +5769,7 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an container containing the hyperbolic tangent of each element in ``x``.
+            a container containing the hyperbolic tangent of each element in ``x``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
 
@@ -5829,7 +5829,7 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            an container containing the hyperbolic tangent of each element in 
+            a container containing the hyperbolic tangent of each element in 
             ``self``. The returned container must have a real-valued floating-point 
             data type determined by :ref:`type-promotion`.
 
