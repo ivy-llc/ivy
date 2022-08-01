@@ -8,20 +8,19 @@ from numbers import Number
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy.functional.backends.numpy as ivy_np
 
 
 # abs
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="abs"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_abs(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -49,14 +48,12 @@ def test_abs(
 # acosh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="acosh"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_acosh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -84,14 +81,12 @@ def test_acosh(
 # acos
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_acos(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -121,14 +116,12 @@ def test_acos(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_add(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -139,6 +132,7 @@ def test_add(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -157,14 +151,12 @@ def test_add(
 # asin
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="asin"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_asin(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -192,14 +184,12 @@ def test_asin(
 # asinh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="asinh"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_asinh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -227,14 +217,12 @@ def test_asinh(
 # atan
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="atan"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_atan(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -264,14 +252,12 @@ def test_atan(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="atan2"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_atan2(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -282,6 +268,7 @@ def test_atan2(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -300,14 +287,12 @@ def test_atan2(
 # atanh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="atanh"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_atanh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -337,14 +322,12 @@ def test_atanh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_and"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_bitwise_and(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -355,6 +338,7 @@ def test_bitwise_and(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -372,15 +356,15 @@ def test_bitwise_and(
 
 # bitwise_left_shift
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.all_int_dtypes),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy.all_int_dtypes, num_arrays=2, shared_dtype=True
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_bitwise_left_shift(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -391,12 +375,9 @@ def test_bitwise_left_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(x)
-    x1 = np.asarray(x, dtype=input_dtype)
-    n_bits = ivy.dtype_bits(input_dtype)
-    x2 = np.random.randint(n_bits, size=x1.shape, dtype=input_dtype)
+
     helpers.test_function(
-        input_dtypes=[input_dtype, input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -405,8 +386,8 @@ def test_bitwise_left_shift(
         instance_method=instance_method,
         fw=fw,
         fn_name="bitwise_left_shift",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -415,14 +396,12 @@ def test_bitwise_left_shift(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.all_int_dtypes + ("bool",)
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_invert"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_bitwise_invert(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -452,14 +431,12 @@ def test_bitwise_invert(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_or"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_bitwise_or(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -470,6 +447,7 @@ def test_bitwise_or(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -487,15 +465,15 @@ def test_bitwise_or(
 
 # bitwise_right_shift
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.all_int_dtypes),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy.all_int_dtypes, num_arrays=2, shared_dtype=True
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_bitwise_right_shift(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -506,12 +484,9 @@ def test_bitwise_right_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(x)
-    x1 = np.asarray(x, dtype=input_dtype)
-    n_bits = ivy.dtype_bits(input_dtype)
-    x2 = np.random.randint(n_bits, size=x1.shape, dtype=input_dtype)
+
     helpers.test_function(
-        input_dtypes=[input_dtype, input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -520,8 +495,8 @@ def test_bitwise_right_shift(
         instance_method=instance_method,
         fw=fw,
         fn_name="bitwise_right_shift",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -530,14 +505,12 @@ def test_bitwise_right_shift(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_xor"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_bitwise_xor(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -548,6 +521,7 @@ def test_bitwise_xor(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -566,14 +540,12 @@ def test_bitwise_xor(
 # ceil
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="ceil"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_ceil(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -601,14 +573,12 @@ def test_ceil(
 # cos
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cos"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_cos(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -636,14 +606,12 @@ def test_cos(
 # cosh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="cosh"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_cosh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -673,14 +641,12 @@ def test_cosh(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="divide"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_divide(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -691,14 +657,12 @@ def test_divide(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    # ToDo: remove the checks below, and instead handle this during the
-    #  hypothesis data generation
-    if np.any(x2 == 0):
-        return  # don't divide by 0
-    elif np.any(x1 > 9223372036854775807):
-        return  # np.divide converts to signed int so values can't be too large
+    # prevent division by 0
+    assume(np.all(x2 != 0))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -719,14 +683,12 @@ def test_divide(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="equal"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_equal(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -737,6 +699,7 @@ def test_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -755,14 +718,12 @@ def test_equal(
 # exp
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="exp"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_exp(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -790,14 +751,12 @@ def test_exp(
 # expm1
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="expm1"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_expm1(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -825,14 +784,12 @@ def test_expm1(
 # floor
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="floor"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_floor(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -857,20 +814,19 @@ def test_floor(
     )
 
 
-# floor_divide - don't allow inf as array API spec allows varying behaviour
-# for special cases
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, allow_inf=False
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        num_arrays=2,
+        allow_inf=False,
+        safety_factor=0.5,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_floor_divide(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -884,18 +840,7 @@ def test_floor_divide(
     x1 = (np.asarray(x[0], dtype=input_dtype[0]),)
     x2 = (np.asarray(x[1], dtype=input_dtype[1]),)
     assume(np.all(x2[0] != 0))
-    # we assume values aren't too close to the boundaries as tf and torch have issues:
-    # https://github.com/pytorch/pytorch/issues/77742#issuecomment-1146026178
-    # https://github.com/tensorflow/tensorflow/issues/56130
-    if fw in ["tensorflow", "torch"]:
-        if ivy.is_float_dtype(input_dtype[0]):
-            low1 = 2 * ivy.finfo(input_dtype[0]).smallest_normal
-            high1 = 0.5 * ivy.finfo(input_dtype[0]).max
-            assume(np.all(x1[0] > low1) and np.all(x1[0] < high1))
-        if ivy.is_float_dtype(input_dtype[1]):
-            low2 = 2 * ivy.finfo(input_dtype[0]).smallest_normal
-            high2 = 0.5 * ivy.finfo(input_dtype[1]).max
-            assume(np.all(x2[0] > low2) and np.all(x2[0] < high2))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -916,14 +861,12 @@ def test_floor_divide(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="greater"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_greater(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -934,6 +877,7 @@ def test_greater(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -954,14 +898,12 @@ def test_greater(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="greater_equal"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_greater_equal(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -972,6 +914,7 @@ def test_greater_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -990,14 +933,12 @@ def test_greater_equal(
 # isfinite
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="isfinite"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_isfinite(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1025,14 +966,12 @@ def test_isfinite(
 # isinf
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="isinf"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_isinf(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1060,14 +999,12 @@ def test_isinf(
 # isnan
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="isnan"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_isnan(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1097,14 +1034,12 @@ def test_isnan(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="less"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_less(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1115,6 +1050,7 @@ def test_less(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1135,14 +1071,12 @@ def test_less(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="less_equal"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_less_equal(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1153,6 +1087,7 @@ def test_less_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1171,14 +1106,12 @@ def test_less_equal(
 # log
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="log"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_log(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1206,14 +1139,12 @@ def test_log(
 # log1p
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="log1p"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_log1p(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1241,14 +1172,12 @@ def test_log1p(
 # log2
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="log2"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_log2(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1276,14 +1205,12 @@ def test_log2(
 # log10
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="log10"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_log10(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1313,14 +1240,12 @@ def test_log10(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="logaddexp"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_logaddexp(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1331,6 +1256,7 @@ def test_logaddexp(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1341,7 +1267,7 @@ def test_logaddexp(
         instance_method=instance_method,
         fw=fw,
         fn_name="logaddexp",
-        test_rtol=1e-2,
+        rtol_=1e-2,
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -1350,14 +1276,12 @@ def test_logaddexp(
 # logical_and
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="logical_and"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_logical_and(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1368,6 +1292,7 @@ def test_logical_and(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1386,14 +1311,12 @@ def test_logical_and(
 # logical_not
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="logical_not"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_logical_not(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1421,14 +1344,12 @@ def test_logical_not(
 # logical_or
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="logical_or"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_logical_or(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1439,6 +1360,7 @@ def test_logical_or(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1457,14 +1379,12 @@ def test_logical_or(
 # logical_xor
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="logical_xor"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_logical_xor(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1475,6 +1395,7 @@ def test_logical_xor(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1495,14 +1416,12 @@ def test_logical_xor(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="multiply"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_multiply(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1513,6 +1432,7 @@ def test_multiply(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1531,14 +1451,12 @@ def test_multiply(
 # negative
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="negative"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_negative(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1568,14 +1486,12 @@ def test_negative(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="not_equal"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_not_equal(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1586,6 +1502,7 @@ def test_not_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1604,14 +1521,12 @@ def test_not_equal(
 # positive
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="positive"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_positive(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1641,14 +1556,12 @@ def test_positive(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="pow"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_pow(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1659,16 +1572,17 @@ def test_pow(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    if fw in ["jax", "tensorflow"]:
-        return
-    if (
-        np.any(x2 < 0)
-        and ivy.is_int_dtype(input_dtype[1])
-        and ivy.is_int_dtype(input_dtype[0])
-    ):
-        return  # ints to negative int powers not allowed
+    assume(
+        not (
+            np.any(x2 < 0)
+            and ivy.is_int_dtype(input_dtype[1])
+            and ivy.is_int_dtype(input_dtype[0])
+        )
+    )
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1689,14 +1603,12 @@ def test_pow(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, allow_inf=False
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="remainder"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_remainder(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1710,6 +1622,10 @@ def test_remainder(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
     assume(not np.any(x2 == 0))
+
+    native_array = [native_array, native_array]
+    container = [container, container]
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=[as_variable, False],
@@ -1728,14 +1644,12 @@ def test_remainder(
 # round
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="round"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_round(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1763,14 +1677,12 @@ def test_round(
 # sign
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sign"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_sign(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1798,14 +1710,12 @@ def test_sign(
 # sin
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sin"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_sin(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1833,14 +1743,12 @@ def test_sin(
 # sinh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sinh"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_sinh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1868,14 +1776,12 @@ def test_sinh(
 # square
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="square"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_square(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1905,14 +1811,12 @@ def test_square(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, allow_inf=False
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sqrt"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_sqrt(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1942,14 +1846,12 @@ def test_sqrt(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="subtract"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_subtract(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -1960,6 +1862,7 @@ def test_subtract(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1978,14 +1881,12 @@ def test_subtract(
 # tan
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="tan"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_tan(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -2013,14 +1914,12 @@ def test_tan(
 # tanh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="tanh"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_tanh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -2048,14 +1947,12 @@ def test_tanh(
 # trunc
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="trunc"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_trunc(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -2087,14 +1984,12 @@ def test_trunc(
 # erf
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="erf"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_erf(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -2124,14 +2019,12 @@ def test_erf(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_minimum(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -2142,14 +2035,16 @@ def test_minimum(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    assume(
+        not (
+            (
+                (isinstance(x[0], Number) or isinstance(x[1], Number))
+                and as_variable is True
+                and fw == "mxnet"
+            )
+        )
+    )
 
-    if (
-        (isinstance(x[0], Number) or isinstance(x[1], Number))
-        and as_variable is True
-        and fw == "mxnet"
-    ):
-        # mxnet does not support 0-dimensional variables
-        return
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2170,14 +2065,12 @@ def test_minimum(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_maximum(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -2188,13 +2081,15 @@ def test_maximum(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if (
-        (isinstance(x[0], Number) or isinstance(x[1], Number))
-        and as_variable is True
-        and fw == "mxnet"
-    ):
-        # mxnet does not support 0-dimensional variables
-        return
+
+    assume(
+        not (
+            (isinstance(x[0], Number) or isinstance(x[1], Number))
+            and as_variable is True
+            and fw == "mxnet"
+        )
+    )
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,

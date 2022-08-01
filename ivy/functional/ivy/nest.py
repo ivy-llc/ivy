@@ -73,7 +73,7 @@ def index_nest(
     return ret
 
 
-def prune_nest_at_index(nest, index):
+def prune_nest_at_index(nest: Iterable, index: Tuple):
     """Prune a nested object at a specified index.
 
     Parameters
@@ -91,9 +91,9 @@ def prune_nest_at_index(nest, index):
 
 
 def set_nest_at_index(
-    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List], 
-    index: Sequence[Union[str, int]], 
-    value: Any
+    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
+    index: Sequence[Union[str, int]],
+    value: Any,
 ):
     """Set the value of a nested item at a specified index.
 
@@ -158,7 +158,7 @@ def set_nest_at_index(
         ivy.set_nest_at_index(nest[index[0]], index[1:], value)
 
 
-def insert_into_nest_at_index(nest, index, value):
+def insert_into_nest_at_index(nest: Iterable, index: Tuple, value):
     if len(index) == 1:
         idx = index[0]
         if isinstance(nest, list):
@@ -169,7 +169,7 @@ def insert_into_nest_at_index(nest, index, value):
         insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
-def map_nest_at_index(nest, index, fn):
+def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable):
     """Map a function to the value of a nested item at a specified index.
 
     Parameters
@@ -188,7 +188,7 @@ def map_nest_at_index(nest, index, fn):
         map_nest_at_index(nest[index[0]], index[1:], fn)
 
 
-def multi_index_nest(nest, indices):
+def multi_index_nest(nest: Iterable, indices: Tuple):
     """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
     the case of dicts.
 
@@ -203,7 +203,7 @@ def multi_index_nest(nest, indices):
     return [index_nest(nest, index) for index in indices]
 
 
-def prune_nest_at_indices(nest, indices):
+def prune_nest_at_indices(nest: Iterable, indices: Tuple):
     """Prune a nested object at specified indices.
 
     Parameters
@@ -276,7 +276,7 @@ def set_nest_at_indices(
     [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
 
 
-def insert_into_nest_at_indices(nest, indices, values):
+def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values):
     """Insert a value into the nested item at specified indices with specified values.
 
     Parameters
@@ -298,7 +298,7 @@ def insert_into_nest_at_indices(nest, indices, values):
     ]
 
 
-def map_nest_at_indices(nest, indices, fn):
+def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable):
     """Map a function to the values of a nested item at the specified indices.
 
     Parameters
@@ -343,12 +343,50 @@ def nested_indices_where(
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
+    stop_after_n_found
+        to stop after some needed indices are found.
 
     Returns
     -------
     ret
         A set of indices for the nest where the function evaluated as True.
 
+    Examples
+    --------
+    With :code:`List` input:
+
+    >>> nest = [[[1, -2, 3], 19], [[9, -36, 80], -10.19]]
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> print(nested_indices)
+    [
+        [0, 0, 0], [0, 0, 1],
+        [0, 0, 2], [0, 1],
+        [1, 0, 0], [1, 0, 1],
+        [1, 0, 2], [1, 1]
+    ]
+
+
+    With :code:`Tuple` input:
+
+    >>> nest = ([-5, 9, 2], [0.3, 4.])
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun, stop_after_n_found=4)
+    >>> print(nested_indices)
+    [[0, 0], [0, 1], [0, 2], [1, 0]]
+
+    With :code:`Dict` input:
+
+    >>> nest={'a': [2., 0.6, -2.], 'b': [1., 4., 1.9], 'c': [9.4]}
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> print(nested_indices)
+    [
+        ['a', 0], ['a', 1],
+        ['a', 2], ['b', 0],
+        ['b', 1], ['b', 2],
+        ['c', 0]
+    ]
     """
     to_ignore = ivy.default(to_ignore, ())
     _index = list() if _index is None else _index
@@ -734,8 +772,8 @@ def copy_nest(
 
 
 def nested_multi_map(
-    func,
-    nests,
+    func: Callable,
+    nests: List[Iterable],
     key_chains=None,
     to_apply=True,
     prune_unapplied=False,

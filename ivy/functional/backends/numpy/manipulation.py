@@ -38,7 +38,8 @@ concat.support_native_out = True
 
 
 def expand_dims(
-    x: np.ndarray, axis: int = 0, *, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> np.ndarray:
     ret = np.expand_dims(x, axis)
     return ret
@@ -72,12 +73,13 @@ def permute_dims(
 def reshape(
     x: np.ndarray,
     shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None,
     *,
-    out: Optional[np.ndarray] = None,
+    copy: Optional[bool] = None,
 ) -> np.ndarray:
-    ret = np.reshape(x, shape)
-    return ret
+    if copy:
+        newarr = x.copy()
+        return np.reshape(newarr, shape)
+    return np.reshape(x, shape)
 
 
 def roll(
