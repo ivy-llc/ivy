@@ -213,6 +213,89 @@ def any(
         the returned array must be a non-zero-dimensional array containing the test
         results. The returned array must have a data type of ``bool``.
 
+        Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([2, 3, 4])
+    >>> y = ivy.any(x)
+    >>> print(y)
+    ivy.array(True)
+
+    >>> x = ivy.array([[0],[1]])
+    >>> y = ivy.zeros((1,1), dtype='bool')
+    >>> a = ivy.any(x, axis=0, out = y, keepdims=True)
+    >>> print(a)
+    ivy.array([[True]])
+
+    >>> x=ivy.array(False)
+    >>> y=ivy.any(ivy.array([[0, 3],[1, 4]]), axis=(0,1), out=x, keepdims=False)
+    >>> print(y)
+    ivy.array(True)
+
+    >>> x=ivy.array(False)
+    >>> y=ivy.any(ivy.array([[[0],[1]],[[1],[1]]]), \
+    axis=(0,1,2), out=x, keepdims=False)
+    >>> print(y)
+    ivy.array(True)
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([2, 3, 4])
+    >>> y = ivy.any(x)
+    >>> print(y)
+    ivy.array(True)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
+                          b=ivy.array([3, 4, 5]))
+    >>> y = ivy.any(x)
+    >>> print(y)
+    {
+        a: ivy.array(True),
+        b: ivy.array(True)
+    }
+    
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
+                          b=ivy.array([3, 4, 5]))
+    >>> y = x.any()
+    >>> print(y)
+    {
+        a: ivy.array(True),
+        b: ivy.array(True)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([2, 3, 4])
+    >>> y = x.any()
+    >>> print(y)
+    ivy.array(True)
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
+                          b=ivy.array([3, 4, 5]))
+    >>> y = x.any()
+    >>> print(y)
+    {
+        a: ivy.array(True),
+        b: ivy.array(True)
+    }
+
+    >>> x = ivy.Container(a=ivy.native_array([0, 1, 2]), \
+                          b=ivy.array([3, 4, 5]))
+    >>> y = x.any()
+    >>> print(y)
+    {
+        a: ivy.array(True),
+        b: ivy.array(True)
+    }
     """
     return ivy.current_backend(x).any(x, axis, keepdims, out=out)
 
