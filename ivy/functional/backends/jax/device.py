@@ -32,7 +32,7 @@ def dev(
     x: JaxArray, as_native: bool = False
 ) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
-        return None
+        return ""
     try:
         dv = _to_array(x).device_buffer.device
         dv = dv()
@@ -115,7 +115,7 @@ def tpu_is_available() -> bool:
 
 # noinspection PyMethodMayBeStatic
 class Profiler(BaseProfiler):
-    def __init__(self, save_dir):
+    def __init__(self, save_dir: str):
         super(Profiler, self).__init__(save_dir)
         self._save_dir = os.path.join(self._save_dir, "profile")
 
