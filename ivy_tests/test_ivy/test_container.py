@@ -1307,41 +1307,6 @@ def test_container_stop_gradients(device, call):
     assert "b/d" not in container_stopped_grads
 
 
-def test_container_as_variables(device, call):
-    dict_in = {
-        "a": ivy.array(
-            [[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]], device=device
-        ),
-        "b": {
-            "c": ivy.array(
-                [[[8.0, 7.0], [6.0, 5.0]], [[4.0, 3.0], [2.0, 1.0]]], device=device
-            ),
-            "d": ivy.array(
-                [[[2.0, 4.0], [6.0, 8.0]], [[10.0, 12.0], [14.0, 16.0]]], device=device
-            ),
-        },
-    }
-    container = Container(dict_in)
-
-    assert ivy.is_ivy_array(container["a"])
-    assert ivy.is_ivy_array(container.a)
-    assert ivy.is_ivy_array(container["b"]["c"])
-    assert ivy.is_ivy_array(container.b.c)
-    assert ivy.is_ivy_array(container["b"]["d"])
-    assert ivy.is_ivy_array(container.b.d)
-
-    variable_cont = container.as_variables()
-
-    if call is not helpers.np_call:
-        # Numpy does not support variables or gradients
-        assert ivy.is_variable(variable_cont["a"])
-        assert ivy.is_variable(variable_cont.a)
-        assert ivy.is_variable(variable_cont["b"]["c"])
-        assert ivy.is_variable(variable_cont.b.c)
-        assert ivy.is_variable(variable_cont["b"]["d"])
-        assert ivy.is_variable(variable_cont.b.d)
-
-
 def test_container_as_arrays(device, call):
     dict_in = {
         "a": ivy.variable(
@@ -1432,47 +1397,6 @@ def test_container_size_ordered_arrays(device, call):
         assert np.allclose(ivy.to_numpy(v), arr)
 
 
-def test_container_to_numpy(device, call):
-    dict_in = {
-        "a": ivy.variable(
-            ivy.array(
-                [[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]], device=device
-            )
-        ),
-        "b": {
-            "c": ivy.variable(
-                ivy.array(
-                    [[[8.0, 7.0], [6.0, 5.0]], [[4.0, 3.0], [2.0, 1.0]]], device=device
-                )
-            ),
-            "d": ivy.variable(
-                ivy.array(
-                    [[[2.0, 4.0], [6.0, 8.0]], [[10.0, 12.0], [14.0, 16.0]]],
-                    device=device,
-                )
-            ),
-        },
-    }
-    container = Container(dict_in)
-
-    # before conversion
-    assert ivy.is_ivy_array(container["a"])
-    assert ivy.is_ivy_array(container.a)
-    assert ivy.is_ivy_array(container["b"]["c"])
-    assert ivy.is_ivy_array(container.b.c)
-    assert ivy.is_ivy_array(container["b"]["d"])
-    assert ivy.is_ivy_array(container.b.d)
-
-    # after conversion
-    container_to_numpy = container.to_numpy()
-    assert isinstance(container_to_numpy["a"], np.ndarray)
-    assert isinstance(container_to_numpy.a, np.ndarray)
-    assert isinstance(container_to_numpy["b"]["c"], np.ndarray)
-    assert isinstance(container_to_numpy.b.c, np.ndarray)
-    assert isinstance(container_to_numpy["b"]["d"], np.ndarray)
-    assert isinstance(container_to_numpy.b.d, np.ndarray)
-
-
 def test_container_from_numpy(device, call):
     dict_in = {
         "a": np.array([[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]]),
@@ -1499,39 +1423,6 @@ def test_container_from_numpy(device, call):
     assert ivy.is_ivy_array(container_from_numpy.b.c)
     assert ivy.is_ivy_array(container_from_numpy["b"]["d"])
     assert ivy.is_ivy_array(container_from_numpy.b.d)
-
-
-def test_container_arrays_as_lists(device, call):
-    dict_in = {
-        "a": ivy.array(
-            [[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]], device=device
-        ),
-        "b": {
-            "c": ivy.array(
-                [[[8.0, 7.0], [6.0, 5.0]], [[4.0, 3.0], [2.0, 1.0]]], device=device
-            ),
-            "d": ivy.array(
-                [[[2.0, 4.0], [6.0, 8.0]], [[10.0, 12.0], [14.0, 16.0]]], device=device
-            ),
-        },
-    }
-    container = Container(dict_in)
-
-    assert ivy.is_ivy_array(container["a"])
-    assert ivy.is_ivy_array(container.a)
-    assert ivy.is_ivy_array(container["b"]["c"])
-    assert ivy.is_ivy_array(container.b.c)
-    assert ivy.is_ivy_array(container["b"]["d"])
-    assert ivy.is_ivy_array(container.b.d)
-
-    # without key_chains specification
-    container_arrays_as_lists = container.arrays_as_lists()
-    assert isinstance(container_arrays_as_lists["a"], list)
-    assert isinstance(container_arrays_as_lists.a, list)
-    assert isinstance(container_arrays_as_lists["b"]["c"], list)
-    assert isinstance(container_arrays_as_lists.b.c, list)
-    assert isinstance(container_arrays_as_lists["b"]["d"], list)
-    assert isinstance(container_arrays_as_lists.b.d, list)
 
 
 def test_container_has_key(device, call):
