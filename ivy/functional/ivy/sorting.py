@@ -219,8 +219,8 @@ def searchsorted(
     side="left",
     sorter=None,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None
+) -> ivy.Array:
     """Returns the indices of the inserted elements in a sorted array.
     
     Parameters
