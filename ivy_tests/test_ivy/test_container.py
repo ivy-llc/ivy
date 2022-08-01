@@ -1179,7 +1179,7 @@ def test_container_unstack(device, call):
         assert np.array_equal(ivy.to_numpy(cont.b.d), np.array([bd]))
 
 
-def test_container_split(device, call):
+def test_container_split_conts(device, call):
     dict_in = {
         "a": ivy.array([[1], [2], [3]], device=device),
         "b": {
@@ -1190,7 +1190,7 @@ def test_container_split(device, call):
     container = Container(dict_in)
 
     # without key_chains specification
-    container_split = container.split(1, -1)
+    container_split = container.split_conts(1, -1)
     for cont, a, bc, bd in zip(container_split, [1, 2, 3], [2, 3, 4], [3, 4, 5]):
         assert np.array_equal(ivy.to_numpy(cont["a"])[0], np.array([a]))
         assert np.array_equal(ivy.to_numpy(cont.a)[0], np.array([a]))
