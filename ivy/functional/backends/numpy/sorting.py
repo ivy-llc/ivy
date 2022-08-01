@@ -38,14 +38,8 @@ def sort(
 def searchsorted(
     x1: np.ndarray,
     x2: np.ndarray,
-    side="left",
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
+    side= "left",
+    sorter= None,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:   
-    kind = "stable" if stable else "quicksort"
-    ret = np.asarray(np.sort(x1,x2, axis=axis, kind=kind, side=side))
-    if descending:
-        ret = np.asarray((np.flip(ret, axis)))
-    return ret
+    return np.searchsorted(x1, x2,side=side, sorter=None)
