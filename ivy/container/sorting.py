@@ -2,7 +2,7 @@
 from typing import Optional, List, Union, Dict
 
 # local
-from ivy.container.base import ContainerBase, Container 
+from ivy.container.base import ContainerBase
 import ivy
 
 # ToDo: implement all methods here as public instance methods
