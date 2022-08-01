@@ -371,13 +371,10 @@ def test_roll(
     instance_method,
     fw,
 ):
-    #remove this return before pushing
-    return
+
     value_dtype, value = dtype_value
     shift_dtype, shift = shift
     dtypes = [value_dtype]
-
-    print(shift, axis)
 
 
     helpers.test_function(
@@ -593,8 +590,6 @@ def test_repeat(
     instance_method,
     fw,
 ):
-    #remove this return before pushing
-    return
     dtype, value = dtype_value
     value = np.asarray(value, dtype=dtype)
 
