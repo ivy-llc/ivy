@@ -1041,22 +1041,6 @@ def test_container_flip(device, call):
     )
 
 
-def test_container_as_ones(device, call):
-    dict_in = {
-        "a": ivy.array([1], device=device),
-        "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
-    }
-    container = Container(dict_in)
-
-    container_ones = container.as_ones()
-    assert np.allclose(ivy.to_numpy(container_ones["a"]), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_ones.a), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_ones["b"]["c"]), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_ones.b.c), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_ones["b"]["d"]), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_ones.b.d), np.array([1]))
-
-
 def test_container_as_zeros(device, call):
     dict_in = {
         "a": ivy.array([1], device=device),
