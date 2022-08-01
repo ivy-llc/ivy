@@ -11,6 +11,10 @@ Ivy Tests
 .. _`continuous integration`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows
 .. _`search strategies`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
+.. _`finfo`: https://github.com/unifyai/ivy/blob/d8f1ffe8ebf38fa75161c1a9459170e95f3c82b6/ivy/functional/ivy/data_type.py#L276
+.. _`data generation`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337
+.. _`here`: https://lets-unify.ai/ivy/deep_dive/1_function_types.html#function-types
+.. _`test_default_int_dtype`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835
 .. _`sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
 .. _`lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
 .. _`booleans`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.booleans
@@ -84,8 +88,16 @@ as pytest skipping does not play nicely with hypothesis testing.
 
 Data Generation
 ---------------
+We aim to make the data generation for three out of the four kinds of ivy functions exhaustive; primary, compositional
+and mixed. Exhaustive data generation implies that all possible inputs and combinations of inputs are covered. Take
+`finfo`_ , for example. It can take either arrays or dtypes as input, hence the `data generation`_ reflects this using
+the bespoke search strategy :code:`_array_or_type`. However, such rigorous testing is not necessary for standalone functions
+(those that are entirely self-contained in the Ivy codebase without external references). These kinds of functions may
+only require standard Pytest testing using :code:`parametrize`, e.g. `test_default_int_dtype`_. For further clarity on
+the various function types in ivy, see `here`_.
+
 The way data is generated is described by the :code:`hypothesis.strategies` module which contains a variety of `methods`_
-that have been used widely in each of Ivy's functional and stateful submodule tests. An initialized strategy is a object
+that have been used widely in each of Ivy's functional and stateful submodule tests. An initialized strategy is an object
 that is used by Hypothesis to generate data for the test. For example, let's write a strategy that generates supported
 integer data types in Ivy -:
 

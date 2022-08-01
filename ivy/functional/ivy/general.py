@@ -13,7 +13,7 @@ from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 # local
 import ivy
 from ivy.functional.ivy.device import dev
-from ivy.backend_handler import current_backend
+from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
     infer_device,
     inputs_to_native_arrays,
@@ -1841,8 +1841,8 @@ def current_backend_str() -> Union[str, None]:
 
     """
     fw = current_backend()
-    if fw is None:
-        return None
+    if not backend_stack:
+        return ""
     return fw.current_backend_str()
 
 
@@ -2690,14 +2690,8 @@ def gather(
                           b = ivy.array([1, 2]))
     >>> print(x.gather(y))
     {
-        a: {
-            a: ivy.array([0., 1.]),
-            b: ivy.array([1., 2.])
-        },
-        b: {
-            a: ivy.array([4., 5.]),
-            b: ivy.array([5., 6.])
-        }
+        a: ivy.array([0., 1.]),
+        b: ivy.array([5., 6.])
     }
     """
     return current_backend(params).gather(params, indices, axis, out=out)
