@@ -113,6 +113,10 @@ def squeeze(
                 "Expected dimension of size [{}, {}], but found "
                 "dimension size {}".format(-dim, dim, axis)
             )
+        if x.shape[axis] != 1:
+            raise ValueError(
+                f"Expected size of axis to be 1 but was {x.shape[axis]}"
+            )
         return torch.squeeze(x, axis)
     if axis is None:
         return torch.squeeze(x)
