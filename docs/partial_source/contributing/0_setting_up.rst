@@ -374,15 +374,19 @@ Sometimes, visual studio code is not able to select the python interpreter. Howe
 The steps are as following to setup testing on VS Code when using a new Codespace.
 
 1. Under the flask Icon in the toolbar select "Configure Python Tests" and select PyTest as the test framework
+
 .. image:: content/vs_testing_02.png
 
 2. Select ivy_tests as the root directory for testing.
+
 .. image:: content/vs_testing_03.png
 
 3. Configure the _array_module.py file in the array_api_tests to be set to one of the supported framworks
+
 .. image:: content/vs_testing_04.png
 
 4. As of 01/08/2022, the conftest.py file in the array_api_tests folder must also be commented out in order to run ivy_tests in the test suite. Warning, this will cause the array_api_tests to fail and therefore they must be run via the terminal.
+
 .. image:: content/vs_testing_05.png
 
 5. Refresh Test Suite
