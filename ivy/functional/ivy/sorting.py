@@ -226,23 +226,18 @@ def searchsorted(
     ----------
     x1
         input array
-
     x2
-        specific elements to insert in array x1
-        
+        specific elements to insert in array x1  
     side
         The specific elements' index is at the 'left' side or 
         'right' side in the sorted array x1. If the side is 'left', the 
         index of the first suitable location located is given. If 
         'right', return the last such index.
- 
     out
         optional output array, for writing the result to. 
 
-     
     Returns
     -------
-
     ret
          An array of insertion points. 
 
