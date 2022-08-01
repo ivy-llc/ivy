@@ -489,7 +489,7 @@ def fomaml_step(
         return cost, grads, rets[2]
     return cost, grads
 
-setattr(fomaml_step, "computes_gradients", True)
+fomaml_step.computes_gradients = True
 
 @to_native_arrays_and_back
 def reptile_step(
@@ -573,7 +573,8 @@ def reptile_step(
         return cost, grads, rets[2]
     return cost, grads
 
-setattr(reptile_step, "computes_gradients", True)
+reptile_step.computes_gradients = True
+
 
 # Second Order
 
@@ -694,4 +695,4 @@ def maml_step(
         cost = ivy.stop_gradient(cost, preserve_type=False)
     return (cost, grads.sum(0), *rets)
 
-setattr(maml_step, "computes_gradients", True)
+maml_step.computes_gradients = True

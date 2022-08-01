@@ -2093,3 +2093,6 @@ def handle_cmd_line_args(test_fn):
         return test_fn(*args, **kwargs)
 
     return new_fn
+
+def gradient_incompatible_function(*,fn):
+    return not ivy.supports_gradients and hasattr(fn, "computes_gradients") and fn.computes_gradients
