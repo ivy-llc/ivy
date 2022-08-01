@@ -1460,39 +1460,6 @@ def test_container_from_numpy(device, call):
     assert ivy.is_ivy_array(container_from_numpy.b.d)
 
 
-def test_container_arrays_as_lists(device, call):
-    dict_in = {
-        "a": ivy.array(
-            [[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]], device=device
-        ),
-        "b": {
-            "c": ivy.array(
-                [[[8.0, 7.0], [6.0, 5.0]], [[4.0, 3.0], [2.0, 1.0]]], device=device
-            ),
-            "d": ivy.array(
-                [[[2.0, 4.0], [6.0, 8.0]], [[10.0, 12.0], [14.0, 16.0]]], device=device
-            ),
-        },
-    }
-    container = Container(dict_in)
-
-    assert ivy.is_ivy_array(container["a"])
-    assert ivy.is_ivy_array(container.a)
-    assert ivy.is_ivy_array(container["b"]["c"])
-    assert ivy.is_ivy_array(container.b.c)
-    assert ivy.is_ivy_array(container["b"]["d"])
-    assert ivy.is_ivy_array(container.b.d)
-
-    # without key_chains specification
-    container_arrays_as_lists = container.arrays_as_lists()
-    assert isinstance(container_arrays_as_lists["a"], list)
-    assert isinstance(container_arrays_as_lists.a, list)
-    assert isinstance(container_arrays_as_lists["b"]["c"], list)
-    assert isinstance(container_arrays_as_lists.b.c, list)
-    assert isinstance(container_arrays_as_lists["b"]["d"], list)
-    assert isinstance(container_arrays_as_lists.b.d, list)
-
-
 def test_container_has_key(device, call):
     dict_in = {
         "a": ivy.array([1], device=device),
