@@ -215,7 +215,7 @@ def sort(
 @handle_nestable
 def searchsorted(
     x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    v: Union[ivy.Array, ivy.NativeArray],
     side="left",
     sorter=None,
     *,
@@ -227,7 +227,7 @@ def searchsorted(
     ----------
     x1
         input array
-    x2
+    v
         specific elements to insert in array x1  
     side
         The specific elements' index is at the 'left' side or 
@@ -279,7 +279,7 @@ def searchsorted(
 
     ivy.array([3,2,4])
     """ 
-    return ivy.current_backend(x1).searchsorted(x1, x2, side=side, sorter=None, out=out)
+    return ivy.current_backend(x1).searchsorted(x1, v, side=side, sorter=None, out=out)
 
 # Extra #
 # ------#
