@@ -32,7 +32,6 @@ def sort(
 sort.support_native_out = True
 
 
-
 def searchsorted(
     x1: torch.Tensor,
     x2: torch.Tensor,
