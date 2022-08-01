@@ -722,8 +722,48 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        The new function weights ws_new, following the gradient descent updates.</span>
+<span class="sd">        The new weights, following the gradient descent updates.</span>
 
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+<span class="sd">    &gt;&gt;&gt; w = ivy.array([[1., 2, 3],\</span>
+<span class="sd">                        [4, 6, 1],\</span>
+<span class="sd">                        [1, 0, 7]])</span>
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([[0.5, 0.2, 0.1],\</span>
+<span class="sd">                        [0.3, 0.6, 0.4],\</span>
+<span class="sd">                        [0.4, 0.7, 0.2]])</span>
+<span class="sd">    &gt;&gt;&gt; lr = ivy.array(0.1)</span>
+<span class="sd">    &gt;&gt;&gt; NewWeights = ivy.gradient_descent_update(w,\</span>
+<span class="sd">                                                dcdw,\</span>
+<span class="sd">                                                lr,\</span>
+<span class="sd">                                                inplace=False,\</span>
+<span class="sd">                                                stop_gradients=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(NewWeights)</span>
+<span class="sd">        ivy.array([[ 0.95,  1.98,  2.99],</span>
+<span class="sd">                    [ 3.97,  5.94,  0.96],</span>
+<span class="sd">                    [ 0.96, -0.07,  6.98]])</span>
+
+<span class="sd">    &gt;&gt;&gt; w = ivy.array([1., 2., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([0.5, 0.2, 0.1])</span>
+<span class="sd">    &gt;&gt;&gt; lr = ivy.array(0.3)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.gradient_descent_update(w, dcdw, lr, inplace=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(w)</span>
+<span class="sd">        ivy.array([0.85, 1.94, 2.97])</span>
+
+<span class="sd">    With :code: `ivy.container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
+<span class="sd">                          b=ivy.array([3.48, 5.72, 1.98]))</span>
+<span class="sd">    &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\</span>
+<span class="sd">                             b=ivy.array([2., 3.42, 1.69]))</span>
+<span class="sd">    &gt;&gt;&gt; lr = ivy.array(0.3)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.gradient_descent_update(w, dcdw, lr, inplace=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(w)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0.85, 1.94, 2.97]),</span>
+<span class="sd">            b: ivy.array([2.88, 4.69, 1.47])</span>
+<span class="sd">        }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 

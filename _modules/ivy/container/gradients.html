@@ -581,9 +581,9 @@
 
 <div class="viewcode-block" id="ContainerWithGradients.static_gradient_descent_update"><a class="viewcode-back" href="../../../data_classes/container/gradients/ContainerWithGradients.html#ivy.container.gradients.ContainerWithGradients.static_gradient_descent_update">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_gradient_descent_update</span><span class="p">(</span>
-        <span class="n">w</span><span class="p">,</span>
-        <span class="n">dcdw</span><span class="p">,</span>
-        <span class="n">lr</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -591,7 +591,79 @@
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.gradient_descent_update.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for</span>
+<span class="sd">        ivy.gradient_descent_update also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        w</span>
+<span class="sd">            Weights of the function to be updated.</span>
+<span class="sd">        dcdw</span>
+<span class="sd">            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
+<span class="sd">        lr</span>
+<span class="sd">            Learning rate(s), the rate(s) at which the weights should be</span>
+<span class="sd">            updated relative to the gradient.</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">            variable updates, and handle gradients behind the scenes such as PyTorch.</span>
+<span class="sd">            If the update step should form part of a computation graph</span>
+<span class="sd">            (i.e. higher order optimization), then this should be set to False.</span>
+<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">        stop_gradients</span>
+<span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The new weights, following the gradient descent updates.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code: `ivy.container` inputs:</span>
+
+<span class="sd">        &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
+<span class="sd">                              b=ivy.array([3.48, 5.72, 1.98]))</span>
+<span class="sd">        &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\</span>
+<span class="sd">                                 b=ivy.array([2., 3.42, 1.69]))</span>
+<span class="sd">        &gt;&gt;&gt; lr = ivy.array(0.3)</span>
+<span class="sd">        &gt;&gt;&gt; NewWeights = ivy.Container.static_gradient_descent_update(w,\</span>
+<span class="sd">                                                                    dcdw,\</span>
+<span class="sd">                                                                    lr,\</span>
+<span class="sd">                                                                    inplace=False)</span>
+<span class="sd">        &gt;&gt;&gt; print(NewWeights)</span>
+<span class="sd">            {</span>
+<span class="sd">                a: ivy.array([0.85, 1.94, 2.97]),</span>
+<span class="sd">                b: ivy.array([2.88, 4.69, 1.47])</span>
+<span class="sd">            }</span>
+
+<span class="sd">        &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
+<span class="sd">                              b=ivy.array([3.48, 5.72, 1.98]))</span>
+<span class="sd">        &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\</span>
+<span class="sd">                                b=ivy.array([2., 3.42, 1.69]))</span>
+<span class="sd">        &gt;&gt;&gt; lr = ivy.Container(a=ivy.array(0.3),\</span>
+<span class="sd">                                b=ivy.array(0.1))</span>
+<span class="sd">        &gt;&gt;&gt; NewWeights = ivy.Container.static_gradient_descent_update(w,\</span>
+<span class="sd">                                                                      dcdw,\</span>
+<span class="sd">                                                                      lr,\</span>
+<span class="sd">                                                                      inplace=False)</span>
+<span class="sd">        &gt;&gt;&gt; print(NewWeights)</span>
+<span class="sd">            {</span>
+<span class="sd">                a: ivy.array([0.85, 1.94, 2.97]),</span>
+<span class="sd">                b: ivy.array([3.28, 5.38, 1.81])</span>
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;gradient_descent_update&quot;</span><span class="p">,</span>
             <span class="n">w</span><span class="p">,</span>
@@ -606,16 +678,85 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithGradients.gradient_descent_update"><a class="viewcode-back" href="../../../data_classes/container/gradients/ContainerWithGradients.html#ivy.container.gradients.ContainerWithGradients.gradient_descent_update">[docs]</a>    <span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">dcdw</span><span class="p">,</span>
-        <span class="n">lr</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.gradient_descent_update.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for</span>
+<span class="sd">        ivy.gradient_descent_update also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Weights of the function to be updated.</span>
+<span class="sd">        dcdw</span>
+<span class="sd">            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
+<span class="sd">        lr</span>
+<span class="sd">            Learning rate(s), the rate(s) at which the weights should be</span>
+<span class="sd">            updated relative to the gradient.</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">            variable updates, and handle gradients behind the scenes such as PyTorch.</span>
+<span class="sd">            If the update step should form part of a computation graph</span>
+<span class="sd">            (i.e. higher order optimization), then this should be set to False.</span>
+<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">        stop_gradients</span>
+<span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The new weights , following the gradient descent updates.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code: `ivy.container` inputs:</span>
+
+<span class="sd">        &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
+<span class="sd">                              b=ivy.array([3.48, 5.72, 1.98]))</span>
+<span class="sd">        &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\</span>
+<span class="sd">                                 b=ivy.array([2., 3.42, 1.69]))</span>
+<span class="sd">        &gt;&gt;&gt; lr = ivy.array(0.3)</span>
+<span class="sd">        &gt;&gt;&gt; NewWeights = w.gradient_descent_update(dcdw, lr, inplace=False)</span>
+<span class="sd">        &gt;&gt;&gt; print(NewWeights)</span>
+<span class="sd">            {</span>
+<span class="sd">                a: ivy.array([0.85, 1.94, 2.97]),</span>
+<span class="sd">                b: ivy.array([2.88,4.69,1.47])</span>
+<span class="sd">            }</span>
+
+<span class="sd">        &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
+<span class="sd">                              b=ivy.array([3.48, 5.72, 1.98]))</span>
+<span class="sd">        &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\</span>
+<span class="sd">                                 b=ivy.array([2., 3.42, 1.69]))</span>
+<span class="sd">        &gt;&gt;&gt; lr = ivy.Container(a=ivy.array(0.3),\</span>
+<span class="sd">                                b=ivy.array(0.1))</span>
+<span class="sd">        &gt;&gt;&gt; NewWeights = w.gradient_descent_update(dcdw, lr, inplace=False)</span>
+<span class="sd">        &gt;&gt;&gt; print(NewWeights)</span>
+<span class="sd">            {</span>
+<span class="sd">                a: ivy.array([0.85, 1.94, 2.97]),</span>
+<span class="sd">                b: ivy.array([3.28, 5.38, 1.81])</span>
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_gradient_descent_update</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">dcdw</span><span class="p">,</span>

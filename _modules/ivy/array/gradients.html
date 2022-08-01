@@ -249,7 +249,59 @@
 <span class="sd">            ivy.array([[[ 0.11], [ 0.32], [-0.63]]]),</span>
 <span class="sd">            ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithGradients.gradient_descent_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.gradient_descent_update">[docs]</a>    <span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.gradient_descent_update.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for</span>
+<span class="sd">        ivy.gradient_descent_update also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Weights of the function to be updated.</span>
+<span class="sd">        dcdw</span>
+<span class="sd">            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
+<span class="sd">        lr</span>
+<span class="sd">            Learning rate(s), the rate(s) at which the weights should be</span>
+<span class="sd">            updated relative to the gradient.</span>
+<span class="sd">        inplace</span>
+<span class="sd">            Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">            variable updates, and handle gradients behind the scenes such as PyTorch.</span>
+<span class="sd">            If the update step should form part of a computation graph</span>
+<span class="sd">            (i.e. higher order optimization), then this should be set to False.</span>
+<span class="sd">            Default is True, provided the backend framework supports it.</span>
+<span class="sd">        stop_gradients</span>
+<span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
+<span class="sd">            Default is True.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The new weights, following the gradient descent updates.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code: `ivy.Array` inputs:</span>
+
+<span class="sd">        &gt;&gt;&gt; w = ivy.array([[[5., 3., 2.], [0., 4., 1.], [-2., 3., -1.]]])</span>
+<span class="sd">        &gt;&gt;&gt; dcdw = ivy.array([[[0.5, 0.92, 0.1], [0.2, 0.7, 0.3], [0.3, 0.8, 0.01]]])</span>
+<span class="sd">        &gt;&gt;&gt; lr = ivy.array(0.3)</span>
+<span class="sd">        &gt;&gt;&gt; NewWeights = w.gradient_descent_update(dcdw, lr, inplace=False)</span>
+<span class="sd">        &gt;&gt;&gt; print(NewWeights)</span>
+<span class="sd">            ivy.array([[[ 4.85,  2.72,  1.97],</span>
+<span class="sd">                        [-0.06,  3.79,  0.91],</span>
+<span class="sd">                        [-2.09,  2.76, -1.  ]]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

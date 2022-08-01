@@ -3,6 +3,8 @@ gradient_descent_update
 
 .. autofunction:: ivy.functional.ivy.gradients.gradient_descent_update
 
+.. autofunction:: ivy.array.array_methods.gradient_descent_update
+
 .. autofunction:: ivy.container.container_methods.gradient_descent_update
 
 .. autofunction:: ivy.container.container_methods.static_gradient_descent_update
@@ -33,6 +35,7 @@ gradient_descent_update
    :caption: gradient_descent_update
 
    gradient_descent_update/gradient_descent_update_functional.rst
+   gradient_descent_update/gradient_descent_update_array.rst
    gradient_descent_update/gradient_descent_update_container.rst
    gradient_descent_update/static_gradient_descent_update_container.rst
 
