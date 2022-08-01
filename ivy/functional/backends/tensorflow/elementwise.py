@@ -382,6 +382,9 @@ def negative(
     return tf.negative(x)
 
 
+negative.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
+
+
 def not_equal(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
