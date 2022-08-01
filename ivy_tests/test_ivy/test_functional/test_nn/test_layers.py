@@ -110,7 +110,7 @@ def x_and_weight(draw, dtypes, fn_name):
     if fn_name == "scaled_dot_product_attention":
         return dtype, q, k, v, mask, scale
     if fn_name == "lstm_update":
-        return dtype, x_lstm,init_h, init_c, kernel, recurrent_kernel, lstm_bias, recurrent_bias
+        return dtype, x_lstm, init_h, init_c, kernel, recurrent_kernel, lstm_bias, recurrent_bias
     if fn_name == "multi_head_attention":
         return dtype, x_mha, scale, num_heads, context, mask
 
@@ -289,9 +289,9 @@ def test_scaled_dot_product_attention(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         fn_name="multi_head_attention",
     ),
-    to_q_fn = st.functions(like=lambda x,v:x),
-    to_kv_fn = st.functions(like=lambda x,v:x),
-    to_out_fn = st.functions(like=lambda x,v:x),
+    to_q_fn = st.functions(like=lambda x, v: x),
+    to_kv_fn = st.functions(like=lambda x, v: x),
+    to_out_fn = st.functions(like=lambda x, v: x),
     with_out=st.booleans(),
     data=st.data(),
 )
@@ -328,7 +328,6 @@ def test_multi_head_attention(
         scale=scale,
         mask=np.asarray(mask, dtype=dtype),
     )
-
 
 
 # Convolutions #
@@ -875,7 +874,8 @@ def test_lstm(
     fw,
     device,
 ):
-    dtype, x_lstm, init_h, init_c, kernel, recurrent_kernel, bias, recurrent_bias = dtype_lstm
+    dtype, x_lstm, init_h, init_c, kernel, \
+    recurrent_kernel, bias, recurrent_bias = dtype_lstm
     as_variable = [as_variable] * 7
     native_array = [native_array] * 7
     container = [container] * 7
