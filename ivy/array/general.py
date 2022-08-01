@@ -74,8 +74,8 @@ class ArrayWithGeneral(abc.ABC):
         axis
             optional int, the axis from which to gather from. Default is -1.
         device
-            optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1',
-            'cpu' etc. Same as x if None.
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+            ``x`` if None.
         out
             optional output array, for writing the result to.
 
