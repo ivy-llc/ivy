@@ -813,7 +813,7 @@ def test_method(
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
-    ground_truth_backend: str = "numpy",
+    ground_truth_backend: str = "tensorflow",
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
     by comparing the result with numpy.
@@ -940,7 +940,7 @@ def test_function(
     atol_: float = 1e-06,
     test_values: bool = True,
     test_gradients: bool = False,
-    ground_truth_backend: str = "numpy",
+    ground_truth_backend: str = "tensorflow",
     device_: str = "cpu",
     **all_as_kwargs_np,
 ):
