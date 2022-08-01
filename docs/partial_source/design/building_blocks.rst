@@ -84,9 +84,9 @@ For more complicated functions, we need to do more than simply wrap and maybe ch
 Ivy Functional API ✅
 ------------------
 
-Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling :code:`ivy.set_framework(‘torch’)` for example.
+Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
 
-:code:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The :code:`clip` function is shown below:
+:code:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The :code:`prod` function is shown below:
 
 .. code-block:: python
 
@@ -176,65 +176,57 @@ until the user explicitly sets a different backend. The examples can be seeen be
 |   # -> <class 'torch.Tensor'>          |                                                    |
 +----------------------------------------+----------------------------------------------------+
 
-This implicit framework selection, and the use of a shared global ivy namespace for all backends, are both made possible via the framework handler.
+This implicit backend selection, and the use of a shared global ivy namespace for all backends, are both made possible via the backend handler.
 
-Framework Handler ✅
+Backend Handler ✅
 -----------------
 
-All code for setting and unsetting frameworks resides in the submodule at :code:`ivy/framework_handler.py`, and the front facing function is :code:`ivy.current_framework()`. The contents of this function are as follows:
+All code for setting and unsetting backend resides in the submodule at :code:`ivy/backend_handler.py`, and the front facing function is :code:`ivy.current_backend()`. The contents of this function are as follows:
 
 .. code-block:: python
 
-   # ivy/framework_handler.py
-   def current_framework(*args, f=None, **kwargs):
+   # ivy/backend_handler.py
+    def current_backend(*args, **kwargs):
+        global implicit_backend
+        # if a global backend has been set with set_backend then this will be returned
+        if backend_stack:
+            f = backend_stack[-1]
+            if verbosity.level > 0:
+                verbosity.cprint("Using backend from stack: {}".format(f))
+            return f
 
-       if f:
-           if verbosity.level > 0:
-               verbosity.cprint(
-                   'Using provided framework: {}'.format(f))
-           return f
+        # if no global backend exists, we try to infer the backend from the arguments
+        f = _determine_backend_from_args(list(args) + list(kwargs.values()))
+        if f is not None:
+            implicit_backend = f.current_backend_str()
+            return f
+        if verbosity.level > 0:
+            verbosity.cprint("Using backend from type: {}".format(f))
+        return importlib.import_module(_backend_dict[implicit_backend])
 
-       if framework_stack:
-           f = framework_stack[-1]
-           if verbosity.level > 0:
-               verbosity.cprint(
-                   'Using framework from stack: {}'.format(f))
-           return f
-
-       f = _determine_framework_from_args(
-           list(args) + list(kwargs.values()))
-       if f is None:
-           raise ValueError(
-               'get_framework failed to find a valid library'
-               'from the inputs: {} {}'.format(args, kwargs))
-       if verbosity.level > 0:
-           verbosity.cprint(
-               'Using framework from type: {}'.format(f))
-       return f
-
-When the backend framework is provided explicitly as an argument (for example :code:`f=ivy.functional.backends.torch`), then this framework is returned directly without setting it as the global framework. Otherwise, if a global framework has been previously added to the framework stack using for example :code:`ivy.set_framework(‘tensorflow’)`, then this globally set framework is returned. Finally if neither of these cases apply then the input arguments are type-checked to infer the framework, and this is returned from the function without setting as the global framework. In all cases, a callable module is returned with all bound functions adhering to the specific backend.
+If a global backend framework has been previously set using for example :code:`ivy.set_backend(‘tensorflow’)`, then this globally set backend is returned. Otherwise, the input arguments are type-checked to infer the backend, and this is returned from the function as a callable module with all bound functions adhering to the specific backend.
 
 The functions in this returned module are populated by iterating through the global :code:`ivy.__dict__` (or a non-global copy of :code:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global :code:`ivy.__dict__` directly:
 
 .. code-block:: python
 
-   # ivy/framework_handler.py
-   def set_framework(f):
+   # ivy/backend_handler.py
+   def set_backend(backend):
 
        # un-modified ivy.__dict__
        global ivy_original_dict
-       if not framework_stack:
+       if not backend_stack:
            ivy_original_dict = ivy.__dict__.copy()
 
-       # add the input framework to global stack
-       framework_stack.append(f)
+       # add the input backend to global stack
+       backend_stack.append(f)
 
        # iterate through original ivy.__dict__
        for k, v in ivy_original_dict.items():
 
-           # if method doesn't exist in backend module f
+           # if method doesn't exist in the backend
            if k not in f.__dict__:
-               # add the original ivy method to f
+               # add the original ivy method to backend
                f.__dict__[k] = v
            # update global ivy.__dict__ with this method
            ivy.__dict__[k] = f.__dict__[k]
@@ -242,16 +234,47 @@ The functions in this returned module are populated by iterating through the glo
        # maybe log to terminal
        if verbosity.level > 0:
            verbosity.cprint(
-               'framework stack: {}'.format(framework_stack))
+               'Backend stack: {}'.format(backend_stack))
 
 The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is :code:`ivy.lstm_update`, as shown:
 
 .. code-block:: python
 
-    # ivy/functional/ivy/nn/layers.py
-    def lstm_update(x, init_h, init_c, kernel, recurrent_kernel,
-                    bias=None, recurrent_bias=None):
-
+    # ivy/functional/ivy/layers.py
+    @to_native_arrays_and_back
+    @handle_nestable
+    def lstm_update(
+        x: Union[ivy.Array, ivy.NativeArray],
+        init_h: Union[ivy.Array, ivy.NativeArray],
+        init_c: Union[ivy.Array, ivy.NativeArray],
+        kernel: Union[ivy.Array, ivy.NativeArray],
+        recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
+        """Perform long-short term memory update by unrolling time dimension of input array.
+        Parameters
+        ----------
+        x
+            input tensor of LSTM layer *[batch_shape, t, in]*.
+        init_h
+            initial state tensor for the cell output *[batch_shape, out]*.
+        init_c
+            initial state tensor for the cell hidden state *[batch_shape, out]*.
+        kernel
+            weights for cell kernel *[in, 4 x out]*.
+        recurrent_kernel
+            weights for cell recurrent kernel *[out, 4 x out]*.
+        bias
+            bias for cell kernel *[4 x out]*. (Default value = None)
+        recurrent_bias
+            bias for cell recurrent kernel *[4 x out]*. (Default value = None)
+        Returns
+        -------
+        ret
+            hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
+            timestep *[batch_shape,out]*
+        """
         # get shapes
         x_shape = list(x.shape)
         batch_shape = x_shape[:-2]
@@ -263,7 +286,8 @@ The functions implemented by the backend-specific backend such as :code:`ivy.fun
         Wi = kernel
         Wi_x = ivy.reshape(
             ivy.matmul(x_flat, Wi) + (bias if bias is not None else 0),
-                           batch_shape + [timesteps, -1])
+            batch_shape + [timesteps, -1],
+        )
         Wii_x, Wif_x, Wig_x, Wio_x = ivy.split(Wi_x, 4, -1)
 
         # recurrent kernel
@@ -278,16 +302,20 @@ The functions implemented by the backend-specific backend such as :code:`ivy.fun
 
         # unrolled time dimension with lstm steps
         for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
-                ivy.unstack(Wii_x, axis=-2), ivy.unstack(Wif_x, axis=-2),
-                ivy.unstack(Wig_x, axis=-2), ivy.unstack(Wio_x, axis=-2)):
-
+            ivy.unstack(Wii_x, axis=-2),
+            ivy.unstack(Wif_x, axis=-2),
+            ivy.unstack(Wig_x, axis=-2),
+            ivy.unstack(Wio_x, axis=-2),
+        ):
             htm1 = ht
             ctm1 = ct
 
-            Wh_htm1 = ivy.matmul(htm1, Wh) + \
-                (recurrent_bias if recurrent_bias is not None else 0)
-            Whi_htm1, Whf_htm1, Whg_htm1, Who_htm1 = \
-                ivy.split(Wh_htm1, num_or_size_splits=4, axis=-1)
+            Wh_htm1 = ivy.matmul(htm1, Wh) + (
+                recurrent_bias if recurrent_bias is not None else 0
+            )
+            Whi_htm1, Whf_htm1, Whg_htm1, Who_htm1 = ivy.split(
+                Wh_htm1, num_or_size_splits=4, axis=-1
+            )
 
             it = ivy.sigmoid(Wii_xt + Whi_htm1)
             ft = ivy.sigmoid(Wif_xt + Whf_htm1)
@@ -298,9 +326,9 @@ The functions implemented by the backend-specific backend such as :code:`ivy.fun
 
             hts_list.append(ivy.expand_dims(ht, -2))
 
-        return ivy.concatenate(hts_list, -2), ct
+        return ivy.concat(hts_list, -2), ct
 
-We *could* find and wrap the functional LSTM update methods for each backend framework which might bring a small performance improvement, but in this case there are no functional LSTM methods exposed in the official functional APIs of the backend frameworks, and therefore the functional LSTM code which does exist for these frameworks is much less stable and less reliable for wrapping into Ivy.
+We *could* find and wrap the functional LSTM update methods for each backend framework which might bring a small performance improvement, but in this case there are no functional LSTM methods exposed in the official functional APIs of the backend frameworks, and therefore the functional LSTM code which does exist for the backends is much less stable and less reliable for wrapping into Ivy.
 Generally, we have made decisions so that Ivy is as stable and scalable as possible, minimizing dependencies to backend framework code where possible with minimal sacrifices in performance.
 
 Graph Compiler 🚧
@@ -407,6 +435,6 @@ Therefore, the backend code can always be run with maximal efficiency by compili
 
 **Round Up**
 
-Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, framework handler and graph compiler 🙂
+Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, backend handler and graph compiler 🙂
 
 Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
