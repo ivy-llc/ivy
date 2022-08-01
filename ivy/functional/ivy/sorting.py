@@ -220,8 +220,8 @@ def searchsorted(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
+
     """Returns the indices of the inserted elements in a sorted array.
-    
     Parameters
     ----------
     x1
@@ -246,11 +246,8 @@ def searchsorted(
     ret
          An array of insertion points. 
 
-         
-
     Examples
     --------
-
     With：code:`ivy.Array` inputs:
 
 
