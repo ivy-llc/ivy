@@ -1,15 +1,15 @@
 # global
+from typing import Union
+
 import numpy as np
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from tensorflow.experimental.numpy import any
-from typing import Union
 
 # local
 import ivy
 
 
-def _cast_for_binary_op(x1, x2):
+def _cast_for_binary_op(x1, x2, clamp=False):
     if isinstance(x1, Tensor):
         if isinstance(x2, Tensor):
             promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
@@ -19,6 +19,12 @@ def _cast_for_binary_op(x1, x2):
             x2 = tf.constant(x2, dtype=x1.dtype)
     elif isinstance(x2, Tensor):
         x1 = tf.constant(x1, dtype=x2.dtype)
+    if clamp:
+        x2 = tf.clip_by_value(
+            x2,
+            tf.constant(0, dtype=x2.dtype),
+            tf.constant(x1.dtype.size * 8 - 1, dtype=x2.dtype),
+        )
     return x1, x2
 
 
@@ -33,15 +39,11 @@ def abs(
         return tf.abs(x)
 
 
-def acos(
-    x: Union[tf.Tensor, tf.Variable]
-) -> Union[tf.Tensor, tf.Variable]:
+def acos(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.acos(x)
 
 
-def acosh(
-    x: Union[tf.Tensor, tf.Variable]
-) -> Union[tf.Tensor, tf.Variable]:
+def acosh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.acosh(x)
 
 
@@ -67,9 +69,7 @@ def asinh(
     return tf.asinh(x)
 
 
-def atan(
-    x: Union[tf.Tensor, tf.Variable]
-) -> Union[tf.Tensor, tf.Variable]:
+def atan(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.atan(x)
 
 
@@ -83,9 +83,7 @@ def atan2(
     return tf.math.atan2(x1, x2)
 
 
-def atanh(
-    x: Union[tf.Tensor, tf.Variable]
-) -> Union[tf.Tensor, tf.Variable]:
+def atanh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.atanh(x)
 
 
@@ -117,7 +115,7 @@ def bitwise_left_shift(
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2, clamp=True)
     return tf.bitwise.left_shift(x1, x2)
 
 
@@ -140,7 +138,7 @@ def bitwise_right_shift(
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2, clamp=True)
     return tf.bitwise.right_shift(x1, x2)
 
 
@@ -237,8 +235,7 @@ def floor_divide(
 
 
 def greater(
-    x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable]
+    x1: Union[float, tf.Tensor, tf.Variable], x2: Union[float, tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.greater(x1, x2)
@@ -282,8 +279,7 @@ def isnan(
 
 
 def less(
-    x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable]
+    x1: Union[float, tf.Tensor, tf.Variable], x2: Union[float, tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.less(x1, x2)

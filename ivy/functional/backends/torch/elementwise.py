@@ -16,8 +16,6 @@ def _cast_for_binary_op(x1, x2, clamp=False):
     if isinstance(x1, torch.Tensor):
         if isinstance(x2, torch.Tensor):
             promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-            if clamp:
-                x2 = torch.clamp(x2, max=torch.iinfo(promoted_type).bits - 1)
             x1 = x1.to(promoted_type)
             x2 = x2.to(promoted_type)
         else:
@@ -28,6 +26,8 @@ def _cast_for_binary_op(x1, x2, clamp=False):
         else:
             x1 = torch.tensor(x1)
             x2 = torch.tensor(x2)
+    if clamp:
+        x2 = torch.clamp(x2, min=0, max=torch.iinfo(x1.dtype).bits - 1)
     return x1, x2
 
 
@@ -311,10 +311,7 @@ logical_xor.support_native_out = True
 
 
 def logical_and(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    *,
-    out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.logical_and(x1.type(torch.bool), x2.type(torch.bool), out=out)
 

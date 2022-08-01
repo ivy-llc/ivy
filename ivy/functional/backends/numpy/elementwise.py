@@ -1,7 +1,9 @@
 # global
-import numpy as np
-from typing import Union, Optional, Callable
 import functools
+from typing import Union, Optional, Callable
+
+import numpy
+import numpy as np
 
 # local
 import ivy
@@ -12,7 +14,7 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
-def _cast_for_binary_op(x1, x2):
+def _cast_for_binary_op(x1, x2, clamp=False):
     if isinstance(x1, np.ndarray):
         if isinstance(x2, np.ndarray):
             promoted_type = np.promote_types(x1.dtype, x2.dtype)
@@ -20,6 +22,13 @@ def _cast_for_binary_op(x1, x2):
             x2 = x2.astype(promoted_type)
         else:
             x2 = np.asarray(x2, dtype=x1.dtype)
+    if clamp:
+        x2 = numpy.clip(
+            x2,
+            np.array(0, dtype=x2.dtype),
+            np.array(np.dtype(x1.dtype).itemsize * 8 - 1),
+            dtype=x2.dtype,
+        )
     return x1, x2
 
 
@@ -146,7 +155,7 @@ def bitwise_left_shift(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2, clamp=True)
     return np.left_shift(x1, x2, out=out)
 
 
@@ -174,7 +183,7 @@ def bitwise_right_shift(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2, clamp=True)
     return np.right_shift(x1, x2, out=out)
 
 
@@ -422,10 +431,7 @@ logaddexp.support_native_out = True
 
 @_handle_0_dim_output
 def logical_and(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    *,
-    out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.logical_and(x1, x2, out=out)
 
