@@ -190,8 +190,8 @@ class ContainerWithSorting(ContainerBase):
     def static_searchsorted(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        side= "left",
-        sorter= None,
+        side="left",
+        sorter=None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -215,8 +215,8 @@ class ContainerWithSorting(ContainerBase):
     def searchsorted(
         self: ivy.Container,
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        side= "left",
-        sorter= None,
+        side="left",
+        sorter=None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
