@@ -187,8 +187,7 @@ more :code:`ivy.Array` or :code:`ivy.NativeArray` objects, the corresponding fun
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make calls to
 :code:`ivy.add`, :code:`ivy.subtract`,
 :code:`ivy.multiply` and :code:`ivy.divide` respectively if the input 
-contains any :code:`ivy.Array` or :code:`ivy.NativeArray` objects. If the input does not, 
-the normal operator function behavior will take place.
+contains any :code:`ivy.Array` or :code:`ivy.NativeArray` objects.
 
 Nestable Functions
 ------------------
