@@ -92,25 +92,46 @@ def x_and_weight(draw, dtypes, fn_name):
 
     x_lstm = draw(
         helpers.array_values(
-            dtype=dtype, shape=x_lstm_shape, min_value=0, max_value=1))
+            dtype=dtype,
+            shape=x_lstm_shape,
+            min_value=0,
+            max_value=1))
     init_h = draw(
         helpers.array_values(
-            dtype=dtype, shape=init_h_shape, min_value=0, max_value=1))
+            dtype=dtype,
+            shape=init_h_shape,
+            min_value=0,
+            max_value=1))
     init_c = draw(
         helpers.array_values(
-            dtype=dtype, shape=init_c_shape, min_value=0, max_value=1))
+            dtype=dtype,
+            shape=init_c_shape,
+            min_value=0,
+            max_value=1))
     kernel = draw(
         helpers.array_values(
-            dtype=dtype, shape=kernel_shape, min_value=0, max_value=1))
+            dtype=dtype,
+            shape=kernel_shape,
+            min_value=0,
+            max_value=1))
     recurrent_kernel = draw(
         helpers.array_values(
-            dtype=dtype, shape=recurrent_kernel_shape, min_value=0, max_value=1))
+            dtype=dtype,
+            shape=recurrent_kernel_shape,
+            min_value=0,
+            max_value=1))
     lstm_bias = draw(
         helpers.array_values(
-            dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
+            dtype=dtype,
+            shape=bias_shape,
+            min_value=0,
+            max_value=1))
     recurrent_bias = draw(
         helpers.array_values(
-            dtype=dtype, shape=recurrent_bias_shape, min_value=0, max_value=1))
+            dtype=dtype,
+            shape=recurrent_bias_shape,
+            min_value=0,
+            max_value=1))
 
     num_heads = num_keys
 
