@@ -1370,7 +1370,7 @@ def test_frontend_function(
             assert ret.data is out.data
 
     # bfloat16 is not supported by numpy
-    assume(not("bfloat16" in input_dtypes))
+    assume(not ("bfloat16" in input_dtypes))
 
     # create NumPy args
     args_np = ivy.nested_map(
