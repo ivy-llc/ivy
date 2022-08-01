@@ -795,9 +795,10 @@ def test_swapaxes(
 
 # clip
 @given(
+    # use filter to ensure dtypes are all the same
     x_min_n_max=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3
-    ).filter(lambda x_min_n_max: x_min_n_max[0][0] == x_min_n_max[0][1] and x_min_n_max[0][1] == x_min_n_max[0][2]),
+    ).filter(lambda x_min_n_max: all(x == x_min_n_max[0][0] for x in x_min_n_max[0])),
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
     data=st.data(),
 )
