@@ -383,8 +383,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> print(ivy.static_gather(x, y))
         >>> print(z)
         {
-            a: ivy.array(0., 1.),
-            b: ivy.array(4., 5.)
+            a: ivy.array([0., 1.]),
+            b: ivy.array([4., 5.])
         }
 
         With multiple :code:`ivy.Container` inputs:
