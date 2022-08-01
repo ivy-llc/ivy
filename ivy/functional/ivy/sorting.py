@@ -231,11 +231,10 @@ def searchsorted(
         specific elements to insert in array x1
         
     side
-        The specific elements' index is at the 'left' side or 'right' side in the sorted array x1. 
-
-        If the side is 'left', the index of the first suitable location located is given. If 'right', 
-
-        return the last such index.
+        The specific elements' index is at the 'left' side or 
+        'right' side in the sorted array x1. If the side is 'left', the 
+        index of the first suitable location located is given. If 
+        'right', return the last such index.
  
     out
         optional output array, for writing the result to. 
@@ -288,9 +287,6 @@ def searchsorted(
     ivy.array([3,2,4])
     """ 
     return ivy.current_backend(x1, x2).searchsorted(x1, x2, side=side, out=out)
-
-
-
 
 # Extra #
 # ------#
