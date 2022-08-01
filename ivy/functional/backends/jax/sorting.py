@@ -44,6 +44,7 @@ def searchsorted(
     x1: JaxArray,
     x2: JaxArray,
     side= 'left',
+    sorter= None,
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
