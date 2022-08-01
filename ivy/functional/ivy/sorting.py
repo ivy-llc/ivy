@@ -297,8 +297,7 @@ def searchsorted(
      ivy.array([3,2,4])
      
      """ 
-
-    return ivy.current_backend(x1, x2).searchsorted(x1, x2, side=side, out=out)
+     return ivy.current_backend(x1, x2).searchsorted(x1, x2, side=side, out=out)
 
 
 
