@@ -48,9 +48,12 @@ class ArrayWithSorting(abc.ABC):
     
     def searchsorted(  
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray], 
+        x2: ivy.Array, 
         side="left",
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.searchsorted(self.data, x2, side=side, out=out)
+        return ivy.searchsorted(self.data, x2, side=side, axis, descending, stable, out=out)
