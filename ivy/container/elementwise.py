@@ -3568,6 +3568,30 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        With :code:'ivy.Container' inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 9.2]), b=ivy.array([2., 1.1, 5.5]))
+        >>> x2 = ivy.Container(a=ivy.array([12, 2.2, 4.1]), b=ivy.array([1, 0.7, 3.8]))
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, False, False]),
+            b: ivy.array([False, False, False])
+        }
+
+        With mixed :code:'ivy.Container' and :code:'ivy.Array' inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 9.2]), b=ivy.array([2., 1., 5.5]))
+        >>> x2 = ivy.array([2., 1.1, 5.5])
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([True, True, True])
+        }
+
+
         """
         return self.static_less_equal(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -3700,13 +3724,31 @@ class ContainerWithElementwise(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
         ret
             a container containing the evaluated result for each element in ``x``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))
+        >>> y = ivy.Container.static_log1p(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.693, 1.1]),
+            b: ivy.array([1.39, 1.61, 1.81])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.]), b=ivy.array([ 4., 5.1]))
+        >>> ivy.Container.static_log1p(x , out = x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.693, 1.1]),
+            b: ivy.array([1.39, 1.61, 1.81])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -3757,6 +3799,17 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the evaluated result for each element in ``self``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),\
+                            b=ivy.array([4.5, 5.3, 2.3]))
+        >>> y = x.log1p()
+        >>> print(y)
+        {
+            a: ivy.array([0.956, 1.28, 1.5]),
+            b: ivy.array([1.7, 1.84, 1.19])
+        }
 
         """
         return self.static_log1p(
@@ -3898,6 +3951,21 @@ class ContainerWithElementwise(ContainerBase):
             element in ``x``. The returned array must have a real-valued
             floating-point data type determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        Using :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
+                              b=ivy.array([-0., -3.9, float('+inf')]),\
+                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> y = ivy.Container.static_log10(x)
+        >>> print(y)
+        {
+            a: ivy.array([-inf, nan]),
+            b: ivy.array([-inf, nan, inf]),
+            c: ivy.array([0.898, 0.0414, 0.])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "log10",
@@ -3948,6 +4016,20 @@ class ContainerWithElementwise(ContainerBase):
             each element in ``self``. The returned array must have a real-valued
             floating-point data type determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
+                              b=ivy.array([-0., -3.9, float('+inf')]), \
+                              c=ivy.array([7.9, 1.1, 1.]))
+        >>> y = x.log10(x)
+        >>> print(y)
+        {
+            a: ivy.array([-inf, nan]),
+            b: ivy.array([-inf, nan, inf]),
+            c: ivy.array([0.898, 0.0414, 0.])
+        }
         """
         return self.static_log10(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -4151,15 +4233,14 @@ class ContainerWithElementwise(ContainerBase):
         {
             a: ivy.array([True, False, False, False])
         }
-
         >>> print(x)
         {
             a: ivy.array([False, True, False, False])
         }
-
         >>> print(y)
-            ivy.array([False, False, False, False])
-
+        {
+            a: ivy.array([False, False, False, False])
+        }
         >>> print(z)
         {
             a: ivy.array([True, False, True]),
@@ -4242,15 +4323,14 @@ class ContainerWithElementwise(ContainerBase):
         {
             a: ivy.array([True, False, False, False])
         }
-
         >>> print(x)
         {
             a: ivy.array([False, True, False, False])
         }
-
         >>> print(y)
-        ivy.array([False, False, False, False])
-
+        {
+            a: ivy.array([False, False, False, False])
+        }
         >>> print(z)
         {
             a: ivy.array([True, False, True]),
@@ -4499,6 +4579,30 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.array([0,0,1,1,0])
+        >>> y = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
+        >>> z = ivy.Container.static_logical_xor(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([True, False, True, False, False]),
+            b: ivy.array([True, False, False, True, False])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
+        >>> y = ivy.Container(a=ivy.array([0,0,1,1,0]), b=ivy.array([1,0,1,1,0]))
+        >>> z = ivy.Container.static_logical_xor(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([True, False, True, False, False]),
+            b: ivy.array([False, False, False, True, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "logical_xor",
@@ -4553,6 +4657,17 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
+        >>> y = ivy.Container(a=ivy.array([0,0,1,1,0]), b=ivy.array([1,0,1,1,0]))
+        >>> z = x.logical_xor(y)
+        >>> print(z)
+        {
+            a: ivy.array([True, False, True, False, False]),
+            b: ivy.array([False, False, False, True, False])
+        }
         """
         return self.static_logical_xor(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -6444,8 +6559,8 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
@@ -6493,12 +6608,14 @@ class ContainerWithElementwise(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
             Container object with all sub-arrays having the minimum values computed.
 
         """
-        return self.static_minimum(self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out)
+        return self.static_minimum(
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )

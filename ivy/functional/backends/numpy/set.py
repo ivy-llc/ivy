@@ -18,9 +18,7 @@ def unique_all(x: np.ndarray) -> NamedTuple:
 
     if (nan_count > 1) & (np.sum(np.isnan(values)).item() == 1):
         counts[np.where(np.isnan(values))[0]] = 1
-        counts = np.append(
-            counts, np.full(fill_value=1, shape=(nan_count - 1,))
-        ).astype("int32")
+        counts = np.append(counts, np.full(fill_value=1, shape=(nan_count - 1,)))
 
         values = np.append(
             values, np.full(fill_value=np.nan, shape=(nan_count - 1,)), axis=0
@@ -28,14 +26,14 @@ def unique_all(x: np.ndarray) -> NamedTuple:
 
         nan_idx = np.where(np.isnan(x.flatten()))[0]
 
-        indices = np.concatenate((indices[:-1], nan_idx), axis=0).astype("int32")
+        indices = np.concatenate((indices[:-1], nan_idx), axis=0)
     else:
         pass
 
     return UniqueAll(
         values.astype(x.dtype),
         indices,
-        np.reshape(inverse_indices, x.shape).astype("int32"),
+        np.reshape(inverse_indices, x.shape),
         counts,
     )
 

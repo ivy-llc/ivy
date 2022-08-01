@@ -579,6 +579,120 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
+    def static_einops_rearrange(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        pattern: Union[str, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+        **axes_lengths: Dict[str, int],
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.einops_rearrange.
+        This method simply wraps the function, and so the docstring
+        for ivy.einops_rearrange also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array or container to be re-arranged.
+        pattern
+            Rearrangement pattern.
+        axes_lengths
+            Any additional specifications for dimensions.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container with einops.rearrange having been applied.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "einops_rearrange",
+            x,
+            pattern,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            **axes_lengths,
+        )
+
+    def einops_rearrange(
+        self: ivy.Container,
+        pattern: Union[str, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+        **axes_lengths: Dict[str, int],
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.einops_rearrange.
+        This method simply wraps the function, and so the docstring
+        for ivy.einops_rearrange also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container to be re-arranged.
+        pattern
+            Rearrangement pattern.
+        axes_lengths
+            Any additional specifications for dimensions.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container with einops.rearrange having been applied.
+
+        """
+        return self.static_einops_rearrange(
+            self,
+            pattern,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
+            **axes_lengths,
+        )
+
+    @staticmethod
     def static_einops_reduce(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pattern: str,
@@ -812,8 +926,74 @@ class ContainerWithGeneral(ContainerBase):
             **axes_lengths,
         )
 
+    @staticmethod
+    def static_to_numpy(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.to_numpy. This method simply wraps
+        the function, and so the docstring for ivy.to_numpy also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of numpy arrays copying all the element of the container
+            ``self``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
+                            b=ivy.array([1, -1, 0, 0]))
+        >>> y = ivy.Container.static_to_numpy(x)
+        >>> print(y)
+        {
+            a: array([1, 0, 1, 1], dtype=int32),
+            b: array([1, -1, 0, 0], dtype=int32)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
+                            b=ivy.native_array([1, 1, -1, 0]))
+        >>> y = ivy.Container.static_to_numpy(x)
+        >>> print(y)
+        {
+            a: array([1., 0., 0., 1.], dtype=float32),
+            b: array([1, 1, -1, 0], dtype=int32)
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "to_numpy",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
     def to_numpy(
-        self,
+        self: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -881,16 +1061,16 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_to_numpy(
-        x: Union[ivy.Array, ivy.NativeArray],
+    def static_to_list(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.to_numpy. This method simply wraps
-        the function, and so the docstring for ivy.to_numpy also applies to this method
+        ivy.Container static method variant of ivy.to_list. This method simply wraps
+        the function, and so the docstring for ivy.to_list also applies to this method
         with minimal changes.
 
         Parameters
@@ -911,39 +1091,55 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            a container of numpy arrays copying all the element of the container
-            ``self``.
-
-        Examples
-        --------
-        With one :code:`ivy.Container` inputs:
-
-        >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
-                            b=ivy.array([1, -1, 0, 0]))
-        >>> y = ivy.Container.static_to_numpy(x)
-        >>> print(y)
-        {
-            a: array([1, 0, 1, 1], dtype=int32),
-            b: array([1, -1, 0, 0], dtype=int32)
-        }
-
-        >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
-                            b=ivy.native_array([1, 1, -1, 0]))
-        >>> y = ivy.Container.static_to_numpy(x)
-        >>> print(y)
-        {
-            a: array([1., 0., 0., 1.], dtype=float32),
-            b: array([1, 1, -1, 0], dtype=int32)
-        }
-
+            A list representation of the input array ``x``.
         """
         return ContainerBase.multi_map_in_static_method(
-            "to_numpy",
+            "to_list",
             x,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+        )
+
+    def to_list(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.to_list. This method simply wraps
+        the function, and so the docstring for ivy.to_list also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A list representation of the input array ``x``.
+        """
+        return self.static_to_list(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
         )
 
     @staticmethod

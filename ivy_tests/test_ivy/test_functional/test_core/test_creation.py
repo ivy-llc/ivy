@@ -4,7 +4,7 @@
 # global
 import numpy as np
 from hypothesis import given, strategies as st
-from hypothesis import settings 
+from hypothesis import settings
 
 # local
 import ivy
@@ -13,7 +13,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy.functional.backends.numpy as ivy_np
 import hypothesis.extra.numpy as hnp
 from datetime import timedelta
-
 
 
 # native_array
