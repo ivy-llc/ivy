@@ -1153,6 +1153,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Parameters
         ----------
+        self
+            input array. Should have a floating-point data type.
         axis
             If an integer, ``axis`` specifies the axis (dimension) along which to compute
             vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along
