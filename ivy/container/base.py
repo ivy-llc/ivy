@@ -2344,11 +2344,14 @@ class ContainerBase(dict, abc.ABC):
             A list of sub-arrays.
 
         """
-        dim_size = (
-            num_or_size_splits
-            if isinstance(num_or_size_splits, int)
-            else len(num_or_size_splits)
-        )
+        if num_or_size_splits is None:
+            dim_size = 1
+        else:
+            dim_size = (
+                num_or_size_splits
+                if isinstance(num_or_size_splits, int)
+                else len(num_or_size_splits)
+            )
         # noinspection PyTypeChecker
         return self.map(
             lambda x, kc: self._ivy.split(x, num_or_size_splits, axis, with_remainder)
