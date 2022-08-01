@@ -144,7 +144,7 @@ def x_and_weight(draw, dtypes, fn_name):
         return dtype, q, k, v, mask, scale
     if fn_name == "lstm_update":
         return dtype, x_lstm, init_h, init_c, kernel, \
-               recurrent_kernel, lstm_bias, recurrent_bias
+            recurrent_kernel, lstm_bias, recurrent_bias
     if fn_name == "multi_head_attention":
         return dtype, x_mha, scale, num_heads, context, mask
 
@@ -909,7 +909,7 @@ def test_lstm(
     device,
 ):
     dtype, x_lstm, init_h, init_c, kernel, \
-    recurrent_kernel, bias, recurrent_bias = dtype_lstm
+        recurrent_kernel, bias, recurrent_bias = dtype_lstm
     as_variable = [as_variable] * 7
     native_array = [native_array] * 7
     container = [container] * 7
