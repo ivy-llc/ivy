@@ -373,19 +373,8 @@ def test_roll(
 ):
 
     value_dtype, value = dtype_value
-
-    if fw in ['tensorflow', 'torch']:
-        #Tensor and Torch requires shift to be passed as a tuple not a list/tensor
-        shift = tuple(shift[1]) if not isinstance(shift[1], int) else shift[1]
-
-        as_variable = as_variable[0]
-        native_array = native_array[0]
-        container = container[0]
-        dtypes = value_dtype
-    else:
-        shift_dtype, shift = shift
-        shift = np.asarray(shift,dtype=shift_dtype)
-        dtypes = [value_dtype, shift_dtype]
+    shift_dtype, shift = shift
+    dtypes = [value_dtype]
 
     print(shift, axis)
 
@@ -611,10 +600,6 @@ def test_repeat(
         repeat_dtype, repeat_list = repeat
         repeat = np.asarray(repeat_list, dtype=repeat_dtype)
         dtype = [dtype, repeat_dtype]
-    else:
-        as_variable = as_variable[0]
-        native_array = native_array[0]
-        container = container[0]
 
     if not isinstance(axis,int) and axis is not None:
         axis = axis[0]
