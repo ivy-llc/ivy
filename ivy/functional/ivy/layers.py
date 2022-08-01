@@ -93,10 +93,10 @@ def linear(
 
 @handle_nestable
 def dropout(
-    x:Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
     scale: bool = True,
-    dtype: ivy.Dtype=None,
+    dtype: ivy.Dtype = None,
     *,
     out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -397,7 +397,6 @@ def scaled_dot_product_attention(
 scaled_dot_product_attention.unsupported_dtypes = {'torch': ('float16', )}
 
 
-@to_native_arrays_and_back
 def multi_head_attention(
     x,
     scale,

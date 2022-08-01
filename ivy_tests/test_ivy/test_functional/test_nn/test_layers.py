@@ -14,6 +14,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # Linear #
 # -------#
 
+
 @st.composite
 def x_and_weight(draw, dtypes, fn_name):
     dtype = draw(dtypes)
@@ -33,6 +34,7 @@ def x_and_weight(draw, dtypes, fn_name):
     )
     batch_shape = inner_batch_shape
 
+    #Linear
     in_features = draw(st.integers(min_value=1, max_value=3))
     out_features = draw(st.integers(min_value=1, max_value=3))
 
@@ -40,10 +42,14 @@ def x_and_weight(draw, dtypes, fn_name):
     weight_shape = outer_batch_shape + (out_features,) + (in_features,)
     bias_shape = outer_batch_shape + (out_features,)
 
-    x = draw(helpers.array_values(dtype=dtype, shape=x_shape, min_value=0, max_value=1))
-    weight = draw(helpers.array_values(dtype=dtype, shape=weight_shape, min_value=0, max_value=1))
-    bias = draw(helpers.array_values(dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
+    x = draw(helpers.array_values
+             (dtype=dtype, shape=x_shape, min_value=0, max_value=1))
+    weight = draw(helpers.array_values
+                  (dtype=dtype, shape=weight_shape, min_value=0, max_value=1))
+    bias = draw(helpers.array_values
+                (dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
 
+    #Scaled_dot_product_attention
     num_queries = in_features
     num_keys = in_features
     feat_dim = in_features
@@ -60,11 +66,16 @@ def x_and_weight(draw, dtypes, fn_name):
     v_shape = batch_shape + (num_keys,) + (feat_dim,)
     mask_shape = batch_shape + (num_queries,) + (num_keys,)
 
-    q = draw(helpers.array_values(dtype=dtype, shape=q_shape, min_value=0, max_value=1))
-    k = draw(helpers.array_values(dtype=dtype, shape=k_shape, min_value=0, max_value=1))
-    v = draw(helpers.array_values(dtype=dtype, shape=v_shape, min_value=0, max_value=1))
-    mask = draw(helpers.array_values(dtype=dtype, shape=mask_shape, min_value=0, max_value=1, safety_factor=2))
+    q = draw(helpers.array_values
+             (dtype=dtype, shape=q_shape, min_value=0, max_value=1))
+    k = draw(helpers.array_values
+             (dtype=dtype, shape=k_shape, min_value=0, max_value=1))
+    v = draw(helpers.array_values
+             (dtype=dtype, shape=v_shape, min_value=0, max_value=1))
+    mask = draw(helpers.array_values
+                (dtype=dtype, shape=mask_shape, min_value=0, max_value=1, safety_factor=2))
 
+    #Update_lstm
     t = draw(st.integers(min_value=1, max_value=3))
     _in_ = draw(st.integers(min_value=1, max_value=3))
     _out_ = draw(st.integers(min_value=1, max_value=3))
@@ -77,18 +88,26 @@ def x_and_weight(draw, dtypes, fn_name):
     bias_shape = (4 * _out_,)
     recurrent_bias_shape = bias_shape
 
-    x_lstm = draw(helpers.array_values(dtype=dtype, shape=x_lstm_shape, min_value=0, max_value=1))
-    init_h = draw(helpers.array_values(dtype=dtype, shape=init_h_shape, min_value=0, max_value=1))
-    init_c = draw(helpers.array_values(dtype=dtype, shape=init_c_shape, min_value=0, max_value=1))
-    kernel = draw(helpers.array_values(dtype=dtype, shape=kernel_shape, min_value=0, max_value=1))
-    recurrent_kernel = draw(helpers.array_values(dtype=dtype, shape=recurrent_kernel_shape, min_value=0, max_value=1))
-    lstm_bias = draw(helpers.array_values(dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
-    recurrent_bias = draw(helpers.array_values(dtype=dtype, shape=recurrent_bias_shape, min_value=0, max_value=1))
+    x_lstm = draw(helpers.array_values
+                  (dtype=dtype, shape=x_lstm_shape, min_value=0, max_value=1))
+    init_h = draw(helpers.array_values
+                  (dtype=dtype, shape=init_h_shape, min_value=0, max_value=1))
+    init_c = draw(helpers.array_values
+                  (dtype=dtype, shape=init_c_shape, min_value=0, max_value=1))
+    kernel = draw(helpers.array_values
+                  (dtype=dtype, shape=kernel_shape, min_value=0, max_value=1))
+    recurrent_kernel = draw(helpers.array_values
+                  (dtype=dtype, shape=recurrent_kernel_shape, min_value=0, max_value=1))
+    lstm_bias = draw(helpers.array_values
+                  (dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
+    recurrent_bias = draw(helpers.array_values
+                  (dtype=dtype, shape=recurrent_bias_shape, min_value=0, max_value=1))
 
-    # x_feat_dim = feat_dim
-    # num_heads = num_keys
-    #
-    # x_mha_shape = q
+    #Multi_head_attention
+    num_heads = num_keys
+
+    x_mha = q
+    context = k
 
     if fn_name == "linear":
         return dtype, x, weight, bias
@@ -96,6 +115,8 @@ def x_and_weight(draw, dtypes, fn_name):
         return dtype, q, k, v, mask, scale
     if fn_name == "lstm_update":
         return dtype, x_lstm,init_h, init_c, kernel, recurrent_kernel, lstm_bias, recurrent_bias
+    if fn_name == "multi_head_attention":
+        return dtype, x_mha, scale, num_heads, context, mask
 
 
 # linear
@@ -267,29 +288,51 @@ def test_scaled_dot_product_attention(
 
 
 # multi_head_attention
-@pytest.mark.parametrize(
-    "x_n_s_n_m_n_c_n_gt",
-    [([[3.0]], 2.0, [[1.0]], [[4.0, 5.0]], [[4.0, 5.0, 4.0, 5.0]])],
+@given(
+    dtype_mha=x_and_weight(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        fn_name="multi_head_attention",
+    ),
+    to_q_fn = st.functions(like=lambda x,v:x),
+    to_kv_fn = st.functions(like=lambda x,v:x),
+    to_out_fn = st.functions(like=lambda x,v:x),
+    with_out=st.booleans(),
+    data=st.data(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call):
-    x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
-    # smoke test
-    x = tensor_fn(x, dtype=dtype, device=device)
-    context = tensor_fn(context, dtype=dtype, device=device)
-    mask = tensor_fn(mask, dtype=dtype, device=device)
-    fn = lambda x_, v: ivy.tile(x_, (1, 2))
-    ret = ivy.multi_head_attention(x, scale, 2, context, mask, fn, fn, fn)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert list(ret.shape) == list(np.array(ground_truth).shape)
-    # value test
-    assert np.allclose(
-        call(ivy.multi_head_attention, x, scale, 2, context, mask, fn, fn, fn),
-        np.array(ground_truth),
+def test_multi_head_attention(
+    *,
+    data,
+    dtype_mha,
+    as_variable,
+    num_positional_args,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtype, x_mha, scale, num_heads, context, mask = dtype_mha
+    as_variable = [as_variable] * 3
+    native_array = [native_array] * 3
+    container = [container] * 3
+
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="multi_head_attention",
+        x=np.asarray(x_mha, dtype=dtype),
+        context=np.asarray(context, dtype=dtype),
+        scale=scale,
+        mask=np.asarray(mask, dtype=dtype),
     )
+
 
 
 # Convolutions #
