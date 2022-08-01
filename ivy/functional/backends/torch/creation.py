@@ -226,7 +226,7 @@ def full_like(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    # _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
@@ -265,7 +265,7 @@ def linspace(
 
 
 linspace.support_native_out = True
-linspace.unsupported_device_and_dtype = {'devices': ('cpu', ), 'dtypes': ('float16', )}
+linspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}
 
 
 def linspace_helper(start, stop, num, axis=None, *, device, dtype):

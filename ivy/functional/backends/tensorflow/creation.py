@@ -220,7 +220,7 @@ def full_like(
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    # _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     with tf.device(device):
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 

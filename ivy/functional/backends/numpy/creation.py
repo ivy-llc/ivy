@@ -137,7 +137,7 @@ def full_like(
     device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    # _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
 
 
