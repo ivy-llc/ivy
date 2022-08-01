@@ -909,7 +909,7 @@ class ContainerWithGradients(ContainerBase):
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.stop_gradient. This method simply
+        ivy.Container instance method variant of ivy.stop_gradient. This method simply
         wraps the function, and so the docstring for ivy.stop_gradient also applies
         to this method with minimal changes.
 
