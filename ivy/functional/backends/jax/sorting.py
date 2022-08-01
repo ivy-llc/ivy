@@ -42,10 +42,10 @@ def sort(
 
 def searchsorted(
     x1: JaxArray,
-    x2: JaxArray,
+    v: JaxArray,
     side='left',
     sorter=None,
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.searchsorted(x1, x2, side=side, sorter=None)
+    return jnp.searchsorted(x1, v, side=side, sorter=None)
