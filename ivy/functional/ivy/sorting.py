@@ -216,10 +216,11 @@ def sort(
 def searchsorted(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    side="left",
+    side= "left",
+    sorter= None,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
-) -> ivy.Array:
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the indices of the inserted elements in a sorted array.
     
     Parameters
@@ -278,7 +279,7 @@ def searchsorted(
 
     ivy.array([3,2,4])
     """ 
-    return ivy.current_backend(x1, x2).searchsorted(x1, x2, side=side, out=out)
+    return ivy.current_backend(x1).searchsorted(x1, x2, side=side, sorter=None, out=out)
 
 # Extra #
 # ------#
