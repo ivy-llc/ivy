@@ -251,7 +251,6 @@ def exp(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 tan = lambda x: math.tan(x) if isinstance(x, float) else mx.nd.tan(x)
-asin = lambda x: math.asin(x) if isinstance(x, float) else mx.nd.arcsin(x)
 
 
 @_handle_flat_arrays_in_out
