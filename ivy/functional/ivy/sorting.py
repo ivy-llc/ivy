@@ -221,74 +221,73 @@ def searchsorted(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> ivy.Array:
     """Returns the indices of the inserted elements in a sorted array.
-
-     Parameters
-     ----------
-     x1
+    
+    Parameters
+    ----------
+    x1
         input array
 
-     x2
+    x2
         specific elements to insert in array x1
         
-     side
+    side
         The specific elements' index is at the 'left' side or 'right' side in the sorted array x1. 
 
         If the side is 'left', the index of the first suitable location located is given. If 'right', 
 
         return the last such index.
  
-     out
+    out
         optional output array, for writing the result to. 
 
      
-     Returns
-     -------
+    Returns
+    -------
 
-     ret
+    ret
          An array of insertion points. 
 
          
 
-     Examples
-     --------
+    Examples
+    --------
 
-     With：code:`ivy.Array` inputs:
+    With：code:`ivy.Array` inputs:
 
 
-     >>> x1 = ivy.array([2,1,0])
+    >>> x1 = ivy.array([2,1,0])
 
-     >>> x2 = ivy.array([1])
+    >>> x2 = ivy.array([1])
 
-     >>> y  = ivy.searchsorted(x1,x2)
+    >>> y  = ivy.searchsorted(x1,x2)
 
-     >>> print(y)
+    >>> print(y)
 
-     ivy.array([0])
+    ivy.array([0])
      
 
-     >>> x1 = ivy.array([1,0,3,2])
+    >>> x1 = ivy.array([1,0,3,2])
 
-     >>> x2 = ivy.array([3])
+    >>> x2 = ivy.array([3])
 
-     >>> y  = ivy.searchsorted(x1, x2, side='right')
+    >>> y  = ivy.searchsorted(x1, x2, side='right')
 
-     >>> print(y)
+    >>> print(y)
 
-     ivy.array([4])
+    ivy.array([4])
 
 
-     >>> x1 = ivy.array([2,0,1,3])
+    >>> x1 = ivy.array([2,0,1,3])
 
-     >>> x2 = ivy.array([3,1,9])
+    >>> x2 = ivy.array([3,1,9])
 
-     >>> y  = ivy.searchsorted(x1, x2, side='left')
+    >>> y  = ivy.searchsorted(x1, x2, side='left')
 
-     >>> print(y)
+    >>> print(y)
 
-     ivy.array([3,2,4])
-     
-     """ 
-     return ivy.current_backend(x1, x2).searchsorted(x1, x2, side=side, out=out)
+    ivy.array([3,2,4])
+    """ 
+    return ivy.current_backend(x1, x2).searchsorted(x1, x2, side=side, out=out)
 
 
 
