@@ -42,8 +42,18 @@ def sort(
 
 def searchsorted(
     x1: JaxArray,
-    side='left',
+    x2: JaxArray,
+    side= 'left',
     *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.searchsorted(x1, side=side)
+    kind = "stable" if stable else "quicksort"
+    res = jnp.asarray(jnp.searchsorted(x1,x2,side=side axis=axis, kind=kind))
+    if descending:
+        ret = jnp.asarray(jnp.flip(res, axis=axis))
+    else:
+        ret = res
+    return ret
