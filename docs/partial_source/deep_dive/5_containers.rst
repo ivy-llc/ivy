@@ -178,14 +178,17 @@ These special methods include
 `__contains__`_ that enables us to check for chains of keys in the underlying :code:`dict`,
 and `__getstate__`_ and `__setstate__`_ which combined enable the container to be pickled and unpickled.
 
-As for the special methods which **do** simply wrap corresponding functions in the functional API,
+As for the special methods which **do** make use of functions implemented in the functional API,
 these are `implemented`_ in the main :code:`ivy.Container` class.
 
-These special methods all directly wrap the corresponding API *static* :code:`ivy.Container` method.
-
-Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
-:code:`ivy.Container.static_add`, :code:`ivy.Container.static_subtract`,
-:code:`ivy.Container.static_multiply` and :code:`ivy.Container.static_divide` respectively.
+Most of these special methods make use of operator functions. As a result, if the input contains one or 
+more :code:`ivy.Array` or :code:`ivy.NativeArray` objects, the corresponding functional API methods are used.
+ 
+Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make calls to
+:code:`ivy.add`, :code:`ivy.subtract`,
+:code:`ivy.multiply` and :code:`ivy.divide` respectively if the input 
+contains any :code:`ivy.Array` or :code:`ivy.NativeArray` objects. If the input does not, 
+the normal operator function behavior will take place.
 
 Nestable Functions
 ------------------
@@ -277,9 +280,6 @@ mode execution, and for the reasons outlined above, the preference is to keep
 compositional implicitly nestable where possible.
 
 **Shared Nested Structure**
-
-NOTE - implementing the behaviour for shared nested structures is a work in progress,
-the master branch will soon support all of the examples given below, but not yet 🚧
 
 When the nested structures of the multiple containers are *shared* but not *identical*,
 then the behaviour of the nestable function is a bit different.
