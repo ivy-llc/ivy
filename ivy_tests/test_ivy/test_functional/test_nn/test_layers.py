@@ -34,7 +34,6 @@ def x_and_weight(draw, dtypes, fn_name):
     )
     batch_shape = inner_batch_shape
 
-    #Linear
     in_features = draw(st.integers(min_value=1, max_value=3))
     out_features = draw(st.integers(min_value=1, max_value=3))
 
@@ -49,7 +48,6 @@ def x_and_weight(draw, dtypes, fn_name):
     bias = draw(helpers.array_values
                 (dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
 
-    #Scaled_dot_product_attention
     num_queries = in_features
     num_keys = in_features
     feat_dim = in_features
@@ -75,7 +73,6 @@ def x_and_weight(draw, dtypes, fn_name):
     mask = draw(helpers.array_values
                 (dtype=dtype, shape=mask_shape, min_value=0, max_value=1, safety_factor=2))
 
-    #Update_lstm
     t = draw(st.integers(min_value=1, max_value=3))
     _in_ = draw(st.integers(min_value=1, max_value=3))
     _out_ = draw(st.integers(min_value=1, max_value=3))
@@ -103,7 +100,6 @@ def x_and_weight(draw, dtypes, fn_name):
     recurrent_bias = draw(helpers.array_values
                   (dtype=dtype, shape=recurrent_bias_shape, min_value=0, max_value=1))
 
-    #Multi_head_attention
     num_heads = num_keys
 
     x_mha = q
