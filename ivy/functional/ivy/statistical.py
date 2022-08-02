@@ -182,7 +182,7 @@ def mean(
     ivy.array(6.)
 
     >>> x = ivy.array([4., 5.1, 7.1])
-    >>> z = ivy.array([1.,2.,3.])
+    >>> z = ivy.array([0.,0.,0.])
     >>> y = ivy.mean(x, out=z)
     >>> print(y)
     ivy.array(5.4)
