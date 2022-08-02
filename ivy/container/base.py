@@ -212,7 +212,7 @@ class ContainerBase(dict, abc.ABC):
             if isinstance(values, list):
                 for v in values:
                     if ivy.is_ivy_array(v):
-                        return ret.unstack(0)
+                        return ret.unstack_conts(0)
         return ret
 
     @staticmethod
@@ -1913,7 +1913,7 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def unstack(self, axis, keepdims=False, dim_size=None):
+    def unstack_conts(self, axis, keepdims=False, dim_size=None):
         """Unstack containers along specified dimension.
 
         Parameters
@@ -2002,7 +2002,7 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             prune_unapplied,
             map_sequences,
-        ).unstack(0, dim_size=dim_size)
+        ).unstack_conts(0, dim_size=dim_size)
 
     def num_arrays(self, exclusive=False):
         """Compute the number of arrays present at the leaf nodes, including variables
