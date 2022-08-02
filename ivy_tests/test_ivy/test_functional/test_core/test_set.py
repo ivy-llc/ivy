@@ -134,6 +134,7 @@ def test_unique_counts(
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=5,
+        safety_factor=1.0,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_inverse"),
     data=st.data(),
