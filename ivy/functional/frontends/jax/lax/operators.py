@@ -26,3 +26,8 @@ def full(shape, fill_value, dtype=None):
 
 
 full.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+def abs(x):
+    return ivy.abs(x)
+
+abs.ubsupported_dtypes = {"torch": ("float16", "bfloat16")}
