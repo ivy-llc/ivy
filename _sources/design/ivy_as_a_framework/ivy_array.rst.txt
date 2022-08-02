@@ -191,7 +191,7 @@ Without enforcing the use of the :code:`ivy.Array` class for arrays returned fro
 
 Therefore, with the design of Ivy, we have made the decision to require all arrays returned from Ivy methods to be instances of the :code:`ivy.Array` class.
 
-API monkey patching
+API Monkey Patching
 -------------------
 
 All ivy functions with array inputs/outputs have been wrapped to return :code:`ivy.Array` instances while accepting both :code:`ivy.Array` and :code:`ivy.NativeArray` instances.

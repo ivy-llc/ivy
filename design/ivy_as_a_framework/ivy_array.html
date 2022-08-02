@@ -52,7 +52,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Ivy Array</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#the-array-class">The Array Class</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#unifying-operators">Unifying Operators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#api-monkey-patching">API monkey patching</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api-monkey-patching">API Monkey Patching</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#instance-methods">Instance Methods</a></li>
 </ul>
 </li>
@@ -308,7 +308,7 @@ For example, maybe one framework makes the strange decision to return rounded in
 <p>Therefore, with the design of Ivy, we have made the decision to require all arrays returned from Ivy methods to be instances of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.</p>
 </section>
 <section id="api-monkey-patching">
-<h2>API monkey patching<a class="headerlink" href="#api-monkey-patching" title="Permalink to this heading"></a></h2>
+<h2>API Monkey Patching<a class="headerlink" href="#api-monkey-patching" title="Permalink to this heading"></a></h2>
 <p>All ivy functions with array inputs/outputs have been wrapped to return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances while accepting both <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.
 This allows for the control required to provide a unified array interface.
 For more detail on wrapping, see the the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html">Function Wrapping</a> page in deep dive.</p>
