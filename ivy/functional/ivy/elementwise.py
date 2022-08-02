@@ -1392,7 +1392,7 @@ def bitwise_xor(
     >>> b = ivy.array([78])
     >>> z = x ^ y
     >>> print(z)
-    {a:ivy.array([True])}
+    {a:ivy.array([85])}
 
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
@@ -1401,7 +1401,7 @@ def bitwise_xor(
     >>> y = ivy.array([12, 13])
     >>> z = x ^ y
     >>> print(z)
-    {a:ivy.array([True,True])}
+    {a: ivy.array([-79, 24])}
     """
     return ivy.current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
