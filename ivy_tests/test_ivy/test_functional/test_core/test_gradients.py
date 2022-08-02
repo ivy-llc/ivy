@@ -47,7 +47,7 @@ def test_variable(
 # is_variable
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    num_positional_args=helpers.num_positional_args(fn_name="variable"),
+    num_positional_args=helpers.num_positional_args(fn_name="is_variable"),
     data=st.data(),
 )
 @helpers.handle_cmd_line_args
