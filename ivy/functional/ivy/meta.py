@@ -147,7 +147,7 @@ def _train_task(
 
     # update variables
     if stop_gradients:
-        variables = variables.stop_gradients()
+        variables = variables.stop_gradient()
     if not batched:
         variables = variables.expand_dims(0)
 
@@ -259,7 +259,7 @@ def _train_tasks_with_for_loop(
         outer_v_seq = True
     else:
         outer_v_seq = False
-    for i, sub_batch in enumerate(batch.unstack(0, True, num_tasks)):
+    for i, sub_batch in enumerate(batch.unstack_conts(0, True, num_tasks)):
         if inner_sub_batch_fn is not None:
             inner_sub_batch = inner_sub_batch_fn(sub_batch)
         else:
