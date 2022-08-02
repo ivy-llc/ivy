@@ -95,7 +95,10 @@ def inplace_update(
     return x
 
 
-inplace_arrays_supported = lambda: True
+def inplace_arrays_supported():
+    return True
+
+
 inplace_variables_supported = lambda: True
 
 
@@ -244,13 +247,15 @@ def multiprocessing(context=None):
     )
 
 
-def one_hot(indices, depth, device=None):
+def one_hot(indices: mx.nd.NDArray, depth: int, *, device: mx.context.Context):
     return mx.nd.one_hot(indices, depth)
 
 
-def shape(x: mx.nd.NDArray, as_array: bool = False) -> Union[tuple, mx.nd.NDArray]:
+def shape(
+    x: mx.nd.NDArray, as_array: bool = False
+) -> Union[mx.nd.NDArray, ivy.Shape, ivy.Array]:
     if as_array:
-        return mx.nd.shape_array(x)
+        return ivy.array(mx.nd.shape_array(x))
     else:
         return ivy.Shape(x.shape)
 

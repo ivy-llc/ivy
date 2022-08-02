@@ -10,12 +10,9 @@ import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
 import tensorflow as tf
-from tensorflow.python.framework.tensor_shape import TensorShape
 
 # local
 import ivy
-from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.tensorflow.device import as_native_dev
 
 
 def is_native_array(x, exclusive=False):
@@ -26,7 +23,11 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def copy_array(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def copy_array(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.identity(x)
 
 
@@ -52,6 +53,8 @@ def to_list(x: Union[tf.Tensor, tf.Variable]) -> list:
 def floormod(
     x: Union[tf.Tensor, tf.Variable],
     y: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x, "dtype") and hasattr(y, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
@@ -95,7 +98,10 @@ def inplace_update(
     return x
 
 
-inplace_arrays_supported = lambda: False
+def inplace_arrays_supported():
+    return False
+
+
 inplace_variables_supported = lambda: True
 
 
@@ -134,18 +140,31 @@ def inplace_increment(x, val):
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumsum(x, axis)
 
 
 def cumprod(
-    x: Union[tf.Tensor, tf.Variable], axis: int = 0, exclusive: Optional[bool] = False
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+    exclusive: Optional[bool] = False,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, reduction="sum", out=None):
+def scatter_flat(
+    indices: Union[tf.Tensor, tf.Variable],
+    updates: Union[tf.Tensor, tf.Variable],
+    size: Optional[int] = None,
+    reduction: str = "sum",
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     if indices.dtype != tf.int32 or indices.dtype != tf.int64:
         if indices.dtype in [tf.int8, tf.int16, tf.uint8, tf.uint16]:
             indices = tf.cast(indices, tf.int32)
@@ -212,13 +231,13 @@ def _parse_ellipsis(so, ndims):
 
 # noinspection PyShadowingNames
 def scatter_nd(
-    indices,
-    updates,
+    indices: Union[tf.Tensor, tf.Variable],
+    updates: Union[tf.Tensor, tf.Variable],
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    reduction="sum",
+    reduction: str = "sum",
     *,
-    out=None
-):
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
 
     if ivy.exists(out) and not isinstance(updates, Number):
         out = (
@@ -316,16 +335,28 @@ def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
     axis: Optional[int] = -1,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
     return tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
-def gather_nd(params, indices):
+def gather_nd(
+    params: Union[tf.Tensor, tf.Variable],
+    indices: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.gather_nd(params, indices)
 
 
-def one_hot(indices, depth, *, device):
+def one_hot(
+    indices: Union[tf.Tensor, tf.Variable],
+    depth: int,
+    *,
+    device: str,
+) -> Union[tf.Tensor, tf.Variable]:
     if indices.dtype == tf.int8:
         indices = tf.cast(indices, tf.uint8)
     elif indices.dtype == tf.int16 or tf.uint16:
@@ -359,9 +390,9 @@ def indices_where(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Varia
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
-) -> Union[tf.Tensor, tf.Variable, TensorShape]:
+) -> Union[tf.Tensor, ivy.Shape, ivy.Array]:
     if as_array:
-        return tf.shape(x)
+        return ivy.array(tf.shape(x))
     else:
         return ivy.Shape(x.shape)
 
