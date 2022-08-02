@@ -65,7 +65,6 @@ def argsort(
 
     Examples
     --------
-
     With: code:`ivy.Array` input:
 
     >>> x = ivy.array([3,1,2])
