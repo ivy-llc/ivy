@@ -10,6 +10,7 @@ eigvalsh
 #matrix_power # failing for jax, torch, and tensorflow- waiting on fix for https://github.com/data-apis/array-api-tests/issues/117
 matrix_rank
 matrix_transpose
+#matrix_transpose # failing for statistical-torch 
 outer
 pinv
 qr
