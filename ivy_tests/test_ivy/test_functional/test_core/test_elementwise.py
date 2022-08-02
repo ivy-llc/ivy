@@ -11,9 +11,7 @@ from numbers import Number
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
-#from ivy_tests.test_ivy import helpers
 
-#import ivy.functional.backends.numpy as ivy_np
 
 
 # abs
