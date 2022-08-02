@@ -186,14 +186,14 @@
 <span class="sd">            an array containing the inverse hyperbolic cosine</span>
 <span class="sd">            of each element in ``self``.</span>
 <span class="sd">            The returned array must have the same data type as ``self``.</span>
-<span class="sd">            </span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([2., 10.0, 1.0])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.acosh()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([1.32, 2.99, 0.  ])</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">acosh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -216,14 +216,14 @@
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the inverse cosine of each element in ``self``.</span>
 <span class="sd">            The  returned array must have the same data type as ``self``.</span>
-<span class="sd">            </span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1.0, 0.0, -0.9])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.acos()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([0.  , 1.57, 2.69])</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -337,14 +337,14 @@
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the inverse tangent of each element in ``self``. The</span>
 <span class="sd">            returned array must have the same data type as ``self``.</span>
-<span class="sd">            </span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1.0, 0.5, -0.5])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.atan()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([ 0.785,  0.464, -0.464])</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -410,14 +410,14 @@
 <span class="sd">            an array containing the inverse hyperbolic tangent of each element</span>
 <span class="sd">            in ``self``. The returned array must have a floating-point data type</span>
 <span class="sd">            determined by :ref:`type-promotion`.</span>
-<span class="sd">            </span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([0.0, 0.5, -0.9])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.atanh()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([ 0.   ,  0.549, -1.47 ])</span>
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">atanh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -978,7 +978,7 @@
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the element-wise results. The returned array must</span>
 <span class="sd">            have a data type of ``bool``.</span>
-<span class="sd">            </span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x1 = ivy.array([2., 5., 15.])</span>
@@ -1118,7 +1118,7 @@
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the element-wise results. The returned array</span>
 <span class="sd">            must have a data type of ``bool``.</span>
-<span class="sd">            </span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x1 = ivy.array([2., 5., 15.])</span>
@@ -1216,9 +1216,10 @@
 
 <div class="viewcode-block" id="ArrayWithElementwise.log1p"><a class="viewcode-back" href="../../../data_classes/array/elementwise/ArrayWithElementwise.html#ivy.array.elementwise.ArrayWithElementwise.log1p">[docs]</a>    <span class="k">def</span> <span class="nf">log1p</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">       ivy.Array instance method variant of ivy.log1p.</span>
+<span class="sd">        ivy.Array instance method variant of ivy.log1p.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.log1p also applies to this method with minimal changes.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -1226,6 +1227,7 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">            the inputs broadcast to.</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
@@ -1235,7 +1237,6 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1 , 2 ,3 ])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.log1p()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -1277,7 +1278,7 @@
 <span class="sd">        ivy.Array instance method variant of ivy.log10. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.log10 also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -1314,7 +1315,6 @@
 <span class="sd">        ivy.array([[nan, 0., 0.699, inf],</span>
 <span class="sd">                   [-inf, nan, nan, nan]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithElementwise.logaddexp"><a class="viewcode-back" href="../../../data_classes/array/elementwise/ArrayWithElementwise.html#ivy.array.elementwise.ArrayWithElementwise.logaddexp">[docs]</a>    <span class="k">def</span> <span class="nf">logaddexp</span><span class="p">(</span>
