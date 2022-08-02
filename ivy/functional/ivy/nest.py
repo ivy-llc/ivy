@@ -343,12 +343,50 @@ def nested_indices_where(
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
+    stop_after_n_found
+        to stop after some needed indices are found.
 
     Returns
     -------
     ret
         A set of indices for the nest where the function evaluated as True.
 
+    Examples
+    --------
+    With :code:`List` input:
+
+    >>> nest = [[[1, -2, 3], 19], [[9, -36, 80], -10.19]]
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> print(nested_indices)
+    [
+        [0, 0, 0], [0, 0, 1],
+        [0, 0, 2], [0, 1],
+        [1, 0, 0], [1, 0, 1],
+        [1, 0, 2], [1, 1]
+    ]
+
+
+    With :code:`Tuple` input:
+
+    >>> nest = ([-5, 9, 2], [0.3, 4.])
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun, stop_after_n_found=4)
+    >>> print(nested_indices)
+    [[0, 0], [0, 1], [0, 2], [1, 0]]
+
+    With :code:`Dict` input:
+
+    >>> nest={'a': [2., 0.6, -2.], 'b': [1., 4., 1.9], 'c': [9.4]}
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> print(nested_indices)
+    [
+        ['a', 0], ['a', 1],
+        ['a', 2], ['b', 0],
+        ['b', 1], ['b', 2],
+        ['c', 0]
+    ]
     """
     to_ignore = ivy.default(to_ignore, ())
     _index = list() if _index is None else _index
@@ -735,7 +773,7 @@ def copy_nest(
 
 def nested_multi_map(
     func: Callable,
-    nests,
+    nests: List[Iterable],
     key_chains=None,
     to_apply=True,
     prune_unapplied=False,
