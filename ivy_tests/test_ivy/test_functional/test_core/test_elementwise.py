@@ -270,6 +270,12 @@ def test_atan2(
 ):
     input_dtype, x = dtype_and_x
 
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+
+    # make sure they're not too close together
+    assume(not (np.any(np.isclose(x1, 0)) or np.any(np.isclose(x2, 0))))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -280,8 +286,8 @@ def test_atan2(
         instance_method=instance_method,
         fw=fw,
         fn_name="atan2",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
