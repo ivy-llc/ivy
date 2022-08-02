@@ -1212,10 +1212,12 @@ def bitwise_right_shift(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right according to the respective element ``x2_i`` of the input array ``x2``.
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the 
+    right according to the respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
-       This operation must be an arithmetic shift (i.e., sign-propagating) and thus equivalent to floor division by a power of two.
+       This operation must be an arithmetic shift (i.e., sign-propagating) and thus
+       equivalent to floor division by a power of two.
 
     Parameters
     ----------
@@ -1223,7 +1225,8 @@ def bitwise_right_shift(
         first input array. Should have an integer data type.
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). 
-        Should have an integer data type. Each element must be greater than or equal to ``0``.
+        Should have an integer data type. Each element must be greater than or equal
+        to ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1236,7 +1239,7 @@ def bitwise_right_shift(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
