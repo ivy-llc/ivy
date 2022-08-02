@@ -1948,7 +1948,7 @@ class ContainerBase(dict, abc.ABC):
             for i in range(dim_size)
         ]
 
-    def split(
+    def split_conts(
         self,
         num_or_size_splits=None,
         axis=0,
