@@ -1923,12 +1923,12 @@ def get_min_base() -> float:
     Gets the global minimum base used by ivy for numerically stable power raising.
 
     Returns
-    -------------------
+    -------
     ret
         Global minimum base number
 
     Examples
-    -------------------
+    --------
     >>> x = ivy.get_min_base()
     >>> print(x)
     1e-05    
