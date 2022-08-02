@@ -178,14 +178,17 @@ These special methods include
 `__contains__`_ that enables us to check for chains of keys in the underlying :code:`dict`,
 and `__getstate__`_ and `__setstate__`_ which combined enable the container to be pickled and unpickled.
 
-As for the special methods which **do** simply wrap corresponding functions in the functional API,
-these are `implemented`_ in the main :code:`ivy.Container` class.
+As for the special methods which are `implemented`_ in the main :code:`ivy.Container` class, they all make 
+calls to the standard operator functions.
 
-These special methods all directly wrap the corresponding API *static* :code:`ivy.Container` method.
-
-Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
-:code:`ivy.Container.static_add`, :code:`ivy.Container.static_subtract`,
-:code:`ivy.Container.static_multiply` and :code:`ivy.Container.static_divide` respectively.
+As a result, the operator functions will make use of the special methods of the passed input objects.
+For instance, if the input contains one or more :code:`ivy.Array` objects, the operator function will 
+make calls to the special methods of those array objects. The special methods will in turn 
+call the suitable functions from the ivy functional API.
+ 
+Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make calls to
+:code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide`, respectively, if 
+the input contains any :code:`ivy.Array` objects.
 
 Nestable Functions
 ------------------
@@ -277,9 +280,6 @@ mode execution, and for the reasons outlined above, the preference is to keep
 compositional implicitly nestable where possible.
 
 **Shared Nested Structure**
-
-NOTE - implementing the behaviour for shared nested structures is a work in progress,
-the master branch will soon support all of the examples given below, but not yet 🚧
 
 When the nested structures of the multiple containers are *shared* but not *identical*,
 then the behaviour of the nestable function is a bit different.
