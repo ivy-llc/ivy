@@ -147,7 +147,7 @@ def _train_task(
 
     # update variables
     if stop_gradients:
-        variables = variables.stop_gradients()
+        variables = variables.stop_gradient()
     if not batched:
         variables = variables.expand_dims(0)
 
