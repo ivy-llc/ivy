@@ -129,14 +129,16 @@ def get_command_line_flags(request) -> Dict[str, bool]:
     o_f_s = request.config.getoption("--skip-out-testing")
     n_s = request.config.getoption("--skip-nestable-testing")
     i_m_f_s = request.config.getoption("--skip-instance-method-testing")
+    g_t_f_s = request.config.getoption("--skip-gradient-testing")
 
     a_v_f_w = request.config.getoption("--with-variable-testing")
     n_f_w = request.config.getoption("--with-native-array-testing")
     o_f_w = request.config.getoption("--with-out-testing")
     n_w = request.config.getoption("--with-nestable-testing")
     i_m_f_w = request.config.getoption("--with-instance-method-testing")
+    g_t_f_w = request.config.getoption("--with-gradient-testing")
 
-    no_extra_testing = request.config.getoption("--no-extra-testing")
+    no_extra_testing = MAP_BOOL_FLAGS[request.config.getoption("--no-extra-testing")]
 
     # mapping command line arguments, first element of the tuple is
     # the --skip flag, and the second is the --with flag
@@ -145,6 +147,7 @@ def get_command_line_flags(request) -> Dict[str, bool]:
     CONFIG_DICT["with_out"] = (MAP_BOOL_FLAGS[o_f_s], MAP_BOOL_FLAGS[o_f_w])
     CONFIG_DICT["container"] = (MAP_BOOL_FLAGS[n_s], MAP_BOOL_FLAGS[n_w])
     CONFIG_DICT["instance_method"] = (MAP_BOOL_FLAGS[i_m_f_s], MAP_BOOL_FLAGS[i_m_f_w])
+    CONFIG_DICT["test_gradients"] = (MAP_BOOL_FLAGS[g_t_f_s], MAP_BOOL_FLAGS[g_t_f_w])
 
     # final mapping for hypothesis value generation
     for k, v in CONFIG_DICT.items():
@@ -183,12 +186,14 @@ def pytest_addoption(parser):
     parser.addoption("--skip-out-testing", action="store", default="false")
     parser.addoption("--skip-nestable-testing", action="store", default="false")
     parser.addoption("--skip-instance-method-testing", action="store", default="false")
+    parser.addoption("--skip-gradient-testing", action="store", default="false")
 
     parser.addoption("--with-variable-testing", action="store", default="false")
     parser.addoption("--with-native-array-testing", action="store", default="false")
     parser.addoption("--with-out-testing", action="store", default="false")
     parser.addoption("--with-nestable-testing", action="store", default="false")
     parser.addoption("--with-instance-method-testing", action="store", default="false")
+    parser.addoption("--with-gradient-testing", action="store", default="false")
 
     parser.addoption("--no-extra-testing", action="store", default="false")
     parser.addoption(
