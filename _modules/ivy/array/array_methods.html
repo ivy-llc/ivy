@@ -807,32 +807,6 @@
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    `ivy.Array` instance method variant of `ivy.result_type`. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for `ivy.result_type` also applies to</span>
-<span class="sd">    this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array from which to cast.</span>
-<span class="sd">    arrays_and_dtypes</span>
-<span class="sd">        an arbitrary number of input arrays and/or dtypes.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        the dtype resulting from an operation involving the input arrays and dtypes.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
-<span class="sd">    &gt;&gt;&gt; print(x.dtype)</span>
-<span class="sd">    int32</span>
-
-<span class="sd">    &gt;&gt;&gt; x.result_type(ivy.float64)</span>
-<span class="sd">    &lt;dtype:&#39;float64&#39;&gt;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">)</span></div>
 
 <span class="c1">#ivy.array.device</span>
@@ -934,14 +908,14 @@
 <span class="sd">        an array containing the inverse hyperbolic cosine</span>
 <span class="sd">        of each element in ``self``.</span>
 <span class="sd">        The returned array must have the same data type as ``self``.</span>
-
+<span class="sd">        </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([2., 10.0, 1.0])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.acosh()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([1.32, 2.99, 0.  ])</span>
-
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -965,14 +939,14 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the inverse cosine of each element in ``self``.</span>
 <span class="sd">        The  returned array must have the same data type as ``self``.</span>
-
+<span class="sd">        </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1.0, 0.0, -0.9])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.acos()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0.  , 1.57, 2.69])</span>
-
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -1090,14 +1064,14 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the inverse tangent of each element in ``self``. The</span>
 <span class="sd">        returned array must have the same data type as ``self``.</span>
-
+<span class="sd">        </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1.0, 0.5, -0.5])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.atan()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([ 0.785,  0.464, -0.464])</span>
-
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -1165,14 +1139,14 @@
 <span class="sd">        an array containing the inverse hyperbolic tangent of each element</span>
 <span class="sd">        in ``self``. The returned array must have a floating-point data type</span>
 <span class="sd">        determined by :ref:`type-promotion`.</span>
-
+<span class="sd">        </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0.0, 0.5, -0.9])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.atanh()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([ 0.   ,  0.549, -1.47 ])</span>
-
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -1749,7 +1723,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must</span>
 <span class="sd">        have a data type of ``bool``.</span>
-
+<span class="sd">        </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([2., 5., 15.])</span>
@@ -1894,7 +1868,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array</span>
 <span class="sd">        must have a data type of ``bool``.</span>
-
+<span class="sd">        </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([2., 5., 15.])</span>
@@ -1935,35 +1909,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array</span>
 <span class="sd">        must have a data type of ``bool``.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:&#39;ivy.Array&#39; inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([2, 2, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = x1.less_equal(x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([True, True, False])</span>
-
-<span class="sd">    With mixed :code:&#39;ivy.Array&#39; and :code:&#39;ivy.NativeArray&#39; inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([2.5, 3.3, 9.24])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([2.5, 1.1, 9.24])</span>
-<span class="sd">    &gt;&gt;&gt; y = x1.less_equal(x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([True, False, True])</span>
-
-<span class="sd">    With mixed :code:&#39;ivy.Container&#39; and :code:&#39;ivy.Array&#39; inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([3., 1., 0.8])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([2., 1., 0.7]), b=ivy.array([3., 0.6, 1.2]))</span>
-<span class="sd">    &gt;&gt;&gt; y = x1.less_equal(x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False]),</span>
-<span class="sd">        b: ivy.array([True, False, True])</span>
-<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -1973,7 +1918,6 @@
 <span class="sd">    ivy.Array instance method variant of ivy.log. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.log also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2013,19 +1957,6 @@
 <span class="sd">        an array containing the evaluated result for each element in ``self``.</span>
 <span class="sd">        The returned array must have a real-valued floating-point data</span>
 <span class="sd">        type determined by :ref:`type-promotion`.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1 , 2 ,3 ])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.log1p()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0.693, 1.1  , 1.39 ])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.1 , .001 ])</span>
-<span class="sd">    &gt;&gt;&gt; x.log1p( out = x)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([0.0953, 0.001 ])</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -2074,27 +2005,6 @@
 <span class="sd">        an array containing the evaluated base ``10`` logarithm for each element</span>
 <span class="sd">        in ``self``. The returned array must have a real-valued</span>
 <span class="sd">        floating-point data type determined by :ref:`type-promotion`.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([4.0, 1, -0.0, -5.0])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.log10()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([0.602, 0., -inf, nan])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([float(&#39;nan&#39;), -5.0, -0.0, 1.0, 5.0, float(&#39;+inf&#39;)])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.log10()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([nan, nan, -inf, 0., 0.699, inf])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[float(&#39;nan&#39;), 1, 5.0, float(&#39;+inf&#39;)],\</span>
-<span class="sd">                       [+0, -1.0, -5, float(&#39;-inf&#39;)]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.log10()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[nan, 0., 0.699, inf],</span>
-<span class="sd">               [-inf, nan, nan, nan]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -2257,14 +2167,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array</span>
 <span class="sd">        must have a data type of ``bool``.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([True, False, True, False])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([True, True, False, False])</span>
-<span class="sd">    &gt;&gt;&gt; z = x.logical_xor(y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([False,  True,  True, False])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -2816,7 +2718,7 @@
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
@@ -2868,66 +2770,11 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="unstack"><a class="viewcode-back" href="../../../functional/ivy/general/unstack/unstack_array.html#ivy.array.array_methods.unstack">[docs]</a><span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.unstack. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.unstack also applies to</span>
-<span class="sd">    this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Input array to unstack.</span>
-<span class="sd">    axis</span>
-<span class="sd">        Axis for which to unpack the array.</span>
-<span class="sd">    keepdims</span>
-<span class="sd">        Whether to keep dimension 1 in the unstack dimensions. Default is False.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        List of arrays, unpacked along specified dimensions.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="gather"><a class="viewcode-back" href="../../../functional/ivy/general/gather/gather_array.html#ivy.array.array_methods.gather">[docs]</a><span class="k">def</span> <span class="nf">gather</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.gather. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.gather also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        array, the array from which to gather values.</span>
-<span class="sd">    indices</span>
-<span class="sd">        array, index array.</span>
-<span class="sd">    axis</span>
-<span class="sd">        optional int, the axis from which to gather from. Default is -1.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        New array with the values gathered at the specified indices along</span>
-<span class="sd">        the specified axis.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
 <div class="viewcode-block" id="gather_nd"><a class="viewcode-back" href="../../../functional/ivy/general/gather_nd/gather_nd_array.html#ivy.array.array_methods.gather_nd">[docs]</a><span class="k">def</span> <span class="nf">gather_nd</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the</span>
@@ -2962,109 +2809,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gather_nd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="einops_rearrange"><a class="viewcode-back" href="../../../functional/ivy/general/einops_rearrange/einops_rearrange_array.html#ivy.array.array_methods.einops_rearrange">[docs]</a><span class="k">def</span> <span class="nf">einops_rearrange</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">axes_lengths</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.einops_rearrange.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring</span>
-<span class="sd">    for ivy.einops_rearrange also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Input array to be re-arranged.</span>
-<span class="sd">    pattern</span>
-<span class="sd">        Rearrangement pattern.</span>
-<span class="sd">    axes_lengths</span>
-<span class="sd">        Any additional specifications for dimensions.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        New array with einops.rearrange having been applied.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="einops_reduce"><a class="viewcode-back" href="../../../functional/ivy/general/einops_reduce/einops_reduce_array.html#ivy.array.array_methods.einops_reduce">[docs]</a><span class="k">def</span> <span class="nf">einops_reduce</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">reduction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">axes_lengths</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.einops_reduce. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.einops_reduce also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Input array to be reduced.</span>
-<span class="sd">    pattern</span>
-<span class="sd">        Reduction pattern.</span>
-<span class="sd">    reduction</span>
-<span class="sd">        One of available reductions (&#39;min&#39;, &#39;max&#39;, &#39;sum&#39;, &#39;mean&#39;, &#39;prod&#39;), or</span>
-<span class="sd">        callable.</span>
-<span class="sd">    axes_lengths</span>
-<span class="sd">        Any additional specifications for dimensions.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        New array with einops.reduce having been applied.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="einops_repeat"><a class="viewcode-back" href="../../../functional/ivy/general/einops_repeat/einops_repeat_array.html#ivy.array.array_methods.einops_repeat">[docs]</a><span class="k">def</span> <span class="nf">einops_repeat</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">axes_lengths</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.einops_repeat. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.einops_repeat also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Input array to be repeated.</span>
-<span class="sd">    pattern</span>
-<span class="sd">        Rearrangement pattern.</span>
-<span class="sd">    axes_lengths</span>
-<span class="sd">        Any additional specifications for dimensions.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        New array with einops.repeat having been applied.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_repeat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">axes_lengths</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="to_numpy"><a class="viewcode-back" href="../../../functional/ivy/general/to_numpy/to_numpy_array.html#ivy.array.array_methods.to_numpy">[docs]</a><span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.to_numpy. This method simply wraps</span>
@@ -3095,25 +2839,6 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    [1 0 0 1]</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="to_list"><a class="viewcode-back" href="../../../functional/ivy/general/to_list/to_list_array.html#ivy.array.array_methods.to_list">[docs]</a><span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.to_list. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.to_list also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        A list representation of the input array ``x``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -3179,8 +2904,8 @@
 <span class="sd">    ivy.Array instance method variant of ivy.clip_vector_norm. This method simply</span>
 <span class="sd">    wraps the function, and so the docstring for ivy.clip_vector_norm also applies</span>
 <span class="sd">    to this method with minimal changes.</span>
-
-
+<span class="sd">       </span>
+<span class="sd">        </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    self</span>
@@ -3192,12 +2917,12 @@
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape</span>
 <span class="sd">        that the inputs broadcast to.</span>
-
+<span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        An array with the vector norm downscaled to the max norm if needed.</span>
-
+<span class="sd">    </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :code:`ivy.Array` instance method:</span>
@@ -3214,7 +2939,7 @@
 <span class="c1">#ivy.array.gradients</span>
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -3333,86 +3058,6 @@
 <span class="sd">        (ivy.array([[[ 0.639], [ 0.639], [-0.639]]]),</span>
 <span class="sd">        ivy.array([[[ 0.11], [ 0.32], [-0.63]]]),</span>
 <span class="sd">        ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="gradient_descent_update"><a class="viewcode-back" href="../../../functional/ivy/gradients/gradient_descent_update/gradient_descent_update_array.html#ivy.array.array_methods.gradient_descent_update">[docs]</a><span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.gradient_descent_update.</span>
-<span class="sd">    This method simply wraps the function, and so the docstring for</span>
-<span class="sd">    ivy.gradient_descent_update also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Weights of the function to be updated.</span>
-<span class="sd">    dcdw</span>
-<span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    lr</span>
-<span class="sd">        Learning rate(s), the rate(s) at which the weights should be</span>
-<span class="sd">        updated relative to the gradient.</span>
-<span class="sd">    inplace</span>
-<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
-<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch.</span>
-<span class="sd">        If the update step should form part of a computation graph</span>
-<span class="sd">        (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">        Default is True, provided the backend framework supports it.</span>
-<span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
-<span class="sd">        Default is True.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The new weights, following the gradient descent updates.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code: `ivy.Array` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; w = ivy.array([[[5., 3., 2.], [0., 4., 1.], [-2., 3., -1.]]])</span>
-<span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([[[0.5, 0.92, 0.1], [0.2, 0.7, 0.3], [0.3, 0.8, 0.01]]])</span>
-<span class="sd">    &gt;&gt;&gt; lr = ivy.array(0.3)</span>
-<span class="sd">    &gt;&gt;&gt; NewWeights = w.gradient_descent_update(dcdw, lr, inplace=False)</span>
-<span class="sd">    &gt;&gt;&gt; print(NewWeights)</span>
-<span class="sd">        ivy.array([[[ 4.85,  2.72,  1.97],</span>
-<span class="sd">                    [-0.06,  3.79,  0.91],</span>
-<span class="sd">                    [-2.09,  2.76, -1.  ]]])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../functional/ivy/gradients/stop_gradient/stop_gradient_array.html#ivy.array.array_methods.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">preserve_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.stop_gradient. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.stop_gradient also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Array for which to stop the gradient.</span>
-<span class="sd">    preserve_type</span>
-<span class="sd">        Whether to preserve the input type (ivy.Variable or ivy.Array),</span>
-<span class="sd">        otherwise an array is always returned. Default is True.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a</span>
-<span class="sd">        shape that the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The same array x, but with no gradient information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -3610,43 +3255,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.cross. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.cross also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
-<span class="sd">    </span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        first input array. Should have a numeric data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``self``</span>
-<span class="sd">        (see :ref:`broadcasting`). Should have a numeric data type.</span>
-<span class="sd">    axis</span>
-<span class="sd">        the axis (dimension) of x1 and x2 containing the vectors for which to </span>
-<span class="sd">        compute (default: -1) the cross product.vIf set to -1, the function </span>
-<span class="sd">        computes the cross product for vectors defined by the last axis (dimension).</span>
-<span class="sd">        Default: -1.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-<span class="sd">        </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise products. The returned array must </span>
-<span class="sd">        have a data type determined by :ref:`type-promotion`.</span>
-<span class="sd">        </span>
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` inputs:</span>
-<span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 0., 0.])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([0., 1., 0.])</span>
-<span class="sd">    &gt;&gt;&gt; z = x.cross(y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([0., 0., 1.])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -3959,38 +3567,6 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="split"><a class="viewcode-back" href="../../../functional/ivy/manipulation/split/split_array.html#ivy.array.array_methods.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">num_or_size_splits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">with_remainder</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.split. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.split also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        array to be divided into sub-arrays.</span>
-<span class="sd">    num_or_size_splits</span>
-<span class="sd">        Number of equal arrays to divide the array into along the given axis if an</span>
-<span class="sd">        integer. The size of each split element if a sequence of integers. Default</span>
-<span class="sd">        is to divide into as many 1-dimensional arrays as the axis dimension.</span>
-<span class="sd">    axis</span>
-<span class="sd">        The axis along which to split, default is 0.</span>
-<span class="sd">    with_remainder</span>
-<span class="sd">        If the tensor does not split evenly, then store the last remainder entry.</span>
-<span class="sd">        Default is False.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">        A list of sub-arrays.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">num_or_size_splits</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="flip"><a class="viewcode-back" href="../../../functional/ivy/manipulation/flip/flip_array.html#ivy.array.array_methods.flip">[docs]</a><span class="k">def</span> <span class="nf">flip</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -4002,40 +3578,10 @@
 
 <div class="viewcode-block" id="expand_dims"><a class="viewcode-back" href="../../../functional/ivy/manipulation/expand_dims/expand_dims_array.html#ivy.array.array_methods.expand_dims">[docs]</a><span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.expand_dims. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.expand_dims also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array.</span>
-<span class="sd">    axis</span>
-<span class="sd">        position in the expanded array where a new axis (dimension) of size one</span>
-<span class="sd">        will be added. If array ``self`` has the rank of ``N``, the ``axis`` needs</span>
-<span class="sd">        to be between ``[-N-1, N]``. Default: ``0``.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        An array with the elements of ``self``, but with its dimension added</span>
-<span class="sd">        by one in a given ``axis``.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([-4.7, -2.3, 0.7]) #x.shape-&gt;(3,)</span>
-<span class="sd">    &gt;&gt;&gt; y = x.expand_dims() #y.shape-&gt;(1, 3)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[-4.7, -2.3,  0.7]])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -4354,6 +3900,8 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 
+<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+
 
 <div class="viewcode-block" id="random_uniform"><a class="viewcode-back" href="../../../functional/ivy/random/random_uniform/random_uniform_array.html#ivy.array.array_methods.random_uniform">[docs]</a><span class="k">def</span> <span class="nf">random_uniform</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
@@ -4612,167 +4160,6 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="shuffle"><a class="viewcode-back" href="../../../functional/ivy/random/shuffle/shuffle_array.html#ivy.array.array_methods.shuffle">[docs]</a><span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.shuffle. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.shuffle also applies to</span>
-<span class="sd">    this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Input array. Should have a numeric data type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a</span>
-<span class="sd">        shape that the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        An array object, shuffled along the first dimension.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<span class="c1">#ivy.array.searching</span>
-<span class="c1"># global</span>
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
-
-<span class="c1"># local</span>
-<span class="kn">import</span> <span class="nn">ivy</span>
-
-
-<div class="viewcode-block" id="argmax"><a class="viewcode-back" href="../../../functional/ivy/searching/argmax/argmax_array.html#ivy.array.array_methods.argmax">[docs]</a><span class="k">def</span> <span class="nf">argmax</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.argmax. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.argmax also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    axis</span>
-<span class="sd">        axis along which to search. If None, the function must return the index of</span>
-<span class="sd">        the maximum value of the flattened array. Default  None.</span>
-<span class="sd">    keepdims</span>
-<span class="sd">        If this is set to True, the axes which are reduced are left in the result as</span>
-<span class="sd">        dimensions with size one. With this option, the result will broadcast</span>
-<span class="sd">        correctly against the array.</span>
-<span class="sd">    out</span>
-<span class="sd">        If provided, the result will be inserted into this array. It should be of</span>
-<span class="sd">        the appropriate shape and dtype.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        if axis is None, a zero-dimensional array containing the index of the first</span>
-<span class="sd">        occurrence of the maximum value; otherwise, a non-zero-dimensional array</span>
-<span class="sd">        containing the indices of the maximum values. The returned array must have</span>
-<span class="sd">        the default array index data type.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="argmin"><a class="viewcode-back" href="../../../functional/ivy/searching/argmin/argmin_array.html#ivy.array.array_methods.argmin">[docs]</a><span class="k">def</span> <span class="nf">argmin</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.argmin. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.argmin also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    axis</span>
-<span class="sd">        axis along which to search. If None, the function must return the index of</span>
-<span class="sd">        the minimum value of the flattened array. Default = None.</span>
-<span class="sd">    keepdims</span>
-<span class="sd">        if True, the reduced axes (dimensions) must be included in the result as</span>
-<span class="sd">        singleton dimensions, and, accordingly, the result must be compatible with</span>
-<span class="sd">        the input array (see Broadcasting). Otherwise, if False, the reduced axes</span>
-<span class="sd">        (dimensions) must not be included in the result. Default = False.</span>
-<span class="sd">    out</span>
-<span class="sd">        if axis is None, a zero-dimensional array containing the index of the first</span>
-<span class="sd">        occurrence of the minimum value; otherwise, a non-zero-dimensional array</span>
-<span class="sd">        containing the indices of the minimum values. The returned array must have</span>
-<span class="sd">        the default array index data type.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Array containing the indices of the minimum values across the specified</span>
-<span class="sd">        axis.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="nonzero"><a class="viewcode-back" href="../../../functional/ivy/searching/nonzero/nonzero_array.html#ivy.array.array_methods.nonzero">[docs]</a><span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.nonzero. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.nonzero also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Array containing the indices of the non-zero values.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="where"><a class="viewcode-back" href="../../../functional/ivy/searching/where/where_array.html#ivy.array.array_methods.where">[docs]</a><span class="k">def</span> <span class="nf">where</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">x1</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.where. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.where also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Where True, yield x1, otherwise yield x2.</span>
-<span class="sd">    x1</span>
-<span class="sd">        input array. Should have a numeric data type.</span>
-<span class="sd">    x2</span>
-<span class="sd">        values from which to choose when condition is False.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        An array with elements from self where condition is True, and elements from</span>
-<span class="sd">        x2 otherwise.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
 <span class="c1">#ivy.array.set</span>
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
@@ -4831,7 +4218,7 @@
 <span class="c1">#ivy.array.sorting</span>
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="c1"># local</span>
 
@@ -4875,17 +4262,6 @@
 <span class="sd">    ivy.array([8.5, 8.2, 7.6])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="searchsorted"><a class="viewcode-back" href="../../../functional/ivy/sorting/searchsorted/searchsorted_array.html#ivy.array.array_methods.searchsorted">[docs]</a><span class="k">def</span> <span class="nf">searchsorted</span><span class="p">(</span>  
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">v</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> 
-    <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
-    <span class="n">sorter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="k">pass</span></div>
 
 
@@ -4938,65 +4314,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.var. This method simply </span>
-<span class="sd">    wraps the function, and so the docstring for ivy.var also applies </span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    **Special Cases**</span>
-
-<span class="sd">    Let N equal the number of elements over which to compute the variance.</span>
-
-<span class="sd">    If N - correction is less than or equal to 0, the variance is NaN.</span>
-
-<span class="sd">    If x_i is NaN, the variance is NaN (i.e., NaN values propagate).</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        input array. Should have a floating-point data type.</span>
-<span class="sd">    axis</span>
-<span class="sd">        axis or axes along which variances must be computed. By default, </span>
-<span class="sd">        the variance must be computed over the entire array. If a tuple of</span>
-<span class="sd">        integers, variances must be computed over multiple axes. Default: None.</span>
-<span class="sd">    correction</span>
-<span class="sd">        degrees of freedom adjustment. Setting this parameter to a value </span>
-<span class="sd">        other than 0 has the effect of adjusting the divisor during the </span>
-<span class="sd">        calculation of the variance according to N-c where N corresponds </span>
-<span class="sd">        to the total number of elements over which the variance is computed </span>
-<span class="sd">        and c corresponds to the provided degrees of freedom adjustment. </span>
-<span class="sd">        When computing the variance of a population, setting this parameter </span>
-<span class="sd">        to 0 is the standard choice (i.e., the provided array contains data </span>
-<span class="sd">        constituting an entire population). When computing the unbiased sample </span>
-<span class="sd">        variance, setting this parameter to 1 is the standard choice (i.e., the </span>
-<span class="sd">        provided array contains data sampled from a larger population; this is </span>
-<span class="sd">        commonly referred to as Bessel&#39;s correction). Default: 0.</span>
-<span class="sd">    keepdims</span>
-<span class="sd">        if True, the reduced axes (dimensions) must be included in the result as</span>
-<span class="sd">        singleton dimensions, and, accordingly, the result must be compatible </span>
-<span class="sd">        with the input array (see Broadcasting). Otherwise, if False, the </span>
-<span class="sd">        reduced axes (dimensions) must not be included in the result. </span>
-<span class="sd">        Default: False.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        if the variance was computed over the entire array, </span>
-<span class="sd">        a zero-dimensional array containing the variance; </span>
-<span class="sd">        otherwise, a non-zero-dimensional array containing the variances. </span>
-<span class="sd">        The returned array must have the same data type as x.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-<span class="sd">     &gt;&gt;&gt; x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])</span>
-<span class="sd">     &gt;&gt;&gt; y = x.var()</span>
-<span class="sd">     &gt;&gt;&gt; print(y)</span>
-<span class="sd">     ivy.array(0.07472222)</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
