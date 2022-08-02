@@ -10,9 +10,9 @@ Here we explain the components of Ivy which are fundamental to it’s usage eith
 Backend Functional APIs ✅
 -----------------------
 
-The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function :code:`ivy.clip` as an example.
+The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function :code:`ivy.stack` as an example.
 
-There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy, and so we implement the :code:`clip` method once for each backend, each in separate backend files like so:
+There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and so we implement the :code:`stack` method once for each backend, each in separate backend files like so:
 
 .. code-block:: python
 
@@ -63,7 +63,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy
 
 There were no changes required for this function except a minor axis check for JAX.
 
-For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch, MXNet and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
+For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
 
 .. code-block:: python
 
@@ -86,7 +86,7 @@ Ivy Functional API ✅
 
 Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
 
-:code:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The :code:`prod` function is shown below:
+:code:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. For example, The function :code:`prod`  is shown below:
 
 .. code-block:: python
 
@@ -157,7 +157,7 @@ Calling the different backend files explicitly would work okay, but it would mea
         )
 
 Implicitly, Ivy sets numpy as the default backend or operates with the backend corresponding to the specified data inputs
-until the user explicitly sets a different backend. The examples can be seeen below:
+until the user explicitly sets a different backend. The examples can be seen below:
 
 
 +----------------------------------------+----------------------------------------------------+
