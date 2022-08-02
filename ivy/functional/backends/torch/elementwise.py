@@ -311,10 +311,7 @@ logical_xor.support_native_out = True
 
 
 def logical_and(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    *,
-    out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.logical_and(x1.type(torch.bool), x2.type(torch.bool), out=out)
 
@@ -550,7 +547,6 @@ def remainder(
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     ret = torch.remainder(x1, x2, out=out)
-    ret[torch.isnan(ret)] = 0
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

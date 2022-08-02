@@ -250,7 +250,12 @@ def exp(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return ret
 
 
-tan = lambda x: math.tan(x) if isinstance(x, float) else mx.nd.tan(x)
+def tan(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    if isinstance(x, float):
+        ret = math.tan(x)
+    else:
+        ret = mx.nd.tan(x)
+    return ret
 
 
 @_handle_flat_arrays_in_out
