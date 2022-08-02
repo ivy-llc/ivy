@@ -48,5 +48,5 @@ def searchsorted(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    res= jnp.asarray(jnp.searchsorted(x, v, side=side))
+    res = jnp.asarray(jnp.searchsorted(x, v, side=side))
     return res
