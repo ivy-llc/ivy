@@ -268,8 +268,6 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                     st.integers(d_in, d_in),
                 )
             )
-            # print("x_shape")
-            # print(x_shape)
         else:
             x_shape = draw(
                 st.tuples(
@@ -572,7 +570,7 @@ def test_depthwise_conv2d(
     device,
 ):
 
-    dtype, x, filters, dilations, data_format, x_shape, filter_shape = x_f_d_df
+    dtype, x, filters, dilations, data_format = x_f_d_df
     dtype = [dtype] * 2
     as_variable = [as_variable, as_variable]
     native_array = [native_array, native_array]
