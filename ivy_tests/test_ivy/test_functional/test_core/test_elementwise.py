@@ -885,6 +885,12 @@ def test_greater(
 ):
     input_dtype, x = dtype_and_x
 
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+
+    # make sure they're not too close together
+    assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -895,8 +901,8 @@ def test_greater(
         instance_method=instance_method,
         fw=fw,
         fn_name="greater",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
@@ -922,6 +928,12 @@ def test_greater_equal(
 ):
     input_dtype, x = dtype_and_x
 
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+
+    # make sure they're not too close together
+    assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -932,8 +944,8 @@ def test_greater_equal(
         instance_method=instance_method,
         fw=fw,
         fn_name="greater_equal",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
@@ -1039,7 +1051,9 @@ def test_isnan(
 # less
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        num_arrays=2,
+        min_num_dims=1,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="less"),
     data=st.data(),
@@ -1058,6 +1072,12 @@ def test_less(
 ):
     input_dtype, x = dtype_and_x
 
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+
+    # make sure they're not too close together
+    assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1068,8 +1088,8 @@ def test_less(
         instance_method=instance_method,
         fw=fw,
         fn_name="less",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
@@ -1095,6 +1115,12 @@ def test_less_equal(
 ):
     input_dtype, x = dtype_and_x
 
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+
+    # make sure they're not too close together
+    assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1105,8 +1131,8 @@ def test_less_equal(
         instance_method=instance_method,
         fw=fw,
         fn_name="less_equal",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x1,
+        x2=x2,
     )
 
 
