@@ -117,7 +117,7 @@ class ArrayWithGeneral(abc.ABC):
         
         >>> x = ivy.array([[0., 1., 2.], \
                             [3., 4., 5.]])
-        >>> y = ivy.array([[[0, 1]], \
+        >>> y = ivy.array([[0, 1]], \
                             [1, 2]])
         >>> z = x.gather(y)
         >>> print(z)
