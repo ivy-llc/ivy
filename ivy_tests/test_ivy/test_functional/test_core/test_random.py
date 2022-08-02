@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -118,6 +118,10 @@ def test_random_normal(
         dtype=dtype,
         device=device,
     )
+    ret = helpers.flatten(ret=ret)
+    ret_gt = helpers.flatten(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert u.dtype == v.dtype
 
 
 @st.composite
@@ -144,11 +148,12 @@ def _pop_size_num_samples_replace_n_probs(draw):
 
 # multinomial
 @given(everything=_pop_size_num_samples_replace_n_probs())
-def test_multinomial(everything, device, call):
+def test_multinomial(everything, device, call, fw):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
-    if call is helpers.tf_call and not replace or prob_dtype == "float64":
-        # tenosorflow does not support multinomial without replacement
-        return
+
+    # tensorflow does not support multinomial without replacement
+    assume(not (fw == "tensorflow" and not replace or prob_dtype == "float64"))
+
     # smoke test
     probs = (
         ivy.array(probs, dtype=prob_dtype, device=device)
@@ -235,25 +240,41 @@ def test_seed(seed_val):
 # shuffle
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+        available_dtypes=ivy_np.valid_float_dtypes,
+        allow_inf=False,
+        min_num_dims=1,
+        min_dim_size=2,
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="shuffle"),
     data=st.data(),
 )
 @handle_cmd_line_args
-def test_shuffle(*, data, dtype_and_x, as_variable, device, call):
-    # smoke test
+def test_shuffle(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
     dtype, x = dtype_and_x
-    x = ivy.array(x, dtype=dtype, device=device)
-    if as_variable:
-        x = ivy.variable(x)
-    ret = ivy.shuffle(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    ivy.seed(0)
-    first_shuffle = call(ivy.shuffle, x)
-    ivy.seed(0)
-    second_shuffle = call(ivy.shuffle, x)
-    assert np.array_equal(first_shuffle, second_shuffle)
+    ret, ret_gt = helpers.test_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        test_values=False,
+        fw=fw,
+        fn_name="shuffle",
+        x=np.asarray(x, dtype=dtype),
+    )
+    ret = helpers.flatten(ret=ret)
+    ret_gt = helpers.flatten(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert ivy.all(ivy.sort(u, 0) == ivy.sort(v, 0))

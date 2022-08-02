@@ -132,10 +132,10 @@ def set_with_grads(with_grads: bool):
 
 
 def unset_with_grads():
-   
+
     global with_grads_stack
     if with_grads_stack:
-         with_grads_stack.pop(-1)
+        with_grads_stack.pop(-1)
 
 
 # Variables #
@@ -594,8 +594,48 @@ def gradient_descent_update(
     Returns
     -------
     ret
-        The new function weights ws_new, following the gradient descent updates.
+        The new weights, following the gradient descent updates.
 
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+    >>> w = ivy.array([[1., 2, 3],\
+                        [4, 6, 1],\
+                        [1, 0, 7]])
+    >>> dcdw = ivy.array([[0.5, 0.2, 0.1],\
+                        [0.3, 0.6, 0.4],\
+                        [0.4, 0.7, 0.2]])
+    >>> lr = ivy.array(0.1)
+    >>> NewWeights = ivy.gradient_descent_update(w,\
+                                                dcdw,\
+                                                lr,\
+                                                inplace=False,\
+                                                stop_gradients=True)
+    >>> print(NewWeights)
+        ivy.array([[ 0.95,  1.98,  2.99],
+                    [ 3.97,  5.94,  0.96],
+                    [ 0.96, -0.07,  6.98]])
+
+    >>> w = ivy.array([1., 2., 3.])
+    >>> dcdw = ivy.array([0.5, 0.2, 0.1])
+    >>> lr = ivy.array(0.3)
+    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace=True)
+    >>> print(w)
+        ivy.array([0.85, 1.94, 2.97])
+
+    With :code: `ivy.container` inputs:
+
+    >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                          b=ivy.array([3.48, 5.72, 1.98]))
+    >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
+                             b=ivy.array([2., 3.42, 1.69]))
+    >>> lr = ivy.array(0.3)
+    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace=True)
+    >>> print(w)
+        {
+            a: ivy.array([0.85, 1.94, 2.97]),
+            b: ivy.array([2.88, 4.69, 1.47])
+        }
     """
     return ivy.optimizer_update(w, dcdw, lr, inplace, stop_gradients)
 
