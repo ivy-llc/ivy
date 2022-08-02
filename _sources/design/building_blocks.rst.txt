@@ -370,9 +370,9 @@ As an example, the following 3 pieces of code all compile to the exact same comp
 | ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          |
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/computational_one.png?raw=true
    :align: center
-   :width: 75%
+   :width: 100%
 
 For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
 
@@ -401,9 +401,9 @@ For all existing ML frameworks, the functional API is the backbone which underpi
 | net(x)                                 | graph(x, w, b)                          | graph(x, w, b)                          |
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/computational_two.png?raw=true
    :align: center
-   :width: 75%
+   :width: 100%
 
 The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :code:`ivy.compile()`, which wraps backend-specific compilation code, for example:
 
