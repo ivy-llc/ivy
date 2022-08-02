@@ -2,7 +2,7 @@
 
 # local
 import ivy
-from typing import Union, Optional,Callable
+from typing import Union, Optional, Callable
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
@@ -429,8 +429,6 @@ def execute_with_gradients(func: Callable,
         b: ivy.array([20., 20., 20.])
     }
     """
-  
-    
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
 

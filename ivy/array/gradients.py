@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union,Optional,Callable,List,Dict
+from typing import Union, Callable
 
 # local
 import ivy
@@ -181,33 +181,35 @@ class ArrayWithGradients(abc.ABC):
         retain_grads: bool = False
     ):
         """
-        ivy.Array instance method variant of ivy.execute_with_gradients. This method simply wraps
-        the function, and so the docstring for ivy.execute_with_gradients also applies to this
+        ivy.Array instance method variant of ivy.execute_with_gradients.
+        This method simply wraps the function, and so 
+        the docstring for ivy.execute_with_gradients also applies to this
         method with minimal changes.
         
         Call function func with the container, and return func first output y,
-        the gradients [dy/dx for x in xs], and any other function outputs after the returned
-        y value.
+        the gradients [dy/dx for x in xs], and any other function 
+        outputs after the returned y value.
 
         Parameters
         ----------
         func
-            Function for which we compute the gradients of the output with respect to xs
-            input.
+            Function for which we compute the gradients of the 
+            output with respect to xs input.
         retain_grads
-            Whether to retain the gradients of the returned values. (Default value = False)
+            Whether to retain the gradients of the returned values.
+            (Default value = False)
 
         Returns
         -------
         ret
-            the function first output y, the gradients [dy/dx for x in xs], and any other
-            extra function outputs.
+            the function first output y, the gradients [dy/dx for x in xs],
+            and any other extra function outputs.
 
         Examples
         --------
 
         With :code:`ivy.Array` input:
-        
+
         >>> ivy.set_backend('tensorflow')
         >>> func = lambda x :x**2
         >>> xs =ivy.array([1.,0.,10.])

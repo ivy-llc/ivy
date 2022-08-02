@@ -265,13 +265,13 @@ class ContainerWithGradients(ContainerBase):
         map_sequences: bool = False,
     ):
         """
-        ivy.Container static method variant of ivy.execute_with_gradients. This method simply wraps
-        the function, and so the docstring for ivy.execute_with_gradients also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.execute_with_gradients.
+        This method simply wraps the function, and so the docstring for 
+        ivy.execute_with_gradients also applies to this method with minimal changes.
         
         Call function func with input of xs variables, and return func first output y,
-        the gradients [dy/dx for x in xs], and any other function outputs after the returned
-        y value.
+        the gradients [dy/dx for x in xs], and any other function outputs after 
+        the returned y value.
 
         Parameters
         ----------
@@ -281,7 +281,8 @@ class ContainerWithGradients(ContainerBase):
         xs
             Variables for which to compute the function gradients with respective to.
         retain_grads
-            Whether to retain the gradients of the returned values. (Default value = False)
+            Whether to retain the gradients of the returned values.
+            (Default value = False)
 
         Returns
         -------
@@ -373,13 +374,13 @@ class ContainerWithGradients(ContainerBase):
         map_sequences: bool = False,
     ):
         """
-        ivy.Container instance method variant of ivy.execute_with_gradients. This method simply wraps
-        the function, and so the docstring for ivy.execute_with_gradients also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.execute_with_gradients.
+        This method simply wraps the function, and so the docstring for 
+        ivy.execute_with_gradients also applies to this method with minimal changes.
         
         Call function func with the container, and return func first output y,
-        the gradients [dy/dx for x in xs], and any other function outputs after the returned
-        y value.
+        the gradients [dy/dx for x in xs], and any other function outputs after 
+        the returned y value.
 
         Parameters
         ----------
@@ -387,7 +388,8 @@ class ContainerWithGradients(ContainerBase):
             Function for which we compute the gradients of the output with respect to xs
             input.
         retain_grads
-            Whether to retain the gradients of the returned values. (Default value = False)
+            Whether to retain the gradients of the returned values.
+            (Default value = False)
 
         Returns
         -------
@@ -456,8 +458,6 @@ class ContainerWithGradients(ContainerBase):
         c function output:  ivy.array([1.24])
         c gradients:  ivy.array([1.15  , 1.12  , 0.0972])
         """
-    
-        
         return self.static_execute_with_gradients(
             func,
             self,
@@ -466,7 +466,7 @@ class ContainerWithGradients(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            ) 
+        ) 
 
     @staticmethod
     def static_adam_step(
