@@ -34,10 +34,11 @@ def sort(
 
 
 def searchsorted(
-    x1: mx.nd.NDArray,
+    x: mx.nd.NDArray,
     v: mx.nd.NDArray,
     side="left",
     sorter=None,
     out: Optional[mx.nd.NDArray] = None
 ) -> mx.nd.NDArray:
-    return mx.nd.searchsorted(x1, v, side=side, sorter=None)
+    res = mx.np.searchsorted(x, v, side=side)
+    return res
