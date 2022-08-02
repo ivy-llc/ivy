@@ -190,7 +190,7 @@ def test_tensorflow_full(
         rtol=1e-05,
     )
 
-    
+
 # subtract
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -222,5 +222,3 @@ def test_tensorflow_subtract(
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
-
-
