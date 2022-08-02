@@ -2004,47 +2004,6 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         ).unstack(0, dim_size=dim_size)
 
-    def to_device(
-        self,
-        device,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Move the container arrays to the desired device, specified by device string.
-
-        Parameters
-        ----------
-        dev
-            device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device
-            if None.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            The container, but with each sub-array now placed on the target device.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_device(x, device=device))
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def num_arrays(self, exclusive=False):
         """Compute the number of arrays present at the leaf nodes, including variables
         by default.
