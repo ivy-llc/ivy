@@ -18,6 +18,8 @@ def _cast_for_binary_op(x1, x2):
     if not isinstance(x1, (int, float)):
         if isinstance(x2, (int, float)):
             x2 = jnp.asarray(x2, dtype=x1.dtype)
+    elif not isinstance(x2, (int, float)):
+        x1 = jnp.asarray(x1, dtype=x2.dtype)
     return x1, x2
 
 
@@ -142,12 +144,8 @@ def cosh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cosh(x)
 
 
-def divide(
-    x1: Union[float, JaxArray],
-    x2: Union[float, JaxArray],
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.divide(x1, x2)
 
 

@@ -1392,7 +1392,7 @@ def bitwise_xor(
     >>> b = ivy.array([78])
     >>> z = x ^ y
     >>> print(z)
-    {a:ivy.array([True])}
+    {a:ivy.array([85])}
 
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
@@ -1401,7 +1401,7 @@ def bitwise_xor(
     >>> y = ivy.array([12, 13])
     >>> z = x ^ y
     >>> print(z)
-    {a:ivy.array([True,True])}
+    {a: ivy.array([-79, 24])}
     """
     return ivy.current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
@@ -2226,7 +2226,7 @@ def greater(
                       [False, False, False],
                       [False, False, False]])
     }
-    
+
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
@@ -2759,7 +2759,7 @@ def isnan(
     >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
     >>> z = ivy.isnan(x)
     >>> print(z)
-    ivy.array([[[False], 
+    ivy.array([[[False],
                 [False],
                 [False]]])
 
@@ -2779,9 +2779,9 @@ def isnan(
     ivy.array([[False, False, False],
        [False, False, False],
        [False, False, False]])
-    
+
     With :code:`ivy.NativeArray` inputs:
-    
+
     >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
     >>> z = ivy.isnan(x)
     >>> print(z)
@@ -2799,8 +2799,8 @@ def isnan(
         a: ivy.array([False, True, False]),
         b: ivy.array([True, False, False])
     }
-    
-    
+
+
     Instance Method Examples
     ------------------------
     With :code:`ivy.Array` inputs:
@@ -2831,9 +2831,9 @@ def isnan(
     ivy.array([[False, False, False],
         [False, False, False],
         [False, False, False]])
-    
+
     With :code:`ivy.NativeArray` inputs:
-    
+
     >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
     >>> x.isnan()
     ivy.array([[False],
@@ -2861,7 +2861,7 @@ def isnan(
         a: ivy.array([False, True, False]),
         b: ivy.array([True, False, False])
     }
-    
+
     """
     return ivy.current_backend(x).isnan(x, out=out)
 
@@ -3082,7 +3082,6 @@ def log10(
         c: ivy.array([0.898, 0.0414, 0.])
     }
     """
-
     return ivy.current_backend(x).log10(x, out=out)
 
 
@@ -3299,7 +3298,7 @@ def logical_and(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of bool.
-    
+
     Examples
     --------
     >>> x = ivy.array([True, True, False])
@@ -3373,11 +3372,11 @@ def logical_not(
        accept input arrays having numeric data types. If non-boolean data types are
        supported, zeros must be considered the equivalent of ``False``, while non-zeros
        must be considered the equivalent of ``True``.
-       
+
        **Special cases**
-       
+
        For this particular case,
-       
+
        - If ``x_i`` is ``NaN``, the result is ``False``.
        - If ``x_i`` is ``-0``, the result is ``True``.
        - If ``x_i`` is ``-infinity``, the result is ``False``.
@@ -3396,7 +3395,7 @@ def logical_not(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of ``bool``.
-        
+
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
@@ -3405,24 +3404,24 @@ def logical_not(
     >>> y=ivy.logical_not(x)
     >>> print(y)
     ivy.array([False, True, False, False,  True])
-    
+
     >>> x=ivy.array([2,0,3,5])
     >>> y=ivy.logical_not(x)
     >>> print(y)
     ivy.array([False, True, False, False])
-    
+
     With :code:`ivy.NativeArray` input:
 
     >>> x=ivy.native_array([1,0,1,1,0])
     >>> y=ivy.logical_not(x)
     >>> print(y)
     ivy.array([False, True, False, False,  True])
-    
+
     >>> x=ivy.native_array([1,0,6,5])
     >>> y=ivy.logical_not(x)
     >>> print(y)
     ivy.array([False, True, False, False])
-    
+
     With :code:`ivy.Container` input:
 
     >>> x=ivy.Container(a=ivy.array([1,0,1,1]), b=ivy.array([1,0,8,9]))
@@ -3432,7 +3431,7 @@ def logical_not(
         a: ivy.array([False, True, False, False]),
         b: ivy.array([False, True, False, False])
     }
-    
+
     >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
     >>> y=ivy.logical_not(x)
     >>> print(y)
@@ -3440,29 +3439,29 @@ def logical_not(
         a: ivy.array([False, True, False, True]),
         b: ivy.array([False, False, True, False])
     }
-    
+
     Instance Method Examples
     ------------------------
-    
+
     With :code:`ivy.Array` input:
 
     >>> x=ivy.array([0,1,1,0])
     >>> x.logical_not()
     ivy.array([ True, False, False,  True])
-    
+
     >>> x=ivy.array([2,0,3,9])
     >>> x.logical_not()
     ivy.array([False,  True, False, False])
-    
+
     With :code:`ivy.Container` input:
-    
+
     >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
     >>> x.logical_not()
     {
         a: ivy.array([False, True, True, False]),
         b: ivy.array([False, False, False, True])
     }
-    
+
     >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
     >>> x.logical_not()
     {
@@ -3543,7 +3542,7 @@ def logical_xor(
     ret
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
-    
+
     Examples
     --------
     With :code:`ivy.Array` inputs:
@@ -3562,7 +3561,7 @@ def logical_xor(
             [False],
             [False],
             [False]]])
-    
+
     >>> x = ivy.array([[[1], [2], [3], [4]]])
     >>> y = ivy.array([4, 5, 6, 7])
     >>> z = ivy.logical_xor(x,y)
@@ -3571,7 +3570,7 @@ def logical_xor(
             [False, False, False, False],
             [False, False, False, False],
             [False, False, False, False]]])
-    
+
     With :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
@@ -4235,7 +4234,7 @@ def round(
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.round.html>`_ # noqa
     in the standard.
-    
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
