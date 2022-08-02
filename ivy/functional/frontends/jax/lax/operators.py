@@ -28,5 +28,5 @@ def full(shape, fill_value, dtype=None):
 full.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
-def max(x, y):
-    return ivy.max([x, y])
+def max(x: Any, y: Any):
+    return ivy.maximum(x, y)
