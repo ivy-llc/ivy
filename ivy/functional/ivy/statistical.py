@@ -455,7 +455,8 @@ def var(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the variance of the input array x.
+    """
+    Calculates the variance of the input array x.
 
     **Special Cases**
 
@@ -498,6 +499,44 @@ def var(
         if the variance was computed over the entire array, a zero-dimensional array
         containing the variance; otherwise, a non-zero-dimensional array containing the
         variances. The returned array must have the same data type as x.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
+    >>> y = ivy.var(x)
+    >>> print(y)
+    ivy.array(0.07472222)
+
+    >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
+    >>> y = ivy.zeros(6)
+    >>> ivy.var(x, out=y)
+    >>> print(y)
+    ivy.array(0.07472222)
+
+    >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
+    >>> ivy.var(x, out=x)
+    >>> print(x)
+    ivy.array(0.)
+
+    With :code:`ivy.native_array` input:
+
+    >>> x = ivy.native_array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
+    >>> y = ivy.var(x)
+    >>> print(y)
+    ivy.array(0.07472222)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
+                          b=ivy.array([0.7, 0.1, 0.9]))
+    >>> y = ivy.var(x)
+    >>> print(y)
+    {
+        a:ivy.array(0.12666667),
+        b:ivy.array(0.11555555)
+    }
 
     """
     return current_backend(x).var(x, axis, correction, keepdims, out=out)
