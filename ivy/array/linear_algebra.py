@@ -120,18 +120,6 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(z)
         ivy.array([0., 0., 1.])
 
-        With a combination of :code:`ivy.Array`
-        and :code:`ivy.Container` inputs:
-
-        >>> x = ivy.array([9., 0., 3.])
-        >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
-        >>> z = x.cross(x,y)
-        >>> print(z)
-        {
-        a: ivy.array([-3., 3., 9.]),
-        b: ivy.array([0., -6., 0.])
-        }
-
         """
         return ivy.cross(self._data, x2, axis, out=out)
 
