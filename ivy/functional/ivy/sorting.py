@@ -64,7 +64,7 @@ def argsort(
     and also the examples below.
 
     Examples
-    -------------------
+    --------
 
     With: code:`ivy.Array` input:
 
