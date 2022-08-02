@@ -838,9 +838,12 @@ def test_floor_divide(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    x1 = (np.asarray(x[0], dtype=input_dtype[0]),)
-    x2 = (np.asarray(x[1], dtype=input_dtype[1]),)
-    assume(np.all(x2[0] != 0))
+
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+
+    # Make sure it's not dividing value too close to zero
+    assume(not np.any(np.isclose(x2, 0)))
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -852,8 +855,8 @@ def test_floor_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="floor_divide",
-        x1=x1[0],
-        x2=x2[0],
+        x1=x1,
+        x2=x2,
     )
 
 
