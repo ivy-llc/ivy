@@ -36,10 +36,12 @@ def sort(
 
 
 def searchsorted(
-    x1: np.ndarray,
+    x: np.ndarray,
     v: np.ndarray,
     side="left",
     sorter=None,
     out: Optional[np.ndarray] = None
-) -> np.ndarray:   
-    return np.searchsorted(x1, v, side=side, sorter=None)
+) -> np.ndarray:
+    v = list(v)
+    res = np.asarray(np.searchsorted(x, v, side=side))
+    return res
