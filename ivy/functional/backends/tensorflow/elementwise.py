@@ -229,7 +229,9 @@ def floor_divide(
     else:
         ret = tf.math.floordiv(x1, x2)
 
-    if (any(isinf(x1)) and any(isfinite(x2))) or (any(isfinite(x1)) and any(isinf(x2))):
+    only_x1_inf = tf.reduce_any(isinf(x1)) and tf.reduce_any(isfinite(x2))
+    only_x2_inf = tf.reduce_any(isfinite(x1)) and tf.reduce_any(isinf(x2))
+    if only_x1_inf or only_x2_inf:
         return ivy.full_like(ret, floor(divide(x1, x2)), dtype=ret.dtype)
     return ret
 
