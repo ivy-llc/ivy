@@ -222,7 +222,7 @@ class ContainerWithSet(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-         ivy.Container static method variant of ivy.unique_inverse. This method simply
+         ivy.Container instance method variant of ivy.unique_inverse. This method simply
          wraps the function, and so the docstring for ivy.unique_inverse also applies
          to this method with minimal changes.
 
@@ -256,22 +256,10 @@ class ContainerWithSet(ContainerBase):
               must have the same shape as ``x`` and must have the default array index data
               type.
 
-              .. note::
-                 The order of unique elements is not specified and may vary between
-                 implementations.
-
-         This method conforms to the `Array API Standard
-         <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-         the `docstring <https://data-apis.org/array-api/latest/API_specification/
-         generated/signatures..set_functions.unique_inverse.html>`_
-         in the standard.
-
               Examples
               --------
-
-              >>> x = ivy.Container(a=ivy.array([4., 8., 3. , 5. , 9. , 4.]), \
-                                    b=ivy.array([7,6,4,5,6,3,2]))
-              >>> y = ivy.ivy.unique_inverse(x)
+              >>> x = ivy.Container(a=ivy.array([4., 8., 3. , 5. , 9. , 4.]), b=ivy.array([7,6,4,5,6,3,2]))
+              >>> y = x.unique_inverse()
               >>> print(y)
               {
                 a: (list[2], <class ivy.array.array.Array> shape=[5]),

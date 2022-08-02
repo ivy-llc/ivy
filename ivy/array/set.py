@@ -75,23 +75,8 @@ class ArrayWithSet(abc.ABC):
               must have the same shape as ``x`` and must have the default array index data
               type.
 
-             .. note::
-                The order of unique elements is not specified and may vary between
-                implementations.
-
-          This method conforms to the `Array API Standard
-          <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-          the `docstring <https://data-apis.org/array-api/latest/API_specification/
-          generated/signatures..set_functions.unique_inverse.html>`_
-          in the standard.
-
           Examples
           --------
-
-        >>> x = ivy.array([3,4,7,4,2,8,5])
-        >>> y = ivy.unique_inverse(x)
-        >>> print(y)
-        unique_inverse(values=ivy.array([2, 3, 4, 5, 7, 8]), inverse_indices=ivy.array([1, 2, 4, 2, 0, 5, 3]))
 
         >>> x = ivy.array([0.3,0.4,0.7,0.4,0.2,0.8,0.5])
         >>> y = ivy.unique_inverse(x)
