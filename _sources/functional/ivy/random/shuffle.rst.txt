@@ -3,8 +3,6 @@ shuffle
 
 .. autofunction:: ivy.functional.ivy.random.shuffle
 
-.. autofunction:: ivy.array.array_methods.shuffle
-
 .. autofunction:: ivy.container.container_methods.shuffle
 
 .. autofunction:: ivy.container.container_methods.static_shuffle
@@ -35,7 +33,6 @@ shuffle
    :caption: shuffle
 
    shuffle/shuffle_functional.rst
-   shuffle/shuffle_array.rst
    shuffle/shuffle_container.rst
    shuffle/static_shuffle_container.rst
 
