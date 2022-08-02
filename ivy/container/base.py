@@ -17,7 +17,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union, Iterable, Dict
+from typing import Union
 from builtins import set
 
 # local
@@ -212,7 +212,7 @@ class ContainerBase(dict, abc.ABC):
             if isinstance(values, list):
                 for v in values:
                     if ivy.is_ivy_array(v):
-                        return ret.unstack(0)
+                        return ret.unstack_conts(0)
         return ret
 
     @staticmethod
@@ -1913,52 +1913,7 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def dev_clone(self, devices):
-        """Clone the current container across multiple devices.
-
-        Parameters
-        ----------
-        devs
-            The devices on which to clone the container.
-
-        Returns
-        -------
-            a set of cloned containers across the specified devices.
-
-        """
-        return self._ivy.DevClonedItem(
-            {device: self.to_device(device=device) for device in devices}
-        )
-
-    def dev_dist(self, devices: Union[Iterable[str], Dict[str, int]], axis=0):
-        """Distribute the current container across multiple devices.
-
-        Parameters
-        ----------
-        devs
-            The devices along which to distribute the container.
-        axis
-            The axis along which to split the arrays at the container leaves.
-            Default is 0.
-
-        Returns
-        -------
-            a set of distributed sub-containers across the specified devices.
-
-        """
-        split_arg = (
-            list(devices.values()) if isinstance(devices, dict) else len(devices)
-        )
-        return self._ivy.DevDistItem(
-            {
-                device: cont.to_device(device)
-                for cont, device in zip(
-                    self.split(split_arg, axis, with_remainder=True), devices
-                )
-            }
-        )
-
-    def unstack(self, axis, keepdims=False, dim_size=None):
+    def unstack_conts(self, axis, keepdims=False, dim_size=None):
         """Unstack containers along specified dimension.
 
         Parameters
@@ -1993,7 +1948,7 @@ class ContainerBase(dict, abc.ABC):
             for i in range(dim_size)
         ]
 
-    def split(
+    def split_conts(
         self,
         num_or_size_splits=None,
         axis=0,
@@ -2047,86 +2002,7 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             prune_unapplied,
             map_sequences,
-        ).unstack(0, dim_size=dim_size)
-
-    def to_device(
-        self,
-        device,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Move the container arrays to the desired device, specified by device string.
-
-        Parameters
-        ----------
-        dev
-            device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device
-            if None.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            The container, but with each sub-array now placed on the target device.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_device(x, device=device))
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def as_arrays(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested variables to arrays, which do not support gradient
-        computation.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each variable converted to an array.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(x, False)
-            if self._ivy.is_variable(x)
-            else (
-                x
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else self._ivy.array(x)
-            ),
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
+        ).unstack_conts(0, dim_size=dim_size)
 
     def num_arrays(self, exclusive=False):
         """Compute the number of arrays present at the leaf nodes, including variables
@@ -2167,38 +2043,6 @@ class ContainerBase(dict, abc.ABC):
             ),
             alphabetical_keys=False,
         )
-
-    def from_numpy(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested numpy arrays to native backend arrays.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each ivy array converted to a numpy array.
-
-        """
-        ret = self.map(
-            lambda x, kc: self._ivy.array(x) if isinstance(x, np.ndarray) else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-        return ret
 
     def to_disk_as_hdf5(
         self, h5_obj_or_filepath, starting_index=0, mode="a", max_batch_size=None
