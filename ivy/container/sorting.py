@@ -51,6 +51,7 @@ class ContainerWithSorting(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret 
@@ -135,7 +136,7 @@ class ContainerWithSorting(ContainerBase):
         Parameters
         ----------
         self 
-            input array.
+            input array or container. Should have a numeric data type.
         axis
             axis along which to sort. If set to ``-1``, the function must sort along the last axis. Default: ``-1``.
         descending
@@ -155,6 +156,7 @@ class ContainerWithSorting(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+            
         Returns
         -------
         ret 
