@@ -180,6 +180,9 @@ select a JAX backend, but also select the PyTorch frontend and write Ivy code wh
 functional API. In the reverse direction: we can take pre-written pure PyTorch code, replace each PyTorch function
 with the equivalent function using Ivy’s PyTorch frontend, and then run this PyTorch code using JAX:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_conversion.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_conversion.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_conversion.png?raw=true" style="width: 100%;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <p>For this example it’s very simple, the differences are only syntactic, but the above process works for <strong>any</strong> function.
 If there are semantic differences then these will be captured (a) in the wrapped frontend code which expresses the
 frontend method as a composition of Ivy functions, and (b) in the wrapped backend code which expressed the Ivy
