@@ -24,26 +24,29 @@ class ContainerWithSorting(ContainerBase):
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.argsort. This method simply wraps the
-        function, and so the docstring for ivy.argsort also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.argsort. This method 
+        simply wraps the function, and so the docstring for 
+        ivy.argsort also applies to this method with minimal changes.
         
         Parameters
         ----------
         x 
             input array or container. Should have a numeric data type.
         axis
-            axis along which to sort. If set to ``-1``, the function must sort along the last axis.
-            Default: ``-1``.
+            axis along which to sort. If set to ``-1``, the function must sort 
+            along the last axis. Default: ``-1``.
         descending
-            sort order. If ``True``, the returned indices sort ``x`` in descending order (by value).
-            If ``False``, the returned indices sort ``x`` in ascending order (by value). Default: ``False``.
+            sort order. If ``True``, the returned indices sort
+            ``x`` in descending order (by value). If ``False``, 
+            the returned indices sort ``x`` in ascending order 
+            (by value). Default: ``False``.
         stable
-            sort stability. If ``True``, the returned indices must maintain the relative order of ``x``
-            values which compare as equal. If ``False``, the returned indices may or may not maintain
+            sort stability. If ``True``, the returned indices must maintain
+            the relative order of ``x`` values which compare as equal.
+            If ``False``, the returned indices may or may not maintain
             the relative order of ``x`` values which compare as equal (i.e., the 
-            relative order of ``x`` values which compare as equal is implementation-
-            dependent). Default: ``True``.
+            relative order of ``x`` values which compare as equal 
+            is implementation-dependent). Default: ``True``.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -61,7 +64,8 @@ class ContainerWithSorting(ContainerBase):
         Returns
         -------
         ret 
-            a container containing the index values of sorted array. The returned array must have a
+            a container containing the index values of sorted
+            array. The returned array must have a
             data type determined by :ref:`type-promotion`.
         
         Examples
@@ -135,8 +139,9 @@ class ContainerWithSorting(ContainerBase):
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.argsort. This method simply wraps the
-        function, and so the docstring for ivy.argsort also applies to this method
+        ivy.Container instance method variant of ivy.argsort.
+        This method simply wraps the function, and 
+        so the docstring for ivy.argsort also applies to this method
         with minimal changes.
         
         Parameters
@@ -144,37 +149,42 @@ class ContainerWithSorting(ContainerBase):
         self 
             input array or container. Should have a numeric data type.
         axis
-            axis along which to sort. If set to ``-1``, the function must sort along the last axis.
-            Default: ``-1``.
+            axis along which to sort. If set to ``-1``, the function 
+            must sort along the last axis. Default: ``-1``.
         descending
-            sort order. If ``True``, the returned indices sort ``x`` in descending order 
-            (by value). If ``False``, the returned indices sort ``x`` in ascending order (by value).
+            sort order. If ``True``, the returned indices sort ``x``
+            in descending order (by value). If ``False``, the 
+            returned indices sort ``x`` in ascending order (by value).
             Default: ``False``.
         stable
-            sort stability. If ``True``, the returned indices must maintain the relative order of 
-            ``x`` values which compare as equal. If ``False``, the returned indices may or may not
-            maintain the relative order of ``x`` values which compare as equal (i.e., the relative 
-            order of ``x`` values which compare as equal is implementation-dependent).
+            sort stability. If ``True``, the returned indices must
+            maintain the relative order of ``x`` values which compare
+            as equal. If ``False``, the returned indices may or may not
+            maintain the relative order of ``x`` values which compare 
+            as equal (i.e., the relative order of ``x`` values which 
+            compare as equal is implementation-dependent).
             Default: ``True``.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is True.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
             Default is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples). 
+            Default is False.
         out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+            optional output container, for writing the result to.
+            It must have a shape that the inputs broadcast to.
             
         Returns
         -------
         ret 
-            a container containing the index values of sorted array. The returned array must 
-            have a data type determined by :ref:`type-promotion`.
+            a container containing the index values of sorted array.
+            The returned array must have a data type determined 
+            by :ref:`type-promotion`.
         
         Examples
         --------
