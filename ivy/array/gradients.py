@@ -1,7 +1,6 @@
 # global
 import abc
-from typing import Union, Callable
-
+from typing import Union, Callable, Optional
 # local
 import ivy
 
@@ -174,7 +173,7 @@ class ArrayWithGradients(abc.ABC):
                         [-2.09,  2.76, -1.  ]]])
         """
         return ivy.gradient_descent_update(self, dcdw, lr, inplace, stop_gradients)
-
+        
     def execute_with_gradients(
         self: ivy.Array,
         func: Callable,
@@ -198,10 +197,6 @@ class ArrayWithGradients(abc.ABC):
         retain_grads
             Whether to retain the gradients of the returned values.
             (Default value = False)
-
-        Returns
-        -------
-        ret
             the function first output y, the gradients [dy/dx for x in xs],
             and any other extra function outputs.
 
@@ -231,9 +226,35 @@ class ArrayWithGradients(abc.ABC):
         function output:  ivy.array(103.)
         grads:  ivy.array([  2.,   1., 100.])      
         """
-
         return ivy.execute_with_gradients(
             func,
             self,
             retain_grads=retain_grads
         )
+        
+    def stop_gradient(
+        self: ivy.Array, preserve_type: bool = True, *, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.stop_gradient. This method simply
+        wraps the function, and so the docstring for ivy.stop_gradient also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array for which to stop the gradient.
+        preserve_type
+            Whether to preserve the input type (ivy.Variable or ivy.Array),
+            otherwise an array is always returned. Default is True.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+
+            The same array x, but with no gradient information.
+        """
+        return ivy.stop_gradient(self._data, preserve_type, out=out)
