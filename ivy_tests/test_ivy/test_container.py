@@ -1086,50 +1086,6 @@ def test_container_all_false(device, call):
     assert error_raised
 
 
-@pytest.mark.parametrize("devs_as_dict", [True, False])
-def test_container_distribute(devs_as_dict, device, call):
-    array_a = ivy.array([[1], [2], [3], [4]], device=device)
-    array_bc = ivy.array([[2], [3], [4], [5]], device=device)
-    array_bd = ivy.array([[3], [4], [5], [6]], device=device)
-    dict_in = {"a": array_a, "b": {"c": array_bc, "d": array_bd}}
-    container = Container(dict_in)
-    batch_size = array_a.shape[0]
-
-    if call is helpers.mx_call:
-        # MXNet does not support splitting along an axis with a remainder after division
-        pytest.skip()
-
-    # devices
-    dev0 = device
-    devices = [dev0]
-    if "gpu" in device and ivy.num_gpus() > 1:
-        idx = ivy.num_gpus() - 1
-        dev1 = device[:-1] + str(idx)
-        devices.append(dev1)
-    if devs_as_dict:
-        devices = dict(zip(devices, [int((1 / len(devices)) * 4)] * len(devices)))
-    num_devs = len(devices)
-    sub_size = int(batch_size / num_devs)
-
-    # without key_chains specification
-    container_dist = container.dev_dist(devices)
-    assert isinstance(container_dist, ivy.DevDistItem)
-    assert min([cont.dev_str == ds for ds, cont in container_dist.items()])
-    for i, sub_cont in enumerate(container_dist.values()):
-        assert np.array_equal(
-            ivy.to_numpy(sub_cont.a),
-            ivy.to_numpy(array_a)[i * sub_size : i * sub_size + sub_size],
-        )
-        assert np.array_equal(
-            ivy.to_numpy(sub_cont.b.c),
-            ivy.to_numpy(array_bc)[i * sub_size : i * sub_size + sub_size],
-        )
-        assert np.array_equal(
-            ivy.to_numpy(sub_cont.b.d),
-            ivy.to_numpy(array_bd)[i * sub_size : i * sub_size + sub_size],
-        )
-
-
 def test_container_unstack(device, call):
     dict_in = {
         "a": ivy.array([[1], [2], [3]], device=device),

@@ -17,7 +17,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union, Iterable, Dict
+from typing import Union
 from builtins import set
 
 # local
@@ -1911,34 +1911,6 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             prune_unapplied,
             map_sequences,
-        )
-
-    def dev_dist(self, devices: Union[Iterable[str], Dict[str, int]], axis=0):
-        """Distribute the current container across multiple devices.
-
-        Parameters
-        ----------
-        devs
-            The devices along which to distribute the container.
-        axis
-            The axis along which to split the arrays at the container leaves.
-            Default is 0.
-
-        Returns
-        -------
-            a set of distributed sub-containers across the specified devices.
-
-        """
-        split_arg = (
-            list(devices.values()) if isinstance(devices, dict) else len(devices)
-        )
-        return self._ivy.DevDistItem(
-            {
-                device: cont.to_device(device)
-                for cont, device in zip(
-                    self.split(split_arg, axis, with_remainder=True), devices
-                )
-            }
         )
 
     def unstack(self, axis, keepdims=False, dim_size=None):
