@@ -41,11 +41,12 @@ def sort(
 
 
 def searchsorted(
-    x1: JaxArray,
+    x: JaxArray,
     v: JaxArray,
     side='left',
     sorter=None,
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.searchsorted(x1, v, side=side, sorter=None)
+    res= jnp.asarray(jnp.searchsorted(x, v, side=side))
+    return res
