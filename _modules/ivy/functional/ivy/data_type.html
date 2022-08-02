@@ -611,7 +611,8 @@
 <span class="k">def</span> <span class="nf">result_type</span><span class="p">(</span>
     <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the dtype that results from applying the type promotion rules (see</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the dtype that results from applying the type promotion rules (see</span>
 <span class="sd">    :ref:`type-promotion`) to the arguments.</span>
 
 <span class="sd">    .. note::</span>
@@ -628,6 +629,42 @@
 <span class="sd">    ret</span>
 <span class="sd">        the dtype resulting from an operation involving the input arrays and dtypes.</span>
 
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.result_type.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 4, 5])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([3., 4., 5.])</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.result_type(x, y))</span>
+<span class="sd">    float64</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([3., 4, 7.5])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([3, 4, 7])</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.result_type(x, y))</span>
+<span class="sd">    float64</span>
+
+<span class="sd">    With :code:`ivy.Dtype` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.result_type(ivy.uint8, ivy.uint64))</span>
+<span class="sd">    uint64</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([3, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; print(x.a.dtype)</span>
+<span class="sd">    int32</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.result_type(x, ivy.float64))</span>
+<span class="sd">    {</span>
+<span class="sd">        a: float64</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">arrays_and_dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">arrays_and_dtypes</span><span class="p">)</span></div>
 
@@ -809,6 +846,39 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The closest valid data type as a native ivy.Dtype</span>
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Dtype` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; xType = ivy.float16</span>
+<span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
+<span class="sd">    &gt;&gt;&gt; print(yType)</span>
+<span class="sd">    float16</span>
+
+<span class="sd">    &gt;&gt;&gt; xType = ivy.int8</span>
+<span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
+<span class="sd">    &gt;&gt;&gt; print(yType)</span>
+<span class="sd">    int8</span>
+
+<span class="sd">    With :code:`ivy.Native_dtype` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; xType = ivy.native_uint16</span>
+<span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
+<span class="sd">    &gt;&gt;&gt; print(yType)</span>
+<span class="sd">    &lt;dtype:&#39;uint16&#39;&gt;</span>
+
+<span class="sd">    With :code:`str` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; xType = &#39;int32&#39;</span>
+<span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
+<span class="sd">    &gt;&gt;&gt; print(yType)</span>
+<span class="sd">    int32</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>

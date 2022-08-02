@@ -64,8 +64,8 @@
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Ivy Tests</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Hypothesis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#data-generation">Data Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Hypothesis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Data Generation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#important-strategies">Important Strategies</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#integration-of-strategies-into-ivy-tests">Integration of Strategies into Ivy Tests</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#why-do-we-need-helper-functions">Why do we need helper functions</a></li>
@@ -74,7 +74,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#self-consistent-and-explicit-testing">Self-Consistent and Explicit Testing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">test_array_function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">test_array_function</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
@@ -174,8 +174,8 @@ there is also a collection of Ivy tests, located in subfolder <a class="referenc
 The standard only mandates a subset of required behaviour, which the Ivy functions generally extend upon.</p></li>
 </ol>
 <p>As done in the <a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a>, we also make use of <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/">hypothesis</a> for performing property based testing.</p>
-<section id="id1">
-<h2>Hypothesis<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<section id="id2">
+<h2>Hypothesis<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
 <p>Using pytest fixtures (such as the ones removed in this <a class="reference external" href="https://github.com/unifyai/ivy/commit/8e6074419c0b6ee27c52e8563374373c8bcff30f">commit</a>) cause a grid search to be performed for all
 combinations of parameters. This is great when we want the test to be very thorough,
 but can make the entire test suite very time consuming.
@@ -197,10 +197,17 @@ for <code class="code docutils literal notranslate"><span class="pre">ivy.abs</s
 Among other changes, all <code class="code docutils literal notranslate"><span class="pre">pytest.skip()</span></code> calls were replaced with return statements,
 as pytest skipping does not play nicely with hypothesis testing.</p>
 </section>
-<section id="data-generation">
-<h2>Data Generation<a class="headerlink" href="#data-generation" title="Permalink to this heading"></a></h2>
+<section id="id3">
+<h2>Data Generation<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h2>
+<p>We aim to make the data generation for three out of the four kinds of ivy functions exhaustive; primary, compositional
+and mixed. Exhaustive data generation implies that all possible inputs and combinations of inputs are covered. Take
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/d8f1ffe8ebf38fa75161c1a9459170e95f3c82b6/ivy/functional/ivy/data_type.py#L276">finfo</a> , for example. It can take either arrays or dtypes as input, hence the <a class="reference external" href="https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337">data generation</a> reflects this using
+the bespoke search strategy <code class="code docutils literal notranslate"><span class="pre">_array_or_type</span></code>. However, such rigorous testing is not necessary for standalone functions
+(those that are entirely self-contained in the Ivy codebase without external references). These kinds of functions may
+only require standard Pytest testing using <code class="code docutils literal notranslate"><span class="pre">parametrize</span></code>, e.g. <a class="reference external" href="https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835">test_default_int_dtype</a>. For further clarity on
+the various function types in ivy, see <a href="#id7"><span class="problematic" id="id8">`here`_</span></a>.</p>
 <p>The way data is generated is described by the <code class="code docutils literal notranslate"><span class="pre">hypothesis.strategies</span></code> module which contains a variety of <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html">methods</a>
-that have been used widely in each of Ivy’s functional and stateful submodule tests. An initialized strategy is a object
+that have been used widely in each of Ivy’s functional and stateful submodule tests. An initialized strategy is an object
 that is used by Hypothesis to generate data for the test. For example, let’s write a strategy that generates supported
 integer data types in Ivy -:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">valid_int_dtypes</span> <span class="o">=</span>  <span class="p">(</span><span class="n">int8</span><span class="p">,</span><span class="n">int16</span><span class="p">,</span><span class="n">int32</span><span class="p">,</span><span class="n">int64</span><span class="p">,</span><span class="n">uint8</span><span class="p">,</span> <span class="n">uint16</span><span class="p">,</span> <span class="n">uint32</span><span class="p">,</span> <span class="n">uint64</span><span class="p">)</span>
@@ -264,7 +271,7 @@ For example, this <a class="reference external" href="https://github.com/unifyai
 </pre></div>
 </div>
 <p>9. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.shared">shared</a> - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
-the same key will share the same value. For example, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L392">here</a>, the parameters, <em>input_dtype</em> and <em>as_variable</em> share
+the same key will share the same value. For example, <a href="#id9"><span class="problematic" id="id10">`here`_</span></a>, the parameters, <em>input_dtype</em> and <em>as_variable</em> share
 the same key <em>num_arrays</em>, hence similar values will be drawn for both arguments.</p>
 <p>10. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sets">sets</a> - This is used for generating a <em>unique collection</em> of elements. Like <strong>st.lists</strong> it accepts another strategy
 which describes the elements of the set being generated.</p>
@@ -439,7 +446,7 @@ second element is a list/nested list containing floating point numbers of that p
 <span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">283405296074752.0</span><span class="p">,</span> <span class="mf">564049465049088.0</span><span class="p">,</span> <span class="mf">1.0417876997507982e+16</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>This function contains a list of <a href="#id5"><span class="problematic" id="id6">`keyword`_</span></a> arguments. To name a few, min_value, max_value, allow_inf, min_num_dims etc.
+<p>This function contains a list of <a href="#id11"><span class="problematic" id="id12">`keyword`_</span></a> arguments. To name a few, min_value, max_value, allow_inf, min_num_dims etc.
 It can be used wherever an array of values with a specified data type is expected. That would again be a list a functions
 which expects at least one <code class="code docutils literal notranslate"><span class="pre">ivy.array</span></code>.</p>
 <p>7. <strong>reshape_shapes</strong> - This function returns a valid shape after a reshape operation is applied given as input of any
@@ -667,7 +674,7 @@ and a variety performance details are supported. Let’s look at the function <a
 <a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png" style="width: 600px;" /></a>
 <p>It can be seen that the function doesn’t fail for <strong>Jax</strong>, <strong>Numpy</strong> and <strong>Torch</strong>, which is clearly not the case with
 <strong>Tensorflow</strong>, wherein 7 examples failed the test. One important thing to note is the number of values for which
-<a href="#id2"><span class="problematic" id="id3">**</span></a>Shrinking**(discussed in brief above) happened. Statistics for both <em>generate phase</em>, and <em>shrink phase</em> if the test
+<a href="#id4"><span class="problematic" id="id5">**</span></a>Shrinking**(discussed in brief above) happened. Statistics for both <em>generate phase</em>, and <em>shrink phase</em> if the test
 fails are printed in the output. If the tests are re-run, <em>reuse phase</em> statistics are printed as well where notable
 examples from previous runs are displayed.</p>
 <p>Another argument which can be specified for a more detailed output is <strong>hypothesis-verbosity = verbose</strong>. Let’s look at
@@ -713,8 +720,8 @@ These should be added using <code class="code docutils literal notranslate"><spa
 However, we should still also include <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> in the test,
 so that we can still test for arbitrary variations in the input arguments.</p>
 </section>
-<section id="id4">
-<h2>test_array_function<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h2>
+<section id="id6">
+<h2>test_array_function<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h2>
 <p>The helper <a class="reference external" href="https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401">test_array_function</a> tests that the function:</p>
 <ol class="arabic simple">
 <li><p>can handle the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument correctly</p></li>

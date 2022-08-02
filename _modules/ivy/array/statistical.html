@@ -172,6 +172,65 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.var. This method simply </span>
+<span class="sd">        wraps the function, and so the docstring for ivy.var also applies </span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        **Special Cases**</span>
+
+<span class="sd">        Let N equal the number of elements over which to compute the variance.</span>
+
+<span class="sd">        If N - correction is less than or equal to 0, the variance is NaN.</span>
+
+<span class="sd">        If x_i is NaN, the variance is NaN (i.e., NaN values propagate).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array. Should have a floating-point data type.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis or axes along which variances must be computed. By default, </span>
+<span class="sd">            the variance must be computed over the entire array. If a tuple of</span>
+<span class="sd">            integers, variances must be computed over multiple axes. Default: None.</span>
+<span class="sd">        correction</span>
+<span class="sd">            degrees of freedom adjustment. Setting this parameter to a value </span>
+<span class="sd">            other than 0 has the effect of adjusting the divisor during the </span>
+<span class="sd">            calculation of the variance according to N-c where N corresponds </span>
+<span class="sd">            to the total number of elements over which the variance is computed </span>
+<span class="sd">            and c corresponds to the provided degrees of freedom adjustment. </span>
+<span class="sd">            When computing the variance of a population, setting this parameter </span>
+<span class="sd">            to 0 is the standard choice (i.e., the provided array contains data </span>
+<span class="sd">            constituting an entire population). When computing the unbiased sample </span>
+<span class="sd">            variance, setting this parameter to 1 is the standard choice (i.e., the </span>
+<span class="sd">            provided array contains data sampled from a larger population; this is </span>
+<span class="sd">            commonly referred to as Bessel&#39;s correction). Default: 0.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            if True, the reduced axes (dimensions) must be included in the result as</span>
+<span class="sd">            singleton dimensions, and, accordingly, the result must be compatible </span>
+<span class="sd">            with the input array (see Broadcasting). Otherwise, if False, the </span>
+<span class="sd">            reduced axes (dimensions) must not be included in the result. </span>
+<span class="sd">            Default: False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            if the variance was computed over the entire array, </span>
+<span class="sd">            a zero-dimensional array containing the variance; </span>
+<span class="sd">            otherwise, a non-zero-dimensional array containing the variances. </span>
+<span class="sd">            The returned array must have the same data type as x.</span>
+<span class="sd">    </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Array` input:</span>
+<span class="sd">         &gt;&gt;&gt; x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])</span>
+<span class="sd">         &gt;&gt;&gt; y = x.var()</span>
+<span class="sd">         &gt;&gt;&gt; print(y)</span>
+<span class="sd">         ivy.array(0.07472222)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithStatistical.prod"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.prod">[docs]</a>    <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>

@@ -244,6 +244,32 @@
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        `ivy.Array` instance method variant of `ivy.result_type`. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for `ivy.result_type` also applies to</span>
+<span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array from which to cast.</span>
+<span class="sd">        arrays_and_dtypes</span>
+<span class="sd">            an arbitrary number of input arrays and/or dtypes.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            the dtype resulting from an operation involving the input arrays and dtypes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; print(x.dtype)</span>
+<span class="sd">        int32</span>
+
+<span class="sd">        &gt;&gt;&gt; x.result_type(ivy.float64)</span>
+<span class="sd">        &lt;dtype:&#39;float64&#39;&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">)</span></div></div>
 </pre></div>
 

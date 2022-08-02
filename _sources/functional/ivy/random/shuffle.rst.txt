@@ -2,6 +2,12 @@ shuffle
 =======
 
 .. autofunction:: ivy.functional.ivy.random.shuffle
+
+.. autofunction:: ivy.array.array_methods.shuffle
+
+.. autofunction:: ivy.container.container_methods.shuffle
+
+.. autofunction:: ivy.container.container_methods.static_shuffle
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ shuffle
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: shuffle
+
+   shuffle/shuffle_functional.rst
+   shuffle/shuffle_array.rst
+   shuffle/shuffle_container.rst
+   shuffle/static_shuffle_container.rst
+
