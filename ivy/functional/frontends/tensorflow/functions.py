@@ -25,3 +25,6 @@ def fill(dims, value, name="full"):
 
 
 fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+def subtract(x, y, name=None):
+    return ivy.subtract(x,y)
