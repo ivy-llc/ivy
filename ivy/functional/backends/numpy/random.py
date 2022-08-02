@@ -48,7 +48,7 @@ def multinomial(
     num_samples: int,
     batch_size: int = 1,
     probs: Optional[np.ndarray] = None,
-    replace=True,
+    replace: bool = True,
     *,
     device: str,
     out: Optional[np.ndarray] = None,
