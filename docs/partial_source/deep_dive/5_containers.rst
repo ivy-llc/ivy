@@ -178,16 +178,17 @@ These special methods include
 `__contains__`_ that enables us to check for chains of keys in the underlying :code:`dict`,
 and `__getstate__`_ and `__setstate__`_ which combined enable the container to be pickled and unpickled.
 
-As for the special methods which **do** make use of functions implemented in the functional API,
-these are `implemented`_ in the main :code:`ivy.Container` class.
+As for the special methods which are `implemented`_ in the main :code:`ivy.Container` class, they all make 
+calls to the standard operator functions.
 
-Most of these special methods make use of operator functions. As a result, if the input contains one or 
-more :code:`ivy.Array` or :code:`ivy.NativeArray` objects, the corresponding functional API methods are used.
+As a result, the operator functions will make use of the special methods of the passed input objects.
+For instance, if the input contains one or more :code:`ivy.Array` objects, the operator function will 
+make calls to the special methods of those array objects. The special methods will in turn 
+call the suitable functions from the ivy functional API.
  
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make calls to
-:code:`ivy.add`, :code:`ivy.subtract`,
-:code:`ivy.multiply` and :code:`ivy.divide` respectively if the input 
-contains any :code:`ivy.Array` or :code:`ivy.NativeArray` objects.
+:code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide`, respectively, if 
+the input contains any :code:`ivy.Array` objects.
 
 Nestable Functions
 ------------------
