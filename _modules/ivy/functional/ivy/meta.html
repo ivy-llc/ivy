@@ -275,7 +275,7 @@
 
     <span class="c1"># update variables</span>
     <span class="k">if</span> <span class="n">stop_gradients</span><span class="p">:</span>
-        <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">stop_gradients</span><span class="p">()</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">batched</span><span class="p">:</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
