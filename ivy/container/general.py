@@ -1343,7 +1343,7 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.clip_matrix_norm. This method
+        ivy.Container static method variant of ivy.clip_matrix_norm. This method
         simply wraps the function, and so the docstring for ivy.clip_matrix_norm
         also applies to this method with minimal changes.
 
@@ -1376,7 +1376,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` instance method:
+        With :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
                               b=ivy.array([[3., 4., 5.]]))
