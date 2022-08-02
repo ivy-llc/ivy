@@ -845,6 +845,8 @@ def test_floor_divide(
     # Make sure it's not dividing value too close to zero
     assume(not np.any(np.isclose(x2, 0)))
 
+    # Absolute tolerance is 1,
+    # due to flooring can cause absolute error of 1 due to precision
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -857,6 +859,7 @@ def test_floor_divide(
         fn_name="floor_divide",
         x1=x1,
         x2=x2,
+        atol_=1,
     )
 
 
