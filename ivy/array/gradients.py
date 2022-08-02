@@ -237,4 +237,3 @@ class ArrayWithGradients(abc.ABC):
             self,
             retain_grads=retain_grads
         )
-
