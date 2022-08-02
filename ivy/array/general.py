@@ -123,9 +123,7 @@ class ArrayWithGeneral(abc.ABC):
                             [[2, 0]]])
         >>> z = x.gather(y, axis=0)
         >>> print(z)
-        ivy.array([[[ 0., 5.], [ 2., 7.]], \
-                    [[ 4., 9.],[ 6., 11.]], \
-                    [[ 8., 1.], [10., 3.]]])
+        ivy.array([[[0., 5.]], [[4., 9.]], [[8., 1.]]])
         """
         return ivy.gather(self, indices, axis, out=out)
 
