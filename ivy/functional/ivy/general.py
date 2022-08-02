@@ -140,8 +140,9 @@ def is_native_array(
         return False
 
 
-def is_ivy_array(x: Any, exclusive: bool = False) -> bool:
-    """Determines whether the input x is an Ivy Array.
+def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
+    """
+    Determines whether the input x is an Ivy Array.
 
     Parameters
     ----------
@@ -158,12 +159,24 @@ def is_ivy_array(x: Any, exclusive: bool = False) -> bool:
 
     Examples
     --------
-    >>> x = [0., 1., 2.]
+    >>> x = ivy.array([0, 1, 2])
+    >>> ivy.is_ivy_array(x)
+    True
+
+    >>> x = ivy.native_array([1.5, 2.3, 4.9, 2.6])
     >>> ivy.is_ivy_array(x)
     False
 
-    >>> x = ivy.array([0., 1., 2.])
-    >>> ivy.is_ivy_array(x)
+    >>> x = ivy.native_array([-1, 2, 7, -3])
+    >>> ivy.is_ivy_array(x, False)
+    False
+
+    >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
+    >>> ivy.is_ivy_array(x, True)
+    False
+
+    >>> x = ivy.array([5, 2, 6, 9])
+    >>> ivy.is_ivy_array(x, True)
     True
 
     """
@@ -2278,7 +2291,14 @@ def queue_timeout():
 
 
 def tmp_dir():
-    """"""
+    """Get the path for directory that saves temporary files.
+    
+    Returns
+    -------
+    ret
+        The path of directory that saves temporary files.
+    
+    """
     return TMP_DIR
 
 
