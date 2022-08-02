@@ -173,7 +173,7 @@ def mean(
            default floating-point data type.
 
             Examples
-    --------
+            --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([5., 6., 7.])
@@ -207,6 +207,7 @@ def mean(
         a: ivy.array(5.),
         b: ivy.array(8.)
     }
+    
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
                           b=ivy.array([2., 3., 4.]))
     >>> z = x.mean()
