@@ -404,7 +404,7 @@ class ContainerWithGradients(ContainerBase):
         >>> z  = ivy.variable(ivy.array([2.,1.,100.]))
         >>> func = lambda x :ivy.matmul(z,x)
         >>> xs = ivy.Container(a = ivy.array([1.,1.,1.]))
-        >>> results = xs.execute_with_gradients(
+        >>> results = xs.execute_with_gradients( \
         >>>            func)
         >>> func_output,grads = results['a']
         >>> print("function output: ", func_output)
@@ -415,10 +415,10 @@ class ContainerWithGradients(ContainerBase):
         With multiple :code:`ivy.Container` inputs:
 
         >>> func = lambda x: x**2
-        >>> xs = ivy.Container(
-        >>>            a=ivy.array([1.,1.,1.]),
+        >>> xs = ivy.Container( \
+        >>>            a=ivy.array([1.,1.,1.]), \
         >>>            b =ivy.array([5.,5.,5.]) )
-        >>> results = xs.execute_with_gradients(
+        >>> results = xs.execute_with_gradients( \
         >>>            func)
         >>> a_func_output, a_grads = results['a']
         >>> b_func_output, b_grads = results['b']
@@ -434,12 +434,12 @@ class ContainerWithGradients(ContainerBase):
 
         >>> linear = ivy.Linear(3,1)
         >>> func = lambda x: linear(x)
-        >>> xs = ivy.Container(
-        >>>    a=ivy.array([1.,1.,1.]),
-        >>>    b =ivy.array([5.,5.,5.]),
-        >>>    c=ivy.array([1.,0.,1.]) )
-        >>> results = xs.execute_with_gradients(
-        >>>    func)
+        >>> xs = ivy.Container( \
+        >>>     a=ivy.array([1.,1.,1.]), \
+        >>>     b =ivy.array([5.,5.,5.]), \
+        >>>     c=ivy.array([1.,0.,1.]) )
+        >>> results = xs.execute_with_gradients( \
+        >>>     func)
         >>> a_func_output, a_grads = results['a']
         >>> b_func_output, b_grads = results['b']
         >>> c_func_output, c_grads = results['c']
