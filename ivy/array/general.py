@@ -87,32 +87,22 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([0., 1., 2.])
+        >>> x = ivy.array([0., 1., 2., 3.])
         >>> y = ivy.array([0, 1])
-        >>> print(ivy.gather(x, y))
-        ivy.array([0., 1.])
-
-        >>> x = ivy.array([[0., 1., 2.], \
-                            [3., 4., 5.]])
-        >>> y = ivy.array([[0, 1], \
-                            [1, 2]])
-        >>> z = ivy.array([[0., 0.], \
-                            [0., 0.]])
-        >>> ivy.gather(x, y, out=z)
+        >>> z = x.gather(y)
         >>> print(z)
-        ivy.array([[0., 1.],
-                    [4., 5.]])
-
+        ivy.array([0., 1.])
+        
         >>> x = ivy.array([[[0., 1.], [2., 3.]], \
                             [[4., 5.], [6., 7.]], \
                             [[8., 9.], [10., 11.]]])
         >>> y = ivy.array([[[0, 1]], \
                             [[1, 2]], \
                             [[2, 0]]])
-        >>> x.gather(x, y, axis=0, out=x)
-        >>> print(x)
+        >>> z = x.gather(y, axis=0)
+        >>> print(z)
         ivy.array([[[ 0., 5.], [ 2., 7.]], \
-                    [[ 4., 9.], [ 6., 11.]], \
+                    [[ 4., 9.],[ 6., 11.]], \
                     [[ 8., 1.], [10., 3.]]])
         """
         return ivy.gather(self, indices, axis, out=out)
