@@ -462,6 +462,29 @@ with minimal changes.</p>
 </div>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.unstack">
+<span class="sig-name descname"><span class="pre">unstack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.unstack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.unstack" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.unstack. This method simply
+wraps the function, and so the docstring for ivy.unstack also applies to
+this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Input array to unstack.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Axis for which to unpack the array.</p></li>
+<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to keep dimension 1 in the unstack dimensions. Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – List of arrays, unpacked along specified dimensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <div class="line-block">

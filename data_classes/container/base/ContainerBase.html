@@ -294,28 +294,6 @@ Default is False.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.as_arrays">
-<span class="sig-name descname"><span class="pre">as_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.as_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.as_arrays" title="Permalink to this definition"></a></dt>
-<dd><p>Converts all nested variables to arrays, which do not support gradient
-computation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
-<li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains will
-be skipped. Default is True.</p></li>
-<li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied. Default
-is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>container with each variable converted to an array.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.as_bools">
 <span class="sig-name descname"><span class="pre">as_bools</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">assert_is_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.as_bools"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.as_bools" title="Permalink to this definition"></a></dt>
 <dd><p>Return boolean evaluation for all nested items in the container.</p>
@@ -643,38 +621,6 @@ present. otherwise, do nothing.</p>
 the devices are not consistent.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.dev_clone">
-<span class="sig-name descname"><span class="pre">dev_clone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">devices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.dev_clone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.dev_clone" title="Permalink to this definition"></a></dt>
-<dd><p>Clone the current container across multiple devices.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>devs</strong> – The devices on which to clone the container.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>a set of cloned containers across the specified devices.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.dev_dist">
-<span class="sig-name descname"><span class="pre">dev_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">devices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.dev_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.dev_dist" title="Permalink to this definition"></a></dt>
-<dd><p>Distribute the current container across multiple devices.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>devs</strong> – The devices along which to distribute the container.</p></li>
-<li><p><strong>axis</strong> – The axis along which to split the arrays at the container leaves.
-Default is 0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>a set of distributed sub-containers across the specified devices.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.dev_str">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dev_str</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.dev_str" title="Permalink to this definition"></a></dt>
@@ -859,27 +805,6 @@ from flat list.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>Container.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.from_numpy">
-<span class="sig-name descname"><span class="pre">from_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.from_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.from_numpy" title="Permalink to this definition"></a></dt>
-<dd><p>Converts all nested numpy arrays to native backend arrays.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
-<li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains will
-be skipped. Default is True.</p></li>
-<li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied. Default
-is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>container with each ivy array converted to a numpy array.</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1706,8 +1631,8 @@ rather than a variable or traced array. (Default value = False)</p>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.split">
-<span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_or_size_splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_remainder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.split" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.split_conts">
+<span class="sig-name descname"><span class="pre">split_conts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_or_size_splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_remainder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.split_conts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.split_conts" title="Permalink to this definition"></a></dt>
 <dd><p>Splits a container into multiple sub-containers, by splitting their
 constituent arrays.</p>
 <dl class="field-list simple">
@@ -1729,30 +1654,6 @@ is False.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>A list of sub-arrays.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.stop_gradients">
-<span class="sig-name descname"><span class="pre">stop_gradients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preserve_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.stop_gradients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.stop_gradients" title="Permalink to this definition"></a></dt>
-<dd><p>Stop gradients of all array entries in the container.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>preserve_type</strong> – Whether to preserve the input type (ivy.Variable or ivy.Array),
-otherwise an array is always returned. Default is True.</p></li>
-<li><p><strong>preserve_type</strong> – bool, optional (Default value = True)</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
-<li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains will
-be skipped. Default is True.</p></li>
-<li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied. Default
-is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>container with each array having their gradients stopped.</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1783,29 +1684,6 @@ Default is True.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>Compared containers</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.to_device">
-<span class="sig-name descname"><span class="pre">to_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.to_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.to_device" title="Permalink to this definition"></a></dt>
-<dd><p>Move the container arrays to the desired device, specified by device string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – device to move the array to ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Keep same device
-if None.</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
-<li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains will
-be skipped. Default is True.</p></li>
-<li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied. Default
-is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>The container, but with each sub-array now placed on the target device.</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1993,8 +1871,8 @@ Default is 0.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.unstack">
-<span class="sig-name descname"><span class="pre">unstack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.unstack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.unstack" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.unstack_conts">
+<span class="sig-name descname"><span class="pre">unstack_conts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.unstack_conts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.unstack_conts" title="Permalink to this definition"></a></dt>
 <dd><p>Unstack containers along specified dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
