@@ -72,8 +72,8 @@ class ContainerWithSorting(ContainerBase):
         >>> y = x.static_argsort(-1, True, False)
         >>> print(y)
         {
-            a: ivy.array([2, 1, 0]),
-            b: ivy.array([1, 0])
+            a: ivy.array([0, 1, 2]),
+            b: ivy.array([0, 1])
         }
         
         >>> x = ivy.Container(a=ivy.array([7, 2, 1]),\
@@ -81,8 +81,8 @@ class ContainerWithSorting(ContainerBase):
         >>> y = x.static_argsort(-1, True, False)
         >>> print(y)
         {
-            a: ivy.array([2, 1, 0]),
-            b: ivy.array([[1, 0]],[1,0]])
+            a: ivy.array([0, 1, 2]),
+            b: ivy.array([[0, 1]],[0, 1]])
         }
         
         With: code:`ivy.Container` inputs:
@@ -92,9 +92,9 @@ class ContainerWithSorting(ContainerBase):
         >>> y = x.static_argsort(-1, True, False)
         >>> print(y)
         {
-            a: ivy.array([2, 1, 0]),
-            b: ivy.array([[0, 1],\
-                            [1,0]])
+            a: ivy.array([2, 0, 1]),
+            b: ivy.array([[1, 0],\
+                            [0,1]])
         }
         
         >>> x = ivy.Container(a=ivy.native_array([2, 5, 1]),\
@@ -102,9 +102,9 @@ class ContainerWithSorting(ContainerBase):
         >>> y = x.static_argsort(-1, True, False)
         >>> print(y)
         {
-            a: ivy.array([2, 1, 0]),
-            b: ivy.array([[0, 1],\
-                            [1,0]])
+            a: ivy.array([2, 0, 1]),
+            b: ivy.array([[1, 0],\
+                            [0,1]])
         }
         
         """
@@ -182,8 +182,8 @@ class ContainerWithSorting(ContainerBase):
         >>> y = x.argsort(-1, True, False)
         >>> print(y)
         {
-            a: ivy.array([2, 1, 0]),
-            b: ivy.array([1, 0])
+            a: ivy.array([0, 1, 2]),
+            b: ivy.array([0, 1])
         }
         """
         return self.static_argsort(
