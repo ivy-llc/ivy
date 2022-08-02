@@ -217,39 +217,39 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.var.</span>
-<span class="sd">        This method simply wraps the function, and so the</span>
-<span class="sd">        docstring for ivy.var also applies to this method</span>
+<span class="sd">        ivy.Container instance method variant of ivy.var. </span>
+<span class="sd">        This method simply wraps the function, and so the </span>
+<span class="sd">        docstring for ivy.var also applies to this method </span>
 <span class="sd">        with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
 <span class="sd">            input array. Should have a floating-point data type.</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. </span>
 <span class="sd">            Default is None.</span>
 <span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains,</span>
+<span class="sd">            If True, the method will be applied to key_chains, </span>
 <span class="sd">            otherwise key_chains will be skipped. Default is True.</span>
 <span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not</span>
+<span class="sd">            Whether to prune key_chains for which the function was not </span>
 <span class="sd">            applied. Default is False.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). </span>
 <span class="sd">            Default is False.</span>
 <span class="sd">        out</span>
-<span class="sd">            optional output, for writing the result to. It must have a</span>
+<span class="sd">            optional output, for writing the result to. It must have a </span>
 <span class="sd">            shape that the inputs broadcast to.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">           if the variance was computed over the entire array, a</span>
-<span class="sd">           zero-dimensional arraycontaining the variance; otherwise,</span>
-<span class="sd">           a non-zero-dimensional array containing the variances.</span>
+<span class="sd">           if the variance was computed over the entire array, a </span>
+<span class="sd">           zero-dimensional arraycontaining the variance; otherwise, </span>
+<span class="sd">           a non-zero-dimensional array containing the variances. </span>
 <span class="sd">           The returned array must have the same data type as x.</span>
-
+<span class="sd">       </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \</span>
@@ -287,9 +287,9 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container static method variant of ivy.var.</span>
-<span class="sd">        This method simply wraps the function, and so</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        ivy.Container static method variant of ivy.var. </span>
+<span class="sd">        This method simply wraps the function, and so </span>
 <span class="sd">        the docstring for ivy.var also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
 
@@ -298,30 +298,30 @@
 <span class="sd">        self</span>
 <span class="sd">            input array. Should have a floating-point data type.</span>
 <span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. </span>
 <span class="sd">            Default is None.</span>
 <span class="sd">        to_apply</span>
 <span class="sd">            If True, the method will be applied to key_chains,</span>
 <span class="sd">            otherwise key_chains will be skipped. Default is True.</span>
 <span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was</span>
+<span class="sd">            Whether to prune key_chains for which the function was </span>
 <span class="sd">            not applied. Default is False.</span>
 <span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). </span>
 <span class="sd">            Default is False.</span>
 <span class="sd">        out</span>
-<span class="sd">            optional output, for writing the result to.</span>
+<span class="sd">            optional output, for writing the result to. </span>
 <span class="sd">            It must have a shape that the inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">           if the variance was computed over the entire array,</span>
-<span class="sd">           a zero-dimensional array containing the variance;</span>
-<span class="sd">           otherwise, a non-zero-dimensional array containing the</span>
-<span class="sd">           variances. The returned array must have the same data</span>
+<span class="sd">           if the variance was computed over the entire array, </span>
+<span class="sd">           a zero-dimensional array containing the variance; </span>
+<span class="sd">           otherwise, a non-zero-dimensional array containing the </span>
+<span class="sd">           variances. The returned array must have the same data </span>
 <span class="sd">           type as x.</span>
-
+<span class="sd">       </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \</span>
