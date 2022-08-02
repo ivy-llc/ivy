@@ -471,12 +471,50 @@
 <span class="sd">    _base</span>
 <span class="sd">        Whether the current function call is the first function call in the recursive</span>
 <span class="sd">        stack. Used internally, do not set manually.</span>
+<span class="sd">    stop_after_n_found</span>
+<span class="sd">        to stop after some needed indices are found.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        A set of indices for the nest where the function evaluated as True.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`List` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; nest = [[[1, -2, 3], 19], [[9, -36, 80], -10.19]]</span>
+<span class="sd">    &gt;&gt;&gt; fun = ivy.abs</span>
+<span class="sd">    &gt;&gt;&gt; nested_indices = ivy.nested_indices_where(nest, fn=fun)</span>
+<span class="sd">    &gt;&gt;&gt; print(nested_indices)</span>
+<span class="sd">    [</span>
+<span class="sd">        [0, 0, 0], [0, 0, 1],</span>
+<span class="sd">        [0, 0, 2], [0, 1],</span>
+<span class="sd">        [1, 0, 0], [1, 0, 1],</span>
+<span class="sd">        [1, 0, 2], [1, 1]</span>
+<span class="sd">    ]</span>
+
+
+<span class="sd">    With :code:`Tuple` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; nest = ([-5, 9, 2], [0.3, 4.])</span>
+<span class="sd">    &gt;&gt;&gt; fun = ivy.abs</span>
+<span class="sd">    &gt;&gt;&gt; nested_indices = ivy.nested_indices_where(nest, fn=fun, stop_after_n_found=4)</span>
+<span class="sd">    &gt;&gt;&gt; print(nested_indices)</span>
+<span class="sd">    [[0, 0], [0, 1], [0, 2], [1, 0]]</span>
+
+<span class="sd">    With :code:`Dict` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; nest={&#39;a&#39;: [2., 0.6, -2.], &#39;b&#39;: [1., 4., 1.9], &#39;c&#39;: [9.4]}</span>
+<span class="sd">    &gt;&gt;&gt; fun = ivy.abs</span>
+<span class="sd">    &gt;&gt;&gt; nested_indices = ivy.nested_indices_where(nest, fn=fun)</span>
+<span class="sd">    &gt;&gt;&gt; print(nested_indices)</span>
+<span class="sd">    [</span>
+<span class="sd">        [&#39;a&#39;, 0], [&#39;a&#39;, 1],</span>
+<span class="sd">        [&#39;a&#39;, 2], [&#39;b&#39;, 0],</span>
+<span class="sd">        [&#39;b&#39;, 1], [&#39;b&#39;, 2],</span>
+<span class="sd">        [&#39;c&#39;, 0]</span>
+<span class="sd">    ]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">to_ignore</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">to_ignore</span><span class="p">,</span> <span class="p">())</span>
     <span class="n">_index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="k">if</span> <span class="n">_index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_index</span>
@@ -899,22 +937,37 @@
 <span class="sd">        nest containing the result of the funciton.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">nest0</span> <span class="o">=</span> <span class="n">nests</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">nest0</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">nest</span> <span class="ow">in</span> <span class="n">nests</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
+            <span class="n">nest0</span> <span class="o">=</span> <span class="n">nest</span>
+            <span class="k">break</span>
     <span class="n">return_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nest0</span><span class="p">):</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">nest</span> <span class="ow">in</span> <span class="n">nests</span><span class="p">]</span>
-        <span class="n">value0</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">this_key_chain</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="n">key_chain</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value0</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value0</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">))</span>
-            <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_num_dims</span><span class="p">(</span><span class="n">value0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">value0</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value0</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-        <span class="p">):</span>
+    <span class="k">if</span> <span class="n">nest0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">is_dict</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nest0</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_dict</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span>
+                    <span class="k">else</span> <span class="n">nest</span><span class="p">[</span><span class="n">val</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="n">nest</span>
+                    <span class="k">for</span> <span class="n">nest</span> <span class="ow">in</span> <span class="n">nests</span>
+                <span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span>
+                    <span class="k">else</span> <span class="n">nest</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">nest</span><span class="p">)[</span><span class="n">index</span><span class="p">]]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="n">nest</span>
+                    <span class="k">for</span> <span class="n">nest</span> <span class="ow">in</span> <span class="n">nests</span>
+                <span class="p">]</span>
+            <span class="n">value0</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">this_key_chain</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="n">key_chain</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+            <span class="p">)</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_multi_map</span><span class="p">(</span>
                 <span class="n">func</span><span class="p">,</span>
                 <span class="n">values</span><span class="p">,</span>
@@ -923,35 +976,41 @@
                 <span class="n">prune_unapplied</span><span class="p">,</span>
                 <span class="n">this_key_chain</span><span class="p">,</span>
                 <span class="n">config</span><span class="p">,</span>
+                <span class="n">to_ivy</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">ret</span><span class="p">):</span>
-                    <span class="n">return_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">to_ivy</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">)):</span>
+                    <span class="n">return_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">ret</span><span class="p">)))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">return_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">key_chains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">this_key_chain</span> <span class="ow">in</span> <span class="n">key_chains</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">to_apply</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                    <span class="n">this_key_chain</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key_chains</span> <span class="ow">and</span> <span class="n">to_apply</span>
-                <span class="p">):</span>
-                    <span class="k">if</span> <span class="n">prune_unapplied</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">value0</span><span class="p">):</span>
-                        <span class="n">return_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">value0</span><span class="p">))</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">return_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value0</span><span class="p">)</span>
-                    <span class="k">continue</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">ret</span><span class="p">):</span>
-                <span class="n">return_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
-
-    <span class="c1"># noinspection PyProtectedMember</span>
-    <span class="k">if</span> <span class="n">to_ivy</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">return_list</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">return_list</span></div>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">nests</span>
+        <span class="n">this_key_chain</span> <span class="o">=</span> <span class="n">key_chain</span>
+        <span class="k">if</span> <span class="n">key_chains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">this_key_chain</span> <span class="ow">in</span> <span class="n">key_chains</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">to_apply</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">this_key_chain</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key_chains</span> <span class="ow">and</span> <span class="n">to_apply</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="n">prune_unapplied</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">return_list</span>
+                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">value0</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">to_ivy</span><span class="p">:</span>
+                        <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value0</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value0</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value0</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">return_list</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">to_ivy</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="n">ret</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ret</span>
+    <span class="k">return</span> <span class="n">return_list</span></div>
 </pre></div>
 
            </div>

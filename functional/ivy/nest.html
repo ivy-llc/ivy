@@ -385,6 +385,7 @@ Default is False.</p></li>
 manually.</p></li>
 <li><p><strong>_base</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether the current function call is the first function call in the recursive (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 stack. Used internally, do not set manually.</p></li>
+<li><p><strong>stop_after_n_found</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – to stop after some needed indices are found. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -394,6 +395,41 @@ stack. Used internally, do not set manually.</p></li>
 <dd class="field-odd"><p><em>ret</em> – A set of indices for the nest where the function evaluated as True.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">List</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nest</span> <span class="o">=</span> <span class="p">[[[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">19</span><span class="p">],</span> <span class="p">[[</span><span class="mi">9</span><span class="p">,</span> <span class="o">-</span><span class="mi">36</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span> <span class="o">-</span><span class="mf">10.19</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fun</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">abs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nested_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="n">fun</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">nested_indices</span><span class="p">)</span>
+<span class="go">[</span>
+<span class="go">    [0, 0, 0], [0, 0, 1],</span>
+<span class="go">    [0, 0, 2], [0, 1],</span>
+<span class="go">    [1, 0, 0], [1, 0, 1],</span>
+<span class="go">    [1, 0, 2], [1, 1]</span>
+<span class="go">]</span>
+</pre></div>
+</div>
+<p>With <code class="code docutils literal notranslate"><span class="pre">Tuple</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nest</span> <span class="o">=</span> <span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">4.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fun</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">abs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nested_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="n">fun</span><span class="p">,</span> <span class="n">stop_after_n_found</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">nested_indices</span><span class="p">)</span>
+<span class="go">[[0, 0], [0, 1], [0, 2], [1, 0]]</span>
+</pre></div>
+</div>
+<p>With <code class="code docutils literal notranslate"><span class="pre">Dict</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nest</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">],</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">9.4</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fun</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">abs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nested_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="n">fun</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">nested_indices</span><span class="p">)</span>
+<span class="go">[</span>
+<span class="go">    [&#39;a&#39;, 0], [&#39;a&#39;, 1],</span>
+<span class="go">    [&#39;a&#39;, 2], [&#39;b&#39;, 0],</span>
+<span class="go">    [&#39;b&#39;, 1], [&#39;b&#39;, 2],</span>
+<span class="go">    [&#39;c&#39;, 0]</span>
+<span class="go">]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
