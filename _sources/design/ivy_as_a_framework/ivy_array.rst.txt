@@ -191,10 +191,12 @@ Without enforcing the use of the :code:`ivy.Array` class for arrays returned fro
 
 Therefore, with the design of Ivy, we have made the decision to require all arrays returned from Ivy methods to be instances of the :code:`ivy.Array` class.
 
-API wrapping for Ivy Array returns
+API monkey patching
 -------------------
 
-All ivy functions have been 
+All ivy functions with array inputs/outputs have been wrapped to return :code:`ivy.Array` instances while accepting both :code:`ivy.Array` and :code:`ivy.NativeArray` instances.
+This allows for the control required to provide a unified array interface.
+For more detail on wrapping, see the the `Function Wrapping <https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html>`_ page in deep dive.
 
 
 Instance Methods
@@ -234,7 +236,7 @@ One benefit of these instance methods is that they can help to tidy up code. For
 
 In the example above, not only is the :code:`ivy.Array` approach shorter to write, but more importantly there is much better alignment between each function and the function arguments. It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
 
-In addition to the functions in the topic-specific parent classes, there are 41 builtin methods implemented directly in the :code:`ivy.Array` class, most of which directly wrap a method in Ivy's functional API. some examples are given below.
+In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the :code:`ivy.Array` class, most of which directly wrap a method in Ivy's functional API. some examples are given below.
 
 .. code-block:: python
 
