@@ -214,7 +214,7 @@ def sort(
 @handle_out_argument
 @handle_nestable
 def searchsorted(
-    x1: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],
     side="left",
     sorter=None,
@@ -225,7 +225,7 @@ def searchsorted(
     
     Parameters
     ----------
-    x1
+    x
         input array
     v
         specific elements to insert in array x1  
@@ -245,41 +245,26 @@ def searchsorted(
     Examples
     --------
     With：code:`ivy.Array` inputs:
-
-
+    
     >>> x1 = ivy.array([2,1,0])
-
     >>> x2 = ivy.array([1])
-
     >>> y  = ivy.searchsorted(x1,x2)
-
     >>> print(y)
-
     ivy.array([0])
-     
-
+    
     >>> x1 = ivy.array([1,0,3,2])
-
     >>> x2 = ivy.array([3])
-
     >>> y  = ivy.searchsorted(x1, x2, side='right')
-
     >>> print(y)
-
     ivy.array([4])
-
-
+    
     >>> x1 = ivy.array([2,0,1,3])
-
     >>> x2 = ivy.array([3,1,9])
-
     >>> y  = ivy.searchsorted(x1, x2, side='left')
-
     >>> print(y)
-
     ivy.array([3,2,4])
     """ 
-    return ivy.current_backend(x1, v).searchsorted(x1, v, side=side, out=out)
+    return ivy.current_backend(x, v).searchsorted(x, v, side=side, out=out)
 
 # Extra #
 # ------#
