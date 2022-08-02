@@ -25,3 +25,15 @@ def fill(dims, value, name="full"):
 
 
 fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def hard_sigmoid(x):
+    if x < -2.5:
+        return 0
+    elif x > 2.5:
+        return 1
+    else:
+        return ivy.sum(ivy.multiply(0.2, x), 0.5)
+
+
+hard_sigmoid.unsupported_dtypes = {"torch": ("float16")}
