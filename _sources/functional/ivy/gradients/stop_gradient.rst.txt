@@ -2,6 +2,12 @@ stop_gradient
 =============
 
 .. autofunction:: ivy.functional.ivy.gradients.stop_gradient
+
+.. autofunction:: ivy.array.array_methods.stop_gradient
+
+.. autofunction:: ivy.container.container_methods.stop_gradient
+
+.. autofunction:: ivy.container.container_methods.static_stop_gradient
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ stop_gradient
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: stop_gradient
+
+   stop_gradient/stop_gradient_functional.rst
+   stop_gradient/static_stop_gradient_container.rst
+   stop_gradient/stop_gradient_array.rst
+   stop_gradient/stop_gradient_container.rst
+

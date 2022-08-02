@@ -963,9 +963,9 @@
 
 <span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC</span>
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]).unsqueeze(-1) / 9.0</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(-1)</span>
+<span class="sd">    &gt;&gt;&gt; b = ivy.array([[1., 1., 1.], [1., 1., 1.], [1., 1., 1.]]).expand_dims(-1) / 9.0</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.Container(a = a, b = b)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(x, filters, strides=1, padding=&#39;VALID&#39;, dilations=2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -983,10 +983,10 @@
 <span class="sd">    With a mix of :code:`ivy.Array`, code:`ivy.NativeArray`</span>
 <span class="sd">    and :code:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.native_array(ivy.eye(6, 6, 1).view(1, 6, 6, 1))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array(ivy.eye(6, 6).reshape((1, 6, 6, 1)))</span>
 <span class="sd">    &gt;&gt;&gt; inp = ivy.Container(x = x, y = y)</span>
-<span class="sd">    &gt;&gt;&gt; filter = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()</span>
+<span class="sd">    &gt;&gt;&gt; filter = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(-1)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(inp, filter, strides=1, padding=&#39;VALID&#39;, dilations=2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
