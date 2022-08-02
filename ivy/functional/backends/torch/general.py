@@ -237,42 +237,38 @@ def scatter_nd(
         if updates.shape == () and ivy.exists(out) and out.shape == ():
             return updates
         shape = out.shape if ivy.exists(out) else updates.shape
-        indices = torch.concat(
-            [
-                torch.unsqueeze(g, -1)
-                for g in torch.meshgrid(*[torch.range(0, s) for s in shape])
-            ],
-            -1,
-        )
-    elif isinstance(indices, (float, int, bool)):
-        indices = (indices,)
-    if isinstance(indices, tuple):
+        indices =  torch.stack([torch.reshape(value, (-1,)) for value in torch.meshgrid(
+                    *[
+                        torch.range(0, shape[0]-1)  
+                    ]
+        )], axis=-1)
+    elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
         shape = out.shape if ivy.exists(out) else updates.shape
         indices = _parse_ellipsis(indices, len(shape))
-        indices = torch.concat(
-            [
-                torch.unsqueeze(g, -1)
-                for g in torch.meshgrid(
+        indices =   torch.stack([torch.reshape(value, (-1,)) for value in torch.meshgrid(
                     *[
-                        torch.range(0, s)
-                        if idx is slice(None, None, None)
-                        else torch.tensor(idx) % s
+                        torch.range(0, s-1) if idx == slice(None, None, None) else torch.Tensor([idx % s])
                         for s, idx in zip(shape, indices)
-                    ]
-                )
-            ],
-            -1,
-        )
-
+                    ], indexing ='ij'
+        )], axis=-1)        
+    else:
+        indices = [[indices]] if isinstance(indices, Number) else indices
+        indices = torch.Tensor(indices) if isinstance(indices, (tuple, list)) else indices
+        if len(indices.shape) < 2:
+                indices = torch.unsqueeze(indices, -1)
+        
+        if len(updates.shape) < 2:
+            updates = torch.unsqueeze(updates, 0)
+    
     # broadcast updates to indices
-    if updates.shape == ():
-        updates = torch.broadcast_to(updates, indices.shape[:-1])
+    if  updates.shape == ():
+        updates = torch.broadcast_to(updates, indices.shape[:1]) 
 
     # implementation
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.Shape(target.shape) == ivy.Shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     indices_shape = indices.shape
@@ -296,7 +292,7 @@ def scatter_nd(
             )
         )
     if target_given:
-        flat_output = torch.reshape(out, (flat_result_size,))
+        flat_output = torch.reshape(out._data, (flat_result_size,))
     else:
         flat_output = torch.ones(flat_result_size, dtype=dtype) * initial_val
     flat_updates = torch.reshape(updates, (-1,))
@@ -336,8 +332,12 @@ def scatter_nd(
             flat_scatter,
         )
     res = torch.reshape(flat_scatter, list(shape))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
     return res
 
+scatter_nd.support_native_out = True
+scatter_nd.unsupported_dtypes = ('float16', 'uint16', 'uint32', 'uint64',)
 
 # noinspection PyShadowingNames
 def gather(

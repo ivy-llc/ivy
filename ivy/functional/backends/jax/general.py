@@ -208,7 +208,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.Shape(target.shape) == ivy.Shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if reduction == "sum":
         if not target_given:
@@ -236,8 +236,11 @@ def scatter_nd(
                 reduction
             )
         )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _to_device(target))        
     return _to_device(target)
 
+scatter_nd.support_native_out = True
 
 def gather(params: JaxArray, indices: JaxArray, axis: Optional[int] = -1) -> JaxArray:
     return _to_device(jnp.take_along_axis(params, indices, axis))

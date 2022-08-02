@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Iterable, Optional, Union, Sequence
 
 _round = round
 import numpy as np
@@ -239,72 +239,78 @@ def scatter_nd(
     # hanle non-tensor indices
     if indices == ():
         return updates
+    
     elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
         if updates.shape == () and ivy.exists(out) and out.shape == ():
             return updates
         shape = out.shape if ivy.exists(out) else updates.shape
-        indices = tf.concat(
-            [tf.expand_dims(g, -1) for g in tf.meshgrid(*[tf.range(s) for s in shape])],
-            -1,
-        )
-    elif isinstance(indices, Number):
-        indices = (indices,)
-    if isinstance(indices, tuple):
+        indices =  tf.stack([tf.reshape(value, (-1,)) for value in tf.meshgrid(
+                    *[
+                        tf.range(shape[0])  
+                    ], indexing ='ij'
+        )], axis=-1)
+
+    elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
         shape = out.shape if ivy.exists(out) else updates.shape
         indices = _parse_ellipsis(indices, len(shape))
-        indices = tf.concat(
-            [
-                tf.expand_dims(g, -1)
-                for g in tf.meshgrid(
+        indices =   tf.stack([tf.reshape(value, (-1,)) for value in tf.meshgrid(
                     *[
-                        tf.range(s) if idx is slice(None, None, None) else idx % s
+                        tf.range(s) if idx == slice(None, None, None) else tf.constant([idx % s])
                         for s, idx in zip(shape, indices)
-                    ]
-                )
-            ],
-            -1,
-        )
-
+                    ], indexing ='ij'
+        )], axis=-1)        
+    else:
+        indices = [[indices]] if isinstance(indices, Number) else indices
+        indices = tf.constant(indices)
+        if len(indices.shape) < 2:
+                indices = tf.expand_dims(indices, -1)
+        
+        if len(updates.shape) < 2:
+            updates = tf.expand_dims(updates, 0)
+    
     # broadcast updates to indices
-    if updates.shape == ():
-        updates = tf.broadcast_to(updates, indices.shape[:-1])
-
+    if  updates.shape == ():
+        updates = tf.broadcast_to(updates, indices.shape[:1])        
     # implementation
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.Shape(target.shape) == ivy.Shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     if reduction == "sum":
         if target_given:
-            return tf.tensor_scatter_nd_add(out, indices, updates)
-        return tf.scatter_nd(indices, updates, shape)
+            res = tf.tensor_scatter_nd_add(out, indices, updates)
+        else:
+            res = tf.scatter_nd(indices, updates, shape)
     elif reduction == "min":
         if not target_given:
             target = tf.fill(shape, tf.cast(1e12, dtype))
         res = tf.tensor_scatter_nd_min(target, indices, updates)
         if not target_given:
-            res = tf.where(res == 1e12, 0.0, res)
+            res = tf.where(res == tf.cast(1e12, dtype), 0, res)
     elif reduction == "max":
         if not target_given:
             target = tf.fill(shape, tf.cast(-1e12, dtype))
         res = tf.tensor_scatter_nd_max(target, indices, updates)
         if not target_given:
-            res = tf.where(res == -1e12, 0.0, res)
+            res = tf.where(res == tf.cast(-1e12, dtype), 0, res)
     elif reduction == "replace":
         if target_given:
             res = tf.tensor_scatter_nd_update(out, indices, updates)
         else:
-            res = tf.tensor_scatter_nd_update(tf.zeros(shape), indices, updates)
+            res = tf.tensor_scatter_nd_update(tf.zeros(shape, dtype=dtype), indices, updates)
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
         )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
     return res
 
+scatter_nd.support_native_out = True
 
 def gather(
     params: Union[tf.Tensor, tf.Variable],

@@ -174,7 +174,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.Shape(target.shape) == ivy.Shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -206,8 +206,11 @@ def scatter_nd(
                 reduction
             )
         )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _to_device(target))        
     return _to_device(target)
 
+scatter_nd.support_native_out = True
 
 def gather(
     params: np.ndarray,

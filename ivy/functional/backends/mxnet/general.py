@@ -201,6 +201,7 @@ def scatter_nd(
             "but {} selected.".format(reduction)
         )
 
+scatter_nd.support_native_out = True
 
 def gather(
     params: mx.nd.NDArray,

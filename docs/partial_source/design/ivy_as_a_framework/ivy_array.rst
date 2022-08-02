@@ -135,7 +135,7 @@ Let's take a look at how that method is implemented in the :code:`ivy.Array` cla
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')
+            self._data = ivy.scatter_nd(query, val, out=self._data, reduction='replace')
 
 We can implement inplace updates in the :code:`ivy.Array` class without requiring inplace updates in the backend array classes.
 If the backend does not support inplace updates, then we can use the :code:`ivy.scatter_nd` method to return a new array and store this in the :code:`self._data` attribute.
