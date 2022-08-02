@@ -41,8 +41,9 @@ class ContainerWithSorting(ContainerBase):
         stable
             sort stability. If ``True``, the returned indices must maintain the relative order of ``x``
             values which compare as equal. If ``False``, the returned indices may or may not maintain
-            the relative order of ``x`` values which compare as equal (i.e., the relative order of ``x``
-            values which compare as equal is implementation-dependent). Default: ``True``.
+            the relative order of ``x`` values which compare as equal (i.e., the 
+            relative order of ``x`` values which compare as equal is implementation-
+            dependent). Default: ``True``.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
