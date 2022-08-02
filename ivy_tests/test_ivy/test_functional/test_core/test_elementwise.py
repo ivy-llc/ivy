@@ -1683,7 +1683,10 @@ def test_remainder(
     input_dtype, x = dtype_and_x
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    assume(not np.any(x2 == 0))
+
+    # Make sure values is not too close to zero
+    assume(not np.any(np.isclose(x1, 0)))
+    assume(not np.any(np.isclose(x2, 0)))
 
     native_array = [native_array, native_array]
     container = [container, container]
