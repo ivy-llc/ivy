@@ -2,6 +2,12 @@ argmin
 ======
 
 .. autofunction:: ivy.functional.ivy.searching.argmin
+
+.. autofunction:: ivy.array.array_methods.argmin
+
+.. autofunction:: ivy.container.container_methods.static_argmin
+
+.. autofunction:: ivy.container.container_methods.argmin
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ argmin
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: argmin
+
+   argmin/argmin_functional.rst
+   argmin/argmin_array.rst
+   argmin/argmin_container.rst
+   argmin/static_argmin_container.rst
+
