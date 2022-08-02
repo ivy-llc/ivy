@@ -6395,8 +6395,10 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Computes the elementwise minimum between this container and another container
-        or number.
+        """
+        ivy.Container static method variant of ivy.minimum.
+        This method simply wraps the function, and so the docstring for
+        ivy.minimum also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -6444,8 +6446,11 @@ class ContainerWithElementwise(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Computes the elementwise minimum between this container and another container
-        or number.
+        """
+        ivy.Container instance method variant of ivy.minimum.
+        This method simply wraps the function, and so the docstring for
+        ivy.minimum also applies to this method with minimal changes.
+
 
         Parameters
         ----------
