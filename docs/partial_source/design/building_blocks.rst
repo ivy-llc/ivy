@@ -340,7 +340,7 @@ With the design as currently presented, there would be a small performance hit e
 
 The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only. The dependency graph for this process looks like this:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/graph_and_compiler.png?raw=true
    :align: center
    :width: 75%
 

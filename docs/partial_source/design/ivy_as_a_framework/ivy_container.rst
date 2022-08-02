@@ -139,7 +139,7 @@ Or we can flip each sub-array:
         }
     }
 
-There are about such functions for the :code:`ivy.Container` class in total, check out the `code https://github.com/unifyai/ivy/tree/master/ivy/container`_ or `docs <https://lets-unify.ai/ivy/core/container.html>`_ to see what they are!
+There are about 200 such functions for the :code:`ivy.Container` class in total, check out the `code <https://github.com/unifyai/ivy/tree/master/ivy/container>`_ or `docs <https://lets-unify.ai/ivy/core/container.html>`_ to see what they are!
 
 Built-ins
 ----------
