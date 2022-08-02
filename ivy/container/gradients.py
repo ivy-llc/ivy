@@ -287,8 +287,8 @@ class ContainerWithGradients(ContainerBase):
         Returns
         -------
         ret
-            the function first output y, the gradients [dy/dx for x in xs], and any other
-            extra function outputs.
+            the function first output y, the gradients [dy/dx for x in xs], 
+            and any other extra function outputs.
 
         Examples
         --------
@@ -394,8 +394,8 @@ class ContainerWithGradients(ContainerBase):
         Returns
         -------
         ret
-            the function first output y, the gradients [dy/dx for x in xs], and any other
-            extra function outputs.
+            the function first output y, the gradients [dy/dx for x in xs], 
+            and any other extra function outputs.
 
         Examples
         --------

@@ -236,6 +236,5 @@ class ArrayWithGradients(abc.ABC):
             func,
             self,
             retain_grads=retain_grads
-            )
-
-    
+        )
+        
