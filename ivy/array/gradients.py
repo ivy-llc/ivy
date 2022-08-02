@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union
+from typing import Union,Optional,Callable,List,Dict
 
 # local
 import ivy
@@ -174,3 +174,66 @@ class ArrayWithGradients(abc.ABC):
                         [-2.09,  2.76, -1.  ]]])
         """
         return ivy.gradient_descent_update(self, dcdw, lr, inplace, stop_gradients)
+
+    def execute_with_gradients(
+        self: ivy.Array,
+        func: Callable,
+        retain_grads: bool = False
+    ):
+        """
+        ivy.Array instance method variant of ivy.execute_with_gradients. This method simply wraps
+        the function, and so the docstring for ivy.execute_with_gradients also applies to this
+        method with minimal changes.
+        
+        Call function func with the container, and return func first output y,
+        the gradients [dy/dx for x in xs], and any other function outputs after the returned
+        y value.
+
+        Parameters
+        ----------
+        func
+            Function for which we compute the gradients of the output with respect to xs
+            input.
+        retain_grads
+            Whether to retain the gradients of the returned values. (Default value = False)
+
+        Returns
+        -------
+        ret
+            the function first output y, the gradients [dy/dx for x in xs], and any other
+            extra function outputs.
+
+        Examples
+        --------
+
+        With :code:`ivy.Array` input:
+        
+        >>> ivy.set_backend('tensorflow')
+        >>> func = lambda x :x**2
+        >>> xs =ivy.array([1.,0.,10.])
+        >>> func_output,grads = ivy.execute_with_gradients( \
+        >>>     func, \
+        >>>     xs)
+        >>> print("function output: ", func_output)
+        >>> print("grads: ", grads)
+        function output:  ivy.array([  1.,   0., 100.])
+        grads:  ivy.array([ 2.,  0., 20.])
+
+        >>> z  = ivy.variable(ivy.array([2.,1.,100.]))
+        >>> func = lambda x :ivy.matmul(z,x)
+        >>> xs = ivy.array([1.,1.,1.])
+        >>> func_output, grads  = xs.execute_with_gradients( \
+        >>>     func)
+        >>> print("function output: ", func_output)
+        >>> print("grads: ", grads)  
+        function output:  ivy.array(103.)
+        grads:  ivy.array([  2.,   1., 100.])      
+        """
+
+        return ivy.execute_with_gradients(
+            func,
+            self,
+            retain_grads=retain_grads
+            )
+
+    
