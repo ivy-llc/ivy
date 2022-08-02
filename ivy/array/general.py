@@ -53,6 +53,28 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
+    def unstack(self: ivy.Array, axis: int, keepdims: bool = False) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.unstack. This method simply
+        wraps the function, and so the docstring for ivy.unstack also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to unstack.
+        axis
+            Axis for which to unpack the array.
+        keepdims
+            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+
+        Returns
+        -------
+        ret
+            List of arrays, unpacked along specified dimensions.
+
+        """
+        return ivy.unstack(self._data, axis, keepdims)
+
     def gather(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
