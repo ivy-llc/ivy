@@ -807,6 +807,10 @@ def test_floor(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
+    x = np.asarray(x, dtype=input_dtype)
+    assume(not np.any(np.isclose(x, 0)))
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -817,7 +821,7 @@ def test_floor(
         instance_method=instance_method,
         fw=fw,
         fn_name="floor",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
