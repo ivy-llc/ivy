@@ -3,74 +3,76 @@
 # global
 from numbers import Number
 import pytest
+from hypothesis import given, strategies as st
 import numpy as np
 
 # local
 import ivy
-import ivy.functional.backends.numpy
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.container import Container
 
 
 # variable
-@pytest.mark.parametrize("object_in", [[], [0.0], [1], [True], [[1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float16", "float32", "float64"])
-def test_variable(object_in, dtype, device, call):
-    if call is helpers.tf_graph_call:
-        # cannot create variables as part of compiled tf graph
-        pytest.skip()
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        pytest.skip()
-    if len(object_in) == 0 and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    # smoke test
-    ret = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
-    # type test
-    if call is not helpers.np_call:
-        assert ivy.is_variable(ret)
-    # cardinality test
-    assert ret.shape == np.array(object_in).shape
-    # value test
-    assert np.allclose(
-        call(ivy.variable, ivy.array(object_in, dtype=dtype, device=device)),
-        np.array(object_in).astype(dtype),
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="variable"),
+    data=st.data(),
+)
+@helpers.handle_cmd_line_args
+def test_variable(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=True,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="variable",
+        x=np.asarray(x, dtype=dtype),
     )
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support string devices
-        return
 
 
 # is_variable
-@pytest.mark.parametrize("object_in", [[], [0.0], [1], [True], [[1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float16", "float32", "float64"])
-def test_is_variable(object_in, dtype, device, call):
-    if call is helpers.tf_graph_call:
-        # cannot create variables as part of compiled tf graph
-        pytest.skip()
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        pytest.skip()
-    if len(object_in) == 0 and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    # smoke test
-    non_var = ivy.array(object_in, dtype=dtype, device=device)
-    var = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
-    non_var_res = ivy.is_variable(non_var)
-    var_res = ivy.is_variable(var)
-    # type test
-    assert ivy.is_ivy_array(non_var)
-    if call is not helpers.np_call:
-        assert ivy.is_variable(var)
-    if call in [helpers.np_call, helpers.jnp_call]:
-        # numpy and jax do not support flagging variables
-        pytest.skip()
-    # value test
-    assert non_var_res is False
-    assert var_res is True
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="variable"),
+    data=st.data(),
+)
+@helpers.handle_cmd_line_args
+def test_is_variable(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=True,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="is_variable",
+        x=np.asarray(x, dtype=dtype),
+    )
 
 
 # variable data
