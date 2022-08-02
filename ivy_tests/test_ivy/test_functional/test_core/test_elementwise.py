@@ -1584,12 +1584,19 @@ def test_pow(
 
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
+
+    # Make sure x2 is non-negative when both is integer
     assume(
         not (
             np.any(x2 < 0)
             and ivy.is_int_dtype(input_dtype[1])
             and ivy.is_int_dtype(input_dtype[0])
         )
+    )
+
+    # Make sure x2 isn't a float when x1 is integer
+    assume(
+        not (ivy.is_int_dtype(input_dtype[1] and not ivy.is_int_dtype(input_dtype[0])))
     )
 
     helpers.test_function(
