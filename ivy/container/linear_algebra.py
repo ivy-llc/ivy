@@ -1059,7 +1059,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Computes the vector norm of a vector (or batch of vectors) ``x``.
+        """
+        ivy.Container static method variant of ivy.vector_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.vector_norm also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1149,7 +1152,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Computes the vector norm of a vector (or batch of vectors) ``x``.
+        """
+        ivy.Container instance method variant of ivy.vector_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.vector_norm also applies to this method with minimal changes.
 
         Parameters
         ----------
