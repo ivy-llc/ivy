@@ -375,22 +375,22 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 
 1. Under the flask Icon in the toolbar select "Configure Python Tests" and select PyTest as the test framework.
 
-.. image:: content/vs_testing_01.png
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_01.png?raw=true
    :width: 420
 
 2. Select ivy_tests as the root directory for testing.
 
-.. image:: content/vs_testing_02.png
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_02.png?raw=true
    :width: 420
 
 3. Configure the _array_module.py file in the array_api_tests to be set to one of the supported framworks.
 
-.. image:: content/vs_testing_03.png
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_03.png?raw=true
    :width: 420
 
 4. As of 01/08/2022, the conftest.py file in the array_api_tests folder must also be commented out in order to run ivy_tests in the test suite. This will cause the array_api_tests to fail and therefore they must be run via the terminal.
 
-.. image:: content/vs_testing_04.png
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_04.png?raw=true
    :width: 420
 
 5. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
