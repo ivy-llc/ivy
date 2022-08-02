@@ -62,7 +62,7 @@ with the equivalent function using Ivy’s PyTorch frontend, and then run this P
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_conversion.png?raw=true
    :align: center
    :width: 100%
-
+|
 For this example it’s very simple, the differences are only syntactic, but the above process works for **any** function.
 If there are semantic differences then these will be captured (a) in the wrapped frontend code which expresses the
 frontend method as a composition of Ivy functions, and (b) in the wrapped backend code which expressed the Ivy
