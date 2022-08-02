@@ -2065,9 +2065,7 @@ def get_all_arrays_in_memory():
 
 
 def num_arrays_in_memory():
-    """
-    Returns the number of arrays which are currently alive.
-    """
+    """Returns the number of arrays which are currently alive."""
     return len(get_all_arrays_in_memory())
 
 
@@ -2085,7 +2083,8 @@ def set_queue_timeout(timeout):
     Parameters
     ----------
     timeout
-        The timeout when waiting for containers to arrive from the queues. To be set in seconds.
+        The timeout when waiting for containers to arrive from the queues.
+        To be set in seconds.
 
 
     Examples
