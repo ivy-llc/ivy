@@ -2045,44 +2045,6 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def as_arrays(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested variables to arrays, which do not support gradient
-        computation.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each variable converted to an array.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(x, False)
-            if self._ivy.is_variable(x)
-            else (
-                x
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else self._ivy.array(x)
-            ),
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def num_arrays(self, exclusive=False):
         """Compute the number of arrays present at the leaf nodes, including variables
         by default.

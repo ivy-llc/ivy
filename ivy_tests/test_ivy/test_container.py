@@ -1147,47 +1147,6 @@ def test_container_to_device(device, call):
     assert ivy.dev(container_to_cpu.b.d) == device
 
 
-def test_container_as_arrays(device, call):
-    dict_in = {
-        "a": ivy.variable(
-            ivy.array(
-                [[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]], device=device
-            )
-        ),
-        "b": {
-            "c": ivy.variable(
-                ivy.array(
-                    [[[8.0, 7.0], [6.0, 5.0]], [[4.0, 3.0], [2.0, 1.0]]], device=device
-                )
-            ),
-            "d": ivy.variable(
-                ivy.array(
-                    [[[2.0, 4.0], [6.0, 8.0]], [[10.0, 12.0], [14.0, 16.0]]],
-                    device=device,
-                )
-            ),
-        },
-    }
-    container = Container(dict_in)
-    if call is not helpers.np_call:
-        # Numpy does not support variables or gradients
-        assert ivy.is_variable(container["a"])
-        assert ivy.is_variable(container.a)
-        assert ivy.is_variable(container["b"]["c"])
-        assert ivy.is_variable(container.b.c)
-        assert ivy.is_variable(container["b"]["d"])
-        assert ivy.is_variable(container.b.d)
-
-    # without key_chains specification
-    container_as_arrays = container.as_arrays()
-    assert ivy.is_ivy_array(container_as_arrays["a"])
-    assert ivy.is_ivy_array(container_as_arrays.a)
-    assert ivy.is_ivy_array(container_as_arrays["b"]["c"])
-    assert ivy.is_ivy_array(container_as_arrays.b.c)
-    assert ivy.is_ivy_array(container_as_arrays["b"]["d"])
-    assert ivy.is_ivy_array(container_as_arrays.b.d)
-
-
 def test_container_num_arrays(device, call):
     dict_in = {
         "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
