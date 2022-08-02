@@ -82,7 +82,7 @@ Some common important tasks are:
 #. add the correct :ref:`Docstrings` to every function **and** its *relevant methods*,
    including those you did not implement yourself.
 #. add thorough :ref:`Docstring Examples` for every function **and** its
-   *relevant methods*
+   *relevant methods* and ensure they pass the docstring tests.
 
 Frontend APIs
 -------------
