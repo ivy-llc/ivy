@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union
+from typing import Union, Optional
 
 # local
 import ivy
@@ -174,3 +174,29 @@ class ArrayWithGradients(abc.ABC):
                         [-2.09,  2.76, -1.  ]]])
         """
         return ivy.gradient_descent_update(self, dcdw, lr, inplace, stop_gradients)
+
+    def stop_gradient(
+        self: ivy.Array, preserve_type: bool = True, *, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.stop_gradient. This method simply
+        wraps the function, and so the docstring for ivy.stop_gradient also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array for which to stop the gradient.
+        preserve_type
+            Whether to preserve the input type (ivy.Variable or ivy.Array),
+            otherwise an array is always returned. Default is True.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The same array x, but with no gradient information.
+        """
+        return ivy.stop_gradient(self._data, preserve_type, out=out)
