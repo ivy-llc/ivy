@@ -803,7 +803,8 @@ def test_swapaxes(
 # clip
 @given(
     x_min_n_max=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3,
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
     data=st.data(),
