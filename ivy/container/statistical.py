@@ -89,39 +89,39 @@ class ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.var. 
-        This method simply wraps the function, and so the 
-        docstring for ivy.var also applies to this method 
+        ivy.Container instance method variant of ivy.var.
+        This method simply wraps the function, and so the
+        docstring for ivy.var also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         self
             input array. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. 
+            The key-chains to apply or not apply the method to.
             Default is None.
         to_apply
-            If True, the method will be applied to key_chains, 
+            If True, the method will be applied to key_chains,
             otherwise key_chains will be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not 
+            Whether to prune key_chains for which the function was not
             applied. Default is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). 
+            Whether to also map method to sequences (lists, tuples).
             Default is False.
         out
-            optional output, for writing the result to. It must have a 
+            optional output, for writing the result to. It must have a
             shape that the inputs broadcast to.
-        
+
         Returns
         -------
         ret
-           if the variance was computed over the entire array, a 
-           zero-dimensional arraycontaining the variance; otherwise, 
-           a non-zero-dimensional array containing the variances. 
+           if the variance was computed over the entire array, a
+           zero-dimensional arraycontaining the variance; otherwise,
+           a non-zero-dimensional array containing the variances.
            The returned array must have the same data type as x.
-       
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
@@ -159,9 +159,9 @@ class ContainerWithStatistical(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ 
-        ivy.Container static method variant of ivy.var. 
-        This method simply wraps the function, and so 
+        """
+        ivy.Container static method variant of ivy.var.
+        This method simply wraps the function, and so
         the docstring for ivy.var also applies to this method
         with minimal changes.
 
@@ -170,30 +170,30 @@ class ContainerWithStatistical(ContainerBase):
         self
             input array. Should have a floating-point data type.
         key_chains
-            The key-chains to apply or not apply the method to. 
+            The key-chains to apply or not apply the method to.
             Default is None.
         to_apply
             If True, the method will be applied to key_chains,
             otherwise key_chains will be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was 
+            Whether to prune key_chains for which the function was
             not applied. Default is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). 
+            Whether to also map method to sequences (lists, tuples).
             Default is False.
         out
-            optional output, for writing the result to. 
+            optional output, for writing the result to.
             It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-           if the variance was computed over the entire array, 
-           a zero-dimensional array containing the variance; 
-           otherwise, a non-zero-dimensional array containing the 
-           variances. The returned array must have the same data 
+           if the variance was computed over the entire array,
+           a zero-dimensional array containing the variance;
+           otherwise, a non-zero-dimensional array containing the
+           variances. The returned array must have the same data
            type as x.
-       
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
