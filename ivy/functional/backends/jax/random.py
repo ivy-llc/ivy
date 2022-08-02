@@ -73,7 +73,6 @@ def multinomial(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-
     global RNG
     RNG, rng_input = jax.random.split(RNG)
     if probs is None:
