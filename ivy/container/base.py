@@ -684,8 +684,10 @@ class ContainerBase(dict, abc.ABC):
                     )
                     if ret:
                         return_dict[key] = ret
-                elif isinstance(value0, (list, tuple)) and map_nests:
-                    ret = ivy.nested_multi_map(lambda x, _: func(x, None), values)
+                elif any(isinstance(x, (list, tuple)) for x in values) and map_nests:
+                    ret = ivy.nested_multi_map(
+                        lambda x, _: func(x, None), values, to_ivy=False
+                    )
                     if prune_unapplied and not ret:
                         continue
                     return_dict[key] = ret
