@@ -276,12 +276,15 @@ These special methods include
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4884">__setitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be set via a chain of keys,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4904">__contains__</a> that enables us to check for chains of keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>,
 and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4912">__getstate__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4927">__setstate__</a> which combined enable the container to be pickled and unpickled.</p>
-<p>As for the special methods which <strong>do</strong> simply wrap corresponding functions in the functional API,
-these are <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L98">implemented</a> in the main <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class.</p>
-<p>These special methods all directly wrap the corresponding API <em>static</em> <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> method.</p>
-<p>Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L115">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133">__truediv__</a> which directly call
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_subtract</span></code>,
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_divide</span></code> respectively.</p>
+<p>As for the special methods which are <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L98">implemented</a> in the main <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class, they all make
+calls to the standard operator functions.</p>
+<p>As a result, the operator functions will make use of the special methods of the passed input objects.
+For instance, if the input contains one or more <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> objects, the operator function will
+make calls to the special methods of those array objects. The special methods will in turn
+call the suitable functions from the ivy functional API.</p>
+<p>Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L115">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133">__truediv__</a> which will make calls to
+<code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.subtract</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code>, respectively, if
+the input contains any <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> objects.</p>
 </section>
 <section id="nestable-functions">
 <h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading"></a></h2>
@@ -356,8 +359,6 @@ The distinction is only really relevant when stepping through and debugging with
 mode execution, and for the reasons outlined above, the preference is to keep
 compositional implicitly nestable where possible.</p>
 <p><strong>Shared Nested Structure</strong></p>
-<p>NOTE - implementing the behaviour for shared nested structures is a work in progress,
-the master branch will soon support all of the examples given below, but not yet 🚧</p>
 <p>When the nested structures of the multiple containers are <em>shared</em> but not <em>identical</em>,
 then the behaviour of the nestable function is a bit different.
 Containers have <em>shared</em> nested structures if all unique leaves in any of the containers

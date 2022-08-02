@@ -1520,7 +1520,7 @@
 <span class="sd">    &gt;&gt;&gt; b = ivy.array([78])</span>
 <span class="sd">    &gt;&gt;&gt; z = x ^ y</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {a:ivy.array([True])}</span>
+<span class="sd">    {a:ivy.array([85])}</span>
 
 <span class="sd">    With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:</span>
 
@@ -1529,7 +1529,7 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([12, 13])</span>
 <span class="sd">    &gt;&gt;&gt; z = x ^ y</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {a:ivy.array([True,True])}</span>
+<span class="sd">    {a: ivy.array([-79, 24])}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
