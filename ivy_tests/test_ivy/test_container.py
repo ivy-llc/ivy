@@ -1086,34 +1086,6 @@ def test_container_all_false(device, call):
     assert error_raised
 
 
-def test_container_clone(device, call):
-    dict_in = {
-        "a": ivy.array([[1], [2], [3]], device=device),
-        "b": {
-            "c": ivy.array([[2], [3], [4]], device=device),
-            "d": ivy.array([[3], [4], [5]], device=device),
-        },
-    }
-    container = Container(dict_in)
-
-    # devices
-    devices = list()
-    device0 = device
-    devices.append(device0)
-    if "gpu" in device and ivy.num_gpus() > 1:
-        idx = ivy.num_gpus() - 1
-        device1 = device[:-1] + str(idx)
-        devices.append(device1)
-
-    # without key_chains specification
-    container_cloned = container.dev_clone(devices)
-    assert isinstance(container_cloned, ivy.DevClonedItem)
-    assert min([cont.dev_str == ds for ds, cont in container_cloned.items()])
-    assert ivy.Container.multi_map(
-        lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.values()]
-    ).all_true()
-
-
 @pytest.mark.parametrize("devs_as_dict", [True, False])
 def test_container_distribute(devs_as_dict, device, call):
     array_a = ivy.array([[1], [2], [3], [4]], device=device)

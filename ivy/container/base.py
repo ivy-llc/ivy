@@ -1913,23 +1913,6 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def dev_clone(self, devices):
-        """Clone the current container across multiple devices.
-
-        Parameters
-        ----------
-        devs
-            The devices on which to clone the container.
-
-        Returns
-        -------
-            a set of cloned containers across the specified devices.
-
-        """
-        return self._ivy.DevClonedItem(
-            {device: self.to_device(device=device) for device in devices}
-        )
-
     def dev_dist(self, devices: Union[Iterable[str], Dict[str, int]], axis=0):
         """Distribute the current container across multiple devices.
 
