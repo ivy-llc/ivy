@@ -115,15 +115,14 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(z)
         ivy.array([0., 1.])
         
-        >>> x = ivy.array([[[0., 1.], [2., 3.]], \
-                            [[4., 5.], [6., 7.]], \
-                            [[8., 9.], [10., 11.]]])
+        >>> x = ivy.array([[0., 1., 2.], \
+                            [3., 4., 5.]])
         >>> y = ivy.array([[[0, 1]], \
-                            [[1, 2]], \
-                            [[2, 0]]])
+                            [1, 2]])
         >>> z = x.gather(y, axis=0)
         >>> print(z)
-        ivy.array([[[0., 5.]], [[4., 9.]], [[8., 1.]]])
+        ivy.array([[0., 1.], \ 
+                    [4., 5.]])
         """
         return ivy.gather(self, indices, axis, out=out)
 
