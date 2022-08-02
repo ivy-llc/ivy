@@ -58,14 +58,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic cosine
             of each element in ``self``.
             The returned array must have the same data type as ``self``.
-            
+
         Examples
         --------
         >>> x = ivy.array([2., 10.0, 1.0])
         >>> y = x.acosh()
         >>> print(y)
         ivy.array([1.32, 2.99, 0.  ])
-        
+
         """
         return ivy.acosh(self._data, out=out)
 
@@ -88,14 +88,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse cosine of each element in ``self``.
             The  returned array must have the same data type as ``self``.
-            
+
         Examples
         --------
         >>> x = ivy.array([1.0, 0.0, -0.9])
         >>> y = x.acos()
         >>> print(y)
         ivy.array([0.  , 1.57, 2.69])
-        
+
         """
         return ivy.acos(self._data, out=out)
 
@@ -209,14 +209,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse tangent of each element in ``self``. The
             returned array must have the same data type as ``self``.
-            
+
         Examples
         --------
         >>> x = ivy.array([1.0, 0.5, -0.5])
         >>> y = x.atan()
         >>> print(y)
         ivy.array([ 0.785,  0.464, -0.464])
-        
+
         """
         return ivy.atan(self._data, out=out)
 
@@ -282,14 +282,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic tangent of each element
             in ``self``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
-            
+
         Examples
         --------
         >>> x = ivy.array([0.0, 0.5, -0.9])
         >>> y = x.atanh()
         >>> print(y)
         ivy.array([ 0.   ,  0.549, -1.47 ])
-        
+
         """
         return ivy.atanh(self._data, out=out)
 
@@ -850,7 +850,7 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array must
             have a data type of ``bool``.
-            
+
         Examples
         --------
         >>> x1 = ivy.array([2., 5., 15.])
@@ -990,7 +990,7 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
-            
+
         Examples
         --------
         >>> x1 = ivy.array([2., 5., 15.])
@@ -1088,9 +1088,10 @@ class ArrayWithElementwise(abc.ABC):
 
     def log1p(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-       ivy.Array instance method variant of ivy.log1p.
+        ivy.Array instance method variant of ivy.log1p.
         This method simply wraps the function, and so the docstring
         for ivy.log1p also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -1098,6 +1099,7 @@ class ArrayWithElementwise(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -1107,7 +1109,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([1 , 2 ,3 ])
         >>> y = x.log1p()
         >>> print(y)
@@ -1149,7 +1150,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.log10. This method simply wraps the
         function, and so the docstring for ivy.log10 also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -1186,7 +1187,6 @@ class ArrayWithElementwise(abc.ABC):
         ivy.array([[nan, 0., 0.699, inf],
                    [-inf, nan, nan, nan]])
         """
-
         return ivy.log10(self._data, out=out)
 
     def logaddexp(
