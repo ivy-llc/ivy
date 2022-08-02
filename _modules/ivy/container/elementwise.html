@@ -3852,7 +3852,6 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
@@ -3862,6 +3861,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_log1p(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -6310,7 +6310,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container containing the tangent of each element in ``self``.</span>
+<span class="sd">            an array containing the tangent of each element in ``self``.</span>
 <span class="sd">            The return must have a floating-point data type determined</span>
 <span class="sd">            by :ref:`type-promotion`.</span>
 
@@ -6365,7 +6365,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container containing the hyperbolic tangent of each element in ``x``.</span>
+<span class="sd">            an container containing the hyperbolic tangent of each element in ``x``.</span>
 <span class="sd">            The returned array must have a real-valued floating-point data type</span>
 <span class="sd">            determined by :ref:`type-promotion`.</span>
 
@@ -6425,7 +6425,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container containing the hyperbolic tangent of each element in</span>
+<span class="sd">            an container containing the hyperbolic tangent of each element in</span>
 <span class="sd">            ``self``. The returned container must have a real-valued floating-point</span>
 <span class="sd">            data type determined by :ref:`type-promotion`.</span>
 
