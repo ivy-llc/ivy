@@ -3310,9 +3310,9 @@ def logical_and(
     >>> print(y)
     ivy.array([True, False, False])
 
-    x = ivy.Container(a=ivy.array([False, True, True]), \
+    >>> x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
-    y = ivy.Container(a=ivy.array([True, True, False]), \
+    >>> y = ivy.Container(a=ivy.array([True, True, False]), \
         b=ivy.array([False, False, True]))
     print(ivy.logical_and(y, x))
     {
@@ -3332,10 +3332,6 @@ def logical_and(
     >>> print(ivy.logical_and(x, y))
     ivy.array([True, False, False])
 
-    >>> ivy.logical_and(x, y, out=y)
-    >>> print(y)
-    ivy.array([True, False, False])
-
     >>> x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
     >>> y = ivy.array([True, False, True])
@@ -3345,8 +3341,8 @@ def logical_and(
         b: ivy.array([True, False, False])
     }
 
-    >>> ivy.logical_and(y, x, out=y)
-    >>> print(y)
+    >>> ivy.logical_and(y, x, out=x)
+    >>> print(x)
     {
         a: ivy.array([False, False, True]),
         b: ivy.array([True, False, False])

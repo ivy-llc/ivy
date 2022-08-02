@@ -4201,18 +4201,18 @@ class ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_logical_and(m, n)
         >>> z = ivy.Container.static_logical_and(k, l)
 
-        >>> print(w)
         {
             a: ivy.array([True, False, False, False])
         }
+
         >>> print(x)
         {
             a: ivy.array([False, True, False, False])
         }
+
         >>> print(y)
-        {
-            a: ivy.array([False, False, False, False])
-        }
+            ivy.array([False, False, False, False])
+
         >>> print(z)
         {
             a: ivy.array([True, False, True]),
