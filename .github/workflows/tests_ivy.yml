@@ -17,17 +17,6 @@ jobs:
           persist-credentials: false
           submodules: "recursive"
 
-      - name: Artifacts folder
-        run: |
-        cd ivy
-        mkdir - p artifacts
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ivy-test-artifacts
-          path: artifacts
-
       - name: Cache hypothesis
         uses: actions/cache@v3
         with:
@@ -40,3 +29,14 @@ jobs:
           cd ivy
           mkdir -p .hypothesis
           docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend ${{ matrix.backends }} ivy/ivy_tests/test_ivy/test_functional/test_nn/${{matrix.submodules}}.py
+
+      - name: Artifacts folder
+        run: |
+        cd ivy
+        mkdir - p artifacts
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ivy-test-artifacts
+          path: artifacts
