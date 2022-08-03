@@ -561,7 +561,9 @@ def map(
                           unique = {'x':[1,2,3]}, \
                           mean = False)
     >>> print(results)
-    [array([1, 1], dtype=int32), array([1, 2], dtype=int32), array([1, 3], dtype=int32)]
+    [array([1, 1], dtype=int32),
+    array([1, 2], dtype=int32),
+    array([1, 3], dtype=int32)]
 
     >>> results = ivy.map(fn = special_pow, \
                           constant = {'y':[0,1]}, \
@@ -583,17 +585,17 @@ def map(
     With :code:`ivy.Array` inputs:
 
     >>> results = ivy.map(fn = linear_model, \
-                          constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])}, \
-                          unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \
-                          mean = False)
+        constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])}, \
+        unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \
+        mean = False)
     >>> print(results)
     [ivy.array([  0.,  10., 100.]),
     ivy.array([  1.,  10., 101.])]
 
     >>> results = ivy.map(fn = linear_model, \
-                          constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])}, \
-                          unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \
-                          mean = True)
+        constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])}, \
+        unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \
+        mean = True)
     >>> print(results)
     ivy.array([  0.5,  10. , 100. ])
     """
