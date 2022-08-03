@@ -74,7 +74,6 @@
 <li class="toctree-l3"><a class="reference internal" href="execute_with_gradients/static_execute_with_gradients_container.html">ivy.Container.static_execute_with_gradients</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="value_and_grad.html">value_and_grad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adam_step.html">adam_step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optimizer_update.html">optimizer_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient_descent_update.html">gradient_descent_update</a></li>
@@ -153,6 +152,33 @@
              
   <section id="execute-with-gradients">
 <h1>execute_with_gradients<a class="headerlink" href="#execute-with-gradients" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.gradients.execute_with_gradients">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">execute_with_gradients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retain_grads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/gradients.html#execute_with_gradients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.execute_with_gradients" title="Permalink to this definition"></a></dt>
+<dd><p>Call function func with input of xs variables, and return func first output y,
+the gradients [dy/dx for x in xs], and any other function outputs after the returned
+y value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – Function for which we compute the gradients of the output with respect to xs
+input.</p></li>
+<li><p><strong>xs</strong> – Variables for which to compute the function gradients with respective to.</p></li>
+<li><p><strong>retain_grads</strong> – Whether to retain the gradients of the returned values. (Default value = False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – the function first output y, the gradients [dy/dx for x in xs], and any other
+extra function outputs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_execute_with_gradients">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_execute_with_gradients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retain_grads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/gradients.html#ContainerWithGradients.static_execute_with_gradients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_execute_with_gradients" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

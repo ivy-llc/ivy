@@ -151,6 +151,32 @@
              
   <section id="nested-multi-map">
 <h1>nested_multi_map<a class="headerlink" href="#nested-multi-map" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.nested_multi_map">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">nested_multi_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nests</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ivy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#nested_multi_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.nested_multi_map" title="Permalink to this definition"></a></dt>
+<dd><p>Apply function to all array values from a collection of identically
+structured ivy arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – Function to apply to each nest entry.</p></li>
+<li><p><strong>nest</strong> – nests to map.</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains will
+be skipped. Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied,
+otherwise the leftmost nest value is used. Default is False.</p></li>
+<li><p><strong>key_chain</strong> – Chain of keys for this dict entry (Default value = ‘’)</p></li>
+<li><p><strong>config</strong> – The configuration for the nests. Default is the same as nest0.</p></li>
+<li><p><strong>to_ivy</strong> – convert the output to ivy_arrays. Default is True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>nest containing the result of the funciton.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
