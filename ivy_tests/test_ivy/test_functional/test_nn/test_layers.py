@@ -629,6 +629,7 @@ def test_conv3d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv3d",
+        ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
         strides=stride,

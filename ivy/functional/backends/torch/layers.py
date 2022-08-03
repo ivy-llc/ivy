@@ -22,6 +22,9 @@ def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     return dim_size
 
 
+def _out_shape(x, strides, pad, dilations, filters):
+    return (x - 1) * strides - 2 * pad + dilations * (filters - 1) + 1
+
 # noinspection PyUnresolvedReferences
 def conv1d(
     x: torch.Tensor,
@@ -191,8 +194,8 @@ def conv2d_transpose(
     not_valid_w = False
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
-        out_h = (x.shape[2] - 1) * strides[0] + dilations[0] * (filters.shape[2] - 1) + 1
-        out_w = (x.shape[3] - 1) * strides[1] + dilations[1] * (filters.shape[3] - 1) + 1
+        out_h = _out_shape(x.shape[2], strides[0], 0, dilations[0], filters.shape[2])
+        out_w = _out_shape(x.shape[3], strides[1], 0, dilations[1], filters.shape[3])
         output_padding = [max(new_h - out_h, 0), max(new_w - out_w, 0)]
     elif padding == "SAME":
         filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
@@ -215,10 +218,20 @@ def conv2d_transpose(
             not_valid_w = True
         pad_h_ = pad_h // 2
         pad_w_ = pad_w // 2
-        out_h = (x.shape[2] - 1) * strides[0] - 2 * pad_h_ + dilations[0] * \
-                (filters.shape[2] - 1) + 1
-        out_w = (x.shape[3] - 1) * strides[1] - 2 * pad_w_ + dilations[1] * \
-                (filters.shape[3] - 1) + 1
+        out_h = _out_shape(
+            x.shape[2],
+            strides[0],
+            pad_h_,
+            dilations[0],
+            filters.shape[2]
+        )
+        out_w = _out_shape(
+            x.shape[3],
+            strides[1],
+            pad_w_,
+            dilations[1],
+            filters.shape[3]
+        )
         padding_list = [pad_h_, pad_w_]
         output_padding = [max(new_h - out_h, 0), max(new_w - out_w, 0)]
     else:
