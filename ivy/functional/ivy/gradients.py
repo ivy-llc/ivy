@@ -356,6 +356,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     """
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
+execute_with_gradients.computes_gradients = True
 
 # Optimizer Steps #
 
