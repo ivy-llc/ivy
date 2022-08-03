@@ -30,3 +30,6 @@ full.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 def max(x: Any, y: Any):
     return ivy.maximum(x, y)
+
+
+max.unsupported_dtypes = {"torch": ("float16", "bfloat16")}

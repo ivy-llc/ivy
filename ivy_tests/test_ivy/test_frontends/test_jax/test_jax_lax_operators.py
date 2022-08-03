@@ -202,24 +202,30 @@ def test_jax_lax_full(
 
 
 @given(
-    x=helpers.integers(),
-    y=helpers.integers(),
-    as_variable=helpers.list_of_length(x=st.floats(), length=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_jax.valid_float_dtypes))
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.max"
     ),
-    native_array=helpers.list_of_length(x=st.floats(), length=2),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_jax_lax_max(
-    x,
-    y,
+    dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
+    input_dtype, x = dtype_and_x
+
     helpers.test_frontend_function(
-        input_dtypes=[ivy.valid_numeric_dtypes],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -227,6 +233,6 @@ def test_jax_lax_max(
         fw=fw,
         frontend="jax",
         fn_name="lax.max",
-        x=x,
-        y=y,
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
     )
