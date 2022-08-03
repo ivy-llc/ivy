@@ -58,14 +58,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic cosine
             of each element in ``self``.
             The returned array must have the same data type as ``self``.
-            
+
         Examples
         --------
         >>> x = ivy.array([2., 10.0, 1.0])
         >>> y = x.acosh()
         >>> print(y)
         ivy.array([1.32, 2.99, 0.  ])
-        
+
         """
         return ivy.acosh(self._data, out=out)
 
@@ -88,14 +88,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse cosine of each element in ``self``.
             The  returned array must have the same data type as ``self``.
-            
+
         Examples
         --------
         >>> x = ivy.array([1.0, 0.0, -0.9])
         >>> y = x.acos()
         >>> print(y)
         ivy.array([0.  , 1.57, 2.69])
-        
+
         """
         return ivy.acos(self._data, out=out)
 
@@ -209,14 +209,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse tangent of each element in ``self``. The
             returned array must have the same data type as ``self``.
-            
+
         Examples
         --------
         >>> x = ivy.array([1.0, 0.5, -0.5])
         >>> y = x.atan()
         >>> print(y)
         ivy.array([ 0.785,  0.464, -0.464])
-        
+
         """
         return ivy.atan(self._data, out=out)
 
@@ -282,14 +282,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic tangent of each element
             in ``self``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
-            
+
         Examples
         --------
         >>> x = ivy.array([0.0, 0.5, -0.9])
         >>> y = x.atanh()
         >>> print(y)
         ivy.array([ 0.   ,  0.549, -1.47 ])
-        
+
         """
         return ivy.atanh(self._data, out=out)
 
@@ -850,7 +850,7 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array must
             have a data type of ``bool``.
-            
+
         Examples
         --------
         >>> x1 = ivy.array([2., 5., 15.])
@@ -913,6 +913,13 @@ class ArrayWithElementwise(abc.ABC):
             an array containing test results. An element ``out_i`` is ``True``
             if ``self_i`` is finite and ``False`` otherwise.
             The returned array must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, ivy.nan, -ivy.inf, float('inf')])
+        >>> y = x.isfinite()
+        >>> print(y)
+        ivy.array([ True, False, False, False])
         """
         return ivy.isfinite(self._data, out=out)
 
@@ -990,7 +997,7 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
-            
+
         Examples
         --------
         >>> x1 = ivy.array([2., 5., 15.])
@@ -1030,6 +1037,35 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :code:'ivy.Array' inputs:
+
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([2, 2, 1])
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        ivy.array([True, True, False])
+
+        With mixed :code:'ivy.Array' and :code:'ivy.NativeArray' inputs:
+
+        >>> x1 = ivy.array([2.5, 3.3, 9.24])
+        >>> x2 = ivy.native_array([2.5, 1.1, 9.24])
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        ivy.array([True, False, True])
+
+        With mixed :code:'ivy.Container' and :code:'ivy.Array' inputs:
+
+        >>> x1 = ivy.array([3., 1., 0.8])
+        >>> x2 = ivy.Container(a=ivy.array([2., 1., 0.7]), b=ivy.array([3., 0.6, 1.2]))
+        >>> y = x1.less_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, True])
+        }
         """
         return ivy.less_equal(self._data, x2, out=out)
 
@@ -1038,6 +1074,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.log. This method simply wraps the
         function, and so the docstring for ivy.log also applies to this method
         with minimal changes.
+
 
         Parameters
         ----------
@@ -1076,6 +1113,19 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the evaluated result for each element in ``self``.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1 , 2 ,3 ])
+        >>> y = x.log1p()
+        >>> print(y)
+        ivy.array([0.693, 1.1  , 1.39 ])
+
+        >>> x = ivy.array([0.1 , .001 ])
+        >>> x.log1p( out = x)
+        >>> print(x)
+        ivy.array([0.0953, 0.001 ])
+
         """
         return ivy.log1p(self._data, out=out)
 
@@ -1107,7 +1157,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.log10. This method simply wraps the
         function, and so the docstring for ivy.log10 also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -1144,7 +1194,6 @@ class ArrayWithElementwise(abc.ABC):
         ivy.array([[nan, 0., 0.699, inf],
                    [-inf, nan, nan, nan]])
         """
-
         return ivy.log10(self._data, out=out)
 
     def logaddexp(
@@ -1301,6 +1350,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([True, False, True, False])
+        >>> y = ivy.array([True, True, False, False])
+        >>> z = x.logical_xor(y)
+        >>> print(z)
+        ivy.array([False,  True,  True, False])
         """
         return ivy.logical_xor(self._data, x2, out=out)
 

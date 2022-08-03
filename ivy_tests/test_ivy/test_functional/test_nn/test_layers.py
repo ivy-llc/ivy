@@ -3,7 +3,7 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -86,8 +86,9 @@ def test_linear(
 )
 @handle_cmd_line_args
 def test_dropout(*, data, array_shape, dtype, as_variable, fw, device, call):
-    if (fw == "tensorflow" or fw == "torch") and "int" in dtype:
-        return
+
+    assume(not ((fw == "tensorflow" or fw == "torch") and "int" in dtype))
+
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
     x = ivy.asarray(x)
     if as_variable:
@@ -142,8 +143,8 @@ def test_scaled_dot_product_attention(
 ):
 
     dtype = [dtype] * 5
-    if fw == "torch" and "float16" in dtype:
-        return
+    assume(not (fw == "torch" and "float16" in dtype))
+
     q = np.random.uniform(size=batch_shape + [num_queries] + [feat_dim]).astype(
         dtype[0]
     )
@@ -206,7 +207,7 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
 
 
 @st.composite
-def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
+def x_and_filters(draw, dtypes, data_format, type: str = "2d", transpose=False):
     data_format = draw(data_format)
     dtype = draw(dtypes)
     dilations = draw(st.integers(min_value=1, max_value=3))
@@ -218,7 +219,6 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                 st.integers(1, 3),
             )
         )
-
         min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         d_in = filter_shape[1]
         if data_format == "NWC":
@@ -237,18 +237,39 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                     st.integers(min_value=min_x_width, max_value=100),
                 )
             )
-    elif type == "2d":
-        filter_shape = draw(
-            st.tuples(
-                st.integers(3, 5),
-                st.integers(3, 5),
-                st.integers(1, 3),
-                st.integers(1, 3),
+    elif type == "2d" or type == "depthwise":
+        if type == "depthwise":
+            filter_shape = draw(
+                st.tuples(
+                    st.integers(3, 5),
+                    st.integers(3, 5),
+                    st.integers(1, 3),
+                )
             )
-        )
-
-        min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        elif not transpose:
+            filter_shape = draw(
+                st.tuples(
+                    st.integers(3, 5),
+                    st.integers(3, 5),
+                    st.integers(1, 3),
+                    st.integers(1, 3),
+                )
+            )
+        else:
+            filter_shape = draw(
+                st.tuples(
+                    st.integers(3, 5),
+                    st.integers(3, 5),
+                    st.shared(st.integers(1, 3), key="d_in"),
+                    st.shared(st.integers(1, 3), key="d_in"),
+                )
+            )
+        if not transpose:
+            min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+            min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        else:
+            min_x_height = 1
+            min_x_width = 1
         d_in = filter_shape[2]
         if data_format == "NHWC":
             x_shape = draw(
@@ -259,8 +280,6 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                     st.integers(d_in, d_in),
                 )
             )
-            # print("x_shape")
-            # print(x_shape)
         else:
             x_shape = draw(
                 st.tuples(
@@ -270,7 +289,6 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                     st.integers(min_value=min_x_width, max_value=100),
                 )
             )
-
     else:
         filter_shape = draw(
             st.tuples(
@@ -468,30 +486,24 @@ def test_conv2d(
 
 # conv2d_transpose
 @given(
-    array_shape=helpers.lists(arg=st.integers(1, 5), min_size=3, max_size=3),
-    filter_shape=st.integers(min_value=1, max_value=5),
+    x_f_d_df=x_and_filters(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        data_format=st.sampled_from(["NHWC", "NCHW"]),
+        type="2d",
+        transpose=True
+    ),
     stride=st.integers(min_value=1, max_value=3),
     pad=st.sampled_from(["VALID", "SAME"]),
-    output_shape=helpers.lists(arg=st.integers(1, 5), min_size=4, max_size=4),
-    data_format=st.sampled_from(["NHWC", "NCHW"]),
-    dilations=st.integers(min_value=1, max_value=5),
-    dtype=helpers.list_of_length(
-        x=st.sampled_from(ivy_np.valid_float_dtypes), length=2
-    ),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_conv2d_transpose(
     *,
-    array_shape,
-    filter_shape,
+    x_f_d_df,
     stride,
     pad,
-    output_shape,
-    data_format,
-    dilations,
-    dtype,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -500,21 +512,11 @@ def test_conv2d_transpose(
     fw,
     device,
 ):
-    if fw == "tensorflow" and "cpu" in device:
-        # tf conv2d transpose does not work when CUDA is installed, but array is on CPU
-        return
-    if fw in ["numpy", "jax"]:
-        # numpy and jax do not yet support conv2d_transpose
-        return
-    if fw == "torch" and ("16" in dtype[0] or "16" in dtype[1]):
-        # not implemented for Half
-        return
-    x = np.random.uniform(size=array_shape).astype(dtype[0])
-    x = np.expand_dims(x, (-1))
-    filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
-        dtype[1]
-    )
-
+    dtype, x, filters, dilations, data_format = x_f_d_df
+    dtype = [dtype] * 2
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -526,68 +528,65 @@ def test_conv2d_transpose(
         fw=fw,
         fn_name="conv2d_transpose",
         device_=device,
-        x=x,
-        filters=filters,
+        ground_truth_backend="jax",
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
-        output_shape=tuple(output_shape),
+        output_shape=None,
         data_format=data_format,
         dilations=dilations,
     )
 
 
 # depthwise_conv2d
-@pytest.mark.parametrize(
-    "x_n_filters_n_pad_n_res",
-    [
-        (
-            [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-            [[[0.0], [1.0], [0.0]], [[1.0], [1.0], [1.0]], [[0.0], [1.0], [0.0]]],
-            "SAME",
-            [[[[0.0], [3.0], [0.0]], [[3.0], [3.0], [3.0]], [[0.0], [3.0], [0.0]]]],
-        ),
-        (
-            [
-                [[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]
-                for _ in range(5)
-            ],
-            [[[0.0], [1.0], [0.0]], [[1.0], [1.0], [1.0]], [[0.0], [1.0], [0.0]]],
-            "SAME",
-            [
-                [[[0.0], [3.0], [0.0]], [[3.0], [3.0], [3.0]], [[0.0], [3.0], [0.0]]]
-                for _ in range(5)
-            ],
-        ),
-        (
-            [[[[0.0], [0.0], [0.0]], [[0.0], [3.0], [0.0]], [[0.0], [0.0], [0.0]]]],
-            [[[0.0], [1.0], [0.0]], [[1.0], [1.0], [1.0]], [[0.0], [1.0], [0.0]]],
-            "VALID",
-            [[[[3.0]]]],
-        ),
-    ],
+@given(
+    x_f_d_df=x_and_filters(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        data_format=st.sampled_from(["NHWC", "NCHW"]),
+        type="depthwise",
+    ),
+    stride=st.integers(min_value=1, max_value=4),
+    pad=st.sampled_from(["VALID", "SAME"]),
+    num_positional_args=helpers.num_positional_args(fn_name="depthwise_conv2d"),
+    data=st.data(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, device, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
-        # tf depthwise conv2d does not work when CUDA is installed, but array is on CPU
-        pytest.skip()
-    # smoke test
-    if call in [helpers.np_call, helpers.jnp_call]:
-        # numpy and jax do not yet support depthwise 2d convolutions
-        pytest.skip()
-    x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype=dtype, device=device)
-    filters = tensor_fn(filters, dtype=dtype, device=device)
-    true_res = tensor_fn(true_res, dtype=dtype, device=device)
-    ret = ivy.depthwise_conv2d(x, filters, 1, padding)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_res.shape
-    # value test
-    assert np.allclose(
-        call(ivy.depthwise_conv2d, x, filters, 1, padding), ivy.to_numpy(true_res)
+@handle_cmd_line_args
+def test_depthwise_conv2d(
+    *,
+    x_f_d_df,
+    stride,
+    pad,
+    num_positional_args,
+    as_variable,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+
+    dtype, x, filters, dilations, data_format = x_f_d_df
+    dtype = [dtype] * 2
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="depthwise_conv2d",
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
+        strides=stride,
+        padding=pad,
+        data_format=data_format,
+        dilations=dilations,
     )
 
 
@@ -673,20 +672,19 @@ def test_conv3d_transpose(
     fw,
     device,
 ):
-    if fw == "tensorflow" and "cpu" in device:
-        # tf conv3d transpose does not work when CUDA is installed, but array is on CPU
-        return
-    # smoke test
-    if fw in ["numpy", "jax"]:
-        # numpy and jax do not yet support 3d transpose convolutions, and mxnet only
-        # supports with CUDNN
-        return
-    if fw == "mxnet" and "cpu" in device:
-        # mxnet only supports 3d transpose convolutions with CUDNN
-        return
-    if fw == "torch" and ("16" in dtype[0] or "16" in dtype[1]):
-        # not implemented for half
-        return
+    # tf conv3d transpose does not work when CUDA is installed, but array is on CPU
+    assume(not (fw == "tensorflow" and "cpu" in device))
+
+    # numpy and jax do not yet support 3d transpose convolutions,
+    # and mxnet only supports with CUDNN
+    assume(not (fw in ["numpy", "jax"]))
+
+    # mxnet only supports 3d transpose convolutions with CUDNN
+    assume(not (fw == "mxnet" and "cpu" in device))
+
+    # not implemented for half
+    assume(not (fw == "torch" and ("16" in dtype[0] or "16" in dtype[1])))
+
     x = np.random.uniform(size=array_shape).astype(dtype[0])
     x = np.expand_dims(x, (-1))
     filters = np.random.uniform(
@@ -744,10 +742,8 @@ def test_lstm(
 ):
     dtype = [dtype] * 7
 
-    # smoke test
-    if fw == "torch" and device == "cpu" and "float16" in dtype:
-        # "sigmoid_cpu" not implemented for 'Half'
-        return
+    # "sigmoid_cpu" not implemented for 'Half'
+    assume(not (fw == "torch" and device == "cpu" and "float16" in dtype))
 
     x = np.random.uniform(size=b + [t] + [input_channel]).astype(dtype[0])
     init_h = np.ones(b + [hidden_channel]).astype(dtype[1])
