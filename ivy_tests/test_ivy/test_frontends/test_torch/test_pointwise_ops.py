@@ -112,7 +112,6 @@ def test_torch_tan(
     native_array=st.booleans(),
 )
 def test_torch_abs(
-    
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
