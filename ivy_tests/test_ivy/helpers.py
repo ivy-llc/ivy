@@ -1677,6 +1677,8 @@ def dtype_values_axis(
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, *, shape):
+    if isinstance(shape, st._internal.SearchStrategy):
+        shape = draw(shape)
     size = 1 if len(shape) == 0 else math.prod(shape)
     rshape = draw(st.lists(st.integers(0)).filter(lambda s: math.prod(s) == size))
     # assume(all(side <= MAX_SIDE for side in rshape))
@@ -2159,7 +2161,7 @@ def get_axis(
     unique_by = (lambda x: shape[x]) if unique else None
 
     if max_size is None and unique:
-        max_size = axes
+        max_size = max(axes, min_size)
 
     if allow_none:
         if axes == 0:
