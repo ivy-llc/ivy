@@ -211,6 +211,6 @@ def test_tensorflow_hard_sigmoid(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="hard_sigmoid",
+        fn_name="activations.hard_sigmoid",
         x=np.asarray(x, dtype=input_dtype),
     )
