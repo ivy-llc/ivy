@@ -1,10 +1,10 @@
-name: test-ivy
+name: test-core-ivy
 on: [push, pull_request]
 jobs:
   run-nightly-tests:
     strategy:
       matrix:
-        backends :  ["numpy", "torch", "jax", "tensorflow"]
+        backends :  [numpy, torch, jax, tensorflow]
         submodules: [test_creation, test_device, test_dtype, test_elementwise, test_general, test_gradients, test_linalg
                     test_manipulation, test_meta, test_nest, test_random, test_searching, test_set, test_sorting, test_statistical
                     test_utility]
@@ -29,7 +29,8 @@ jobs:
           cd ivy
           mkdir -p .hypothesis
           mkdir -p artifacts
-          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend ${{ matrix.backends }} ivy/ivy_tests/test_ivy/test_functional/test_nn/${{matrix.submodules}}.py
+          ./test_ivy.sh ${{ matrix.backend }} ${{ matrix.submodules }}
+          
 
 
       - name: Upload artifacts
@@ -37,3 +38,5 @@ jobs:
         with:
           name: ivy-test-artifacts
           path: ivy/artifacts
+
+      docker run --rm -v IVY_BACKEND="$1"  -v $(pwd):/ivy -v $(pwd)/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_ivy/test_functional/test_core/"$2"
