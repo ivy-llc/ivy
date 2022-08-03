@@ -928,6 +928,13 @@ class ArrayWithElementwise(abc.ABC):
             an array containing test results. An element ``out_i`` is ``True``
             if ``self_i`` is finite and ``False`` otherwise.
             The returned array must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, ivy.nan, -ivy.inf, float('inf')])
+        >>> y = x.isfinite()
+        >>> print(y)
+        ivy.array([ True, False, False, False])
         """
         return ivy.isfinite(self._data, out=out)
 
