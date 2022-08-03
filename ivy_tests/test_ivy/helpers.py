@@ -433,19 +433,19 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
             num_output = num_output.split(",")
             num_parsed_output = num_parsed_output.split(",")
             docstr_result = True
-            for (u, v) in zip(num_output, num_parsed_output):
-                if u == "":
+            for (doc_u, doc_v) in zip(num_output, num_parsed_output):
+                if doc_u == "":
                     continue
                 try:
-                    docstr_result = np.allclose(complex(u), complex(v))
+                    docstr_result = np.allclose(complex(doc_u), complex(doc_v))
                 except Exception:
                     print(fn)
                     print(output)
                     print("")
                     print(parsed_output)
                     print("")
-                    print(u)
-                    print(v)
+                    print(doc_u)
+                    print(doc_v)
                     print("")
                     return False
             return docstr_result
