@@ -38,7 +38,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 def test_cross_entropy(
     *,
-    data,
     dtype_and_true,
     dtype_and_pred,
     axis,
@@ -101,7 +100,6 @@ def test_cross_entropy(
 @handle_cmd_line_args
 def test_binary_cross_entropy(
     *,
-    data,
     dtype_and_true,
     dtype_and_pred,
     epsilon,
@@ -162,7 +160,6 @@ def test_binary_cross_entropy(
 @handle_cmd_line_args
 def test_sparse_cross_entropy(
     *,
-    data,
     dtype_and_true,
     dtype_and_pred,
     axis,

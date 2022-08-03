@@ -1,11 +1,8 @@
 """Collection of tests for manipulation functions."""
 
 # global
-import types
-import pytest
+
 import numpy as np
-import math
-from numbers import Number
 from hypothesis import given, strategies as st
 from hypothesis import settings
 
@@ -129,7 +126,9 @@ def test_expand_dims(
     instance_method,
     fw,
 ):
+
     dtype, array, axis = dtype_array_axis
+
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -170,7 +169,9 @@ def test_flip(
     instance_method,
     fw,
 ):
+
     dtype, array, axis = dtype_array_axis
+
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -221,6 +222,7 @@ def test_permute_dims(
     instance_method,
     fw,
 ):
+
     dtype, array, permutation = dtype_array_permutation
 
     helpers.test_function(
@@ -272,7 +274,9 @@ def test_reshape(
     instance_method,
     fw,
 ):
+
     array, dtype, shape = array_dtype_reshape
+
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -372,9 +376,11 @@ def test_roll(
     fw,
 ):
 
+
     value_dtype, value = dtype_value
     shift_dtype, shift = shift
     dtypes = [value_dtype]
+
 
 
     helpers.test_function(
@@ -437,6 +443,7 @@ def test_squeeze(
     instance_method,
     fw,
 ):
+
     dtype, values, axis = dtype_values_axis
 
     helpers.test_function(
@@ -590,8 +597,10 @@ def test_repeat(
     instance_method,
     fw,
 ):
+
     dtype, value = dtype_value
     value = np.asarray(value, dtype=dtype)
+
 
     if not isinstance(repeat, int):
         repeat_dtype, repeat_list = repeat
@@ -661,6 +670,7 @@ def test_tile(
     instance_method,
     fw,
 ):
+
     dtype_value, repeat = dtype_value_repeat
 
     dtype, value = dtype_value
@@ -724,6 +734,7 @@ def test_constant_pad(
     instance_method,
     fw,
 ):
+
     dtype, value, pad_width, constant = dtype_value_pad_width_constant
 
     helpers.test_function(
@@ -766,8 +777,10 @@ def test_zero_pad(
     instance_method,
     fw,
 ):
+
     # Drop the generated constant as only 0 is used
     dtype, value, pad_width, _ = dtype_value_pad_width
+
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -825,7 +838,9 @@ def test_swapaxes(
     instance_method,
     fw,
 ):
+
     dtype, value = dtype_value
+
 
     helpers.test_function(
         input_dtypes=dtype,

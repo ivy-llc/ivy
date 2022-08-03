@@ -241,11 +241,33 @@ def exp(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return ret
 
 
-tan = lambda x: math.tan(x) if isinstance(x, float) else mx.nd.tan(x)
 asin = lambda x: math.asin(x) if isinstance(x, float) else mx.nd.arcsin(x)
-atan = lambda x: math.atan(x) if isinstance(x, float) else mx.nd.arctan(x)
 
 
+def tan(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    if isinstance(x, float):
+        ret = math.tan(x)
+    else:
+        ret = mx.nd.tan(x)
+    return ret
+
+
+@_handle_flat_arrays_in_out
+def atan(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    if isinstance(x, float):
+        return math.atan(x)
+    else:
+        return mx.nd.arctan(x)
+
+
+@_handle_flat_arrays_in_out
+def atanh(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    if isinstance(x, float):
+        return math.atanh(x)
+    else:
+        return mx.nd.arctanh(x)
+  
+  
 @_handle_flat_arrays_in_out
 def atan2(x: mx.nd.NDArray, y: mx.nd.NDArray) -> mx.nd.NDArray:
     if isinstance(x, float):
@@ -257,7 +279,6 @@ def atan2(x: mx.nd.NDArray, y: mx.nd.NDArray) -> mx.nd.NDArray:
 
 cosh = lambda x: math.cosh(x) if isinstance(x, float) else mx.nd.cosh(x)
 asinh = lambda x: math.asinh(x) if isinstance(x, float) else mx.nd.arcsinh(x)
-atanh = lambda x: math.atanh(x) if isinstance(x, float) else mx.nd.arctanh(x)
 log = lambda x: math.log(x) if isinstance(x, float) else mx.nd.log(x)
 equal = lambda x1, x2: x1 == x2
 equal.__name__ = "equal"
