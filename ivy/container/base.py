@@ -17,7 +17,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union, Iterable, Dict
+from typing import Union
 from builtins import set
 
 # local

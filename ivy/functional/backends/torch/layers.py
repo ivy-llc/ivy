@@ -319,7 +319,7 @@ def conv3d(
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
     data_format: str = "NDHWC",
-    dilations:  Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     *,
     out: Optional[torch.Tensor] = None
 ):
@@ -327,13 +327,13 @@ def conv3d(
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
     # filter_shape = list(filters.shape[0:3])
     f_w_after_dilation = filters.shape[2] + (
-            (dilations[2] - 1) * (filters.shape[2] - 1)
+        (dilations[2] - 1) * (filters.shape[2] - 1)
     )
     f_h_after_dilation = filters.shape[1] + (
-            (dilations[1] - 1) * (filters.shape[1] - 1)
+        (dilations[1] - 1) * (filters.shape[1] - 1)
     )
     f_d_after_dilation = filters.shape[0] + (
-            (dilations[0] - 1) * (filters.shape[0] - 1)
+        (dilations[0] - 1) * (filters.shape[0] - 1)
     )
     filter_shape = [f_d_after_dilation, f_h_after_dilation, f_w_after_dilation]
     filters = filters.permute(4, 3, 0, 1, 2)

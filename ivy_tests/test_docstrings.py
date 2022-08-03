@@ -73,11 +73,11 @@ def test_docstrings(backend):
                 method = getattr(ivy.Array, method_name)
                 if method_name in skip_arr_cont \
                         or helpers.gradient_incompatible_function(
-                    fn=method
-                ) \
+                        fn=method
+                        ) \
                         or helpers.docstring_examples_run(
-                    fn=method, from_array=True
-                ):
+                        fn=method, from_array=True
+                        ):
                     continue
                 success = False
                 failures.append("Array." + method_name)
@@ -88,10 +88,10 @@ def test_docstrings(backend):
                 if method_name in skip_arr_cont \
                         or helpers.gradient_incompatible_function(
                         fn=method
-                ) \
+                        ) \
                         or helpers.docstring_examples_run(
-                    fn=method, from_container=True
-                ):
+                        fn=method, from_container=True
+                        ):
                     continue
                 success = False
                 failures.append("Container." + method_name)
@@ -100,10 +100,10 @@ def test_docstrings(backend):
             if k in to_skip \
                     or helpers.gradient_incompatible_function(
                     fn=v
-            ) \
+                    ) \
                     or helpers.docstring_examples_run(
                     fn=v
-            ):
+                    ):
                 continue
             success = False
             failures.append(k)
