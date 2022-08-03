@@ -584,25 +584,25 @@ def eigh(
 def eigvalsh(
     x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
+    """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)...
     x.
 
     Parameters
     ----------
     x
-        input array having shape (..., M, M) and whose innermost two dimensions form
+        input array having shape (..., M, M) and whose innermost two dimensions form...
         square matrices. Must have floating-point data type.
     out
-        optional output array, for writing the result to. It must have a shape that the
+        optional output array, for writing the result to. It must have a shape that the...
         inputs broadcast to.
 
     Returns
     -------
     ret
-        an array containing the computed eigenvalues. The returned array must have shape
+        an array containing the computed eigenvalues. The returned array must have shape...
         (..., M) and have the same data type as x.
     
-    This function conforms to the `Array API Standard
+    This function conforms to the `Array API Standard...
     Both the description and the type hints above assumes an array input for simplicity.
     
         
@@ -617,9 +617,9 @@ def eigvalsh(
     >>> print(e)
     ivy.array([-3.50330763,  1.61507163,  3.88823601])
     
-    >>> x = ivy.array([[1, 2, -1, 3],\
-                       [2, 1, 3, 7],\
-                       [-1, 3, 0, 8],\
+    >>> x = ivy.array([[1, 2, -1, 3], \
+                       [2, 1, 3, 7], \
+                       [-1, 3, 0, 8], \ 
                        [3, 5, 1, 6]])
     >>> ivy.eigvalsh(x, out = x)
     >>> print(x)
@@ -627,8 +627,8 @@ def eigvalsh(
     
     With :code:`ivy.NativeArray` inputs:
     
-    >>> x = ivy.native_array([[1, 2, -1],\
-                              [2, 1, 3],\
+    >>> x = ivy.native_array([[1, 2, -1], \
+                              [2, 1, 3], \
                               [-1, 3, 0]])
     >>> y = ivy.zeros([3,]) 
     >>> ivy.eigvalsh(x, out = y)
@@ -637,7 +637,7 @@ def eigvalsh(
     
     With :code:`ivy.Container` inputs:
     
-    >>> x = ivy.Container(a = ivy.array[[2, 4],\
+    >>> x = ivy.Container(a = ivy.array[[2, 4], \
                                         [6, 8]])
     >>> y = ivy.eigvalsh(x)
     >>> print(y)
@@ -647,26 +647,26 @@ def eigvalsh(
     
     With multiple :code:`ivy.Container` inputs:
     
-    >>> x = ivy.Container(a = ivy.native_array[[2, 4],\
-                                               [6, 8]],\
-                          b = ivy.native_array([[1, 2],\
+    >>> x = ivy.Container(a = ivy.native_array[[2, 4], \
+                                               [6, 8]], \
+                          b = ivy.native_array([[1, 2], \
                                                [3, 4]]))
     >>> y = ivy.eigvalsh(x)
     >>> print(y)
     {
         
-      a: ivy.array([-1.70820393, 11.70820393]),\
+      a: ivy.array([-1.70820393, 11.70820393]), \
       b: ivy.array([-0.85410197,  5.85410197])
     
     }
     
     With multiple :code:`ivy.Array` inputs:   
     
-    >>> x = ivy.array([[2, 4],\
+    >>> x = ivy.array([[2, 4], \
                        [6, 8]])
                                    
-    >>> y = ivy.array([[2, 5, 9],\
-                       [2, 5 ,7],\
+    >>> y = ivy.array([[2, 5, 9], \
+                       [2, 5 ,7], \
                        [1, 7, 8]])
     >>> e, e_1 = ivy.eigvalsh(x, y)
     >>> print(e, e_1)
