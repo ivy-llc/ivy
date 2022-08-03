@@ -18,9 +18,7 @@ import ivy.functional.backends.torch as ivy_torch
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.sigmoid"
-    ),
+    num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
     native_array=st.booleans(),
 )
 def test_torch_sigmoid(
