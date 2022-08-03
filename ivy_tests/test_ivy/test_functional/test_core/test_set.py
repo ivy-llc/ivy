@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import strategies as st, given
+from hypothesis import strategies as st, given, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -16,7 +16,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_num_dims=3,
         min_dim_size=1,
         max_dim_size=3,
-        safety_factor=1.0,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_values"),
     data=st.data(),
@@ -35,6 +34,7 @@ def test_unique_values(
     device,
 ):
     dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -57,7 +57,6 @@ def test_unique_values(
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
-        safety_factor=1.0,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_all"),
     data=st.data(),
@@ -75,6 +74,7 @@ def test_unique_all(
     device,
 ):
     dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -97,7 +97,6 @@ def test_unique_all(
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=5,
-        safety_factor=1.0,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_counts"),
     data=st.data(),
@@ -115,6 +114,7 @@ def test_unique_counts(
     device,
 ):
     dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -137,7 +137,6 @@ def test_unique_counts(
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=5,
-        safety_factor=1.0,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_inverse"),
     data=st.data(),
@@ -155,6 +154,7 @@ def test_unique_inverse(
     device,
 ):
     dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
         input_dtypes=dtype,
