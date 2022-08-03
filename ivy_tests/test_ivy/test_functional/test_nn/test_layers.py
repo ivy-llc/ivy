@@ -255,6 +255,7 @@ def test_scaled_dot_product_attention(
         mask=np.asarray(mask, dtype=dtype),
     )
 
+
 @st.composite
 def x_and_mha(draw, dtypes):
     dtype = draw(dtypes)
