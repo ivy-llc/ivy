@@ -29,6 +29,7 @@ jobs:
       #     rm examples.zip
 
       - name: Run Random Tests
+        id: tests
         run: |
           cd ivy
           mkdir -p .hypothesis
