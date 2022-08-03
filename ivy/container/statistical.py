@@ -164,8 +164,8 @@ class ContainerWithStatistical(ContainerBase):
         >>> x.var(out=y)
         >>> print(y)
         {
-            c: ivy.array(0.6666667),
-            d: ivy.array(0.6666667)
+            a: ivy.array(0.6666667),
+            b: ivy.array(0.6666667)
         }
 
         >>> x = ivy.Container(a=ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]]), \
