@@ -9,6 +9,19 @@ from typing import List, Optional, Tuple, Union, Sequence
 import ivy
 
 
+def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
+
+    # Get the dilated kernel size
+    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
+
+    if padding == 'VALID':
+        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
+    elif padding == 'SAME':
+        dim_size = dim_size * stride_size
+
+    return dim_size
+
+
 # noinspection PyUnresolvedReferences
 def conv1d(
     x: torch.Tensor,
@@ -144,31 +157,94 @@ conv2d.unsupported_dtypes = ("float16",)
 def conv2d_transpose(
     x: torch.Tensor,
     filters: torch.Tensor,
-    strides: int,
+    strides: Union[int, Tuple[int, int]],
     padding: str,
-    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    output_shape=None,
     data_format: str = "NHWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int, int]]= 1,
     *,
     out: Optional[torch.Tensor] = None
 ):
-    filter_shape = list(filters.shape[0:1])
-    filters = filters.permute(2, 3, 0, 1)
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    filter_shape = list(filters.shape[0:2])
+    filters = filters.permute(3, 2, 0, 1)
+
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
+    new_h = _deconv_length(
+        x.shape[2],
+        strides[0],
+        filter_shape[0],
+        padding,
+        dilations[0]
+    )
+    new_w = _deconv_length(
+        x.shape[3],
+        strides[1],
+        filter_shape[1],
+        padding,
+        dilations[1]
+    )
+    output_shape = [new_h, new_w]
+    not_valid_h = False
+    not_valid_w = False
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
+        out_h = (x.shape[2] - 1) * strides[0] + dilations[0] * (filters.shape[2] - 1) + 1
+        out_w = (x.shape[3] - 1) * strides[1] + dilations[1] * (filters.shape[3] - 1) + 1
+        output_padding = [max(new_h - out_h, 0), max(new_w - out_w, 0)]
     elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
+        filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
+        filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
+        if output_shape[1] % strides[1] == 0:
+            pad_w = max(filter_shape[1] - strides[1], 0)
+        else:
+            pad_w = max(filter_shape[1] - (output_shape[1] % strides[1]), 0)
+
+        if output_shape[0] % strides[0] == 0:
+            pad_h = max(filter_shape[0] - strides[0], 0)
+        else:
+            pad_h = max(filter_shape[0] - (output_shape[0] % strides[0]), 0)
+
+        if pad_h % 2 != 0:
+            pad_h -= 1
+            not_valid_h = True
+        if pad_w % 2 != 0:
+            pad_w -= 1
+            not_valid_w = True
+        pad_h_ = pad_h // 2
+        pad_w_ = pad_w // 2
+        out_h = (x.shape[2] - 1) * strides[0] - 2 * pad_h_ + dilations[0] * \
+                (filters.shape[2] - 1) + 1
+        out_w = (x.shape[3] - 1) * strides[1] - 2 * pad_w_ + dilations[1] * \
+                (filters.shape[3] - 1) + 1
+        padding_list = [pad_h_, pad_w_]
+        output_padding = [max(new_h - out_h, 0), max(new_w - out_w, 0)]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
     res = torch.nn.functional.conv_transpose2d(
-        x, filters, None, strides, padding_list, dilation=dilations
+        x,
+        filters,
+        None,
+        strides,
+        padding_list,
+        dilation=dilations,
+        output_padding=output_padding
     )
-    return res.permute(0, 2, 3, 1)
+    if not_valid_h:
+        res = res[:, :, 0:-1, :]
+    if not_valid_w:
+        res = res[:, :, :, 0:-1]
+    if data_format == "NHWC":
+        res = res.permute(0, 2, 3, 1)
+    return res
+
+
+conv2d_transpose.unsupported_dtypes = ('float16',)
 
 
 # noinspection PyUnresolvedReferences
