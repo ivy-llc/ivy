@@ -108,7 +108,6 @@ def test_linear(
         max_num_dims=1,
         min_dim_size=2,
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     data=st.data(),
     prob=st.floats(
         min_value=0.10000000149011612,
@@ -116,7 +115,6 @@ def test_linear(
         width=64
     ),
     scale=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="dropout"),
     native_array=st.booleans(),
     container=st.booleans(),
@@ -129,7 +127,6 @@ def test_dropout(
     dtype_and_x,
     prob,
     scale,
-    dtype,
     as_variable,
     with_out,
     num_positional_args,
