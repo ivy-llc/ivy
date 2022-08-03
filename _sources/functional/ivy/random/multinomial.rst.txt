@@ -2,6 +2,12 @@ multinomial
 ===========
 
 .. autofunction:: ivy.functional.ivy.random.multinomial
+
+.. autofunction:: ivy.array.array_methods.multinomial
+
+.. autofunction:: ivy.container.container_methods.multinomial
+
+.. autofunction:: ivy.container.container_methods.static_multinomial
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ multinomial
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: multinomial
+
+   multinomial/multinomial_functional.rst
+   multinomial/multinomial_array.rst
+   multinomial/multinomial_container.rst
+   multinomial/static_multinomial_container.rst
+
