@@ -17,7 +17,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union
+from typing import Union, Iterable, Dict
 from builtins import set
 
 # local
@@ -1623,7 +1623,6 @@ class ContainerBase(dict, abc.ABC):
                 ]
             )
         )
-        )
 
     def minimum(
         self,
@@ -2548,128 +2547,6 @@ class ContainerBase(dict, abc.ABC):
             lambda x, kc: ivy.einops_repeat(x, pattern, **axes_lengths)
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-)
-
-
-    def matrix_norm(
-        self,
-        ord=2,
-        keepdims=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Compute matrix p-norm for each array in the container.
-
-        Parameters
-        ----------
-        p
-            Order of the norm. Default is 2.
-        axis
-            If axis is an integer, it specifies the axis of x along which to compute the
-            matrix norms. Default is None, in which case the flattened array is
-            considered.
-        keepdims
-            If this is set to True, the axes which are normed over are left in the
-            result as dimensions with size one. With this option the result will
-            broadcast correctly against the original x. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        ord
-            Default value = 2)
-
-        Returns
-        -------
-            Container object with the matrix norms for each sub-array returned.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def slice_via_key(self, slice_key):
-        """Get slice of container, based on key.
-
-        Parameters
-        ----------
-        slice_key
-            key to slice container at.
-
-        Returns
-        -------
-            Container object sliced at desired key.
-
-        """
-        return_dict = dict()
-        for key, value in self.items():
-            if key == slice_key:
-                return value
-            elif isinstance(value, ivy.Container):
-                return_dict[key] = value.slice_via_key(slice_key)
-            else:
-                return_dict[key] = value
-        return ivy.Container(return_dict, **self._config)
-
-    def as_bools(
-        self,
-        assert_is_bool=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Return boolean evaluation for all nested items in the container.
-
-        Parameters
-        ----------
-        assert_is_bool
-            Whether or not to assert the entry is of type Boolean.
-            (Default value = False)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all entries boolean evaluated.
-
-        """
-
-        def _ret_bool(x):
-            if assert_is_bool:
-                assert isinstance(x, bool)
-                return x
-            return bool(x)
-
-        return self.map(
-            lambda x, kc: _ret_bool(x),
             key_chains,
             to_apply,
             prune_unapplied,
