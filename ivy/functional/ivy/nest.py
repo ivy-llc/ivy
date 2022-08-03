@@ -540,7 +540,8 @@ def map(
 
     With :code:`int` inputs:
 
-    >>> def special_square(x:float) -> float: return np.square(x)
+    >>> def special_square(x:float) -> float:
+    >>> return np.square(x)
     >>> results = ivy.map( \
     >>>     fn = special_square, \
     >>>     constant = None, \
@@ -557,7 +558,8 @@ def map(
     >>> print(results)
     1.6666666666666667
 
-    >>> def special_pow(x:float,y:float) ->float : return np.power(x,y)
+    >>> def special_pow(x:float,y:float) ->float : 
+    >>>     return np.power(x,y)
     >>> results = ivy.map( \
     >>>     fn = special_pow, \
     >>>     constant = {'y':[0,1]}, \
@@ -576,7 +578,7 @@ def map(
 
     With :code:`float` inputs:
 
-    >>> def linear_model(w:float, x:float, b:float) -> float: \
+    >>> def linear_model(w:float, x:float, b:float) -> float: 
     >>>     return w*x + b
     >>> results = ivy.map( \
     >>>         fn = linear_model, \
