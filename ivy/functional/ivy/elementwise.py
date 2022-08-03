@@ -1392,7 +1392,7 @@ def bitwise_xor(
     >>> b = ivy.array([78])
     >>> z = x ^ y
     >>> print(z)
-    {a:ivy.array([True])}
+    {a:ivy.array([85])}
 
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
@@ -1401,7 +1401,7 @@ def bitwise_xor(
     >>> y = ivy.array([12, 13])
     >>> z = x ^ y
     >>> print(z)
-    {a:ivy.array([True,True])}
+    {a: ivy.array([-79, 24])}
     """
     return ivy.current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
@@ -2554,6 +2554,74 @@ def isfinite(
         finite and ``False`` otherwise. The returned array must have a data type of
         ``bool``.
 
+    This method conforms to the
+    `Array API Standard<https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the `docstring 
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isfinite.html>`
+    _ in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0, ivy.nan, -ivy.inf, float('inf')])
+    >>> y = ivy.isfinite(x)
+    >>> print(y)
+    ivy.array([ True, False, False, False])
+
+    >>> x = ivy.array([0, ivy.nan, -ivy.inf])
+    >>> y = ivy.zeros(3)
+    >>> ivy.isfinite(x, out=y)
+    >>> print(y)
+    ivy.array([ True, False, False])
+
+    >>> x = ivy.array([[9, float('-0')], [ivy.nan, ivy.inf]])
+    >>> ivy.isfinite(x, out=x)
+    >>> print(x)
+    ivy.array([[ True,  True],
+        [False, False]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0, -0, ivy.nan , -1, ivy.inf])
+    >>> y = ivy.isfinite(x)
+    >>> print(y)
+    ivy.array([ True,  True, False,  True, False])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
+                          b=ivy.array([float('-0'), ivy.nan]))
+    >>> y = ivy.isfinite(x)
+    >>> print(y)
+    {
+        a: ivy.array([True, True]),
+        b: ivy.array([True, False])
+    }
+
+    With :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[9, float('-0')], [ivy.nan, ivy.inf]])
+    >>> y = x.isfinite()
+    >>> print(y)
+    ivy.array([[ True,  True],
+        [False, False]])
+
+    With :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
+                          b=ivy.array([float('-0'), ivy.nan]))
+    >>> y = x.isfinite()
+    >>> print(y)
+    {
+        a: ivy.array([True, True]),
+        b: ivy.array([True, False])
+    }
     """
     return ivy.current_backend(x).isfinite(x, out=out)
 

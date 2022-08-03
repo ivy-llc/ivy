@@ -352,15 +352,23 @@ def copy_array(
 ) -> ivy.Array:
     """Copy an array.
 
+    Parameters
+    ----------
+    x
+        input array.
+
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
     Returns
     -------
     ret
         a copy of the input array ``x``.
 
-    Functional Examples
+    Examples
     --------
-
-    With :code:`ivy.Array` input:
+    With one :code:`ivy.Array` input:
 
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.copy_array(x)
@@ -373,28 +381,17 @@ def copy_array(
     ivy.array([1, 0, 1, 1])
 
     >>> x = ivy.array([1, 0, 1, -1])
-    >>> y = ivy.copy_array(x)
+    >>> y = ivy.zeros((1, 4))
+    >>> ivy.copy_array(x, out=y)
     >>> print(y)
     ivy.array([1, 0, 1, -1])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-1, 0, 1])
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    ivy.array([-1, 0, 1])
-
-    >>> x = ivy.native_array([1, 0, 1, 1])
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> ivy.copy_array(x, out=x)
+    >>> print(x)
     ivy.array([1, 0, 1, 1])
 
-    >>> x = ivy.native_array([1, 0, 1, -1])
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    ivy.array([1, 0, 1, -1])
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+    With one :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
     >>> y = ivy.copy_array(x)
@@ -412,84 +409,18 @@ def copy_array(
         b: ivy.array([-1, 0, 1, 1, 1, 0])
     }
 
+    With one :code:`ivy.Container` static method:
+
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]),\
-                          c=ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1]),
-        b: ivy.array([-1, 0, 1, 1, 1, 0]),
-        c: ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1])
-    }
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1])
-    }
-
-    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]),\
-                          b=ivy.native_array([-1, 0, 1, 1, 1, 0]))
-    >>> y = ivy.copy_array(x)
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.Container.static_copy_array(x)
     >>> print(y)
     {
         a: ivy.array([-1, 0, 1]),
         b: ivy.array([-1, 0, 1, 1, 1, 0])
     }
-
-    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]),\
-                          b=ivy.native_array([-1, 0, 1, 1, 1, 0]),\
-                          c=ivy.native_array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1]),
-        b: ivy.array([-1, 0, 1, 1, 1, 0]),
-        c: ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1])
-    }
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array`\
-                                        and :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.native_array([-1, 0, 1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1]),
-        b: ivy.array([-1, 0, 1])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
-                          b=ivy.native_array([1, 0, 1, 1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([1, 0, 1, 1]),
-        b: ivy.array([1, 0, 1, 1])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1, 0, 1, -1]),\
-                          b=ivy.native_array([1, 0, 1, -1]),\
-                          c=ivy.native_array([1, 0, 1, -1, 1, 1, 0]),\
-                          d=ivy.array([1, 0, 1, -1, 0, 1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([1, 0, 1, -1]),
-        b: ivy.array([1, 0, 1, -1]),
-        c: ivy.array([1, 0, 1, -1, 1, 1, 0]),
-        d: ivy.array([1, 0, 1, -1, 0, 1])
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance method:
+    
+    With one :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([-1, 0, 1])
     >>> y = x.copy_array()
@@ -500,11 +431,17 @@ def copy_array(
     >>> y = x.copy_array()
     >>> print(y)
     ivy.array([1, 0, 1, 1])
+    
+    With :code:`ivy.Container` instance method:
 
-    >>> x = ivy.array([1, 0, 1, -1])
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1]))
     >>> y = x.copy_array()
     >>> print(y)
-    ivy.array([1, 0, 1, -1])
+    {
+        a: ivy.array([1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1])
+    }
 
     """
     return current_backend(x).copy_array(x, out=out)
@@ -1692,11 +1629,29 @@ def try_else_none(fn):
 
 
 def arg_names(receiver):
-    """Get the expected keyword arguments for a function or class constructor.
+    """
+    Gets the expected keyword arguments for a function or class constructor.
 
     Parameters
     ----------
     receiver
+        Function or class constructor
+
+    Returns
+    -------
+    ret
+        List containing the keyword arguments' names for a function or class constructor
+
+    Examples
+    --------
+    >>> x = ivy.arg_names(ivy.tan)
+    >>> print(x)
+    ['x', 'out']
+
+    >>> x = ivy.arg_names(ivy.optimizers.Adam)
+    >>> print(x)
+    ['lr', 'beta1', 'beta2', 'epsilon', 'inplace',
+    'stop_gradients', 'compile_on_next_step', 'device']
 
     """
     return list(inspect.signature(receiver).parameters.keys())
@@ -2089,14 +2044,30 @@ def print_all_arrays_in_memory():
 
 
 def set_queue_timeout(timeout):
-    """Set the global queue timeout values (in seconds). Default value without this
-    function being called is 10 seconds.
+    """
+    Set the global queue timeout value (in seconds) 
+    Default value without this function being called is 15 seconds.
 
     Parameters
     ----------
     timeout
-        The timeout to set in seconds.
+        The timeout when waiting for containers to arrive from the queues.
+        To be set in seconds.
 
+
+    Examples
+    --------
+    >> x = ivy.queue_timeout()
+    >> print(x)
+    15.0   
+    
+    To set the timeout for example 30 seconds
+
+    >> ivy.set_queue_timeout(30)
+    >> y = ivy.queue_timeout()
+    >> print(y)
+    30 
+    
     """
     global TIMEOUT
     TIMEOUT = timeout

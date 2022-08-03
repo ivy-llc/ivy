@@ -522,7 +522,12 @@ def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
         ret_np_flat = [ret_np_flat]
     if type(ret_from_np_flat) != list:
         ret_from_np_flat = [ret_from_np_flat]
-    assert len(ret_np_flat) == len(ret_from_np_flat)
+    assert len(ret_np_flat) == len(ret_from_np_flat), (
+        "len(ret_np_flat) != len(ret_from_np_flat):\n\n"
+        "ret_np_flat:\n\n{}\n\nret_from_np_flat:\n\n{}".format(
+            ret_np_flat, ret_from_np_flat
+        )
+    )
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
@@ -2197,3 +2202,6 @@ def handle_cmd_line_args(test_fn):
         return test_fn(*args, **kwargs)
 
     return new_fn
+
+def gradient_incompatible_function(*,fn):
+    return not ivy.supports_gradients and hasattr(fn, "computes_gradients") and fn.computes_gradients
