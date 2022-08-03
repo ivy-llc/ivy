@@ -129,7 +129,7 @@ class ContainerWithStatistical(ContainerBase):
             a container contianing different arrays depends on parameters. see below
             for the types of arrays in the returned container if the variance was
             computed over the entire array, a zero-dimensional array containing the
-            variance; otherwise, a non-zero-dimensional array containing the variances. 
+            variance; otherwise, a non-zero-dimensional array containing the variances.
             The returned container must have the same data type as self.
 
         Examples
@@ -151,7 +151,7 @@ class ContainerWithStatistical(ContainerBase):
             d: ivy.array(0.66666667)
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0, 1, 2], [3, 4, 5]]), 
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2], [3, 4, 5]]),
                               b=ivy.array([[6, 7, 8], [9, 10, 11]]))
         >>> y = ivy.Container(c=ivy.array([0., 0., 0.]), d=ivy.array([0., 0., 0.]))
         >>> x.var(axis=0, out=y)
@@ -160,6 +160,7 @@ class ContainerWithStatistical(ContainerBase):
             a: ivy.array([2.25, 2.25, 2.25]),
             b: ivy.array([2.25, 2.25, 2.25])
         }
+
         """
         return self.handle_inplace(
             self.map(
