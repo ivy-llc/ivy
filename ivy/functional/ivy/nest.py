@@ -541,16 +541,14 @@ def map(
     With :code:`int` inputs:
 
     >>> def special_square(x : float) -> float : return np.square(x)
-    >>> results = ivy.map( \
-    >>>     fn = special_square, \
+    >>> results = ivy.map(fn = special_square, \
     >>>     constant = None, \
     >>>     unique = {'x' : [1,2,3]}, \
     >>>     mean = False)
     >>> print(results)
     [1, 4, 9]
 
-    >>> results = ivy.map( \
-    >>>     fn = special_square, \
+    >>> results = ivy.map(fn = special_square, \
     >>>     constant = None, \
     >>>     unique = {'x':[0,1,2]},\
     >>>     mean = True)
@@ -558,16 +556,14 @@ def map(
     1.6666666666666667
 
     >>> def special_pow(x:float,y:float) ->float : return np.power(x,y)
-    >>> results = ivy.map( \
-    >>>     fn = special_pow, \
+    >>> results = ivy.map(fn = special_pow, \
     >>>     constant = {'y':[0,1]}, \
     >>>     unique = {'x':[1,2,3]}, \
     >>>     mean = False)
     >>> print(results)
     [array([1, 1], dtype=int32), array([1, 2], dtype=int32), array([1, 3], dtype=int32)]
 
-    >>> results = ivy.map( \
-    >>>     fn = special_pow, \
+    >>> results = ivy.map(fn = special_pow, \
     >>>     constant = {'y':[0,1]}, \
     >>>     unique = {'x':[1,2,3]}, \
     >>>     mean = True)
@@ -577,8 +573,7 @@ def map(
     With :code:`float` inputs:
 
     >>> def linear_model(w:float, x:float, b:float) -> float: return w*x + b
-    >>> results = ivy.map( \
-    >>>     fn = linear_model, \
+    >>> results = ivy.map(fn = linear_model, \
     >>>     constant = {'w':10., 'b':1.}, \
     >>>     unique = {'x':[0.,1.,2.]}, \
     >>>     mean = False)
@@ -587,8 +582,7 @@ def map(
 
     With :code:`ivy.Array` inputs:
 
-    >>> results = ivy.map(
-    >>>     fn = linear_model, \
+    >>> results = ivy.map(fn = linear_model, \
     >>>     constant = {'w':ivy.array([1.,0.,1.]), \
     >>>            'b':ivy.array([0.,10.,100.])}, \
     >>>     unique = {'x':[ivy.array([0.,1.,0.]), \
@@ -598,8 +592,7 @@ def map(
     [ivy.array([  0.,  10., 100.]),
     ivy.array([  1.,  10., 101.])]
 
-    >>> results = ivy.map( \
-    >>>     fn = linear_model, \
+    >>> results = ivy.map(fn = linear_model, \
     >>>     constant = {'w':ivy.array([1.,0.,1.]), \
     >>>                 'b':ivy.array([0.,10.,100.])},\
     >>>     unique = {'x':[ivy.array([0.,1.,0.]), \
