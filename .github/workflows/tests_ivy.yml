@@ -4,7 +4,7 @@ jobs:
   run-nightly-tests:
     strategy:
       matrix:
-        backends : [numpy, torch, jax, tensorflow]
+        backends : ["numpy", "torch", "jax", "tensorflow"]
         submodules: [test_creation, test_device, test_dtype, test_elementwise, test_general, test_gradients, test_linalg
                     test_manipulation, test_meta, test_nest, test_random, test_searching, test_set, test_sorting, test_statistical
                     test_utility]
@@ -21,7 +21,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: |
-            ivy/.artifacts
+            ivy/artifacts/
       - name: Cache hypothesis
         uses: actions/cache@v3
         with:
@@ -33,5 +33,5 @@ jobs:
         run: |
           cd ivy
           mkdir -p .hypothesis
-          mkdir -p .artifacts
+          mkdir -p  artifacts
           docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend ${{matrix.backends}} ivy/ivy_tests/test_ivy/test_functional/test_nn/${{matrix.submodules}}.py
