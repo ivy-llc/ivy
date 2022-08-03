@@ -174,6 +174,7 @@ def mean(
 
     Examples
     --------
+    
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([5., 6., 7.])
