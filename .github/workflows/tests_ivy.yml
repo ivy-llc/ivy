@@ -31,19 +31,3 @@ jobs:
           ./test_ivy.sh ${{ matrix.backends }} ${{ matrix.submodules }}
         continue-on-error: true
 
-      - name: Create Artifacts Folder
-        run: |
-        cd ivy
-        mkdir downloads
-
-      - name: Add artifacts to publish
-        run:
-          cd downloads
-          echo 'alpha' > alpha.html
-
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ivy-test-artifacts
-          path: ivy/downloads
