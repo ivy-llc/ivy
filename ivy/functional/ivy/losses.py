@@ -41,6 +41,9 @@ def cross_entropy(
     ret
         The cross-entropy loss between the given distributions
 
+    Both the description and the type hints above assumes an array input for simplicity but this function is
+    *nestable*, and therefore also accepts :code:`ivy.Container` instances in place of any of the arguments.
+
     Examples
     --------
     >>> x = ivy.array([0, 0, 1, 0])
