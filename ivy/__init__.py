@@ -477,6 +477,8 @@ backend = "none"
 
 native_inplace_support = None
 
+supports_gradients = None
+
 if "IVY_BACKEND" in os.environ:
     ivy.set_backend(os.environ["IVY_BACKEND"])
 

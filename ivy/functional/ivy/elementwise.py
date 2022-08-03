@@ -1392,7 +1392,7 @@ def bitwise_xor(
     >>> b = ivy.array([78])
     >>> z = x ^ y
     >>> print(z)
-    {a:ivy.array([True])}
+    {a:ivy.array([85])}
 
     With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
 
@@ -1401,7 +1401,7 @@ def bitwise_xor(
     >>> y = ivy.array([12, 13])
     >>> z = x ^ y
     >>> print(z)
-    {a:ivy.array([True,True])}
+    {a: ivy.array([-79, 24])}
     """
     return ivy.current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
@@ -2222,7 +2222,7 @@ def greater(
                       [False, False, False],
                       [False, False, False]])
     }
-    
+
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
@@ -2550,6 +2550,74 @@ def isfinite(
         finite and ``False`` otherwise. The returned array must have a data type of
         ``bool``.
 
+    This method conforms to the
+    `Array API Standard<https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the `docstring 
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isfinite.html>`
+    _ in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0, ivy.nan, -ivy.inf, float('inf')])
+    >>> y = ivy.isfinite(x)
+    >>> print(y)
+    ivy.array([ True, False, False, False])
+
+    >>> x = ivy.array([0, ivy.nan, -ivy.inf])
+    >>> y = ivy.zeros(3)
+    >>> ivy.isfinite(x, out=y)
+    >>> print(y)
+    ivy.array([ True, False, False])
+
+    >>> x = ivy.array([[9, float('-0')], [ivy.nan, ivy.inf]])
+    >>> ivy.isfinite(x, out=x)
+    >>> print(x)
+    ivy.array([[ True,  True],
+        [False, False]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0, -0, ivy.nan , -1, ivy.inf])
+    >>> y = ivy.isfinite(x)
+    >>> print(y)
+    ivy.array([ True,  True, False,  True, False])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
+                          b=ivy.array([float('-0'), ivy.nan]))
+    >>> y = ivy.isfinite(x)
+    >>> print(y)
+    {
+        a: ivy.array([True, True]),
+        b: ivy.array([True, False])
+    }
+
+    With :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[9, float('-0')], [ivy.nan, ivy.inf]])
+    >>> y = x.isfinite()
+    >>> print(y)
+    ivy.array([[ True,  True],
+        [False, False]])
+
+    With :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
+                          b=ivy.array([float('-0'), ivy.nan]))
+    >>> y = x.isfinite()
+    >>> print(y)
+    {
+        a: ivy.array([True, True]),
+        b: ivy.array([True, False])
+    }
     """
     return ivy.current_backend(x).isfinite(x, out=out)
 
@@ -2755,7 +2823,7 @@ def isnan(
     >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
     >>> z = ivy.isnan(x)
     >>> print(z)
-    ivy.array([[[False], 
+    ivy.array([[[False],
                 [False],
                 [False]]])
 
@@ -2775,9 +2843,9 @@ def isnan(
     ivy.array([[False, False, False],
        [False, False, False],
        [False, False, False]])
-    
+
     With :code:`ivy.NativeArray` inputs:
-    
+
     >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
     >>> z = ivy.isnan(x)
     >>> print(z)
@@ -2795,8 +2863,8 @@ def isnan(
         a: ivy.array([False, True, False]),
         b: ivy.array([True, False, False])
     }
-    
-    
+
+
     Instance Method Examples
     ------------------------
     With :code:`ivy.Array` inputs:
@@ -2827,9 +2895,9 @@ def isnan(
     ivy.array([[False, False, False],
         [False, False, False],
         [False, False, False]])
-    
+
     With :code:`ivy.NativeArray` inputs:
-    
+
     >>> x = ivy.native_array([[1], [5], [-ivy.nan]])
     >>> x.isnan()
     ivy.array([[False],
@@ -2857,7 +2925,7 @@ def isnan(
         a: ivy.array([False, True, False]),
         b: ivy.array([True, False, False])
     }
-    
+
     """
     return ivy.current_backend(x).isnan(x, out=out)
 
@@ -3078,7 +3146,6 @@ def log10(
         c: ivy.array([0.898, 0.0414, 0.])
     }
     """
-
     return ivy.current_backend(x).log10(x, out=out)
 
 
@@ -3090,8 +3157,22 @@ def log1p(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates an implementation-dependent approximation to log(1+x), where log
+    """
+    Calculates an implementation-dependent approximation to log(1+x), where log
     refers to the natural (base e) logarithm.
+    .. note::
+       The purpose of this function is to calculate ``log(1+x)`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``log(1+x)``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is less than ``-1``, the result is ``NaN``.
+    - If ``x_i`` is ``-1``, the result is ``-infinity``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
 
     Parameters
     ----------
@@ -3104,7 +3185,62 @@ def log1p(
     Returns
     -------
     ret
-        a new array containing the evaluated result for each element in x.
+        an array containing the evaluated Natural logarithm of 1 + x for each element in
+        ``x``. The returned array must have a floating-point data type determined by
+        :ref:`type-promotion`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1 , 2 ,3 ])
+    >>> y = ivy.log1p(x)
+    >>> print(y)
+    ivy.array([0.693, 1.1  , 1.39 ])
+
+    >>> x = ivy.array([0 , 1 ])
+    >>> y = ivy.zeros(2)
+    >>> ivy.log1p(x , out = y)
+    >>> print(y)
+    ivy.array([0.   , 0.693])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], \
+                   [4.4, 5.5, 6.6]])
+    >>> ivy.log1p(x , out = x)
+    >>> print(x)
+    ivy.array([[0.742, 1.16 , 1.46 ],
+           [1.69 , 1.87 , 2.03 ]])
+
+    >>> x = ivy.array([1e-9] , dtype = ivy.float32)
+    >>> y = x.log1p()
+    >>> print(y)
+    ivy.array([1.e-09])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([10., 20.])
+    >>> y = ivy.log1p(x)
+    >>> print(y)
+    ivy.array([2.4 , 3.04])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))
+    >>> y = ivy.Container.static_log1p(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.693, 1.1]),
+        b: ivy.array([1.39, 1.61, 1.81])
+    }
 
     """
     return ivy.current_backend(x).log1p(x, out=out)
@@ -3238,9 +3374,9 @@ def logical_and(
     >>> print(y)
     ivy.array([True, False, False])
 
-    >>> x = ivy.Container(a=ivy.array([False, True, True]), \
+    x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
-    >>> y = ivy.Container(a=ivy.array([True, True, False]), \
+    y = ivy.Container(a=ivy.array([True, True, False]), \
         b=ivy.array([False, False, True]))
     print(ivy.logical_and(y, x))
     {
@@ -3260,6 +3396,10 @@ def logical_and(
     >>> print(ivy.logical_and(x, y))
     ivy.array([True, False, False])
 
+    >>> ivy.logical_and(x, y, out=y)
+    >>> print(y)
+    ivy.array([True, False, False])
+
     >>> x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
     >>> y = ivy.array([True, False, True])
@@ -3269,8 +3409,8 @@ def logical_and(
         b: ivy.array([True, False, False])
     }
 
-    >>> ivy.logical_and(y, x, out=x)
-    >>> print(x)
+    >>> ivy.logical_and(y, x, out=y)
+    >>> print(y)
     {
         a: ivy.array([False, False, True]),
         b: ivy.array([True, False, False])
@@ -4158,7 +4298,7 @@ def round(
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.round.html>`_ # noqa
     in the standard.
-    
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.

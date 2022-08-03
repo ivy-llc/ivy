@@ -207,7 +207,7 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, device, call
 
 
 @st.composite
-def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
+def x_and_filters(draw, dtypes, data_format, type: str = "2d", transpose=False):
     data_format = draw(data_format)
     dtype = draw(dtypes)
     dilations = draw(st.integers(min_value=1, max_value=3))
@@ -219,7 +219,6 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                 st.integers(1, 3),
             )
         )
-
         min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         d_in = filter_shape[1]
         if data_format == "NWC":
@@ -247,7 +246,7 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                     st.integers(1, 3),
                 )
             )
-        else:
+        elif not transpose:
             filter_shape = draw(
                 st.tuples(
                     st.integers(3, 5),
@@ -256,9 +255,21 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                     st.integers(1, 3),
                 )
             )
-
-        min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        else:
+            filter_shape = draw(
+                st.tuples(
+                    st.integers(3, 5),
+                    st.integers(3, 5),
+                    st.shared(st.integers(1, 3), key="d_in"),
+                    st.shared(st.integers(1, 3), key="d_in"),
+                )
+            )
+        if not transpose:
+            min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+            min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+        else:
+            min_x_height = 1
+            min_x_width = 1
         d_in = filter_shape[2]
         if data_format == "NHWC":
             x_shape = draw(
@@ -278,7 +289,6 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d"):
                     st.integers(min_value=min_x_width, max_value=100),
                 )
             )
-
     else:
         filter_shape = draw(
             st.tuples(
@@ -476,30 +486,24 @@ def test_conv2d(
 
 # conv2d_transpose
 @given(
-    array_shape=helpers.lists(arg=st.integers(1, 5), min_size=3, max_size=3),
-    filter_shape=st.integers(min_value=1, max_value=5),
+    x_f_d_df=x_and_filters(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        data_format=st.sampled_from(["NHWC", "NCHW"]),
+        type="2d",
+        transpose=True
+    ),
     stride=st.integers(min_value=1, max_value=3),
     pad=st.sampled_from(["VALID", "SAME"]),
-    output_shape=helpers.lists(arg=st.integers(1, 5), min_size=4, max_size=4),
-    data_format=st.sampled_from(["NHWC", "NCHW"]),
-    dilations=st.integers(min_value=1, max_value=5),
-    dtype=helpers.list_of_length(
-        x=st.sampled_from(ivy_np.valid_float_dtypes), length=2
-    ),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_conv2d_transpose(
     *,
-    array_shape,
-    filter_shape,
+    x_f_d_df,
     stride,
     pad,
-    output_shape,
-    data_format,
-    dilations,
-    dtype,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -508,21 +512,11 @@ def test_conv2d_transpose(
     fw,
     device,
 ):
-    # tf conv2d transpose does not work when CUDA is installed, but array is on CPU
-    assume(not (fw == "tensorflow" and "cpu" in device))
-
-    # numpy and jax do not yet support conv2d_transpose
-    assume(not (fw in ["numpy", "jax"]))
-
-    # not implemented for Half
-    assume(not (fw == "torch" and ("16" in dtype[0] or "16" in dtype[1])))
-
-    x = np.random.uniform(size=array_shape).astype(dtype[0])
-    x = np.expand_dims(x, (-1))
-    filters = np.random.uniform(size=(filter_shape, filter_shape, 1, 1)).astype(
-        dtype[1]
-    )
-
+    dtype, x, filters, dilations, data_format = x_f_d_df
+    dtype = [dtype] * 2
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -534,11 +528,12 @@ def test_conv2d_transpose(
         fw=fw,
         fn_name="conv2d_transpose",
         device_=device,
-        x=x,
-        filters=filters,
+        ground_truth_backend="jax",
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
-        output_shape=tuple(output_shape),
+        output_shape=None,
         data_format=data_format,
         dilations=dilations,
     )
@@ -634,6 +629,7 @@ def test_conv3d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv3d",
+        ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
         strides=stride,

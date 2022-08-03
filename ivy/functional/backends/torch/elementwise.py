@@ -251,12 +251,10 @@ def divide(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    if ivy.is_array(x1):
-        ret = torch.div(x1, x2).type(x1.dtype)
-        return ret
-    else:
-        ret = torch.div(x1, x2).type(torch.float32)
-        return ret
+    ret=torch.div(x1, x2)
+    if not ivy.is_float_dtype(ret.dtype):
+        ret=torch.tensor(ret,dtype=ivy.default_float_dtype(as_native=True))
+    return ret
 
 
 divide.support_native_out = True
@@ -542,7 +540,6 @@ def remainder(
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     ret = torch.remainder(x1, x2, out=out)
-    ret[torch.isnan(ret)] = 0
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

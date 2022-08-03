@@ -167,12 +167,10 @@ def divide(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    if ivy.is_array(x1):
-        ret = tf.cast(tf.experimental.numpy.divide(x1, x2), x1.dtype)
-        return ret
-    else:
-        ret = tf.cast(tf.experimental.numpy.divide(x1, x2), "float32")
-        return ret
+    ret=tf.experimental.numpy.divide(x1, x2)
+    if not ivy.is_float_dtype(ret.dtype):
+        ret=tf.cast(ret,dtype=ivy.default_float_dtype(as_native=true))
+    return ret
 
 
 def equal(
@@ -414,8 +412,6 @@ def remainder(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    if (not np.all(x2)) or (np.any(x2) == -0) or (np.any(x1) == 0):
-        return ivy.asarray(np.remainder(x1, x2))
     return tf.experimental.numpy.remainder(x1, x2)
 
 

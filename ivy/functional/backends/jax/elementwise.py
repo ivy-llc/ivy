@@ -132,19 +132,14 @@ def cosh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cosh(x)
 
 
-def divide(
-    x1: Union[float, JaxArray],
-    x2: Union[float, JaxArray],
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+
+def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    if ivy.is_array(x1):
-        ret = jax.numpy.divide(x1, x2).astype(x1.dtype)
-        return ret
-    else:
-        ret = jax.numpy.divide(x1, x2).astype("float32")
-        return ret
+    ret=jax.numpy.divide(x1, x2)
+    if not ivy.is_float_dtype(ret.dtype):
+        ret=jnp.asarray(ret,dtype=ivy.default_float_dtype(as_native=True))
+    return ret
+
 
 
 def equal(

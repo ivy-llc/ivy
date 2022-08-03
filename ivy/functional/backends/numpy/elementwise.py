@@ -226,12 +226,10 @@ def divide(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    if ivy.is_array(x1):
-        ret = np.divide(x1, x2).astype(x1.dtype)
-        return ret
-    else:
-        ret = np.divide(x1, x2).astype("float32")
-        return ret
+    ret= np.divide(x1, x2)
+    if not ivy.is_float_dtype(ret.dtype):
+        ret=np.asarray(ret,dtype=ivy.default_float_dtype(as_native=True))
+    return ret
 
 
 divide.support_native_out = True
@@ -643,6 +641,7 @@ def erf(x, *, out: Optional[np.ndarray] = None):
     if hasattr(x, "dtype"):
         ret = np.asarray(_erf(x, out=out), dtype=x.dtype)
     return ret
+
 
 
 erf.support_native_out = True
