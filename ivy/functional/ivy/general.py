@@ -1426,12 +1426,89 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     x
         Input array.
     include_infs
-        Whether to include infs and -infs in the check. Default is True.
+        Whether to include ``+infinity`` and ``-infinity`` in the check. Default is True.
 
     Returns
     -------
     ret
         Boolean as to whether the array contains nans.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    False
+
+    >>> x = ivy.array([float('nan'), 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([float('inf'), 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([float('inf'), 2, 3])
+    >>> y = ivy.has_nans(x, False)
+    >>> print(y)
+    False
+
+    With :code: `ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 2, 3, float('nan')])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    {
+        a: false,
+        b: false
+    }
+
+    With one :code:`ivy.Container` static method:
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.Container.static_has_nans(x)
+    >>> print(y)
+    {
+        a: false,
+        b: false
+    }
+
+     With one :code:`ivy.Array` instance method:
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = x.has_nans()
+    >>> print(y)
+    False
+
+    With :code:`ivy.Container` instance method:
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1]))
+    >>> y = x.has_nans()
+    >>> print(y)
+    {
+        a: false,
+        b: false
+    }
 
     """
     return ivy.value_is_nan(ivy.sum(x), include_infs)
@@ -2045,7 +2122,7 @@ def print_all_arrays_in_memory():
 
 def set_queue_timeout(timeout):
     """
-    Set the global queue timeout value (in seconds) 
+    Set the global queue timeout value (in seconds)
     Default value without this function being called is 15 seconds.
 
     Parameters
@@ -2059,15 +2136,15 @@ def set_queue_timeout(timeout):
     --------
     >> x = ivy.queue_timeout()
     >> print(x)
-    15.0   
-    
+    15.0
+
     To set the timeout for example 30 seconds
 
     >> ivy.set_queue_timeout(30)
     >> y = ivy.queue_timeout()
     >> print(y)
-    30 
-    
+    30
+
     """
     global TIMEOUT
     TIMEOUT = timeout
@@ -2085,12 +2162,12 @@ def queue_timeout():
 
 def tmp_dir():
     """Get the path for directory that saves temporary files.
-    
+
     Returns
     -------
     ret
         The path of directory that saves temporary files.
-    
+
     """
     return TMP_DIR
 
