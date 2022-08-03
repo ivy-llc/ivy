@@ -62,7 +62,13 @@ def test_docstrings(backend):
     skip_arr_cont = [
         "cross_entropy",
     ]
-    currently_being_worked_on = []
+    currently_being_worked_on = [
+        "logical_and",
+        "matrix_rank",
+        "squeeze",
+        "to_list",
+        "log1p",
+    ]
 
     # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp + currently_being_worked_on
@@ -71,9 +77,9 @@ def test_docstrings(backend):
         if k == "Array":
             for method_name in dir(v):
                 method = getattr(ivy.Array, method_name)
-                if method_name in skip_arr_cont or helpers.docstring_examples_run(
-                    fn=method, from_array=True
-                ):
+                if method_name in (
+                    skip_arr_cont + currently_being_worked_on
+                ) or helpers.docstring_examples_run(fn=method, from_array=True):
                     continue
                 success = False
                 failures.append("Array." + method_name)
@@ -81,9 +87,9 @@ def test_docstrings(backend):
         elif k == "Container":
             for method_name in dir(v):
                 method = getattr(ivy.Container, method_name)
-                if method_name in skip_arr_cont or helpers.docstring_examples_run(
-                    fn=method, from_container=True
-                ):
+                if method_name in (
+                    skip_arr_cont + currently_being_worked_on
+                ) or helpers.docstring_examples_run(fn=method, from_container=True):
                     continue
                 success = False
                 failures.append("Container." + method_name)
