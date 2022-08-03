@@ -356,6 +356,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     """
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
+
 execute_with_gradients.computes_gradients = True
 
 
@@ -377,6 +378,7 @@ def value_and_grad(func):
 
     """
     return current_backend(None).value_and_grad(func)
+
 
 values_and_grad.computes_gradients = True
 
