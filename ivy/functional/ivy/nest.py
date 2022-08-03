@@ -541,11 +541,11 @@ def map(
     With :code:`int` inputs:
 
     >>> def special_square(x:float) -> float:
-    >>> return np.square(x)
+    >>>     return np.square(x)
     >>> results = ivy.map( \
     >>>     fn = special_square, \
     >>>     constant = None, \
-    >>>     unique = {'x' : [1,2,3]},\
+    >>>     unique = {'x' : [1,2,3]}, \
     >>>     mean = False)
     >>> print(results)
     [1, 4, 9]
@@ -578,8 +578,7 @@ def map(
 
     With :code:`float` inputs:
 
-    >>> def linear_model(w:float, x:float, b:float) -> float: 
-    >>>     return w*x + b
+    >>> def linear_model(w:float, x:float, b:float) -> float: return w*x + b
     >>> results = ivy.map( \
     >>>         fn = linear_model, \
     >>>         constant = {'w':10., 'b':1.}, \
@@ -604,7 +603,7 @@ def map(
     >>> results = ivy.map( \
     >>>     fn = linear_model, \
     >>>     constant = {'w':ivy.array([1.,0.,1.]), \
-    >>>         'b':ivy.array([0.,10.,100.])},\
+    >>>                 'b':ivy.array([0.,10.,100.])},\
     >>>     unique = {'x':[ivy.array([0.,1.,0.]), \
     >>>               ivy.array([1.,1.,1.])]}, \
     >>>     mean = True)
