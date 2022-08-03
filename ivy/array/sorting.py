@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional
+from typing import Optional, Union
 
 # local
 
@@ -45,3 +45,13 @@ class ArrayWithSorting(abc.ABC):
 
         """
         return ivy.sort(self._data, axis, descending, stable, out=out)
+    
+    def searchsorted(  
+        self: ivy.Array,
+        v: Union[ivy.Array, ivy.NativeArray], 
+        side="left",
+        sorter=None,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.searchsorted(self.data, v, side=side, sorter=None, out=out)
