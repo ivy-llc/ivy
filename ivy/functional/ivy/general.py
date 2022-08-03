@@ -1291,7 +1291,9 @@ def floormod(
 @to_native_arrays_and_back
 @handle_nestable
 def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: int,
+    keepdims: bool = False
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -1309,6 +1311,57 @@ def unstack(
     ret
         List of arrays, unpacked along specified dimensions.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> y = ivy.unstack(x, axis=0)
+    >>> print(y)
+    [ivy.array([[1, 2],
+                [3, 4]]), ivy.array([[5, 6],
+                [7, 8]])]
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> y = ivy.unstack(x, axis=1, keepdims=True)
+    >>> print(y)
+    [ivy.array([[[1, 2]],
+                [[5, 6]]]), ivy.array([[[3, 4]],
+                [[7, 8]]])]
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]), 
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> y = ivy.unstack(x, axis=0)
+    >>> print(y)
+    [{
+    a: ivy.array([[1, 2],
+                  [3, 4]]),
+    b: ivy.array([[9, 10],
+                  [11, 12]])
+    }, {
+    a: ivy.array([[5, 6],
+                  [7, 8]]),
+    b: ivy.array([[13, 14],
+                  [15, 16]])
+    }]
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> y = ivy.unstack(x, axis=1, keepdims=True)
+    >>> print(y)
+    [{
+    a: ivy.array([[[1, 2]],
+                  [[5, 6]]]),
+    b: ivy.array([[[9, 10]],
+                  [[13, 14]]])
+    }, {
+    a: ivy.array([[[3, 4]],
+                  [[7, 8]]]),
+    b: ivy.array([[[11, 12]],
+                  [[15, 16]]])
+    }]
     """
     return current_backend(x).unstack(x, axis, keepdims)
 

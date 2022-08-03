@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 import ivy
 
 _round = round
@@ -73,7 +73,11 @@ def floormod(
 container_types = lambda: []
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: mx.nd.NDArray, 
+    axis: int,
+    keepdims: bool = False,
+) -> List[mx.nd.NDArray]:
     if x.shape == ():
         return [x]
     num_outputs = x.shape[axis]

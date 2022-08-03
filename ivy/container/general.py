@@ -364,6 +364,43 @@ class ContainerWithGeneral(ContainerBase):
         ret
             List of arrays, unpacked along specified dimensions, or containers
             with arrays unpacked at leaves
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]), 
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> >>> y = ivy.Container.static_unstack(x, axis=0)
+        >>> print(y)
+        [{
+            a: ivy.array([[1, 2],
+                         [3, 4]]),
+            b: ivy.array([[9, 10],
+                         [11, 12]])
+        }, {
+            a: ivy.array([[5, 6],
+                         [7, 8]]),
+             b: ivy.array([[13, 14],
+                          [15, 16]])
+        }]
+
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> y = ivy.Container.static_unstack(x, axis=1, keepdims=True)
+        >>> print(y)
+        [{
+            a: ivy.array([[[1, 2]],
+                         [[5, 6]]]),
+            b: ivy.array([[[9, 10]],
+                         [[13, 14]]])
+        }, {
+            a: ivy.array([[[3, 4]],
+                         [[7, 8]]]),
+            b: ivy.array([[[11, 12]],
+                         [[15, 16]]])
+        }]
+
         """
         return ContainerBase.multi_map_in_static_method(
             "unstack",
@@ -413,6 +450,24 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Containers with arrays unpacked at leaves
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> y = ivy.Container.unstack(x, axis=0)
+        >>> print(y)
+        [[{
+            a: ivy.array([[1, 2],
+                         [3, 4]]),
+            b: ivy.array([[9, 10],
+                          [11, 12]])
+        }, {
+            a: ivy.array([[5, 6],
+                          [7, 8]]),
+            b: ivy.array([[13, 14],
+                          [15, 16]])
+        }]
         """
         return self.static_unstack(
             self,
