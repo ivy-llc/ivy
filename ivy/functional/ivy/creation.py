@@ -29,7 +29,9 @@ def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
         ivy.is_float_dtype(dtype)
         and isinstance(fill_value, float)
         or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not compatible"
+    ), "the fill_value:\n\n{}\n\nand data type:\n\n{}\n\nare not compatible.".format(
+        fill_value, dtype
+    )
 
 
 # Array API Standard #
