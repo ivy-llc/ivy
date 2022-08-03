@@ -2044,14 +2044,30 @@ def print_all_arrays_in_memory():
 
 
 def set_queue_timeout(timeout):
-    """Set the global queue timeout values (in seconds). Default value without this
-    function being called is 10 seconds.
+    """
+    Set the global queue timeout value (in seconds) 
+    Default value without this function being called is 15 seconds.
 
     Parameters
     ----------
     timeout
-        The timeout to set in seconds.
+        The timeout when waiting for containers to arrive from the queues.
+        To be set in seconds.
 
+
+    Examples
+    --------
+    >> x = ivy.queue_timeout()
+    >> print(x)
+    15.0   
+    
+    To set the timeout for example 30 seconds
+
+    >> ivy.set_queue_timeout(30)
+    >> y = ivy.queue_timeout()
+    >> print(y)
+    30 
+    
     """
     global TIMEOUT
     TIMEOUT = timeout
