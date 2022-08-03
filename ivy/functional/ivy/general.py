@@ -2460,6 +2460,32 @@ def cumprod(
         a: ivy.array([2, 6, 24]),
         b: ivy.array([3, 12, 60])
     }
+
+    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.cumprod(x, exclusive=True)
+    >>> print(y)
+    {
+        a: ivy.array([1, 2, 6]),
+        b: ivy.array([1, 3, 12])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[2, 3],
+                                        [5, 7],
+                                        [11, 13]]),
+                            b=ivy.array([[3, 4],
+                                        [4, 5], 
+                                        [5, 6]]))
+    >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([[1, 2],
+                      [1, 5],
+                      [1, 11]]),
+        b: ivy.array([[1, 3],
+                      [1, 4],
+                      [1, 5]])
+    }
     """
     return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
