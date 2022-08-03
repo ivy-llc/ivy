@@ -862,3 +862,46 @@ def nested_multi_map(
         return ivy.array(return_list)
     else:
         return return_list
+    
+    
+def all_nested_indices( nest: Iterable,
+                     indices: None):
+    if indices is None:
+        indices = []
+    for i in nest:
+        if isinstance(i, list) and i[0] == 'a' and i[-1] == 'b':
+            indices.append([lst.index(i)])
+            all_nested_indices(i, indices)
+        elif isinstance(i, list):
+            all_nested_indices(i, indices)
+    return indices
+    """ Gets all the nested items from all indices.
+       
+     Parameters
+     -------------
+     nest 
+         The nested items to insert.
+     indices
+         It is none because all_nested_indices dose not find on specific
+         indices. Its apply on whole item.
+         
+     Return
+     --------------
+     indices 
+            A set of indices for the nest where the function evaluated as True.
+      
+     Examples
+     --------------
+     >>> list3 = [1, 4, 7, ["a", "z", ["a", 6, "b"], "b"], 5, 3]
+     >>> print(all_nested_indices(list3))
+     [[3], [2]]
+     
+     >>> list5 = [1, 4, ["a", 5, "b"], 3, 4, 6, ["a", 5, "b"], 5]
+     >>> print(all_nested_indices(list5))
+     [[2], [2]]
+
+     >>> list6 = [1, 4, ["a", 7, "b"], 3, 4, 6, ["a", 5, "b"], 5]
+     >>> print(all_nested_indices(list6))
+     [[2], [6]]
+     
+     """
