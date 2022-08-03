@@ -582,13 +582,13 @@ def conv1d(
 @handle_out_argument
 @handle_nestable
 def conv1d_transpose(
-    x,
-    filters,
-    strides,
-    padding,
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: int,
+    padding: str,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NWC",
-    dilations=1,
+    dilations: int = 1,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
