@@ -1,2 +1,2 @@
 #!/bin/bash -e
-docker run --rm -v IVY_BACKEND="$1" -v `pwd`:/ivy `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_functional/test_core/"$2".py
+docker run --rm -v IVY_BACKEND="$1" -v "$(pwd)":/ivy "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_functional/test_core/"$2".py
