@@ -149,7 +149,8 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+        >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), \
+        b=ivy.array([3.0, 4.0, 5.0]))
         >>> y = x.var()
         >>> print(y)
         {
@@ -157,8 +158,9 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array(0.66666667)
         }
 
-        >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-        >>> y = ivy.Container(c=ivy.array(0.), d=ivy.array(0.)
+        >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), \
+        b=ivy.array([3.0, 4.0, 5.0]))
+        >>> y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))
         >>> x.var(out=y)
         >>> print(y)
         {
@@ -166,9 +168,9 @@ class ContainerWithStatistical(ContainerBase):
             d: ivy.array(0.66666667)
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0, 1, 2], [3, 4, 5]]),
-                              b=ivy.array([[6, 7, 8], [9, 10, 11]]))
-        >>> y = ivy.Container(c=ivy.array([0., 0., 0.]), d=ivy.array([0., 0., 0.]))
+        >>> x = ivy.Container(a=ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]]), \
+                              b=ivy.array([[6.0, 7.0, 8.0], [9.0, 10.0, 11.0]]))
+        >>> y = ivy.Container(a=ivy.array([0., 0., 0.]), b=ivy.array([0., 0., 0.]))
         >>> x.var(axis=0, out=y)
         >>> print(y)
         {

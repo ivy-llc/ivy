@@ -534,8 +534,8 @@ def var(
     >>> y = ivy.var(x)
     >>> print(y)
     {
-        a:ivy.array(0.12666667),
-        b:ivy.array(0.11555555)
+        a: ivy.array(0.12666667),
+        b: ivy.array(0.11555555)
     }
 
     This function conforms to the `Array API Standard
@@ -551,30 +551,30 @@ def var(
     -------------------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([0, 1, 2, 3, 4, 5, 6, 7, 8])
+    >>> x = ivy.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0])
     >>> y = ivy.var(x)
     >>> print(y)
-    ivy.array(6.66666667)
+    ivy.array(6.6666665)
 
-    >>> x = ivy.array([0, 1, 2, 3, 4, 5, 6, 7, 8])
-    >>> y = ivy.array(0)
+    >>> x = ivy.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0])
+    >>> y = ivy.array(0.0)
     >>> ivy.var(x, out=y)
     >>> print(y)
-    ivy.array(6.66666667)
+    ivy.array(6.6666665)
 
-    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
-    >>> y = ivy.array(0)
+    >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], [6.0, 7.0, 8.0]])
+    >>> y = ivy.array(0.0)
     >>> ivy.var(x, out=y)
     >>> print(y)
-    ivy.array(6.66666667)
+    ivy.array(6.6666665)
 
-    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
+    >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0],[6.0, 7.0, 8.0]])
     >>> y = ivy.zeros(3)
     >>> ivy.var(x, axis=1, out=y)
     >>> print(y)
     ivy.array([0.667, 0.667, 0.667])
 
-    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
+    >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], [6.0, 7.0, 8.0]])
     >>> y = ivy.zeros(3)
     >>> ivy.var(x, axis=0, out=y)
     >>> print(y)
@@ -582,20 +582,20 @@ def var(
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([1,2,2,3])
+    >>> x = ivy.native_array([1.0, 2.0, 2.0, 3.0])
     >>> y = ivy.var(x)
     >>> print(y)
     ivy.array(0.5)
 
-    >>> x = ivy.native_array([1,2,2,3])
-    >>> y = ivy.array(0)
+    >>> x = ivy.native_array([1.0, 2.0, 2.0, 3.0])
+    >>> y = ivy.array(0.0)
     >>> ivy.var(x, out=y)
     >>> print(y)
     ivy.array(0.5)
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), b=ivy.array([3.0, 4.0, 5.0]))
     >>> y = ivy.var(x)
     >>> print(y)
     {
@@ -603,7 +603,7 @@ def var(
         b: ivy.array(0.66666667)
     }
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), b=ivy.array([3.0, 4.0, 5.0]))
     >>> y = ivy.Container.static_var(x)
     >>> print(y)
     {
@@ -615,19 +615,19 @@ def var(
     ------------------------
     Using :code:`ivy.Array` instance method:
     
-    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
+    >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0],[6.0, 7.0, 8.0]])
     >>> y = x.var()
     >>> print(y)
     ivy.array(6.66666667)
 
-    >>> x = ivy.array([[0,1,2], [3,4,5],[6,7,8]])
+    >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0],[6.0, 7.0, 8.0]])
     >>> y = x.var(axis=0)
     >>> print(y)
     ivy.array([6., 6., 6.])
 
     Using :code:`ivy.Container` instance method:
 
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
+    >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), b=ivy.array([3.0, 4.0, 5.0]))
     >>> y = x.var()
     >>> print(y)
     {
