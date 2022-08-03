@@ -1652,6 +1652,8 @@ def dtype_values_axis(
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, *, shape):
+    if isinstance(shape, st._internal.SearchStrategy):
+        shape = draw(shape)
     size = 1 if len(shape) == 0 else math.prod(shape)
     rshape = draw(st.lists(st.integers(0)).filter(lambda s: math.prod(s) == size))
     # assume(all(side <= MAX_SIDE for side in rshape))
@@ -2098,24 +2100,28 @@ def get_axis(draw,
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
     shape
-        shape of the array as a tuple, or a hypothesis strategy from which the shape will be drawn
+        shape of the array as a tuple, or a hypothesis strategy from which the shape
+        will be drawn
     allow_none
         boolean; if True, allow None to be drawn
     sorted
-        boolean; if True, and a tuple of axes is drawn, tuple is sorted in increasing fashion
+        boolean; if True, and a tuple of axes is drawn, tuple is sorted in increasing
+        fashion
     unique
         boolean; if True, and a tuple of axes is drawn, all axes drawn will be unique
     min_size
-        int or hypothesis strategy; if a tuple of axes is drawn, the minimum number of axes drawn
+        int or hypothesis strategy; if a tuple of axes is drawn, the minimum number of
+        axes drawn
     max_size
-        int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of axes drawn. If None and unique is True, then it is set
-        to the number of axes in the shape
+        int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
+        axes drawn.
+        If None and unique is True, then it is set to the number of axes in the shape
 
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
-    #Draw values from any strategies given
+    # Draw values from any strategies given
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
     if isinstance(min_size, st._internal.SearchStrategy):
@@ -2123,12 +2129,11 @@ def get_axis(draw,
     if isinstance(max_size, st._internal.SearchStrategy):
         max_size = draw(max_size)
 
-
     axes = len(shape)
     unique_by = (lambda x: shape[x]) if unique else None
 
     if max_size is None and unique:
-        max_size=axes
+        max_size = max(axes, min_size)
 
     if allow_none:
         if axes == 0:
@@ -2252,5 +2257,9 @@ def handle_cmd_line_args(test_fn):
 
     return new_fn
 
-def gradient_incompatible_function(*,fn):
-    return not ivy.supports_gradients and hasattr(fn, "computes_gradients") and fn.computes_gradients
+
+def gradient_incompatible_function(*, fn):
+    return \
+        not ivy.supports_gradients \
+        and hasattr(fn, "computes_gradients") \
+        and fn.computes_gradients
