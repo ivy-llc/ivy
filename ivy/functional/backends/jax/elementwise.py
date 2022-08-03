@@ -373,6 +373,7 @@ def erf(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def maximum(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.maximum(x1, x2)
 
 
@@ -382,4 +383,5 @@ def minimum(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    x1,x2=_cast_for_binary_op(x1,x2)
     return jnp.minimum(x1, x2)

@@ -18,7 +18,7 @@ def _cast_for_binary_op(x1, x2, clamp=False):
         x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
     else:
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return ivy.promote_types_of_inputs(x1, x2)
+    return x1,x2
 
 
 def add(
@@ -603,18 +603,16 @@ def minimum(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    x_val = torch.tensor(x1) if (isinstance(x1, int) or isinstance(x1, float)) else x1
-    y_val = torch.tensor(x2) if (isinstance(x2, int) or isinstance(x2, float)) else x2
-    return torch.min(x_val, y_val, out=out)
+    x1,x2=_cast_for_binary_op(x1,x2)
+    return torch.min(x1, x2, out=out)
 
 
 minimum.support_native_out = True
 
 
 def maximum(x1, x2, *, out: Optional[torch.Tensor] = None):
-    x_val = torch.tensor(x1) if (isinstance(x1, int) or isinstance(x1, float)) else x1
-    y_val = torch.tensor(x2) if (isinstance(x2, int) or isinstance(x2, float)) else x2
-    return torch.max(x_val, y_val, out=out)
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    return torch.max(x1, x2, out=out)
 
 
 maximum.support_native_out = True

@@ -2,7 +2,7 @@
 import math
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, List, Optional, Callable, Any
+from typing import Union, Tuple, List, Optional, Callable, Iterable
 
 # local
 import ivy
@@ -12,7 +12,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_arrays,
     handle_nestable,
-    inputs_to_ivy_arrays,
 )
 
 
@@ -1750,16 +1749,24 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
 
 
 def promote_types_of_inputs(
-    x1: Any,
-    x2: Any,
-) -> Any:
+    x1: Union[ivy.NativeArray, Number, Iterable[Number]],
+    x2: Union[ivy.NativeArray, Number, Iterable[Number]],
+) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
+
+    """Promotes the dtype of the given native array inputs to a common dtype
+    based on type promotion rules. While passing float or integer values or any
+    other non-array input to this function, it should be noted that the return will
+    be an array-like object. Therefore, outputs from this function should be used
+    as inputs only for those functions that expect an array-like or tensor-like objects,
+    otherwise it might give unexpected results.
+    """
     try:
-        x1, x2 = ivy.to_ivy(x1), ivy.to_ivy(x2)
-        if hasattr(x1, "_dtype") and hasattr(x2, "_dtype"):
-            promoted = promote_types(x1._dtype, x2._dtype)
+        x1, x2 = ivy.asarray(x1), ivy.asarray(x2)
+        if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+            promoted = promote_types(x1.dtype, x2.dtype)
             x1 = ivy.asarray(x1, dtype=promoted)
             x2 = ivy.asarray(x2, dtype=promoted)
         x1, x2 = ivy.to_native(x1), ivy.to_native(x2)
         return x1, x2
-    except:
+    except Exception:
         raise

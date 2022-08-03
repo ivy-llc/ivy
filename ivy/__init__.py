@@ -350,7 +350,7 @@ invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
 
 # data type promotion
-promotion_table = {
+array_api_promotion_table = {
     (int8, int8): int8,
     (int8, int16): int16,
     (int8, int32): int32,
@@ -418,8 +418,60 @@ promotion_table = {
     (float64, float64): float64,
     (bool, bool): bool,
 }
-
 locks = {"backend_setter": threading.Lock()}
+extra_promotion_table = {
+    (int8, float16): float16,
+    (float16, int8): float16,
+    (int8, float32): float32,
+    (float32, int8): float32,
+    (int8, float64): float64,
+    (float64, int8): float64,
+    (int16, float16): float16,
+    (float16, int16): float16,
+    (int16, float32): float32,
+    (float32, int16): float32,
+    (int16, float64): float64,
+    (float64, int16): float64,
+    (int32, float16): float16,
+    (float16, int32): float16,
+    (int32, float32): float32,
+    (float32, int32): float32,
+    (int32, float64): float64,
+    (float64, int32): float64,
+    (int64, float16): float16,
+    (float16, int64): float16,
+    (int64, float32): float32,
+    (float32, int64): float32,
+    (int64, float64): float64,
+    (float64, int64): float64,
+    (uint8, float16): float16,
+    (float16, uint8): float16,
+    (uint8, float32): float32,
+    (float32, uint8): float32,
+    (uint8, float64): float64,
+    (float64, uint8): float64,
+    (uint16, float16): float16,
+    (float16, uint16): float16,
+    (uint16, float32): float32,
+    (float32, uint16): float32,
+    (uint16, float64): float64,
+    (float64, uint16): float64,
+    (uint32, float16): float16,
+    (float16, uint32): float16,
+    (uint32, float32): float32,
+    (float32, uint32): float32,
+    (uint32, float64): float64,
+    (float64, uint32): float64,
+    (uint64, float16): float16,
+    (float16, uint64): float16,
+    (uint64, float32): float32,
+    (float32, uint64): float32,
+    (uint64, float64): float64,
+    (float64, uint64): float64,
+}
+
+promotion_table = {**array_api_promotion_table, **extra_promotion_table}
+
 
 backend = "none"
 

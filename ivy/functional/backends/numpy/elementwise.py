@@ -14,14 +14,6 @@ except (ImportError, ModuleNotFoundError):
 
 def _cast_for_binary_op(x1, x2):
     return ivy.promote_types_of_inputs(x1, x2)
-    # if isinstance(x1, np.ndarray):
-    #     if isinstance(x2, np.ndarray):
-    #         promoted_type = np.promote_types(x1.dtype, x2.dtype)
-    #         x1 = x1.astype(promoted_type)
-    #         x2 = x2.astype(promoted_type)
-    #     else:
-    #         x2 = np.asarray(x2, dtype=x1.dtype)
-    # return x1, x2
 
 
 # when inputs are 0 dimensional, numpy's functions return scalars
@@ -658,6 +650,7 @@ erf.support_native_out = True
 
 @_handle_0_dim_output
 def maximum(x1, x2, *, out: Optional[np.ndarray] = None):
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.maximum(x1, x2, out=out)
 
 
@@ -671,6 +664,7 @@ def minimum(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    x1,x2=_cast_for_binary_op(x1,x2)
     return np.minimum(x1, x2, out=out)
 
 

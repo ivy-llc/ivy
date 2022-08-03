@@ -1,7 +1,6 @@
 # global
 import numpy as np
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
 from tensorflow.experimental.numpy import any
 from typing import Union
 
