@@ -191,6 +191,55 @@ class ArrayWithRandom(abc.ABC):
             out=out,
         )
 
+    def multinomial(
+        self: ivy.Array,
+        population_size: int,
+        num_samples: int,
+        batch_size: int = 1,
+        replace: bool = True,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.multinomial. This method simply
+        wraps the function, and so the docstring for ivy.multinomial also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The unnormalized probabilities for all elements in population,
+            default is uniform *[batch_shape, population_size]*
+        population_size
+            The size of the population from which to draw samples.
+        num_samples
+            Number of independent samples to draw from the population.
+        batch_size
+            Number of tensors to generate. Default is 1.
+        replace
+            Whether to replace samples once they've been drawn. Default is True.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None)
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the parameterized normal distribution.
+        """
+        return ivy.multinomial(
+            population_size,
+            num_samples,
+            batch_size,
+            self._data,
+            replace,
+            device=device,
+            out=out,
+        )
+
     def randint(
         self: ivy.Array,
         high: Union[int, ivy.Array, ivy.NativeArray],
