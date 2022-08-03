@@ -47,6 +47,7 @@ Data type
    data_type/unset_default_int_dtype.rst
    data_type/unset_default_uint_dtype.rst
    data_type/valid_dtype.rst
+   data_type/promote_types_of_inputs.rst
    data_type/DefaultDtype:
     """"""
 
