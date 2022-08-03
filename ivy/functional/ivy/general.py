@@ -1518,12 +1518,22 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     >>> print(y)
     False
 
+    With :code: `ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 2, 3, float('nan')])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.has_nans(x)
     >>> print(y)
-    False
+    {
+        a: false,
+        b: false
+    }
 
     """
     return ivy.value_is_nan(ivy.sum(x), include_infs)
