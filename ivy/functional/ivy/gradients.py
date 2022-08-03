@@ -380,9 +380,6 @@ def value_and_grad(func):
     return current_backend(None).value_and_grad(func)
 
 
-values_and_grad.computes_gradients = True  # noqa: F821
-
-
 # Optimizer Steps #
 
 
