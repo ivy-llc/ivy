@@ -145,15 +145,15 @@
 <span class="n">ivy_original_fn_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="ContextManager"><a class="viewcode-back" href="../../backend_handler.html#ivy.backend_handler.ContextManager">[docs]</a><span class="k">class</span> <span class="nc">ContextManager</span><span class="p">:</span>
-<div class="viewcode-block" id="ContextManager.__init__"><a class="viewcode-back" href="../../backend_handler.html#ivy.backend_handler.ContextManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">module</span></div>
+<span class="k">class</span> <span class="nc">ContextManager</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">module</span>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">set_backend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-        <span class="n">unset_backend</span><span class="p">()</span></div>
+        <span class="n">unset_backend</span><span class="p">()</span>
 
 
 <span class="n">_array_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
