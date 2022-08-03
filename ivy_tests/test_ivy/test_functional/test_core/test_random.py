@@ -1,4 +1,3 @@
-# for review
 """Collection of tests for unified reduction functions."""
 
 # global

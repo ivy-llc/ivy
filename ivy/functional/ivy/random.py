@@ -1,4 +1,3 @@
-# for review
 """Collection of random Ivy functions."""
 
 # global

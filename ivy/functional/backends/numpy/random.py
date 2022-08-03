@@ -1,4 +1,3 @@
-# for review
 """Collection of Numpy random functions, wrapped to fit Ivy syntax and signature."""
 
 # global

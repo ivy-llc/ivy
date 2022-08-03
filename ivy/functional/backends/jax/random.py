@@ -1,4 +1,3 @@
-# for review
 """Collection of Jax random functions, wrapped to fit Ivy syntax and signature."""
 
 # global

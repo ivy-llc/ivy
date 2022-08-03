@@ -9,7 +9,7 @@ from ivy_tests.test_ivy import helpers
 from ivy import clear_backend_stack, DefaultDevice
 
 
-FW_STRS = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
+FW_STRS = ["numpy", "jax", "tensorflow", "torch"]
 
 
 TEST_BACKENDS: Dict[str, callable] = {
@@ -17,14 +17,14 @@ TEST_BACKENDS: Dict[str, callable] = {
     "jax": lambda: helpers.get_ivy_jax(),
     "tensorflow": lambda: helpers.get_ivy_tensorflow(),
     "torch": lambda: helpers.get_ivy_torch(),
-    "mxnet": lambda: helpers.get_ivy_mxnet(),
+    # "mxnet": lambda: helpers.get_ivy_mxnet(),
 }
 TEST_CALL_METHODS: Dict[str, callable] = {
     "numpy": helpers.np_call,
     "jax": helpers.jnp_call,
     "tensorflow": helpers.tf_call,
     "torch": helpers.torch_call,
-    "mxnet": helpers.mx_call,
+    # "mxnet": helpers.mx_call,
 }
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
     "as_variable": None,
