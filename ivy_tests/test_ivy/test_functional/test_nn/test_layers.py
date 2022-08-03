@@ -964,7 +964,7 @@ def x_and_lstm(draw, dtypes):
         )
     )
     return dtype, x_lstm, init_h, init_c, kernel, \
-           recurrent_kernel, lstm_bias, recurrent_bias
+        recurrent_kernel, lstm_bias, recurrent_bias
 
 
 # lstm
