@@ -636,14 +636,14 @@ def squeeze(
 
     >>> x = ivy.native_array([[[3]]])
     >>> print(x.shape)
-    torch.Size([1, 1, 1])
+    (1, 1, 1)
 
     >>> print(ivy.squeeze(x, 2))
     ivy.array([[3]])
 
     >>> x = ivy.native_array(0)
     >>> print(x.shape)
-    torch.Size([])
+    ()
 
     >>> print(ivy.squeeze(x, 0))
     ivy.array(0)
