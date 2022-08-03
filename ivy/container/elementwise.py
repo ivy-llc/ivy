@@ -4503,6 +4503,28 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        This function conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+        `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
+        in the standard.
+
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+        instances in place of any of the arguments.
+
+        Examples
+        --------
+
+        Using :code:`ivy.Container` instance method:
+        
+        >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
+        >>> y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))
+        >>> x.logical_or(y)
+        {
+            a: ivy.array([False, True, True]),
+            b: ivy.array([True, True, True])
+        }
         """
         return self.static_logical_or(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
