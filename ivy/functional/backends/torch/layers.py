@@ -314,30 +314,67 @@ depthwise_conv2d.unsupported_dtypes = ('float16', )
 
 # noinspection PyUnresolvedReferences
 def conv3d(
-    x,
-    filters,
-    strides: int,
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int, int, int]],
     padding: str,
     data_format: str = "NDHWC",
-    dilations: int = 1,
+    dilations:  Union[int, Tuple[int, int, int]] = 1,
     *,
     out: Optional[torch.Tensor] = None
 ):
-    filter_shape = list(filters.shape[0:3])
-    filters = filters.permute(3, 4, 0, 1, 2)
+    strides = [strides] * 3 if isinstance(strides, int) else strides
+    dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
+    # filter_shape = list(filters.shape[0:3])
+    f_w_after_dilation = filters.shape[2] + (
+            (dilations[2] - 1) * (filters.shape[2] - 1)
+    )
+    f_h_after_dilation = filters.shape[1] + (
+            (dilations[1] - 1) * (filters.shape[1] - 1)
+    )
+    f_d_after_dilation = filters.shape[0] + (
+            (dilations[0] - 1) * (filters.shape[0] - 1)
+    )
+    filter_shape = [f_d_after_dilation, f_h_after_dilation, f_w_after_dilation]
+    filters = filters.permute(4, 3, 0, 1, 2)
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
-    if padding == "VALID":
-        padding_list: List[int] = [0, 0, 0]
-    elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
-    else:
+    x_shape = list(x.shape[2:])
+    if padding == "SAME":
+        if x_shape[2] % strides[2] == 0:
+            pad_w = max(filter_shape[2] - strides[2], 0)
+        else:
+            pad_w = max(filter_shape[2] - (x_shape[2] % strides[2]), 0)
+
+        if x_shape[1] % strides[1] == 0:
+            pad_h = max(filter_shape[1] - strides[1], 0)
+        else:
+            pad_h = max(filter_shape[1] - (x_shape[1] % strides[1]), 0)
+        if x_shape[0] % strides[0] == 0:
+            pad_d = max(filter_shape[0] - strides[0], 0)
+        else:
+            pad_d = max(filter_shape[0] - (x_shape[0] % strides[0]), 0)
+        x = torch.nn.functional.pad(
+            x,
+            [
+                pad_w // 2,
+                pad_w - pad_w // 2,
+                pad_h // 2,
+                pad_h - pad_h // 2,
+                pad_d // 2,
+                pad_d - pad_d // 2
+            ],
+            value=0
+        )
+    elif padding != "VALID":
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
-    res = torch.nn.functional.conv3d(x, filters, None, strides, padding_list, dilations)
-    return res.permute(0, 2, 3, 4, 1)
+    res = torch.nn.functional.conv3d(x, filters, None, strides, "valid", dilations)
+    if data_format == "NDHWC":
+        res = res.permute(0, 2, 3, 4, 1)
+    return res
 
 
 conv3d.unsupported_dtypes = ("float16",)

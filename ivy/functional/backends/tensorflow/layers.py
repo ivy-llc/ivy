@@ -184,7 +184,7 @@ def conv3d_transpose(
 ) -> Tensor:
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
     dilations = (
-            [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
+        [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
