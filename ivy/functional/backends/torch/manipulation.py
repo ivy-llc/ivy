@@ -307,7 +307,6 @@ def zero_pad(
     return constant_pad(x, pad_width, 0.0)
 
 
-
 zero_pad.unsupported_dtypes = (
     "uint16",
     "uint32",

@@ -466,11 +466,13 @@ def f_n_calls():
     ]
 
 
-def assert_all_close(ret_np, ret_from_np, rtol=1e-05, atol=1e-08,ground_truth_backend='TensorFlow'):
+def assert_all_close(ret_np, ret_from_np, rtol=1e-05, 
+                     atol=1e-08, ground_truth_backend='TensorFlow'):
     assert ret_np.dtype is ret_from_np.dtype, (
         "the return with a {} backend produced data type of {}, "
-        "while the return with a {} backend returned a data type of {}.".format(ground_truth_backend,
-            ret_from_np.dtype, ivy.current_backend_str(), ret_np.dtype
+        "while the return with a {} backend returned a data type of {}.".format(
+            ground_truth_backend, ret_from_np.dtype, ivy.current_backend_str(), 
+            ret_np.dtype
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
@@ -517,7 +519,8 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
     return ret, flatten(ret=ret)
 
 
-def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6,ground_truth_backend='TensorFlow'):
+def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6, 
+               ground_truth_backend='TensorFlow'):
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_from_np_flat) != list:
@@ -532,10 +535,12 @@ def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6,ground_tru
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
             rtol = TOLERANCE_DICT.get(str(ret_from_np.dtype), 1e-03)
-            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol,ground_truth_backend=ground_truth_backend)
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol, 
+                             ground_truth_backend=ground_truth_backend)
     else:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol,ground_truth_backend=ground_truth_backend)
+            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol, 
+                             ground_truth_backend=ground_truth_backend)
 
 
 def args_to_container(array_args):
