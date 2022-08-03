@@ -22,7 +22,7 @@ jobs:
         with:
           path: |
             ivy/.hypothesis
-          key: ${{ runner.os cle}}-hypothesis
+          key: ${{ runner.os }}-hypothesis
 
       - name: Run Activations Tests
         run: |
@@ -30,5 +30,9 @@ jobs:
           mkdir -p .hypothesis
           ./test_ivy.sh ${{ matrix.backends }} ${{ matrix.submodules }}
         continue-on-error: true
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
 
