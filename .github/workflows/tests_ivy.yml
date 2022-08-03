@@ -29,9 +29,9 @@ jobs:
           cd ivy
           mkdir -p .hypothesis
           mkdir -p artifacts
-          echo ${{ matrix.backend}}
+          echo ${{ matrix.backends}}
           echo ${{ matrix.submodules }}
-          ./test_ivy.sh ${{ matrix.backend }} ${{ matrix.submodules }}
+          ./test_ivy.sh ${{ matrix.backends }} ${{ matrix.submodules }}
           
 
       - name: Upload artifacts
