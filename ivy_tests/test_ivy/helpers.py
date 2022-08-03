@@ -19,7 +19,7 @@ cmd_line_args = (
     "with_out",
     "container",
     "instance_method",
-    "test_gradients"
+    "test_gradients",
 )
 
 try:
@@ -522,7 +522,12 @@ def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
         ret_np_flat = [ret_np_flat]
     if type(ret_from_np_flat) != list:
         ret_from_np_flat = [ret_from_np_flat]
-    assert len(ret_np_flat) == len(ret_from_np_flat)
+    assert len(ret_np_flat) == len(ret_from_np_flat), (
+        "len(ret_np_flat) != len(ret_from_np_flat):\n\n"
+        "ret_np_flat:\n\n{}\n\nret_from_np_flat:\n\n{}".format(
+            ret_np_flat, ret_from_np_flat
+        )
+    )
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
@@ -1370,7 +1375,7 @@ def test_frontend_function(
             assert ret.data is out.data
 
     # bfloat16 is not supported by numpy
-    assume(not("bfloat16" in input_dtypes))
+    assume(not ("bfloat16" in input_dtypes))
 
     # create NumPy args
     args_np = ivy.nested_map(
@@ -1401,9 +1406,13 @@ def test_frontend_function(
             lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
         )
 
-        # fix for torch not accepting string args for dtype
-        if "dtype" in kwargs_frontend and frontend == "torch":
+        # change ivy dtypes to native dtypes
+        if "dtype" in kwargs_frontend:
             kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
+
+        # change ivy device to native devices
+        if "device" in kwargs_frontend:
+            kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
 
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
@@ -2193,3 +2202,6 @@ def handle_cmd_line_args(test_fn):
         return test_fn(*args, **kwargs)
 
     return new_fn
+
+def gradient_incompatible_function(*,fn):
+    return not ivy.supports_gradients and hasattr(fn, "computes_gradients") and fn.computes_gradients

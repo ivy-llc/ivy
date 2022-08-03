@@ -343,12 +343,50 @@ def nested_indices_where(
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
+    stop_after_n_found
+        to stop after some needed indices are found.
 
     Returns
     -------
     ret
         A set of indices for the nest where the function evaluated as True.
 
+    Examples
+    --------
+    With :code:`List` input:
+
+    >>> nest = [[[1, -2, 3], 19], [[9, -36, 80], -10.19]]
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> print(nested_indices)
+    [
+        [0, 0, 0], [0, 0, 1],
+        [0, 0, 2], [0, 1],
+        [1, 0, 0], [1, 0, 1],
+        [1, 0, 2], [1, 1]
+    ]
+
+
+    With :code:`Tuple` input:
+
+    >>> nest = ([-5, 9, 2], [0.3, 4.])
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun, stop_after_n_found=4)
+    >>> print(nested_indices)
+    [[0, 0], [0, 1], [0, 2], [1, 0]]
+
+    With :code:`Dict` input:
+
+    >>> nest={'a': [2., 0.6, -2.], 'b': [1., 4., 1.9], 'c': [9.4]}
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> print(nested_indices)
+    [
+        ['a', 0], ['a', 1],
+        ['a', 2], ['b', 0],
+        ['b', 1], ['b', 2],
+        ['c', 0]
+    ]
     """
     to_ignore = ivy.default(to_ignore, ())
     _index = list() if _index is None else _index
@@ -771,22 +809,37 @@ def nested_multi_map(
         nest containing the result of the funciton.
 
     """
-    nest0 = nests[0]
+    nest0 = None
+    for nest in nests:
+        if isinstance(nest, (tuple, list, dict)):
+            nest0 = nest
+            break
     return_list = list()
-    for index, val in enumerate(nest0):
-        values = [nest[index] for nest in nests]
-        value0 = values[0]
-        this_key_chain = (
-            str(index) if key_chain == "" else (key_chain + "/" + str(index))
-        )
-        if (
-            (isinstance(value0, ivy.Array) or isinstance(value0, ivy.NativeArray))
-            and ivy.get_num_dims(value0) > 0
-        ) or (
-            isinstance(value0, list)
-            or isinstance(value0, tuple)
-            or isinstance(value0, dict)
-        ):
+    if nest0 is not None:
+        is_dict = isinstance(nest0, dict)
+        for index, val in enumerate(nest0):
+            if is_dict:
+                values = [
+                    nest[index]
+                    if isinstance(nest, (tuple, list))
+                    else nest[val]
+                    if isinstance(nest, dict)
+                    else nest
+                    for nest in nests
+                ]
+            else:
+                values = [
+                    nest[index]
+                    if isinstance(nest, (tuple, list))
+                    else nest[list(nest)[index]]
+                    if isinstance(nest, dict)
+                    else nest
+                    for nest in nests
+                ]
+            value0 = values[0]
+            this_key_chain = (
+                str(index) if key_chain == "" else (key_chain + "/" + str(index))
+            )
             ret = ivy.nested_multi_map(
                 func,
                 values,
@@ -795,32 +848,38 @@ def nested_multi_map(
                 prune_unapplied,
                 this_key_chain,
                 config,
+                to_ivy,
             )
-            if ret:
-                if ivy.is_array(ret):
-                    return_list.insert(index, ivy.to_list(ret))
+            if to_ivy:
+                if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+                    return_list.insert(index, ivy.array(ivy.to_list(ret)))
                 else:
                     return_list.insert(index, ret)
-        else:
-            if key_chains is not None:
-                if (this_key_chain in key_chains and not to_apply) or (
-                    this_key_chain not in key_chains and to_apply
-                ):
-                    if prune_unapplied:
-                        continue
-                    if ivy.is_array(value0):
-                        return_list.insert(index, ivy.to_list(value0))
-                    else:
-                        return_list.insert(index, value0)
-                    continue
-            ret = func(values, this_key_chain)
-            if ivy.is_array(ret):
-                return_list.insert(index, ivy.to_list(ret))
             else:
                 return_list.insert(index, ret)
-
-    # noinspection PyProtectedMember
-    if to_ivy:
-        return ivy.array(return_list)
     else:
-        return return_list
+        values = nests
+        this_key_chain = key_chain
+        if key_chains is not None:
+            if (this_key_chain in key_chains and not to_apply) or (
+                this_key_chain not in key_chains and to_apply
+            ):
+                if prune_unapplied:
+                    return return_list
+                if ivy.is_array(value0):
+                    if to_ivy:
+                        return_list.append(value0)
+                    else:
+                        return_list.append(ivy.array(value0))
+                else:
+                    return_list.append(value0)
+                return return_list
+        ret = func(values, this_key_chain)
+        if to_ivy:
+            if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+                return ret
+            else:
+                return ivy.array(ret)
+        else:
+            return ret
+    return return_list
