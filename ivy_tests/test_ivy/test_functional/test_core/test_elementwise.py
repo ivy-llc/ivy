@@ -251,7 +251,12 @@ def test_atan(
 # atan2
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
+        available_dtypes=ivy_np.valid_float_dtypes,
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="atan2"),
     data=st.data(),
@@ -273,7 +278,15 @@ def test_atan2(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
-    # make sure they're not too close together
+    one = np.array(1, dtype="uint8")
+    zero = np.array(0, dtype="uint8")
+
+    # if number is near zero, make sure
+    f = np.vectorize(lambda item: item + (one if np.isclose(item, 0) else zero))
+
+    x1 = f(x1)
+    x2 = f(x2)
+
     assume(not (np.any(np.isclose(x1, 0)) or np.any(np.isclose(x2, 0))))
 
     helpers.test_function(
