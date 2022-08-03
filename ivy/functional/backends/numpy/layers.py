@@ -4,8 +4,6 @@
 import numpy as np
 from typing import Union, Tuple, Optional, List
 
-import ivy
-
 
 def _add_dilations(x, dilations, axis):
     return np.insert(
@@ -230,8 +228,6 @@ def conv2d_transpose(
 
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-
-
     new_h = _deconv_length(
         x.shape[1],
         strides[0],
