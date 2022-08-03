@@ -1178,17 +1178,21 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x
             input array. Should have a floating-point data type.
         axis
-            If an integer, ``axis`` specifies the axis (dimension) along which to compute
-            vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along
-            which to compute batched vector norms. If ``None``, the vector norm must be
-            computed over all array values (i.e., equivalent to computing the vector norm of
-            a flattened array). Negative indices must be supported. Default: ``None``.
+            If an integer, ``axis`` specifies the axis (dimension)
+            along which to compute vector norms. If an n-tuple,
+            ``axis`` specifies the axes (dimensions) along
+            which to compute batched vector norms. If ``None``, the
+             vector norm must be computed over all array values
+             (i.e., equivalent to computing the vector norm of
+            a flattened array). Negative indices must be
+            supported. Default: ``None``.
         keepdims
-            If ``True``, the axes (dimensions) specified by ``axis`` must be included in the
-            result as singleton dimensions, and, accordingly, the result must be compatible
-            with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the
-            axes (dimensions) specified by ``axis`` must not be included in the result.
-            Default: ``False``.
+            If ``True``, the axes (dimensions) specified by ``axis``
+            must be included in the result as singleton dimensions,
+            and, accordingly, the result must be compatible
+            with the input array (see :ref:`broadcasting`). Otherwise,
+            if ``False``, the axes (dimensions) specified by ``axis`` must
+            not be included in the result. Default: ``False``.
         ord
             order of the norm. The following mathematical norms must be supported:
 
@@ -1213,7 +1217,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             +------------------+--------------------------------+
             | -1               | 1./sum(1./abs(a))              |
             +------------------+--------------------------------+
-            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   |
+            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | # noqa
             +------------------+--------------------------------+
             | -inf             | min(abs(a))                    |
             +------------------+--------------------------------+
@@ -1222,18 +1226,21 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
             Default: ``2``.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array containing the vector norms. If ``axis`` is ``None``, the returned
-            array must be a zero-dimensional array containing a vector norm. If ``axis`` is
-            a scalar value (``int`` or ``float``), the returned array must have a rank which
-            is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned
-            array must have a rank which is ``n`` less than the rank of ``x``. The returned
-            array must have a floating-point data type determined by :ref:`type-promotion`.
+            an array containing the vector norms. If ``axis`` is
+            ``None``, the returned array must be a zero-dimensional
+            array containing a vector norm. If ``axis`` is
+            a scalar value (``int`` or ``float``), the returned array
+            must have a rank which is one less than the rank of ``x``.
+            If ``axis`` is a ``n``-tuple, the returned array must have
+             a rank which is ``n`` less than the rank of ``x``. The returned
+            array must have a floating-point data type determined
+            by :ref:`type-promotion`.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -1271,17 +1278,20 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self
             input array. Should have a floating-point data type.
         axis
-            If an integer, ``axis`` specifies the axis (dimension) along which to compute
-            vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along
-            which to compute batched vector norms. If ``None``, the vector norm must be
-            computed over all array values (i.e., equivalent to computing the vector norm of
-            a flattened array). Negative indices must be supported. Default: ``None``.
+            If an integer, ``axis`` specifies the axis (dimension)
+            along which to compute vector norms. If an n-tuple, ``axis``
+            specifies the axes (dimensions) along which to compute
+            batched vector norms. If ``None``, the vector norm must be
+            computed over all array values (i.e., equivalent to computing
+            the vector norm of a flattened array). Negative indices must
+            be supported. Default: ``None``.
         keepdims
-            If ``True``, the axes (dimensions) specified by ``axis`` must be included in the
-            result as singleton dimensions, and, accordingly, the result must be compatible
-            with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the
-            axes (dimensions) specified by ``axis`` must not be included in the result.
-            Default: ``False``.
+            If ``True``, the axes (dimensions) specified by ``axis`` must
+            be included in the result as singleton dimensions, and, accordingly,
+            the result must be compatible with the input array
+            (see :ref:`broadcasting`).Otherwise, if ``False``, the axes
+            (dimensions) specified by ``axis`` must not be included in
+            the result. Default: ``False``.
         ord
             order of the norm. The following mathematical norms must be supported:
 
@@ -1306,7 +1316,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             +------------------+--------------------------------+
             | -1               | 1./sum(1./abs(a))              |
             +------------------+--------------------------------+
-            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   |
+            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | # noqa
             +------------------+--------------------------------+
             | -inf             | min(abs(a))                    |
             +------------------+--------------------------------+
@@ -1315,18 +1325,20 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
             Default: ``2``.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array containing the vector norms. If ``axis`` is ``None``, the returned
-            array must be a zero-dimensional array containing a vector norm. If ``axis`` is
-            a scalar value (``int`` or ``float``), the returned array must have a rank which
-            is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned
-            array must have a rank which is ``n`` less than the rank of ``x``. The returned
-            array must have a floating-point data type determined by :ref:`type-promotion`.
+            an array containing the vector norms. If ``axis`` is ``None``,
+            the returned array must be a zero-dimensional array containing
+            a vector norm. If ``axis`` is a scalar value (``int`` or ``float``),
+            the returned array must have a rank which is one less than the
+            rank of ``x``. If ``axis`` is a ``n``-tuple, the returned
+            array must have a rank which is ``n`` less than the rank of
+            ``x``. The returned array must have a floating-point data type
+            determined by :ref:`type-promotion`.
 
         """
         return self.static_vector_norm(
