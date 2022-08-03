@@ -1490,7 +1490,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     >>> y = ivy.Container.static_has_nans(x)
     >>> print(y)
     {
-        a: false
+        a: false,
         b: false
     }
 
@@ -1506,7 +1506,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     >>> y = x.has_nans()
     >>> print(y)
     {
-        a: false
+        a: false,
         b: false
     }
 
