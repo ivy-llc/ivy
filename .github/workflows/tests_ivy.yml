@@ -22,7 +22,7 @@ jobs:
         with:
           path: |
             ivy/.hypothesis
-          key: ${{ runner.os.}}-hypothesis
+          key: ${{ runner.os }}-hypothesis
 
       - name: Run Activations Tests
         run: |
