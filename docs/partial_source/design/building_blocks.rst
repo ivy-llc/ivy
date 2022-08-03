@@ -350,9 +350,9 @@ As an example, the following 3 pieces of code all compile to the exact same comp
 |.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
 |                                        |                                         |                                         |
 | def pure_ivy(x):                       | def pure_torch(x):                      | def mix(x):                             |
-|     y = ivy.reduce_mean(x)             |     y = torch.mean(x)                   |     y = ivy.reduce_mean(x)              |
-|     z = ivy.reduce_sum(x)              |     z = torch.sum(x)                    |     z = torch.sum(x)                    |
-|     f = ivy.reduce_var(y)              |     f = torch.var(y)                    |     f = ivy.reduce_var(y)               |
+|     y = ivy.mean(x)                    |     y = torch.mean(x)                   |     y = ivy.mean(x)                     |
+|     z = ivy.sum(x)                     |     z = torch.sum(x)                    |     z = torch.sum(x)                    |
+|     f = ivy.var(y)                     |     f = torch.var(y)                    |     f = ivy.var(y)                      |
 |     k = ivy.cos(z)                     |     k = torch.cos(z)                    |     k = torch.cos(z)                    |
 |     m = ivy.sin(f)                     |     m = torch.sin(f)                    |     m = ivy.sin(f)                      |
 |     o = ivy.tan(y)                     |     o = torch.tan(y)                    |     o = torch.tan(y)                    |
