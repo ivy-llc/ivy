@@ -282,10 +282,8 @@ def test_empty(
     if not ivy.exists(ret):
         return
     res, res_np = ret
-    ivy.set_backend('tensorflow')
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
-    ivy.unset_backend
 
 
 # empty_like
@@ -332,10 +330,8 @@ def test_empty_like(
     if not ivy.exists(ret):
         return
     res, res_np = ret
-    ivy.set_backend('tensorflow')
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
-    ivy.unset_backend
 
 
 # eye
