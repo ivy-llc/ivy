@@ -26,6 +26,7 @@ jobs:
 
       - name: Run Activations Tests
         run: |
+          cd ivy
           mkdir -p .hypothesis
           mkdir -p artifacts
           ./test_ivy.sh ${{ matrix.backend }} ${{ matrix.submodules }}
