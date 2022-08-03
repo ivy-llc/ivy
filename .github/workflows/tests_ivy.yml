@@ -20,7 +20,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: |
-            ivy/artifacts
+            cd ivy
+            ivy/.artifacts
       - name: Cache hypothesis
         uses: actions/cache@v3
         with:
