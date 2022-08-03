@@ -172,9 +172,8 @@ def mean(
            array ``x`` has an integer data type, the returned array must have the
            default floating-point data type.
 
-    Examples
-    --------
-    
+           Examples
+           --------
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([5., 6., 7.])
