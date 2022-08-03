@@ -1624,8 +1624,6 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-
-
     def matrix_norm(
         self,
         ord=2,
