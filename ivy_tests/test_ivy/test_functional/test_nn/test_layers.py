@@ -208,6 +208,7 @@ def x_and_scaled_attention(draw, dtypes):
             max_value=1, safety_factor=2))
     return dtype, q, k, v, mask, scale
 
+
 # # scaled_dot_product_attention
 @given(
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
@@ -304,6 +305,7 @@ def x_and_mha(draw, dtypes):
         )
     )
     return dtype, x_mha, scale, num_heads, context, mask
+
 
 # multi_head_attention
 @given(
@@ -962,6 +964,7 @@ def x_and_lstm(draw, dtypes):
     )
     return dtype, x_lstm, init_h, init_c, kernel, \
            recurrent_kernel, lstm_bias, recurrent_bias
+
 
 # lstm
 @given(
