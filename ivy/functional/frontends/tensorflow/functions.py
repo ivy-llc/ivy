@@ -28,12 +28,12 @@ fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def hard_sigmoid(x):
-    if x < -2.5:
-        return 0
-    elif x > 2.5:
-        return 1
-    else:
-        return ivy.sum(ivy.multiply(0.2, x), 0.5)
+    point_two = ivy.full(x.shape, 0.2)
+    point_five = ivy.full(x.shape, 0.5)
+    x = ivy.multiply(x, point_two)
+    x = ivy.add(x, point_five)
+    x = ivy.clip(x, 0., 1.)
+    return x
 
 
 hard_sigmoid.unsupported_dtypes = {"torch": ("float16")}
