@@ -76,25 +76,63 @@ def conv1d_transpose(
     out: Optional[torch.Tensor] = None
 ):
     filter_shape = list(filters.shape[0:1])
-    filters = filters.permute(1, 2, 0)
+    filters = filters.permute(2, 1, 0)
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
+    new_w = _deconv_length(
+        x.shape[2],
+        strides,
+        filter_shape[0],
+        padding,
+        dilations
+    )
+    output_shape = [new_w]
+    not_valid_h = False
     if padding == "VALID":
         padding_list: List[int] = [0]
+        out_w = _out_shape(x.shape[2], strides, 0, dilations, filters.shape[2])
+        output_padding = [max(new_w - out_w, 0)]
     elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
+        filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+        if output_shape[0] % strides == 0:
+            pad_w = max(filter_shape[0] - strides, 0)
+        else:
+            pad_w = max(filter_shape[0] - (output_shape[0] % strides), 0)
+        if pad_w % 2 != 0:
+            pad_w -= 1
+            not_valid_h = True
+        pad_w_ = pad_w // 2
+        out_w = _out_shape(
+            x.shape[2],
+            strides,
+            pad_w_,
+            dilations,
+            filters.shape[2]
+        )
+        padding_list = [pad_w_]
+        output_padding = [max(new_w - out_w, 0)]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
     res = torch.nn.functional.conv_transpose1d(
-        x, filters, None, strides, padding_list, dilation=dilations
+        x,
+        filters,
+        None,
+        strides,
+        padding_list,
+        dilation=dilations,
+        output_padding=output_padding
     )
-    return res.permute(0, 2, 1)
+    if not_valid_h:
+        res = res[:, :, 0:-1]
+    if data_format == "NWC":
+        res = res.permute(0, 2, 1)
+    return res
 
 
-conv1d.unsupported_dtypes = ("float16",)
+conv1d_transpose.unsupported_dtypes = ("float16",)
 
 
 # noinspection PyUnresolvedReferences
@@ -319,7 +357,7 @@ def conv3d(
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
     data_format: str = "NDHWC",
-    dilations:  Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     *,
     out: Optional[torch.Tensor] = None
 ):
@@ -327,13 +365,13 @@ def conv3d(
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
     # filter_shape = list(filters.shape[0:3])
     f_w_after_dilation = filters.shape[2] + (
-            (dilations[2] - 1) * (filters.shape[2] - 1)
+        (dilations[2] - 1) * (filters.shape[2] - 1)
     )
     f_h_after_dilation = filters.shape[1] + (
-            (dilations[1] - 1) * (filters.shape[1] - 1)
+        (dilations[1] - 1) * (filters.shape[1] - 1)
     )
     f_d_after_dilation = filters.shape[0] + (
-            (dilations[0] - 1) * (filters.shape[0] - 1)
+        (dilations[0] - 1) * (filters.shape[0] - 1)
     )
     filter_shape = [f_d_after_dilation, f_h_after_dilation, f_w_after_dilation]
     filters = filters.permute(4, 3, 0, 1, 2)
