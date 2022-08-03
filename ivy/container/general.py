@@ -3,7 +3,6 @@ from numbers import Number
 from typing import Any, Union, List, Dict, Iterable, Optional, Callable
 
 # local
-from ivy import Container
 from ivy.container.base import ContainerBase
 import ivy
 
@@ -427,22 +426,24 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_gather(
-            params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            axis: Union[int, ivy.Container] = -1,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: Union[int, ivy.Container] = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.gather. This method simply wraps
         the function, and so the docstring for ivy.gather also applies to this method
         with minimal changes.
+
         Parameters
         ----------
+
         param
             the array or container from which to gather values.
         indices
@@ -461,6 +462,7 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
@@ -480,22 +482,24 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     def gather(
-            self: ivy.Container,
-            indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            axis: Union[int, ivy.Container] = -1,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: Union[int, ivy.Container] = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.gather. This method simply wraps
         the function, and so the docstring for ivy.gather also applies to this method
         with minimal changes.
+
         Parameters
         ----------
+
         self
             the container from which to gather values.
         indices
@@ -514,6 +518,7 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
@@ -533,23 +538,26 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_has_nans(
-            x: Iterable[Any],
-            include_infs: bool = True,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        x: Iterable[Any],
+        include_infs: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.has_nans. This method simply wraps
         the function, and so the docstring for ivy.has_nans also applies to this method
         with minimal changes.
+
         Parameters
         ----------
+
         x
             Input container.
         include_infs
-            Whether to include ``+infinity`` and ``-infinity`` in the check. Default is True.
+            Whether to include ``+infinity`` and ``-infinity`` in the check.
+            Default is True.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -564,6 +572,7 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             container of booleans, whether there is a nans at indices.
+
         Examples
         --------
         With :code:`ivy.Container` input:
@@ -598,12 +607,15 @@ class ContainerWithGeneral(ContainerBase):
         This method simply wraps the function, and so the docstring
         for ivy.has_nans also applies to this method
         with minimal changes.
+
         Parameters
         ----------
+
         self
             The container from which to check nans.
         include_infs
-            Whether to include ``+infinity`` and ``-infinity`` in the check. Default is True.
+            Whether to include ``+infinity`` and ``-infinity`` in the check.
+            Default is True.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -614,6 +626,7 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+
         Returns
         -------
         ret
@@ -629,12 +642,7 @@ class ContainerWithGeneral(ContainerBase):
         }
         """
         return self.static_has_nans(
-            self,
-            include_infs,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences
+            self, include_infs, key_chains, to_apply, prune_unapplied, map_sequences
         )
 
     @staticmethod
@@ -655,6 +663,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
+
         params
             The container from which to gather values.
         indices

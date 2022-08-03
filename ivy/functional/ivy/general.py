@@ -1445,7 +1445,6 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
@@ -2123,7 +2122,7 @@ def print_all_arrays_in_memory():
 
 def set_queue_timeout(timeout):
     """
-    Set the global queue timeout value (in seconds) 
+    Set the global queue timeout value (in seconds)
     Default value without this function being called is 15 seconds.
 
     Parameters
@@ -2137,15 +2136,15 @@ def set_queue_timeout(timeout):
     --------
     >> x = ivy.queue_timeout()
     >> print(x)
-    15.0   
-    
+    15.0
+
     To set the timeout for example 30 seconds
 
     >> ivy.set_queue_timeout(30)
     >> y = ivy.queue_timeout()
     >> print(y)
-    30 
-    
+    30
+
     """
     global TIMEOUT
     TIMEOUT = timeout
@@ -2163,12 +2162,12 @@ def queue_timeout():
 
 def tmp_dir():
     """Get the path for directory that saves temporary files.
-    
+
     Returns
     -------
     ret
         The path of directory that saves temporary files.
-    
+
     """
     return TMP_DIR
 
