@@ -1535,6 +1535,32 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
         b: false
     }
 
+    With one :code:`ivy.Container` static method:
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.Container.static_has_nans(x)
+    >>> print(y)
+    {
+        a: false
+        b: false
+    }
+
+     With one :code:`ivy.Array` instance method:
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = x.has_nans()
+    >>> print(y)
+    False
+
+    With :code:`ivy.Container` instance method:
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1]))
+    >>> y = x.has_nans()
+    >>> print(y)
+    {
+        a: false
+        b: false
+    }
+
     """
     return ivy.value_is_nan(ivy.sum(x), include_infs)
 
