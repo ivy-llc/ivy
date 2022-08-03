@@ -578,10 +578,10 @@ def map(
 
     >>> def linear_model(w:float, x:float, b:float) -> float: return w*x + b
     >>> results = ivy.map( \
-    >>>         fn = linear_model, \
-    >>>         constant = {'w':10., 'b':1.}, \
-    >>>         unique = {'x':[0.,1.,2.]}, \
-    >>>         mean = False)
+    >>>     fn = linear_model, \
+    >>>     constant = {'w':10., 'b':1.}, \
+    >>>     unique = {'x':[0.,1.,2.]}, \
+    >>>     mean = False)
     >>> print(results)
     [1.0, 11.0, 21.0]
 
