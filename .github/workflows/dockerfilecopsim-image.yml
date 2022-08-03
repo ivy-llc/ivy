@@ -4,12 +4,12 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
+    types: [labeled, review_requested]
     branches: [ "master" ]
 
 jobs:
 
   build:
-
     runs-on: ubuntu-20.04
 
     steps:

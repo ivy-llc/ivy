@@ -5,66 +5,58 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # relu
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="relu"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_relu(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
     container,
     instance_method,
+    native_array,
     fw,
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x, dtype=dtype)
-    if x.shape == ():
-        return
-    if fw == "torch" and dtype == "float16":
-        return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        with_out,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "relu",
-        x=x,
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="relu",
+        x=np.asarray(x, dtype=dtype),
     )
 
 
 # leaky_relu
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
-    native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
-    alpha=st.floats(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
+    alpha=st.floats(width=16),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_leaky_relu(
+    *,
     dtype_and_x,
     alpha,
     as_variable,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -72,20 +64,17 @@ def test_leaky_relu(
     fw,
 ):
     dtype, x = dtype_and_x
-    if not ivy.all(ivy.isfinite(ivy.array(x))) or not ivy.isfinite(ivy.array([alpha])):
-        return
-    if fw == "torch" and dtype == "float16":
-        return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        False,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "leaky_relu",
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="leaky_relu",
+        rtol_=1e-4,
         x=np.asarray(x, dtype=dtype),
         alpha=alpha,
     )
@@ -93,17 +82,17 @@ def test_leaky_relu(
 
 # gelu
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     approximate=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="gelu"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_gelu(
+    *,
     dtype_and_x,
     as_variable,
+    with_out,
     approximate,
     num_positional_args,
     container,
@@ -112,36 +101,35 @@ def test_gelu(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
-    x = np.asarray(x, dtype=dtype)
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        False,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "gelu",
-        x=x,
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="gelu",
+        atol_=1e-4,
+        rtol_=1e-4,
+        x=np.asarray(x, dtype=dtype),
         approximate=approximate,
     )
 
 
 # tanh
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="tanh"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_tanh(
+    *,
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -149,34 +137,32 @@ def test_tanh(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        False,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "tanh",
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="tanh",
         x=np.asarray(x, dtype=dtype),
     )
 
 
 # sigmoid
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_sigmoid(
+    *,
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -184,34 +170,36 @@ def test_sigmoid(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        False,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "sigmoid",
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="sigmoid",
         x=np.asarray(x, dtype=dtype),
     )
 
 
 # softmax
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.all_float_dtypes),
-    as_variable=st.booleans(),
-    native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+    ),
+    axis=st.integers(-1, 0),
+    num_positional_args=helpers.num_positional_args(fn_name="softmax"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_softmax(
+    *,
     dtype_and_x,
     as_variable,
+    axis,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -219,39 +207,35 @@ def test_softmax(
     fw,
 ):
     dtype, x = dtype_and_x
-    axis = -1
-    if fw == "torch" and dtype == "float16":
-        return
-    x = np.asarray(x, dtype=dtype)
-    if x.shape == ():
-        return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        False,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "softmax",
-        x=x,
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="softmax",
+        x=np.asarray(x, dtype=dtype),
         axis=axis,
     )
 
 
 # softplus
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
-    native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="softplus"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_softplus(
+    *,
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     container,
     instance_method,
@@ -259,17 +243,15 @@ def test_softplus(
     fw,
 ):
     dtype, x = dtype_and_x
-    if fw == "torch" and dtype == "float16":
-        return
-    helpers.test_array_function(
-        dtype,
-        as_variable,
-        False,
-        native_array,
-        fw,
-        num_positional_args,
-        container,
-        instance_method,
-        "softplus",
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="softplus",
         x=np.asarray(x, dtype=dtype),
     )

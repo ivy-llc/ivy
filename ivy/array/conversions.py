@@ -17,7 +17,7 @@ def _to_native(x: Any) -> Any:
     if isinstance(x, ivy.Array):
         return _to_native(x.data)
     elif isinstance(x, ivy.Container):
-        return x.to_native()
+        return x.map(lambda x_, _: _to_native(x_))
     return x
 
 
@@ -40,10 +40,10 @@ def _to_ivy(x: Any) -> Any:
 
 
 def to_ivy(
-    x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
+    x: Union[ivy.Array, ivy.NativeArray, Iterable],
     nested: bool = False,
     include_derived: Dict[type, bool] = None,
-) -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
+) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """Returns the input array converted to an ivy.Array instances if it is an array
     type, otherwise the input is returned unchanged. If nested is set, the check is
     applied to all nested leafs of tuples, lists and dicts contained within x.
@@ -103,10 +103,10 @@ def args_to_ivy(
 
 
 def to_native(
-    x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
+    x: Union[ivy.Array, ivy.NativeArray, Iterable],
     nested: bool = False,
     include_derived: Dict[type, bool] = None,
-) -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
+) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """Returns the input item in it's native backend framework form if it is an
     ivy.Array or ivy.Variable instance. otherwise the input is returned unchanged. If
     nested is set, the check is applied to all nested leafs of tuples, lists and dicts

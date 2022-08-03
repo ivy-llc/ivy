@@ -145,7 +145,7 @@ The path to python can be found by :code:`where python` on Windows and :code:`wh
 Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any
 future projects.
 
-To make sure you have all the packages for running tests available change the directory to :code:`ivy\ivy_tests\test_array_api` in your
+To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/test_array_api` in your
 cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
 
     .. code-block:: none
@@ -278,6 +278,25 @@ Ubuntu
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `docker channel`_!
 
+More Detailed Hypothesis Logs
+****
+For testing, we use the `Hypothesis <https://hypothesis.readthedocs.io/en/latest/#>`_ module for data generation.
+During testing, if Hypothesis detects an error, it will do its best to find the simplest values that are causing the error.
+However, when using PyCharm, if Hypothesis detects two or more distinct errors, it will return the number of errors found and not return much more information.
+This is because PyCharm by default turns off headers and summary's while running tests. To get more detailed information on errors in the code, we recommend doing the following:
+
+#. Going to the settings -> Advanced
+#. Using the search bar to search for 'Pytest'
+#. Make sure that the checkbox for 'Pytest: do not add "--no-header --no-summary -q"' is checked.
+
+    a. .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_setting.png
+          :width: 420
+
+Now, if Hypothesis detects an error in the code it will return more detailed information on each of the failing examples:
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_example.png
+   :width: 420
+
 GitHub Codespaces
 -----------------
 
@@ -349,6 +368,32 @@ There are 3 ways to connect your existing codespaces, you can use any of the app
 **Troubleshooting**
 
 Sometimes, visual studio code is not able to select the python interpreter. However, you can do that manually if that ever happens. Open up any python file, then click on the bottom right where it is written "Select Python Interpreter". From there, select :code:`Python 3.8.10 64-bit usr/bin/python3`.
+
+**Setting Up Testing**
+
+The steps are as following to setup testing on VS Code when using a new Codespace.
+
+1. Under the flask Icon in the toolbar select "Configure Python Tests" and select PyTest as the test framework.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_01.png?raw=true
+   :width: 420
+
+2. Select ivy_tests as the root directory for testing.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_02.png?raw=true
+   :width: 420
+
+3. Configure the _array_module.py file in the array_api_tests to be set to one of the supported framworks.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_03.png?raw=true
+   :width: 420
+
+4. As of 01/08/2022, the conftest.py file in the array_api_tests folder must also be commented out in order to run ivy_tests in the test suite. This will cause the array_api_tests to fail and therefore they must be run via the terminal.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_04.png?raw=true
+   :width: 420
+
+5. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
 
 Pre-Commit
 ----------

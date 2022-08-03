@@ -18,6 +18,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -28,7 +29,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def max(
@@ -39,6 +40,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -49,7 +51,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def mean(
@@ -60,6 +62,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -70,7 +73,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def var(
@@ -82,8 +85,54 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.var.
+        This method simply wraps the function, and so the
+        docstring for ivy.var also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is None.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not
+            applied. Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
+        out
+            optional output, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+           if the variance was computed over the entire array, a
+           zero-dimensional arraycontaining the variance; otherwise,
+           a non-zero-dimensional array containing the variances.
+           The returned array must have the same data type as x.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
+                              b=ivy.array([0.7, 0.1, 0.9]))
+        >>> y = x.var()
+        >>> print(y)
+        {
+            a:ivy.array(0.12666667),
+            b:ivy.array(0.11555555)
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.var(x_, axis, correction, keepdims)
@@ -94,7 +143,80 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
+        )
+
+    @staticmethod
+    def static_var(
+        x: ivy.Container,
+        axis: Union[int, Tuple[int]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.var.
+        This method simply wraps the function, and so
+        the docstring for ivy.var also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is None.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was
+            not applied. Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
+        out
+            optional output, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+           if the variance was computed over the entire array,
+           a zero-dimensional array containing the variance;
+           otherwise, a non-zero-dimensional array containing the
+           variances. The returned array must have the same data
+           type as x.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
+                              b=ivy.array([0.7, 0.1, 0.9]))
+        >>> y = ivy.Container.static_var(x)
+        >>> print(y)
+        {
+            a:ivy.array(0.12666667),
+            b:ivy.array(0.11555555)
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "var",
+            x,
+            key_chains=key_chains,
+            axis=axis,
+            correction=correction,
+            keepdims=keepdims,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     def prod(
@@ -106,6 +228,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -118,7 +241,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def sum(
@@ -130,6 +253,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -142,7 +266,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def std(
@@ -154,6 +278,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -166,7 +291,7 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )
 
     def einsum(
@@ -176,6 +301,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
@@ -186,5 +312,5 @@ class ContainerWithStatistical(ContainerBase):
                 prune_unapplied,
                 map_sequences,
             ),
-            out,
+            out=out,
         )

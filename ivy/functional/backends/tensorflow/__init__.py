@@ -3,6 +3,7 @@ import sys
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
+from tensorflow.python.framework.tensor_shape import TensorShape
 
 # local
 import ivy
@@ -14,6 +15,7 @@ NativeArray = Tensor
 NativeVariable = Tensor
 NativeDevice = str
 NativeDtype = DType
+NativeShape = TensorShape
 
 # native data types
 native_int8 = tf.int8
@@ -47,7 +49,7 @@ valid_dtypes = (
     ivy.float64,
     ivy.bool,
 )
-valid_numeirc_dtypes = (
+valid_numeric_dtypes = (
     ivy.int8,
     ivy.int16,
     ivy.int32,
@@ -72,12 +74,18 @@ valid_int_dtypes = (
     ivy.uint64,
 )
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 
 # invalid data types
 invalid_dtypes = ()
 invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
+invalid_uint_dtypes = ()
+
+native_inplace_support = False
+
+supports_gradients = True
 
 
 def closest_valid_dtype(type):
@@ -106,8 +114,6 @@ from . import general
 from .general import *
 from . import gradients
 from .gradients import *
-from . import image
-from .image import *
 from . import layers
 from .layers import *
 from . import linear_algebra as linalg

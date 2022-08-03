@@ -2,7 +2,7 @@
 
 # global
 from builtins import map as _map
-from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable
+from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, Sequence
 
 # local
 import ivy
@@ -12,7 +12,10 @@ import ivy
 # ------#
 
 
-def index_nest(nest, index):
+def index_nest(
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+    index: Union[List[int], Tuple[int], Iterable[int]],
+) -> Any:
     """Index a nested object, using a tuple of indices or keys in the case of dicts.
 
     Parameters
@@ -22,6 +25,47 @@ def index_nest(nest, index):
     index
         A tuple of indices for indexing.
 
+    Returns
+    -------
+    ret
+        The result element through indexing the nested object.
+
+    Examples
+    --------
+    With :code:`Tuple` inputs:
+
+    >>> x = (1, 2)
+    >>> y = [0]
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    1
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[1., 2.], \
+                       [3., 4.]])
+    >>> y = [1]
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    ivy.array([3., 4.])
+
+    With :code:`Dict` input:
+
+    >>> x = {'a': 0, 'b': [1, [2, 3]], 'c': (4, 5)}
+    >>> y = ('b', 1)
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    [2, 3]
+
+    With :code:`List` inputs:
+
+    >>> x = [['a', 'b', 'c'], \
+             ['d', 'e', 'f'], \
+             ['g', ['h', 'i']]]
+    >>> y = iter([2, 1, 0])
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    h
     """
     ret = nest
     for i in index:
@@ -29,7 +73,7 @@ def index_nest(nest, index):
     return ret
 
 
-def prune_nest_at_index(nest, index):
+def prune_nest_at_index(nest: Iterable, index: Tuple):
     """Prune a nested object at a specified index.
 
     Parameters
@@ -46,7 +90,11 @@ def prune_nest_at_index(nest, index):
         prune_nest_at_index(nest[index[0]], index[1:])
 
 
-def set_nest_at_index(nest, index, value):
+def set_nest_at_index(
+    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
+    index: Sequence[Union[str, int]],
+    value: Any,
+):
     """Set the value of a nested item at a specified index.
 
     Parameters
@@ -58,14 +106,59 @@ def set_nest_at_index(nest, index, value):
     value
         The new value for updating.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> y = (1, 1)
+    >>> z = 5.
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    ivy.array([[1., 2.], [3., 5.]])
+
+    >>> x = ivy.array([1., 2., 3., 4.])
+    >>> y = [1]
+    >>> z = 5.
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    ivy.array([1., 5., 3., 4.])
+
+    With :code:`Dict` input:
+    >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
+    >>> y = (1, 1)
+    >>> z = 2
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    {1: [1, 2], 2: (4, 5)}
+
+    With :code:`List` inputs:
+    >>> x = [['a', 'b', 'c'], \
+             ['d', 'e', 'f'], \
+             ['g', ['h', 'i']]]
+    >>> y = (2, 1, 0)
+    >>> z = 'H'
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    [['a','b','c'],['d','e','f'],['g',['H','i']]]
+
+     With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
+    >>> y = ('b',)
+    >>> z = ivy.array([3., 4.])
+    >>> ivy.set_nest_at_index(x, y, z)
+    >>> print(x)
+    {\
+    a: ivy.array([1., 2.]),\
+    b: ivy.array([3., 4.])\
+    }\
     """
     if len(index) == 1:
         nest[index[0]] = value
     else:
-        set_nest_at_index(nest[index[0]], index[1:], value)
+        ivy.set_nest_at_index(nest[index[0]], index[1:], value)
 
 
-def insert_into_nest_at_index(nest, index, value):
+def insert_into_nest_at_index(nest: Iterable, index: Tuple, value):
     if len(index) == 1:
         idx = index[0]
         if isinstance(nest, list):
@@ -76,7 +169,7 @@ def insert_into_nest_at_index(nest, index, value):
         insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
-def map_nest_at_index(nest, index, fn):
+def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable):
     """Map a function to the value of a nested item at a specified index.
 
     Parameters
@@ -95,7 +188,7 @@ def map_nest_at_index(nest, index, fn):
         map_nest_at_index(nest[index[0]], index[1:], fn)
 
 
-def multi_index_nest(nest, indices):
+def multi_index_nest(nest: Iterable, indices: Tuple):
     """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
     the case of dicts.
 
@@ -110,7 +203,7 @@ def multi_index_nest(nest, indices):
     return [index_nest(nest, index) for index in indices]
 
 
-def prune_nest_at_indices(nest, indices):
+def prune_nest_at_indices(nest: Iterable, indices: Tuple):
     """Prune a nested object at specified indices.
 
     Parameters
@@ -124,7 +217,11 @@ def prune_nest_at_indices(nest, indices):
     [prune_nest_at_index(nest, index) for index in indices]
 
 
-def set_nest_at_indices(nest, indices, values):
+def set_nest_at_indices(
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+    indices: Union[List[int], Tuple[int], Iterable[int]],
+    values: Union[List[int], Tuple[int], Iterable[int]],
+) -> Any:
     """Set the value of a nested item at specified indices with specified values.
 
     Parameters
@@ -136,13 +233,50 @@ def set_nest_at_indices(nest, indices, values):
     values
         The new values for updating.
 
+    Examples
+    --------
+    With :code:`List` inputs:
+
+    >>> nest = [[1, 2, 3, 4, 5, 6], ['a', 'b', 'c', 'd', 'e', 'f']]
+    >>> indices = [[0, 4], [1, 3]]
+    >>> values = [111, 'x']
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    [[1, 2, 3, 4, 111, 6], ['a', 'b', 'c', 'x', 'e', 'f']]
+
+    With :code:`Tuple` inputs:
+
+    >>> nest = (['abc', 'xyz', 'pqr'],[1, 4, 'a', 'b'])
+    >>> indices = ((0, 1),(1, 2))
+    >>> values = ('ivy', 'x')
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    (['abc', 'ivy', 'pqr'], [1, 4, 'x', 'b'])
+
+    With :code:`Dict` input:
+
+    >>> nest = {'a': [1., 2., 3.], 'b': [4., 5., 6.], 'c': [0.]}
+    >>> indices = (('a', 1), ('b', 2), ('c', 0))
+    >>> values = (11., 22., 33.)
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    {'a': [1.0, 11.0, 3.0], 'b': [4.0, 5.0, 22.0], 'c': [33.0]}
+
+    With :code:`ivy.Array` inputs:
+
+    >>> nest = ivy.array([[1., 2., 3.],[4., 5., 6.]])
+    >>> indices = ((0, 1),(1, 2))
+    >>> values = (11., 22.)
+    >>> ivy.set_nest_at_indices(nest, indices, values)
+    >>> print(nest)
+    ivy.array([[1., 11., 3.], [4., 5., 22.]])
     """
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
     [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
 
 
-def insert_into_nest_at_indices(nest, indices, values):
+def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values):
     """Insert a value into the nested item at specified indices with specified values.
 
     Parameters
@@ -164,7 +298,7 @@ def insert_into_nest_at_indices(nest, indices, values):
     ]
 
 
-def map_nest_at_indices(nest, indices, fn):
+def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable):
     """Map a function to the values of a nested item at the specified indices.
 
     Parameters
@@ -187,6 +321,7 @@ def nested_indices_where(
     to_ignore: Union[type, Tuple[type]] = None,
     _index: List = None,
     _base: bool = True,
+    stop_after_n_found: Optional[int] = None,
 ) -> Union[Iterable, bool]:
     """Checks the leaf nodes of nested x via function fn, and returns all nest indices
     where the method evaluates as True.
@@ -208,28 +343,112 @@ def nested_indices_where(
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
+    stop_after_n_found
+        to stop after some needed indices are found.
 
     Returns
     -------
     ret
         A set of indices for the nest where the function evaluated as True.
 
+    Examples
+    --------
+    With :code:`List` input:
+
+    >>> nest = [[[1, -2, 3], 19], [[9, -36, 80], -10.19]]
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> print(nested_indices)
+    [
+        [0, 0, 0], [0, 0, 1],
+        [0, 0, 2], [0, 1],
+        [1, 0, 0], [1, 0, 1],
+        [1, 0, 2], [1, 1]
+    ]
+
+
+    With :code:`Tuple` input:
+
+    >>> nest = ([-5, 9, 2], [0.3, 4.])
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun, stop_after_n_found=4)
+    >>> print(nested_indices)
+    [[0, 0], [0, 1], [0, 2], [1, 0]]
+
+    With :code:`Dict` input:
+
+    >>> nest={'a': [2., 0.6, -2.], 'b': [1., 4., 1.9], 'c': [9.4]}
+    >>> fun = ivy.abs
+    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> print(nested_indices)
+    [
+        ['a', 0], ['a', 1],
+        ['a', 2], ['b', 0],
+        ['b', 1], ['b', 2],
+        ['c', 0]
+    ]
     """
     to_ignore = ivy.default(to_ignore, ())
     _index = list() if _index is None else _index
     if isinstance(nest, (tuple, list)) and not isinstance(nest, to_ignore):
-        _indices = [
-            nested_indices_where(item, fn, check_nests, to_ignore, _index + [i], False)
-            for i, item in enumerate(nest)
-        ]
+        n = 0
+        _indices = []
+        for i, item in enumerate(nest):
+            ind = (
+                nested_indices_where(
+                    item,
+                    fn,
+                    check_nests,
+                    to_ignore,
+                    _index + [i],
+                    False,
+                    stop_after_n_found - n,
+                )
+                if stop_after_n_found is not None
+                else nested_indices_where(
+                    item, fn, check_nests, to_ignore, _index + [i], False
+                )
+            )
+            if stop_after_n_found is not None and ind:
+                if n < stop_after_n_found:
+                    n += len(ind)
+                    _indices += [ind]
+                else:
+                    break
+            else:
+                _indices += [ind]
+            if stop_after_n_found is not None and len(_indices) >= stop_after_n_found:
+                break
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
     elif isinstance(nest, dict) and not isinstance(nest, to_ignore):
-        _indices = [
-            nested_indices_where(v, fn, check_nests, to_ignore, _index + [k], False)
-            for k, v in nest.items()
-        ]
+        n = 0
+        _indices = []
+        for k, v in nest.items():
+            ind = (
+                nested_indices_where(
+                    v,
+                    fn,
+                    check_nests,
+                    to_ignore,
+                    _index + [k],
+                    False,
+                    stop_after_n_found - n,
+                )
+                if stop_after_n_found is not None
+                else nested_indices_where(
+                    v, fn, check_nests, to_ignore, _index + [k], False
+                )
+            )
+            if stop_after_n_found is not None and ind:
+                if n < stop_after_n_found:
+                    n += len(ind)
+                    _indices += [ind]
+                else:
+                    break
+            else:
+                _indices += [ind]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
@@ -331,7 +550,7 @@ def map(
 
 
 def nested_map(
-    x: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
+    x: Union[ivy.Array, ivy.NativeArray, Iterable],
     fn: Callable,
     include_derived: Optional[Union[Dict[type, bool], bool]] = None,
     to_mutable: bool = False,
@@ -340,7 +559,7 @@ def nested_map(
     _tuple_check_fn: Optional[callable] = None,
     _list_check_fn: Optional[callable] = None,
     _dict_check_fn: Optional[callable] = None,
-) -> Union[Union[ivy.Array, ivy.NativeArray], Iterable, Dict]:
+) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
     are traversed to their lowest leaves before applying the method and returning x. If
     x is not nested, the method is applied to x directly.
@@ -507,7 +726,7 @@ def nested_any(
 
 
 def copy_nest(
-    nest: Union[Union[ivy.Array, ivy.NativeArray], Iterable],
+    nest: Union[ivy.Array, ivy.NativeArray, Iterable],
     include_derived: bool = False,
     to_mutable: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
@@ -553,8 +772,8 @@ def copy_nest(
 
 
 def nested_multi_map(
-    func,
-    nests,
+    func: Callable,
+    nests: List[Iterable],
     key_chains=None,
     to_apply=True,
     prune_unapplied=False,
@@ -590,18 +809,37 @@ def nested_multi_map(
         nest containing the result of the funciton.
 
     """
-    nest0 = nests[0]
+    nest0 = None
+    for nest in nests:
+        if isinstance(nest, (tuple, list, dict)):
+            nest0 = nest
+            break
     return_list = list()
-    for index, val in enumerate(nest0):
-        values = [nest[index] for nest in nests]
-        value0 = values[0]
-        this_key_chain = (
-            str(index) if key_chain == "" else (key_chain + "/" + str(index))
-        )
-        if (
-            (isinstance(value0, ivy.Array) or isinstance(value0, ivy.NativeArray))
-            and ivy.get_num_dims(value0) > 0
-        ) or (isinstance(value0, list) or isinstance(value0, tuple)):
+    if nest0 is not None:
+        is_dict = isinstance(nest0, dict)
+        for index, val in enumerate(nest0):
+            if is_dict:
+                values = [
+                    nest[index]
+                    if isinstance(nest, (tuple, list))
+                    else nest[val]
+                    if isinstance(nest, dict)
+                    else nest
+                    for nest in nests
+                ]
+            else:
+                values = [
+                    nest[index]
+                    if isinstance(nest, (tuple, list))
+                    else nest[list(nest)[index]]
+                    if isinstance(nest, dict)
+                    else nest
+                    for nest in nests
+                ]
+            value0 = values[0]
+            this_key_chain = (
+                str(index) if key_chain == "" else (key_chain + "/" + str(index))
+            )
             ret = ivy.nested_multi_map(
                 func,
                 values,
@@ -610,32 +848,38 @@ def nested_multi_map(
                 prune_unapplied,
                 this_key_chain,
                 config,
+                to_ivy,
             )
-            if ret:
-                if ivy.is_array(ret):
-                    return_list.insert(index, ivy.to_list(ret))
+            if to_ivy:
+                if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+                    return_list.insert(index, ivy.array(ivy.to_list(ret)))
                 else:
                     return_list.insert(index, ret)
-        else:
-            if key_chains is not None:
-                if (this_key_chain in key_chains and not to_apply) or (
-                    this_key_chain not in key_chains and to_apply
-                ):
-                    if prune_unapplied:
-                        continue
-                    if ivy.is_array(value0):
-                        return_list.insert(index, ivy.to_list(value0))
-                    else:
-                        return_list.insert(index, value0)
-                    continue
-            ret = func(values, this_key_chain)
-            if ivy.is_array(ret):
-                return_list.insert(index, ivy.to_list(ret))
             else:
                 return_list.insert(index, ret)
-
-    # noinspection PyProtectedMember
-    if to_ivy:
-        return ivy.array(return_list)
     else:
-        return return_list
+        values = nests
+        this_key_chain = key_chain
+        if key_chains is not None:
+            if (this_key_chain in key_chains and not to_apply) or (
+                this_key_chain not in key_chains and to_apply
+            ):
+                if prune_unapplied:
+                    return return_list
+                if ivy.is_array(value0):
+                    if to_ivy:
+                        return_list.append(value0)
+                    else:
+                        return_list.append(ivy.array(value0))
+                else:
+                    return_list.append(value0)
+                return return_list
+        ret = func(values, this_key_chain)
+        if to_ivy:
+            if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+                return ret
+            else:
+                return ivy.array(ret)
+        else:
+            return ret
+    return return_list

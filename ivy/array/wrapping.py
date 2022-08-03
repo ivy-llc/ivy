@@ -5,6 +5,8 @@ import ivy
 from typing import Callable, Type, List, Iterable, Optional
 from types import ModuleType
 
+TO_IGNORE = ["shape"]
+
 
 def _wrap_function(function_name: str) -> Callable:
     """Wraps the function called `function_name`.
@@ -38,7 +40,7 @@ def _wrap_function(function_name: str) -> Callable:
         function = ivy.__dict__[function_name]
         # gives us the position and name of the array argument
         data_idx = function.array_spec[0]
-        if len(args) > data_idx[0][0]:
+        if len(args) >= data_idx[0][0]:
             args = ivy.copy_nest(args, to_mutable=True)
             data_idx = [data_idx[0][0]] + [
                 0 if idx is int else idx for idx in data_idx[1:]
@@ -83,6 +85,7 @@ def add_ivy_array_instance_methods(
     True True
 
     """
+    to_ignore = TO_IGNORE + list(to_ignore)
     for module in modules:
         for key, value in module.__dict__.items():
             # we skip the cases where the function is protected, the instance

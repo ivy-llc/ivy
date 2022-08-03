@@ -3,119 +3,190 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # cross_entropy
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_int_dtypes,
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        min_value=1.0013580322265625e-05,
+        max_value=1,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    axis=helpers.integers(min_value=-1, max_value=0),
+    epsilon=st.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_cross_entropy(
-    dtype_and_x,
+    *,
+    dtype_and_true,
+    dtype_and_pred,
+    axis,
+    epsilon,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     container,
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
-        return
-    if fw == "torch" and input_dtype == "float16":
-        return
-    helpers.test_array_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "cross_entropy",
-        true=np.asarray(x[0], dtype=input_dtype[0]),
-        pred=np.asarray(x[1], dtype=input_dtype[1]),
+    pred_dtype, pred = dtype_and_pred
+    true_dtype, true = dtype_and_true
+
+    helpers.test_function(
+        input_dtypes=[true_dtype, pred_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="cross_entropy",
+        true=np.asarray(true, dtype=true_dtype),
+        pred=np.asarray(pred, dtype=pred_dtype),
+        axis=axis,
+        epsilon=epsilon,
+        rtol_=1e-03,
     )
 
 
 # binary_cross_entropy
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_int_dtypes,
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        min_value=1.0013580322265625e-05,
+        max_value=1,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    epsilon=st.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_binary_cross_entropy(
-    dtype_and_x,
+    *,
+    dtype_and_true,
+    dtype_and_pred,
+    epsilon,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     container,
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
-        return
-    if fw == "torch" and input_dtype == "float16":
-        return
-    helpers.test_array_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "binary_cross_entropy",
-        true=np.asarray(x[0], dtype=input_dtype[0]),
-        pred=np.asarray(x[1], dtype=input_dtype[1]),
+    pred_dtype, pred = dtype_and_pred
+    true_dtype, true = dtype_and_true
+
+    helpers.test_function(
+        input_dtypes=[true_dtype, pred_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="binary_cross_entropy",
+        true=np.asarray(true, dtype=true_dtype),
+        pred=np.asarray(pred, dtype=pred_dtype),
+        epsilon=epsilon,
     )
 
 
 # sparse_cross_entropy
 @given(
-    dtype_and_x=helpers.dtype_and_values(ivy.valid_float_dtypes, 2),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_int_dtypes,
+        min_value=0,
+        max_value=2,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=3,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        min_value=1.0013580322265625e-05,
+        max_value=1,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=3,
+    ),
+    axis=helpers.integers(min_value=-1, max_value=0),
+    epsilon=st.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_sparse_cross_entropy(
-    dtype_and_x,
+    *,
+    dtype_and_true,
+    dtype_and_pred,
+    axis,
+    epsilon,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     container,
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    if (v == [] for v in x):
-        return
-    if fw == "torch" and input_dtype == "float16":
-        return
-    helpers.test_array_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "sparse_cross_entropy",
-        true=np.asarray(x[0], dtype=input_dtype[0]),
-        pred=np.asarray(x[1], dtype=input_dtype[1]),
+    true_dtype, true = dtype_and_true
+    pred_dtype, pred = dtype_and_pred
+
+    helpers.test_function(
+        input_dtypes=[true_dtype, pred_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="sparse_cross_entropy",
+        true=np.asarray(true, dtype=true_dtype),
+        pred=np.asarray(pred, dtype=pred_dtype),
+        axis=axis,
+        epsilon=epsilon,
     )

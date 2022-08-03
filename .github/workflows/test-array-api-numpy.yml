@@ -1,5 +1,9 @@
 name: test-array-api-numpy
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+    types: [labeled, review_requested]
+  workflow_dispatch: 
 jobs:
   run-numpy-array-api-tests:
     runs-on: ubuntu-latest
@@ -15,10 +19,15 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: test-array-api-numpy.yml
-          workflow_conclusion: success
-          name: hypothesis
+          name: hypothesis_numpy_zip
           path: |
-            ivy/.hypothesis
+            ivy/.hypothesis/
+      
+      - name: Unzip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          unzip examples.zip
+          rm examples.zip
             
       - name: Run NumPy Tests
         id: tests
@@ -27,12 +36,17 @@ jobs:
           ./test_array_api.sh numpy
         continue-on-error: true
         
-      - name: Upload hypothesis
+      - name: Zip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          zip -r examples.zip examples
+          
+      - name: Upload Hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: hypothesis
+          name: hypothesis_numpy_zip
           path: |
-            ivy/.hypothesis
+            ivy/.hypothesis/examples.zip
     
       - name: Check on failures
         if: steps.tests.outcome != 'success'

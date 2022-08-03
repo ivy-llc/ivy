@@ -1,5 +1,10 @@
 name: test-array-api-torch
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+    types: [labeled, review_requested]
+  workflow_dispatch: 
+
 jobs:
   run-torch-array-api-tests:
     runs-on: ubuntu-latest
@@ -15,11 +20,16 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: test-array-api-torch.yml
-          workflow_conclusion: success
-          name: hypothesis
+          name: hypothesis_torch_zip
           path: |
-            ivy/.hypothesis
-
+            ivy/.hypothesis/
+      
+      - name: Unzip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          unzip examples.zip
+          rm examples.zip
+            
       - name: Run Torch Tests
         id: tests
         run: |
@@ -27,12 +37,17 @@ jobs:
           ./test_array_api.sh torch
         continue-on-error: true
         
+      - name: Zip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          zip -r examples.zip examples 
+      
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: hypothesis
+          name: hypothesis_torch_zip
           path: |
-            ivy/.hypothesis
+            ivy/.hypothesis/examples.zip
     
       - name: Check on failures
         if: steps.tests.outcome != 'success'

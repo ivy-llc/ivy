@@ -17,7 +17,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union, Iterable, Dict
+from typing import Union
 from builtins import set
 
 # local
@@ -196,11 +196,23 @@ class ContainerBase(dict, abc.ABC):
         # levels of that container using map_fn and call fn using those arrays
         # as inputs
         ret = ivy.Container.multi_map(
-            map_fn, conts, key_chains, to_apply, prune_unapplied
+            map_fn,
+            conts,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_nests=map_sequences,
         )
         if ivy.exists(out):
             out.inplace_update(ret)
             ret = out
+
+        # Multiple containers for functions returning multiple arrays
+        for values in ret.values():
+            if isinstance(values, list):
+                for v in values:
+                    if ivy.is_ivy_array(v):
+                        return ret.unstack_conts(0)
         return ret
 
     @staticmethod
@@ -593,7 +605,7 @@ class ContainerBase(dict, abc.ABC):
         prune_unapplied=False,
         key_chain="",
         config=None,
-        map_sequences=False,
+        map_nests=False,
         assert_identical=False,
     ):
         """Apply function to all array values from a collection of identically
@@ -627,12 +639,23 @@ class ContainerBase(dict, abc.ABC):
             Container
 
         """
-        container0 = containers[0]
+        container0 = None
+        for cont in containers:
+            if isinstance(cont, ivy.Container):
+                container0 = cont
+                break
+        if container0 is None:
+            raise Exception(
+                "No containers found in the inputs to " "ivy.Container.multi_map"
+            )
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
         return_dict = dict()
         for key in container0.keys():
-            values = [cont[key] for cont in containers]
+            values = [
+                cont[key] if isinstance(cont, ivy.Container) and key in cont else cont
+                for cont in containers
+            ]
             value0 = values[0]
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             is_container = [ivy.is_ivy_container(x) for x in values]
@@ -656,13 +679,15 @@ class ContainerBase(dict, abc.ABC):
                         prune_unapplied,
                         this_key_chain,
                         config,
-                        map_sequences,
+                        map_nests,
                         assert_identical,
                     )
                     if ret:
                         return_dict[key] = ret
-                elif isinstance(value0, (list, tuple)) and map_sequences:
-                    ret = ivy.nested_multi_map(lambda x, _: func(x, None), values)
+                elif any(isinstance(x, (list, tuple)) for x in values) and map_nests:
+                    ret = ivy.nested_multi_map(
+                        lambda x, _: func(x, None), values, to_ivy=False
+                    )
                     if prune_unapplied and not ret:
                         continue
                     return_dict[key] = ret
@@ -1342,7 +1367,7 @@ class ContainerBase(dict, abc.ABC):
             for k, v in self.map(
                 lambda x, kc: list(x.shape)
                 if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else ([len(x)] if isinstance(x, (list, tuple, ivy.MultiDev)) else None)
+                else ([len(x)] if isinstance(x, (list, tuple)) else None)
             ).to_iterator()
             if v
         ]
@@ -1597,6 +1622,7 @@ class ContainerBase(dict, abc.ABC):
                     ).to_iterator()
                 ]
             )
+        )
         )
 
     def minimum(
@@ -1960,39 +1986,6 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = value
         return ivy.Container(return_dict, **self._config)
 
-    def as_ones(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Return arrays of ones for all nested arrays in the container.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays filled with ones.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.ones_like(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def as_zeros(
         self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
     ):
@@ -2246,31 +2239,6 @@ class ContainerBase(dict, abc.ABC):
             }
         )
 
-    def to_multi_dev(self, devices, axis=0):
-        """Return a single MultiDevContainer, which shares the same structure as the
-        current container, but replaces arrays at the leaves with DistributedArray
-        instances.
-
-        Parameters
-        ----------
-        devs
-            The devices along which to distribute each array in the container.
-        axis
-            The axis along which to split the arrays at the container leaves.
-            Default is 0.
-
-        Returns
-        -------
-            a MultiDevContainer instance, with all leafs arrays replaced by
-            DistributedArray instances.
-
-        """
-        return ivy.MultiDevContainer(
-            self.map(lambda x, kc: self._ivy.dev_dist_array(x, devices, axis)),
-            devices,
-            **self._config,
-        )
-
     def unstack(self, axis, keepdims=False, dim_size=None):
         """Unstack containers along specified dimension.
 
@@ -2346,11 +2314,14 @@ class ContainerBase(dict, abc.ABC):
             A list of sub-arrays.
 
         """
-        dim_size = (
-            num_or_size_splits
-            if isinstance(num_or_size_splits, int)
-            else len(num_or_size_splits)
-        )
+        if num_or_size_splits is None:
+            dim_size = 1
+        else:
+            dim_size = (
+                num_or_size_splits
+                if isinstance(num_or_size_splits, int)
+                else len(num_or_size_splits)
+            )
         # noinspection PyTypeChecker
         return self.map(
             lambda x, kc: self._ivy.split(x, num_or_size_splits, axis, with_remainder)
@@ -2582,40 +2553,52 @@ class ContainerBase(dict, abc.ABC):
             prune_unapplied,
             map_sequences,
         )
+)
 
-    def to_device(
+
+    def matrix_norm(
         self,
-        device,
+        ord=2,
+        keepdims=False,
         key_chains=None,
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Move the container arrays to the desired device, specified by device string.
+        """Compute matrix p-norm for each array in the container.
 
         Parameters
         ----------
-        dev
-            device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device
-            if None.
+        p
+            Order of the norm. Default is 2.
+        axis
+            If axis is an integer, it specifies the axis of x along which to compute the
+            matrix norms. Default is None, in which case the flattened array is
+            considered.
+        keepdims
+            If this is set to True, the axes which are normed over are left in the
+            result as dimensions with size one. With this option the result will
+            broadcast correctly against the original x. Default is False.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        ord
+            Default value = 2)
 
         Returns
         -------
-            The container, but with each sub-array now placed on the target device.
+            Container object with the matrix norms for each sub-array returned.
 
         """
         return self.map(
-            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_device(x, device=device))
+            lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims)
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
@@ -2624,56 +2607,134 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def stop_gradients(
+    def slice_via_key(self, slice_key):
+        """Get slice of container, based on key.
+
+        Parameters
+        ----------
+        slice_key
+            key to slice container at.
+
+        Returns
+        -------
+            Container object sliced at desired key.
+
+        """
+        return_dict = dict()
+        for key, value in self.items():
+            if key == slice_key:
+                return value
+            elif isinstance(value, ivy.Container):
+                return_dict[key] = value.slice_via_key(slice_key)
+            else:
+                return_dict[key] = value
+        return ivy.Container(return_dict, **self._config)
+
+    def as_bools(
         self,
-        preserve_type=True,
+        assert_is_bool=False,
         key_chains=None,
         to_apply=True,
         prune_unapplied=False,
         map_sequences=False,
     ):
-        """Stop gradients of all array entries in the container.
+        """Return boolean evaluation for all nested items in the container.
 
         Parameters
         ----------
-        preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
-        preserve_type
-            bool, optional (Default value = True)
+        assert_is_bool
+            Whether or not to assert the entry is of type Boolean.
+            (Default value = False)
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
 
         Returns
         -------
-            container with each array having their gradients stopped.
+            Container object with all entries boolean evaluated.
 
         """
+
+        def _ret_bool(x):
+            if assert_is_bool:
+                assert isinstance(x, bool)
+                return x
+            return bool(x)
+
         return self.map(
-            lambda x, kc: self._ivy.stop_gradient(x, preserve_type)
-            if self._ivy.is_variable(x)
-            else x,
+            lambda x, kc: _ret_bool(x),
             key_chains,
             to_apply,
             prune_unapplied,
             map_sequences,
         )
 
-    def as_variables(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested arrays to variables, which support gradient computation.
+    def unstack_conts(self, axis, keepdims=False, dim_size=None):
+        """Unstack containers along specified dimension.
 
         Parameters
         ----------
+        axis
+            Dimensions along which to unstack.
+        keepdims
+            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+        dim_size
+            Size of the dimension to unstack. Determined from inputs by default.
+
+        Returns
+        -------
+            List of containers, unstacked along the specified dimension.
+
+        """
+        if dim_size is None:
+            dim_size = self.shape[axis]
+        if keepdims:
+            # noinspection PyTypeChecker
+            return [
+                self[
+                    slice(i, i + 1, 1)
+                    if axis == 0
+                    else tuple([slice(None, None, None)] * axis + [slice(i, i + 1, 1)])
+                ]
+                for i in range(dim_size)
+            ]
+        # noinspection PyTypeChecker
+        return [
+            self[i if axis == 0 else tuple([slice(None, None, None)] * axis + [i])]
+            for i in range(dim_size)
+        ]
+
+    def split_conts(
+        self,
+        num_or_size_splits=None,
+        axis=0,
+        with_remainder=False,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=False,
+    ):
+        """Splits a container into multiple sub-containers, by splitting their
+        constituent arrays.
+
+        Parameters
+        ----------
+        num_or_size_splits
+            Number of equal arrays to divide the array into along the given axis if an
+            integer. The size of each split element if a sequence of integers. Default
+            is to divide into as many 1-dimensional arrays as the axis dimension.
+        axis
+            The axis along which to split, default is 0.
+        with_remainder
+            If the tensor does not split evenly, then store the last remainder entry.
+            Default is False.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -2687,56 +2748,24 @@ class ContainerBase(dict, abc.ABC):
 
         Returns
         -------
-            container with each array converted to a variable.
+            A list of sub-arrays.
 
         """
+        dim_size = (
+            num_or_size_splits
+            if isinstance(num_or_size_splits, int)
+            else len(num_or_size_splits)
+        )
+        # noinspection PyTypeChecker
         return self.map(
-            lambda x, kc: self._ivy.variable(x)
+            lambda x, kc: self._ivy.split(x, num_or_size_splits, axis, with_remainder)
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
             to_apply,
             prune_unapplied,
             map_sequences,
-        )
-
-    def as_arrays(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested variables to arrays, which do not support gradient
-        computation.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each variable converted to an array.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(x, False)
-            if self._ivy.is_variable(x)
-            else (
-                x
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else self._ivy.array(x)
-            ),
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
+        ).unstack_conts(0, dim_size=dim_size)
 
     def num_arrays(self, exclusive=False):
         """Compute the number of arrays present at the leaf nodes, including variables
@@ -2776,118 +2805,6 @@ class ContainerBase(dict, abc.ABC):
                 )
             ),
             alphabetical_keys=False,
-        )
-
-    def to_numpy(
-        self,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        update_backend=True,
-    ):
-        """Converts all nested ivy arrays to numpy arrays.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        update_backend
-            Whether to update the ivy backend of the returned container to numpy.
-            Default is True.
-
-        Returns
-        -------
-            container with each ivy array converted to a numpy array.
-
-        """
-        import ivy.functional.backends.numpy
-
-        ret = self.map(
-            lambda x, kc: self._ivy.to_numpy(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-        if update_backend:
-            ret.set_ivy_backend(ivy.get_backend("numpy"))
-        return ret
-
-    def from_numpy(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested numpy arrays to native backend arrays.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each ivy array converted to a numpy array.
-
-        """
-        ret = self.map(
-            lambda x, kc: self._ivy.array(x) if isinstance(x, np.ndarray) else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-        return ret
-
-    def arrays_as_lists(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested arrays to lists, a useful intermediate step for
-        conversion to other framework array types.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each array converted to a list.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.to_list(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
         )
 
     def to_disk_as_hdf5(
@@ -4189,17 +4106,6 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def dtype(self):
-        """Summary.
-
-        Returns
-        -------
-        ret
-             New datatype container
-
-        """
-        return self.map(lambda x, _: self._ivy.dtype(x))
-
     def with_entries_as_lists(self):
         def to_list(x, _=""):
             try:
@@ -4761,6 +4667,7 @@ class ContainerBase(dict, abc.ABC):
                     .replace(")dtype=", "), dtype=")
                     .replace(", ),", ",),")
                 )
+                json_dumped_str = re.sub("}, $", "}", json_dumped_str)
             # color keys
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)

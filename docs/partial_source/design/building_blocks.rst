@@ -3,178 +3,230 @@ Building Blocks
 
 Here we explain the components of Ivy which are fundamental to it’s usage either as a code converter or as a fully-fledged framework-agnostic ML framework. These are the 4 parts labelled as (a) in the image below:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/dependency_graph_with_compiler.png?raw=true
    :align: center
    :width: 100%
 
 Backend Functional APIs ✅
 -----------------------
 
-The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function :code:`ivy.clip` as an example.
+The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function :code:`ivy.stack` as an example.
 
-There are separate backend modules for JAX, TensorFlow, PyTorch, MXNet and NumPy, and so we implement the :code:`clip` method once for each backend, each in separate backend files like so:
+There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and so we implement the :code:`stack` method once for each backend, each in separate backend files like so:
 
 .. code-block:: python
 
-   # ivy/functional/backends/jax/elementwise.py:
-   def clip(x, x_min, x_max):
-       return jax.numpy.clip(x, x_min, x_max)
+   # ivy/functional/backends/jax/manipulation.py:
+    def stack(
+        x: Union[Tuple[JaxArray], List[JaxArray]],
+        axis: Optional[int] = None,
+        *,
+        out: Optional[JaxArray] = None,
+    ) -> JaxArray:
+        if axis is None:
+            axis = 0
+        ret = jnp.stack(x, axis=axis)
+        return ret
+
 .. code-block:: python
 
-   # ivy/functional/backends/mxnet/elementwise.py:
-   def clip(x, x_min, x_max):
-       return mxnet.nd.clip(x, x_min, x_max)
+   # ivy/functional/backends/numpy/manipulation.py:
+    def stack(
+        x: Union[Tuple[np.ndarray], List[np.ndarray]],
+        axis: Optional[int] = 0,
+        *,
+        out: Optional[np.ndarray] = None,
+    ) -> np.ndarray:
+        return np.stack(x, axis, out=out)
+
 .. code-block:: python
 
-   # ivy/functional/backends/numpy/elementwise.py:
-   def clip(x, x_min, x_max):
-       return numpy.clip(x, x_min, x_max)
+   # ivy/functional/backends/tensorflow/manipulation.py:
+    def stack(
+        x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
+        axis: Optional[int] = 0,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        ret = tf.experimental.numpy.stack(x, axis)
+        return ret
+
 .. code-block:: python
 
-   # ivy/functional/backends/tensorflow/elementwise.py:
-   def clip(x, x_min, x_max):
-       return tensorflow.clip_by_value(x, x_min, x_max)
-.. code-block:: python
+   # ivy/functional/backends/torch/manipulation.py:
+    def stack(
+        x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+        axis: Optional[int] = 0,
+        *,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        ret = torch.stack(x, axis, out=out)
+        return ret
 
-   # ivy/functional/backends/torch/elementwise.py:
-   def clip(x, x_min, x_max):
-       return torch.clamp(x, x_min, x_max)
+There were no changes required for this function except a minor axis check for JAX.
 
-For NumPy, MXNet, and JAX there are no changes at all in this case, and for TensorFlow and PyTorch there is just a simple name change.
-
-For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch, MXNet and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
+For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
 
 .. code-block:: python
 
    # ivy/functional/backends/tensorflow/creation.py:
-   def logspace(start, stop, num, base=10., axis=None, dev=None):
-       power_seq = linspace(start, stop, num, axis, default_device(dev))
-       return base ** power_seq
+    def logspace(
+        start: Union[tf.Tensor, tf.Variable, int],
+        stop: Union[tf.Tensor, tf.Variable, int],
+        num: int,
+        base: float = 10.0,
+        axis: Optional[int] = None,
+        *,
+        dtype: tf.DType,
+        device: str,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        power_seq = ivy.linspace(start, stop, num, axis, dtype=dtype, device=device)
+        return base**power_seq
 
 Ivy Functional API ✅
 ------------------
 
-Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling :code:`ivy.set_framework(‘torch’)` for example.
+Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
 
-:code:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. The :code:`clip` function is shown below:
+:code:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. For example, The function :code:`prod`  is shown below:
 
 .. code-block:: python
 
    # ivy/functional/ivy/elementwise.py:
-   def clip(x: Union[ivy.Array, ivy.NativeArray],
-         x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-         x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]],
-         f: ivy.Framework = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
+    @to_native_arrays_and_back
+    @handle_out_argument
+    @handle_nestable
+    def prod(
+        x: Union[ivy.Array, ivy.NativeArray],
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """Calculates the product of input array x elements.
+
+        x
+            input array. Should have a numeric data type.
+        axis
+            axis or axes along which products must be computed. By default, the product must
+            be computed over the entire array. If a tuple of integers, products must be
+            computed over multiple axes. Default: None.
+        keepdims
+            bool, if True, the reduced axes (dimensions) must be included in the result as
+            singleton dimensions, and, accordingly, the result must be compatible with the
+            input array (see Broadcasting). Otherwise, if False, the reduced axes
+            (dimensions) must not be included in the result. Default: False.
+        dtype
+            data type of the returned array. If None,
+            if the default data type corresponding to the data type “kind” (integer or
+            floating-point) of x has a smaller range of values than the data type of x
+            (e.g., x has data type int64 and the default data type is int32, or x has data
+            type uint64 and the default data type is int64), the returned array must have
+            the same data type as x. if x has a floating-point data type, the returned array
+            must have the default floating-point data type. if x has a signed integer data
+            type (e.g., int16), the returned array must have the default integer data type.
+            if x has an unsigned integer data type (e.g., uint16), the returned array must
+            have an unsigned integer data type having the same number of bits as the default
+            integer data type (e.g., if the default integer data type is int32, the returned
+            array must have a uint32 data type). If the data type (either specified or
+            resolved) differs from the data type of x, the input array should be cast to the
+            specified data type before computing the product. Default: None.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            array,  if the product was computed over the entire array, a zero-dimensional
+            array containing the product; otherwise, a non-zero-dimensional array containing
+            the products. The returned array must have a data type as described by the dtype
+            parameter above.
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> z = ivy.prod(x)
+        >>> print(z)
+        ivy.array(6)
+
+        >>> x = ivy.array([1, 0, 3])
+        >>> z = ivy.prod(x)
+        >>> print(z)
+        ivy.array(0)
+
         """
-        Clips (limits) the values in an array.
-        Given an interval, values outside the interval are clipped
-        to the interval edges (element-wise). For example, if an
-        interval of [0, 1] is specified, values smaller than 0
-        become 0,and values larger than 1 become 1.
+        return current_backend(x).prod(
+            x, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+        )
 
-        :param x: Input array containing elements to clip.
-        :type x: array
-        :param x_min: Minimum value.
-        :type x_min: scalar or array
-        :param x_max: Maximum value.
-        :type x_max: scalar or array
-        :param f: ML framework. Inferred from inputs if None.
-        :type f: ml_framework, optional
-        :return: An array with the elements of x, but where values
-            < x_min are replaced with x_min, and those > x_max with
-            x_max.
-        """
-        return ivy.current_framework(x, f=f).clip(x, x_min, x_max)
-
-Furthermore, this :code:`ivy.api` submodule enables implicit framework selection, where a function can be called before a backend framework is explicitly set, and the backend framework is then inferred automatically by checking the input types to the function.
+Implicitly, Ivy sets numpy as the default backend or operates with the backend corresponding to the specified data inputs
+until the user explicitly sets a different backend. The examples can be seen below:
 
 
-+----------------------------------------+-----------------------------------------+
-|                                        |                                         |
-|.. code-block:: python                  |.. code-block:: python                   |
-|                                        |                                         |
-|   # implicit                           |   # explicit                            |
-|   import ivy                           |   import ivy                            |
-|   import torch                         |   import torch                          |
-|                                        |                                         |
-|   a = torch.ones((1, ))                |   a = torch.ones((1,))                  |
-|   b = torch.zeros((1,))                |   b = torch.zeros((1,))                 |
-|                                        |                                         |
-|   print(ivy.current_framework())       |   print(ivy.current_framework())        |
-|   -> 'No backed framework selected'    |   -> 'No backed framework selected'     |
-|                                        |                                         |
-|                                        |   ivy.set_framework('torch')            |
-|                                        |                                         |
-|   # ivy/api/core/general.py            |   # ivy/backends/torch/core/general.py  |
-|   c = ivy.concatenate([a, b], 0)       |   c = ivy.concatenate([a, b], 0)        |
-|                                        |                                         |
-|   print(type(c))                       |   print(type(c))                        |
-|   -> <class 'torch.Tensor'>            |   -> <class 'torch.Tensor'>             |
-|                                        |                                         |
-|   print(ivy.current_framework())       |   print(ivy.current_framework())        |
-|   -> 'No backed framework selected'    |   -> <module 'ivy.backends.torch'>      |
-+----------------------------------------+-----------------------------------------+
++----------------------------------------+----------------------------------------------------+
+|                                        |                                                    |
+|.. code-block:: python                  |.. code-block:: python                              |
+|                                        |                                                    |
+|   # implicit                           |   # explicit                                       |
+|   import ivy                           |   import ivy                                       |
+|   x = ivy.array([1, 2, 3])             |   ivy.set_backend("jax")                           |
+|   (type(ivy.to_native(x)))             |                                                    |
+|   # -> <class 'numpy.ndarray'>         |   z = ivy.array([1, 2, 3]))                        |
+|                                        |   type(ivy.to_native(z))                           |
+|   import torch                         |   # ->  <class 'jaxlib.xla_extension.DeviceArray'> |
+|   t = torch.tensor([23,42, -1])        |                                                    |
+|   type(ivy.to_native(ivy.sum(t)))      |                                                    |
+|   # -> <class 'torch.Tensor'>          |                                                    |
++----------------------------------------+----------------------------------------------------+
 
-This implicit framework selection, and the use of a shared global ivy namespace for all backends, are both made possible via the framework handler.
+This implicit backend selection, and the use of a shared global ivy namespace for all backends, are both made possible via the backend handler.
 
-Framework Handler ✅
+Backend Handler ✅
 -----------------
 
-All code for setting and unsetting frameworks resides in the submodule at :code:`ivy/framework_handler.py`, and the front facing function is :code:`ivy.current_framework()`. The contents of this function are as follows:
+All code for setting and unsetting backend resides in the submodule at :code:`ivy/backend_handler.py`, and the front facing function is :code:`ivy.current_backend()`. The contents of this function are as follows:
 
 .. code-block:: python
 
-   # ivy/framework_handler.py
-   def current_framework(*args, f=None, **kwargs):
+   # ivy/backend_handler.py
+    def current_backend(*args, **kwargs):
+        global implicit_backend
+        # if a global backend has been set with set_backend then this will be returned
+        if backend_stack:
+            f = backend_stack[-1]
+            if verbosity.level > 0:
+                verbosity.cprint("Using backend from stack: {}".format(f))
+            return f
 
-       if f:
-           if verbosity.level > 0:
-               verbosity.cprint(
-                   'Using provided framework: {}'.format(f))
-           return f
+        # if no global backend exists, we try to infer the backend from the arguments
+        f = _determine_backend_from_args(list(args) + list(kwargs.values()))
+        if f is not None:
+            implicit_backend = f.current_backend_str()
+            return f
+        if verbosity.level > 0:
+            verbosity.cprint("Using backend from type: {}".format(f))
+        return importlib.import_module(_backend_dict[implicit_backend])
 
-       if framework_stack:
-           f = framework_stack[-1]
-           if verbosity.level > 0:
-               verbosity.cprint(
-                   'Using framework from stack: {}'.format(f))
-           return f
-
-       f = _determine_framework_from_args(
-           list(args) + list(kwargs.values()))
-       if f is None:
-           raise ValueError(
-               'get_framework failed to find a valid library'
-               'from the inputs: {} {}'.format(args, kwargs))
-       if verbosity.level > 0:
-           verbosity.cprint(
-               'Using framework from type: {}'.format(f))
-       return f
-
-When the backend framework is provided explicitly as an argument (for example :code:`f=ivy.functional.backends.torch`), then this framework is returned directly without setting it as the global framework. Otherwise, if a global framework has been previously added to the framework stack using for example :code:`ivy.set_framework(‘tensorflow’)`, then this globally set framework is returned. Finally if neither of these cases apply then the input arguments are type-checked to infer the framework, and this is returned from the function without setting as the global framework. In all cases, a callable module is returned with all bound functions adhering to the specific backend.
+If a global backend framework has been previously set using for example :code:`ivy.set_backend(‘tensorflow’)`, then this globally set backend is returned. Otherwise, the input arguments are type-checked to infer the backend, and this is returned from the function as a callable module with all bound functions adhering to the specific backend.
 
 The functions in this returned module are populated by iterating through the global :code:`ivy.__dict__` (or a non-global copy of :code:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global :code:`ivy.__dict__` directly:
 
 .. code-block:: python
 
-   # ivy/framework_handler.py
-   def set_framework(f):
+   # ivy/backend_handler.py
+   def set_backend(backend):
 
        # un-modified ivy.__dict__
        global ivy_original_dict
-       if not framework_stack:
+       if not backend_stack:
            ivy_original_dict = ivy.__dict__.copy()
 
-       # add the input framework to global stack
-       framework_stack.append(f)
+       # add the input backend to global stack
+       backend_stack.append(f)
 
        # iterate through original ivy.__dict__
        for k, v in ivy_original_dict.items():
 
-           # if method doesn't exist in backend module f
+           # if method doesn't exist in the backend
            if k not in f.__dict__:
-               # add the original ivy method to f
+               # add the original ivy method to backend
                f.__dict__[k] = v
            # update global ivy.__dict__ with this method
            ivy.__dict__[k] = f.__dict__[k]
@@ -182,16 +234,47 @@ The functions in this returned module are populated by iterating through the glo
        # maybe log to terminal
        if verbosity.level > 0:
            verbosity.cprint(
-               'framework stack: {}'.format(framework_stack))
+               'Backend stack: {}'.format(backend_stack))
 
 The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is :code:`ivy.lstm_update`, as shown:
 
 .. code-block:: python
 
-    # ivy/functional/ivy/nn/layers.py
-    def lstm_update(x, init_h, init_c, kernel, recurrent_kernel,
-                    bias=None, recurrent_bias=None):
-
+    # ivy/functional/ivy/layers.py
+    @to_native_arrays_and_back
+    @handle_nestable
+    def lstm_update(
+        x: Union[ivy.Array, ivy.NativeArray],
+        init_h: Union[ivy.Array, ivy.NativeArray],
+        init_c: Union[ivy.Array, ivy.NativeArray],
+        kernel: Union[ivy.Array, ivy.NativeArray],
+        recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
+        """Perform long-short term memory update by unrolling time dimension of input array.
+        Parameters
+        ----------
+        x
+            input tensor of LSTM layer *[batch_shape, t, in]*.
+        init_h
+            initial state tensor for the cell output *[batch_shape, out]*.
+        init_c
+            initial state tensor for the cell hidden state *[batch_shape, out]*.
+        kernel
+            weights for cell kernel *[in, 4 x out]*.
+        recurrent_kernel
+            weights for cell recurrent kernel *[out, 4 x out]*.
+        bias
+            bias for cell kernel *[4 x out]*. (Default value = None)
+        recurrent_bias
+            bias for cell recurrent kernel *[4 x out]*. (Default value = None)
+        Returns
+        -------
+        ret
+            hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
+            timestep *[batch_shape,out]*
+        """
         # get shapes
         x_shape = list(x.shape)
         batch_shape = x_shape[:-2]
@@ -203,7 +286,8 @@ The functions implemented by the backend-specific backend such as :code:`ivy.fun
         Wi = kernel
         Wi_x = ivy.reshape(
             ivy.matmul(x_flat, Wi) + (bias if bias is not None else 0),
-                           batch_shape + [timesteps, -1])
+            batch_shape + [timesteps, -1],
+        )
         Wii_x, Wif_x, Wig_x, Wio_x = ivy.split(Wi_x, 4, -1)
 
         # recurrent kernel
@@ -218,16 +302,20 @@ The functions implemented by the backend-specific backend such as :code:`ivy.fun
 
         # unrolled time dimension with lstm steps
         for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
-                ivy.unstack(Wii_x, axis=-2), ivy.unstack(Wif_x, axis=-2),
-                ivy.unstack(Wig_x, axis=-2), ivy.unstack(Wio_x, axis=-2)):
-
+            ivy.unstack(Wii_x, axis=-2),
+            ivy.unstack(Wif_x, axis=-2),
+            ivy.unstack(Wig_x, axis=-2),
+            ivy.unstack(Wio_x, axis=-2),
+        ):
             htm1 = ht
             ctm1 = ct
 
-            Wh_htm1 = ivy.matmul(htm1, Wh) + \
-                (recurrent_bias if recurrent_bias is not None else 0)
-            Whi_htm1, Whf_htm1, Whg_htm1, Who_htm1 = \
-                ivy.split(Wh_htm1, num_or_size_splits=4, axis=-1)
+            Wh_htm1 = ivy.matmul(htm1, Wh) + (
+                recurrent_bias if recurrent_bias is not None else 0
+            )
+            Whi_htm1, Whf_htm1, Whg_htm1, Who_htm1 = ivy.split(
+                Wh_htm1, num_or_size_splits=4, axis=-1
+            )
 
             it = ivy.sigmoid(Wii_xt + Whi_htm1)
             ft = ivy.sigmoid(Wif_xt + Whf_htm1)
@@ -238,9 +326,9 @@ The functions implemented by the backend-specific backend such as :code:`ivy.fun
 
             hts_list.append(ivy.expand_dims(ht, -2))
 
-        return ivy.concatenate(hts_list, -2), ct
+        return ivy.concat(hts_list, -2), ct
 
-We *could* find and wrap the functional LSTM update methods for each backend framework which might bring a small performance improvement, but in this case there are no functional LSTM methods exposed in the official functional APIs of the backend frameworks, and therefore the functional LSTM code which does exist for these frameworks is much less stable and less reliable for wrapping into Ivy.
+We *could* find and wrap the functional LSTM update methods for each backend framework which might bring a small performance improvement, but in this case there are no functional LSTM methods exposed in the official functional APIs of the backend frameworks, and therefore the functional LSTM code which does exist for the backends is much less stable and less reliable for wrapping into Ivy.
 Generally, we have made decisions so that Ivy is as stable and scalable as possible, minimizing dependencies to backend framework code where possible with minimal sacrifices in performance.
 
 Graph Compiler 🚧
@@ -252,7 +340,7 @@ With the design as currently presented, there would be a small performance hit e
 
 The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only. The dependency graph for this process looks like this:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/graph_and_compiler.png?raw=true
    :align: center
    :width: 75%
 
@@ -262,9 +350,9 @@ As an example, the following 3 pieces of code all compile to the exact same comp
 |.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
 |                                        |                                         |                                         |
 | def pure_ivy(x):                       | def pure_torch(x):                      | def mix(x):                             |
-|     y = ivy.reduce_mean(x)             |     y = torch.mean(x)                   |     y = ivy.reduce_mean(x)              |
-|     z = ivy.reduce_sum(x)              |     z = torch.sum(x)                    |     z = torch.sum(x)                    |
-|     f = ivy.reduce_var(y)              |     f = torch.var(y)                    |     f = ivy.reduce_var(y)               |
+|     y = ivy.mean(x)                    |     y = torch.mean(x)                   |     y = ivy.mean(x)                     |
+|     z = ivy.sum(x)                     |     z = torch.sum(x)                    |     z = torch.sum(x)                    |
+|     f = ivy.var(y)                     |     f = torch.var(y)                    |     f = ivy.var(y)                      |
 |     k = ivy.cos(z)                     |     k = torch.cos(z)                    |     k = torch.cos(z)                    |
 |     m = ivy.sin(f)                     |     m = torch.sin(f)                    |     m = ivy.sin(f)                      |
 |     o = ivy.tan(y)                     |     o = torch.tan(y)                    |     o = torch.tan(y)                    |
@@ -282,9 +370,9 @@ As an example, the following 3 pieces of code all compile to the exact same comp
 | ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          |
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/computational_one.png?raw=true
    :align: center
-   :width: 75%
+   :width: 100%
 
 For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
 
@@ -313,9 +401,9 @@ For all existing ML frameworks, the functional API is the backbone which underpi
 | net(x)                                 | graph(x, w, b)                          | graph(x, w, b)                          |
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/computational_two.png?raw=true
    :align: center
-   :width: 75%
+   :width: 100%
 
 The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :code:`ivy.compile()`, which wraps backend-specific compilation code, for example:
 
@@ -347,6 +435,6 @@ Therefore, the backend code can always be run with maximal efficiency by compili
 
 **Round Up**
 
-Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, framework handler and graph compiler 🙂
+Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, backend handler and graph compiler 🙂
 
 Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!

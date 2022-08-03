@@ -1,5 +1,10 @@
 name: test-array-api-jax
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+    types: [labeled, review_requested]
+  workflow_dispatch:
+
 jobs:
   run-jax-array-api-tests:
     runs-on: ubuntu-latest
@@ -15,24 +20,34 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: test-array-api-jax.yml
-          workflow_conclusion: success
-          name: hypothesis
+          name: hypothesis_jax_zip
           path: |
-            ivy/.hypothesis
+            ivy/.hypothesis/
 
+      - name: Unzip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          unzip examples.zip
+          rm examples.zip
+          
       - name: Run JAX Tests
         id: tests
         run: |
           cd ivy
           ./test_array_api.sh jax
         continue-on-error: true
-        
+      
+      - name: Zip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          zip -r examples.zip examples
+          
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: hypothesis
+          name: hypothesis_jax_zip
           path: |
-            ivy/.hypothesis
+            ivy/.hypothesis/examples.zip
     
       - name: Check on failures
         if: steps.tests.outcome != 'success'
