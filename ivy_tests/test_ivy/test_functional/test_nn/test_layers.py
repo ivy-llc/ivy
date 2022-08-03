@@ -256,12 +256,6 @@ def test_scaled_dot_product_attention(
 @st.composite
 def x_and_mha(draw, dtypes):
     dtype = draw(dtypes)
-    # batch_shape = draw(
-    #     st.tuples(
-    #         st.integers(1, 3),
-    #         st.integers(1, 3),
-    #     )
-    # )
     num_queries = draw(st.integers(min_value=1, max_value=3))
     feat_dim = draw(st.integers(min_value=1, max_value=3))
     num_heads = draw(st.integers(min_value=1, max_value=3))
