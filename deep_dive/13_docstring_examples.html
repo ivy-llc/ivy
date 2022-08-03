@@ -966,6 +966,10 @@ of differences.</p>
 tests to fail, you should be good to go. However, one of the reviewers might ask you to make additional
 changes involving examples. Passing docstring tests is a necessary but not sufficient condition for
 the completion of docstring formatting.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Docstring examples should not have code that imports ivy or sets a backend, otherwise it leads to segmentation faults.</p>
+</div>
 <p><strong>Round Up</strong></p>
 <p>These three examples should give you a good understanding of what is required when
 adding docstring examples.</p>
