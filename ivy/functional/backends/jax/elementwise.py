@@ -132,16 +132,14 @@ def cosh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cosh(x)
 
 
-
 def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret=jax.numpy.divide(x1, x2)
+    ret = jax.numpy.divide(x1, x2)
     if ivy.is_float_dtype(x1.dtype):
-        ret=jnp.asarray(ret, dtype=x1.dtype)
+        ret = jnp.asarray(ret, dtype=x1.dtype)
     else:
-        ret=jnp.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
+        ret = jnp.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
     return ret
-
 
 
 def equal(
@@ -380,5 +378,5 @@ def minimum(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    x1,x2=_cast_for_binary_op(x1,x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.minimum(x1, x2)

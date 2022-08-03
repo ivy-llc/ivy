@@ -16,9 +16,9 @@ def _add_dilations(x, dilations, axis):
 
 def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
-    if padding == 'VALID':
+    if padding == "VALID":
         dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == 'SAME':
+    elif padding == "SAME":
         dim_size = dim_size * stride_size
     return dim_size
 
@@ -222,18 +222,10 @@ def conv2d_transpose(
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     new_h = _deconv_length(
-        x.shape[1],
-        strides[0],
-        filters.shape[0],
-        padding,
-        dilations[0]
+        x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
     )
     new_w = _deconv_length(
-        x.shape[2],
-        strides[1],
-        filters.shape[1],
-        padding,
-        dilations[1]
+        x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
     )
     output_shape = [new_h, new_w]
     if strides[1] > 1:
@@ -251,12 +243,10 @@ def conv2d_transpose(
     pad_h = _handle_padding(output_shape[0], strides[0], filters.shape[0], padding)
 
     pad_h = pad_h - max(
-        0,
-        output_shape[0] - (x.shape[1] + filters.shape[0] - 1 - pad_h)
+        0, output_shape[0] - (x.shape[1] + filters.shape[0] - 1 - pad_h)
     )
     pad_w = pad_w - max(
-        0,
-        output_shape[1] - (x.shape[2] + filters.shape[1] - 1 - pad_w)
+        0, output_shape[1] - (x.shape[2] + filters.shape[1] - 1 - pad_w)
     )
     pad_h_top = filters.shape[0] - 1 - (pad_h // 2)
     pad_h_bot = filters.shape[0] - 1 - (pad_h - pad_h // 2)
@@ -270,18 +260,15 @@ def conv2d_transpose(
 
     x = np.pad(
         x,
-        [(0, 0),
-         (pad_h_top, pad_h_bot),
-         (pad_w_left, pad_w_right),
-         (0, 0)],
-        'constant'
+        [(0, 0), (pad_h_top, pad_h_bot), (pad_w_left, pad_w_right), (0, 0)],
+        "constant",
     )
 
     filters = np.swapaxes(filters, 2, 3)
     x = np.flip(x, (1, 2))
     res = np.flip(
-        conv2d(x, filters, strides=1, padding='VALID', data_format='NHWC', dilations=1),
-        (1, 2)
+        conv2d(x, filters, strides=1, padding="VALID", data_format="NHWC", dilations=1),
+        (1, 2),
     )
     if data_format == "NCHW":
         res = np.transpose(res, (0, 3, 1, 2))
@@ -411,25 +398,13 @@ def conv3d_transpose(
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
     new_d = _deconv_length(
-        x.shape[1],
-        strides[0],
-        filters.shape[0],
-        padding,
-        dilations[0]
+        x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
     )
     new_h = _deconv_length(
-        x.shape[2],
-        strides[1],
-        filters.shape[1],
-        padding,
-        dilations[1]
+        x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
     )
     new_w = _deconv_length(
-        x.shape[3],
-        strides[2],
-        filters.shape[2],
-        padding,
-        dilations[2]
+        x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
     )
     output_shape = [new_d, new_h, new_w]
 
@@ -451,16 +426,13 @@ def conv3d_transpose(
     pad_h = _handle_padding(output_shape[1], strides[1], filters.shape[1], padding)
     pad_w = _handle_padding(output_shape[2], strides[2], filters.shape[2], padding)
     pad_d = pad_d - max(
-        0,
-        output_shape[0] - (x.shape[1] + filters.shape[0] - 1 - pad_d)
+        0, output_shape[0] - (x.shape[1] + filters.shape[0] - 1 - pad_d)
     )
     pad_h = pad_h - max(
-        0,
-        output_shape[1] - (x.shape[2] + filters.shape[1] - 1 - pad_h)
+        0, output_shape[1] - (x.shape[2] + filters.shape[1] - 1 - pad_h)
     )
     pad_w = pad_w - max(
-        0,
-        output_shape[2] - (x.shape[3] + filters.shape[2] - 1 - pad_w)
+        0, output_shape[2] - (x.shape[3] + filters.shape[2] - 1 - pad_w)
     )
     pad_d_top = filters.shape[0] - 1 - (pad_d // 2)
     pad_d_bot = filters.shape[0] - 1 - (pad_d - pad_d // 2)
@@ -477,25 +449,22 @@ def conv3d_transpose(
         pad_w_left, pad_w_right = pad_w_right, pad_w_left
     x = np.pad(
         x,
-        [(0, 0),
-         (pad_d_top, pad_d_bot),
-         (pad_h_top, pad_h_bot),
-         (pad_w_left, pad_w_right),
-         (0, 0)],
-        'constant'
+        [
+            (0, 0),
+            (pad_d_top, pad_d_bot),
+            (pad_h_top, pad_h_bot),
+            (pad_w_left, pad_w_right),
+            (0, 0),
+        ],
+        "constant",
     )
     filters = np.swapaxes(filters, 3, 4)
     x = np.flip(x, (1, 2, 3))
     res = np.flip(
         conv3d(
-            x,
-            filters,
-            strides=1,
-            padding='VALID',
-            data_format='NDHWC',
-            dilations=1
+            x, filters, strides=1, padding="VALID", data_format="NDHWC", dilations=1
         ),
-        (1, 2, 3)
+        (1, 2, 3),
     )
     if data_format == "NCDHW":
         res = np.transpose(res, (0, 4, 1, 2, 3))

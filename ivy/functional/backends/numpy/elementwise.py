@@ -226,7 +226,7 @@ def divide(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret= np.divide(x1, x2)
+    ret = np.divide(x1, x2)
     if ivy.is_float_dtype(x1):
         ret = np.asarray(ret, dtype=x1.dtype)
     else:
@@ -645,7 +645,6 @@ def erf(x, *, out: Optional[np.ndarray] = None):
     return ret
 
 
-
 erf.support_native_out = True
 
 
@@ -665,7 +664,7 @@ def minimum(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1,x2=_cast_for_binary_op(x1,x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.minimum(x1, x2, out=out)
 
 

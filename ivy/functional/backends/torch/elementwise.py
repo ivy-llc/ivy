@@ -18,7 +18,7 @@ def _cast_for_binary_op(x1, x2, clamp=False):
         x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
     else:
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return x1,x2
+    return x1, x2
 
 
 def add(
@@ -251,7 +251,7 @@ def divide(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret=torch.div(x1, x2)
+    ret = torch.div(x1, x2)
     if ivy.is_float_dtype(x1.dtype):
         ret = torch.tensor(ret, dtype=x1.dtype)
     else:
@@ -602,7 +602,7 @@ def minimum(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    x1,x2=_cast_for_binary_op(x1,x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.min(x1, x2, out=out)
 
 

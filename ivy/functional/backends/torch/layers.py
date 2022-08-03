@@ -14,9 +14,9 @@ def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     # Get the dilated kernel size
     kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
 
-    if padding == 'VALID':
+    if padding == "VALID":
         dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == 'SAME':
+    elif padding == "SAME":
         dim_size = dim_size * stride_size
 
     return dim_size
@@ -176,18 +176,10 @@ def conv2d_transpose(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     new_h = _deconv_length(
-        x.shape[2],
-        strides[0],
-        filter_shape[0],
-        padding,
-        dilations[0]
+        x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
     )
     new_w = _deconv_length(
-        x.shape[3],
-        strides[1],
-        filter_shape[1],
-        padding,
-        dilations[1]
+        x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
     )
     output_shape = [new_h, new_w]
     not_valid_h = False
@@ -219,18 +211,10 @@ def conv2d_transpose(
         pad_h_ = pad_h // 2
         pad_w_ = pad_w // 2
         out_h = _out_shape(
-            x.shape[2],
-            strides[0],
-            pad_h_,
-            dilations[0],
-            filters.shape[2]
+            x.shape[2], strides[0], pad_h_, dilations[0], filters.shape[2]
         )
         out_w = _out_shape(
-            x.shape[3],
-            strides[1],
-            pad_w_,
-            dilations[1],
-            filters.shape[3]
+            x.shape[3], strides[1], pad_w_, dilations[1], filters.shape[3]
         )
         padding_list = [pad_h_, pad_w_]
         output_padding = [max(new_h - out_h, 0), max(new_w - out_w, 0)]
@@ -246,7 +230,7 @@ def conv2d_transpose(
         strides,
         padding_list,
         dilation=dilations,
-        output_padding=output_padding
+        output_padding=output_padding,
     )
     if not_valid_h:
         res = res[:, :, 0:-1, :]
@@ -257,7 +241,7 @@ def conv2d_transpose(
     return res
 
 
-conv2d_transpose.unsupported_dtypes = ('float16',)
+conv2d_transpose.unsupported_dtypes = ("float16",)
 
 
 # noinspection PyUnresolvedReferences
@@ -362,25 +346,13 @@ def conv3d_transpose(
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
     new_d = _deconv_length(
-        x.shape[2],
-        strides[0],
-        filter_shape[0],
-        padding,
-        dilations[0]
+        x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
     )
     new_h = _deconv_length(
-        x.shape[3],
-        strides[1],
-        filter_shape[1],
-        padding,
-        dilations[1]
+        x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
     )
     new_w = _deconv_length(
-        x.shape[4],
-        strides[2],
-        filter_shape[2],
-        padding,
-        dilations[2]
+        x.shape[4], strides[2], filter_shape[2], padding, dilations[2]
     )
     output_shape = [new_d, new_h, new_w]
     not_valid_h = False
@@ -394,7 +366,7 @@ def conv3d_transpose(
         output_padding = [
             max(new_d - out_d, 0),
             max(new_h - out_h, 0),
-            max(new_w - out_w, 0)
+            max(new_w - out_w, 0),
         ]
     elif padding == "SAME":
         filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
@@ -427,31 +399,19 @@ def conv3d_transpose(
         pad_h_ = pad_h // 2
         pad_w_ = pad_w // 2
         out_d = _out_shape(
-            x.shape[2],
-            strides[0],
-            pad_h_,
-            dilations[0],
-            filters.shape[2]
+            x.shape[2], strides[0], pad_h_, dilations[0], filters.shape[2]
         )
         out_h = _out_shape(
-            x.shape[3],
-            strides[1],
-            pad_h_,
-            dilations[1],
-            filters.shape[3]
+            x.shape[3], strides[1], pad_h_, dilations[1], filters.shape[3]
         )
         out_w = _out_shape(
-            x.shape[4],
-            strides[2],
-            pad_w_,
-            dilations[2],
-            filters.shape[4]
+            x.shape[4], strides[2], pad_w_, dilations[2], filters.shape[4]
         )
         padding_list = [pad_d_, pad_h_, pad_w_]
         output_padding = [
             max(new_d - out_d, 0),
             max(new_h - out_h, 0),
-            max(new_w - out_w, 0)
+            max(new_w - out_w, 0),
         ]
     else:
         raise Exception(
@@ -465,7 +425,7 @@ def conv3d_transpose(
         strides,
         padding_list,
         dilation=dilations,
-        output_padding=output_padding
+        output_padding=output_padding,
     )
     if not_valid_d:
         res = res[:, :, 0:-1, :, :]
@@ -478,4 +438,4 @@ def conv3d_transpose(
     return res
 
 
-conv3d_transpose.unsupported_dtypes = ("float16", )
+conv3d_transpose.unsupported_dtypes = ("float16",)
