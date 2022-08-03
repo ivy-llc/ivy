@@ -3145,4 +3145,3 @@ def function_supported_devices_and_dtypes(fn: Callable) -> Dict:
                  with keys 'devices' and 'dtypes'"
             )
     return supported_devices_dtype
-
