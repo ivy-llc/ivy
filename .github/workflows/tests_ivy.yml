@@ -17,7 +17,7 @@ jobs:
           persist-credentials: false
           submodules: "recursive"
       - name: Upload Artifacts
-        uses: actions/upload-artifacts@v3
+        uses: actions/upload-artifact@v3
         with:
           path: |
             ivy/artifacts
