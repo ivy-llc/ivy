@@ -53,20 +53,21 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
-    def has_nans(
-            self: ivy.Array,
-            include_infs: bool = True
-    ):
+    def has_nans(self: ivy.Array, include_infs: bool = True):
         """
         ivy.Array instance method variant of ivy.has_nans. This method simply wraps the
         function, and so the docstring for ivy.has_nans also applies to this method
         with minimal changes.
+
         Parameters
         ----------
+
         self
             input array
         include_infs
-            Whether to include ``+infinity`` and ``-infinity`` in the check. Default is True.
+            Whether to include ``+infinity`` and ``-infinity`` in the check.
+            Default is True.
+
         Returns
         -------
         ret
@@ -126,6 +127,7 @@ class ArrayWithGeneral(abc.ABC):
             optional int, the axis from which to gather from. Default is -1.
         out
             optional output array, for writing the result to.
+
         Returns
         -------
         ret
