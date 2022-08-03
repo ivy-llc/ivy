@@ -4,7 +4,7 @@ jobs:
   run-nightly-tests:
     strategy:
       matrix:
-        backends :  [numpy, torch, jax, tensorflow]
+        backends :  ["numpy", "torch", "jax", "tensorflow"]
         submodules: [test_creation, test_device, test_dtype, test_elementwise, test_general, test_gradients, test_linalg
                     test_manipulation, test_meta, test_nest, test_random, test_searching, test_set, test_sorting, test_statistical
                     test_utility]
@@ -12,7 +12,6 @@ jobs:
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
-        run: echo ${{ matrix.backends}}
         with:
           path: ivy
           persist-credentials: false
