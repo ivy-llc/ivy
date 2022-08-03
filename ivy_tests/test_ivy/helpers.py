@@ -328,7 +328,9 @@ def trim(*, docstring):
     return "\n".join(trimmed)
 
 
-def docstring_examples_run(*, fn, from_container=False, from_array=False):
+def docstring_examples_run(
+    *, fn, from_container=False, from_array=False, num_sig_fig=3
+):
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
@@ -418,6 +420,7 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
     # print("Putput: ", parsed_output)
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
+    sig_fig = float("1e-" + str(num_sig_fig))
     if "ivy.array(" in output and "inf" not in output and "nan" not in output:
         numeric_pattern = re.compile(
             r"""
@@ -437,7 +440,9 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
             docstr_result = True
             for (doc_u, doc_v) in zip(num_output, num_parsed_output):
                 try:
-                    docstr_result = np.allclose(complex(doc_u), complex(doc_v))
+                    docstr_result = np.allclose(
+                        complex(doc_u), complex(doc_v), rtol=sig_fig
+                    )
                 except Exception:
                     print(
                         "output for ",
