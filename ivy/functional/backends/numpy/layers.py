@@ -4,6 +4,38 @@
 import numpy as np
 from typing import Union, Tuple, Optional, List
 
+import ivy
+
+
+def _add_dilations(x, dilations, axis):
+    return np.insert(
+        x,
+        [i for i in range(1, x.shape[axis])] * (dilations - 1),
+        values=0,
+        axis=axis,
+    )
+
+
+def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
+    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
+    if padding == 'VALID':
+        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
+    elif padding == 'SAME':
+        dim_size = dim_size * stride_size
+    return dim_size
+
+
+def _handle_padding(x, strides, filters, padding):
+    if padding == "SAME":
+        if x % strides == 0:
+            pad = max(filters - strides, 0)
+        else:
+            pad = max(filters - (x % strides), 0)
+    else:
+        pad = 0
+
+    return pad
+
 
 def conv1d(
     x: np.ndarray,
@@ -66,19 +98,9 @@ def conv2d(
 
     # adding dilations
     if dilations[1] > 1:
-        filters = np.insert(
-            filters,
-            [i for i in range(1, filters.shape[1])] * (dilations[1] - 1),
-            values=0,
-            axis=1,
-        )
+        filters = _add_dilations(filters, dilations[1], axis=1)
     if dilations[0] > 1:
-        filters = np.insert(
-            filters,
-            [i for i in range(1, filters.shape[0])] * (dilations[0] - 1),
-            values=0,
-            axis=0,
-        )
+        filters = _add_dilations(filters, dilations[0], axis=0)
 
     filter_shape = filters.shape[0:2]
     filter_shape = list(filter_shape)
@@ -192,8 +214,89 @@ def depthwise_conv2d(
     return outputs
 
 
-def conv2d_transpose(*_):
-    raise Exception("Convolutions not yet implemented for numpy library")
+def conv2d_transpose(
+    x: np.ndarray,
+    filters: np.ndarray,
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    output_shape=None,
+    data_format: str = "NHWC",
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+    *,
+    out: Optional[np.ndarray] = None,
+):
+    if data_format == "NCHW":
+        x = np.transpose(x, (0, 2, 3, 1))
+
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+
+
+    new_h = _deconv_length(
+        x.shape[1],
+        strides[0],
+        filters.shape[0],
+        padding,
+        dilations[0]
+    )
+    new_w = _deconv_length(
+        x.shape[2],
+        strides[1],
+        filters.shape[1],
+        padding,
+        dilations[1]
+    )
+    output_shape = [new_h, new_w]
+    if strides[1] > 1:
+        x = _add_dilations(x, strides[1], axis=2)
+    if strides[0] > 1:
+        x = _add_dilations(x, strides[0], axis=1)
+
+    if dilations[1] > 1:
+        filters = _add_dilations(filters, dilations[1], axis=1)
+
+    if dilations[0] > 1:
+        filters = _add_dilations(filters, dilations[0], axis=0)
+
+    pad_w = _handle_padding(output_shape[1], strides[1], filters.shape[1], padding)
+    pad_h = _handle_padding(output_shape[0], strides[0], filters.shape[0], padding)
+
+    pad_h = pad_h - max(
+        0,
+        output_shape[0] - (x.shape[1] + filters.shape[0] - 1 - pad_h)
+    )
+    pad_w = pad_w - max(
+        0,
+        output_shape[1] - (x.shape[2] + filters.shape[1] - 1 - pad_w)
+    )
+    pad_h_top = filters.shape[0] - 1 - (pad_h // 2)
+    pad_h_bot = filters.shape[0] - 1 - (pad_h - pad_h // 2)
+    pad_w_left = filters.shape[1] - 1 - (pad_w // 2)
+    pad_w_right = filters.shape[1] - 1 - (pad_w - pad_w // 2)
+
+    if filters.shape[0] == 1:
+        pad_h_top, pad_h_bot = pad_h_bot, pad_h_top
+    if filters.shape[1] == 1:
+        pad_w_left, pad_w_right = pad_w_right, pad_w_left
+
+    x = np.pad(
+        x,
+        [(0, 0),
+         (pad_h_top, pad_h_bot),
+         (pad_w_left, pad_w_right),
+         (0, 0)],
+        'constant'
+    )
+
+    filters = np.swapaxes(filters, 2, 3)
+    x = np.flip(x, (1, 2))
+    res = np.flip(
+        conv2d(x, filters, strides=1, padding='VALID', data_format='NHWC', dilations=1),
+        (1, 2)
+    )
+    if data_format == "NCHW":
+        res = np.transpose(res, (0, 3, 1, 2))
+    return res
 
 
 def conv3d(
