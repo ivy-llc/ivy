@@ -41,19 +41,34 @@ def conv1d(
 
 
 def conv1d_transpose(
-    x,
-    filters,
-    strides,
-    padding,
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
+    strides: int,
+    padding: str,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format="NWC",
-    dilations=1,
+    data_format: str ="NWC",
+    dilations: int =1,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ):
-    return tf.nn.conv1d_transpose(
-        x, filters, output_shape, strides, padding, data_format, dilations
+    if data_format == "NCW":
+        x = tf.transpose(x, (0, 2, 1))
+    new_w = _deconv_length(
+        x.shape[1],
+        strides,
+        filters.shape[0],
+        padding,
+        dilations
     )
+    res = tf.nn.conv1d_transpose(
+        x, filters, [1, new_w, 1], strides, padding, "NWC", dilations
+    )
+    if data_format == "NCW":
+        res = tf.transpose(res, (0, 2, 1))
+    return res
+
+
+conv1d_transpose.unsupported_devices = ("cpu", )
 
 
 def conv2d(
