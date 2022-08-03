@@ -41,14 +41,6 @@ class ArrayWithLosses(abc.ABC):
         -------
         ret
             The cross-entropy loss between the given distributions.
-
-        Examples
-        --------
-        >>> x = ivy.array([0, 0, 1, 0])
-        >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
-        >>> z = x.cross_entropy(y)
-        >>> print(z)
-        ivy.array(1.3862944)
         """
         return ivy.cross_entropy(self._data, pred, axis=axis, epsilon=epsilon, out=out)
 
