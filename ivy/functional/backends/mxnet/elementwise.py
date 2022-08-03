@@ -120,11 +120,7 @@ def acos(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 @_handle_flat_arrays_in_out
-def logical_and(
-    x1: mx.nd.NDArray,
-    x2: mx.nd.NDArray,
-    dtype: ["bool"]
-) -> mx.nd.NDArray:
+def logical_and(x1: mx.nd.NDArray, x2: mx.nd.NDArray, dtype: ["bool"]) -> mx.nd.NDArray:
     ret = mx.nd.logical_and(x1, x2, dtype).astype("bool")
     return ret
 
@@ -266,8 +262,8 @@ def atanh(x: mx.nd.NDArray) -> mx.nd.NDArray:
         return math.atanh(x)
     else:
         return mx.nd.arctanh(x)
-  
-  
+
+
 @_handle_flat_arrays_in_out
 def atan2(x: mx.nd.NDArray, y: mx.nd.NDArray) -> mx.nd.NDArray:
     if isinstance(x, float):
