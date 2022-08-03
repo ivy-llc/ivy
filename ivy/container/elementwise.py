@@ -3097,6 +3097,16 @@ class ContainerWithElementwise(ContainerBase):
             if ``x_i`` is finite and ``False`` otherwise.
             The returned array must have a data type of ``bool``.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
+                          b=ivy.array([float('-0'), ivy.nan]))
+        >>> y = ivy.Container.static_isfinite(x)
+        >>> print(y)
+        {
+            a: ivy.array([True, True]),
+            b: ivy.array([True, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "isfinite",
@@ -3147,6 +3157,16 @@ class ContainerWithElementwise(ContainerBase):
             if ``self_i`` is finite and ``False`` otherwise.
             The returned array must have a data type of ``bool``.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 999999999999]),\
+                          b=ivy.array([float('-0'), ivy.nan]))
+        >>> y = x.isfinite()
+        >>> print(y)
+        {
+            a: ivy.array([True, True]),
+            b: ivy.array([True, False])
+        }
         """
         return self.static_isfinite(
             self, key_chains, to_apply, prune_unapplied, map_sequences, out=out
