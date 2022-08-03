@@ -290,19 +290,32 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d", transpose=False):
                 )
             )
     else:
-        filter_shape = draw(
-            st.tuples(
-                st.integers(3, 5),
-                st.integers(3, 5),
-                st.integers(3, 5),
-                st.integers(1, 3),
-                st.integers(1, 3),
+        if not transpose:
+            filter_shape = draw(
+                st.tuples(
+                    st.integers(3, 5),
+                    st.integers(3, 5),
+                    st.integers(3, 5),
+                    st.integers(1, 3),
+                    st.integers(1, 3),
+                )
             )
-        )
-
-        min_x_depth = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-        min_x_height = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
-        min_x_width = filter_shape[2] + (filter_shape[2] - 1) * (dilations - 1)
+            min_x_depth = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+            min_x_height = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
+            min_x_width = filter_shape[2] + (filter_shape[2] - 1) * (dilations - 1)
+        else:
+            filter_shape = draw(
+                st.tuples(
+                    st.integers(3, 5),
+                    st.integers(3, 5),
+                    st.integers(3, 5),
+                    st.shared(st.integers(1, 3), key="d_in"),
+                    st.shared(st.integers(1, 3), key="d_in"),
+                )
+            )
+            min_x_depth = 1
+            min_x_height = 1
+            min_x_width = 1
         d_in = filter_shape[3]
         if data_format == "NDHWC":
             x_shape = draw(
@@ -629,6 +642,7 @@ def test_conv3d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv3d",
+        ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
         strides=stride,
@@ -640,30 +654,23 @@ def test_conv3d(
 
 # conv3d_transpose
 @given(
-    array_shape=helpers.lists(arg=st.integers(1, 5), min_size=4, max_size=4),
-    filter_shape=st.integers(min_value=1, max_value=5),
-    stride=st.integers(min_value=1, max_value=3),
-    pad=st.sampled_from(["VALID", "SAME"]),
-    output_shape=helpers.lists(arg=st.integers(1, 5), min_size=5, max_size=5),
-    data_format=st.sampled_from(["NHWC", "NCHW"]),
-    dilations=st.integers(min_value=1, max_value=5),
-    dtype=helpers.list_of_length(
-        x=st.sampled_from(ivy_np.valid_float_dtypes), length=2
+    x_f_d_df=x_and_filters(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        data_format=st.sampled_from(["NDHWC", "NCDHW"]),
+        type="3d",
+        transpose=True
     ),
+    stride=st.integers(min_value=1, max_value=4),
+    pad=st.sampled_from(["VALID", "SAME"]),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d_transpose"),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_conv3d_transpose(
     *,
-    array_shape,
-    filter_shape,
+    x_f_d_df,
     stride,
     pad,
-    output_shape,
-    data_format,
-    dilations,
-    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -672,24 +679,8 @@ def test_conv3d_transpose(
     fw,
     device,
 ):
-    # tf conv3d transpose does not work when CUDA is installed, but array is on CPU
-    assume(not (fw == "tensorflow" and "cpu" in device))
-
-    # numpy and jax do not yet support 3d transpose convolutions,
-    # and mxnet only supports with CUDNN
-    assume(not (fw in ["numpy", "jax"]))
-
-    # mxnet only supports 3d transpose convolutions with CUDNN
-    assume(not (fw == "mxnet" and "cpu" in device))
-
-    # not implemented for half
-    assume(not (fw == "torch" and ("16" in dtype[0] or "16" in dtype[1])))
-
-    x = np.random.uniform(size=array_shape).astype(dtype[0])
-    x = np.expand_dims(x, (-1))
-    filters = np.random.uniform(
-        size=(filter_shape, filter_shape, filter_shape, 1, 1)
-    ).astype(dtype[1])
+    dtype, x, filters, dilations, data_format = x_f_d_df
+    dtype = [dtype] * 2
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -701,11 +692,12 @@ def test_conv3d_transpose(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv3d_transpose",
-        x=x,
-        filters=filters,
+        ground_truth_backend="jax",
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
-        output_shape=output_shape,
+        output_shape=None,
         data_format=data_format,
         dilations=dilations,
     )
