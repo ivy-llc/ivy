@@ -47,6 +47,7 @@ def x_and_linear(draw, dtypes):
                 (dtype=dtype, shape=bias_shape, min_value=0, max_value=1))
     return dtype, x, weight, bias
 
+
 # linear
 @given(
     dtype_x_weight_bias=x_and_linear(
