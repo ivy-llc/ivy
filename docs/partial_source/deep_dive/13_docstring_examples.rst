@@ -988,6 +988,9 @@ tests to fail, you should be good to go. However, one of the reviewers might ask
 changes involving examples. Passing docstring tests is a necessary but not sufficient condition for
 the completion of docstring formatting.
 
+.. note::
+   Docstring examples should not have code that imports ivy or sets a backend, otherwise it leads to segmentation faults.
+
 **Round Up**
 
 These three examples should give you a good understanding of what is required when
