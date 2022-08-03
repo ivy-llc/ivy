@@ -34,11 +34,11 @@ jobs:
       - name: Create Artifacts Folder
         run: |
         cd ivy
-        mkdir -p downloads
+        mkdir downloads
 
       - name: Add artifacts to publish
         run:
-          cd ivy/downloads
+          cd downloads
           echo 'alpha' > alpha.html
 
 
