@@ -43,7 +43,7 @@ def sort(
 def searchsorted(
     x: JaxArray,
     v: JaxArray,
-    side='left',
+    side="left",
     sorter=None,
     *,
     out: Optional[JaxArray] = None
