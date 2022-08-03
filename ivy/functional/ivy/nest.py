@@ -557,8 +557,7 @@ def map(
     >>> print(results)
     1.6666666666666667
 
-    >>> def special_pow(x:float,y:float) ->float : 
-    >>>     return np.power(x,y)
+    >>> def special_pow(x:float,y:float) ->float : return np.power(x,y)
     >>> results = ivy.map( \
     >>>     fn = special_pow, \
     >>>     constant = {'y':[0,1]}, \
