@@ -620,7 +620,9 @@ def squeeze(
     ivy.array([0, 1, 2])
 
     >>> print(ivy.squeeze(x, axis=0))
-    ivy.array([[0], [1], [2]])
+    ivy.array([[0],
+           [1],
+           [2]])
 
     >>> print(ivy.squeeze(x, axis=2))
     ivy.array([[0, 1, 2]])
@@ -1187,3 +1189,7 @@ def zero_pad(
 
     """
     return current_backend(x).zero_pad(x, pad_width, out=out)
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
