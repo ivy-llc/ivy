@@ -540,7 +540,8 @@ def map(
 
     With :code:`int` inputs:
 
-    >>> def special_square(x:float) -> float : return np.square(x)
+    >>> def special_square(x : float) -> float : 
+    >>>     return np.square(x) 
     >>> results = ivy.map( \
     >>>     fn = special_square, \
     >>>     constant = None, \
