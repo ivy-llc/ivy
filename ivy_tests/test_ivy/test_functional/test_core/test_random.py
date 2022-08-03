@@ -65,8 +65,8 @@ def test_random_uniform(
     ret = helpers.flatten(ret=ret)
     ret_gt = helpers.flatten(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(u >= low) and ivy.all(u < high)
-        assert ivy.all(v >= low) and ivy.all(v < high)
+        assert ivy.all(u >= low) and ivy.all(u <= high)
+        assert ivy.all(v >= low) and ivy.all(v <= high)
 
 
 # random_normal
@@ -139,8 +139,10 @@ def _pop_size_num_samples_replace_n_probs(draw):
         helpers.array_values(
             dtype=prob_dtype,
             shape=[batch_size, num_samples],
-            min_value=0.0999755859375,
+            min_value=1.0013580322265625e-05,
             max_value=1.0,
+            exclude_min=True,
+            safety_factor=0.8,
         )
     )
     return prob_dtype, batch_size, population_size, num_samples, replace, probs
