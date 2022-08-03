@@ -1752,7 +1752,6 @@ def promote_types_of_inputs(
     x1: Union[ivy.NativeArray, Number, Iterable[Number]],
     x2: Union[ivy.NativeArray, Number, Iterable[Number]],
 ) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
-
     """Promotes the dtype of the given native array inputs to a common dtype
     based on type promotion rules. While passing float or integer values or any
     other non-array input to this function, it should be noted that the return will
