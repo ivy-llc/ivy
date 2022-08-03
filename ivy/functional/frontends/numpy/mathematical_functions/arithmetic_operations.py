@@ -22,5 +22,25 @@ def add(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
+def divide(
+	x1,
+	x2,
+	/,
+	out=None,
+	*,
+	where=True,
+	casting="same_kind",
+	order="k",
+	dtype=None,
+):
+	if dtype:
+        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
+        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
+    div = ivy.divide(x1, x2, out=out)
+    if ivy.is_array(where):
+        div = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return div
+
+
 
 add.unsupported_dtypes = {"torch": ("float16",)}
