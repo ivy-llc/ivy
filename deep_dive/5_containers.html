@@ -77,6 +77,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -264,10 +265,8 @@ It also enables other helpful perks, such as auto-completions in the IDE etc.</p
 </section>
 <section id="api-special-methods">
 <h2>API Special Methods<a class="headerlink" href="#api-special-methods" title="Permalink to this heading"></a></h2>
-<p>As is the case for the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
-most special methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> simply wrap a corresponding function in the functional API.</p>
-<p>The special methods which <strong>do not</strong> wrap functions in the functional API are implemented in <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a>,
-which is the base abstract class for all containers.
+<p>All non-operator special methods are implemented in <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56">ContainerBase</a>,
+which is the abstract base class for all containers.
 These special methods include
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4588">__repr__</a> which controls how the container is printed in the terminal,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4782">__getattr__</a> that enables keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be queried as attributes,
@@ -276,12 +275,20 @@ These special methods include
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4884">__setitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be set via a chain of keys,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4904">__contains__</a> that enables us to check for chains of keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>,
 and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4912">__getstate__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4927">__setstate__</a> which combined enable the container to be pickled and unpickled.</p>
-<p>As for the special methods which <strong>do</strong> simply wrap corresponding functions in the functional API,
-these are <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L98">implemented</a> in the main <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class.</p>
-<p>These special methods all directly wrap the corresponding API <em>static</em> <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> method.</p>
-<p>Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L115">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133">__truediv__</a> which directly call
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_subtract</span></code>,
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_divide</span></code> respectively.</p>
+<p>As for the special methods which are <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L98">implemented</a> in the main <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+class, they all make calls to the corresponding standard operator functions.</p>
+<p>As a result, the operator functions will make use of the special methods of the lefthand
+passed input objects if available, otherwise it will make use of the reverse special
+method of the righthand operand. For instance, if the lefthand operand at any given leaf
+of the container in an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>, then the operator function will make calls to
+the special methods of this array object. As explained in the <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section of
+the Deep Dive, these special methods will in turn call the corresponding functions from
+the ivy functional API.</p>
+<p>Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L115">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133">__truediv__</a> which will make
+calls to <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.subtract</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code> respectively if the lefthand operand is an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> object.
+Otherwise, these special methods will be called on whatever objects are at the leaves of
+the container, such as :code`int`, <code class="code docutils literal notranslate"><span class="pre">float</span></code>, :code`ivy.NativeArray` etc.</p>
 </section>
 <section id="nestable-functions">
 <h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading"></a></h2>
@@ -356,8 +363,6 @@ The distinction is only really relevant when stepping through and debugging with
 mode execution, and for the reasons outlined above, the preference is to keep
 compositional implicitly nestable where possible.</p>
 <p><strong>Shared Nested Structure</strong></p>
-<p>NOTE - implementing the behaviour for shared nested structures is a work in progress,
-the master branch will soon support all of the examples given below, but not yet 🚧</p>
 <p>When the nested structures of the multiple containers are <em>shared</em> but not <em>identical</em>,
 then the behaviour of the nestable function is a bit different.
 Containers have <em>shared</em> nested structures if all unique leaves in any of the containers
@@ -427,77 +432,6 @@ than <code class="code docutils literal notranslate"><span class="pre">y</span><
 <code class="code docutils literal notranslate"><span class="pre">z</span></code> despite <code class="code docutils literal notranslate"><span class="pre">d</span></code> not being a non-leaf node in <code class="code docutils literal notranslate"><span class="pre">z</span></code>,
 and likewise the key chain <code class="code docutils literal notranslate"><span class="pre">d/g</span></code> for <code class="code docutils literal notranslate"><span class="pre">z</span></code> is not present in <code class="code docutils literal notranslate"><span class="pre">x</span></code>
 despite <code class="code docutils literal notranslate"><span class="pre">d</span></code> not being a non-leaf node in <code class="code docutils literal notranslate"><span class="pre">x</span></code>.</p>
-<p><strong>Container-dependent Functions</strong></p>
-<p><em>Container-dependent</em> functions are functions containing arguments which, if provided,
-<strong>must</strong> be provided as an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>.
-<em>Container-dependent</em> functions are never <em>nestable</em>, as we will explain.
-Due to their dependence on containers, <em>container-dependent</em> functions all have a natural
-many (the containers) to one (all other arguments) correspondence in the arguments,
-unlike <em>nestable</em> functions which have a one-to-one correspondence between the arguments
-by default.</p>
-<p>A couple of examples of <em>Container-dependent</em> functions are:
-<code class="code docutils literal notranslate"><span class="pre">ivy.execute_with_gradients</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.multi_head_attention</span></code>.</p>
-<p>We’ll go through the signatures and docstring descriptions for both of these in turn.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span>
-    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-    <span class="n">xs</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
-    <span class="n">retain_grads</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Call function func with container of input variables xs, and return the</span>
-<span class="sd">    functions first output y, the gradients dy/dx as a new container, and any other</span>
-<span class="sd">    function outputs after the returned y value.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-</pre></div>
-</div>
-<p>Technically, this function <em>could</em> be made fully nestable, whereby the function would
-be independently applied on each leaf node of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> of variables,
-but this would be much less efficient, with the backend autograd function
-(such as <code class="code docutils literal notranslate"><span class="pre">torch.autograd.grad</span></code>) being called many times independently for each
-variable in the container of variables <code class="code docutils literal notranslate"><span class="pre">xs</span></code>. By making this function non-nestable,
-we do not map the function across each of the container leaves, and instead pass the
-entire container into the backend autograd function directly,
-which is much more efficient.</p>
-<p>If the function were <em>nestable</em>, it would also repeatedly return <code class="code docutils literal notranslate"><span class="pre">y</span></code> and all
-other function return values at each leaf of the single returned container,
-changing the signature of the function, and causing repeated redundancy in the return.</p>
-<p>The example <code class="code docutils literal notranslate"><span class="pre">ivy.multi_head_attention</span></code> is a bit different.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">multi_head_attention</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">scale</span><span class="p">:</span> <span class="n">Number</span><span class="p">,</span>
-    <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">to_q_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">to_kv_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">to_out_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">to_q_v</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">to_kv_v</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">to_out_v</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Applies multi-head attention, with the array (x) to determine the queries from,</span>
-<span class="sd">    the scale for the query-key similarity measure, the number of</span>
-<span class="sd">    attention heads, the context to determine the keys and values from,</span>
-<span class="sd">    the mask to apply to the query-key values, the function (to_q_fn) to compute</span>
-<span class="sd">    queries from input x, the function (to_kv_fn) to compute keys and values from</span>
-<span class="sd">    the context, the function (to_out_fn) to compute the output from the scaled</span>
-<span class="sd">    dot-product attention, the variables (to_q_v) for function to_q_fn, the</span>
-<span class="sd">    variables (to_kv_v) for function to_kv_fn, and the variables (to_out_v) for</span>
-<span class="sd">    function to_out_fn.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-</pre></div>
-</div>
-<p>This function fundamentally could not be made <em>nestable</em>,
-as the function takes a many-to-one approach with regards to the optional containers:
-<code class="code docutils literal notranslate"><span class="pre">to_q_v</span></code>, <code class="code docutils literal notranslate"><span class="pre">to_kv_v</span></code> and <code class="code docutils literal notranslate"><span class="pre">to_out_v</span></code>.
-The containers are optionally used for the purpose of returning a single
-<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> at the end. Calling this function on each leaf of the containers
-passed in the input would not make any sense.</p>
-<p>Hopefully, these two examples explain why <em>Container-dependent</em> functions
-(with arguments which, if provided, <strong>must</strong> be provided as an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>),
-are never implemented as <em>nestable</em> functions.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for containers, and how these are handled in Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,

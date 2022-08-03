@@ -2,6 +2,12 @@ split
 =====
 
 .. autofunction:: ivy.functional.ivy.manipulation.split
+
+.. autofunction:: ivy.array.array_methods.split
+
+.. autofunction:: ivy.container.container_methods.split
+
+.. autofunction:: ivy.container.container_methods.static_split
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ split
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: split
+
+   split/split_functional.rst
+   split/split_array.rst
+   split/split_container.rst
+   split/static_split_container.rst
+

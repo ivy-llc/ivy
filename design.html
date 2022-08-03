@@ -54,6 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="deep_dive.html">Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -148,9 +149,15 @@ after you’ve gone through the higher level overview which is covered in this <
 <div class="line">1. enable automatic code conversions between frameworks</div>
 <div class="line">2. serve as a new ML framework with multi-framework support</div>
 <div class="line"><br /></div>
-<div class="line">The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which fall into one of these three categories as follows:</div>
+<div class="line">The Ivy codebase can then be split into three categories which are labelled (a),</div>
+<div class="line">(b) and (c) below, and can be further split into 8 distinct submodules.</div>
+<div class="line">The eight submodules are Ivy API, Backend Handler, Backend API, Ivy Array,</div>
+<div class="line">Ivy Container, Ivy Stateful API, and finally Frontend API.</div>
 </div>
-<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
+<div class="line-block">
+<div class="line">All eight fall into one of the three categories as follows:</div>
+</div>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/dependency_graph_with_compiler.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/dependency_graph_with_compiler.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/dependency_graph_with_compiler.png?raw=true" style="width: 100%;" /></a>
 <div class="line-block">
 <div class="line">(a) <a class="reference internal" href="design/building_blocks.html#building-blocks"><span class="std std-ref">Building Blocks</span></a></div>
 <div class="line">back-end functional APIs ✅</div>
@@ -164,7 +171,7 @@ after you’ve gone through the higher level overview which is covered in this <
 <div class="line">(c) <a class="reference internal" href="design/ivy_as_a_framework.html#ivy-as-a-framework"><span class="std std-ref">Ivy as a Framework</span></a></div>
 <div class="line">Ivy stateful API ✅</div>
 <div class="line">Ivy Container ✅</div>
-<div class="line">Ivy Array 🚧</div>
+<div class="line">Ivy Array ✅</div>
 </div>
 <div class="toctree-wrapper compound">
 </div>

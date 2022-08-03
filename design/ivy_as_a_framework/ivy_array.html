@@ -65,6 +65,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../deep_dive.html">Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -154,65 +155,86 @@ returns <code class="code docutils literal notranslate"><span class="pre">ivy.Ar
 <h2>The Array Class<a class="headerlink" href="#the-array-class" title="Permalink to this heading"></a></h2>
 <p>Let’s dive straight in and check out what the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> constructor looks like.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/array/__init__.py</span>
-<span class="k">class</span> <span class="nc">Array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithDevice</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithGeneral</span><span class="p">,</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithGradients</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithImage</span><span class="p">,</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithLinalg</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithLogic</span><span class="p">,</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithMath</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithMeta</span><span class="p">,</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithRandom</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ArrayWithReductions</span><span class="p">):</span>
-
+<span class="k">class</span> <span class="nc">Array</span><span class="p">(</span>
+    <span class="n">ArrayWithActivations</span><span class="p">,</span>
+    <span class="n">ArrayWithCreation</span><span class="p">,</span>
+    <span class="n">ArrayWithDataTypes</span><span class="p">,</span>
+    <span class="n">ArrayWithDevice</span><span class="p">,</span>
+    <span class="n">ArrayWithElementwise</span><span class="p">,</span>
+    <span class="n">ArrayWithGeneral</span><span class="p">,</span>
+    <span class="n">ArrayWithGradients</span><span class="p">,</span>
+    <span class="n">ArrayWithImage</span><span class="p">,</span>
+    <span class="n">ArrayWithLayers</span><span class="p">,</span>
+    <span class="n">ArrayWithLinearAlgebra</span><span class="p">,</span>
+    <span class="n">ArrayWithLosses</span><span class="p">,</span>
+    <span class="n">ArrayWithManipulation</span><span class="p">,</span>
+    <span class="n">ArrayWithNorms</span><span class="p">,</span>
+    <span class="n">ArrayWithRandom</span><span class="p">,</span>
+    <span class="n">ArrayWithSearching</span><span class="p">,</span>
+    <span class="n">ArrayWithSet</span><span class="p">,</span>
+    <span class="n">ArrayWithSorting</span><span class="p">,</span>
+    <span class="n">ArrayWithStatistical</span><span class="p">,</span>
+    <span class="n">ArrayWithUtility</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">ArrayWithActivations</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithCreation</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithDataTypes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithDevice</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithElementwise</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithGeneral</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithGradients</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithImage</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithLayers</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithLinearAlgebra</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithLosses</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithManipulation</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithNorms</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithRandom</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithSearching</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithSet</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithSorting</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithStatistical</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ArrayWithUtility</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_device</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pre_repr</span> <span class="o">=</span> <span class="s1">&#39;ivy.&#39;</span>
-        <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_post_repr</span> <span class="o">=</span> <span class="s1">&#39;, dev=</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pre_repr</span> <span class="o">=</span> <span class="s2">&quot;ivy.&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;gpu&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_post_repr</span> <span class="o">=</span> <span class="s2">&quot;, dev=</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_post_repr</span> <span class="o">=</span> <span class="s1">&#39;)&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_post_repr</span> <span class="o">=</span> <span class="s2">&quot;)&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">framework_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_variable</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
     <span class="c1"># Properties #</span>
     <span class="c1"># -----------#</span>
 
-<span class="nd">@property</span>
-<span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+    <span class="c1"># noinspection PyPep8Naming</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mT</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-<span class="nd">@property</span>
-<span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">)</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
-<span class="nd">@property</span>
-<span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-
-<span class="nd">@property</span>
-<span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
-
-<span class="nd">@property</span>
-<span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
-
-<span class="nd">@property</span>
-<span class="k">def</span> <span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span>
-
-<span class="nd">@property</span>
-<span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
-
-<span class="nd">@property</span>
-<span class="k">def</span> <span class="nf">mT</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We can see that the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class is a simple wrapper around an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> class (such as  <code class="code docutils literal notranslate"><span class="pre">np.ndarray</span></code>, <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code> etc), stored in the <code class="code docutils literal notranslate"><span class="pre">self._data</span></code> attribute.</p>
@@ -227,23 +249,23 @@ which we discuss next!</p>
 <p>Let’s assume that there is no such thing as the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class,
 and we are just returning native arrays from all Ivy methods.</p>
 <p>Consider the code below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Let’s first assume we use numpy in the backend by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework('numpy')</span></code> in the first line.
+<p>Let’s first assume we use numpy in the backend by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend('numpy')</span></code> in the first line.
 <code class="code docutils literal notranslate"><span class="pre">x</span></code> would then be a <code class="code docutils literal notranslate"><span class="pre">np.ndarray</span></code> instance.</p>
 <p>In this case, the code will execute without error, printing <code class="code docutils literal notranslate"><span class="pre">array([0,</span> <span class="pre">2,</span> <span class="pre">3])</span></code> to the console.</p>
-<p>Now consider we use JAX in the backend by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework('jax')</span></code> in the first line.
+<p>Now consider we use JAX in the backend by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend('jax')</span></code> in the first line.
 <code class="code docutils literal notranslate"><span class="pre">x</span></code> would then be a <code class="code docutils literal notranslate"><span class="pre">jax.numpy.ndarray</span></code> instance.</p>
 <p>The code will now throw the error <code class="code docutils literal notranslate"><span class="pre">TypeError:</span> <span class="pre">'&lt;class</span> <span class="pre">'jaxlib.xla_extension.DeviceArray'&gt;'</span> <span class="pre">object</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">support</span> <span class="pre">item</span> <span class="pre">assignment.</span></code> <code class="code docutils literal notranslate"><span class="pre">JAX</span> <span class="pre">arrays</span> <span class="pre">are</span> <span class="pre">immutable.</span></code> <code class="code docutils literal notranslate"><span class="pre">Instead</span> <span class="pre">of</span> <span class="pre">x[idx]</span> <span class="pre">=</span> <span class="pre">y,</span> <span class="pre">use</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">x.at[idx].set(y)</span> <span class="pre">or</span> <span class="pre">another</span> <span class="pre">.at[]</span> <span class="pre">method</span></code> when we try to set index 0 to the value 0.</p>
 <p>As can be seen from the error message, the reason for this is that JAX does not support inplace updates for arrays.</p>
 <p>This is a problem. The code written above is <strong>pure Ivy code</strong> which means it should behave identically irrespective of the backend, but as we’ve just seen it behaves <strong>differently</strong> with different backends.
 Therefore, in this case, we could not claim that the Ivy code was truly framework-agnostic.</p>
 <p>For the purposes of explanation, we can re-write the above code as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="n">x</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -258,7 +280,10 @@ then the <code class="code docutils literal notranslate"><span class="pre">__set
     <span class="k">try</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span>
+            <span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We can implement inplace updates in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class without requiring inplace updates in the backend array classes.
@@ -285,70 +310,9 @@ For example, maybe one framework makes the strange decision to return rounded in
 </section>
 <section id="api-monkey-patching">
 <h2>API Monkey Patching<a class="headerlink" href="#api-monkey-patching" title="Permalink to this heading"></a></h2>
-<p>If you’ve looked through the code at all, you may notice that the Ivy methods do not return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances at all.</p>
-<p>This is true, as far as the code appears, the methods actually return <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.</p>
-<p>For example, let’s take a look at the <code class="code docutils literal notranslate"><span class="pre">ivy.inv</span></code> method with a PyTorch backend.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/torch/linear_algebra.py</span>
-<span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Passing in an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance for <code class="code docutils literal notranslate"><span class="pre">x</span></code> will throw an error. The method will also always return a <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, not an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
-but we have just explained that every Ivy method both accepts and returns <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, what gives?</p>
-<p>In order to avoid excessive code duplication, we have opted to implement this behaviour via monkey-patching, using <code class="code docutils literal notranslate"><span class="pre">_wrap_method</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/func_wrapper.py</span>
-<span class="k">def</span> <span class="nf">_wrap_method</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)</span> <span class="ow">and</span> \
-            <span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span> <span class="ow">or</span>
-             <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">NON_WRAPPED_METHODS</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">fn</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;wrapped&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn</span><span class="o">.</span><span class="n">wrapped</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">fn</span>
-
-    <span class="k">def</span> <span class="nf">_method_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">native_args</span><span class="p">,</span> <span class="n">native_kwargs</span> <span class="o">=</span> \
-            <span class="n">ivy</span><span class="o">.</span><span class="n">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">(</span>
-                    <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">native_args</span><span class="p">,</span> <span class="o">**</span><span class="n">native_kwargs</span><span class="p">),</span>
-                    <span class="n">nested</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
-        <span class="n">_method_wrapped</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
-    <span class="n">_method_wrapped</span><span class="o">.</span><span class="n">wrapped</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">_method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span> <span class="o">=</span> <span class="n">fn</span>
-    <span class="k">return</span> <span class="n">_method_wrapped</span>
-</pre></div>
-</div>
-<p>When setting any backend framework, the entire <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> is traversed and every method is wrapped using the <code class="code docutils literal notranslate"><span class="pre">_wrap_method</span></code> outlined above.
-Therefore, all Ivy methods accept and return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances without issue, whist still making use of the wrapped backend methods which only operate with <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, such as:code:<cite>torch.Tensor</cite> etc.</p>
-<p>Breaking <code class="code docutils literal notranslate"><span class="pre">_wrap_method</span></code> down a bit, first we verify the method should be wrapped, otherwise we return the method without wrapping.
-Next, we check if the method is already wrapped, and if so we just return this already wrapped method.
-Then we define the new wrapped method <code class="code docutils literal notranslate"><span class="pre">_method_wrapped</span></code>.
-Finally, we copy the method name over to <code class="code docutils literal notranslate"><span class="pre">_method_wrapped</span></code>, and flag the wrapped attribute,
-store the unwrapped inner function as an attribute, and return the wrapped method.</p>
-<p>Importantly, <code class="code docutils literal notranslate"><span class="pre">ivy.args_to_native</span></code> does not fail in the inputs are already native arrays.
-This means that every Ivy method is able to accept either <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances for each array argument,
-but the returned arrays are always enforced to be <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances.</p>
-<p>This just simplifies the transition from native code to Ivy code in any given project, preventing code such as the following from needlessly throwing an error:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="c1"># lots of torch code</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="c1"># lots of ivy code</span>
-</pre></div>
-</div>
-<p>The unwrap method is much simpler, implemented as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/func_wrapper.py</span>
-<span class="k">def</span> <span class="nf">_unwrap_method</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">):</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">,</span> <span class="s1">&#39;wrapped&#39;</span><span class="p">)</span> <span class="ow">or</span> \
-            <span class="ow">not</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">wrapped</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">method_wrapped</span>
-    <span class="k">return</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span>
-</pre></div>
-</div>
-<p>This is called whenever a framework is unset, and each method is unwrapped back to the original version.</p>
+<p>All ivy functions with array inputs/outputs have been wrapped to return <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances while accepting both <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances.
+This allows for the control required to provide a unified array interface.
+For more detail on wrapping, see the the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html">Function Wrapping</a> page in deep dive.</p>
 </section>
 <section id="instance-methods">
 <h2>Instance Methods<a class="headerlink" href="#instance-methods" title="Permalink to this heading"></a></h2>
@@ -380,7 +344,7 @@ The only reason the Array class derives from so many different Array classes is 
 </pre></div>
 </div>
 <p>In the example above, not only is the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> approach shorter to write, but more importantly there is much better alignment between each function and the function arguments. It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.</p>
-<p>In addition to the functions in the topic-specific parent classes, there are 41 builtin methods implemented directly in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, most of which directly wrap a method in Ivy’s functional API. some examples are given below.</p>
+<p>In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, most of which directly wrap a method in Ivy’s functional API. some examples are given below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/array/__init__.py</span>
 <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>

@@ -15,4 +15,5 @@ Sorting
 
    sorting/argsort.rst
    sorting/sort.rst
+   sorting/searchsorted.rst
 

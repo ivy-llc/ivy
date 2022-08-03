@@ -2,6 +2,12 @@ argmax
 ======
 
 .. autofunction:: ivy.functional.ivy.searching.argmax
+
+.. autofunction:: ivy.array.array_methods.argmax
+
+.. autofunction:: ivy.container.container_methods.static_argmax
+
+.. autofunction:: ivy.container.container_methods.argmax
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ argmax
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: argmax
+
+   argmax/argmax_functional.rst
+   argmax/argmax_array.rst
+   argmax/argmax_container.rst
+   argmax/static_argmax_container.rst
+

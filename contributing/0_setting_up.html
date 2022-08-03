@@ -74,6 +74,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -473,6 +474,27 @@ This is because PyCharm by default turns off headers and summary’s while runni
 <a class="reference internal image-reference" href="../_images/connect_existing.png"><img alt="../_images/connect_existing.png" src="../_images/connect_existing.png" style="width: 420px;" /></a>
 <p><strong>Troubleshooting</strong></p>
 <p>Sometimes, visual studio code is not able to select the python interpreter. However, you can do that manually if that ever happens. Open up any python file, then click on the bottom right where it is written “Select Python Interpreter”. From there, select <code class="code docutils literal notranslate"><span class="pre">Python</span> <span class="pre">3.8.10</span> <span class="pre">64-bit</span> <span class="pre">usr/bin/python3</span></code>.</p>
+<p><strong>Setting Up Testing</strong></p>
+<p>The steps are as following to setup testing on VS Code when using a new Codespace.</p>
+<ol class="arabic simple">
+<li><p>Under the flask Icon in the toolbar select “Configure Python Tests” and select PyTest as the test framework.</p></li>
+</ol>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_01.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_01.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_01.png?raw=true" style="width: 420px;" /></a>
+<ol class="arabic simple" start="2">
+<li><p>Select ivy_tests as the root directory for testing.</p></li>
+</ol>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_02.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_02.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_02.png?raw=true" style="width: 420px;" /></a>
+<ol class="arabic simple" start="3">
+<li><p>Configure the _array_module.py file in the array_api_tests to be set to one of the supported framworks.</p></li>
+</ol>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_03.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_03.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_03.png?raw=true" style="width: 420px;" /></a>
+<ol class="arabic simple" start="4">
+<li><p>As of 01/08/2022, the conftest.py file in the array_api_tests folder must also be commented out in order to run ivy_tests in the test suite. This will cause the array_api_tests to fail and therefore they must be run via the terminal.</p></li>
+</ol>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_04.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_04.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_04.png?raw=true" style="width: 420px;" /></a>
+<ol class="arabic simple" start="5">
+<li><p>Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!</p></li>
+</ol>
 </section>
 <section id="pre-commit">
 <h2>Pre-Commit<a class="headerlink" href="#pre-commit" title="Permalink to this heading"></a></h2>

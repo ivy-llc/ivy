@@ -74,6 +74,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../deep_dive.html">Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -165,7 +166,6 @@
 <h2>Construction<a class="headerlink" href="#construction" title="Permalink to this heading"></a></h2>
 <p>A container can be constructed in a number of ways. All construction approaches below result in identical <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
-<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
 
  <span class="n">dct</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
         <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
@@ -195,17 +195,15 @@
 <p><code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> prints the hierarchical structure to the terminal in a very intuitive manner, much more so than native Python Dicts.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">dct</span><span class="p">)</span>
 
-<span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda:0&#39;</span><span class="p">),</span> <span class="s1">&#39;b&#39;</span>
-<span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda:0&#39;</span><span class="p">),</span> <span class="s1">&#39;</span>
-<span class="n">d</span><span class="s1">&#39;: tensor([2.], device=&#39;</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="s1">&#39;)}}</span>
+<span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])}}</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
 
 <span class="p">{</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
     <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">c</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">d</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">2.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">c</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
+        <span class="n">d</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -217,35 +215,33 @@
 
 <span class="nb">print</span><span class="p">(</span><span class="n">dct</span><span class="p">)</span>
 
-<span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+<span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
         <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
         <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
         <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
-        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda:0&#39;</span><span class="p">),</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span>
-<span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span>  <span class="o">...</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
-        <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span>  <span class="o">...</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
-        <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span>  <span class="o">...</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;c</span>
-<span class="n">uda</span><span class="p">:</span><span class="mi">0</span><span class="s1">&#39;), &#39;</span><span class="n">d</span><span class="s1">&#39;: tensor([[1., 1.],</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]),</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]]),</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
         <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
         <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
         <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
-        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda:0&#39;</span><span class="p">)}}</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])}}</span>
 
 <span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">dct</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
 
-<span class="p">{</span>
-    <span class="n">a</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>
-    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">c</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]),</span>
-        <span class="n">d</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+ <span class="p">{</span>
+     <span class="n">a</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>
+     <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">c</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]),</span>
+         <span class="n">d</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -259,30 +255,30 @@
 </pre></div>
 </div>
 <p>We can compute the mean of each sub-array:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">())</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 
 <span class="p">{</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">c</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">4.3333</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">d</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">5.6667</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+     <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">1.</span><span class="p">),</span>
+     <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">c</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">4.3333335</span><span class="p">),</span>
+         <span class="n">d</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">5.6666665</span><span class="p">)</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
 </pre></div>
 </div>
 <p>Or we can flip each sub-array:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="o">.</span><span class="n">flip</span><span class="p">())</span>
 
-<span class="p">{</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">c</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">d</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+ <span class="p">{</span>
+     <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]),</span>
+     <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">c</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span>
+         <span class="n">d</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">])</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
 </pre></div>
 </div>
-<p>There are 178 such functions for the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class in total, check out the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/container.py">code</a> or <a class="reference external" href="https://lets-unify.ai/ivy/core/container.html">docs</a> to see what they are!</p>
+<p>There are about 200 such functions for the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class in total, check out the <a class="reference external" href="https://github.com/unifyai/ivy/tree/master/ivy/container">code</a> or <a class="reference external" href="https://lets-unify.ai/ivy/core/container.html">docs</a> to see what they are!</p>
 </section>
 <section id="built-ins">
 <h2>Built-ins<a class="headerlink" href="#built-ins" title="Permalink to this heading"></a></h2>
@@ -300,12 +296,12 @@
 <span class="n">new_weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">-</span> <span class="n">grads</span> <span class="o">*</span> <span class="n">lr</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">new_weights</span><span class="p">)</span>
 
-<span class="p">{</span>
-    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.0600</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">1.3100</span><span class="p">,</span> <span class="mf">2.2400</span><span class="p">,</span> <span class="mf">0.6900</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+ <span class="p">{</span>
+     <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.06</span><span class="p">]),</span>
+         <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.31</span><span class="p">,</span> <span class="mf">2.24</span><span class="p">,</span> <span class="mf">0.69</span><span class="p">])</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
 </pre></div>
 </div>
 <p>Check out the section below on Ivy’s stateful API to see how the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is used for storing all network weights in <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances!</p>
@@ -320,11 +316,11 @@
 
 <span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
 
-<span class="p">{</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-    <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-    <span class="n">c</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">2.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
-<span class="p">}</span>
+ <span class="p">{</span>
+     <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+     <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
+     <span class="n">c</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])</span>
+ <span class="p">}</span>
 
 <span class="k">assert</span> <span class="n">cnt</span><span class="o">.</span><span class="n">c</span> <span class="ow">is</span> <span class="n">cnt</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span>
 </pre></div>
@@ -336,17 +332,17 @@
 
 <span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
 
-<span class="p">{</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">c</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
-    <span class="p">},</span>
-    <span class="n">d</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">e</span><span class="p">:</span> <span class="p">{</span>
-            <span class="n">f</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">2.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+ <span class="p">{</span>
+     <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+     <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">c</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+     <span class="p">},</span>
+     <span class="n">d</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">e</span><span class="p">:</span> <span class="p">{</span>
+             <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])</span>
+         <span class="p">}</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
 </pre></div>
 </div>
 <p>One of the key benefits of using properties under the hood is the autocomplete support this introduces. Class attributes can be auto-completed when pressing tab midway through typing. This is not possible with Dicts.</p>
@@ -364,7 +360,7 @@
 <span class="n">cnt</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">total_h</span> <span class="o">-&gt;</span> <span class="n">tab</span>
 <span class="n">cnt</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">total_height</span>
 
-<span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda:0&#39;</span><span class="p">)</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
 </pre></div>
 </div>
 </section>
@@ -423,17 +419,17 @@
 <h2>Comparisons<a class="headerlink" href="#comparisons" title="Permalink to this heading"></a></h2>
 <p>Comparing differences between containers can be achieved on a per-leaf basis. This is useful for debugging and also comparing configurations between runs. For example, consider a case where two containers of arrays should be identical at all levels. We can then very quickly find conflicting leaves.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cnt0</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
-                   <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])})</span>
+                  <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])})</span>
 <span class="n">cnt1</span> <span class="o">=</span> <span class="n">cnt0</span><span class="o">.</span><span class="n">deep_copy</span><span class="p">()</span>
 <span class="n">cnt1</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">cnt0</span><span class="p">,</span> <span class="n">cnt1</span><span class="p">))</span>
 
 <span class="p">{</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
     <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">diff_0</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">diff_1</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">diff_0</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
+        <span class="n">diff_1</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -500,28 +496,28 @@
 
 <span class="p">{</span>
     <span class="n">decoder__l0</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
     <span class="p">},</span>
     <span class="n">decoder__l1</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
     <span class="p">},</span>
     <span class="n">encoder__l0</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
     <span class="p">},</span>
     <span class="n">encoder__l1</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
     <span class="p">},</span>
     <span class="n">l0</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
     <span class="p">},</span>
     <span class="n">l1</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -531,24 +527,24 @@
 
 <span class="p">{</span>
     <span class="n">decoder</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">l0__b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">l0__w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">l1__b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">l1__w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">l0__b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">l0__w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]]),</span>
+        <span class="n">l1__b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">l1__w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
     <span class="p">},</span>
     <span class="n">encoder</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">l0__b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">l0__w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">l1__b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">l1__w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">l0__b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">l0__w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]]),</span>
+        <span class="n">l1__b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">l1__w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
     <span class="p">},</span>
     <span class="n">l0</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
     <span class="p">},</span>
     <span class="n">l1</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">),</span>
-        <span class="n">w</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]],</span> <span class="n">device</span><span class="o">=</span><span class="n">cuda</span><span class="p">:</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>

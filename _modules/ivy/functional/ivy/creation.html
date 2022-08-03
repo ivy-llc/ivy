@@ -46,6 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -157,7 +158,9 @@
         <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
         <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
         <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">))</span>
-    <span class="p">),</span> <span class="s2">&quot;the fill_value and data type are not compatible&quot;</span>
+    <span class="p">),</span> <span class="s2">&quot;the fill_value:</span><span class="se">\n\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">and data type:</span><span class="se">\n\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">are not compatible.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span>
+    <span class="p">)</span>
 
 
 <span class="c1"># Array API Standard #</span>
