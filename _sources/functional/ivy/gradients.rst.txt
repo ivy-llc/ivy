@@ -21,6 +21,7 @@ Gradients
    gradients/variable_data.rst
    gradients/stop_gradient.rst
    gradients/execute_with_gradients.rst
+   gradients/value_and_grad.rst
    gradients/adam_step.rst
    gradients/optimizer_update.rst
    gradients/gradient_descent_update.rst
