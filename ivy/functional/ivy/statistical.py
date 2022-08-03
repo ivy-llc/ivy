@@ -502,7 +502,6 @@ def var(
     
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
@@ -550,7 +549,6 @@ def var(
 
     Functional Examples
     -------------------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0, 1, 2, 3, 4, 5, 6, 7, 8])
@@ -631,7 +629,7 @@ def var(
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
     >>> y = x.var()
-    >>> y
+    >>> print(y)
     {
         a: ivy.array(0.66666667),
         b: ivy.array(0.66666667)
