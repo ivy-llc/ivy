@@ -956,6 +956,40 @@ docstring, with the operator called with a :code:`Number` on the left and an
         a: 4,
         b: 5
     }
+**Docstring Tests**
+
+After making a Pull Request, each time you make a commit, then a number of checks are run on it to ensure everything's working fine.
+One of these checks is the docstring tests named as :code:`test-docstrings / run-docstring-tests` in the GitHub actions. The docstring
+tests check whether the docstring examples for a given function are valid or not. It basically checks if the output upon
+execution of the examples that are documented match exactly with the ones shown in the docstrings. Therefore each time you
+make a commit, you must ensure that the :code:`test-docstrings / run-docstring-tests` are working correctly at least for the
+function you are making changes to. To check whether the docstring tests are passing you need to check the logs for :code:`test-docstrings / run-docstring-tests`:
+
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/docstring_examples/docstring_failing_test_logs.png?raw=true
+           :width: 420
+
+You will need to go through the logs and see if the list of functions for which the docstring tests are
+failing also has the function you are working with.
+
+If the docstring tests are failing the  logs show a list of functions having issues along with a diff message:
+:code:`output for failing_fn_name on run: ......`
+:code:`output in docs: ........`
+as shown below:
+
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docstring_examples/docstring_log.png
+           :width: 420
+
+It can be quite tedious to go through the output diffs and spot the exact error, so you can
+take help of online tools like `text compare <https://text-compare.com/>`_ to spot the minutest
+of differences.
+
+Once you make the necessary changes and the function you are working on doesn't cause the docstring
+tests to fail, you should be good to go. However, one of the reviewers might ask you to make additional
+changes involving examples. Passing docstring tests is a necessary but not sufficient condition for
+the completion of docstring formatting.
+
+.. note::
+   Docstring examples should not have code that imports ivy or sets a backend, otherwise it leads to segmentation faults.
 
 **Round Up**
 

@@ -80,10 +80,7 @@ def is_native_array(x, exclusive=False):
 
 
 def floormod(
-    x: np.ndarray, 
-    y: np.ndarray, 
-    *, 
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, y: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.asarray(x % y)
     return ret

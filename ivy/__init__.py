@@ -51,10 +51,11 @@ class NativeShape:
 
 class Device(str):
     def __new__(cls, dev_str):
-        assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
-        if dev_str != "cpu":
-            assert dev_str[3] == ":"
-            assert dev_str[4:].isnumeric()
+        if dev_str != "":
+            assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
+            if dev_str != "cpu":
+                assert dev_str[3] == ":"
+                assert dev_str[4:].isnumeric()
         return str.__new__(cls, dev_str)
 
 
@@ -74,7 +75,9 @@ class Shape(tuple):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
             shape_tup = tuple(shape_tup)
-        assert builtins.all([isinstance(v, int) for v in shape_tup])
+        assert builtins.all(
+            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup]
+        )
         if ivy.shape_array_mode():
             return ivy.array(shape_tup)
         return tuple.__new__(cls, shape_tup)
@@ -118,6 +121,8 @@ _MIN_BASE = 1e-5
 import threading
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
+from .array import conversions as arr_conversions
+from .container import conversions as cont_conversions
 from .container import (
     ContainerBase,
     Container,
@@ -173,6 +178,7 @@ add_ivy_array_instance_methods(
     Array,
     [
         activations,
+        arr_conversions,
         creation,
         data_type,
         device,
@@ -197,6 +203,7 @@ add_ivy_container_instance_methods(
     Container,
     [
         activations,
+        cont_conversions,
         creation,
         data_type,
         device,
@@ -222,6 +229,7 @@ add_ivy_container_instance_methods(
     Container,
     [
         activations,
+        cont_conversions,
         creation,
         data_type,
         device,
@@ -416,6 +424,8 @@ locks = {"backend_setter": threading.Lock()}
 backend = "none"
 
 native_inplace_support = None
+
+supports_gradients = None
 
 if "IVY_BACKEND" in os.environ:
     ivy.set_backend(os.environ["IVY_BACKEND"])
