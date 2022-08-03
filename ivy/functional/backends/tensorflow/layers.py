@@ -168,7 +168,7 @@ def conv3d(
     return res
 
 
-conv3d.unsupported_device = ("cpu",)
+conv3d.unsupported_devices = ("cpu",)
 
 
 def conv3d_transpose(
@@ -182,6 +182,18 @@ def conv3d_transpose(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Tensor:
-    return tf.nn.conv3d_transpose(
-        x, filters, output_shape, strides, padding, data_format, dilations
+    strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
+    dilations = (
+            [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
+    if data_format == "NCDHW":
+        x = tf.transpose(x, (0, 2, 3, 4, 1))
+    res = tf.nn.conv3d_transpose(
+        x, filters, output_shape, strides, padding, "NDHWC", dilations
+    )
+    if data_format == "NCDHW":
+        return tf.transpose(res, (0, 4, 1, 2, 3))
+    return res
+
+
+conv3d_transpose.unsupported_devices = ("cpu",)
