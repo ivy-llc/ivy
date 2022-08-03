@@ -367,6 +367,8 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
             end_index = trimmed_docstring.index("", index)
             p_output = trimmed_docstring[index + 1 : end_index]
             p_output = ("").join(p_output).replace(" ", "")
+            if parsed_output != "":
+                parsed_output += ","
             parsed_output += p_output
 
     if end_index == -1:
@@ -382,6 +384,8 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
         for line in executable_lines:
             # noinspection PyBroadException
             try:
+                if f.getvalue() != "" and f.getvalue()[-2] != ",":
+                    print(",")
                 exec(line)
             except Exception as e:
                 print(e, " ", ivy.current_backend_str(), " ", line)
@@ -389,6 +393,7 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
     output = f.getvalue()
     output = output.rstrip()
     output = output.replace(" ", "").replace("\n", "")
+    output = output.rstrip(",")
 
     # handling cases when the stdout contains ANSI colour codes
     # 7-bit C1 ANSI sequences
@@ -413,6 +418,37 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
     # print("Putput: ", parsed_output)
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
+    if "ivy.array(" in output and "inf" not in output and "nan" not in output:
+        numeric_pattern = re.compile(
+            r"""
+                                [^\d\.]+e[^\d\+]*
+                                | ((,|-){2,})*[^\-\,\d]+\.[^\-\,\d]+((,|-){2,})*
+                                | [^ej\d\,\.\-\+]
+                            """,
+            re.VERBOSE,
+        )
+        num_output = numeric_pattern.sub("", output).replace(",,", "")
+        num_parsed_output = numeric_pattern.sub("", parsed_output).replace(",,", "")
+        if re.search(r"""\d""", num_output):
+            num_output = num_output.split(",")
+            num_parsed_output = num_parsed_output.split(",")
+            docstr_result = True
+            for (u, v) in zip(num_output, num_parsed_output):
+                if u == "":
+                    continue
+                try:
+                    docstr_result = np.allclose(complex(u), complex(v))
+                except Exception:
+                    print(fn)
+                    print(output)
+                    print("")
+                    print(parsed_output)
+                    print("")
+                    print(u)
+                    print(v)
+                    print("")
+                    return False
+            return docstr_result
     if not (output == parsed_output):
         print(
             "output for ",
