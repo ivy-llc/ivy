@@ -1189,7 +1189,3 @@ def zero_pad(
 
     """
     return current_backend(x).zero_pad(x, pad_width, out=out)
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
