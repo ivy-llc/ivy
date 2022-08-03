@@ -191,7 +191,8 @@ eye.unsupported_dtypes = ("uint16",)
 def from_dlpack(
     x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.dlpack.from_dlpack(x)
+    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
+    return tf.experimental.dlpack.from_dlpack(dlcapsule)
 
 
 def full(

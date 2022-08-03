@@ -6,7 +6,11 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.random import _check_bounds_and_get_shape, _check_valid_scale
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _randint_check_dtype_and_bound,
+    _check_valid_scale,
+)
 
 # Extra #
 # ------#
@@ -44,7 +48,7 @@ def multinomial(
     num_samples: int,
     batch_size: int = 1,
     probs: Optional[np.ndarray] = None,
-    replace=True,
+    replace: bool = True,
     *,
     device: str,
     out: Optional[np.ndarray] = None,
@@ -78,14 +82,20 @@ multinomial.support_native_out = True
 
 
 def randint(
-    low: int,
-    high: int,
-    shape: Union[ivy.NativeShape, Sequence[int]],
+    low: Union[float, np.ndarray],
+    high: Union[float, np.ndarray],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
     device: str,
+    dtype: Optional[Union[np.dtype, ivy.Dtype]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.random.randint(low, high, shape)
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    _randint_check_dtype_and_bound(low, high, dtype)
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    return np.random.randint(low, high, shape, dtype=dtype)
 
 
 def seed(seed_value: int = 0) -> None:
