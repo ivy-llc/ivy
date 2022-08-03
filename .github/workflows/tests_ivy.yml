@@ -29,10 +29,9 @@ jobs:
           cd ivy
           mkdir -p .hypothesis
           mkdir -p artifacts
-          echo ${{ matrix.backends}}
-          echo ${{ matrix.submodules }}
           ./test_ivy.sh ${{ matrix.backends }} ${{ matrix.submodules }}
-          
+        continue-on-error: true
+
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
