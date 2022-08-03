@@ -195,7 +195,7 @@ def test_tensorflow_full(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+            set(ivy_np.native_bool).intersection(set(ivy_tf.native_bool))
         ),
         num_arrays=2,
         shared_dtype=True,
