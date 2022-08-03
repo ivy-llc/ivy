@@ -356,7 +356,29 @@ def execute_with_gradients(func, xs, retain_grads=False):
     """
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
+
 execute_with_gradients.computes_gradients = True
+
+
+@to_native_arrays_and_back
+def value_and_grad(func):
+    """
+    Create a function that evaluates both func and the gradient of func.
+
+    Parameters
+    ----------
+    func
+        Function for which we compute the gradients of the output with respect to xs
+        input.
+
+    Returns
+    -------
+    ret
+        A function that returns both func and the gradient of func.
+
+    """
+    return current_backend(None).value_and_grad(func)
+
 
 # Optimizer Steps #
 

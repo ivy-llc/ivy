@@ -796,7 +796,7 @@ def matrix_rank(
     >>> ivy.matrix_rank(x)
     {a:ivy.array(2.), b:ivy.array(1.)}
 
-    
+
     """
     return current_backend(x).matrix_rank(x, rtol, out=out)
 
