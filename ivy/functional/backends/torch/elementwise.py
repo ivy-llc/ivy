@@ -252,8 +252,10 @@ def divide(
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     ret=torch.div(x1, x2)
-    if not ivy.is_float_dtype(ret.dtype):
-        ret=torch.tensor(ret,dtype=ivy.default_float_dtype(as_native=True))
+    if ivy.is_float_dtype(x1.dtype):
+        ret = torch.tensor(ret, dtype=x1.dtype)
+    else:
+        ret = torch.tensor(ret, dtype=ivy.default_float_dtype(as_native=True))
     return ret
 
 

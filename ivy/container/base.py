@@ -17,7 +17,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union
+from typing import Union, Iterable, Dict
 from builtins import set
 
 # local
@@ -1623,7 +1623,7 @@ class ContainerBase(dict, abc.ABC):
                 ]
             )
         )
-        )
+
 
     def minimum(
         self,
@@ -2553,7 +2553,7 @@ class ContainerBase(dict, abc.ABC):
             prune_unapplied,
             map_sequences,
         )
-)
+
 
 
     def matrix_norm(
