@@ -70,8 +70,39 @@ def conv1d(
     return res
 
 
-def conv1d_transpose(*_):
-    raise Exception("Convolutions not yet implemented for numpy library")
+def conv1d_transpose(
+    x: np.ndarray,
+    filters: np.ndarray,
+    strides: int,
+    padding: str,
+    output_shape: List[int] = None,
+    data_format: str = "NWC",
+    dilations: int = 1,
+) -> np.ndarray:
+    if isinstance(strides, tuple):
+        strides = strides[0]
+    if isinstance(dilations, tuple):
+        dilations = dilations[0]
+    if data_format == 'NCW':
+        x = np.transpose(x, (0, 2, 1))
+    # output_shape = [1] + output_shape
+    x_shape = (1,) + x.shape
+    filter_shape = (1,) + filters.shape
+    x_strides = (x.strides[0],) + x.strides
+    filter_strides = (filters.strides[0],) + filters.strides
+    x = np.lib.stride_tricks.as_strided(x, shape=x_shape, strides=x_strides)
+    filters = np.lib.stride_tricks.as_strided(
+        filters, shape=filter_shape, strides=filter_strides
+    )
+    x = np.transpose(x, (1, 0, 2, 3))
+    res = conv2d_transpose(x, filters, strides, padding, None, "NHWC", dilations)
+    res = np.transpose(res, (1, 0, 2, 3))
+    res = np.lib.stride_tricks.as_strided(
+        res, shape=res.shape[1:], strides=res.strides[1:]
+    )
+    if data_format == 'NCW':
+        res = np.transpose(res, (0, 2, 1))
+    return res
 
 
 def conv2d(
