@@ -61,7 +61,6 @@ class ArrayWithGeneral(abc.ABC):
 
         Parameters
         ----------
-
         self
             input array
         include_infs
@@ -118,7 +117,6 @@ class ArrayWithGeneral(abc.ABC):
 
         Parameters
         ----------
-
         self
             array, the array from which to gather values.
         indices

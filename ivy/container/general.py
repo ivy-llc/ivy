@@ -443,7 +443,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
-
         param
             the array or container from which to gather values.
         indices
@@ -499,7 +498,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
-
         self
             the container from which to gather values.
         indices
@@ -552,7 +550,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
-
         x
             Input container.
         include_infs
@@ -568,6 +565,7 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+
         Returns
         -------
         ret
@@ -610,7 +608,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
-
         self
             The container from which to check nans.
         include_infs
@@ -631,6 +628,7 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean, true if container has a nans, false otherwise.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 2, float('nan')]))
@@ -663,7 +661,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
-
         params
             The container from which to gather values.
         indices
