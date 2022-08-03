@@ -332,7 +332,7 @@ def test_multi_head_attention(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -363,14 +363,24 @@ def x_and_filters(draw, dtypes, data_format, type: str = "2d", transpose=False):
     dtype = draw(dtypes)
     dilations = draw(st.integers(min_value=1, max_value=3))
     if type == "1d":
-        filter_shape = draw(
-            st.tuples(
-                st.integers(3, 5),
-                st.integers(1, 3),
-                st.integers(1, 3),
+        if not transpose:
+            filter_shape = draw(
+                st.tuples(
+                    st.integers(3, 5),
+                    st.integers(1, 3),
+                    st.integers(1, 3),
+                )
             )
-        )
-        min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+            min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+        else:
+            filter_shape = draw(
+                st.tuples(
+                    st.integers(3, 5),
+                    st.shared(st.integers(1, 3), key="d_in"),
+                    st.shared(st.integers(1, 3), key="d_in"),
+                )
+            )
+            min_x_width = 1
         d_in = filter_shape[1]
         if data_format == "NWC":
             x_shape = draw(
@@ -547,57 +557,56 @@ def test_conv1d(
 
 
 # conv1d_transpose
-@pytest.mark.parametrize(
-    "x_n_filters_n_pad_n_outshp_n_res",
-    [
-        (
-            [[[0.0], [3.0], [0.0]]],
-            [[[0.0]], [[1.0]], [[0.0]]],
-            "SAME",
-            (1, 3, 1),
-            [[[0.0], [3.0], [0.0]]],
-        ),
-        (
-            [[[0.0], [3.0], [0.0]] for _ in range(5)],
-            [[[0.0]], [[1.0]], [[0.0]]],
-            "SAME",
-            (5, 3, 1),
-            [[[0.0], [3.0], [0.0]] for _ in range(5)],
-        ),
-        (
-            [[[0.0], [3.0], [0.0]]],
-            [[[0.0]], [[1.0]], [[0.0]]],
-            "VALID",
-            (1, 5, 1),
-            [[[0.0], [0.0], [3.0], [0.0], [0.0]]],
-        ),
-    ],
+@given(
+    x_f_d_df=x_and_filters(
+        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        data_format=st.sampled_from(["NWC", "NCW"]),
+        type="1d",
+        transpose=True
+    ),
+    stride=st.integers(min_value=1, max_value=4),
+    pad=st.sampled_from(["VALID", "SAME"]),
+    num_positional_args=helpers.num_positional_args(fn_name="conv1d_transpose"),
+    data=st.data(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+@handle_cmd_line_args
 def test_conv1d_transpose(
-    x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, device, call
+    *,
+    data,
+    x_f_d_df,
+    stride,
+    pad,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
 ):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
-        # tf conv1d transpose does not work when CUDA is installed, but array is on CPU
-        pytest.skip()
-    # smoke test
-    if call in [helpers.np_call, helpers.jnp_call]:
-        # numpy and jax do not yet support conv1d_transpose
-        pytest.skip()
-    x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype=dtype, device=device)
-    filters = tensor_fn(filters, dtype=dtype, device=device)
-    true_res = tensor_fn(true_res, dtype=dtype, device=device)
-    ret = ivy.conv1d_transpose(x, filters, 1, padding, output_shape)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_res.shape
-    # value test
-    assert np.allclose(
-        call(ivy.conv1d_transpose, x, filters, 1, padding, output_shape),
-        ivy.to_numpy(true_res),
+    dtype, x, filters, dilations, data_format = x_f_d_df
+    dtype = [dtype] * 2
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv1d_transpose",
+        ground_truth_backend="jax",
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
+        strides=stride,
+        padding=pad,
+        output_shape=None,
+        data_format=data_format,
+        dilations=dilations,
     )
 
 
