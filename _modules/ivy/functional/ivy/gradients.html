@@ -46,7 +46,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -485,7 +484,26 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">)</span></div>
 
-<span class="n">execute_with_gradients</span><span class="o">.</span><span class="n">computes_gradients</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="value_and_grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/value_and_grad.html#ivy.functional.ivy.gradients.value_and_grad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="k">def</span> <span class="nf">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a function that evaluates both func and the gradient of func.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func</span>
+<span class="sd">        Function for which we compute the gradients of the output with respect to xs</span>
+<span class="sd">        input.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        A function that returns both func and the gradient of func.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
+
 
 <span class="c1"># Optimizer Steps #</span>
 

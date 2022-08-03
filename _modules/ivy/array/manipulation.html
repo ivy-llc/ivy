@@ -46,7 +46,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../deep_dive.html">Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -150,38 +149,6 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">]</span> <span class="o">+</span> <span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayWithManipulation.split"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-        <span class="n">num_or_size_splits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">with_remainder</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.split. This method simply</span>
-<span class="sd">        wraps the function, and so the docstring for ivy.split also applies</span>
-<span class="sd">        to this method with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            array to be divided into sub-arrays.</span>
-<span class="sd">        num_or_size_splits</span>
-<span class="sd">            Number of equal arrays to divide the array into along the given axis if an</span>
-<span class="sd">            integer. The size of each split element if a sequence of integers. Default</span>
-<span class="sd">            is to divide into as many 1-dimensional arrays as the axis dimension.</span>
-<span class="sd">        axis</span>
-<span class="sd">            The axis along which to split, default is 0.</span>
-<span class="sd">        with_remainder</span>
-<span class="sd">            If the tensor does not split evenly, then store the last remainder entry.</span>
-<span class="sd">            Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">            A list of sub-arrays.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">num_or_size_splits</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithManipulation.flip"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.flip">[docs]</a>    <span class="k">def</span> <span class="nf">flip</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
