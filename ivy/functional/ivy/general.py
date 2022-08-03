@@ -1629,11 +1629,29 @@ def try_else_none(fn):
 
 
 def arg_names(receiver):
-    """Get the expected keyword arguments for a function or class constructor.
+    """
+    Gets the expected keyword arguments for a function or class constructor.
 
     Parameters
     ----------
     receiver
+        Function or class constructor
+
+    Returns
+    -------
+    ret
+        List containing the keyword arguments' names for a function or class constructor
+
+    Examples
+    --------
+    >>> x = ivy.arg_names(ivy.tan)
+    >>> print(x)
+    ['x', 'out']
+
+    >>> x = ivy.arg_names(ivy.optimizers.Adam)
+    >>> print(x)
+    ['lr', 'beta1', 'beta2', 'epsilon', 'inplace',
+    'stop_gradients', 'compile_on_next_step', 'device']
 
     """
     return list(inspect.signature(receiver).parameters.keys())
