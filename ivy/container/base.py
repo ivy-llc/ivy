@@ -8,6 +8,7 @@ import termcolor
 import numpy as np
 import json
 
+
 try:
     # noinspection PyPackageRequirements
     import h5py

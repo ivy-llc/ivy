@@ -86,6 +86,7 @@ def test_linear(
         fw=fw,
         fn_name="linear",
         rtol_=1e-03,
+        atol_=1e-03,
         x=np.asarray(x, dtype=dtype),
         weight=np.asarray(weight, dtype=dtype),
         bias=np.asarray(bias, dtype=dtype),
