@@ -62,13 +62,7 @@ def test_docstrings(backend):
     skip_arr_cont = [
         "cross_entropy",
     ]
-    currently_being_worked_on = [
-        # "logical_and",
-        # "matrix_rank",
-        # "squeeze",
-        # "to_list",
-        # "log1p",
-    ]
+    currently_being_worked_on = []
 
     # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp + currently_being_worked_on
