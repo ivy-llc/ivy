@@ -171,42 +171,40 @@ def mean(
            While mixed data type promotion is implementation-defined, if the input
            array ``x`` has an integer data type, the returned array must have the
            default floating-point data type.
-
-           Examples
-           --------
-
+          
+    Examples
+    --------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([5., 6., 7.])
-    >>> y = x.mean()
-    >>> print(y)
-    ivy.array(6.)
-
     >>> x = ivy.array([1., 2., 3.])
+    >>> z = x.mean()
+    >>> print(z)
+    ivy.array(2.)
+
+    >>> x = ivy.array([0., 1., 2.])
     >>> z = ivy.array([0,0,0])
     >>> y = ivy.mean(x, out=z)
     >>> print(z)
-    ivy.array(5.4000)
+    ivy.array(1.)
 
-    >>> x = ivy.array([[1.,2.,4.],[6.,8., 12.]])
+    >>> x = ivy.array([[0., 1., 2.], [4., 6., 10.]])
     >>> y = ivy.mean(x, 0, True)
     >>> print(y)
-    ivy.array([[3.5, 5. , 8. ]])
+    ivy.array([[2., 3.5, 6.]])
 
-    >>> x = ivy.native_array([[1.,2.,4.],[6.,8., 12.]])
+    >>> x = ivy.native_array([[0., 1., 2.], [4., 6., 10.]])
     >>> y = ivy.mean(x)
     >>> print(y)
-    ivy.array(5.5)
+    ivy.array(3.8333333)
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
-                          b=ivy.array([7., 8., 9.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.mean(x)
     >>> print(y)
     {
-        a: ivy.array(5.),
-        b: ivy.array(8.)
+        a: ivy.array(1.),
+        b: ivy.array(4.)
     }
 
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -217,8 +215,7 @@ def mean(
         a: ivy.array(2.),
         b: ivy.array(3.)
     }
-
-    """
+    """""
     return current_backend(x).mean(x, axis, keepdims, out=out)
 
 
