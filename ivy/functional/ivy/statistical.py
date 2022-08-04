@@ -182,7 +182,7 @@ def mean(
     ivy.array(2.)
 
     >>> x = ivy.array([0., 1., 2.])
-    >>> z = ivy.array([0,0,0])
+    >>> z = ivy.array([0.,0.,0.])
     >>> y = ivy.mean(x, out=z)
     >>> print(z)
     ivy.array(1.)
@@ -215,7 +215,7 @@ def mean(
         a: ivy.array(2.),
         b: ivy.array(3.)
     }
-    """""
+    """
     return current_backend(x).mean(x, axis, keepdims, out=out)
 
 
