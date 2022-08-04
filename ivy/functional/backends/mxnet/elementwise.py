@@ -120,6 +120,15 @@ def acos(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 
 @_handle_flat_arrays_in_out
+def asin(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    if isinstance(x, float):
+        ret = math.asin(x)
+    else:
+        ret = mx.nd.arcsin(x)
+    return ret
+
+
+@_handle_flat_arrays_in_out
 def logical_and(
     x1: mx.nd.NDArray,
     x2: mx.nd.NDArray,
@@ -241,9 +250,6 @@ def exp(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return ret
 
 
-asin = lambda x: math.asin(x) if isinstance(x, float) else mx.nd.arcsin(x)
-
-
 def tan(x: mx.nd.NDArray) -> mx.nd.NDArray:
     if isinstance(x, float):
         ret = math.tan(x)
@@ -266,8 +272,8 @@ def atanh(x: mx.nd.NDArray) -> mx.nd.NDArray:
         return math.atanh(x)
     else:
         return mx.nd.arctanh(x)
-  
-  
+
+
 @_handle_flat_arrays_in_out
 def atan2(x: mx.nd.NDArray, y: mx.nd.NDArray) -> mx.nd.NDArray:
     if isinstance(x, float):
