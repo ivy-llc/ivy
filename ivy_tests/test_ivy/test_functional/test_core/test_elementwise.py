@@ -396,6 +396,10 @@ def test_bitwise_left_shift(
 ):
     input_dtype, x = dtype_and_x
 
+    # make sure x2 is not negative
+    if "int" in input_dtype[0] and "int" in input_dtype[1]:
+        x[1] = np.abs(x[1])
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -504,6 +508,10 @@ def test_bitwise_right_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
+    # make sure x2 is not negative
+    if "int" in input_dtype[0] and "int" in input_dtype[1]:
+        x[1] = np.abs(x[1])
 
     helpers.test_function(
         input_dtypes=input_dtype,
