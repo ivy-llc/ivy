@@ -1,13 +1,13 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="true" type="tests" factoryName="py.test">
-    <module name="ivy" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
-    <option name="SDK_HOME" value="docker://ivydl/ivy:latest/python3" />
+    <option name="SDK_HOME" value="C:\Users\dell\anaconda3\envs\ivy_dev\python.exe" />
     <option name="WORKING_DIRECTORY" value="/ivy" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
+    <module name="" />
     <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">
       <option name="envVars">
         <list />

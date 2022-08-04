@@ -2,5 +2,8 @@
 import ivy
 
 
-def relu(x, *, inplace=False):
-    return ivy.relu(x)
+def relu(input):
+    return ivy.relu(input)
+
+
+relu.unsupported_dtypes = ("float16",)
