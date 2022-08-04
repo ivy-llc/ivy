@@ -23,6 +23,96 @@ class ContainerWithSorting(ContainerBase):
         *,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.argsort. This method 
+        simply wraps the function, and so the docstring for 
+        ivy.argsort also applies to this method with minimal changes.
+        
+        Parameters
+        ----------
+        x 
+            input array or container. Should have a numeric data type.
+        axis
+            axis along which to sort. If set to ``-1``, the function must sort 
+            along the last axis. Default: ``-1``.
+        descending
+            sort order. If ``True``, the returned indices sort
+            ``x`` in descending order (by value). If ``False``, 
+            the returned indices sort ``x`` in ascending order 
+            (by value). Default: ``False``.
+        stable
+            sort stability. If ``True``, the returned indices must maintain
+            the relative order of ``x`` values which compare as equal.
+            If ``False``, the returned indices may or may not maintain
+            the relative order of ``x`` values which compare as equal (i.e., the 
+            relative order of ``x`` values which compare as equal 
+            is implementation-dependent). Default: ``True``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+            
+        Returns
+        -------
+        ret 
+            a container containing the index values of sorted
+            array. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
+        With: code:`ivy.Container` inputs:
+        
+        >>> x = ivy.Container(a=ivy.array([7, 2, 1]),\
+                              b=ivy.array([3, 2]))
+        >>> y = x.static_argsort(-1, True, False)
+        >>> print(y)
+        {
+            a: ivy.array([0, 1, 2]),
+            b: ivy.array([0, 1])
+        }
+        
+        >>> x = ivy.Container(a=ivy.array([7, 2, 1]),\
+                              b=ivy.array([[3, 2], [7, 0.2]]))
+        >>> y = x.static_argsort(-1, True, False)
+        >>> print(y)
+        {
+            a: ivy.array([0, 1, 2]),
+            b: ivy.array([[0, 1]],[0, 1]])
+        }
+        
+        With: code:`ivy.Container` inputs:
+        
+        >>> x = ivy.Container(a=ivy.array([2, 5, 1]),\
+                              b=ivy.array([1, 5], [.2,.1]))
+        >>> y = x.static_argsort(-1, True, False)
+        >>> print(y)
+        {
+            a: ivy.array([2, 0, 1]),
+            b: ivy.array([[1, 0],\
+                            [0,1]])
+        }
+        
+        >>> x = ivy.Container(a=ivy.native_array([2, 5, 1]),\
+                              b=ivy.array([1, 5], [.2,.1]))
+        >>> y = x.static_argsort(-1, True, False)
+        >>> print(y)
+        {
+            a: ivy.array([2, 0, 1]),
+            b: ivy.array([[1, 0],\
+                            [0,1]])
+        }
+        
+        """
         return ContainerBase.multi_map_in_static_method(
             "argsort",
             x,
@@ -48,6 +138,65 @@ class ContainerWithSorting(ContainerBase):
         *,
         out: Optional[ivy.Container] = None
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.argsort.
+        This method simply wraps the function, and 
+        so the docstring for ivy.argsort also applies to this method
+        with minimal changes.
+        
+        Parameters
+        ----------
+        self 
+            input array or container. Should have a numeric data type.
+        axis
+            axis along which to sort. If set to ``-1``, the function 
+            must sort along the last axis. Default: ``-1``.
+        descending
+            sort order. If ``True``, the returned indices sort ``x``
+            in descending order (by value). If ``False``, the 
+            returned indices sort ``x`` in ascending order (by value).
+            Default: ``False``.
+        stable
+            sort stability. If ``True``, the returned indices must
+            maintain the relative order of ``x`` values which compare
+            as equal. If ``False``, the returned indices may or may not
+            maintain the relative order of ``x`` values which compare 
+            as equal (i.e., the relative order of ``x`` values which 
+            compare as equal is implementation-dependent).
+            Default: ``True``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). 
+            Default is False.
+        out
+            optional output container, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+            
+        Returns
+        -------
+        ret 
+            a container containing the index values of sorted array.
+            The returned array must have a data type determined 
+            by :ref:`type-promotion`.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([7, 2, 1]),\
+                              b=ivy.array([3, 2]))
+        >>> y = x.argsort(-1, True, False)
+        >>> print(y)
+        {
+            a: ivy.array([0, 1, 2]),
+            b: ivy.array([0, 1])
+        }
+        """
         return self.static_argsort(
             self,
             axis,
