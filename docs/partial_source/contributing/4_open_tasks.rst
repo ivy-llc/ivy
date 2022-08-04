@@ -102,6 +102,21 @@ The general workflow for this task is:
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. verify that the tests for your function are passing
 
+There are a few points to take note when working on your chosen frontend method:
+
+#. you should only implement **one** frontend function.
+#. the frontend function is framework-specific, thus it should be implemented in
+   its respective frontend framework only.
+#. each frontend method should be tested on all backends to ensure that conversions
+   are working correctly.
+#. docstrings and examples are not required for frontend functions.
+
+In the case where your chosen method exists in all frameworks by default, but
+does not present in Ivy, please open a GitHub issue requesting the method to be added
+to Ivy. Meanwhile, you can select another frontend method to work on from the ToDo
+list! If you're stuck on a method which requires complex compositions, you're
+allowed to reselect a method too!
+
 **Round Up**
 
 This should have hopefully given you a good understanding of the basics for contributing.
