@@ -21,6 +21,27 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.concat. This method simply
+        wraps the function, and so the docstring for ivy.concat also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input arrays to join. The arrays must have the same shape, except in the dimension specified by axis.
+        axis
+            axis along which the arrays will be joined. If axis is None, arrays must be flattened before concatenation. If axis is negative, axis on which to join arrays is determined by counting from the top. Default: 0.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output array containing the concatenated values.
+
+        """
         return ivy.concat([self._data] + xs, axis, out=out)
 
     def split(
@@ -61,6 +82,12 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.flip. This method simply
+        wraps the function, and so the docstring for ivy.flip also applies
+        to this method with minimal changes.
+
+        """
         return ivy.flip(self._data, axis, out=out)
 
     def expand_dims(
@@ -109,8 +136,8 @@ class ArrayWithManipulation(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.roll. This method simply wraps the
-        function, and so the docstring for ivy.roll also applies to this method
+        ivy.Array instance method variant of ivy.reshape. This method simply wraps the
+        function, and so the docstring for ivy.reshape also applies to this method
         with minimal changes.
 
         Parameters
@@ -155,6 +182,12 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.permute_dims. This method simply
+        wraps the function, and so the docstring for ivy.permute_dims also applies
+        to this method with minimal changes.
+
+        """
         return ivy.permute_dims(self._data, axes, out=out)
 
     def roll(
@@ -235,6 +268,11 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.stack. This method simply
+        wraps the function, and so the docstring for ivy.stack also applies
+        to this method with minimal changes.
+        """
         return ivy.stack([self._data] + x, axis, out=out)
 
     def clip(
@@ -245,8 +283,8 @@ class ArrayWithManipulation(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.roll. This method simply wraps the
-        function, and so the docstring for ivy.roll also applies to this method
+        ivy.Array instance method variant of ivy.clip. This method simply wraps the
+        function, and so the docstring for ivy.clip also applies to this method
         with minimal changes.
 
         Parameters
@@ -303,6 +341,11 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.tile. This method simply
+        wraps the function, and so the docstring for ivy.tile also applies
+        to this method with minimal changes.
+        """
         return ivy.tile(self._data, reps=reps, out=out)
 
     def constant_pad(
@@ -312,6 +355,11 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.constant_pad. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+        """
         return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
 
     def zero_pad(
@@ -320,6 +368,11 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.zero_pad. This method simply
+        wraps the function, and so the docstring for ivy.zero_pad also applies
+        to this method with minimal changes.
+        """
         return ivy.zero_pad(self._data, pad_width=pad_width, out=out)
 
     def swapaxes(
@@ -329,4 +382,9 @@ class ArrayWithManipulation(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.swap_axes. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+        """
         return ivy.swapaxes(self._data, axis0=axis0, axis1=axis1, out=out)

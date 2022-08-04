@@ -47,7 +47,7 @@ def concat(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Casts an array to a specified type.
+    """Joins a sequence of arrays along an existing axis.
 
     Parameters
     ----------
@@ -55,7 +55,7 @@ def concat(
         The input arrays must have the same shape, except in the dimension corresponding
         to axis (the first, by default).
     axis
-        The axis along which the arrays will be joined. Default is -1.
+        The axis along which the arrays will be joined. Default is 0.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
