@@ -6657,7 +6657,6 @@ class ContainerWithElementwise(ContainerBase):
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
-
     @staticmethod
     def static_maximum(
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -6736,10 +6735,6 @@ class ContainerWithElementwise(ContainerBase):
 
 
         """
-        return self.static_maximum(self,
-                                   x2,
-                                   key_chains,
-                                   to_apply,
-                                   prune_unapplied,
-                                   map_sequences,
-                                   out=out)
+        return self.static_maximum(
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )
