@@ -91,7 +91,11 @@ def prod(
             dtype = torch.float16
 
     dtype = ivy.as_native_dtype(dtype)
-
+    if out is None:
+        out = {}
+    else:
+        out = {"out": out}
+    axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
         axis = x.dim() - 1
     elif type(axis) == tuple:
@@ -106,9 +110,9 @@ def prod(
                     ]
                 ),
                 dtype=dtype,
-                out=out,
+                **out
             )
-    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
+    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, **out)
 
 
 prod.support_native_out = True
@@ -122,6 +126,7 @@ def std(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -167,14 +172,12 @@ def sum(
         elif x.dtype in [torch.int32, torch.int64]:
             dtype = torch.int64
         elif x.dtype == torch.float16:
-            dtype = torch.float32
+            dtype = torch.float16
 
     dtype = ivy.as_native_dtype(dtype)
-
+    axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
         return torch.sum(input=x, dtype=dtype)
-    elif type(axis) == list:
-        return torch.sum(input=x, dim=axis)
     elif type(axis) == tuple:
         if len(axis) == 0:
             axis = 0
@@ -199,6 +202,7 @@ def var(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))

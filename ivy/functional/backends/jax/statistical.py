@@ -18,6 +18,7 @@ def max(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
@@ -28,11 +29,7 @@ def mean(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, list):
-        axis = tuple(axis)
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.mean(x, axis=axis, keepdims=keepdims)
 
 
@@ -43,6 +40,7 @@ def min(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
@@ -72,6 +70,7 @@ def prod(
         else:
             dtype = jnp.uint64
     dtype = ivy.as_native_dtype(dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -83,6 +82,7 @@ def std(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
@@ -112,6 +112,7 @@ def sum(
         else:
             dtype = jnp.uint64
     dtype = ivy.as_native_dtype(dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
@@ -123,6 +124,7 @@ def var(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
