@@ -6657,7 +6657,6 @@ class ContainerWithElementwise(ContainerBase):
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
 
-
     @staticmethod
     def static_maximum(
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -6681,8 +6680,8 @@ class ContainerWithElementwise(ContainerBase):
         x2
             Tensor containing maximum values, must be broadcastable to x1.
         out
-            optional output array, for writing the result to. It must have
-            a shape that the inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -6725,8 +6724,8 @@ class ContainerWithElementwise(ContainerBase):
         x2
             Tensor containing maximum values, must be broadcastable to x1.
         out
-            optional output array, for writing the result to. It must
-            have a shape that the inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -6736,10 +6735,6 @@ class ContainerWithElementwise(ContainerBase):
 
 
         """
-        return self.static_maximum(self,
-                                   x2,
-                                   key_chains,
-                                   to_apply,
-                                   prune_unapplied,
-                                   map_sequences,
-                                   out=out)
+        return self.static_maximum(
+            self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+        )
