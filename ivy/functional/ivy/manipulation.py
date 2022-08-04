@@ -626,7 +626,7 @@ def squeeze(
     >>> print(ivy.squeeze(x, 2))
     ivy.array([[3]])
 
-    >>> x = ivy.native_array(0)
+    >>> x = ivy.native_array([0])
     >>> print(ivy.squeeze(x, 0))
     ivy.array(0)
 
