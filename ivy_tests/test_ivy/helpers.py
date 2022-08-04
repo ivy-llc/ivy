@@ -466,11 +466,16 @@ def f_n_calls():
     ]
 
 
-def assert_all_close(ret_np, ret_from_np, rtol=1e-05, atol=1e-08):
+def assert_all_close(
+    ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
+):
     assert ret_np.dtype is ret_from_np.dtype, (
-        "the return with a NumPy backend produced data type of {}, "
+        "the return with a {} backend produced data type of {}, "
         "while the return with a {} backend returned a data type of {}.".format(
-            ret_from_np.dtype, ivy.current_backend_str(), ret_np.dtype
+            ground_truth_backend,
+            ret_from_np.dtype,
+            ivy.current_backend_str(),
+            ret_np.dtype,
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
@@ -517,20 +522,44 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
     return ret, flatten(ret=ret)
 
 
-def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
+def value_test(
+    *,
+    ret_np_flat,
+    ret_from_np_flat,
+    rtol=None,
+    atol=1e-6,
+    ground_truth_backend="TensorFlow",
+):
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_from_np_flat) != list:
         ret_from_np_flat = [ret_from_np_flat]
-    assert len(ret_np_flat) == len(ret_from_np_flat)
+    assert len(ret_np_flat) == len(ret_from_np_flat), (
+        "len(ret_np_flat) != len(ret_from_np_flat):\n\n"
+        "ret_np_flat:\n\n{}\n\nret_from_np_flat:\n\n{}".format(
+            ret_np_flat, ret_from_np_flat
+        )
+    )
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
             rtol = TOLERANCE_DICT.get(str(ret_from_np.dtype), 1e-03)
-            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+            assert_all_close(
+                ret_np,
+                ret_from_np,
+                rtol=rtol,
+                atol=atol,
+                ground_truth_backend=ground_truth_backend,
+            )
     else:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+            assert_all_close(
+                ret_np,
+                ret_from_np,
+                rtol=rtol,
+                atol=atol,
+                ground_truth_backend=ground_truth_backend,
+            )
 
 
 def args_to_container(array_args):
@@ -1236,6 +1265,7 @@ def test_function(
         ret_from_np_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -1541,6 +1571,10 @@ def dtype_and_values(
     ret_shape=False,
     dtype=None,
 ):
+    if isinstance(min_dim_size, st._internal.SearchStrategy):
+        min_dim_size = draw(min_dim_size)
+    if isinstance(max_dim_size, st._internal.SearchStrategy):
+        max_dim_size = draw(max_dim_size)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if dtype is None:
@@ -2073,7 +2107,16 @@ def get_bounds(draw, *, dtype):
 
 
 @st.composite
-def get_axis(draw, *, shape, allow_none=False):
+def get_axis(
+    draw,
+    *,
+    shape,
+    allow_none=False,
+    sorted=True,
+    unique=True,
+    min_size=1,
+    max_size=None,
+):
     """Draws one or more axis for the given shape.
 
     Parameters
@@ -2082,44 +2125,84 @@ def get_axis(draw, *, shape, allow_none=False):
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
     shape
-        shape of the array.
+        shape of the array as a tuple, or a hypothesis strategy from which the
+        shape will be drawn
     allow_none
-        if True, allow None to be drawn
+        boolean; if True, allow None to be drawn
+    sorted
+        boolean; if True, and a tuple of axes is drawn, tuple is sorted in
+        increasing fashion
+    unique
+        boolean; if True, and a tuple of axes is drawn, all axes drawn will
+        be unique
+    min_size
+        int or hypothesis strategy; if a tuple of axes is drawn, the minimum
+        number of axes drawn
+    max_size
+        int or hypothesis strategy; if a tuple of axes is drawn, the maximum
+        number of axes drawn. If None and unique is True, then it is set
+        to the number of axes in the shape
 
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
+    # Draw values from any strategies given
+    if isinstance(shape, st._internal.SearchStrategy):
+        shape = draw(shape)
+    if isinstance(min_size, st._internal.SearchStrategy):
+        min_size = draw(min_size)
+    if isinstance(max_size, st._internal.SearchStrategy):
+        max_size = draw(max_size)
+
     axes = len(shape)
+    unique_by = (lambda x: shape[x]) if unique else None
+
+    if max_size is None and unique:
+        max_size = axes
+
     if allow_none:
-        axis = draw(
-            st.none()
-            | st.integers(-axes, axes - 1)
-            | st.lists(
-                st.integers(-axes, axes - 1),
-                min_size=1,
-                max_size=axes,
-                unique_by=lambda x: shape[x],
+        if axes == 0:
+            axis = draw(
+                st.none()
+                | st.just(0)
+                | st.lists(st.just(0), min_size=min_size, max_size=max_size)
             )
-        )
+        else:
+            axis = draw(
+                st.none()
+                | st.integers(-axes, axes - 1)
+                | st.lists(
+                    st.integers(-axes, axes - 1),
+                    min_size=min_size,
+                    max_size=max_size,
+                    unique_by=unique_by,
+                )
+            )
     else:
-        axis = draw(
-            st.integers(-axes, axes - 1)
-            | st.lists(
-                st.integers(-axes, axes - 1),
-                min_size=1,
-                max_size=axes,
-                unique_by=lambda x: shape[x],
+        if axes == 0:
+            axis = draw(
+                st.just(0) | st.lists(st.just(0), min_size=min_size, max_size=max_size)
             )
-        )
+        else:
+            axis = draw(
+                st.integers(-axes, axes - 1)
+                | st.lists(
+                    st.integers(-axes, axes - 1),
+                    min_size=min_size,
+                    max_size=max_size,
+                    unique_by=unique_by,
+                )
+            )
     if type(axis) == list:
+        if sorted:
 
-        def sort_key(ele, max_len):
-            if ele < 0:
-                return ele + max_len - 1
-            return ele
+            def sort_key(ele, max_len):
+                if ele < 0:
+                    return ele + max_len - 1
+                return ele
 
-        axis.sort(key=(lambda ele: sort_key(ele, axes)))
+            axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
     return axis
 
@@ -2197,3 +2280,11 @@ def handle_cmd_line_args(test_fn):
         return test_fn(*args, **kwargs)
 
     return new_fn
+
+
+def gradient_incompatible_function(*, fn):
+    return (
+        not ivy.supports_gradients
+        and hasattr(fn, "computes_gradients")
+        and fn.computes_gradients
+    )
