@@ -365,30 +365,42 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
-        if hasattr(original, "array_spec"):
-            to_wrap.array_spec = original.array_spec
-        if hasattr(original, "infer_device") and not hasattr(to_wrap, "infer_device"):
-            to_wrap = infer_device(to_wrap)
-        if hasattr(original, "infer_dtype") and not hasattr(to_wrap, "infer_dtype"):
-            to_wrap = infer_dtype(to_wrap)
-        if hasattr(original, "outputs_to_ivy_arrays") and not hasattr(
-            to_wrap, "outputs_to_ivy_arrays"
-        ):
-            to_wrap = outputs_to_ivy_arrays(to_wrap)
-        if hasattr(original, "inputs_to_native_arrays") and not hasattr(
-            to_wrap, "inputs_to_native_arrays"
-        ):
-            to_wrap = inputs_to_native_arrays(to_wrap)
-        if hasattr(original, "inputs_to_ivy_arrays") and not hasattr(
-            to_wrap, "inputs_to_ivy_arrays"
-        ):
-            to_wrap = inputs_to_ivy_arrays(to_wrap)
-        if hasattr(original, "handle_out_argument") and not hasattr(
-            to_wrap, "handle_out_argument"
-        ):
-            to_wrap = handle_out_argument(to_wrap)
-        if hasattr(original, "handle_nestable") and not hasattr(
-            to_wrap, "handle_nestable"
-        ):
-            to_wrap = handle_nestable(to_wrap)
+        for attr in original.__dict__.keys():
+            if attr.startswith("__"):
+                continue
+            # attr is related to decorator
+            if hasattr(ivy, attr):
+                if not hasattr(to_wrap, attr):
+                    to_wrap = ivy.__dict__[attr](to_wrap)
+                continue
+            # attr is related to attribute
+            setattr(to_wrap, attr, getattr(original, attr))
+        # if hasattr(original, "array_spec"):
+        #     to_wrap.array_spec = original.array_spec
+        # if hasattr(original, "computes_gradients"):
+        #     to_wrap.computes_gradients = original.computes_gradients
+        # if hasattr(original, "infer_device") and not hasattr(to_wrap, "infer_device"):
+        #     to_wrap = infer_device(to_wrap)
+        # if hasattr(original, "infer_dtype") and not hasattr(to_wrap, "infer_dtype"):
+        #     to_wrap = infer_dtype(to_wrap)
+        # if hasattr(original, "outputs_to_ivy_arrays") and not hasattr(
+        #     to_wrap, "outputs_to_ivy_arrays"
+        # ):
+        #     to_wrap = outputs_to_ivy_arrays(to_wrap)
+        # if hasattr(original, "inputs_to_native_arrays") and not hasattr(
+        #     to_wrap, "inputs_to_native_arrays"
+        # ):
+        #     to_wrap = inputs_to_native_arrays(to_wrap)
+        # if hasattr(original, "inputs_to_ivy_arrays") and not hasattr(
+        #     to_wrap, "inputs_to_ivy_arrays"
+        # ):
+        #     to_wrap = inputs_to_ivy_arrays(to_wrap)
+        # if hasattr(original, "handle_out_argument") and not hasattr(
+        #     to_wrap, "handle_out_argument"
+        # ):
+        #     to_wrap = handle_out_argument(to_wrap)
+        # if hasattr(original, "handle_nestable") and not hasattr(
+        #     to_wrap, "handle_nestable"
+        # ):
+        #     to_wrap = handle_nestable(to_wrap)
     return to_wrap
