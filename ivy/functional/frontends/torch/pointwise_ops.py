@@ -20,7 +20,7 @@ def cos(input, *, out=None):
     return ivy.cos(input, out=out)
 
 
-cos.unsupported_dtypes = ("float16",)
+cos.unsupported_dtypes=("float16",)
 
 
 def sin(input, *, out=None):
