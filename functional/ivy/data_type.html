@@ -92,7 +92,6 @@
 <li class="toctree-l2"><a class="reference internal" href="data_type/unset_default_int_dtype.html">unset_default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/unset_default_uint_dtype.html">unset_default_uint_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/valid_dtype.html">valid_dtype</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_type/promote_types_of_inputs.html">promote_types_of_inputs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
@@ -376,10 +375,10 @@ corresponding input array.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – array to broadcast.</p></li>
 <li><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – array shape. Must be compatible with x (see Broadcasting). If
-the array is incompatible with the specified shape, the function
-should raise an exception.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-shape that the inputs broadcast to.</p></li>
+the array is incompatible with the specified shape, the function should raise an
+exception.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+inputs broadcast to.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -389,42 +388,6 @@ shape that the inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – an array having a specified shape. Must have the same data type as x.</p>
 </dd>
 </dl>
-<p class="rubric">Functional Examples</p>
-<p>With :code: ‘ivy.Array’ input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([[1, 2, 3],</span>
-<span class="go">           [1, 2, 3],</span>
-<span class="go">           [1, 2, 3]])</span>
-</pre></div>
-</div>
-<p>With :code: ‘ivy.NativeArray’ input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([[0.1, 0.3],</span>
-<span class="go">           [0.1, 0.3],</span>
-<span class="go">           [0.1, 0.3]])</span>
-</pre></div>
-</div>
-<p>With :code: ‘ivy.Container’ input:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
-&gt;&gt;&gt;                   b=ivy.array([4, 5, 6]))
-&gt;&gt;&gt; y = ivy.broadcast_to(x, (3,3))
-&gt;&gt;&gt; print(y)
-{</p>
-<blockquote>
-<div><dl class="simple">
-<dt>a: ivy.array([[1, 2, 3],</dt><dd><p>[1, 2, 3],
-[1, 2, 3]]),</p>
-</dd>
-<dt>b: ivy.array([[4, 5, 6],</dt><dd><p>[4, 5, 6],
-[4, 5, 6]])</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>}</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1238,22 +1201,6 @@ the current framework.</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – The type that both input types promote to</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.promote_types_of_inputs">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">promote_types_of_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#promote_types_of_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.promote_types_of_inputs" title="Permalink to this definition"></a></dt>
-<dd><p>Promotes the dtype of the given native array inputs to a common dtype
-based on type promotion rules. While passing float or integer values or any
-other non-array input to this function, it should be noted that the return will
-be an array-like object. Therefore, outputs from this function should be used
-as inputs only for those functions that expect an array-like or tensor-like objects,
-otherwise it might give unexpected results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
