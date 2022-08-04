@@ -60,5 +60,7 @@ def stop_gradient(
     return jlax.stop_gradient(x)
 
 
-def jac(func: Callable, x: JaxArray):
-    return jax.jacfwd(func)(x)
+def jac(func: Callable):
+    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    callback_fn = lambda x_in: ivy.to_ivy(jax.jacfwd(grad_fn)((ivy.to_native(x_in))))
+    return callback_fn

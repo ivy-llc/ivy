@@ -75,5 +75,9 @@ def stop_gradient(
     return x.detach()
 
 
-def jac(func: Callable, x: torch.tensor):
-    return torch.autograd.functional.jacobian(func, x)
+def jac(func: Callable):
+    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    callback_fn = lambda x_in: ivy.to_ivy(
+        torch.autograd.functional.jacobian(grad_fn, ivy.to_native(x_in))
+    )
+    return callback_fn

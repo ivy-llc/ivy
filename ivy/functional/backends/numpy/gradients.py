@@ -45,7 +45,7 @@ def stop_gradient(x, preserve_type=True, *, out=None):
     return x
 
 
-def jac(func, xs):
+def jac(func):
     logging.warning(
         "NumPy does not support autograd, 'jac'"
         "returns None in place of function gradients."
