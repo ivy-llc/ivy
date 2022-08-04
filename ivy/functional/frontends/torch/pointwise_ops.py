@@ -15,6 +15,8 @@ def tan(input, *, out=None):
 
 tan.unsupported_dtypes = ("float16",)
 
+def abs(input, *, out=None):
+    return ivy.abs(input, out=out)
 
 def log(input, *, out=None):
     return ivy.log(input, out=out)
