@@ -940,7 +940,7 @@ def split(
     x: Union[ivy.Array, ivy.NativeArray],
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
-    with_remainder: Optional[bool] = False
+    with_remainder: Optional[bool] = False,
 ) -> ivy.Array:
     """Splits an array into multiple sub-arrays.
 

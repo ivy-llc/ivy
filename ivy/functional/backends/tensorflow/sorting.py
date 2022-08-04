@@ -69,6 +69,6 @@ def searchsorted(
     v: Union[tf.Tensor, tf.Variable],
     side="left",
     sorter=None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.searchsorted(x1, v, side=side)
