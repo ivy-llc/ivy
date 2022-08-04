@@ -8,6 +8,7 @@ import termcolor
 import numpy as np
 import json
 
+
 try:
     # noinspection PyPackageRequirements
     import h5py
@@ -17,7 +18,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union, Iterable, Dict
+from typing import Union
 from builtins import set
 
 # local
