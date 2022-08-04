@@ -534,6 +534,22 @@ def subtract(
 subtract.support_native_out = True
 
 
+def isscalar(x):
+    # print("dim: {}".format(x.dim()))
+    # print("size: ", x.size())
+    # print("len: ", len(x))
+    if torch.is_tensor(x):
+        var = x
+        shape_ones = [i > 1 for i in list(var.size())]
+        # print(shape_ones)
+    if x.dim() == 0:
+        return True
+    elif len(x) == 1 and not any(shape_ones):
+        return True
+    else:
+        return False
+
+
 def remainder(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
@@ -541,7 +557,35 @@ def remainder(
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
+    # print("x1 = {} , x2 = {} ({})".format(x1, x2, x2.dtype))
     ret = torch.remainder(x1, x2, out=out)
+    print("ret: ", ret)
+    nan_inds = [i for i in range(len(ret.flatten())) if isnan(ret.flatten()[i])]
+    if len(nan_inds) > 0:
+        for i in nan_inds:
+            # print("x1 size = {}, x2 size = {}".format(x1.size(), x2.size()))
+            # print("x1 len = {}".format(len(x1)))
+            # print("x1 dim = {}, x2 dim = {}".format(x1.dim(), x2.dim()))
+            if isscalar(x1) and isscalar(x2):
+                print("case 1")
+                if isfinite(x1) and isfinite(x2):
+                    ret = 0.0
+
+            elif not isscalar(x1) and isscalar(x2):
+                print("case 2")
+                if isfinite(x1.flatten()[i]) and isfinite(x2):
+                    ret.flatten()[i] = 0.0
+
+            elif isscalar(x1) and not isscalar(x2):
+                print("case 3")
+                if isfinite(x2.flatten()[i]) and isfinite(x1):
+                    ret.flatten()[i] = 0.0
+
+            elif not isscalar(x1) and not isscalar(x2):
+                print("case 4")
+                if isfinite(x1.flatten()[i]) and isfinite(x2.flatten()[i]):
+                    ret.flatten()[i] = 0.0
+
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
