@@ -1,7 +1,7 @@
 # global
 torch_scatter = None
 import torch
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union, Optional, Sequence
 
 # local
 import ivy
@@ -166,8 +166,6 @@ def sum(
             dtype = torch.uint8
         elif x.dtype in [torch.int32, torch.int64]:
             dtype = torch.int64
-        elif x.dtype == torch.float16:
-            dtype = torch.float32
 
     dtype = ivy.as_native_dtype(dtype)
 
@@ -193,9 +191,9 @@ def sum(
 
 def var(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

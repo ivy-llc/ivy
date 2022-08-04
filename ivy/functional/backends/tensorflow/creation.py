@@ -1,6 +1,7 @@
+# For Review
 # global
 import tensorflow as tf
-from typing import Union, Sequence, List, Optional
+from typing import Union, Tuple, List, Optional, Sequence
 
 # local
 import ivy
@@ -19,14 +20,14 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 
 def arange(
-    start,
-    stop=None,
-    step=1,
+    start: float,
+    stop: Optional[float] = None,
+    step: float = 1,
     *,
-    dtype: tf.DType = None,
+    dtype: Optional[tf.DType] = None,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
-):
+) -> Union[tf.Tensor, tf.Variable]:
     if stop is None:
         stop = start
         start = 0
@@ -56,13 +57,13 @@ def arange(
 
 
 def asarray(
-    object_in,
+    object_in: Union[tf.Tensor, tf.Variable, List[float], Tuple[float]],
     *,
-    copy=None,
+    copy: Optional[bool] = None,
     dtype: tf.DType = None,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
-):
+) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         if copy:
             if dtype is None and isinstance(object_in, tf.Tensor):
@@ -187,8 +188,11 @@ eye.unsupported_dtypes = ("uint16",)
 
 
 # noinspection PyShadowingNames
-def from_dlpack(x, *, out: Union[tf.Tensor, tf.Variable] = None):
-    return tf.experimental.dlpack.from_dlpack(x)
+def from_dlpack(
+    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
+    return tf.experimental.dlpack.from_dlpack(dlcapsule)
 
 
 def full(
@@ -222,11 +226,11 @@ def full_like(
 
 
 def linspace(
-    start,
-    stop,
-    num,
-    axis=None,
-    endpoint=True,
+    start: Union[tf.Tensor, tf.Variable, float],
+    stop: Union[tf.Tensor, tf.Variable, float],
+    num: int,
+    axis: Optional[int] = None,
+    endpoint: bool = True,
     *,
     dtype: tf.DType,
     device: str,
@@ -321,15 +325,15 @@ array = asarray
 
 
 def logspace(
-    start,
-    stop,
-    num,
-    base=10.0,
-    axis=None,
+    start: Union[tf.Tensor, tf.Variable, int],
+    stop: Union[tf.Tensor, tf.Variable, int],
+    num: int,
+    base: float = 10.0,
+    axis: Optional[int] = None,
     *,
     dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
-):
+) -> Union[tf.Tensor, tf.Variable]:
     power_seq = ivy.linspace(start, stop, num, axis, dtype=dtype, device=device)
     return base**power_seq
