@@ -1568,12 +1568,14 @@ def dtype_and_values(
     ret_shape=False,
     dtype=None,
 ):
+    # For Review Start
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
     if isinstance(max_dim_size, st._internal.SearchStrategy):
         max_dim_size = draw(max_dim_size)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
+    # For Review End
     if dtype is None:
         dtype = draw(
             array_dtypes(
@@ -2105,6 +2107,7 @@ def get_bounds(draw, *, dtype):
     return low, high
 
 
+# For Review
 @st.composite
 def get_axis(draw,
              *,
