@@ -1,7 +1,8 @@
 # global
-import numpy as np
-from typing import Union, Optional, Callable
 import functools
+from typing import Union, Optional, Callable
+
+import numpy as np
 
 # local
 import ivy
@@ -301,10 +302,7 @@ def floor_divide(
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     ret = np.floor_divide(x1, x2, out=out)
-    if (isinf(x1).any() and isfinite(x2).any()) or (
-        isfinite(x1).any() and isinf(x2).any()
-    ):
-        return ivy.full_like(ret, np.floor(np.divide(x1, x2)), dtype=ret.dtype)
+
     return ret
 
 

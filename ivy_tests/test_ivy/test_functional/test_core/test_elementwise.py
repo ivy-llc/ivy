@@ -853,6 +853,7 @@ def test_floor(
         num_arrays=2,
         allow_inf=False,
         safety_factor=0.5,
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
     data=st.data(),

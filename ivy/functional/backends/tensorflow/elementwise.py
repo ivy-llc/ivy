@@ -1,7 +1,5 @@
 # global
-import numpy as np
 import tensorflow as tf
-from tensorflow.experimental.numpy import any
 from typing import Union
 
 # local
@@ -224,13 +222,7 @@ def floor_divide(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    if (not np.all(x2)) or (np.any(x2) == -0):  # check for division by zero
-        ret = np.floor_divide(x1, x2)
-    else:
-        ret = tf.experimental.numpy.floor_divide(x1, x2)
-
-    if any(isinf(x1)) and any(isfinite(x2)) or any(isfinite(x1)) and any(isinf(x2)):
-        return ivy.full_like(ret, floor(divide(x1, x2)), dtype=ret.dtype)
+    ret = tf.experimental.numpy.floor_divide(x1, x2)
     return ret
 
 
