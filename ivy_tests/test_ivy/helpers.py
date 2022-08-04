@@ -421,58 +421,63 @@ def docstring_examples_run(
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
     sig_fig = float("1e-" + str(num_sig_fig))
-    if "ivy.array(" in output and "inf" not in output and "nan" not in output:
-        numeric_pattern = re.compile(
-            r"""
-                                [^\d\.]+e[^\d\+]*
-                                | ((,|-){2,})*[^\-\,\d]+\.[^\-\,\d]+((,|-){2,})*
-                                | [^ej\d\,\.\-\+]
-                            """,
-            re.VERBOSE,
-        )
-        num_output = numeric_pattern.sub("", output).replace(",,", "").rstrip(",")
-        num_parsed_output = (
-            numeric_pattern.sub("", parsed_output).replace(",,", "").rstrip(",")
-        )
-        if re.search(r"""\d""", num_output):
-            num_output = num_output.split(",")
-            num_parsed_output = num_parsed_output.split(",")
-            docstr_result = True
-            for (doc_u, doc_v) in zip(num_output, num_parsed_output):
-                try:
-                    docstr_result = np.allclose(
-                        complex(doc_u), complex(doc_v), rtol=sig_fig
-                    )
-                except Exception:
-                    print(
-                        "output for ",
-                        fn_name,
-                        " on run: ",
-                        num_output,
-                        "\noutput in docs :",
-                        num_parsed_output,
-                        "\n",
-                        doc_u,
-                        " != ",
-                        doc_v,
-                        "\n",
-                    )
-                    return False
-            return docstr_result
-    if not (output == parsed_output):
-        print(
-            "output for ",
-            fn_name,
-            " on run: ",
-            output,
-            "\noutput in docs :",
-            parsed_output,
-        )
-        ivy.warn(
-            "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
-        )
-        return False
-    return True
+    # if "ivy.array(" in output:
+    numeric_pattern = re.compile(
+        r"""
+            [\{\}\(\)\[\]]|\w+:
+        """,
+        re.VERBOSE,
+    )
+    num_output = output.replace("ivy.array", "")
+    num_output = numeric_pattern.sub("", num_output)
+    num_parsed_output = parsed_output.replace("ivy.array", "")
+    num_parsed_output = numeric_pattern.sub("", num_parsed_output)
+    num_output = num_output.split(",")
+    num_parsed_output = num_parsed_output.split(",")
+    docstr_result = True
+    for (doc_u, doc_v) in zip(num_output, num_parsed_output):
+        try:
+            docstr_result = np.allclose(
+                np.nan_to_num(complex(doc_u)),
+                np.nan_to_num(complex(doc_v)),
+                rtol=sig_fig,
+            )
+        except Exception:
+            if str(doc_u) != str(doc_v):
+                docstr_result = False
+        if not docstr_result:
+            print(
+                "output for ",
+                fn_name,
+                " on run: ",
+                num_output,
+                "\noutput in docs :",
+                num_parsed_output,
+                "\n",
+                doc_u,
+                " != ",
+                doc_v,
+                "\n",
+            )
+            ivy.warn(
+                "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
+            )
+            break
+    return docstr_result
+    # if not (output == parsed_output):
+    #     print(
+    #         "output for ",
+    #         fn_name,
+    #         " on run: ",
+    #         output,
+    #         "\noutput in docs :",
+    #         parsed_output,
+    #     )
+    #     ivy.warn(
+    #         "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
+    #     )
+    #     return False
+    # return True
 
 
 def var_fn(x, *, dtype=None, device=None):
