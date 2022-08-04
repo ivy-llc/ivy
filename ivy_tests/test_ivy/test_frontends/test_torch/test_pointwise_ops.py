@@ -110,7 +110,7 @@ def test_torch_tan(
     ),
     native_array=st.booleans(),
 )
-def test_torch_add(
+def test_torch_log(
     dtype_and_x,
     as_variable,
     with_out,
