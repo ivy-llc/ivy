@@ -12,7 +12,7 @@ def _cast_for_binary_op(x1, x2):
     return ivy.promote_types_of_inputs(x1, x2)
 
 
-def clamp(x1, x2):
+def _clamp_bits(x1, x2):
     x2 = tf.clip_by_value(
         x2,
         tf.constant(0, dtype=x2.dtype),
@@ -109,7 +109,7 @@ def bitwise_left_shift(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    clamp(x1, x2)
+    x1, x2 = _clamp_bits(x1, x2)
     return tf.bitwise.left_shift(x1, x2)
 
 
@@ -133,7 +133,7 @@ def bitwise_right_shift(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    clamp(x1, x2)
+    x1, x2 = _clamp_bits(x1, x2)
     return tf.bitwise.right_shift(x1, x2)
 
 

@@ -16,7 +16,7 @@ def _cast_for_binary_op(x1, x2):
     return ivy.promote_types_of_inputs(x1, x2)
 
 
-def clamp(x1, x2):
+def _clamp_bits(x1, x2):
     x2 = np.clip(
         x2,
         np.array(0, dtype=x2.dtype),
@@ -150,7 +150,7 @@ def bitwise_left_shift(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    x1, x2 = clamp(x1, x2)
+    x1, x2 = _clamp_bits(x1, x2)
     return np.left_shift(x1, x2, out=out)
 
 
@@ -179,7 +179,7 @@ def bitwise_right_shift(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    x1, x2 = clamp(x1, x2)
+    x1, x2 = _clamp_bits(x1, x2)
     return np.right_shift(x1, x2, out=out)
 
 
