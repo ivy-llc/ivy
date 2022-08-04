@@ -31,9 +31,6 @@ def test_torch_sigmoid(
 ):
     input_dtype, x = dtype_and_x
 
-    if input_dtype == "float16":
-        return
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
