@@ -43,6 +43,29 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, grads, *rest)
 
 
+def value_and_grad(func):
+    def grad_fn(xs):
+        grads = ivy.nested_map(xs, lambda x: ivy.zeros_like(x), include_derived=True)
+        with tf.GradientTape(watch_accessed_variables=False) as tape:
+            xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
+            tape.watch(xs)
+            y = func(xs)
+        y = y.to_native(y)
+        grads_ = tape.gradient(y, xs)
+        grads_ = ivy.nested_map(
+            grads_,
+            lambda x: ivy.to_ivy(x),
+            include_derived=True,
+        )
+        grad_idxs = ivy.nested_indices_where(grads_, lambda x: x is not None)
+        grad_array_vals = list(ivy.multi_index_nest(grads_, grad_idxs))
+        ivy.set_nest_at_indices(grads, grad_idxs, grad_array_vals)
+        y = ivy.to_ivy(y)
+        return y, grads
+
+    return grad_fn
+
+
 def stop_gradient(
     x: Union[tf.Tensor, tf.Variable],
     preserve_type: bool = True,

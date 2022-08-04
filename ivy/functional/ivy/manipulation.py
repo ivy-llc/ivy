@@ -596,31 +596,21 @@ def squeeze(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([[[0, 1], [2, 3]]])
-    >>> print(x.shape)
-    (1, 2, 2)
-
-    >>> print(ivy.squeeze(x, axis=0).shape)
-    (2, 2)
-
-    >>> print(ivy.squeeze(x).shape)
-    (2, 2)
+    >>> print(ivy.squeeze(x))
+    ivy.array([[0, 1], [2, 3]])
 
     >>> x = ivy.array([[[[1, 2, 3]], [[4, 5, 6]]]])
-    >>> print(x.shape)
-    (1, 2, 1, 3)
-
-    >>> print(ivy.squeeze(x, axis=2).shape)
-    (1, 2, 3)
+    >>> print(ivy.squeeze(x, axis=2))
+    ivy.array([[[1, 2, 3], [4, 5, 6]]])
 
     >>> x = ivy.array([[[0], [1], [2]]])
-    >>> print(x.shape)
-    (1, 3, 1)
-
     >>> print(ivy.squeeze(x))
     ivy.array([0, 1, 2])
 
     >>> print(ivy.squeeze(x, axis=0))
-    ivy.array([[0], [1], [2]])
+    ivy.array([[0],
+           [1],
+           [2]])
 
     >>> print(ivy.squeeze(x, axis=2))
     ivy.array([[0, 1, 2]])
@@ -635,16 +625,10 @@ def squeeze(
     ivy.array([0, 1, 2])
 
     >>> x = ivy.native_array([[[3]]])
-    >>> print(x.shape)
-    torch.Size([1, 1, 1])
-
     >>> print(ivy.squeeze(x, 2))
     ivy.array([[3]])
 
     >>> x = ivy.native_array(0)
-    >>> print(x.shape)
-    torch.Size([])
-
     >>> print(ivy.squeeze(x, 0))
     ivy.array(0)
 
@@ -941,8 +925,6 @@ def split(
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
-    *,
-    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Splits an array into multiple sub-arrays.
 
