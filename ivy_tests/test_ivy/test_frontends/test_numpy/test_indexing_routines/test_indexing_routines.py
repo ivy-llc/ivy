@@ -1,9 +1,14 @@
+from datetime import timedelta
+
+import hypothesis.extra.numpy as hnp
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, settings
 
 # local
-import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
 
 @st.composite
 def _broadcastable_trio(draw):
@@ -14,34 +19,42 @@ def _broadcastable_trio(draw):
     cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
     x1 = draw(hnp.arrays(dtype, x1_shape))
     x2 = draw(hnp.arrays(dtype, x2_shape))
-    return cond, x1, x2
+    return cond, x1, x2, dtype
+
+
 
 @given(
     broadcastables=_broadcastable_trio(),
-    num_positional_args=helpers.num_positional_args(fn_name="where"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.where"
+    ),
     data=st.data(),
 )
+@handle_cmd_line_args
 def test_numpy_where(
     *,
     data,
     broadcastables,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
-    instance_method,
     fw,
 ):
-    cond, x1, x2 = broadcastables
+    cond, x1, x2, dtype = broadcastables
 
     helpers.test_frontend_function(
+        input_dtypes=["bool", dtype, dtype],
         as_variable_flags=as_variable,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        instance_method=instance_method,
         fw=fw,
         frontend="numpy",
         fn_name="where",
-        condition=cond,
+        cond=cond,
         x1=x1,
         x2=x2,
     )
+
+# input_dtypes, as_variable_flags, with_out, and native_array_flags
