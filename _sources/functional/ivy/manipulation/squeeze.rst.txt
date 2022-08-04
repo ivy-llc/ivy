@@ -5,6 +5,8 @@ squeeze
 
 .. autofunction:: ivy.array.array_methods.squeeze
 
+.. autofunction:: ivy.container.container_methods.static_squeeze
+
 .. autofunction:: ivy.container.container_methods.squeeze
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ squeeze
    squeeze/squeeze_functional.rst
    squeeze/squeeze_array.rst
    squeeze/squeeze_container.rst
+   squeeze/static_squeeze_container.rst
 
