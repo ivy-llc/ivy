@@ -172,7 +172,6 @@ def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
             assert ret == device
 
 
-
 # memory_on_dev
 def test_memory_on_dev(call):
     for device in _get_possible_devices():
