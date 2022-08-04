@@ -54,7 +54,7 @@ def pytest_configure(config):
         )
         settings.load_profile("custom max_examples")
     else:
-        settings.register_profile("default", max_examples=50, deadline=deadline)
+        settings.register_profile("default", max_examples=5, deadline=deadline)
         settings.load_profile("default")
 
 
