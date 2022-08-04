@@ -1223,7 +1223,7 @@ class ArrayWithElementwise(abc.ABC):
         --------
         >>> x = ivy.array([2., 5., 15.])
         >>> y = ivy.array([3., 2., 4.])
-        >>> z = logaddexp(x, y)
+        >>> z = x.logaddexp(y)
         >>> print(z)
         ivy.array([ 3.31,  5.05, 15.  ])
 

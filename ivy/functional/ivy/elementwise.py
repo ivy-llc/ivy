@@ -3286,9 +3286,24 @@ def logaddexp(
 
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
-    >>> ivy.less(x, y, out=x)
+    >>> ivy.logaddexp(x, y, out=x)
     >>> print(x)
     ivy.array([[[8.4], [3.6], [1.6]]])
+
+    Instance Method Examples
+    ------------------------
+
+    >>> x = ivy.array([2., 5., 15.])
+    >>> y = ivy.array([3., 2., 4.])
+    >>> z = x.logaddexp(y)
+    >>> print(z)
+    ivy.array([ 3.31,  5.05, 15.  ])
+
+    >>> x = ivy.array([7., 11., 6.])
+    >>> y = ivy.array([6., 9., 4.])
+    >>> z = x.logaddexp(y)
+    >>> print(z)
+    ivy.array([ 7.31, 11.1 ,  6.13])
 
     With :code:`ivy.NativeArray` input:
 
