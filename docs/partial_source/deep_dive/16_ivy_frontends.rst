@@ -31,7 +31,8 @@ Let's start with some examples to have a better idea on Ivy Frontends!
 Basic
 -----
 
-**NOTE:** Docstrings and examples are not required when working on frontend methods.
+**NOTE:** Type hints, docstrings and examples are not required when working on
+frontend methods.
 
 **Jax**
 

@@ -109,7 +109,7 @@ There are a few points to take note when working on your chosen frontend method:
    its respective frontend framework only.
 #. each frontend method should be tested on all backends to ensure that conversions
    are working correctly.
-#. docstrings and examples are not required for frontend functions.
+#. type hints, docstrings and examples are not required for frontend functions.
 
 In the case where your chosen method exists in all frameworks by default, but
 does not present in Ivy, please open a GitHub issue requesting the method to be added
