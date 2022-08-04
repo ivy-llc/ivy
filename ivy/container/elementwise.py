@@ -6680,8 +6680,8 @@ class ContainerWithElementwise(ContainerBase):
         x2
             Tensor containing maximum values, must be broadcastable to x1.
         out
-            optional output array, for writing the result to. It must have
-            a shape that the inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -6724,8 +6724,8 @@ class ContainerWithElementwise(ContainerBase):
         x2
             Tensor containing maximum values, must be broadcastable to x1.
         out
-            optional output array, for writing the result to. It must
-            have a shape that the inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
