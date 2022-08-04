@@ -680,8 +680,9 @@ def test_divide(
 
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-    # prevent division by 0
-    assume(np.all(x2 != 0))
+
+    # prevent too close to zero
+    assume(not np.any(np.isclose(x2, 0)))
 
     helpers.test_function(
         input_dtypes=input_dtype,
