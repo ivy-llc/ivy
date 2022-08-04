@@ -52,10 +52,9 @@ def concat(
     Parameters
     ----------
     xs
-        The input arrays must have the same shape, except in the dimension corresponding
-        to axis (the first, by default).
+        input arrays to join. The arrays must have the same shape, except in the dimension specified by axis.
     axis
-        The axis along which the arrays will be joined. Default is 0.
+        axis along which the arrays will be joined. If axis is None, arrays are flattened before concatenation. If axis is negative, the axis is along which to join is determined by counting from the last dimension. Default: 0.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -63,7 +62,7 @@ def concat(
     Returns
     -------
     ret
-        The concatenated array.
+        an output array containing the concatenated values. If the input arrays have different data types, normal Type Promotion Rules apply.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -91,21 +90,26 @@ def concat(
 @handle_nestable
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Tuple[int], List[int]],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Expands the shape of an array by inserting a new axis (dimension) of size one
-    at the position specified by ``axis``
+    at the position specified by axis
 
     Parameters
     ----------
     x
         input array.
     axis
-        position in the expanded array where a new axis (dimension) of size one will be
-        added. If array ``x`` has the rank of ``N``, the ``axis`` needs to be between
-        ``[-N-1, N]``. Default: ``0``.
+        axis position (zero-based). If x has rank (i.e, number of dimensions) N, a
+        valid axis must reside on the closed-interval [-N-1, N]. If provided a negative
+        axis, the axis position at which to insert a singleton dimension is
+        computed as N + axis + 1. Hence, if provided -1, the resolved axis position
+        is N (i.e., a singleton dimension is appended to the input array x).
+        If provided -N-1, the resolved axis position is 0 (i.e., a singleton
+        dimension is prepended to the input array x). An IndexError exception
+        is raised if provided an invalid axis position.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -113,7 +117,7 @@ def expand_dims(
     Returns
     -------
     ret
-        an array with its dimension added by one in a given ``axis``.
+        an array with its dimension added by one in a given axis.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring # noqa
@@ -199,7 +203,7 @@ def expand_dims(
                       [5.]])
     }
     """
-    return current_backend(x).expand_dims(x, axis)
+    return current_backend(x).expand_dims(x, axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -219,10 +223,9 @@ def flip(
     x
         input array.
     axis
-        axis (or axes) along which to flip. If ``axis`` is ``None``, the function must
-        flip all input array axes. If ``axis`` is negative, the function must count from
-        the last dimension. If provided more than one axis, the function must flip only
-        the specified axes. Default  ``None``.
+        axis (or axes) along which to flip. If axis is None, all input array axes are
+        flipped. If axis is negative, axis is counted from the last dimension. If
+        provided more than one axis, only the specified axes. Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -230,7 +233,7 @@ def flip(
     Returns
     -------
     ret
-        an output array having the same data type and shape as ``x`` and whose elements,
+        an output array having the same data type and shape as`x and whose elements,
         relative to ``x``, are reordered.
 
 
@@ -338,6 +341,12 @@ def permute_dims(
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
+    Returns
+    -------
+    ret
+        an array containing the axes permutation. The returned array must have the same
+        data type as x.
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
@@ -346,12 +355,6 @@ def permute_dims(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
-
-    Returns
-    -------
-    ret
-        an array containing the axes permutation. The returned array must have the same
-        data type as x.
 
     """
     return current_backend(x).permute_dims(x, axes, out=out)
@@ -374,11 +377,11 @@ def reshape(
     x
         Input array to be reshaped.
     shape
-        The new shape should be compatible with the original shape. One shape dimension
+        a new shape compatible with the original shape. One shape dimension
         can be -1. In this case, the value is inferred from the length of the array and
         remaining dimensions.
     copy
-        boolean indicating whether or not to copy the input array.
+        boolean indicating whether to copy the input array.
         If True, the function must always copy.
         If False, the function must never copy and must
         raise a ValueError in case a copy would be necessary.
@@ -388,6 +391,11 @@ def reshape(
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
+    Returns
+    -------
+    ret
+        an output array having the same data type and elements as x.
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html#signatures.manipulation_functions.reshape>`_
@@ -396,11 +404,6 @@ def reshape(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
-
-    Returns
-    -------
-    ret
-        Reshaped array.
 
     Examples
     --------
@@ -481,18 +484,18 @@ def roll(
     x
         input array.
     shift
-        number of places by which the elements are shifted. If ``shift`` is a tuple,
-        then ``axis`` must be a tuple of the same size, and each of the given axes must
-        be shifted by the corresponding element in ``shift``. If ``shift`` is an ``int``
-        and ``axis`` a tuple, then the same ``shift`` must be used for all specified
+        number of places by which the elements are shifted. If shift is a tuple,
+        then axis must be a tuple of the same size, and each of the given axes must
+        be shifted by the corresponding element in shift. If shift is an int
+        and axis a tuple, then the same shift must be used for all specified
         axes. If a shift is positive, then array elements must be shifted positively
-        (toward larger indices) along the dimension of ``axis``. If a shift is negative,
+        (toward larger indices) along the dimension of axis. If a shift is negative,
         then array elements must be shifted negatively (toward smaller indices) along
-        the dimension of ``axis``.
+        the dimension of axis.
     axis
-        axis (or axes) along which elements to shift. If ``axis`` is ``None``, the array
+        axis (or axes) along which elements to shift. If axis is None, the array
         must be flattened, shifted, and then restored to its original shape.
-        Default ``None``.
+        Default None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -500,8 +503,8 @@ def roll(
     Returns
     -------
     ret
-        an output array having the same data type as ``x`` and whose elements, relative
-        to ``x``, are shifted.
+        an output array having the same data type as x and whose elements, relative
+        to x, are shifted.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -601,7 +604,7 @@ def squeeze(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Removes singleton dimensions (axes) from ``x``.
+    """Removes singleton dimensions (axes) from x.
 
     Parameters
     ----------
@@ -609,7 +612,7 @@ def squeeze(
         input array.
     axis
         axis (or axes) to squeeze. If a specified axis has a size greater than one, a
-        ``ValueError`` must be raised.
+        ValueError is. If None, then all squeezable axes are squeezed. Default: None
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -617,7 +620,7 @@ def squeeze(
     Returns
     -------
     ret
-        an output array having the same data type and elements as ``x``.
+        an output array having the same data type and elements as x.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -702,19 +705,30 @@ def stack(
     arrays
         input arrays to join. Each array must have the same shape.
     axis
-        axis along which the arrays will be joined. Providing an ``axis`` specifies the
-        index of the new axis in the dimensions of the result. For example, if ``axis``
-        is ``0``, the new axis will be the first dimension and the output array will
-        have shape ``(N, A, B, C)``; if ``axis`` is ``1``, the new axis will be the
-        second dimension and the output array will have shape ``(A, N, B, C)``; and, if
-        ``axis`` is ``-1``, the new axis will be the last dimension and the output array
-        will have shape ``(A, B, C, N)``. A valid ``axis`` must be on the interval
-        ``[-N, N)``, where ``N`` is the rank (number of dimensions) of ``x``. If
-        provided an ``axis`` outside of the required interval, the function must raise
-        an exception. Default: ``0``.
+        axis along which the arrays will be joined. Providing an axis specifies the
+        index of the new axis in the dimensions of the result. For example, if axis
+        is 0, the new axis will be the first dimension and the output array will
+        have shape (N, A, B, C); if axis is 1, the new axis will be the
+        second dimension and the output array will have shape (A, N, B, C); and, if
+        axis is -1, the new axis will be the last dimension and the output array
+        will have shape (A, B, C, N). A valid axis must be on the interval
+        [-N, N), where N is the rank (number of dimensions) of x. If
+        provided an axis outside of the required interval, the function must raise
+        an exception. Default: 0.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an output array having rank N+1, where N is the rank (number of
+        dimensions) of x. If the input arrays have different data types, normal
+        ref:`type-promotion` must apply. If the input arrays have the same data type,
+        the output array must have the same data type as the input arrays.
+        .. note::
+           This specification leaves type promotion between data type families (i.e.,
+           intxx and floatxx) unspecified.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -724,17 +738,6 @@ def stack(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
-
-    Returns
-    -------
-    ret
-        an output array having rank ``N+1``, where ``N`` is the rank (number of
-        dimensions) of ``x``. If the input arrays have different data types, normal
-        ref:`type-promotion` must apply. If the input arrays have the same data type,
-        the output array must have the same data type as the input arrays.
-        .. note::
-           This specification leaves type promotion between data type families (i.e.,
-           ``intxx`` and ``floatxx``) unspecified.
 
     """
     return current_backend(arrays).stack(arrays, axis, out=out)
