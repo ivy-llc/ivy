@@ -608,7 +608,9 @@ def squeeze(
     ivy.array([0, 1, 2])
 
     >>> print(ivy.squeeze(x, axis=0))
-    ivy.array([[0], [1], [2]])
+    ivy.array([[0],
+           [1],
+           [2]])
 
     >>> print(ivy.squeeze(x, axis=2))
     ivy.array([[0, 1, 2]])
