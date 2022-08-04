@@ -93,6 +93,7 @@ def test_torch_tan(
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
+
 # abs
 @given(
     dtype_and_x=helpers.dtype_and_values(

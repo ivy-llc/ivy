@@ -22,3 +22,4 @@ def log(input, *, out=None):
     return ivy.log(input, out=out)
 
 log.unsupported_dtypes = ("float16",)
+
