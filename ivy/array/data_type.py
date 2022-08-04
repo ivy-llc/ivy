@@ -60,8 +60,9 @@ class ArrayWithDataTypes(abc.ABC):
         self: ivy.Array, shape: Tuple[int, ...], out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        `ivy.Array` instance method variant of `ivy.broadcast_to`. This method simply wraps
-        the function, and so the docstring for `ivy.broadcast_to` also applies to this
+        `ivy.Array` instance method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
         method with minimal changes.
 
         Parameters

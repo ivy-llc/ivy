@@ -188,11 +188,11 @@ def broadcast_to(
         array to broadcast.
     shape
         array shape. Must be compatible with x (see Broadcasting). If
-        the array is incompatible with the specified shape, the function should raise an
-        exception.
+        the array is incompatible with the specified shape, the function
+        should raise an exception.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to. It must have a
+        shape that the inputs broadcast to.
 
     Returns
     -------
