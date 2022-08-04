@@ -226,6 +226,30 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
+<span class="sd">            input container. Should have a floating-point data type.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis or axes along which variances must be computed. By default, the</span>
+<span class="sd">            variance must be computed over the entire array for each array in the input</span>
+<span class="sd">            container. If a tuple of integers, variances must be computed over</span>
+<span class="sd">            multiple axes. Default: None.</span>
+<span class="sd">        correction</span>
+<span class="sd">            degrees of freedom adjustment. Setting this parameter to a value other than</span>
+<span class="sd">            0 has the effect of adjusting the divisor during the calculation of the</span>
+<span class="sd">            variance according to N-c where N corresponds to the total number of</span>
+<span class="sd">            elements over which the variance is computed and c corresponds to the</span>
+<span class="sd">            provided degrees of freedom adjustment. When computing the variance of a</span>
+<span class="sd">            population, setting this parameter to 0 is the standard choice (i.e.,</span>
+<span class="sd">            the provided array contains data constituting an entire population).</span>
+<span class="sd">            When computing the unbiased sample variance, setting this parameter to 1</span>
+<span class="sd">            is the standard choice (i.e., the provided array contains data sampled from</span>
+<span class="sd">            a larger population; this is commonly referred to as Bessel&#39;s correction).</span>
+<span class="sd">            Default: 0.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            if True, the reduced axes (dimensions) must be included in the result as</span>
+<span class="sd">            singleton dimensions, and, accordingly, the result must be compatible</span>
+<span class="sd">            with the input array (see Broadcasting). Otherwise, if False, the</span>
+<span class="sd">            reduced axes (dimensions) must not be included in the result.</span>
+<span class="sd">            Default: False.</span>
 <span class="sd">            input array. Should have a floating-point data type.</span>
 <span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to.</span>
@@ -246,21 +270,43 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">           if the variance was computed over the entire array, a</span>
-<span class="sd">           zero-dimensional arraycontaining the variance; otherwise,</span>
-<span class="sd">           a non-zero-dimensional array containing the variances.</span>
-<span class="sd">           The returned array must have the same data type as x.</span>
+<span class="sd">            a container contianing different arrays depends on parameters. see below</span>
+<span class="sd">            for the types of arrays in the returned container if the variance was</span>
+<span class="sd">            computed over the entire array, a zero-dimensional array containing the</span>
+<span class="sd">            variance; otherwise, a non-zero-dimensional array containing the variances.</span>
+<span class="sd">            The returned container must have the same data type as self.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \</span>
-<span class="sd">                              b=ivy.array([0.7, 0.1, 0.9]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), \</span>
+<span class="sd">        b=ivy.array([3.0, 4.0, 5.0]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.var()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a:ivy.array(0.12666667),</span>
-<span class="sd">            b:ivy.array(0.11555555)</span>
+<span class="sd">            a: ivy.array(0.6666667),</span>
+<span class="sd">            b: ivy.array(0.6666667)</span>
 <span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), \</span>
+<span class="sd">        b=ivy.array([3.0, 4.0, 5.0]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))</span>
+<span class="sd">        &gt;&gt;&gt; x.var(out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(0.6666667),</span>
+<span class="sd">            b: ivy.array(0.6666667)</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]]), \</span>
+<span class="sd">                              b=ivy.array([[6.0, 7.0, 8.0], [9.0, 10.0, 11.0]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0., 0., 0.]), b=ivy.array([0., 0., 0.]))</span>
+<span class="sd">        &gt;&gt;&gt; x.var(axis=0, out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([2.25, 2.25, 2.25]),</span>
+<span class="sd">            b: ivy.array([2.25, 2.25, 2.25])</span>
+<span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_inplace</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
