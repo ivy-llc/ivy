@@ -411,6 +411,40 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.zeros_like. This method simply
+        wraps the function, and so the docstring for ivy.zeros_like also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array or container from which to derive the output container shape.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output container
+            data type must be inferred from ``self``. Default  ``None``.
+        device
+            device on which to place the created array. If device is ``None``, the
+            output container device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an container having the same shape as ``x`` and filled with ``zeros``.
+        """
         return ContainerBase.multi_map_in_static_method(
             "zeros_like",
             x,
@@ -434,6 +468,40 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.zeros_like. This method simply
+        wraps the function, and so the docstring for ivy.zeros_like also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container from which to derive the output container shape.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output container
+            data type must be inferred from ``self``. Default  ``None``.
+        device
+            device on which to place the created array. If device is ``None``, the
+            output container device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an container having the same shape as ``x`` and filled with ``zeros``.
+        """
         return self.static_zeros_like(
             self,
             key_chains,

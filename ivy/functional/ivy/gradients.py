@@ -87,12 +87,43 @@ def with_grads(with_grads: bool = None) -> bool:
 
 
 # noinspection PyShadowingNames
-def set_with_grads(with_grads):
-    """Summary.
+def set_with_grads(with_grads: bool):
+    """
+    Enter a nested code space where gradients are computed. This method
+    adds the with_grads component to the global list with_grads_stack
 
     Parameters
     ----------
     with_grads
+        Boolean value denoting whether the current code block has gradient
+        computation enabled or not.
+        'True' or 'False' or 'None' (Default value = None)
+
+    Returns
+    -------
+    ret
+        If with_grads is boolean, it returns the boolean value representing
+        if gradient computation is enabled or not.
+        If with_grads is None, it returns the last element in the with_grads_stack
+        representing the parent of the current nested code block. If with_grads_stack
+        is empty, it returns True by default.
+        If with_grads is neither None nor boolean, it will raise an AssertionError
+
+    Examples
+    --------
+    >>> ivy.set_with_grads(True)
+    >>> print(ivy.with_grads(with_grads=None))
+    True
+
+    >>> ivy.set_with_grads(False)
+    >>> print(ivy.with_grads(with_grads=None))
+    False
+
+    >>> print(ivy.with_grads(with_grads=True))
+    True
+
+    >>> print(ivy.with_grads(with_grads=False))
+    False
 
     """
     assert with_grads in [True, False]
@@ -101,7 +132,7 @@ def set_with_grads(with_grads):
 
 
 def unset_with_grads():
-    """"""
+
     global with_grads_stack
     if with_grads_stack:
         with_grads_stack.pop(-1)
@@ -326,6 +357,29 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
 execute_with_gradients.computes_gradients = True
+
+execute_with_gradients.computes_gradients = True
+
+
+@to_native_arrays_and_back
+def value_and_grad(func):
+    """
+    Create a function that evaluates both func and the gradient of func.
+
+    Parameters
+    ----------
+    func
+        Function for which we compute the gradients of the output with respect to xs
+        input.
+
+    Returns
+    -------
+    ret
+        A function that returns both func and the gradient of func.
+
+    """
+    return current_backend(None).value_and_grad(func)
+
 
 # Optimizer Steps #
 
@@ -564,8 +618,48 @@ def gradient_descent_update(
     Returns
     -------
     ret
-        The new function weights ws_new, following the gradient descent updates.
+        The new weights, following the gradient descent updates.
 
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+    >>> w = ivy.array([[1., 2, 3],\
+                        [4, 6, 1],\
+                        [1, 0, 7]])
+    >>> dcdw = ivy.array([[0.5, 0.2, 0.1],\
+                        [0.3, 0.6, 0.4],\
+                        [0.4, 0.7, 0.2]])
+    >>> lr = ivy.array(0.1)
+    >>> NewWeights = ivy.gradient_descent_update(w,\
+                                                dcdw,\
+                                                lr,\
+                                                inplace=False,\
+                                                stop_gradients=True)
+    >>> print(NewWeights)
+        ivy.array([[ 0.95,  1.98,  2.99],
+                    [ 3.97,  5.94,  0.96],
+                    [ 0.96, -0.07,  6.98]])
+
+    >>> w = ivy.array([1., 2., 3.])
+    >>> dcdw = ivy.array([0.5, 0.2, 0.1])
+    >>> lr = ivy.array(0.3)
+    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace=True)
+    >>> print(w)
+        ivy.array([0.85, 1.94, 2.97])
+
+    With :code: `ivy.container` inputs:
+
+    >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                          b=ivy.array([3.48, 5.72, 1.98]))
+    >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
+                             b=ivy.array([2., 3.42, 1.69]))
+    >>> lr = ivy.array(0.3)
+    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace=True)
+    >>> print(w)
+        {
+            a: ivy.array([0.85, 1.94, 2.97]),
+            b: ivy.array([2.88, 4.69, 1.47])
+        }
     """
     return ivy.optimizer_update(w, dcdw, lr, inplace, stop_gradients)
 

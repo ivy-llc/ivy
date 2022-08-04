@@ -216,6 +216,42 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array to be broadcasted.
+        shape
+            desired shape to be broadcasted to.
+        out
+            Optional array to store the broadcasted array.
+
+        Returns
+        -------
+        ret
+            Returns the broadcasted array of shape 'shape'
+
+        Examples
+        --------
+        With :code:`ivy.Container` static method:
+        >>> x = ivy.Container(a=ivy.array([1]),\
+            b=ivy.array([2]))
+        >>> y = ivy.Container.static_broadcast_to(x,(3, 1))
+        >>> print(y)
+        {
+            a: ivy.array([1],
+                         [1],
+                         [1]),
+            b: ivy.array([2],
+                         [2],
+                         [2])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "broadcast_to",
             x,
@@ -237,6 +273,43 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        `ivy.Container` instance method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to be broadcasted.
+        shape
+            desired shape to be broadcasted to.
+        out
+            Optional array to store the broadcasted array.
+
+        Returns
+        -------
+        ret
+            Returns the broadcasted array of shape 'shape'
+
+        Examples
+        --------
+        With :code: 'ivy.Container' instance method:
+        >>> x = ivy.Container(a=ivy.array([0, 0.5]),\
+            b=ivy.array([4, 5]))
+        >>> y = x.broadcast_to((3,2))
+        >>> print(y)
+        {
+            a: ivy.array([[0., 0.5],
+                          [0., 0.5],
+                          [0., 0.5]]),
+            b: ivy.array([[4, 5],
+                          [4, 5],
+                          [4, 5]])
+        }
+
+        """
         return self.static_broadcast_to(
             self,
             shape,
@@ -647,6 +720,46 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `ivy.result_type`. This method simply
+        wraps the function, and so the docstring for `ivy.result_type` also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container from which to cast.
+        arrays_and_dtypes
+            an arbitrary number of input arrays and/or dtypes.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            the dtype resulting from an operation involving the input arrays and dtypes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([0, 1, 2]), \
+                              b = ivy.array([3., 4., 5.]))
+        >>> print(x.a.dtype, x.b.dtype)
+        int32 float32
+
+        >>> print(ivy.Container.static_result_type(x, ivy.float64))
+        {
+            a: float64,
+            b: float32
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "result_type",
             *arrays_and_dtypes,
@@ -664,6 +777,47 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` instance method variant of `ivy.result_type`. This method simply
+        wraps the function, and so the docstring for `ivy.result_type` also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container from which to cast.
+        arrays_and_dtypes
+            an arbitrary number of input arrays and/or dtypes.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            the dtype resulting from an operation involving the input arrays and dtypes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([3, 3, 3]))
+        >>> print(x.a.dtype)
+        int32
+
+        >>> y = ivy.Container(b = ivy.float64)
+        >>> print(x.result_type(y))
+        {
+            a: {
+                b: float64
+            }
+        }
+        """
         return self.static_result_type(
             self,
             *arrays_and_dtypes,
