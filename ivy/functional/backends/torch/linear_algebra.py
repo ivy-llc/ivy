@@ -148,7 +148,7 @@ def matrix_rank(
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
     ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
-    ret = torch.tensor(ret, dtype=ivy.default_float_dtype(as_native=True))
+    ret = torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
     return ret
 
 
