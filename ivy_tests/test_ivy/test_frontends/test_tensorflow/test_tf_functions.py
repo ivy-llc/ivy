@@ -200,7 +200,7 @@ def test_tensorflow_full(
     native_array=st.booleans(),
 )
 def test_tensorflow_hard_sigmoid(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, native_array, fw
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
