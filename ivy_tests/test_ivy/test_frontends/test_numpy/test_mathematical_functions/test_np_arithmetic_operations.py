@@ -113,6 +113,19 @@ def test_numpy_subtract(
     
     
 #multiply
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
+    ),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    where=np_frontend_helpers.where(),
+    as_variable=helpers.array_bools(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.multiply"
+    ),
+    native_array=helpers.array_bools(),
+)
 def test_numpy_multiply(
     dtype_and_x,
     dtype,
