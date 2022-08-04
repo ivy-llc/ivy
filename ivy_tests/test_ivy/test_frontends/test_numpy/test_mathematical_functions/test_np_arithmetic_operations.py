@@ -112,7 +112,7 @@ def test_numpy_subtract(
     )
     
     
-#multiply
+# multiply
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
