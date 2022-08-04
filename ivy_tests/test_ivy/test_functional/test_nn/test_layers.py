@@ -1,12 +1,10 @@
 """Collection of tests for unified neural network layers."""
 
 # global
-import pytest
 import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -88,6 +86,7 @@ def test_linear(
         fw=fw,
         fn_name="linear",
         rtol_=1e-03,
+        atol_=1e-03,
         x=np.asarray(x, dtype=dtype),
         weight=np.asarray(weight, dtype=dtype),
         bias=np.asarray(bias, dtype=dtype),

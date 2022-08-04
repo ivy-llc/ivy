@@ -46,8 +46,8 @@ def conv1d_transpose(
     strides: int,
     padding: str,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: str ="NWC",
-    dilations: int =1,
+    data_format: str = "NWC",
+    dilations: int = 1,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ):
