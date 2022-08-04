@@ -217,8 +217,9 @@ class ContainerWithDataTypes(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        `ivy.Container` static method variant of `ivy.broadcast_to`. This method simply wraps
-        the function, and so the docstring for `ivy.broadcast_to` also applies to this
+        `ivy.Container` static method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
         method with minimal changes.
 
         Parameters
@@ -239,8 +240,9 @@ class ContainerWithDataTypes(ContainerBase):
         --------
         With :code: 'ivy.Container' static method:
         >>> x = ivy.Container(a=ivy.array([1]),
-                              b=ivy.array([2]))
-        >>> print(ivy.Container.static_broadcast_to(x,(3,1)))
+        >>>                   b=ivy.array([2]))
+        >>> y = ivy.Container.static_broadcast_to(x,(3,1))
+        >>> print(y)
         {
             a: ivy.array([1],
                          [1],
@@ -271,9 +273,10 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ 
-        `ivy.Container` instance method variant of `ivy.broadcast_to`. This method simply wraps
-        the function, and so the docstring for `ivy.broadcast_to` also applies to this
+        """
+        `ivy.Container` instance method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
         method with minimal changes.
 
         Parameters
@@ -293,16 +296,16 @@ class ContainerWithDataTypes(ContainerBase):
         Examples
         --------
         With :code: 'ivy.Container' instance method:
-        >>> x = ivy.Container(a=ivy.array([0, 0.5]), 
-                              b=ivy.array([4, 5]))
+        >>> x = ivy.Container(a=ivy.array([0, 0.5]),
+        >>>                   b=ivy.array([4, 5]))
         >>> y = x.broadcast_to((3,2))
         >>> print(y)
         {
-            a: ivy.array([[0, 0.5], 
-                          [0, 0.5], 
+            a: ivy.array([[0, 0.5],
+                          [0, 0.5],
                           [0, 0.5]]),
-            b: ivy.array([[4, 5], 
-                          [4, 5], 
+            b: ivy.array([[4, 5],
+                          [4, 5],
                           [4, 5]])
         }
 

@@ -221,16 +221,16 @@ def broadcast_to(
                [0.1, 0.3]])
 
     With :code: 'ivy.Container' input:
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), 
-                          b=ivy.array([4, 5, 6]))
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+    >>>                   b=ivy.array([4, 5, 6]))
     >>> y = ivy.broadcast_to(x, (3,3))
     >>> print(y)
     {
-        a: ivy.array([[1, 2, 3], 
-                      [1, 2, 3], 
+        a: ivy.array([[1, 2, 3],
+                      [1, 2, 3],
                       [1, 2, 3]]),
-        b: ivy.array([[4, 5, 6], 
-                      [4, 5, 6], 
+        b: ivy.array([[4, 5, 6],
+                      [4, 5, 6],
                       [4, 5, 6]])
     }
 
