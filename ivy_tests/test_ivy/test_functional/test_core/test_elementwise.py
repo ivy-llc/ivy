@@ -12,6 +12,14 @@ import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
+_zero = np.asarray(0, dtype="uint8")
+_one = np.asarray(1, dtype="uint8")
+
+
+def _not_too_close_to_zero(x):
+    f = np.vectorize(lambda item: item + (_one if np.isclose(item, 0) else _zero))
+    return f(x)
+
 
 # abs
 @given(
@@ -278,14 +286,8 @@ def test_atan2(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
-    one = np.array(1, dtype="uint8")
-    zero = np.array(0, dtype="uint8")
-
-    # if number is near zero, make sure
-    f = np.vectorize(lambda item: item + (one if np.isclose(item, 0) else zero))
-
-    x1 = f(x1)
-    x2 = f(x2)
+    x1 = _not_too_close_to_zero(x1)
+    x2 = _not_too_close_to_zero(x2)
 
     assume(not (np.any(np.isclose(x1, 0)) or np.any(np.isclose(x2, 0))))
 
@@ -1654,23 +1656,27 @@ def test_pow(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    x1 = np.asarray(x[0], dtype=input_dtype[0])
-    x2 = np.asarray(x[1], dtype=input_dtype[1])
-
-    # Make sure x2 is non-negative when both is integer
-    assume(
-        not (
-            np.any(x2 < 0)
-            and ivy.is_int_dtype(input_dtype[1])
-            and ivy.is_int_dtype(input_dtype[0])
-        )
-    )
+    # input_dtype, x = (['int16', 'int8'], [[2], [64]])
 
     # Make sure x2 isn't a float when x1 is integer
     assume(
-        not (ivy.is_int_dtype(input_dtype[1] and not ivy.is_int_dtype(input_dtype[0])))
+        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
     )
+
+    # Make sure x2 is non-negative when both is integer
+    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
+        x[1] = np.abs(x[1])
+
+    x[0] = _not_too_close_to_zero(x[0])
+    x[1] = _not_too_close_to_zero(x[1])
+
+    # Makesure it doesn't overflow
+    nt = np.promote_types(input_dtype[0], input_dtype[1])
+    size = nt.itemsize * 8 - 1
+    assume(np.all(np.log2(x[0]) * x[1] <= size))
+
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
 
     helpers.test_function(
         input_dtypes=input_dtype,
