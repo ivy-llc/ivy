@@ -49,7 +49,7 @@ def subtract(
 
 subtract.unsupported_dtypes = {"torch": ("float16",)}
 
-#multiply
+
 def multiply(
     x1,
     x2,
@@ -72,4 +72,3 @@ def multiply(
 
 
 multiply.unsupported_dtypes = {"torch": ("float16",)}
-
