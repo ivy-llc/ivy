@@ -345,6 +345,42 @@
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        `ivy.Container` static method variant of `ivy.broadcast_to`.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring</span>
+<span class="sd">        for `ivy.broadcast_to` also applies to this</span>
+<span class="sd">        method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input array to be broadcasted.</span>
+<span class="sd">        shape</span>
+<span class="sd">            desired shape to be broadcasted to.</span>
+<span class="sd">        out</span>
+<span class="sd">            Optional array to store the broadcasted array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Returns the broadcasted array of shape &#39;shape&#39;</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Container` static method:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1]),\</span>
+<span class="sd">            b=ivy.array([2]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_broadcast_to(x,(3, 1))</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1],</span>
+<span class="sd">                         [1],</span>
+<span class="sd">                         [1]),</span>
+<span class="sd">            b: ivy.array([2],</span>
+<span class="sd">                         [2],</span>
+<span class="sd">                         [2])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;broadcast_to&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
@@ -366,6 +402,43 @@
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        `ivy.Container` instance method variant of `ivy.broadcast_to`.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring</span>
+<span class="sd">        for `ivy.broadcast_to` also applies to this</span>
+<span class="sd">        method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array to be broadcasted.</span>
+<span class="sd">        shape</span>
+<span class="sd">            desired shape to be broadcasted to.</span>
+<span class="sd">        out</span>
+<span class="sd">            Optional array to store the broadcasted array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Returns the broadcasted array of shape &#39;shape&#39;</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code: &#39;ivy.Container&#39; instance method:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 0.5]),\</span>
+<span class="sd">            b=ivy.array([4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.broadcast_to((3,2))</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[0., 0.5],</span>
+<span class="sd">                          [0., 0.5],</span>
+<span class="sd">                          [0., 0.5]]),</span>
+<span class="sd">            b: ivy.array([[4, 5],</span>
+<span class="sd">                          [4, 5],</span>
+<span class="sd">                          [4, 5]])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_broadcast_to</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">shape</span><span class="p">,</span>
