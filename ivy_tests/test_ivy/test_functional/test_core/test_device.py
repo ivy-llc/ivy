@@ -146,13 +146,11 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes[1:]),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
-
-    assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
@@ -172,9 +170,6 @@ def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
             assert ret.type == device.type
         else:
             assert ret == device
-        # compilation test
-        # pytorch scripting does not handle converting string to device
-        assume(not (fw == "torch"))
 
 
 # memory_on_dev
