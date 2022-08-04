@@ -208,7 +208,7 @@ def test_tensorflow_hard_sigmoid(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        #native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
         fn_name="hard_sigmoid",
