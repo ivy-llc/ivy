@@ -1307,17 +1307,21 @@
 <span class="sd">        x</span>
 <span class="sd">            input array. Should have a floating-point data type.</span>
 <span class="sd">        axis</span>
-<span class="sd">            If an integer, ``axis`` specifies the axis (dimension) along which to compute</span>
-<span class="sd">            vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along</span>
-<span class="sd">            which to compute batched vector norms. If ``None``, the vector norm must be</span>
-<span class="sd">            computed over all array values (i.e., equivalent to computing the vector norm of</span>
-<span class="sd">            a flattened array). Negative indices must be supported. Default: ``None``.</span>
+<span class="sd">            If an integer, ``axis`` specifies the axis (dimension)</span>
+<span class="sd">            along which to compute vector norms. If an n-tuple,</span>
+<span class="sd">            ``axis`` specifies the axes (dimensions) along</span>
+<span class="sd">            which to compute batched vector norms. If ``None``, the</span>
+<span class="sd">             vector norm must be computed over all array values</span>
+<span class="sd">             (i.e., equivalent to computing the vector norm of</span>
+<span class="sd">            a flattened array). Negative indices must be</span>
+<span class="sd">            supported. Default: ``None``.</span>
 <span class="sd">        keepdims</span>
-<span class="sd">            If ``True``, the axes (dimensions) specified by ``axis`` must be included in the</span>
-<span class="sd">            result as singleton dimensions, and, accordingly, the result must be compatible</span>
-<span class="sd">            with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the</span>
-<span class="sd">            axes (dimensions) specified by ``axis`` must not be included in the result.</span>
-<span class="sd">            Default: ``False``.</span>
+<span class="sd">            If ``True``, the axes (dimensions) specified by ``axis``</span>
+<span class="sd">            must be included in the result as singleton dimensions,</span>
+<span class="sd">            and, accordingly, the result must be compatible</span>
+<span class="sd">            with the input array (see :ref:`broadcasting`). Otherwise,</span>
+<span class="sd">            if ``False``, the axes (dimensions) specified by ``axis`` must</span>
+<span class="sd">            not be included in the result. Default: ``False``.</span>
 <span class="sd">        ord</span>
 <span class="sd">            order of the norm. The following mathematical norms must be supported:</span>
 
@@ -1342,7 +1346,7 @@
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -1               | 1./sum(1./abs(a))              |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
-<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   |</span>
+<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | </span>
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -inf             | min(abs(a))                    |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
@@ -1351,18 +1355,21 @@
 
 <span class="sd">            Default: ``2``.</span>
 <span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to. It must have a shape that the</span>
-<span class="sd">            inputs broadcast to.</span>
+<span class="sd">            optional output array, for writing the result to. It must</span>
+<span class="sd">            have a shape that the inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            an array containing the vector norms. If ``axis`` is ``None``, the returned</span>
-<span class="sd">            array must be a zero-dimensional array containing a vector norm. If ``axis`` is</span>
-<span class="sd">            a scalar value (``int`` or ``float``), the returned array must have a rank which</span>
-<span class="sd">            is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned</span>
-<span class="sd">            array must have a rank which is ``n`` less than the rank of ``x``. The returned</span>
-<span class="sd">            array must have a floating-point data type determined by :ref:`type-promotion`.</span>
+<span class="sd">            an array containing the vector norms. If ``axis`` is</span>
+<span class="sd">            ``None``, the returned array must be a zero-dimensional</span>
+<span class="sd">            array containing a vector norm. If ``axis`` is</span>
+<span class="sd">            a scalar value (``int`` or ``float``), the returned array</span>
+<span class="sd">            must have a rank which is one less than the rank of ``x``.</span>
+<span class="sd">            If ``axis`` is a ``n``-tuple, the returned array must have</span>
+<span class="sd">             a rank which is ``n`` less than the rank of ``x``. The returned</span>
+<span class="sd">            array must have a floating-point data type determined</span>
+<span class="sd">            by :ref:`type-promotion`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
@@ -1400,17 +1407,20 @@
 <span class="sd">        self</span>
 <span class="sd">            input array. Should have a floating-point data type.</span>
 <span class="sd">        axis</span>
-<span class="sd">            If an integer, ``axis`` specifies the axis (dimension) along which to compute</span>
-<span class="sd">            vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along</span>
-<span class="sd">            which to compute batched vector norms. If ``None``, the vector norm must be</span>
-<span class="sd">            computed over all array values (i.e., equivalent to computing the vector norm of</span>
-<span class="sd">            a flattened array). Negative indices must be supported. Default: ``None``.</span>
+<span class="sd">            If an integer, ``axis`` specifies the axis (dimension)</span>
+<span class="sd">            along which to compute vector norms. If an n-tuple, ``axis``</span>
+<span class="sd">            specifies the axes (dimensions) along which to compute</span>
+<span class="sd">            batched vector norms. If ``None``, the vector norm must be</span>
+<span class="sd">            computed over all array values (i.e., equivalent to computing</span>
+<span class="sd">            the vector norm of a flattened array). Negative indices must</span>
+<span class="sd">            be supported. Default: ``None``.</span>
 <span class="sd">        keepdims</span>
-<span class="sd">            If ``True``, the axes (dimensions) specified by ``axis`` must be included in the</span>
-<span class="sd">            result as singleton dimensions, and, accordingly, the result must be compatible</span>
-<span class="sd">            with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the</span>
-<span class="sd">            axes (dimensions) specified by ``axis`` must not be included in the result.</span>
-<span class="sd">            Default: ``False``.</span>
+<span class="sd">            If ``True``, the axes (dimensions) specified by ``axis`` must</span>
+<span class="sd">            be included in the result as singleton dimensions, and, accordingly,</span>
+<span class="sd">            the result must be compatible with the input array</span>
+<span class="sd">            (see :ref:`broadcasting`).Otherwise, if ``False``, the axes</span>
+<span class="sd">            (dimensions) specified by ``axis`` must not be included in</span>
+<span class="sd">            the result. Default: ``False``.</span>
 <span class="sd">        ord</span>
 <span class="sd">            order of the norm. The following mathematical norms must be supported:</span>
 
@@ -1435,7 +1445,7 @@
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -1               | 1./sum(1./abs(a))              |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
-<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   |</span>
+<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | </span>
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -inf             | min(abs(a))                    |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
@@ -1444,18 +1454,20 @@
 
 <span class="sd">            Default: ``2``.</span>
 <span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to. It must have a shape that the</span>
-<span class="sd">            inputs broadcast to.</span>
+<span class="sd">            optional output array, for writing the result to. It must</span>
+<span class="sd">            have a shape that the inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            an array containing the vector norms. If ``axis`` is ``None``, the returned</span>
-<span class="sd">            array must be a zero-dimensional array containing a vector norm. If ``axis`` is</span>
-<span class="sd">            a scalar value (``int`` or ``float``), the returned array must have a rank which</span>
-<span class="sd">            is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned</span>
-<span class="sd">            array must have a rank which is ``n`` less than the rank of ``x``. The returned</span>
-<span class="sd">            array must have a floating-point data type determined by :ref:`type-promotion`.</span>
+<span class="sd">            an array containing the vector norms. If ``axis`` is ``None``,</span>
+<span class="sd">            the returned array must be a zero-dimensional array containing</span>
+<span class="sd">            a vector norm. If ``axis`` is a scalar value (``int`` or ``float``),</span>
+<span class="sd">            the returned array must have a rank which is one less than the</span>
+<span class="sd">            rank of ``x``. If ``axis`` is a ``n``-tuple, the returned</span>
+<span class="sd">            array must have a rank which is ``n`` less than the rank of</span>
+<span class="sd">            ``x``. The returned array must have a floating-point data type</span>
+<span class="sd">            determined by :ref:`type-promotion`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_vector_norm</span><span class="p">(</span>

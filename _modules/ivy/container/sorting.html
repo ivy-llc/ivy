@@ -152,6 +152,96 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.argsort. This method </span>
+<span class="sd">        simply wraps the function, and so the docstring for </span>
+<span class="sd">        ivy.argsort also applies to this method with minimal changes.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x </span>
+<span class="sd">            input array or container. Should have a numeric data type.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis along which to sort. If set to ``-1``, the function must sort </span>
+<span class="sd">            along the last axis. Default: ``-1``.</span>
+<span class="sd">        descending</span>
+<span class="sd">            sort order. If ``True``, the returned indices sort</span>
+<span class="sd">            ``x`` in descending order (by value). If ``False``, </span>
+<span class="sd">            the returned indices sort ``x`` in ascending order </span>
+<span class="sd">            (by value). Default: ``False``.</span>
+<span class="sd">        stable</span>
+<span class="sd">            sort stability. If ``True``, the returned indices must maintain</span>
+<span class="sd">            the relative order of ``x`` values which compare as equal.</span>
+<span class="sd">            If ``False``, the returned indices may or may not maintain</span>
+<span class="sd">            the relative order of ``x`` values which compare as equal (i.e., the </span>
+<span class="sd">            relative order of ``x`` values which compare as equal </span>
+<span class="sd">            is implementation-dependent). Default: ``True``.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret </span>
+<span class="sd">            a container containing the index values of sorted</span>
+<span class="sd">            array. The returned array must have a</span>
+<span class="sd">            data type determined by :ref:`type-promotion`.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With: code:`ivy.Container` inputs:</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([7, 2, 1]),\</span>
+<span class="sd">                              b=ivy.array([3, 2]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.static_argsort(-1, True, False)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0, 1, 2]),</span>
+<span class="sd">            b: ivy.array([0, 1])</span>
+<span class="sd">        }</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([7, 2, 1]),\</span>
+<span class="sd">                              b=ivy.array([[3, 2], [7, 0.2]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.static_argsort(-1, True, False)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0, 1, 2]),</span>
+<span class="sd">            b: ivy.array([[0, 1]],[0, 1]])</span>
+<span class="sd">        }</span>
+<span class="sd">        </span>
+<span class="sd">        With: code:`ivy.Container` inputs:</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2, 5, 1]),\</span>
+<span class="sd">                              b=ivy.array([1, 5], [.2,.1]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.static_argsort(-1, True, False)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([2, 0, 1]),</span>
+<span class="sd">            b: ivy.array([[1, 0],\</span>
+<span class="sd">                            [0,1]])</span>
+<span class="sd">        }</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.native_array([2, 5, 1]),\</span>
+<span class="sd">                              b=ivy.array([1, 5], [.2,.1]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.static_argsort(-1, True, False)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([2, 0, 1]),</span>
+<span class="sd">            b: ivy.array([[1, 0],\</span>
+<span class="sd">                            [0,1]])</span>
+<span class="sd">        }</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;argsort&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
@@ -177,6 +267,65 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.argsort.</span>
+<span class="sd">        This method simply wraps the function, and </span>
+<span class="sd">        so the docstring for ivy.argsort also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self </span>
+<span class="sd">            input array or container. Should have a numeric data type.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis along which to sort. If set to ``-1``, the function </span>
+<span class="sd">            must sort along the last axis. Default: ``-1``.</span>
+<span class="sd">        descending</span>
+<span class="sd">            sort order. If ``True``, the returned indices sort ``x``</span>
+<span class="sd">            in descending order (by value). If ``False``, the </span>
+<span class="sd">            returned indices sort ``x`` in ascending order (by value).</span>
+<span class="sd">            Default: ``False``.</span>
+<span class="sd">        stable</span>
+<span class="sd">            sort stability. If ``True``, the returned indices must</span>
+<span class="sd">            maintain the relative order of ``x`` values which compare</span>
+<span class="sd">            as equal. If ``False``, the returned indices may or may not</span>
+<span class="sd">            maintain the relative order of ``x`` values which compare </span>
+<span class="sd">            as equal (i.e., the relative order of ``x`` values which </span>
+<span class="sd">            compare as equal is implementation-dependent).</span>
+<span class="sd">            Default: ``True``.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains,</span>
+<span class="sd">            otherwise key_chains will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). </span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to.</span>
+<span class="sd">            It must have a shape that the inputs broadcast to.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret </span>
+<span class="sd">            a container containing the index values of sorted array.</span>
+<span class="sd">            The returned array must have a data type determined </span>
+<span class="sd">            by :ref:`type-promotion`.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([7, 2, 1]),\</span>
+<span class="sd">                              b=ivy.array([3, 2]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.argsort(-1, True, False)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0, 1, 2]),</span>
+<span class="sd">            b: ivy.array([0, 1])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_argsort</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">axis</span><span class="p">,</span>

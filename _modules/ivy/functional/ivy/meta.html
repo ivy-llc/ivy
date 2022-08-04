@@ -618,7 +618,9 @@
         <span class="k">return</span> <span class="n">cost</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">rets</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">cost</span><span class="p">,</span> <span class="n">grads</span></div>
 
+
 <span class="n">fomaml_step</span><span class="o">.</span><span class="n">computes_gradients</span> <span class="o">=</span> <span class="kc">True</span>
+
 
 <div class="viewcode-block" id="reptile_step"><a class="viewcode-back" href="../../../../functional/ivy/meta/reptile_step.html#ivy.functional.ivy.meta.reptile_step">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">reptile_step</span><span class="p">(</span>
@@ -701,6 +703,7 @@
     <span class="k">if</span> <span class="n">return_inner_v</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">cost</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">rets</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">cost</span><span class="p">,</span> <span class="n">grads</span></div>
+
 
 <span class="n">reptile_step</span><span class="o">.</span><span class="n">computes_gradients</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -823,6 +826,7 @@
     <span class="k">if</span> <span class="n">stop_gradients</span><span class="p">:</span>
         <span class="n">cost</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">grads</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">rets</span><span class="p">)</span></div>
+
 
 <span class="n">maml_step</span><span class="o">.</span><span class="n">computes_gradients</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
