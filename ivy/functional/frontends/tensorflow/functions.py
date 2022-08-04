@@ -36,4 +36,4 @@ def hard_sigmoid(x):
     return x
 
 
-hard_sigmoid.unsupported_dtypes = {"torch": ("float16")}
+tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
