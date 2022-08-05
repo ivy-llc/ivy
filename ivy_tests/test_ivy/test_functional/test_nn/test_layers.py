@@ -736,6 +736,7 @@ def test_depthwise_conv2d(
         instance_method=instance_method,
         fw=fw,
         fn_name="depthwise_conv2d",
+        ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
         strides=stride,

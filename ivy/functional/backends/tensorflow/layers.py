@@ -53,13 +53,7 @@ def conv1d_transpose(
 ):
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
-    new_w = _deconv_length(
-        x.shape[1],
-        strides,
-        filters.shape[0],
-        padding,
-        dilations
-    )
+    new_w = _deconv_length(x.shape[1], strides, filters.shape[0], padding, dilations)
     res = tf.nn.conv1d_transpose(
         x, filters, [1, new_w, 1], strides, padding, "NWC", dilations
     )
@@ -68,7 +62,7 @@ def conv1d_transpose(
     return res
 
 
-conv1d_transpose.unsupported_devices = ("cpu", )
+conv1d_transpose.unsupported_devices = ("cpu",)
 
 
 def conv2d(
@@ -144,6 +138,9 @@ def depthwise_conv2d(
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
+
+
+depthwise_conv2d.unsupported_devices = ("cpu",)
 
 
 # noinspection PyDefaultArgument
