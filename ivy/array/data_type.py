@@ -81,9 +81,6 @@ class ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
-
-        Instance Method Examples
-        ------------------------
         With :code: `ivy.Array` instance method:
 
         >>> x = ivy.array([1, 2, 3])
