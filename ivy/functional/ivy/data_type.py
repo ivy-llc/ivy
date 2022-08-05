@@ -138,7 +138,7 @@ def astype(
     >>> print(x.astype(ivy.int32))
     {
         a: ivy.array([0, 1, 1]),
-        b: ivy.array([1, 0, 1])
+        b: ivy.array([3, 2, 1])
     }
 
     """
