@@ -366,19 +366,21 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         return to_wrap
     if isinstance(to_wrap, FunctionType):
         for attr in original.__dict__.keys():
-            if attr.startswith("__"):
+            # private attribute or decorator
+            if attr.startswith("__") or hasattr(ivy, attr):
                 continue
-            # attr is related to decorator
-            if hasattr(ivy, attr):
-                if not hasattr(to_wrap, attr):
-                    to_wrap = ivy.__dict__[attr](to_wrap)
-                continue
-            # attr is related to attribute
             setattr(to_wrap, attr, getattr(original, attr))
-        # if hasattr(original, "array_spec"):
-        #     to_wrap.array_spec = original.array_spec
-        # if hasattr(original, "computes_gradients"):
-        #     to_wrap.computes_gradients = original.computes_gradients
+        for attr in [
+            "infer_device",
+            "infer_dtype",
+            "outputs_to_ivy_arrays",
+            "inputs_to_native_arrays",
+            "inputs_to_ivy_arrays",
+            "handle_out_argument",
+            "handle_nestable",
+        ]:
+            if hasattr(original, attr) and not hasattr(to_wrap, attr):
+                to_wrap = getattr(ivy, attr)(to_wrap)
         # if hasattr(original, "infer_device") and not hasattr(to_wrap, "infer_device"):
         #     to_wrap = infer_device(to_wrap)
         # if hasattr(original, "infer_dtype") and not hasattr(to_wrap, "infer_dtype"):
