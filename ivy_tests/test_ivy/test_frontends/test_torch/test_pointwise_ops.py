@@ -134,7 +134,6 @@ def test_torch_abs(
     )
 
 
-
 # log
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -142,7 +141,8 @@ def test_torch_abs(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)
             )
-        )
+        ),
+        allow_inf=False,
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -172,6 +172,7 @@ def test_torch_log(
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
+
 
 # sin
 @given(
