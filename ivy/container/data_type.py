@@ -69,7 +69,6 @@ class ContainerWithDataTypes(ContainerBase):
             b: ivy.array([3, 2, 1])
         }
         """
-
         return ContainerBase.multi_map_in_static_method(
             "astype",
             x,
