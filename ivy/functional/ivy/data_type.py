@@ -906,9 +906,9 @@ def default_dtype(
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_float_dtype(item):
-            return ivy.default_float_dtype(item, as_native=as_native)
+            return ivy.default_float_dtype(input=item, as_native=as_native)
         elif ivy.is_int_dtype(item):
-            return ivy.default_int_dtype(item, as_native=as_native)
+            return ivy.default_int_dtype(input=item, as_native=as_native)
         elif as_native:
             return ivy.as_native_dtype("bool")
         else:
@@ -932,7 +932,7 @@ def default_int_dtype(
     *,
     input=None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = None,
+    as_native: Optional[bool] = False,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """Summary.
 
