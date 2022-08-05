@@ -196,7 +196,7 @@ def test_tensorflow_full(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_np.valid_numeric_dtypes)
+                set(ivy_tf.valid_numeric_dtypes)
             )
         ),
         num_arrays=2,
