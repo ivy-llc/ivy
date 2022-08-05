@@ -1241,7 +1241,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
              a rank which is ``n`` less than the rank of ``x``. The returned
             array must have a floating-point data type determined
             by :ref:`type-promotion`.
-
         """
         return ContainerBase.multi_map_in_static_method(
             "vector_norm",
@@ -1339,7 +1338,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
             array must have a rank which is ``n`` less than the rank of
             ``x``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
-
         """
         return self.static_vector_norm(
             self,
