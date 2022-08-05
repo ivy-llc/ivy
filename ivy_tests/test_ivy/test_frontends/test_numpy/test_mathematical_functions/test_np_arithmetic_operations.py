@@ -60,7 +60,6 @@ def test_numpy_add(
     )
 
 
-
 # subtract
 @given(
     dtype_and_x=helpers.dtype_and_values(
