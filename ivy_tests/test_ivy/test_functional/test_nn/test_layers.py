@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -774,8 +774,8 @@ def test_depthwise_conv2d(
     fw,
     device,
 ):
-
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    assume(not (fw == "tensorflow" and dilations > 1 and stride > 1))
     dtype = [dtype] * 2
     as_variable = [as_variable, as_variable]
     native_array = [native_array, native_array]
