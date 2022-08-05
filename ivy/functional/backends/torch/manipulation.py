@@ -177,12 +177,12 @@ squeeze.unsupported_dtypes = (
 
 
 def stack(
-    x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+    arrays: Union[Tuple[torch.Tensor], List[torch.Tensor]],
     axis: Optional[int] = 0,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.stack(x, axis, out=out)
+    ret = torch.stack(arrays, axis, out=out)
     return ret
 
 

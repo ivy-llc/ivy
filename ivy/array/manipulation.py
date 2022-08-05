@@ -260,7 +260,7 @@ class ArrayWithManipulation(abc.ABC):
 
     def stack(
         self: ivy.Array,
-        x: Union[
+        arrays: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
@@ -273,7 +273,7 @@ class ArrayWithManipulation(abc.ABC):
         wraps the function, and so the docstring for ivy.stack also applies
         to this method with minimal changes.
         """
-        return ivy.stack([self._data] + x, axis, out=out)
+        return ivy.stack([self._data] + arrays, axis, out=out)
 
     def clip(
         self: ivy.Array,

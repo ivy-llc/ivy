@@ -103,14 +103,14 @@ def squeeze(
 
 
 def stack(
-    x: Union[Tuple[JaxArray], List[JaxArray]],
+    arrays: Union[Tuple[JaxArray], List[JaxArray]],
     axis: Optional[int] = None,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
         axis = 0
-    ret = jnp.stack(x, axis=axis)
+    ret = jnp.stack(arrays, axis=axis)
     return ret
 
 

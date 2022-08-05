@@ -511,7 +511,7 @@ def test_stack(
         instance_method=instance_method,
         fw=fw,
         fn_name="stack",
-        x=arrays,
+        arrays=arrays,
         axis=axis,
     )
 

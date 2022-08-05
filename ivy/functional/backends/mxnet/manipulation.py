@@ -55,11 +55,11 @@ def expand_dims(
 
 
 def stack(
-    x: Union[Tuple[mx.nd.NDArray], List[mx.nd.NDArray]],
+    arrays: Union[Tuple[mx.nd.NDArray], List[mx.nd.NDArray]],
     axis: Optional[int] = 0,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
-    ret = mx.nd.stack(x, axis)
+    ret = mx.nd.stack(arrays, axis)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

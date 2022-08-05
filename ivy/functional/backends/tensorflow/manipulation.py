@@ -158,12 +158,12 @@ def squeeze(
 
 
 def stack(
-    x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
+    arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     axis: Optional[int] = 0,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.stack(x, axis)
+    ret = tf.experimental.numpy.stack(arrays, axis)
     return ret
 
 
