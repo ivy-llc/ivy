@@ -17,7 +17,7 @@ def _new_var_fun(x, *, axis, correction, dtype):
         - tf.cast(tf.expand_dims(mean, axis), dtype=dtype)
     )
     output = output ** 2
-    output = tf.keras.backend.sum(output, axis=axis) / divisor
+    output = tf.math.reduce_sum(output, axis=axis) / divisor
     return output
 
 
