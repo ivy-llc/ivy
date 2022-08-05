@@ -43,6 +43,7 @@ def concat(
         Tuple[Union[ivy.Array, ivy.NativeArray]],
         List[Union[ivy.Array, ivy.NativeArray]],
     ],
+    /,
     axis: Optional[int] = 0,
     *,
     out: Optional[ivy.Array] = None,
@@ -90,6 +91,7 @@ def concat(
 @handle_nestable
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     axis: Union[int, Tuple[int], List[int]],
     *,
     out: Optional[ivy.Array] = None,
@@ -211,6 +213,7 @@ def expand_dims(
 @handle_nestable
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
     out: Optional[ivy.Array] = None,
@@ -325,6 +328,7 @@ def flip(
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     axes: Tuple[int, ...],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -366,6 +370,7 @@ def permute_dims(
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    /,
     *,
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
@@ -471,6 +476,7 @@ def reshape(
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     shift: Union[int, Sequence[int]],
+    /,
     axis: Optional[Union[int, Sequence[int]]] = None,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -600,6 +606,7 @@ def roll(
 @handle_nestable
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     out: Optional[ivy.Array] = None,
@@ -695,6 +702,7 @@ def stack(
         Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray], List[ivy.NativeArray]
     ],
     axis: int = 0,
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -754,6 +762,7 @@ def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, ivy.Array, ivy.NativeArray],
     x_max: Union[Number, ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -879,6 +888,7 @@ def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     pad_width: Iterable[Tuple[int]],
     value: Number = 0,
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -918,6 +928,7 @@ def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     repeats: Union[int, Iterable[int]],
     axis: int = None,
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -983,6 +994,7 @@ def repeat(
 @handle_nestable
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
@@ -1068,6 +1080,7 @@ def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
     axis1: int,
+    /,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -1187,6 +1200,7 @@ def swapaxes(
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     reps: Iterable[int],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1204,7 +1218,7 @@ def tile(
 
     Returns
     -------
-    ret
+    retwaitin
         The tiled output array.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1221,6 +1235,7 @@ def tile(
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     pad_width: Iterable[Tuple[int]],
+    /,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
