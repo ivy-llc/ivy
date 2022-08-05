@@ -94,6 +94,7 @@ def test_torch_tan(
         out=None,
     )
 
+
 # abs
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -111,7 +112,12 @@ def test_torch_tan(
     native_array=st.booleans(),
 )
 def test_torch_abs(
-    dtype_and_x, as_variable, with_out, num_positional_args, native_array, fw,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -127,7 +133,8 @@ def test_torch_abs(
         out=None,
     )
 
-#log
+
+# log
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
