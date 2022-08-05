@@ -39,3 +39,7 @@ acos.unsupported_dtypes = ("float16",)
 
 def abs(input, *, out=None):
     return ivy.abs(input, out=out)
+
+
+def subtract(input, other, *, alpha=1, out=None):
+    return ivy.subtract(input, other * alpha, out=out)
