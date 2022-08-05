@@ -1037,14 +1037,14 @@ def default_uint_dtype(
     >>> ivy.default_uint_dtype()
     'uint16'
 
-    >>> ivy.default_uint_dtype(4294967346)
+    >>> ivy.default_uint_dtype(input=4294967346)
     'uint64'
 
     >>> ivy.default_uint_dtype(uint_dtype=ivy.UintDtype("uint8"))
     'uint8'
 
     >>> x = ivy.array([9,8], dtype="uint32")
-    >>> ivy.default_uint_dtype(x)
+    >>> ivy.default_uint_dtype(input=x)
     'uint32'
     """
     if ivy.exists(uint_dtype):
