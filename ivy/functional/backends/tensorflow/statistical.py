@@ -7,7 +7,7 @@ from typing import Tuple, Union, Optional, Sequence
 import ivy
 
 
-def __new_var_fun(x, *, axis, correction, dtype):
+def _new_var_fun(x, *, axis, correction, dtype):
     output = tf.cast(x, dtype)
     length = tf.cast(tf.shape(output)[axis], dtype)
     divisor = tf.cast(length - correction, dtype)
@@ -21,8 +21,8 @@ def __new_var_fun(x, *, axis, correction, dtype):
     return output
 
 
-def __new_std_fun(x, *, axis, correction, dtype):
-    return tf.math.sqrt(__new_var_fun(x, axis=axis, correction=correction, dtype=dtype))
+def _new_std_fun(x, *, axis, correction, dtype):
+    return tf.math.sqrt(_new_var_fun(x, axis=axis, correction=correction, dtype=dtype))
 
 
 # Array API Standard #
@@ -95,20 +95,20 @@ def std(
     axis = tuple(axis) if isinstance(axis, list) else axis
     dtype = x.dtype
     if isinstance(axis, tuple):
-        out = []
+        ret = []
         for i in axis:
-            out.append(__new_std_fun(
+            ret.append(_new_std_fun(
                 x,
                 axis=i,
                 correction=correction,
                 dtype=dtype).numpy()
                 )
-        out = tf.constant(out, dtype=dtype)
+        ret = tf.constant(ret, dtype=dtype)
     elif isinstance(axis, int):
-        out = __new_std_fun(x, axis=axis, correction=correction, dtype=dtype)
+        ret = _new_std_fun(x, axis=axis, correction=correction, dtype=dtype)
     else:
         size = tf.size(x).numpy()
-        out = __new_std_fun(
+        ret = _new_std_fun(
             tf.reshape(x, size),
             axis=0,
             correction=correction,
@@ -116,10 +116,10 @@ def std(
         )
 
     if keepdims:
-        shape = [1 if tf.rank(out) == 0 else out.shape[0]] \
+        shape = [1 if tf.rank(ret) == 0 else ret.shape[0]] \
                 + [1 for i in range(len(x.shape) - 1)]
-        out = tf.constant(out, shape=shape)
-    return out
+        ret = tf.constant(ret, shape=shape)
+    return ret
 
 
 def sum(
@@ -155,34 +155,34 @@ def var(
     axis = tuple(axis) if isinstance(axis, list) else axis
     dtype = x.dtype
     if isinstance(axis, tuple):
-        out = []
+        ret = []
         for i in axis:
-            out.append(__new_var_fun(
+            ret.append(_new_var_fun(
                 x,
                 axis=i,
                 correction=correction,
-                type=dtype).numpy()
+                dtype=dtype).numpy()
                 )
-        out = tf.constant(out, dtype=dtype)
+        ret = tf.constant(ret, dtype=dtype)
     elif isinstance(axis, int):
-        out = __new_var_fun(
+        ret = _new_var_fun(
             x,
             axis=axis,
             correction=correction,
             dtype=dtype)
     else:
         size = tf.size(x).numpy()
-        out = __new_var_fun(
+        ret = _new_var_fun(
             tf.reshape(x, size),
             axis=0,
             correction=correction,
             dtype=dtype)
 
     if keepdims:
-        shape = [1 if tf.rank(out) == 0 else out.shape[0]] \
+        shape = [1 if tf.rank(ret) == 0 else ret.shape[0]] \
                 + [1 for i in range(len(x.shape) - 1)]
-        out = tf.constant(out, shape=shape)
-    return out
+        ret = tf.constant(ret, shape=shape)
+    return ret
 
 
 # Extra #
