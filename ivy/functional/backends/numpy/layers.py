@@ -61,7 +61,7 @@ def conv1d(
         filters, shape=filter_shape, strides=filter_strides
     )
     x = np.transpose(x, (1, 0, 2, 3))
-    res = conv2d(x, filters, strides, padding, "NHWC", dilations)
+    res = conv2d(x, filters, strides, padding, data_format="NHWC", dilations=dilations)
     res = np.transpose(res, (1, 0, 2, 3))
     res = np.lib.stride_tricks.as_strided(
         res, shape=res.shape[1:], strides=res.strides[1:]
@@ -100,7 +100,13 @@ def conv1d_transpose(
     )
     x = np.transpose(x, (1, 0, 2, 3))
     res = conv2d_transpose(
-        x, filters, strides, padding, output_shape, "NHWC", dilations
+        x,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format="NHWC",
+        dilations=dilations,
     )
     res = np.transpose(res, (1, 0, 2, 3))
     res = np.lib.stride_tricks.as_strided(
@@ -236,7 +242,9 @@ def depthwise_conv2d(
     else:
         outputs = np.empty([x_shape[0], 0, int(out_height), int(out_width)], x.dtype)
     for i in range(depth):
-        output = conv2d(x[i], filters[i], strides, padding, "NHWC", dilations)
+        output = conv2d(
+            x[i], filters[i], strides, padding, data_format="NHWC", dilations=dilations
+        )
         if data_format == "NHWC":
             outputs = np.append(outputs, output, axis=-1)
         else:
@@ -308,7 +316,7 @@ def conv2d_transpose(
     filters = np.swapaxes(filters, 2, 3)
     x = np.flip(x, (1, 2))
     res = np.flip(
-        conv2d(x, filters, strides=1, padding="VALID", data_format="NHWC", dilations=1),
+        conv2d(x, filters, 1, "VALID", data_format="NHWC", dilations=1),
         (1, 2),
     )
     if data_format == "NCHW":
@@ -506,9 +514,7 @@ def conv3d_transpose(
     filters = np.swapaxes(filters, 3, 4)
     x = np.flip(x, (1, 2, 3))
     res = np.flip(
-        conv3d(
-            x, filters, strides=1, padding="VALID", data_format="NDHWC", dilations=1
-        ),
+        conv3d(x, filters, 1, "VALID", data_format="NDHWC", dilations=1),
         (1, 2, 3),
     )
     if data_format == "NCDHW":
