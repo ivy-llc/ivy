@@ -92,7 +92,7 @@ def tpu_is_available() -> bool:
 
 
 class Profiler(BaseProfiler):
-    def __init__(self, save_dir):
+    def __init__(self, save_dir: str):
         super(Profiler, self).__init__(save_dir)
         self._options = tf.profiler.experimental.ProfilerOptions(
             host_tracer_level=3, python_tracer_level=1, device_tracer_level=1

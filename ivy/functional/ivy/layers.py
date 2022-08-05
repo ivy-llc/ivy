@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List, Any
+from typing import Optional, Tuple, Union, List, Any, Callable
 
 # local
 import ivy
@@ -93,7 +93,12 @@ def linear(
 
 @handle_nestable
 def dropout(
-    x, prob, scale=True, dtype=None, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    scale: bool = True,
+    dtype: ivy.Dtype = None,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Randomly zeroes some elements of the input tensor with probability p using
     samples from a Bernoulli distribution.
@@ -191,6 +196,7 @@ def scaled_dot_product_attention(
     >>> print(result)
     ivy.array([[[4.04,5.03],[4.3,5.3],[4.3,5.3]]])
 
+
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
@@ -198,6 +204,14 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
     ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])
+
+    >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
+    >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
+    >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
+    >>> out = ivy.zeros(shape=(1, 3, 2))
+    >>> ivy.scaled_dot_product_attention(q, k, v, scale=1, out=out)
+    >>> print(out)
+    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -215,6 +229,15 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
     ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])
+
+    >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
+    >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
+    >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
+    >>> out = ivy.zeros(shape=(1, 3, 2))
+    >>> ivy.scaled_dot_product_attention(q, k, v, scale=1, out=out)
+    >>> print(out)
+    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
+
 
     With :code:`ivy.Container` input:
 
@@ -262,6 +285,14 @@ def scaled_dot_product_attention(
             [4.3 , 5.3 ]
         ]])
 
+    >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
+    >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
+    >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
+    >>> out = ivy.zeros(shape=(1, 3, 2))
+    >>> ivy.scaled_dot_product_attention(q, k, v, scale=1, out=out)
+    >>> print(out)
+    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
+
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
@@ -279,6 +310,7 @@ def scaled_dot_product_attention(
                     [4.3, 5.3]]])
     }
 
+
     Instance Method Examples
     ------------------------
 
@@ -291,6 +323,15 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)
     >>> print(result)
     ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])
+
+    >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
+    >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
+    >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
+    >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
+    >>> out = ivy.zeros(shape=(1, 3, 2))
+    >>> ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask, out=out)
+    >>> print(out)
+    ivy.array([[[nan, nan],[nan, nan],[nan, nan]]])
 
     With :code:`ivy.Container` input:
 
@@ -353,22 +394,24 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
-@to_native_arrays_and_back
+scaled_dot_product_attention.unsupported_dtypes = {'torch': ('float16', )}
+
+
 def multi_head_attention(
-    x,
+    x: Union[ivy.Array, ivy.NativeArray],
     scale,
     num_heads,
-    context=None,
-    mask=None,
-    to_q_fn=None,
-    to_kv_fn=None,
-    to_out_fn=None,
+    context: Union[ivy.Array, ivy.NativeArray] = None,
+    mask: Union[ivy.Array, ivy.NativeArray] = None,
+    to_q_fn: Callable = None,
+    to_kv_fn: Callable = None,
+    to_out_fn: Callable = None,
     to_q_v=None,
     to_kv_v=None,
     to_out_v=None,
     *,
-    out: Optional[ivy.Array] = None,
-):
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies multi-head attention to inputs x.
 
     Parameters
@@ -452,6 +495,9 @@ def multi_head_attention(
     return ret
 
 
+multi_head_attention.unsupported_dtypes = {"torch": ("float16", )}
+
+
 # Convolutions #
 
 
@@ -496,12 +542,36 @@ def conv1d(
 
     Examples
     --------
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC
     >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
     >>> result = ivy.conv1d(x, filters, (1,), 'SAME', 'NWC', (1,))
     >>> print(result)
     ivy.array([[[0.], [3.], [0.]]])
 
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[[1., 3.], [2., 4.], [5., 7]]])
+    >>> filters = ivy.native_array([[[0., 1.], [1., 0.]]])
+    >>> result = ivy.conv1d(x, filters, strides= (2,), padding='VALID')
+    >>> print(result)
+    ivy.array([[[3., 1.], \
+                [7., 5.]]])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a= ivy.array([[[1.2, 3.1, 4.8], [5.9, 2.2, 3.3],\
+                                       [10.8, 7.6, 4.9], [6.1, 2.2, 9.5]]]), \
+                          b= ivy.array([[[8.8, 7.7, 6.6], [1.1, 2.2, 3.5]]]))
+    >>> filters = ivy.array([[[1., 0., 1.], [0., 1., 0.], [1., 1., 0.]]])
+    >>> result  = ivy.conv1d(x, filters, strides= 3, padding='VALID')
+    >>> print(result)
+    {
+            a: ivy.array([[[6., 7.9, 1.2], \
+                         [15.6, 11.7, 6.1]]]), \
+            b: ivy.array([[[15.4, 14.3, 8.8]]])
+    }
     """
     return current_backend(x).conv1d(
         x, filters, strides, padding, data_format, dilations, out=out
@@ -775,9 +845,9 @@ def depthwise_conv2d(
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC
-    >>> a = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
-    >>> b = ivy.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]).unsqueeze(-1) / 9.0
+    >>> x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC
+    >>> a = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(-1)
+    >>> b = ivy.array([[1., 1., 1.], [1., 1., 1.], [1., 1., 1.]]).expand_dims(-1) / 9.0
     >>> filters = ivy.Container(a = a, b = b)
     >>> y = ivy.depthwise_conv2d(x, filters, strides=1, padding='VALID', dilations=2)
     >>> print(y)
@@ -795,10 +865,10 @@ def depthwise_conv2d(
     With a mix of :code:`ivy.Array`, code:`ivy.NativeArray`
     and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC
-    >>> y = ivy.native_array(ivy.eye(6, 6, 1).view(1, 6, 6, 1))
+    >>> x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC
+    >>> y = ivy.native_array(ivy.eye(6, 6).reshape((1, 6, 6, 1)))
     >>> inp = ivy.Container(x = x, y = y)
-    >>> filter = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
+    >>> filter = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(-1)
     >>> y = ivy.depthwise_conv2d(inp, filter, strides=1, padding='VALID', dilations=2)
     >>> print(y)
     {
@@ -806,10 +876,7 @@ def depthwise_conv2d(
                         [0.]],
                        [[0.],
                         [-6.]]]]),
-        y: ivy.array([[[[0.],
-                        [-6.]],
-                       [[2.],
-                        [0.]]]])
+        y: ivy.array([[[[-6.],[0.]],[[0.],[-6.]]]])
     }
 
     """
@@ -1101,3 +1168,6 @@ def lstm_update(
         hts_list.append(ivy.expand_dims(ht, -2))
 
     return ivy.concat(hts_list, -2), ct
+
+
+lstm_update.unsupported_dtypes = {'torch': ('float16', )}

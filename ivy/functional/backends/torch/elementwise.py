@@ -75,15 +75,11 @@ def bitwise_invert(
 bitwise_invert.support_native_out = True
 
 
-def isfinite(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def isfinite(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.isfinite(x)
 
 
-def isinf(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def isinf(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.isinf(x)
 
 
@@ -551,7 +547,6 @@ def remainder(
 ) -> torch.Tensor:
     x1, x2 = _cast_for_binary_op(x1, x2)
     ret = torch.remainder(x1, x2, out=out)
-    ret[torch.isnan(ret)] = 0
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
