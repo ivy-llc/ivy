@@ -42,10 +42,11 @@ def conv1d(
     filters: JaxArray,
     strides: int,
     padding: str,
+    /,
+    *,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
@@ -59,11 +60,12 @@ def conv1d_transpose(
     filters: JaxArray,
     strides: int,
     padding: str,
+    /,
+    *,
     output_shape=None,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
@@ -97,10 +99,11 @@ def conv2d(
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: int = 1,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -120,10 +123,11 @@ def depthwise_conv2d(
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: int = 1,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -149,11 +153,12 @@ def conv2d_transpose(
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     output_shape=None,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -193,10 +198,11 @@ def conv3d(
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NDHWC",
     dilations: int = 1,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
@@ -216,11 +222,12 @@ def conv3d_transpose(
     filters: JaxArray,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
+    /,
+    *,
     output_shape=None,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     data_format: str = "NDHWC",
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
