@@ -365,11 +365,13 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
+        # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator
             if attr.startswith("__") or hasattr(ivy, attr):
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
+        # wrap decorators (sequence matters)
         for attr in [
             "infer_device",
             "infer_dtype",
@@ -381,28 +383,4 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         ]:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
                 to_wrap = getattr(ivy, attr)(to_wrap)
-        # if hasattr(original, "infer_device") and not hasattr(to_wrap, "infer_device"):
-        #     to_wrap = infer_device(to_wrap)
-        # if hasattr(original, "infer_dtype") and not hasattr(to_wrap, "infer_dtype"):
-        #     to_wrap = infer_dtype(to_wrap)
-        # if hasattr(original, "outputs_to_ivy_arrays") and not hasattr(
-        #     to_wrap, "outputs_to_ivy_arrays"
-        # ):
-        #     to_wrap = outputs_to_ivy_arrays(to_wrap)
-        # if hasattr(original, "inputs_to_native_arrays") and not hasattr(
-        #     to_wrap, "inputs_to_native_arrays"
-        # ):
-        #     to_wrap = inputs_to_native_arrays(to_wrap)
-        # if hasattr(original, "inputs_to_ivy_arrays") and not hasattr(
-        #     to_wrap, "inputs_to_ivy_arrays"
-        # ):
-        #     to_wrap = inputs_to_ivy_arrays(to_wrap)
-        # if hasattr(original, "handle_out_argument") and not hasattr(
-        #     to_wrap, "handle_out_argument"
-        # ):
-        #     to_wrap = handle_out_argument(to_wrap)
-        # if hasattr(original, "handle_nestable") and not hasattr(
-        #     to_wrap, "handle_nestable"
-        # ):
-        #     to_wrap = handle_nestable(to_wrap)
     return to_wrap
