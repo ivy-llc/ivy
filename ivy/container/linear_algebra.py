@@ -1217,11 +1217,11 @@ class ContainerWithLinearAlgebra(ContainerBase):
             +------------------+--------------------------------+
             | -1               | 1./sum(1./abs(a))              |
             +------------------+--------------------------------+
-            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | # noqa
+            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | # noqa
             +------------------+--------------------------------+
             | -inf             | min(abs(a))                    |
             +------------------+--------------------------------+
-            | (int,float < 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |
+            | (int,float < 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |
             +------------------+--------------------------------+
 
             Default: ``2``.
@@ -1241,6 +1241,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
              a rank which is ``n`` less than the rank of ``x``. The returned
             array must have a floating-point data type determined
             by :ref:`type-promotion`.
+
         """
         return ContainerBase.multi_map_in_static_method(
             "vector_norm",
@@ -1315,11 +1316,11 @@ class ContainerWithLinearAlgebra(ContainerBase):
             +------------------+--------------------------------+
             | -1               | 1./sum(1./abs(a))              |
             +------------------+--------------------------------+
-            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | # noqa
+            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | # noqa
             +------------------+--------------------------------+
             | -inf             | min(abs(a))                    |
             +------------------+--------------------------------+
-            | (int,float < 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |
+            | (int,float < 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |
             +------------------+--------------------------------+
 
             Default: ``2``.
@@ -1338,6 +1339,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             array must have a rank which is ``n`` less than the rank of
             ``x``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
+
         """
         return self.static_vector_norm(
             self,
