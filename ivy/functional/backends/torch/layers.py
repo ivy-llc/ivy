@@ -62,6 +62,9 @@ def conv1d(
     return res
 
 
+conv1d.unsupported_dtypes = ("float16",)
+
+
 # noinspection PyUnresolvedReferences
 def conv1d_transpose(
     x,
@@ -78,13 +81,7 @@ def conv1d_transpose(
     filters = filters.permute(2, 1, 0)
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
-    new_w = _deconv_length(
-        x.shape[2],
-        strides,
-        filter_shape[0],
-        padding,
-        dilations
-    )
+    new_w = _deconv_length(x.shape[2], strides, filter_shape[0], padding, dilations)
     output_shape = [new_w]
     not_valid_h = False
     if padding == "VALID":
@@ -101,13 +98,7 @@ def conv1d_transpose(
             pad_w -= 1
             not_valid_h = True
         pad_w_ = pad_w // 2
-        out_w = _out_shape(
-            x.shape[2],
-            strides,
-            pad_w_,
-            dilations,
-            filters.shape[2]
-        )
+        out_w = _out_shape(x.shape[2], strides, pad_w_, dilations, filters.shape[2])
         padding_list = [pad_w_]
         output_padding = [max(new_w - out_w, 0)]
     else:
@@ -122,7 +113,7 @@ def conv1d_transpose(
         strides,
         padding_list,
         dilation=dilations,
-        output_padding=output_padding
+        output_padding=output_padding,
     )
     if not_valid_h:
         res = res[:, :, 0:-1]
@@ -295,10 +286,16 @@ def depthwise_conv2d(
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
 
-    filter_shape = list(filters.shape[0:2])
+    f_w_after_dilation = filters.shape[1] + (
+        (dilations[1] - 1) * (filters.shape[1] - 1)
+    )
+    f_h_after_dilation = filters.shape[0] + (
+        (dilations[0] - 1) * (filters.shape[0] - 1)
+    )
+    filter_shape = [f_h_after_dilation, f_w_after_dilation]
     dims_in = filters.shape[-1]
     filters = torch.unsqueeze(filters, -1)
-    filters = filters.permute(2, 3, 0, 1)
+    filters = filters.permute(3, 2, 0, 1)
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
@@ -383,9 +380,9 @@ def conv3d(
                 pad_h // 2,
                 pad_h - pad_h // 2,
                 pad_d // 2,
-                pad_d - pad_d // 2
+                pad_d - pad_d // 2,
             ],
-            value=0
+            value=0,
         )
     elif padding != "VALID":
         raise Exception(

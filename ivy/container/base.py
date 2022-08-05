@@ -2189,11 +2189,11 @@ class ContainerBase(dict, abc.ABC):
         with open(json_filepath, "w+") as json_data_file:
             json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
 
-    def to_list(self):
+    def to_nested_list(self):
         return_list = list()
         for key, value in self.items():
             if isinstance(value, ivy.Container):
-                return_list.append(value.to_list())
+                return_list.append(value.to_nested_list())
             elif value is not None and key != "_f":
                 return_list.append(value)
         return return_list
