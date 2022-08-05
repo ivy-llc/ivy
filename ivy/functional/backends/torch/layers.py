@@ -286,10 +286,16 @@ def depthwise_conv2d(
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
 
-    filter_shape = list(filters.shape[0:2])
+    f_w_after_dilation = filters.shape[1] + (
+        (dilations[1] - 1) * (filters.shape[1] - 1)
+    )
+    f_h_after_dilation = filters.shape[0] + (
+        (dilations[0] - 1) * (filters.shape[0] - 1)
+    )
+    filter_shape = [f_h_after_dilation, f_w_after_dilation]
     dims_in = filters.shape[-1]
     filters = torch.unsqueeze(filters, -1)
-    filters = filters.permute(2, 3, 0, 1)
+    filters = filters.permute(3, 2, 0, 1)
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
