@@ -207,8 +207,6 @@ def _permute_dims_helper(draw):
 
 
 # permute_dims
-
-
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
