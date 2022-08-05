@@ -180,7 +180,8 @@ def broadcast_to(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Broadcasts an array to a specified shape.
+    """
+    Broadcasts an array to a specified shape.
 
     Parameters
     ----------
@@ -188,19 +189,54 @@ def broadcast_to(
         array to broadcast.
     shape
         array shape. Must be compatible with x (see Broadcasting). If
-        the array is incompatible with the specified shape, the function should raise an
-        exception.
+        the array is incompatible with the specified shape, the function
+        should raise an exception.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to. It must have a
+        shape that the inputs broadcast to.
 
     Returns
     -------
     ret
         an array having a specified shape. Must have the same data type as x.
 
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.broadcast_to(x, (3, 3))
+    >>> print(y)
+    ivy.array([[1, 2, 3],
+               [1, 2, 3],
+               [1, 2, 3]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0.1 , 0.3])
+    >>> y = ivy.broadcast_to(x, (3, 2))
+    >>> print(y)
+    ivy.array([[0.1, 0.3],
+               [0.1, 0.3],
+               [0.1, 0.3]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+        b=ivy.array([4, 5, 6]))
+    >>> y = ivy.broadcast_to(x, (3, 3))
+    >>> print(y)
+    {
+        a: ivy.array([[1, 2, 3],
+                      [1, 2, 3],
+                      [1, 2, 3]]),
+        b: ivy.array([[4, 5, 6],
+                      [4, 5, 6],
+                      [4, 5, 6]])
+    }
     """
-    return current_backend(x).broadcast_to(x, shape, out=out)
+    return current_backend(x).broadcast_to(x, shape)
 
 
 @inputs_to_native_arrays
@@ -1761,11 +1797,19 @@ def promote_types_of_inputs(
     otherwise it might give unexpected results.
     """
     try:
-        x1, x2 = ivy.asarray(x1), ivy.asarray(x2)
-        if hasattr(x1, "dtype") and hasattr(x2, "dtype"):
+        if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
+            not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
+        ):
             promoted = promote_types(x1.dtype, x2.dtype)
             x1 = ivy.asarray(x1, dtype=promoted)
             x2 = ivy.asarray(x2, dtype=promoted)
+        else:
+            if hasattr(x1, "dtype"):
+                x1 = ivy.asarray(x1)
+                x2 = ivy.asarray(x2, dtype=x1.dtype)
+            else:
+                x1 = ivy.asarray(x1, dtype=x2.dtype)
+                x2 = ivy.asarray(x2)
         x1, x2 = ivy.to_native(x1), ivy.to_native(x2)
         return x1, x2
     except Exception:
