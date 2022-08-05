@@ -105,6 +105,7 @@ def test_linspace(
         axis=axis,
         device=device,
         dtype=dtype[0],
+        rtol_=1e-3,
     )
 
 
