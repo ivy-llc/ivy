@@ -397,6 +397,30 @@ like <a class="reference external" href="https://github.com/unifyai/ivy/blob/204
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/func_wrapper.py#L361">handle_out_argument</a>
 wrapping, but we opt to implement this in the compositional function itself,
 due to point 1 mentioned above.</p>
+<p><strong>Mixed Functions</strong></p>
+<p>As explained in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section, <em>mixed</em> functions can effectively
+behave as either compositional or primary functions, depending on the backend
+that is selected.</p>
+<p>Unlike <em>compositional</em> arguments, where the <code class="code docutils literal notranslate"><span class="pre">handle_out_argument</span></code> decorator is not
+included, this decorator <em>should</em> be included for <em>mixed</em> functions. This decorator is
+needed in order to ensure the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is handled correctly when the backend
+<em>does</em> include a backend-specific implementation, which itself may or may not handle the
+<code class="code docutils literal notranslate"><span class="pre">out</span></code> argument explicitly. In such cases, the <em>mixed</em> function behaves like a
+<em>primary</em> function. If the backend-specific implementation does not handle the
+<code class="code docutils literal notranslate"><span class="pre">out</span></code> argument explicitly (there is no attribute <code class="code docutils literal notranslate"><span class="pre">support_native_out</span></code>
+specified on the backend function), then it will need to be handled <a class="reference external" href="https://github.com/unifyai/ivy/blob/588618fe04de21f79d68a8f6cbb48ab3402c6905/ivy/func_wrapper.py#L287">in the decorator</a>.</p>
+<p>However, the inclusion of this decorator means that in cases where the <em>mixed</em> function
+is called compositionally (there is no backend implementation), then the <code class="code docutils literal notranslate"><span class="pre">out</span></code>
+argument will also be handled <a class="reference external" href="https://github.com/unifyai/ivy/blob/588618fe04de21f79d68a8f6cbb48ab3402c6905/ivy/func_wrapper.py#L287">in the decorator</a>, this time because of the lack of the
+<code class="code docutils literal notranslate"><span class="pre">support_native_out</span></code> attribute found on the compositional implementation. But this
+is not ideal. All compositional implementations are fully capable of handling the
+<code class="code docutils literal notranslate"><span class="pre">out</span></code> argument explicitly, and so handling it <a class="reference external" href="https://github.com/unifyai/ivy/blob/588618fe04de21f79d68a8f6cbb48ab3402c6905/ivy/func_wrapper.py#L287">in the decorator</a> will likely be
+less efficient, and prevent us from leveraging backend-specific in-place optimizations
+where they might exist when calling the individual Ivy functions of the compositional
+implementation.</p>
+<p>Therefore, we always add the <code class="code docutils literal notranslate"><span class="pre">support_native_out</span></code> attribute to <em>mixed</em> functions,
+to ensure that the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is always handled directly by the compositional
+implementation, rather than being handled <a class="reference external" href="https://github.com/unifyai/ivy/blob/588618fe04de21f79d68a8f6cbb48ab3402c6905/ivy/func_wrapper.py#L287">in the decorator</a>.</p>
 </section>
 <section id="copy-argument">
 <h2>copy argument<a class="headerlink" href="#copy-argument" title="Permalink to this heading"></a></h2>
