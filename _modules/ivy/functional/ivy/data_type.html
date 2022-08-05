@@ -309,8 +309,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Broadcasts an array to a specified shape.</span>
+    <span class="sd">&quot;&quot;&quot;Broadcasts an array to a specified shape.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -318,54 +317,19 @@
 <span class="sd">        array to broadcast.</span>
 <span class="sd">    shape</span>
 <span class="sd">        array shape. Must be compatible with x (see Broadcasting). If</span>
-<span class="sd">        the array is incompatible with the specified shape, the function</span>
-<span class="sd">        should raise an exception.</span>
+<span class="sd">        the array is incompatible with the specified shape, the function should raise an</span>
+<span class="sd">        exception.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a</span>
-<span class="sd">        shape that the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array having a specified shape. Must have the same data type as x.</span>
 
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.broadcast_to(x, (3, 3))</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[1, 2, 3],</span>
-<span class="sd">               [1, 2, 3],</span>
-<span class="sd">               [1, 2, 3]])</span>
-
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0.1 , 0.3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.broadcast_to(x, (3, 2))</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[0.1, 0.3],</span>
-<span class="sd">               [0.1, 0.3],</span>
-<span class="sd">               [0.1, 0.3]])</span>
-
-<span class="sd">    With :code:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">        b=ivy.array([4, 5, 6]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.broadcast_to(x, (3, 3))</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([[1, 2, 3],</span>
-<span class="sd">                      [1, 2, 3],</span>
-<span class="sd">                      [1, 2, 3]]),</span>
-<span class="sd">        b: ivy.array([[4, 5, 6],</span>
-<span class="sd">                      [4, 5, 6],</span>
-<span class="sd">                      [4, 5, 6]])</span>
-<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="can_cast"><a class="viewcode-back" href="../../../../functional/ivy/data_type/can_cast/can_cast_functional.html#ivy.functional.ivy.data_type.can_cast">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
@@ -493,8 +457,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1.3,2.1,3.4], dtype=ivy.float64)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.finfo(x)</span>
-<span class="sd">    finfo(resolution=1e-15, min=-1.7976931348623157e+308, /</span>
-<span class="sd">    max=1.7976931348623157e+308, dtype=float64)</span>
+<span class="sd">    finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
@@ -509,8 +472,7 @@
 <span class="sd">    &gt;&gt;&gt; ivy.finfo(c)</span>
 <span class="sd">    {</span>
 <span class="sd">        x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),</span>
-<span class="sd">        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /</span>
-<span class="sd">           max=1.7976931348623157e+308, dtype=float64)</span>
+<span class="sd">        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
 <span class="sd">    }</span>
 
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
@@ -525,8 +487,7 @@
 <span class="sd">                          y=ivy.array([1.3,2.1,3.4], dtype=ivy.float16))</span>
 <span class="sd">    &gt;&gt;&gt; c.finfo()</span>
 <span class="sd">    {</span>
-<span class="sd">        x: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /</span>
-<span class="sd">                 max=1.7976931348623157e+308, dtype=float64)</span>
+<span class="sd">        x: finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
 <span class="sd">        y: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),</span>
 <span class="sd">    }</span>
 
@@ -1429,9 +1390,9 @@
 <span class="sd">    ret</span>
 <span class="sd">        &quot;True&quot; if the input data type is a bool, otherwise &quot;False&quot;.</span>
 
-<span class="sd">    Both the description and the type hints above assumes an array input for</span>
-<span class="sd">    simplicity but this function is *nestable*, and therefore also accepts</span>
-<span class="sd">    :code:`ivy.Container` instances in place of any of the arguments.</span>
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
@@ -1474,9 +1435,9 @@
 <span class="sd">    ret</span>
 <span class="sd">        &quot;True&quot; if the input data type is an integer, otherwise &quot;False&quot;.</span>
 
-<span class="sd">    Both the description and the type hints above assumes an array input for</span>
-<span class="sd">    simplicity but this function is *nestable*, and therefore also accepts</span>
-<span class="sd">    :code:`ivy.Container` instances in place of any of the arguments.</span>
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1920,8 +1881,8 @@
     <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Number</span><span class="p">]],</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Number</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Promotes the dtype of the given native array inputs to a common dtype</span>
+
+    <span class="sd">&quot;&quot;&quot;Promotes the dtype of the given native array inputs to a common dtype</span>
 <span class="sd">    based on type promotion rules. While passing float or integer values or any</span>
 <span class="sd">    other non-array input to this function, it should be noted that the return will</span>
 <span class="sd">    be an array-like object. Therefore, outputs from this function should be used</span>
@@ -1929,19 +1890,11 @@
 <span class="sd">    otherwise it might give unexpected results.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">)</span>
-        <span class="p">):</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">):</span>
             <span class="n">promoted</span> <span class="o">=</span> <span class="n">promote_types</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">x2</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
             <span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">promoted</span><span class="p">)</span>
             <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">promoted</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">):</span>
-                <span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
-                <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x1</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x2</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
         <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>

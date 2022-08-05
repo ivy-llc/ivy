@@ -227,7 +227,7 @@
     <span class="n">scale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Randomly zeroes some elements of the input tensor with probability p using</span>
 <span class="sd">    samples from a Bernoulli distribution.</span>
@@ -523,10 +523,7 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;... q k, ... k f -&gt; ... q f&quot;</span><span class="p">,</span> <span class="n">attn</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<span class="n">scaled_dot_product_attention</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
-    <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
-<span class="p">}</span>
+<span class="n">scaled_dot_product_attention</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">,</span> <span class="p">)}</span>
 
 
 <div class="viewcode-block" id="multi_head_attention"><a class="viewcode-back" href="../../../../functional/ivy/layers/multi_head_attention.html#ivy.functional.ivy.layers.multi_head_attention">[docs]</a><span class="k">def</span> <span class="nf">multi_head_attention</span><span class="p">(</span>
@@ -627,10 +624,7 @@
     <span class="k">return</span> <span class="n">ret</span></div>
 
 
-<span class="n">multi_head_attention</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
-    <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
-<span class="p">}</span>
+<span class="n">multi_head_attention</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="p">)}</span>
 
 
 <span class="c1"># Convolutions #</span>
@@ -859,13 +853,13 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">conv2d_transpose</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
-    <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">filters</span><span class="p">,</span>
+    <span class="n">strides</span><span class="p">,</span>
+    <span class="n">padding</span><span class="p">,</span>
     <span class="n">output_shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
-    <span class="n">dilations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
@@ -1305,7 +1299,7 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">hts_list</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">ct</span></div>
 
 
-<span class="n">lstm_update</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
+<span class="n">lstm_update</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">,</span> <span class="p">)}</span>
 </pre></div>
 
            </div>

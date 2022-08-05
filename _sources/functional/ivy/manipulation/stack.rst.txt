@@ -5,6 +5,8 @@ stack
 
 .. autofunction:: ivy.array.array_methods.stack
 
+.. autofunction:: ivy.container.container_methods.static_stack
+
 .. autofunction:: ivy.container.container_methods.stack
 |
 | **Supported Frameworks:**
@@ -35,4 +37,5 @@ stack
    stack/stack_functional.rst
    stack/stack_array.rst
    stack/stack_container.rst
+   stack/static_stack_container.rst
 

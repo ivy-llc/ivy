@@ -6,6 +6,8 @@ zero_pad
 .. autofunction:: ivy.array.array_methods.zero_pad
 
 .. autofunction:: ivy.container.container_methods.zero_pad
+
+.. autofunction:: ivy.container.container_methods.static_zero_pad
 |
 | **Supported Frameworks:**
 
@@ -33,6 +35,7 @@ zero_pad
    :caption: zero_pad
 
    zero_pad/zero_pad_functional.rst
+   zero_pad/static_zero_pad_container.rst
    zero_pad/zero_pad_array.rst
    zero_pad/zero_pad_container.rst
 

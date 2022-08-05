@@ -127,7 +127,8 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.array.manipulation</h1><div class="highlight"><pre>
-<span></span><span class="c1"># global</span>
+<span></span><span class="c1"># For Review</span>
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
@@ -149,6 +150,27 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.concat. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.concat also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input arrays to join. The arrays must have the same shape, except in the dimension specified by axis.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis along which the arrays will be joined. If axis is None, arrays must be flattened before concatenation. If axis is negative, axis on which to join arrays is determined by counting from the top. Default: 0.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">            inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an output array containing the concatenated values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">]</span> <span class="o">+</span> <span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithManipulation.split"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span>
@@ -189,6 +211,12 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.flip. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.flip also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithManipulation.expand_dims"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.expand_dims">[docs]</a>    <span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span>
@@ -237,8 +265,8 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.roll. This method simply wraps the</span>
-<span class="sd">        function, and so the docstring for ivy.roll also applies to this method</span>
+<span class="sd">        ivy.Array instance method variant of ivy.reshape. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.reshape also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
@@ -283,6 +311,12 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.permute_dims. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.permute_dims also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">permute_dims</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithManipulation.roll"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.roll">[docs]</a>    <span class="k">def</span> <span class="nf">roll</span><span class="p">(</span>
@@ -355,7 +389,7 @@
 
 <div class="viewcode-block" id="ArrayWithManipulation.stack"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.stack">[docs]</a>    <span class="k">def</span> <span class="nf">stack</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+        <span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
             <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
             <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]],</span>
         <span class="p">],</span>
@@ -363,7 +397,12 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.stack. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.stack also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">]</span> <span class="o">+</span> <span class="n">arrays</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithManipulation.clip"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.clip">[docs]</a>    <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
@@ -373,8 +412,8 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.roll. This method simply wraps the</span>
-<span class="sd">        function, and so the docstring for ivy.roll also applies to this method</span>
+<span class="sd">        ivy.Array instance method variant of ivy.clip. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.clip also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
@@ -431,6 +470,11 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.tile. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.tile also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="n">reps</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithManipulation.constant_pad"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.constant_pad">[docs]</a>    <span class="k">def</span> <span class="nf">constant_pad</span><span class="p">(</span>
@@ -440,6 +484,11 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.constant_pad. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.split also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">constant_pad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">pad_width</span><span class="o">=</span><span class="n">pad_width</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithManipulation.zero_pad"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.zero_pad">[docs]</a>    <span class="k">def</span> <span class="nf">zero_pad</span><span class="p">(</span>
@@ -448,6 +497,11 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.zero_pad. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.zero_pad also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zero_pad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">pad_width</span><span class="o">=</span><span class="n">pad_width</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithManipulation.swapaxes"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.swapaxes">[docs]</a>    <span class="k">def</span> <span class="nf">swapaxes</span><span class="p">(</span>
@@ -457,6 +511,11 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.swap_axes. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.split also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis0</span><span class="o">=</span><span class="n">axis0</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="n">axis1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 
