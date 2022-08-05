@@ -67,16 +67,16 @@ def test_docstrings(backend):
         "log1p",
     ]
     currently_being_worked_on = [
-        "logical_and",
-        "matrix_rank",
-        "logical_and",
-        "to_list",
-        "stable_divide",
-        "conv2d",
-        "depthwise_conv2d",
-        "svd",
-        "svdvals",
-        "squeeze",
+        # "logical_and",
+        # "matrix_rank",
+        # "logical_and",
+        # "to_list",
+        # "stable_divide",
+        # "conv2d",
+        # "depthwise_conv2d",
+        # "svd",
+        # "svdvals",
+        # "squeeze",
     ]
 
     # comment out the line below in future to check for the functions in temp skip list
