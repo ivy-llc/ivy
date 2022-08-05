@@ -381,7 +381,7 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
     {
         x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),
         y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
-        max=1.7976931348623157e+308, dtype=float64)
+           max=1.7976931348623157e+308, dtype=float64)
     }
 
     Using :code:`ivy.Array` instance method:
