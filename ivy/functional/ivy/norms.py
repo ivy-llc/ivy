@@ -60,7 +60,7 @@ def layer_norm(
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> y = ivy.zeros((2, 3))
     >>> ivy.layer_norm(x, [0], out=y)
-    >>> print(norm)
+    >>> print(y)
     ivy.array([[-1., -1., -1.],
                [ 1.,  1.,  1.]])
 
