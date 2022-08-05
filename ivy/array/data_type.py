@@ -104,6 +104,19 @@ class ArrayWithDataTypes(abc.ABC):
         return ivy.is_bool_dtype(self._data)
 
     def is_float_dtype(self: ivy.Array) -> bool:
+        """
+        `ivy.Array` instance method variant of `ivy.is_float_dtype`. This method simply
+        checks to see if the array is of type `float`.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        ret
+            Boolean value of whether the array is of type `float`.
+        """
         return ivy.is_float_dtype(self._data)
 
     def is_int_dtype(self: ivy.Array) -> bool:
