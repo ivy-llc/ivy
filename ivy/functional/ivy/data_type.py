@@ -364,7 +364,8 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
 
     >>> x = ivy.array([1.3,2.1,3.4], dtype=ivy.float64)
     >>> ivy.finfo(x)
-    finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)
+    finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
+    max=1.7976931348623157e+308, dtype=float64)
 
     With :code:`ivy.NativeArray` input:
 
@@ -379,7 +380,8 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
     >>> ivy.finfo(c)
     {
         x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),
-        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)
+        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
+        max=1.7976931348623157e+308, dtype=float64)
     }
 
     Using :code:`ivy.Array` instance method:
@@ -394,7 +396,8 @@ def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Finfo:
                           y=ivy.array([1.3,2.1,3.4], dtype=ivy.float16))
     >>> c.finfo()
     {
-        x: finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)
+        x: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
+                 max=1.7976931348623157e+308, dtype=float64)
         y: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),
     }
 
@@ -1297,9 +1300,9 @@ def is_bool_dtype(
     ret
         "True" if the input data type is a bool, otherwise "False".
 
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-    instances in place of any of the arguments.
+    Both the description and the type hints above assumes an array input for
+    simplicity but this function is *nestable*, and therefore also accepts
+    :code:`ivy.Container` instances in place of any of the arguments.
 
     """
     if ivy.is_array(dtype_in):
@@ -1342,9 +1345,9 @@ def is_int_dtype(
     ret
         "True" if the input data type is an integer, otherwise "False".
 
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-    instances in place of any of the arguments.
+    Both the description and the type hints above assumes an array input for
+    simplicity but this function is *nestable*, and therefore also accepts
+    :code:`ivy.Container` instances in place of any of the arguments.
 
     Examples
     --------
