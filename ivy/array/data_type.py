@@ -10,12 +10,11 @@ class ArrayWithDataTypes(abc.ABC):
     def astype(
         self: ivy.Array, dtype: ivy.Dtype, copy: bool = True, out: ivy.Array = None
     ) -> ivy.Array:
-        """
-        Copies an array to a specified data type irrespective of :ref:`type-promotion`
-        rules.
+        """Copies an array to a specified data type irrespective of
+        :ref:`type-promotion` rules.
 
         .. note::
-        Casting floating-point ``NaN`` and ``infinity`` values to integral data types 
+        Casting floating-point ``NaN`` and ``infinity`` values to integral data types
         is not specified and is implementation-dependent.
 
         .. note::
@@ -33,24 +32,23 @@ class ArrayWithDataTypes(abc.ABC):
         dtype
             desired data type.
         copy
-            specifies whether to copy an array when the specified ``dtype`` matches 
-            the data type of the input array ``x``. If ``True``, a newly allocated 
+            specifies whether to copy an array when the specified ``dtype`` matches
+            the data type of the input array ``x``. If ``True``, a newly allocated
             array must always be returned. If ``False`` and the specified ``dtype``
             matches the data type of the input array, the input array must be returned;
             otherwise, a newly allocated must be returned. Default: ``True``.
         out
-            optional output array, for writing the result to. It must have a shape 
+            optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array having the specified data type. The returned array must have 
+            an array having the specified data type. The returned array must have
             the same shape as ``x``.
 
         Examples
         --------
-
         Using :code:`ivy.Array` instance method:
 
         >>> x = ivy.array([[-1, -2], [0, 2]])

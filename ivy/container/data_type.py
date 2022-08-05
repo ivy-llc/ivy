@@ -22,9 +22,8 @@ class ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Copies an array to a specified data type irrespective of :ref:`type-promotion`
-        rules.
+        """Copies an array to a specified data type irrespective of 
+        :ref:`type-promotion` rules.
 
         .. note::
         Casting floating-point ``NaN`` and ``infinity`` values to integral data types 
@@ -62,15 +61,15 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-
-        >>> c = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
+        >>> c = ivy.Container(a=ivy.array([False,True,True]), \
+                                 b=ivy.array([3.14, 2.718, 1.618]))
         >>> ivy.Container.static_astype(c, ivy.int32)
         {
             a: ivy.array([0, 1, 1]),
             b: ivy.array([3, 2, 1])
         }
         """
-    
+
         return ContainerBase.multi_map_in_static_method(
             "astype",
             x,
@@ -94,9 +93,8 @@ class ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Copies an array to a specified data type irrespective of :ref:`type-promotion`
-        rules.
+        """Copies an array to a specified data type irrespective of 
+        :ref:`type-promotion` rules.
 
         .. note::
         Casting floating-point ``NaN`` and ``infinity`` values to integral data types
@@ -134,7 +132,6 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-
         Using :code:`ivy.Container` instance method:
         
         >>> x = ivy.Container(a=ivy.array([False,True,True]), \
