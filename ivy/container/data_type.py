@@ -22,12 +22,13 @@ class ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copies an array to a specified data type irrespective of :ref:`type-promotion`
+        """
+        Copies an array to a specified data type irrespective of :ref:`type-promotion`
         rules.
 
         .. note::
-        Casting floating-point ``NaN`` and ``infinity`` values to integral data types is
-        not specified and is implementation-dependent.
+        Casting floating-point ``NaN`` and ``infinity`` values to integral data types 
+        is not specified and is implementation-dependent.
 
         .. note::
         When casting a boolean input array to a numeric data type, a value of ``True``
@@ -44,26 +45,26 @@ class ContainerWithDataTypes(ContainerBase):
         dtype
             desired data type.
         copy
-            specifies whether to copy an array when the specified ``dtype`` matches the data
-            type of the input array ``x``. If ``True``, a newly allocated array must always
-            be returned. If ``False`` and the specified ``dtype`` matches the data type of
-            the input array, the input array must be returned; otherwise, a newly allocated
-            must be returned. Default: ``True``.
+            specifies whether to copy an array when the specified ``dtype`` matches 
+            the data type of the input array ``x``. If ``True``, a newly allocated 
+            array must always be returned. If ``False`` and the specified ``dtype``
+            matches the data type of the input array, the input array must be returned;
+            otherwise, a newly allocated must be returned. Default: ``True``.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array having the specified data type. The returned array must have the same
-            shape as ``x``.
+            an array having the specified data type. The returned array must have 
+            the same shape as ``x``.
 
         Examples
         --------
 
         >>> c = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
-        >>> ivy.Container.static_astype(c, int)
+        >>> ivy.Container.static_astype(c, ivy.int32)
         {
             a: ivy.array([0, 1, 1]),
             b: ivy.array([3, 2, 1])
@@ -93,12 +94,13 @@ class ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copies an array to a specified data type irrespective of :ref:`type-promotion`
+        """
+        Copies an array to a specified data type irrespective of :ref:`type-promotion`
         rules.
 
         .. note::
-        Casting floating-point ``NaN`` and ``infinity`` values to integral data types is
-        not specified and is implementation-dependent.
+        Casting floating-point ``NaN`` and ``infinity`` values to integral data types
+        is not specified and is implementation-dependent.
 
         .. note::
         When casting a boolean input array to a numeric data type, a value of ``True``
@@ -115,20 +117,20 @@ class ContainerWithDataTypes(ContainerBase):
         dtype
             desired data type.
         copy
-            specifies whether to copy an array when the specified ``dtype`` matches the data
-            type of the input array ``x``. If ``True``, a newly allocated array must always
-            be returned. If ``False`` and the specified ``dtype`` matches the data type of
-            the input array, the input array must be returned; otherwise, a newly allocated
-            must be returned. Default: ``True``.
+            specifies whether to copy an array when the specified ``dtype`` matches 
+            the data type of the input array ``x``. If ``True``, a newly allocated 
+            array must always be returned. If ``False`` and the specified ``dtype``
+            matches the data type of the input array, the input array must be returned;
+            otherwise, a newly allocated must be returned. Default: ``True``.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape
+             that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array having the specified data type. The returned array must have the same
-            shape as ``x``.
+            an array having the specified data type. The returned array must have 
+            the same shape as ``x``.
 
         Examples
         --------
@@ -137,10 +139,10 @@ class ContainerWithDataTypes(ContainerBase):
         
         >>> x = ivy.Container(a=ivy.array([False,True,True]), \
                                 b=ivy.array([3.14, 2.718, 1.618]))
-        >>> x.astype(ivy.int32)
+        >>> print(x.astype(ivy.int32))
         {
             a: ivy.array([0, 1, 1]),
-            b: ivy.array([1, 0, 1])
+            b: ivy.array([3, 2, 1])
         }
 
         """
