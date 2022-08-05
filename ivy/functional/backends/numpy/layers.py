@@ -40,9 +40,10 @@ def conv1d(
     filters: np.ndarray,
     strides: int,
     padding: str,
+    /,
+    *,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, tuple):
@@ -75,6 +76,8 @@ def conv1d_transpose(
     filters: np.ndarray,
     strides: int,
     padding: str,
+    /,
+    *,
     output_shape: List[int] = None,
     data_format: str = "NWC",
     dilations: int = 1,
@@ -113,9 +116,10 @@ def conv2d(
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(strides, int):
@@ -200,9 +204,10 @@ def depthwise_conv2d(
     filters: np.ndarray,
     strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: Union[str, List[int]],
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
     out: Optional[np.ndarray] = None,
 ):
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -244,10 +249,11 @@ def conv2d_transpose(
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     output_shape=None,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
     out: Optional[np.ndarray] = None,
 ):
     if data_format == "NCHW":
@@ -315,9 +321,10 @@ def conv3d(
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
-    *,
     out: np.ndarray = None,
 ) -> np.ndarray:
     if isinstance(strides, int):
@@ -424,6 +431,8 @@ def conv3d_transpose(
     filters: np.ndarray,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: Union[str, List[int]],
+    /,
+    *,
     output_shape: np.ndarray = None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,

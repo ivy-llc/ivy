@@ -31,10 +31,11 @@ def conv1d(
     filters: torch.Tensor,
     strides: int,
     padding: str,
+    /,
+    *,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, tuple):
         strides = strides[0]
@@ -71,11 +72,12 @@ def conv1d_transpose(
     filters,
     strides: int,
     padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ):
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(2, 1, 0)
@@ -131,10 +133,11 @@ def conv2d(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
         strides = (strides, strides)
@@ -179,6 +182,8 @@ def conv2d(
     res = torch.nn.functional.conv2d(x, filters, None, strides, "valid", dilations)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
@@ -191,11 +196,12 @@ def conv2d_transpose(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     output_shape=None,
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -285,10 +291,11 @@ def depthwise_conv2d(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -343,10 +350,11 @@ def conv3d(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
@@ -411,11 +419,12 @@ def conv3d_transpose(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
