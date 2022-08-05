@@ -808,7 +808,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">from_call</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_mode</span> <span class="o">==</span> <span class="s2">&quot;on_call&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
         <span class="k">if</span> <span class="n">dtype</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
