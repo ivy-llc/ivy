@@ -2,12 +2,10 @@
 """Collection of tests for creation functions."""
 
 # global
-from datetime import timedelta
 
 import hypothesis.extra.numpy as hnp
 import numpy as np
 from hypothesis import given, strategies as st
-from hypothesis import settings
 
 # local
 import ivy
@@ -106,11 +104,11 @@ def test_linspace(
         device=device,
         dtype=dtype[0],
         rtol_=1e-3,
+        atol_=1e-3,
     )
 
 
 # logspace
-@settings(deadline=timedelta(milliseconds=5000))
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
