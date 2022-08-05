@@ -50,42 +50,43 @@ def astype(
     copy: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Copies an array to a specified data type irrespective of :ref:`type-promotion`
-    rules.
+    """
+        Copies an array to a specified data type irrespective of :ref:`type-promotion`
+        rules.
 
-    .. note::
-       Casting floating-point ``NaN`` and ``infinity`` values to integral data types is
-       not specified and is implementation-dependent.
+        .. note::
+        Casting floating-point ``NaN`` and ``infinity`` values to integral data types 
+        is not specified and is implementation-dependent.
 
-    .. note::
-       When casting a boolean input array to a numeric data type, a value of ``True``
-       must cast to a numeric value equal to ``1``, and a value of ``False`` must cast
-       to a numeric value equal to ``0``.
+        .. note::
+        When casting a boolean input array to a numeric data type, a value of ``True``
+        must cast to a numeric value equal to ``1``, and a value of ``False`` must cast
+        to a numeric value equal to ``0``.
 
-       When casting a numeric input array to ``bool``, a value of ``0`` must cast to
-       ``False``, and a non-zero value must cast to ``True``.
+        When casting a numeric input array to ``bool``, a value of ``0`` must cast to
+        ``False``, and a non-zero value must cast to ``True``.
 
-    Parameters
-    ----------
-    x
-        array to cast.
-    dtype
-        desired data type.
-    copy
-        specifies whether to copy an array when the specified ``dtype`` matches the data
-        type of the input array ``x``. If ``True``, a newly allocated array must always
-        be returned. If ``False`` and the specified ``dtype`` matches the data type of
-        the input array, the input array must be returned; otherwise, a newly allocated
-        must be returned. Default: ``True``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        Parameters
+        ----------
+        x
+            array to cast.
+        dtype
+            desired data type.
+        copy
+            specifies whether to copy an array when the specified ``dtype`` matches 
+            the data type of the input array ``x``. If ``True``, a newly allocated 
+            array must always be returned. If ``False`` and the specified ``dtype``
+            matches the data type of the input array, the input array must be returned;
+            otherwise, a newly allocated must be returned. Default: ``True``.
+        out
+            optional output array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
-    Returns
-    -------
-    ret
-        an array having the specified data type. The returned array must have the same
-        shape as ``x``.
+        Returns
+        -------
+        ret
+            an array having the specified data type. The returned array must have 
+            the same shape as ``x``.
 
     Examples
     --------
@@ -93,31 +94,33 @@ def astype(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2])
+    >>> y = ivy.zeros_like(x)
     >>> y = ivy.astype(x, dtype = ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
 
     >>> x = ivy.array([3.141, 2.718, 1.618])
     >>> ivy.astype(x, ivy.int32, out=y)
-    >>> y
+    >>> print(y)
     ivy.array([3, 2, 1])
 
     >>> x = ivy.array([[-1, -2], [0, 2]])
     >>> ivy.astype(x, ivy.float64, out=x)
-    >>> x
+    >>> print(x)
     ivy.array([[-1., -2.],  [0.,  2.]])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3.141, 2.718, 1.618])
     >>> y = ivy.astype(x, ivy.int32)
-    >>> y
+    >>> print(y)
     ivy.array([3, 2, 1])
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0,2,1]), b=ivy.array([1,0,0]))
-    >>> ivy.astype(x, ivy.bool)
+    >>> x = ivy.Container(a=ivy.array([0,2,1]), \
+                            b=ivy.array([1,0,0]))
+    >>> print(ivy.astype(x, ivy.bool))
     {
         a: ivy.array([False, True, True]),
         b: ivy.array([True, False, False])
@@ -126,13 +129,14 @@ def astype(
     Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([[-1, -2], [0, 2]])
-    >>> x.astype(ivy.float64)
+    >>> print(x.astype(ivy.float64))
     ivy.array([[-1., -2.],  [0.,  2.]])
 
     Using :code:`ivy.Container` instance method:
     
-    >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
-    >>> x.astype(ivy.int32)
+    >>> x = ivy.Container(a=ivy.array([False,True,True]), \
+                            b=ivy.array([3.14, 2.718, 1.618]))
+    >>> print(x.astype(ivy.int32))
     {
         a: ivy.array([0, 1, 1]),
         b: ivy.array([1, 0, 1])
