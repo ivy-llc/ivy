@@ -287,6 +287,7 @@ def unset_backend():
     """
     backend = None
     # if the backend stack is empty, nothing is done and we just return `None`
+
     if backend_stack:
         backend = backend_stack.pop(-1)  # remove last backend from the stack
         if backend.current_backend_str() == "numpy":
