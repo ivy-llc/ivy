@@ -422,7 +422,6 @@ def docstring_examples_run(
     # assert output == parsed_output, "Output is unequal to the docstrings output."
     sig_fig = float("1e-" + str(num_sig_fig))
     # if "ivy.array(" in output:
-
     numeric_pattern = re.compile(
         r"""
             [\{\}\(\)\[\]]|\w+:
