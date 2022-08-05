@@ -131,7 +131,7 @@ def squeeze(
             )
         ret = tf.squeeze(x, axis)
     elif axis is None:
-        ret = x
+        ret = tf.squeeze(x)
     else:
         if isinstance(axis, tuple):
             axis = list(axis)
@@ -211,6 +211,12 @@ def repeat(
     return ret
 
 
+repeat.supported_dtypes = (
+    "int32",
+    "int64",
+)
+
+
 def tile(x, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
@@ -220,6 +226,15 @@ def tile(x, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
         reps = tf.reshape(reps, (-1,))
     ret = tf.tile(x, reps)
     return ret
+
+
+tile.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "int8",
+    "int16",
+)
 
 
 def constant_pad(
