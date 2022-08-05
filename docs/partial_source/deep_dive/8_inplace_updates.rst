@@ -315,6 +315,18 @@ Technically, this could be handled using the
 wrapping, but we opt to implement this in the compositional function itself,
 due to point 1 mentioned above.
 
+**Mixed Functions**
+
+Mixed functions can effectively behave as either compositional or primary functions, depending on the backend
+that is selected. Mixed functions which have all backend implementations present behave like primary functions in this
+context, whereas those missing backend implementations behave like compositional functions.
+
+However, mixed functions *should* include the :code:`handle_out_argument` decorator. Within this function wrapping,
+there will be a check for the :code:`handles_out_arg` attribute. Mixed functions which have all backend implementations
+(i.e. behave as primary functions) will have the :code:`handle_out_arg` attribute. In these cases, the out argument is
+handled appropriately within the :code:`handle_out_argument` wrapping, whereas mixed functions which do not have this
+attribute (i.e. behave as compositional functions) will simply return the function itself.
+
 copy argument
 -------------
 
