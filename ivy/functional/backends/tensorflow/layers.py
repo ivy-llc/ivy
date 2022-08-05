@@ -145,9 +145,6 @@ def depthwise_conv2d(
     return res
 
 
-depthwise_conv2d.unsupported_devices = ("cpu",)
-
-
 # noinspection PyDefaultArgument
 def conv3d(
     x,
