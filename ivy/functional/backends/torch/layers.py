@@ -203,20 +203,24 @@ def conv2d_transpose(
     filters = filters.permute(3, 2, 0, 1)
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    new_h = _deconv_length(
-        x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
-    )
-    new_w = _deconv_length(
-        x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
-    )
-    output_shape = [new_h, new_w]
+    if output_shape is None:
+        new_h = _deconv_length(
+            x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
+        )
+        new_w = _deconv_length(
+            x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
+        )
+        output_shape = [new_h, new_w]
     not_valid_h = False
     not_valid_w = False
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
         out_h = _out_shape(x.shape[2], strides[0], 0, dilations[0], filters.shape[2])
         out_w = _out_shape(x.shape[3], strides[1], 0, dilations[1], filters.shape[3])
-        output_padding = [max(new_h - out_h, 0), max(new_w - out_w, 0)]
+        output_padding = [
+            max(output_shape[0] - out_h, 0),
+            max(output_shape[1] - out_w, 0),
+        ]
     elif padding == "SAME":
         filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
         filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
@@ -245,7 +249,10 @@ def conv2d_transpose(
             x.shape[3], strides[1], pad_w_, dilations[1], filters.shape[3]
         )
         padding_list = [pad_h_, pad_w_]
-        output_padding = [max(new_h - out_h, 0), max(new_w - out_w, 0)]
+        output_padding = [
+            max(output_shape[0] - out_h, 0),
+            max(output_shape[1] - out_w, 0),
+        ]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
