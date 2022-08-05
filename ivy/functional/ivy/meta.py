@@ -489,7 +489,6 @@ def fomaml_step(
         return cost, grads, rets[2]
     return cost, grads
 
-fomaml_step.computes_gradients = True
 
 fomaml_step.computes_gradients = True
 
@@ -575,8 +574,6 @@ def reptile_step(
     if return_inner_v:
         return cost, grads, rets[2]
     return cost, grads
-
-reptile_step.computes_gradients = True
 
 
 reptile_step.computes_gradients = True
