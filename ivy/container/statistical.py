@@ -57,6 +57,7 @@ class ContainerWithStatistical(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
                             b=ivy.array([5., 6., 7.]))
         >>> z = ivy.Container.static_min(x)
+        >>> print(z)
         {
             a: ivy.array([4.]),
             b: ivy.array([5.])
