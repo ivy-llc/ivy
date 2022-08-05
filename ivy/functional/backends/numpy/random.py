@@ -48,7 +48,7 @@ def multinomial(
     num_samples: int,
     batch_size: int = 1,
     probs: Optional[np.ndarray] = None,
-    replace=True,
+    replace: bool = True,
     *,
     device: str,
     out: Optional[np.ndarray] = None,
@@ -66,9 +66,7 @@ def multinomial(
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
     probs_flat = np.reshape(probs, (-1, orig_probs_shape[-1]))
-    probs_flat = probs_flat / np.sum(
-        probs_flat, -1, keepdims=True, dtype="float64", out=out
-    )
+    probs_flat = probs_flat / np.sum(probs_flat, -1, keepdims=True, dtype="float64")
     probs_stack = np.split(probs_flat, probs_flat.shape[0])
     samples_stack = [
         np.random.choice(num_classes, num_samples, replace, p=prob[0])

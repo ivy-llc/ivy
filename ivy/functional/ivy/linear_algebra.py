@@ -180,90 +180,49 @@ def cross(
     ret
          an array containing the cross products. The returned array must have a data
          type determined by Type Promotion Rules.
+         
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
 
-    Functional Examples
+    Examples
     --------
-
     With :code:`ivy.Array` inputs:
 
-    1. Axis = -1: (default) vector cross product
-
     >>> x = ivy.array([1., 0., 0.])
     >>> y = ivy.array([0., 1., 0.])
     >>> z = ivy.cross(x, y)
     >>> print(z)
     ivy.array([0., 0., 1.])
 
-    With :code:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([1., 3., 5.])
-    >>> y = ivy.native_array([2., 4., 6.])
-    >>> z = ivy.cross(x, y)
-    >>> print(z)
-    ivy.array([-2., 4., -2.])
-
     With :code:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
-    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), \
+                          b=ivy.array([0., 0., 2.]))
+    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), \
+                          b=ivy.array([3., 0., 0.]))
     >>> z = ivy.cross(x,y)
     >>> print(z)
     {
-    a: ivy.array([0., 0., 35.]),
-    b: ivy.array([0., 6., 0.])
+        a: ivy.array([0., 0., 35.]),
+        b: ivy.array([0., 6., 0.])
     }
 
-    With a combination of :code:`ivy.Array`
-    and :code:`ivy.Container` inputs:
+    With a combination of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([9., 0., 3.])
-    >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
+    >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), \
+                          b=ivy.array([1., 0., 1.]))
     >>> z = ivy.cross(x,y)
     >>> print(z)
     {
-    a: ivy.array([-3., 3., 9.]),
-    b: ivy.array([0., -6., 0.])
+        a: ivy.array([-3., 3., 9.]),
+        b: ivy.array([0., -6., 0.])
     }
-
-    With a combination of :code:`ivy.NativeArray`
-    and :code:`ivy.Array` inputs:
-
-    2. Axis = 0: changing vector definition
-
-    >>> x = ivy.native_array([[1., 2.], \
-                              [4., 5.], \
-                              [7., 8.]])
-    >>> y = ivy.array([[1.],\
-                       [0.],\
-                       [0.]])
-    >>> z = ivy.cross(x,y, axis = 0)
-    >>> print(z)
-    ivy.array([[ 0.,  0.],
-               [7.,  8.],
-               [ -4., -5.]])
-
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance inputs:
-
-    >>> x = ivy.array([1., 0., 0.])
-    >>> y = ivy.array([0., 1., 0.])
-    >>> z = x.cross(y)
-    >>> print(z)
-    ivy.array([0., 0., 1.])
-
-    With :code:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
-    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
-    >>> z = x.cross(y)
-    >>> print(z)
-    {
-    a: ivy.array([0., 0., 35.]),
-    b: ivy.array([0., 6., 0.])
-    }
-
     """
     return current_backend(x1).cross(x1, x2, axis, out=out)
 
@@ -837,7 +796,7 @@ def matrix_rank(
     >>> ivy.matrix_rank(x)
     {a:ivy.array(2.), b:ivy.array(1.)}
 
-    
+
     """
     return current_backend(x).matrix_rank(x, rtol, out=out)
 

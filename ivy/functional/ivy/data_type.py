@@ -2,7 +2,7 @@
 import math
 import numpy as np
 from numbers import Number
-from typing import Union, Tuple, List, Optional, Callable
+from typing import Union, Tuple, List, Optional, Callable, Iterable
 
 # local
 import ivy
@@ -180,7 +180,8 @@ def broadcast_to(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Broadcasts an array to a specified shape.
+    """
+    Broadcasts an array to a specified shape.
 
     Parameters
     ----------
@@ -188,19 +189,54 @@ def broadcast_to(
         array to broadcast.
     shape
         array shape. Must be compatible with x (see Broadcasting). If
-        the array is incompatible with the specified shape, the function should raise an
-        exception.
+        the array is incompatible with the specified shape, the function
+        should raise an exception.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to. It must have a
+        shape that the inputs broadcast to.
 
     Returns
     -------
     ret
         an array having a specified shape. Must have the same data type as x.
 
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.broadcast_to(x, (3, 3))
+    >>> print(y)
+    ivy.array([[1, 2, 3],
+               [1, 2, 3],
+               [1, 2, 3]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0.1 , 0.3])
+    >>> y = ivy.broadcast_to(x, (3, 2))
+    >>> print(y)
+    ivy.array([[0.1, 0.3],
+               [0.1, 0.3],
+               [0.1, 0.3]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+        b=ivy.array([4, 5, 6]))
+    >>> y = ivy.broadcast_to(x, (3, 3))
+    >>> print(y)
+    {
+        a: ivy.array([[1, 2, 3],
+                      [1, 2, 3],
+                      [1, 2, 3]]),
+        b: ivy.array([[4, 5, 6],
+                      [4, 5, 6],
+                      [4, 5, 6]])
+    }
     """
-    return current_backend(x).broadcast_to(x, shape, out=out)
+    return current_backend(x).broadcast_to(x, shape)
 
 
 @inputs_to_native_arrays
@@ -483,7 +519,8 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
-    """Returns the dtype that results from applying the type promotion rules (see
+    """
+    Returns the dtype that results from applying the type promotion rules (see
     :ref:`type-promotion`) to the arguments.
 
     .. note::
@@ -500,6 +537,42 @@ def result_type(
     ret
         the dtype resulting from an operation involving the input arrays and dtypes.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.result_type.html>`_ # noqa
+    in the standard.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([3, 4, 5])
+    >>> y = ivy.array([3., 4., 5.])
+    >>> print(ivy.result_type(x, y))
+    float64
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([3., 4, 7.5])
+    >>> y = ivy.native_array([3, 4, 7])
+    >>> print(ivy.result_type(x, y))
+    float64
+
+    With :code:`ivy.Dtype` input:
+
+    >>> print(ivy.result_type(ivy.uint8, ivy.uint64))
+    uint64
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([3, 4, 5]))
+    >>> print(x.a.dtype)
+    int32
+
+    >>> print(ivy.result_type(x, ivy.float64))
+    {
+        a: float64
+    }
     """
     return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
 
@@ -681,6 +754,39 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None]) -> Union[ivy.Dtype, s
     -------
     ret
         The closest valid data type as a native ivy.Dtype
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    in the standard.
+
+    Examples
+    --------
+    With :code:`ivy.Dtype` input:
+
+    >>> xType = ivy.float16
+    >>> yType = ivy.closest_valid_dtype(xType)
+    >>> print(yType)
+    float16
+
+    >>> xType = ivy.int8
+    >>> yType = ivy.closest_valid_dtype(xType)
+    >>> print(yType)
+    int8
+
+    With :code:`ivy.Native_dtype` inputs:
+
+    >>> xType = ivy.native_uint16
+    >>> yType = ivy.closest_valid_dtype(xType)
+    >>> print(yType)
+    <dtype:'uint16'>
+
+    With :code:`str` input:
+
+    >>> xType = 'int32'
+    >>> yType = ivy.closest_valid_dtype(xType)
+    >>> print(yType)
+    int32
 
     """
     return current_backend(type).closest_valid_dtype(type)
@@ -1676,3 +1782,35 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None]) -> bool:
     if dtype_in is None:
         return True
     return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
+
+
+def promote_types_of_inputs(
+    x1: Union[ivy.NativeArray, Number, Iterable[Number]],
+    x2: Union[ivy.NativeArray, Number, Iterable[Number]],
+) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
+
+    """Promotes the dtype of the given native array inputs to a common dtype
+    based on type promotion rules. While passing float or integer values or any
+    other non-array input to this function, it should be noted that the return will
+    be an array-like object. Therefore, outputs from this function should be used
+    as inputs only for those functions that expect an array-like or tensor-like objects,
+    otherwise it might give unexpected results.
+    """
+    try:
+        if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
+            not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
+        ):
+            promoted = promote_types(x1.dtype, x2.dtype)
+            x1 = ivy.asarray(x1, dtype=promoted)
+            x2 = ivy.asarray(x2, dtype=promoted)
+        else:
+            if hasattr(x1, "dtype"):
+                x1 = ivy.asarray(x1)
+                x2 = ivy.asarray(x2, dtype=x1.dtype)
+            else:
+                x1 = ivy.asarray(x1, dtype=x2.dtype)
+                x2 = ivy.asarray(x2)
+        x1, x2 = ivy.to_native(x1), ivy.to_native(x2)
+        return x1, x2
+    except Exception:
+        raise

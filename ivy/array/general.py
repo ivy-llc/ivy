@@ -1,7 +1,7 @@
 # global
 import abc
 from numbers import Number
-from typing import Any, Iterable, Union, Optional
+from typing import Any, Iterable, Union, Optional, Dict, Callable
 
 # ToDo: implement all methods here as public instance methods
 
@@ -53,11 +53,92 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
+    def has_nans(self: ivy.Array, include_infs: bool = True):
+        """
+        ivy.Array instance method variant of ivy.has_nans. This method simply wraps the
+        function, and so the docstring for ivy.has_nans also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        include_infs
+            Whether to include ``+infinity`` and ``-infinity`` in the check.
+            Default is True.
+
+        Returns
+        -------
+        ret
+            Boolean as to whether the array contains nans.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.has_nans()
+        >>> print(y)
+        False
+        """
+        return ivy.has_nans(self, include_infs)
+
+    def unstack(self: ivy.Array, axis: int, keepdims: bool = False) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.unstack. This method simply
+        wraps the function, and so the docstring for ivy.unstack also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to unstack.
+        axis
+            Axis for which to unpack the array.
+        keepdims
+            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+
+        Returns
+        -------
+        ret
+            List of arrays, unpacked along specified dimensions.
+
+        """
+        return ivy.unstack(self._data, axis, keepdims)
+
+    def gather(
+        self: ivy.Array,
+        indices: Union[ivy.Array, ivy.NativeArray],
+        axis: int = -1,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.gather. This method simply wraps the
+        function, and so the docstring for ivy.gather also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            array, the array from which to gather values.
+        indices
+            array, index array.
+        axis
+            optional int, the axis from which to gather from. Default is -1.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            New array with the values gathered at the specified indices along
+            the specified axis.
+        """
+        return ivy.gather(self._data, indices, axis, out=out)
+
     def gather_nd(
-            self: ivy.Array,
-            indices: Union[ivy.Array, ivy.NativeArray],
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        indices: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
@@ -92,6 +173,109 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.gather_nd(self, indices, out=out)
 
+    def einops_rearrange(
+        self: ivy.Array,
+        pattern: str,
+        *,
+        out: Optional[ivy.Array] = None,
+        **axes_lengths: Dict[str, int],
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.einops_rearrange.
+        This method simply wraps the function, and so the docstring
+        for ivy.einops_rearrange also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to be re-arranged.
+        pattern
+            Rearrangement pattern.
+        axes_lengths
+            Any additional specifications for dimensions.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New array with einops.rearrange having been applied.
+
+        """
+        return ivy.einops_rearrange(self._data, pattern, out=out, **axes_lengths)
+
+    def einops_reduce(
+        self: ivy.Array,
+        pattern: str,
+        reduction: Union[str, Callable],
+        *,
+        out: Optional[ivy.Array] = None,
+        **axes_lengths: Dict[str, int],
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.einops_reduce. This method simply
+        wraps the function, and so the docstring for ivy.einops_reduce also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to be reduced.
+        pattern
+            Reduction pattern.
+        reduction
+            One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or
+            callable.
+        axes_lengths
+            Any additional specifications for dimensions.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New array with einops.reduce having been applied.
+
+        """
+        return ivy.einops_reduce(
+            self._data, pattern, reduction, out=out, **axes_lengths
+        )
+
+    def einops_repeat(
+        self: ivy.Array,
+        pattern: str,
+        *,
+        out: Optional[ivy.Array] = None,
+        **axes_lengths: Dict[str, int],
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.einops_repeat. This method simply
+        wraps the function, and so the docstring for ivy.einops_repeat also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to be repeated.
+        pattern
+            Rearrangement pattern.
+        axes_lengths
+            Any additional specifications for dimensions.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New array with einops.repeat having been applied.
+
+        """
+        return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
+
     def to_numpy(self: ivy.Array):
         """
         ivy.Array instance method variant of ivy.to_numpy. This method simply wraps
@@ -124,7 +308,25 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.to_numpy(self)
-        
+
+    def to_list(self: ivy.Array):
+        """
+        ivy.Array instance method variant of ivy.to_list. This method simply wraps
+        the function, and so the docstring for ivy.to_list also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+
+        Returns
+        -------
+        ret
+            A list representation of the input array ``x``.
+        """
+        return ivy.to_list(self)
+
     def stable_divide(
         self,
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -185,8 +387,8 @@ class ArrayWithGeneral(abc.ABC):
         ivy.Array instance method variant of ivy.clip_vector_norm. This method simply
         wraps the function, and so the docstring for ivy.clip_vector_norm also applies
         to this method with minimal changes.
-           
-            
+
+
         Parameters
         ----------
         self
@@ -198,12 +400,12 @@ class ArrayWithGeneral(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-            
+
         Returns
         -------
         ret
             An array with the vector norm downscaled to the max norm if needed.
-        
+
         Examples
         --------
         With :code:`ivy.Array` instance method:

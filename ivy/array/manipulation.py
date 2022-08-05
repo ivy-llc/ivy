@@ -22,6 +22,38 @@ class ArrayWithManipulation(abc.ABC):
     ) -> ivy.Array:
         return ivy.concat([self._data] + xs, axis, out=out)
 
+    def split(
+        self: ivy.Array,
+        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+        axis: int = 0,
+        with_remainder: bool = False,
+    ) -> List[ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.split. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            array to be divided into sub-arrays.
+        num_or_size_splits
+            Number of equal arrays to divide the array into along the given axis if an
+            integer. The size of each split element if a sequence of integers. Default
+            is to divide into as many 1-dimensional arrays as the axis dimension.
+        axis
+            The axis along which to split, default is 0.
+        with_remainder
+            If the tensor does not split evenly, then store the last remainder entry.
+            Default is False.
+
+        Returns
+        -------
+            A list of sub-arrays.
+
+        """
+        return ivy.split(self._data, num_or_size_splits, axis, with_remainder)
+
     def flip(
         self: ivy.Array,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
@@ -32,10 +64,40 @@ class ArrayWithManipulation(abc.ABC):
 
     def expand_dims(
         self: ivy.Array,
-        axis: Optional[int] = 0,
+        axis: Union[int, Tuple[int], List[int]] = 0,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.expand_dims. This method simply wraps
+        the function, and so the docstring for ivy.expand_dims also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            position in the expanded array where a new axis (dimension) of size one
+            will be added. If array ``self`` has the rank of ``N``, the ``axis`` needs
+            to be between ``[-N-1, N]``. Default: ``0``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the elements of ``self``, but with its dimension added
+            by one in a given ``axis``.
+
+        Examples
+        --------
+        >>> x = ivy.array([-4.7, -2.3, 0.7]) #x.shape->(3,)
+        >>> y = x.expand_dims() #y.shape->(1, 3)
+        >>> print(y)
+        ivy.array([[-4.7, -2.3,  0.7]])
+        """
         return ivy.expand_dims(self._data, axis, out=out)
 
     def reshape(
@@ -84,7 +146,7 @@ class ArrayWithManipulation(abc.ABC):
                    [3., 4., 5.]])
 
         """
-        return ivy.reshape(self._data, shape, copy, out=out)
+        return ivy.reshape(self._data, shape, copy=copy, out=out)
 
     def permute_dims(
         self: ivy.Array,
