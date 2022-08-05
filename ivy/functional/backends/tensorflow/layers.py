@@ -53,9 +53,12 @@ def conv1d_transpose(
 ):
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
-    new_w = _deconv_length(x.shape[1], strides, filters.shape[0], padding, dilations)
+    if output_shape is None:
+        output_shape = list(
+            _deconv_length(x.shape[1], strides, filters.shape[0], padding, dilations)
+        )
     res = tf.nn.conv1d_transpose(
-        x, filters, [1, new_w, 1], strides, padding, "NWC", dilations
+        x, filters, [1, output_shape[0], 1], strides, padding, "NWC", dilations
     )
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
@@ -188,6 +191,17 @@ def conv3d_transpose(
     )
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
+    if output_shape is None:
+        new_d = _deconv_length(
+            x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
+        )
+        new_h = _deconv_length(
+            x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
+        )
+        new_w = _deconv_length(
+            x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
+        )
+        output_shape = [new_d, new_h, new_w]
     res = tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, "NDHWC", dilations
     )
