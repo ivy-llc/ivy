@@ -14,9 +14,9 @@ def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     # Get the dilated kernel size
     kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
 
-    if padding == 'VALID':
+    if padding == "VALID":
         dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == 'SAME':
+    elif padding == "SAME":
         dim_size = dim_size * stride_size
 
     return dim_size
@@ -41,19 +41,28 @@ def conv1d(
 
 
 def conv1d_transpose(
-    x,
-    filters,
-    strides,
-    padding,
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
+    strides: int,
+    padding: str,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format="NWC",
-    dilations=1,
+    data_format: str = "NWC",
+    dilations: int = 1,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ):
-    return tf.nn.conv1d_transpose(
-        x, filters, output_shape, strides, padding, data_format, dilations
+    if data_format == "NCW":
+        x = tf.transpose(x, (0, 2, 1))
+    new_w = _deconv_length(x.shape[1], strides, filters.shape[0], padding, dilations)
+    res = tf.nn.conv1d_transpose(
+        x, filters, [1, new_w, 1], strides, padding, "NWC", dilations
     )
+    if data_format == "NCW":
+        res = tf.transpose(res, (0, 2, 1))
+    return res
+
+
+conv1d_transpose.unsupported_devices = ("cpu",)
 
 
 def conv2d(
@@ -93,27 +102,13 @@ def conv2d_transpose(
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     new_h = _deconv_length(
-        x.shape[1],
-        strides[0],
-        filters.shape[0],
-        padding,
-        dilations[0]
+        x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
     )
     new_w = _deconv_length(
-        x.shape[2],
-        strides[1],
-        filters.shape[1],
-        padding,
-        dilations[1]
+        x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
     )
     res = tf.nn.conv2d_transpose(
-        x,
-        filters,
-        [new_h, new_w],
-        strides,
-        padding,
-        'NHWC',
-        dilations
+        x, filters, [new_h, new_w], strides, padding, "NHWC", dilations
     )
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
@@ -143,6 +138,9 @@ def depthwise_conv2d(
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
+
+
+depthwise_conv2d.unsupported_devices = ("cpu",)
 
 
 # noinspection PyDefaultArgument
@@ -184,7 +182,7 @@ def conv3d_transpose(
 ) -> Tensor:
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
     dilations = (
-            [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
+        [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))

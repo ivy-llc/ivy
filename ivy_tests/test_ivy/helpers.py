@@ -466,13 +466,18 @@ def f_n_calls():
     ]
 
 
-def assert_all_close(ret_np, ret_from_np, rtol=1e-05, atol=1e-08):
-    assert ret_np.dtype is ret_from_np.dtype, (
-        "the return with a NumPy backend produced data type of {}, "
-        "while the return with a {} backend returned a data type of {}.".format(
-            ret_from_np.dtype, ivy.current_backend_str(), ret_np.dtype
-        )
-    )
+def assert_all_close(
+        ret_np,
+        ret_from_np,
+        rtol=1e-05,
+        atol=1e-08,
+        ground_truth_backend='TensorFlow'):
+    assert ret_np.dtype is ret_from_np.dtype, \
+        ("the return with a {} backend produced data type of {}, while the return with"
+         " a {} backend returned a data type of {}.".format(ground_truth_backend,
+                                                            ret_from_np.dtype,
+                                                            ivy.current_backend_str(),
+                                                            ret_np.dtype))
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
     else:
@@ -517,7 +522,13 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
     return ret, flatten(ret=ret)
 
 
-def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
+def value_test(
+        *,
+        ret_np_flat,
+        ret_from_np_flat,
+        rtol=None,
+        atol=1e-6,
+        ground_truth_backend='TensorFlow'):
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_from_np_flat) != list:
@@ -532,10 +543,20 @@ def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6):
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
             rtol = TOLERANCE_DICT.get(str(ret_from_np.dtype), 1e-03)
-            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+            assert_all_close(
+                ret_np,
+                ret_from_np,
+                rtol=rtol,
+                atol=atol,
+                ground_truth_backend=ground_truth_backend)
     else:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol)
+            assert_all_close(
+                ret_np,
+                ret_from_np,
+                rtol=rtol,
+                atol=atol,
+                ground_truth_backend=ground_truth_backend)
 
 
 def args_to_container(array_args):
@@ -1241,6 +1262,7 @@ def test_function(
         ret_from_np_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
+        ground_truth_backend=ground_truth_backend
     )
 
 
@@ -1652,6 +1674,8 @@ def dtype_values_axis(
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, *, shape):
+    if isinstance(shape, st._internal.SearchStrategy):
+        shape = draw(shape)
     size = 1 if len(shape) == 0 else math.prod(shape)
     rshape = draw(st.lists(st.integers(0)).filter(lambda s: math.prod(s) == size))
     # assume(all(side <= MAX_SIDE for side in rshape))
@@ -2098,24 +2122,28 @@ def get_axis(draw,
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
     shape
-        shape of the array as a tuple, or a hypothesis strategy from which the shape will be drawn
+        shape of the array as a tuple, or a hypothesis strategy from which the shape
+        will be drawn
     allow_none
         boolean; if True, allow None to be drawn
     sorted
-        boolean; if True, and a tuple of axes is drawn, tuple is sorted in increasing fashion
+        boolean; if True, and a tuple of axes is drawn, tuple is sorted in increasing
+        fashion
     unique
         boolean; if True, and a tuple of axes is drawn, all axes drawn will be unique
     min_size
-        int or hypothesis strategy; if a tuple of axes is drawn, the minimum number of axes drawn
+        int or hypothesis strategy; if a tuple of axes is drawn, the minimum number of
+        axes drawn
     max_size
-        int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of axes drawn. If None and unique is True, then it is set
-        to the number of axes in the shape
+        int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
+        axes drawn.
+        If None and unique is True, then it is set to the number of axes in the shape
 
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
-    #Draw values from any strategies given
+    # Draw values from any strategies given
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
     if isinstance(min_size, st._internal.SearchStrategy):
@@ -2123,12 +2151,11 @@ def get_axis(draw,
     if isinstance(max_size, st._internal.SearchStrategy):
         max_size = draw(max_size)
 
-
     axes = len(shape)
     unique_by = (lambda x: shape[x]) if unique else None
 
     if max_size is None and unique:
-        max_size=axes
+        max_size = max(axes, min_size)
 
     if allow_none:
         if axes == 0:
@@ -2252,5 +2279,9 @@ def handle_cmd_line_args(test_fn):
 
     return new_fn
 
-def gradient_incompatible_function(*,fn):
-    return not ivy.supports_gradients and hasattr(fn, "computes_gradients") and fn.computes_gradients
+
+def gradient_incompatible_function(*, fn):
+    return \
+        not ivy.supports_gradients \
+        and hasattr(fn, "computes_gradients") \
+        and fn.computes_gradients

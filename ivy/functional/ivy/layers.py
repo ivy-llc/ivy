@@ -98,7 +98,7 @@ def dropout(
     scale: bool = True,
     dtype: ivy.Dtype = None,
     *,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Randomly zeroes some elements of the input tensor with probability p using
     samples from a Bernoulli distribution.
@@ -394,7 +394,10 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
-scaled_dot_product_attention.unsupported_dtypes = {'torch': ('float16', )}
+scaled_dot_product_attention.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("float16",),
+}
 
 
 def multi_head_attention(
@@ -495,7 +498,10 @@ def multi_head_attention(
     return ret
 
 
-multi_head_attention.unsupported_dtypes = {"torch": ("float16", )}
+multi_head_attention.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("float16",),
+}
 
 
 # Convolutions #
@@ -582,13 +588,13 @@ def conv1d(
 @handle_out_argument
 @handle_nestable
 def conv1d_transpose(
-    x,
-    filters,
-    strides,
-    padding,
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: int,
+    padding: str,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NWC",
-    dilations=1,
+    dilations: int = 1,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -724,13 +730,13 @@ def conv2d(
 @handle_out_argument
 @handle_nestable
 def conv2d_transpose(
-    x,
-    filters,
-    strides,
-    padding,
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NHWC",
-    dilations=1,
+    dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -1170,4 +1176,4 @@ def lstm_update(
     return ivy.concat(hts_list, -2), ct
 
 
-lstm_update.unsupported_dtypes = {'torch': ('float16', )}
+lstm_update.unsupported_dtypes = {"torch": ("float16",)}
