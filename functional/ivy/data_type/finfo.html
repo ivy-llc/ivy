@@ -177,7 +177,7 @@
 <h1>finfo<a class="headerlink" href="#finfo" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.finfo">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">finfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#finfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.finfo" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">finfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#finfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.finfo" title="Permalink to this definition"></a></dt>
 <dd><p>Machine limits for floating-point data types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -230,7 +230,8 @@ number larger than 1.0 according to the IEEE-754 standard.</p>
 <p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.3</span><span class="p">,</span><span class="mf">2.1</span><span class="p">,</span><span class="mf">3.4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
+<span class="go">finfo(resolution=1e-15, min=-1.7976931348623157e+308, /</span>
+<span class="go">max=1.7976931348623157e+308, dtype=float64)</span>
 </pre></div>
 </div>
 <p>With <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:</p>
@@ -245,7 +246,8 @@ number larger than 1.0 according to the IEEE-754 standard.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="go">{</span>
 <span class="go">    x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),</span>
-<span class="go">    y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
+<span class="go">    y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /</span>
+<span class="go">       max=1.7976931348623157e+308, dtype=float64)</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -260,7 +262,8 @@ number larger than 1.0 according to the IEEE-754 standard.</p>
 <span class="go">                      y=ivy.array([1.3,2.1,3.4], dtype=ivy.float16))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">finfo</span><span class="p">()</span>
 <span class="go">{</span>
-<span class="go">    x: finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
+<span class="go">    x: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /</span>
+<span class="go">             max=1.7976931348623157e+308, dtype=float64)</span>
 <span class="go">    y: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),</span>
 <span class="go">}</span>
 </pre></div>
