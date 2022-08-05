@@ -641,7 +641,7 @@ def test_conv1d_transpose(
         filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
-        output_shape=None,
+        output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
     )
@@ -893,7 +893,7 @@ def test_conv3d_transpose(
         filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
-        output_shape=None,
+        output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
     )
