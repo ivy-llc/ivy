@@ -1,5 +1,6 @@
-import torch
 from typing import Optional, Tuple
+
+import torch
 
 
 def argmax(
@@ -9,7 +10,6 @@ def argmax(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-
     x = torch.tensor(x)
     ret = torch.argmax(x, dim=axis, keepdim=keepdims, out=out)
     return ret
@@ -25,7 +25,6 @@ def argmin(
     *,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-
     x = torch.tensor(x)
     ret = torch.argmin(x, axis=axis, keepdim=keepdims, out=out)
     return ret
