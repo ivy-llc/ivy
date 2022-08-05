@@ -368,7 +368,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator
-            if attr.startswith("_") or hasattr(ivy, attr):
+            if attr.startswith("_") or hasattr(ivy, attr) or attr == "handles_out_arg":
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
         # wrap decorators (sequence matters)
