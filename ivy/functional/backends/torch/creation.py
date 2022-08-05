@@ -142,7 +142,7 @@ def eye(
     if n_cols is None:
         n_cols = n_rows
     if batch_shape is None:
-        return torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
+        batch_shape = []
     i = torch.eye(n_rows, n_cols, dtype=dtype, device=device)
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
@@ -265,6 +265,7 @@ def linspace(
 
 
 linspace.support_native_out = True
+linspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}
 
 
 def linspace_helper(start, stop, num, axis=None, *, device, dtype):

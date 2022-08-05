@@ -3,7 +3,7 @@
 import jax.numpy as jnp
 from typing import Union, Optional, Tuple, List, Sequence
 import jaxlib.xla_extension
-from jax.dlpack import from_dlpack as jax_from_dlpack
+import jax.dlpack
 
 # local
 import ivy
@@ -48,7 +48,7 @@ def asarray(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
+    if isinstance(object_in, ivy.NativeArray) and not dtype:
         dtype = object_in.dtype
     elif (
         isinstance(object_in, (list, tuple, dict))
@@ -114,7 +114,8 @@ def eye(
 
 # noinspection PyShadowingNames
 def from_dlpack(x, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jax_from_dlpack(x)
+    capsule = jax.dlpack.to_dlpack(x)
+    return jax.dlpack.from_dlpack(capsule)
 
 
 def full(

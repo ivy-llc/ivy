@@ -4,6 +4,7 @@ import jax.numpy as jnp
 from typing import Union, Optional
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -15,21 +16,18 @@ def _cast_for_bitwise_op(x1, x2):
 
 
 def _cast_for_binary_op(x1, x2):
-    if not isinstance(x1, (int, float)):
-        if isinstance(x2, (int, float)):
-            x2 = jnp.asarray(x2, dtype=x1.dtype)
-    return x1, x2
+    return ivy.promote_types_of_inputs(x1, x2)
 
 
 def abs(x: Union[float, JaxArray], *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.absolute(x)
 
 
-def acos(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def acos(x: JaxArray) -> JaxArray:
     return jnp.arccos(x)
 
 
-def acosh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def acosh(x: JaxArray) -> JaxArray:
     return jnp.arccosh(x)
 
 
@@ -50,7 +48,7 @@ def asinh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsinh(x)
 
 
-def atan(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def atan(x: JaxArray) -> JaxArray:
     return jnp.arctan(x)
 
 
@@ -59,7 +57,7 @@ def atan2(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxA
     return jnp.arctan2(x1, x2)
 
 
-def atanh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def atanh(x: JaxArray) -> JaxArray:
     return jnp.arctanh(x)
 
 
@@ -134,13 +132,14 @@ def cosh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cosh(x)
 
 
-def divide(
-    x1: Union[float, JaxArray],
-    x2: Union[float, JaxArray],
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.divide(x1, x2)
+def divide(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
+    ret = jax.numpy.divide(x1, x2)
+    if ivy.is_float_dtype(x1.dtype):
+        ret = jnp.asarray(ret, dtype=x1.dtype)
+    else:
+        ret = jnp.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
+    return ret
 
 
 def equal(
@@ -175,15 +174,10 @@ def floor_divide(
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return jnp.floor_divide(x1, x2)
+    return jax.numpy.floor_divide(x1, x2)
 
 
-def greater(
-    x1: Union[float, JaxArray],
-    x2: Union[float, JaxArray],
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def greater(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.greater(x1, x2)
 
 
@@ -208,12 +202,7 @@ def isnan(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isnan(x)
 
 
-def less(
-    x1: Union[float, JaxArray],
-    x2: Union[float, JaxArray],
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def less(x1: Union[float, JaxArray], x2: Union[float, JaxArray]) -> JaxArray:
     return jnp.less(x1, x2)
 
 
@@ -379,6 +368,7 @@ def erf(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def maximum(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.maximum(x1, x2)
 
 
@@ -388,4 +378,5 @@ def minimum(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.minimum(x1, x2)
