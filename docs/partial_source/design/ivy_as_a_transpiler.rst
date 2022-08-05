@@ -2,7 +2,7 @@ Ivy as a Transpiler
 ===================
 
 On the :ref:`Building Blocks` page, we explored the role of the backend functional APIs, the Ivy functional API, the
-framework handler and the graph compiler. These parts are labelled (a) in the image below.
+backend handler and the graph compiler. These parts are labelled (a) in the image below.
 
 Here, we explain the role of the backend-specific frontends in Ivy, and how these enable automatic code conversions
 between different ML frameworks. This part is labelled as (b) in the image below.
@@ -17,81 +17,18 @@ This is in keeping with the rest of the documentation.
 Frontend Functional APIs 🚧
 ------------------------
 
-While the backend API, Ivy API and framework handler enable all Ivy code to be framework-agnostic, they do not,
+While the backend API, Ivy API and backend handler enable all Ivy code to be framework-agnostic, they do not,
 for example, enable PyTorch code to be framework agnostic. But with frontend APIs, we can also achieve this!
 
-Let’s revisit the :code:`ivy.clip` method we explored when learning about the backend APIs. The backend code is as follows:
+Let’s take a look at the how the implementation of :code:`clip` method would seem like in the frontends:
+
 
 .. code-block:: python
 
-   # ivy/functional/backends/jax/elementwise.py:
-   def clip(x, x_min, x_max):
-       return jax.numpy.clip(x, x_min, x_max)
-.. code-block:: python
-
-   # ivy/functional/backends/mxnet/elementwise.py:
-   def clip(x, x_min, x_max):
-       return mxnet.nd.clip(x, x_min, x_max)
-.. code-block:: python
-
-   # ivy/functional/backends/numpy/elementwise.py:
-   def clip(x, x_min, x_max):
-       return numpy.clip(x, x_min, x_max)
-.. code-block:: python
-
-   # ivy/functional/backends/tensorflow/elementwise.py:
-   def clip(x, x_min, x_max):
-       return tensorflow.clip_by_value(x, x_min, x_max)
-.. code-block:: python
-
-   # ivy/functional/backends/torch/elementwise.py:
-   def clip(x, x_min, x_max):
-       return torch.clamp(x, x_min, x_max)
-
-The Ivy API for the :code:`clip` method is as follows:
-
-.. code-block:: python
-
-   # ivy/functional/ivy/elementwise.py:
-   def clip(x: Union[ivy.Array, ivy.NativeArray],
-         x_min: Union[Number, ivy.Array, ivy.NativeArray],
-         x_max: Union[Number, ivy.Array, ivy.NativeArray],
-         f: ivy.Framework = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-        """
-        Clips (limits) the values in an array.
-        Given an interval, values outside the interval are clipped
-        to the interval edges (element-wise). For example, if an
-        interval of [0, 1] is specified, values smaller than 0
-        become 0,and values larger than 1 become 1.
-
-        :param x: Input array containing elements to clip.
-        :type x: array
-        :param x_min: Minimum value.
-        :type x_min: scalar or array
-        :param x_max: Maximum value.
-        :type x_max: scalar or array
-        :param f: ML framework. Inferred from inputs if None.
-        :type f: ml_framework, optional
-        :return: An array with the elements of x, but where values
-            < x_min are replaced with x_min, and those > x_max with
-            x_max.
-        """
-        return ivy.current_framework(x, f=f).clip(x, x_min, x_max)
-
-Now, the frontend APIs are as follows:
-
-.. code-block:: python
-
-   # ivy/functional/frontends/jax/numpy/general.py
-   def clip(x, x_min, x_max):
+   # ivy/functional/frontends/jax/lax/functions.py
+   def clamp(x_min,x, x_max):
        return ivy.clip(x, x_min, x_max)
 
-.. code-block:: python
-
-   # ivy/functional/frontends/mxnet/nd/general.py
-   def clip(x, x_min, x_max):
-       return ivy.clip(x, x_min, x_max)
 
 .. code-block:: python
 
@@ -125,7 +62,7 @@ with the equivalent function using Ivy’s PyTorch frontend, and then run this P
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_conversion.png?raw=true
    :align: center
    :width: 100%
-
+|
 For this example it’s very simple, the differences are only syntactic, but the above process works for **any** function.
 If there are semantic differences then these will be captured (a) in the wrapped frontend code which expresses the
 frontend method as a composition of Ivy functions, and (b) in the wrapped backend code which expressed the Ivy
@@ -145,7 +82,9 @@ Let’s look at the NumPy backend code for this Ivy method:
 .. code-block:: python
 
    # ivy/functional/backends/numpy/general.py
-   def one_hot(indices, depth):
+    def one_hot(
+        indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
+    ) -> np.ndarray:
        res = np.eye(depth)[np.array(indices).reshape(-1)]
        return res.reshape(list(indices.shape) + [depth])
 
@@ -156,7 +95,7 @@ By chaining these method together, we can now call :code:`torch.nn.functional.on
    import ivy
    import ivy.frontends.torch as torch
 
-   ivy.set_framework('numpy')
+   ivy.set_backend('numpy')
 
    x = np.array([0., 1., 2.])
    ret = torch.nn.functional.one_hot(x, 3)
@@ -178,35 +117,43 @@ Let’s look at the PyTorch backend code for both of these Ivy methods:
 .. code-block:: python
 
    # ivy/functional/backends/torch/general.py
-   def cumprod(x, axis: int = 0, exclusive: bool = False):
-       if exclusive:
-           x = torch.transpose(x, axis, -1)
-           x = torch.cat(
-               (torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
-           res = torch.cumprod(x, -1)
-           return torch.transpose(res, axis, -1)
-       return torch.cumprod(x, axis)
+    def cumprod(
+        x: torch.Tensor,
+        axis: int = 0,
+        exclusive: Optional[bool] = False,
+        *,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        if exclusive:
+            x = torch.transpose(x, axis, -1)
+            x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
+            res = torch.cumprod(x, -1, out=out)
+            return torch.transpose(res, axis, -1)
+        return torch.cumprod(x, axis, out=out)
 
 .. code-block:: python
 
    # ivy/functional/backends/torch/manipulation.py
-   def flip(x, axis: Optional[List[int]] = None,
-            batch_shape: Optional[List[int]] = None):
-       num_dims: int = len(batch_shape) \
-           if batch_shape is not None else len(x.shape)
-       if not num_dims:
-           return x
-       if axis is None:
-           new_axis: List[int] = list(range(num_dims))
-       else:
-           new_axis: List[int] = axis
-       if isinstance(new_axis, int):
-           new_axis = [new_axis]
-       else:
-           new_axis = new_axis
-       new_axis = [item + num_dims if item < 0
-                   else item for item in new_axis]
-       return torch.flip(x, new_axis)
+    def flip(
+        x: torch.Tensor,
+        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        *,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        num_dims: int = len(x.shape)
+        if not num_dims:
+            return x
+        if axis is None:
+            new_axis: List[int] = list(range(num_dims))
+        else:
+            new_axis: List[int] = axis
+        if isinstance(new_axis, int):
+            new_axis = [new_axis]
+        else:
+            new_axis = new_axis
+        new_axis = [item + num_dims if item < 0 else item for item in new_axis]
+        ret = torch.flip(x, new_axis)
+        return ret
 
 Again, by chaining these methods together, we can now call :code:`tf.math.cumprod()` using PyTorch:
 
@@ -215,7 +162,7 @@ Again, by chaining these methods together, we can now call :code:`tf.math.cumpro
    import ivy
    import ivy.frontends.tensorflow as tf
 
-   ivy.set_framework('torch')
+   ivy.set_backend('torch')
 
    x = torch.tensor([[0., 1., 2.]])
    ret = tf.math.cumprod(x, -1)

@@ -33,4 +33,4 @@ class ArrayWithDevice(abc.ABC):
         to this method with minimal changes.
 
         """
-        return ivy.to_device(self, device, stream=stream, out=out)
+        return ivy.to_device(self._data, device, stream=stream, out=out)
