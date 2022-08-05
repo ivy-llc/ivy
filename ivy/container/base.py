@@ -8,6 +8,7 @@ import termcolor
 import numpy as np
 import json
 
+
 try:
     # noinspection PyPackageRequirements
     import h5py
@@ -684,8 +685,10 @@ class ContainerBase(dict, abc.ABC):
                     )
                     if ret:
                         return_dict[key] = ret
-                elif isinstance(value0, (list, tuple)) and map_nests:
-                    ret = ivy.nested_multi_map(lambda x, _: func(x, None), values)
+                elif any(isinstance(x, (list, tuple)) for x in values) and map_nests:
+                    ret = ivy.nested_multi_map(
+                        lambda x, _: func(x, None), values, to_ivy=False
+                    )
                     if prune_unapplied and not ret:
                         continue
                     return_dict[key] = ret
@@ -1622,6 +1625,52 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
+    def minimum(
+        self,
+        x2,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=False,
+        out=None,
+    ):
+        """Computes the elementwise minimum between this container and another container
+        or number.
+
+        Parameters
+        ----------
+        x2
+            The other container or number to compute the minimum against.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+            Container object with all sub-arrays having the minimum values computed.
+
+        """
+        is_container = isinstance(x2, ivy.Container)
+        return self.handle_inplace(
+            self.map(
+                lambda x, kc: self._ivy.minimum(x, x2[kc] if is_container else x2)
+                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                else x,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out,
+        )
+
     def maximum(
         self,
         x2,
@@ -2140,11 +2189,11 @@ class ContainerBase(dict, abc.ABC):
         with open(json_filepath, "w+") as json_data_file:
             json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
 
-    def to_list(self):
+    def to_nested_list(self):
         return_list = list()
         for key, value in self.items():
             if isinstance(value, ivy.Container):
-                return_list.append(value.to_list())
+                return_list.append(value.to_nested_list())
             elif value is not None and key != "_f":
                 return_list.append(value)
         return return_list
