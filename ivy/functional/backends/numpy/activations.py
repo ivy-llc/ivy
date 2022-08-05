@@ -13,7 +13,7 @@ except (ImportError, ModuleNotFoundError):
 
 
 def relu(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.maximum(x, 0, out=out, dtype=x.dtype)
+    return np.asarray(np.maximum(x, 0, out=out, dtype=x.dtype))
 
 
 def leaky_relu(
