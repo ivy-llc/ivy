@@ -252,20 +252,13 @@ def min(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([7., 77., 777.]), b=ivy.array([8., 88., 888.]))
+    >>> x = ivy.Container(a=ivy.array([7., 77., 777.]),\
+                        b=ivy.array([8., 88., 888.]))
     >>> y = ivy.min(x)
     >>> print(y)
     {
         a: ivy.array(7.),
         b: ivy.array(8.)
-    }
-
-    >>> x = ivy.Container(a=ivy.array([8, 9, 10]), b=ivy.array([30, 19, 3]))
-    >>> z = x.min()
-    >>> print(z)  
-    {
-        a: ivy.array(8),
-        b: ivy.array(3)
     }
     """
     return current_backend.min(x, axis, keepdims, out=out)
