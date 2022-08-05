@@ -9,6 +9,34 @@ from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
 
 
+def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
+    # Get the dilated kernel size
+    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
+
+    if padding == "VALID":
+        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
+    elif padding == "SAME":
+        dim_size = dim_size * stride_size
+
+    return dim_size
+
+
+def _conv_transpose_padding(k, s, padding, dilation, diff=0):
+    k = (k - 1) * dilation + 1
+    if padding == "SAME":
+        pad_len = k + s - 2
+        pad_len -= diff
+        if s > k - 1:
+            pad_a = k - 1
+        else:
+            pad_a = int(jnp.ceil(pad_len / 2))
+    else:
+        pad_len = k + s - 2 + max(k - s, 0)
+        pad_a = k - 1
+    pad_b = pad_len - pad_a
+    return pad_a, pad_b
+
+
 def conv1d(
     x: JaxArray,
     filters: JaxArray,
@@ -115,11 +143,31 @@ def conv2d_transpose(
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    if data_format == "NHWC":
+        x_shape = list(x.shape[1:3])
+    else:
+        x_shape = list(x.shape[2:])
+    out_h = _deconv_length(
+        x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
+    )
+    out_w = _deconv_length(
+        x_shape[1], strides[1], filters.shape[1], padding, dilations[1]
+    )
+    if output_shape is None:
+        output_shape = [out_h, out_w]
+    diff_h = -(output_shape[0] - out_h)
+    diff_w = -(output_shape[1] - out_w)
+    pad_h_before, pad_h_after = _conv_transpose_padding(
+        filters.shape[0], strides[0], padding, dilations[0], diff_h
+    )
+    pad_w_before, pad_w_after = _conv_transpose_padding(
+        filters.shape[1], strides[1], padding, dilations[1], diff_w
+    )
     return jlax.conv_transpose(
         x,
         filters,
         strides,
-        padding,
+        [(pad_h_before, pad_h_after), (pad_w_before, pad_w_after)],
         dilations,
         (data_format, "HWIO", data_format),
         True,
