@@ -85,7 +85,8 @@ def conv1d_transpose(
         dilations = dilations[0]
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
-    # output_shape = [1] + output_shape
+    if output_shape is not None:
+        output_shape = [1] + output_shape
     x_shape = (1,) + x.shape
     filter_shape = (1,) + filters.shape
     x_strides = (x.strides[0],) + x.strides
@@ -95,7 +96,9 @@ def conv1d_transpose(
         filters, shape=filter_shape, strides=filter_strides
     )
     x = np.transpose(x, (1, 0, 2, 3))
-    res = conv2d_transpose(x, filters, strides, padding, None, "NHWC", dilations)
+    res = conv2d_transpose(
+        x, filters, strides, padding, output_shape, "NHWC", dilations
+    )
     res = np.transpose(res, (1, 0, 2, 3))
     res = np.lib.stride_tricks.as_strided(
         res, shape=res.shape[1:], strides=res.strides[1:]
@@ -429,16 +432,17 @@ def conv3d_transpose(
         x = np.transpose(x, (0, 2, 3, 4, 1))
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
-    new_d = _deconv_length(
-        x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
-    )
-    new_h = _deconv_length(
-        x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
-    )
-    new_w = _deconv_length(
-        x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
-    )
-    output_shape = [new_d, new_h, new_w]
+    if output_shape is None:
+        new_d = _deconv_length(
+            x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
+        )
+        new_h = _deconv_length(
+            x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
+        )
+        new_w = _deconv_length(
+            x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
+        )
+        output_shape = [new_d, new_h, new_w]
 
     if strides[2] > 1:
         x = _add_dilations(x, strides[2], axis=3)
