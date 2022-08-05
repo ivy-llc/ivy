@@ -164,11 +164,8 @@ It also enables other helpful perks, such as auto-completions in the IDE etc.
 API Special Methods
 --------------------
 
-As is the case for the :code:`ivy.Array`,
-most special methods of the :code:`ivy.Container` simply wrap a corresponding function in the functional API.
-
-The special methods which **do not** wrap functions in the functional API are implemented in `ContainerBase`_,
-which is the base abstract class for all containers.
+All non-operator special methods are implemented in `ContainerBase`_,
+which is the abstract base class for all containers.
 These special methods include
 `__repr__`_ which controls how the container is printed in the terminal,
 `__getattr__`_ that enables keys in the underlying :code:`dict` to be queried as attributes,
@@ -178,14 +175,22 @@ These special methods include
 `__contains__`_ that enables us to check for chains of keys in the underlying :code:`dict`,
 and `__getstate__`_ and `__setstate__`_ which combined enable the container to be pickled and unpickled.
 
-As for the special methods which **do** simply wrap corresponding functions in the functional API,
-these are `implemented`_ in the main :code:`ivy.Container` class.
+As for the special methods which are `implemented`_ in the main :code:`ivy.Container`
+class, they all make calls to the corresponding standard operator functions.
 
-These special methods all directly wrap the corresponding API *static* :code:`ivy.Container` method.
-
-Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which directly call
-:code:`ivy.Container.static_add`, :code:`ivy.Container.static_subtract`,
-:code:`ivy.Container.static_multiply` and :code:`ivy.Container.static_divide` respectively.
+As a result, the operator functions will make use of the special methods of the lefthand
+passed input objects if available, otherwise it will make use of the reverse special
+method of the righthand operand. For instance, if the lefthand operand at any given leaf
+of the container in an :code:`ivy.Array`, then the operator function will make calls to
+the special methods of this array object. As explained in the :ref:`Arrays` section of
+the Deep Dive, these special methods will in turn call the corresponding functions from
+the ivy functional API.
+ 
+Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make
+calls to :code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and
+:code:`ivy.divide` respectively if the lefthand operand is an :code:`ivy.Array` object.
+Otherwise, these special methods will be called on whatever objects are at the leaves of
+the container, such as :code`int`, :code:`float`, :code`ivy.NativeArray` etc.
 
 Nestable Functions
 ------------------
@@ -278,9 +283,6 @@ compositional implicitly nestable where possible.
 
 **Shared Nested Structure**
 
-NOTE - implementing the behaviour for shared nested structures is a work in progress,
-the master branch will soon support all of the examples given below, but not yet 🚧
-
 When the nested structures of the multiple containers are *shared* but not *identical*,
 then the behaviour of the nestable function is a bit different.
 Containers have *shared* nested structures if all unique leaves in any of the containers
@@ -365,88 +367,6 @@ than :code:`y`, (b) the key chain :code:`d/f` for :code:`x` is not present in
 and likewise the key chain :code:`d/g` for :code:`z` is not present in :code:`x`
 despite :code:`d` not being a non-leaf node in :code:`x`.
 
-**Container-dependent Functions**
-
-*Container-dependent* functions are functions containing arguments which, if provided,
-**must** be provided as an :code:`ivy.Container`.
-*Container-dependent* functions are never *nestable*, as we will explain.
-Due to their dependence on containers, *container-dependent* functions all have a natural
-many (the containers) to one (all other arguments) correspondence in the arguments,
-unlike *nestable* functions which have a one-to-one correspondence between the arguments
-by default.
-
-A couple of examples of *Container-dependent* functions are:
-:code:`ivy.execute_with_gradients` and :code:`ivy.multi_head_attention`.
-
-We'll go through the signatures and docstring descriptions for both of these in turn.
-
-.. code-block:: python
-
-    def execute_with_gradients(
-        func: Callable,
-        xs: ivy.Container,
-        retain_grads: bool = False,
-    ) -> Tuple[ivy.Array, ivy.Container, Any]:
-        """
-        Call function func with container of input variables xs, and return the
-        functions first output y, the gradients dy/dx as a new container, and any other
-        function outputs after the returned y value.
-        """
-
-Technically, this function *could* be made fully nestable, whereby the function would
-be independently applied on each leaf node of the :code:`ivy.Container` of variables,
-but this would be much less efficient, with the backend autograd function
-(such as :code:`torch.autograd.grad`) being called many times independently for each
-variable in the container of variables :code:`xs`. By making this function non-nestable,
-we do not map the function across each of the container leaves, and instead pass the
-entire container into the backend autograd function directly,
-which is much more efficient.
-
-If the function were *nestable*, it would also repeatedly return :code:`y` and all
-other function return values at each leaf of the single returned container,
-changing the signature of the function, and causing repeated redundancy in the return.
-
-The example :code:`ivy.multi_head_attention` is a bit different.
-
-.. code-block:: python
-
-    def multi_head_attention(
-        x: Union[ivy.Array, ivy.NativeArray],
-        scale: Number,
-        num_heads: int,
-        context: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        to_q_fn: Optional[Callable] = None,
-        to_kv_fn: Optional[Callable] = None,
-        to_out_fn: Optional[Callable] = None,
-        to_q_v: Optional[ivy.Container] = None,
-        to_kv_v: Optional[ivy.Container] = None,
-        to_out_v: Optional[ivy.Container] = None,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        Applies multi-head attention, with the array (x) to determine the queries from,
-        the scale for the query-key similarity measure, the number of
-        attention heads, the context to determine the keys and values from,
-        the mask to apply to the query-key values, the function (to_q_fn) to compute
-        queries from input x, the function (to_kv_fn) to compute keys and values from
-        the context, the function (to_out_fn) to compute the output from the scaled
-        dot-product attention, the variables (to_q_v) for function to_q_fn, the
-        variables (to_kv_v) for function to_kv_fn, and the variables (to_out_v) for
-        function to_out_fn.
-        """
-
-This function fundamentally could not be made *nestable*,
-as the function takes a many-to-one approach with regards to the optional containers:
-:code:`to_q_v`, :code:`to_kv_v` and :code:`to_out_v`.
-The containers are optionally used for the purpose of returning a single
-:code:`ivy.Array` at the end. Calling this function on each leaf of the containers
-passed in the input would not make any sense.
-
-Hopefully, these two examples explain why *Container-dependent* functions
-(with arguments which, if provided, **must** be provided as an :code:`ivy.Container`),
-are never implemented as *nestable* functions.
-
 **Round Up**
 
 This should have hopefully given you a good feel for containers, and how these are handled in Ivy.
@@ -454,3 +374,12 @@ This should have hopefully given you a good feel for containers, and how these a
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `containers discussion`_,
 or reach out on `discord`_ in the `containers channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/oHcoYFi2rvI" class="video">
+    </iframe>
