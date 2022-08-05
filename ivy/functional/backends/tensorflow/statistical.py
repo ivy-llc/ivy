@@ -102,7 +102,7 @@ def std(
                 axis=i,
                 correction=correction,
                 dtype=dtype).numpy()
-                )
+            )
         ret = tf.constant(ret, dtype=dtype)
     elif isinstance(axis, int):
         ret = _new_std_fun(x, axis=axis, correction=correction, dtype=dtype)
@@ -117,7 +117,7 @@ def std(
 
     if keepdims:
         shape = [1 if tf.rank(ret) == 0 else ret.shape[0]] \
-                + [1 for i in range(len(x.shape) - 1)]
+            + [1 for i in range(len(x.shape) - 1)]
         ret = tf.constant(ret, shape=shape)
     return ret
 
@@ -162,25 +162,27 @@ def var(
                 axis=i,
                 correction=correction,
                 dtype=dtype).numpy()
-                )
+            )
         ret = tf.constant(ret, dtype=dtype)
     elif isinstance(axis, int):
         ret = _new_var_fun(
             x,
             axis=axis,
             correction=correction,
-            dtype=dtype)
+            dtype=dtype
+        )
     else:
         size = tf.size(x).numpy()
         ret = _new_var_fun(
             tf.reshape(x, size),
             axis=0,
             correction=correction,
-            dtype=dtype)
+            dtype=dtype
+        )
 
     if keepdims:
         shape = [1 if tf.rank(ret) == 0 else ret.shape[0]] \
-                + [1 for i in range(len(x.shape) - 1)]
+            + [1 for i in range(len(x.shape) - 1)]
         ret = tf.constant(ret, shape=shape)
     return ret
 
