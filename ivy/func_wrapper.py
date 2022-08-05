@@ -372,7 +372,6 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
         # wrap decorators (sequence matters)
-
         for attr in [
             "infer_device",
             "infer_dtype",
