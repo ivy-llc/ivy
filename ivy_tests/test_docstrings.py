@@ -60,9 +60,9 @@ def test_docstrings(backend):
 
     # skip list for array and container docstrings
     skip_arr_cont = [
-        "cross_entropy",
+        "cross_entropy", 'logical_and', 'matrix_rank', 'depthwise_conv2d', 'log1p'
     ]
-    currently_being_worked_on = []
+    currently_being_worked_on = ['logical_and','matrix_rank', 'logical_and', 'to_list', 'stable_divide','conv2d','depthwise_conv2d','svd','svdvals','squeeze']
 
     # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp + currently_being_worked_on
