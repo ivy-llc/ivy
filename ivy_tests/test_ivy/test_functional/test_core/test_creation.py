@@ -141,11 +141,7 @@ def test_logspace(
     num_positional_args,
     fw,
 ):
-    dtype, start_stop = (
-        ["float16", "float16"],
-        [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
-    )
-    # dtype, start_stop = dtype_and_start_stop
+    dtype, start_stop = dtype_and_start_stop
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
