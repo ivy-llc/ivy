@@ -3,6 +3,7 @@ import numpy as np
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
 # local
+import ivy
 from ivy import inf
 from collections import namedtuple
 
@@ -116,7 +117,9 @@ def matrix_rank(
 ) -> np.ndarray:
     if rtol is None:
         ret = np.linalg.matrix_rank(x)
-    ret = np.linalg.matrix_rank(x, rtol)
+    else:
+        ret = np.linalg.matrix_rank(x, rtol)
+    ret = np.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
     return ret
 
 
@@ -183,6 +186,7 @@ def solve(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     expanded_last = False
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if len(x2.shape) <= 1:
         if x2.shape[-1] == x1.shape[-1]:
             expanded_last = True
@@ -284,7 +288,7 @@ def vector_to_skew_symmetric_matrix(
     a2s = vector_expanded[..., 1:2, :]
     a3s = vector_expanded[..., 2:3, :]
     # BS x 1 x 1
-    zs = np.zeros(batch_shape + [1, 1])
+    zs = np.zeros(batch_shape + [1, 1], dtype=vector.dtype)
     # BS x 1 x 3
     row1 = np.concatenate((zs, -a3s, a2s), -1)
     row2 = np.concatenate((a3s, zs, -a1s), -1)

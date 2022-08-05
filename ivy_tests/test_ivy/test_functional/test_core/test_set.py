@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import strategies as st, given
+from hypothesis import strategies as st, given, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -34,6 +34,7 @@ def test_unique_values(
     device,
 ):
     dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -73,6 +74,7 @@ def test_unique_all(
     device,
 ):
     dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -112,6 +114,7 @@ def test_unique_counts(
     device,
 ):
     dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -151,6 +154,7 @@ def test_unique_inverse(
     device,
 ):
     dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
         input_dtypes=dtype,

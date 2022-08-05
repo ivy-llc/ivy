@@ -29,7 +29,9 @@ def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
         ivy.is_float_dtype(dtype)
         and isinstance(fill_value, float)
         or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not compatible"
+    ), "the fill_value:\n\n{}\n\nand data type:\n\n{}\n\nare not compatible.".format(
+        fill_value, dtype
+    )
 
 
 # Array API Standard #
@@ -982,14 +984,56 @@ def full(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
-    >>> shape = (2,2)
-    >>> fill_value = 10
-    >>> y = ivy.full(shape, fill_value)
-    >>> print(y)
-    ivy.array([[10, 10],
-           [10, 10]])
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Shape` input:
+
+    >>> shape = ivy.Shape((2,2))
+    >>> fill_value = 8.6
+    >>> x = ivy.full(shape, fill_value)
+    >>> print(x)
+    ivy.array([[8.6, 8.6],
+               [8.6, 8.6]])
+
+    With :code:`ivy.NativeShape` input:
+
+    >>> shape = ivy.NativeShape((2, 2, 2))
+    >>> fill_value = True
+    >>> dtype = ivy.bool
+    >>> device = ivy.Device('cpu')
+    >>> x = ivy.full(shape, fill_value, dtype=dtype, device=device)
+    >>> print(x)
+    ivy.array([[[True,  True],
+                [True,  True]],
+               [[True,  True],
+                [True,  True]]])
+
+    With :code:`ivy.NativeDevice` input:
+
+    >>> shape = ivy.NativeShape((1, 2))
+    >>> fill_value = 0.68
+    >>> dtype = ivy.float64
+    >>> device = ivy.NativeDevice('cpu')
+    >>> x = ivy.full(shape, fill_value, dtype=dtype, device=device)
+    >>> print(x)
+    ivy.array([[0.68, 0.68]])
+
+    With :code:'ivy.Container' input:
+
+    >>> shape = ivy.Container(a=ivy.NativeShape((2, 1)), b=ivy.Shape((2, 1, 2)))
+    >>> fill_value = ivy.Container(a=0.99, b=False)
+    >>> dtype = ivy.Container(a=ivy.float64, b=ivy.bool)
+    >>> device = ivy.Container(a=ivy.NativeDevice('cpu'), b=ivy.Device('cpu'))
+    >>> x = ivy.full(shape, fill_value, dtype=dtype, device=device)
+    >>> print(x)
+    {
+        a: ivy.array([[0.99],
+                      [0.99]]),
+        b: ivy.array([[[False, False]],
+                      [[False, False]]])
+    }
+
 
     """
     return current_backend().full(
