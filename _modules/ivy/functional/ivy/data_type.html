@@ -493,7 +493,8 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1.3,2.1,3.4], dtype=ivy.float64)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.finfo(x)</span>
-<span class="sd">    finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
+<span class="sd">    finfo(resolution=1e-15, min=-1.7976931348623157e+308, /</span>
+<span class="sd">    max=1.7976931348623157e+308, dtype=float64)</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
@@ -508,7 +509,8 @@
 <span class="sd">    &gt;&gt;&gt; ivy.finfo(c)</span>
 <span class="sd">    {</span>
 <span class="sd">        x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),</span>
-<span class="sd">        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
+<span class="sd">        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /</span>
+<span class="sd">           max=1.7976931348623157e+308, dtype=float64)</span>
 <span class="sd">    }</span>
 
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
@@ -523,7 +525,8 @@
 <span class="sd">                          y=ivy.array([1.3,2.1,3.4], dtype=ivy.float16))</span>
 <span class="sd">    &gt;&gt;&gt; c.finfo()</span>
 <span class="sd">    {</span>
-<span class="sd">        x: finfo(resolution=1e-15, min=-1.7976931348623157e+308, max=1.7976931348623157e+308, dtype=float64)</span>
+<span class="sd">        x: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /</span>
+<span class="sd">                 max=1.7976931348623157e+308, dtype=float64)</span>
 <span class="sd">        y: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),</span>
 <span class="sd">    }</span>
 
@@ -1426,9 +1429,9 @@
 <span class="sd">    ret</span>
 <span class="sd">        &quot;True&quot; if the input data type is a bool, otherwise &quot;False&quot;.</span>
 
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
+<span class="sd">    Both the description and the type hints above assumes an array input for</span>
+<span class="sd">    simplicity but this function is *nestable*, and therefore also accepts</span>
+<span class="sd">    :code:`ivy.Container` instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
@@ -1471,9 +1474,9 @@
 <span class="sd">    ret</span>
 <span class="sd">        &quot;True&quot; if the input data type is an integer, otherwise &quot;False&quot;.</span>
 
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
+<span class="sd">    Both the description and the type hints above assumes an array input for</span>
+<span class="sd">    simplicity but this function is *nestable*, and therefore also accepts</span>
+<span class="sd">    :code:`ivy.Container` instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1917,8 +1920,8 @@
     <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Number</span><span class="p">]],</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Number</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-
-    <span class="sd">&quot;&quot;&quot;Promotes the dtype of the given native array inputs to a common dtype</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Promotes the dtype of the given native array inputs to a common dtype</span>
 <span class="sd">    based on type promotion rules. While passing float or integer values or any</span>
 <span class="sd">    other non-array input to this function, it should be noted that the return will</span>
 <span class="sd">    be an array-like object. Therefore, outputs from this function should be used</span>
