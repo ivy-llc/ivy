@@ -53,7 +53,6 @@ def statistical_dtype_values(draw, *, function):
     return dtype, values, axis
 
 
-
 # min
 @given(
     dtype_and_x=statistical_dtype_values(function="min"),
@@ -75,7 +74,7 @@ def test_min(
     fw,
     keep_dims,
 ):
-    input_dtype, x, axis= dtype_and_x
+    input_dtype, x, axis = dtype_and_x
     assume(x)
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -153,7 +152,7 @@ def test_mean(
     fw,
     keep_dims,
 ):
-    input_dtype, x, axis= dtype_and_x
+    input_dtype, x, axis = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -192,7 +191,7 @@ def test_var(
     fw,
     keep_dims,
 ):
-    input_dtype, x, axis, correction= dtype_and_x
+    input_dtype, x, axis, correction = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -319,7 +318,7 @@ def test_std(
     fw,
     keep_dims,
 ):
-    input_dtype, x, axis, correction= dtype_and_x
+    input_dtype, x, axis, correction = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,

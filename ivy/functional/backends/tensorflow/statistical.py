@@ -6,18 +6,24 @@ from typing import Tuple, Union, Optional, Sequence
 # local
 import ivy
 
+
 def __new_var_fun(x, *, axis, correction, dtype):
     output = tf.cast(x, dtype)
     length = tf.cast(tf.shape(output)[axis], dtype)
     divisor = tf.cast(length - correction, dtype)
     mean = tf.keras.backend.sum(output, axis=axis) / length
-    output = tf.math.abs(tf.cast(output, dtype=dtype) - tf.cast(tf.expand_dims(mean, axis), dtype=dtype))
+    output = tf.math.abs(
+        tf.cast(output, dtype=dtype)
+        - tf.cast(tf.expand_dims(mean, axis), dtype=dtype)
+    )
     output = output ** 2
     output = tf.keras.backend.sum(output, axis=axis) / divisor
     return output
 
+
 def __new_std_fun(x, *, axis, correction, dtype):
     return tf.math.sqrt(__new_var_fun(x, axis=axis, correction=correction, dtype=dtype))
+
 
 # Array API Standard #
 # -------------------#
@@ -91,18 +97,30 @@ def std(
     if isinstance(axis, tuple):
         out = []
         for i in axis:
-            out.append(__new_std_fun(x, axis=i, correction=correction, dtype=dtype).numpy())
+            out.append(__new_std_fun(
+                x,
+                axis=i,
+                correction=correction,
+                dtype=dtype).numpy()
+                )
         out = tf.constant(out, dtype=dtype)
     elif isinstance(axis, int):
         out = __new_std_fun(x, axis=axis, correction=correction, dtype=dtype)
     else:
         size = tf.size(x).numpy()
-        out = __new_std_fun(tf.reshape(x,size), axis=0, correction=correction, dtype=dtype)
+        out = __new_std_fun(
+            tf.reshape(x, size),
+            axis=0,
+            correction=correction,
+            dtype=dtype
+        )
 
     if keepdims:
-        shape = [1 if tf.rank(out)==0 else out.shape[0]] + [1 for i in range(len(x.shape)-1)]
+        shape = [1 if tf.rank(out) == 0 else out.shape[0]] \
+                + [1 for i in range(len(x.shape) - 1)]
         out = tf.constant(out, shape=shape)
     return out
+
 
 def sum(
     x: Union[tf.Tensor, tf.Variable],
@@ -139,20 +157,32 @@ def var(
     if isinstance(axis, tuple):
         out = []
         for i in axis:
-            out.append(__new_var_fun(x, axis=i, correction=correction, dtype=dtype).numpy())
+            out.append(__new_var_fun(
+                x,
+                axis=i,
+                correction=correction,
+                type=dtype).numpy()
+                )
         out = tf.constant(out, dtype=dtype)
     elif isinstance(axis, int):
-        out = __new_var_fun(x, axis=axis, correction=correction, dtype=dtype)
+        out = __new_var_fun(
+            x,
+            axis=axis,
+            correction=correction,
+            dtype=dtype)
     else:
         size = tf.size(x).numpy()
-        out = __new_var_fun(tf.reshape(x,size), axis=0, correction=correction, dtype=dtype)
-        print(out)
+        out = __new_var_fun(
+            tf.reshape(x, size),
+            axis=0,
+            correction=correction,
+            dtype=dtype)
 
     if keepdims:
-        shape = [1 if tf.rank(out)==0 else out.shape[0]] + [1 for i in range(len(x.shape)-1)]
+        shape = [1 if tf.rank(out) == 0 else out.shape[0]] \
+                + [1 for i in range(len(x.shape) - 1)]
         out = tf.constant(out, shape=shape)
     return out
-
 
 
 # Extra #
