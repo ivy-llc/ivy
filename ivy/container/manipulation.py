@@ -49,9 +49,10 @@ class ContainerWithManipulation(ContainerBase):
             out=out,
         )
 
-    def expand_dims(
-        self: ivy.Container,
-        axis: Optional[int] = 0,
+    @staticmethod
+    def static_expand_dims(
+        x: ivy.Container,
+        axis: Union[int, Tuple[int], List[int]] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -59,6 +60,132 @@ class ContainerWithManipulation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.expand_dims. This method simply
+        wraps the function, and so the docstring for ivy.expand_dims also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        axis
+            position where a new axis (dimension) of size one will be added. If an
+            element of the container has the rank of ``N``, then the ``axis`` needs
+            to be between ``[-N-1, N]``. Default: ``0``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container with the elements of ``x``, but with the dimensions of
+            its elements added by one in a given ``axis``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1.]), \
+                              b=ivy.array([3., 4.]), \
+                              c=ivy.array([6., 7.]))
+        >>> y = ivy.Container.static_expand_dims(x, axis=1)
+        >>> print(y)
+        {
+            a: ivy.array([[0.],
+                          [1.]]),
+            b: ivy.array([[3.],
+                          [4.]]),
+            c: ivy.array([[6.],
+                          [7.]])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                              b=ivy.array([3., 4., 5.]), \
+                              c=ivy.array([6., 7., 8.]))
+        >>> container_axis = ivy.Container(a=0, b=-1, c=(0,1))
+        >>> y = ivy.Container.static_expand_dims(x, axis=container_axis)
+        >>> print(y)
+        {
+            a: ivy.array([[0., 1., 2.]]),
+            b: ivy.array([[3.],
+                          [4.],
+                          [5.]]),
+            c: ivy.array([[[6., 7., 8.]]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "expand_dims",
+            x,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def expand_dims(
+        self: ivy.Container,
+        axis: Union[int, Tuple[int], List[int]] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.expand_dims. This method simply
+        wraps the function, and so the docstring for ivy.expand_dims also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        axis
+            position where a new axis (dimension) of size one will be added. If an
+            element of the container has the rank of ``N``, the ``axis`` needs to
+            be between ``[-N-1, N]``. Default: ``0``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container with the elements of ``self``, but with the dimensions of
+            its elements added by one in a given ``axis``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0., 1.], \
+                                           [2., 3.]]), \
+                              b=ivy.array([[4., 5.], \
+                                           [6., 7.]]))
+        >>> y = x.expand_dims(axis=1)
+        >>> print(y)
+        {
+            a: ivy.array([[[0., 1.]],
+                          [[2., 3.]]]),
+            b: ivy.array([[[4., 5.]],
+                          [[6., 7.]]])
+        }
+        """
         return ContainerBase.handle_inplace(
             self.map(
                 lambda x_, _: ivy.expand_dims(x_, axis=axis)
@@ -70,6 +197,118 @@ class ContainerWithManipulation(ContainerBase):
                 map_sequences,
             ),
             out=out,
+        )
+
+    @staticmethod
+    def static_split(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+        axis: int = 0,
+        with_remainder: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Union[ivy.Container, List[ivy.Container]]:
+        """
+        ivy.Container static method variant of ivy.split. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            array to be divided into sub-arrays.
+        num_or_size_splits
+            Number of equal arrays to divide the array into along the given axis if an
+            integer. The size of each split element if a sequence of integers. Default
+            is to divide into as many 1-dimensional arrays as the axis dimension.
+        axis
+            The axis along which to split, default is 0.
+        with_remainder
+            If the tensor does not split evenly, then store the last remainder entry.
+            Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+            A container with list of sub-arrays.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "split",
+            x,
+            num_or_size_splits,
+            axis,
+            with_remainder,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def split(
+        self: ivy.Container,
+        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+        axis: int = 0,
+        with_remainder: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Union[ivy.Container, List[ivy.Container]]:
+        """
+        ivy.Container instance method variant of ivy.split. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            array to be divided into sub-arrays.
+        num_or_size_splits
+            Number of equal arrays to divide the array into along the given axis if an
+            integer. The size of each split element if a sequence of integers. Default
+            is to divide into as many 1-dimensional arrays as the axis dimension.
+        axis
+            The axis along which to split, default is 0.
+        with_remainder
+            If the tensor does not split evenly, then store the last remainder entry.
+            Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+            A container with list of sub-arrays.
+
+        """
+        return self.static_split(
+            self,
+            num_or_size_splits,
+            axis,
+            with_remainder,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
         )
 
     def permute_dims(
@@ -139,8 +378,8 @@ class ContainerWithManipulation(ContainerBase):
             input container.
 
         shape
-            The new shape should be compatible with the original shape. 
-            One shape dimension can be -1. In this case, the value is 
+            The new shape should be compatible with the original shape.
+            One shape dimension can be -1. In this case, the value is
             inferred from the length of the array and remaining dimensions.
         copy
             boolean indicating whether or not to copy the input array.
@@ -166,7 +405,7 @@ class ContainerWithManipulation(ContainerBase):
         Returns
         -------
         ret
-            optional output container, for writing the result to. It must have a shape 
+            optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Examples
