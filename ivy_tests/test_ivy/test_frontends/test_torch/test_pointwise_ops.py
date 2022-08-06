@@ -22,12 +22,12 @@ import ivy.functional.backends.torch as ivy_torch
         allow_inf=False,
     ),
     alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    with_out=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.add"
     ),
-    native_array=st.booleans(),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_torch_add(
     dtype_and_x,
@@ -48,11 +48,11 @@ def test_torch_add(
         fw=fw,
         frontend="torch",
         fn_name="add",
+        rtol=1e-04,
         input=np.asarray(x[0], dtype=input_dtype[0]),
         other=np.asarray(x[1], dtype=input_dtype[1]),
         alpha=alpha,
         out=None,
-        rtol=1e-04,
     )
 
 
@@ -112,7 +112,12 @@ def test_torch_tan(
     native_array=st.booleans(),
 )
 def test_torch_abs(
-    dtype_and_x, as_variable, with_out, num_positional_args, native_array, fw,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
