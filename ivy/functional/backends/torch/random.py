@@ -6,8 +6,11 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.device import default_device
-
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _randint_check_dtype_and_bound,
+    _check_valid_scale,
+)
 
 # Extra #
 # ------#
@@ -17,22 +20,14 @@ def random_uniform(
     low: Union[float, torch.Tensor] = 0.0,
     high: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dtype=None,
     *,
+    dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    shape = _check_bounds_and_get_shape(low, high, shape)
     rand_range = high - low
-    if shape is None:
-        shape = []
-    return (
-        torch.rand(shape, device=default_device(device), dtype=dtype, out=out)
-        * rand_range
-        + low
-    )
-
-
-random_uniform.support_native_out = True
+    return torch.rand(shape, device=device, dtype=dtype, out=out) * rand_range + low
 
 
 def random_normal(
@@ -40,19 +35,15 @@ def random_normal(
     std: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
+    dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(mean, float) and isinstance(std, float):
-        ret = torch.normal(mean, std, ivy.default(shape, ()), out=out)
-    else:
-        assert shape is None, (
-            "can only provide explicit shape if mean and std are " "both scalar values"
-        )
-        ret = torch.normal(mean, std, out=out)
-    if ret.device == device:
-        return ret
-    return ret.to(device)
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape)
+    if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
+        return torch.normal(mean, std, shape, out=out).to(device)
+    return torch.normal(mean, std, out=out).to(device)
 
 
 random_normal.support_native_out = True
@@ -78,26 +69,28 @@ def multinomial(
             )
             / population_size
         )
-    return torch.multinomial(probs.float(), num_samples, replace, out=out).to(
-        default_device(device)
-    )
+    return torch.multinomial(probs.float(), num_samples, replace, out=out).to(device)
 
 
 multinomial.support_native_out = True
 
 
 def randint(
-    low: int,
-    high: int,
+    low: Union[int, torch.Tensor],
+    high: Union[int, torch.Tensor],
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     device: torch.device,
+    dtype: Optional[Union[torch.dtype, ivy.Dtype]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.randint(low, high, shape, out=out, device=default_device(device))
-
-
-randint.support_native_out = True
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    _randint_check_dtype_and_bound(low, high, dtype)
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    rand_range = high - low
+    return torch.rand(shape, device=device).to(dtype) * rand_range + low
 
 
 def seed(seed_value: int = 0) -> None:
@@ -108,7 +101,7 @@ def seed(seed_value: int = 0) -> None:
 
 def shuffle(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     batch_size = x.shape[0]
-    return torch.index_select(x, 0, torch.randperm(batch_size, out=out), out=out)
+    return torch.index_select(x, 0, torch.randperm(batch_size), out=out)
 
 
 shuffle.support_native_out = True

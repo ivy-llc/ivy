@@ -12,7 +12,6 @@ from typing import Optional
 # local
 import ivy
 from ivy.container import Container
-from ivy.functional.ivy.gradients import to_container_and_back
 
 
 # ToDo: modify these functions to track whether variable() has been called
@@ -32,7 +31,6 @@ def variable_data(x):
     return x
 
 
-@to_container_and_back
 def execute_with_gradients(func, xs, retain_grads=False):
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
@@ -44,12 +42,28 @@ def execute_with_gradients(func, xs, retain_grads=False):
         rest = tuple()
         grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(x_in), []))
     grad_func = jax.grad(grad_fn)
-    grads = {k: grad_func(x) for k, x in xs.items()}
-    grads = ivy.to_ivy(grads, nested=True)
-    grads = Container(grads)
+    if isinstance(xs, ivy.Container):
+        grads = grad_func(xs)
+        grads = ivy.to_ivy(grads, nested=True)
+        grads = Container(grads)
+    else:
+        grads = grad_func(xs)
+        grads = ivy.to_ivy(grads)
     if not retain_grads:
         y = ivy.stop_gradient(y)
     return (y, grads, *rest)
+
+
+def value_and_grad(func):
+    grad_fn = lambda xs: ivy.to_native(func(xs))
+
+    def callback_fn(xs):
+        xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
+        ret = jax.value_and_grad(grad_fn)(xs)
+        ret = ivy.nested_map(ret, lambda x: ivy.to_ivy(x), include_derived=True)
+        return ret
+
+    return callback_fn
 
 
 def stop_gradient(

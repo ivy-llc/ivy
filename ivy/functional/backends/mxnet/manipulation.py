@@ -2,7 +2,7 @@
 import mxnet as mx
 import math
 import numpy as np
-from typing import Union, Tuple, Optional, List
+from typing import Union, Tuple, Optional, List, Sequence
 from ivy.functional.backends.mxnet import (
     _flat_array_to_1_dim_array,
     _handle_flat_arrays_in_out,
@@ -12,6 +12,9 @@ from ivy.functional.backends.mxnet import (
 
 # local
 import ivy
+
+# noinspection PyProtectedMember
+from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 
 def flip(
@@ -41,15 +44,13 @@ def flip(
 
 def expand_dims(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    out: Optional[mx.nd.NDArray] = None,
+    axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> mx.nd.NDArray:
     if x.shape == ():
         ret = _flat_array_to_1_dim_array(x)
     else:
-        ret = mx.nd.expand_dims(x, axis)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        out_shape = _calculate_out_shape(axis, x.shape)
+        ret = x.reshape(out_shape)
     return ret
 
 
@@ -85,7 +86,15 @@ def squeeze(
     return ret
 
 
-reshape = lambda x, new_shape: x.reshape(new_shape)
+def reshape(
+    x: mx.nd.NDArray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    copy: Optional[bool] = None,
+) -> mx.nd.NDArray:
+    if copy:
+        newarr = x.copy()
+        return newarr.reshape(shape)
+    return x.reshape(shape)
 
 
 @_handle_flat_arrays_in_out
