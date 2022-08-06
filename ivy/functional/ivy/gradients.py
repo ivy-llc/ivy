@@ -787,15 +787,15 @@ def lamb_update(
     step
         training step
     beta1
-        gradient forgetting factor (Default value = 0.9)
+        gradient forgetting factor. (Default value = 0.9)
     beta2
-        second moment of gradient forgetting factor (Default value = 0.999)
+        second moment of gradient forgetting factor. (Default value = 0.999)
     epsilon
-        divisor during lamb update, preventing division by zero (Default value = 1e-7)
+        divisor during lamb update, preventing division by zero. (Default value = 1e-7)
     max_trust_ratio
-        The maximum value for the trust ratio. Default is 10.
+        The maximum value for the trust ratio. (Default value = 10)
     decay_lambda
-        The factor used for weight decay. Default is zero.
+        The factor used for weight decay. (Default value = 0)
     inplace
         Whether to perform the operation inplace, for backends which support inplace
         variable updates, and handle gradients behind the scenes such as PyTorch. If the
@@ -849,6 +849,31 @@ def lamb_update(
         [0.04, 0.07, 0.02]]), ivy.array([[2.5e-04, 4.0e-05, 1.0e-05],
         [9.0e-05, 3.6e-04, 1.6e-04],
         [1.6e-04, 4.9e-04, 4.0e-05]]))
+
+
+    >>> w = ivy.array([[1.,2,3],[4,6,2],[1,0,4]])
+    >>> dcdw = ivy.array([[0.5,0.3,0.2],[0.1,0.8,0.3],[0.6,0.7,0.1]])
+    >>> lr=ivy.array(0.1)
+    >>> mw_tm1 = ivy.zeros((3,3))
+    >>> vw_tm1 = ivy.zeros(3)
+    >>> step = ivy.array(1)
+    >>> beta1=0.8
+    >>> beta2=0.76
+    >>> epsilon=1e-4
+    >>> max_trust_ratio=5.7
+    >>> decay_lambda=1
+    >>> inplace=False
+    >>> stop_gradients = False
+    >>> new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1,beta2,\
+                        epsilon,max_trust_ratio,decay_lambda,inplace,stop_gradients)
+    >>> print(new_weights)
+    (ivy.array([[ 0.922 ,  1.92  ,  2.92  ],
+        [ 3.92  ,  5.92  ,  1.92  ],
+        [ 0.922 , -0.0782,  3.92  ]]), ivy.array([[0.1 , 0.06, 0.04],
+        [0.02, 0.16, 0.06],
+        [0.12, 0.14, 0.02]]), ivy.array([[0.06  , 0.0216, 0.0096],
+        [0.0024, 0.154 , 0.0216],
+        [0.0864, 0.118 , 0.0024]]))
 
 
     With :code: `ivy.container` inputs:
