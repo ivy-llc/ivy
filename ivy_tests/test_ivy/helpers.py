@@ -467,17 +467,17 @@ def f_n_calls():
 
 
 def assert_all_close(
-        ret_np,
-        ret_from_np,
-        rtol=1e-05,
-        atol=1e-08,
-        ground_truth_backend='TensorFlow'):
-    assert ret_np.dtype is ret_from_np.dtype, \
-        ("the return with a {} backend produced data type of {}, while the return with"
-         " a {} backend returned a data type of {}.".format(ground_truth_backend,
-                                                            ret_from_np.dtype,
-                                                            ivy.current_backend_str(),
-                                                            ret_np.dtype))
+    ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
+):
+    assert ret_np.dtype is ret_from_np.dtype, (
+        "the return with a {} backend produced data type of {}, while the return with"
+        " a {} backend returned a data type of {}.".format(
+            ground_truth_backend,
+            ret_from_np.dtype,
+            ivy.current_backend_str(),
+            ret_np.dtype,
+        )
+    )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
     else:
@@ -523,12 +523,13 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
 
 
 def value_test(
-        *,
-        ret_np_flat,
-        ret_from_np_flat,
-        rtol=None,
-        atol=1e-6,
-        ground_truth_backend='TensorFlow'):
+    *,
+    ret_np_flat,
+    ret_from_np_flat,
+    rtol=None,
+    atol=1e-6,
+    ground_truth_backend="TensorFlow",
+):
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_from_np_flat) != list:
@@ -548,7 +549,8 @@ def value_test(
                 ret_from_np,
                 rtol=rtol,
                 atol=atol,
-                ground_truth_backend=ground_truth_backend)
+                ground_truth_backend=ground_truth_backend,
+            )
     else:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
             assert_all_close(
@@ -556,7 +558,8 @@ def value_test(
                 ret_from_np,
                 rtol=rtol,
                 atol=atol,
-                ground_truth_backend=ground_truth_backend)
+                ground_truth_backend=ground_truth_backend,
+            )
 
 
 def args_to_container(array_args):
@@ -1262,7 +1265,7 @@ def test_function(
         ret_from_np_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
-        ground_truth_backend=ground_truth_backend
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -1791,6 +1794,7 @@ def array_values(
     exclude_max=True,
     allow_negative=True,
     safety_factor=0.95,
+    small_value_safety_factor=1,
 ):
     exclude_min = exclude_min if ivy.exists(min_value) else False
     exclude_max = exclude_max if ivy.exists(max_value) else False
@@ -1834,6 +1838,7 @@ def array_values(
             )
         values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
     elif dtype == "float16":
+        limit = math.log(2 - small_value_safety_factor) / math.log(2)
         values = draw(
             list_of_length(
                 x=st.floats(
@@ -1845,11 +1850,13 @@ def array_values(
                     width=16,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                ),
+                ).filter(lambda x: x <= -1 * limit or x >= limit),
                 length=size,
             )
         )
+        values = [v * safety_factor for v in values]
     elif dtype in ["float32", "bfloat16"]:
+        limit = math.log(2 - small_value_safety_factor) / math.log(2)
         values = draw(
             list_of_length(
                 x=st.floats(
@@ -1861,12 +1868,13 @@ def array_values(
                     width=32,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                ),
+                ).filter(lambda x: x <= -1 * limit or x >= limit),
                 length=size,
             )
         )
         values = [v * safety_factor for v in values]
     elif dtype == "float64":
+        limit = math.log(2 - small_value_safety_factor) / math.log(2)
         values = draw(
             list_of_length(
                 x=st.floats(
@@ -1878,7 +1886,7 @@ def array_values(
                     width=64,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                ),
+                ).filter(lambda x: x <= -1 * limit or x >= limit),
                 length=size,
             )
         )
@@ -2106,14 +2114,16 @@ def get_bounds(draw, *, dtype):
 
 
 @st.composite
-def get_axis(draw,
-             *,
-             shape,
-             allow_none=False,
-             sorted=True,
-             unique=True,
-             min_size=1,
-             max_size=None):
+def get_axis(
+    draw,
+    *,
+    shape,
+    allow_none=False,
+    sorted=True,
+    unique=True,
+    min_size=1,
+    max_size=None,
+):
     """Draws one or more axis for the given shape.
 
     Parameters
@@ -2159,12 +2169,11 @@ def get_axis(draw,
 
     if allow_none:
         if axes == 0:
-            axis = draw(st.none()
-                        | st.just(0)
-                        | st.lists(
-                            st.just(0),
-                            min_size=min_size,
-                            max_size=max_size))
+            axis = draw(
+                st.none()
+                | st.just(0)
+                | st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            )
         else:
             axis = draw(
                 st.none()
@@ -2178,11 +2187,9 @@ def get_axis(draw,
             )
     else:
         if axes == 0:
-            axis = draw(st.just(0)
-                        | st.lists(
-                            st.just(0),
-                            min_size=min_size,
-                            max_size=max_size))
+            axis = draw(
+                st.just(0) | st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            )
         else:
             axis = draw(
                 st.integers(-axes, axes - 1)
@@ -2195,6 +2202,7 @@ def get_axis(draw,
             )
     if type(axis) == list:
         if sorted:
+
             def sort_key(ele, max_len):
                 if ele < 0:
                     return ele + max_len - 1
@@ -2281,7 +2289,8 @@ def handle_cmd_line_args(test_fn):
 
 
 def gradient_incompatible_function(*, fn):
-    return \
-        not ivy.supports_gradients \
-        and hasattr(fn, "computes_gradients") \
+    return (
+        not ivy.supports_gradients
+        and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
+    )
