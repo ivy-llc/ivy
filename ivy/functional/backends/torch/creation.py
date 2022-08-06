@@ -265,7 +265,7 @@ def linspace(
 
 
 linspace.support_native_out = True
-linspace.unsupported_device_and_dtype = {'devices': ('cpu', ), 'dtypes': ('float16', )}
+linspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}
 
 
 def linspace_helper(start, stop, num, axis=None, *, device, dtype):
@@ -281,7 +281,7 @@ def linspace_helper(start, stop, num, axis=None, *, device, dtype):
             if axis is not None:
                 return start.unsqueeze(axis).to(device)
             else:
-                return start.to(device)
+                return start.unsqueeze(-1).to(device)
         start = start.reshape((-1,))
         linspace_method = (
             _differentiable_linspace if start.requires_grad else torch.linspace
