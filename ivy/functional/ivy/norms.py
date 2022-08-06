@@ -52,24 +52,24 @@ def layer_norm(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([[1.0, 2.0], [3.0, 4.0]])
-    >>> norm = ivy.layer_norm(x, [0, 1], new_std=2.0)
-    >>> print(norm)
+    >>> y = ivy.layer_norm(x, [0, 1], new_std=2.0)
+    >>> print(y)
     ivy.array([[-2.68 , -0.894],
                [ 0.894,  2.68 ]])
 
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
-    >>> norm = ivy.zeros((2, 3))
-    >>> ivy.layer_norm(x, [0], out=norm)
-    >>> print(norm)
+    >>> y = ivy.zeros((2, 3))
+    >>> ivy.layer_norm(x, [0], out=y)
+    >>> print(y)
     ivy.array([[-1., -1., -1.],
                [ 1.,  1.,  1.]])
 
     >>> x = ivy.array([[0.0976, -0.3452,  1.2740], \
                        [0.1047,  0.5886,  1.2732], \
                        [0.7696, -1.7024, -2.2518]])
-    >>> norm = ivy.layer_norm(x, [0, 1], epsilon=0.001, \
+    >>> y = ivy.layer_norm(x, [0, 1], epsilon=0.001, \
                               new_std=1.5, offset=0.5, scale=0.5)
-    >>> print(norm)
+    >>> print(y)
     ivy.array([[ 0.576,  0.292,  1.33 ],
                [ 0.581,  0.891,  1.33 ],
                [ 1.01 , -0.579, -0.931]])
@@ -78,8 +78,8 @@ def layer_norm(
 
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
-    >>> norm = ivy.layer_norm(x, normalized_idxs, new_std=1.25, offset=0.2)
-    >>> print(norm)
+    >>> y = ivy.layer_norm(x, normalized_idxs, new_std=1.25, offset=0.2)
+    >>> print(y)
     {
         a: ivy.array([[-1.05, -1.05, -1.05],
                       [1.45, 1.45, 1.45]]),
@@ -92,8 +92,8 @@ def layer_norm(
     >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
                            'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
     >>> normalized_idxs = [0]
-    >>> norm = ivy.layer_norm(x, normalized_idxs, 1.25, 0.3)
-    >>> print(norm)
+    >>> y = ivy.layer_norm(x, normalized_idxs, 1.25, 0.3)
+    >>> print(y)
     {
         a: ivy.array([0.658, 1.04, 1.3]),
         b: ivy.array([[0.759, 0.759, 0.759], 
@@ -107,8 +107,8 @@ def layer_norm(
     >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
     >>> new_std = ivy.Container({'a': 1.25, 'b': 1.5})
     >>> offset = ivy.Container({'a': 0.2, 'b': 0.3})
-    >>> norm = ivy.layer_norm(x, normalized_idxs, new_std, offset)
-    >>> print(norm)
+    >>> y = ivy.layer_norm(x, normalized_idxs, new_std, offset)
+    >>> print(y)
     {
         a: ivy.array([0.772, 1.03, 1.2]),
         b: ivy.array([[0.796, 1., 1.2], 
