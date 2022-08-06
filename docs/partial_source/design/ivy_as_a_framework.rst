@@ -9,7 +9,7 @@ So far, by considering parts (a) and (b), we have mainly treated Ivy as a fully 
 
 Specifically, here we consider the :code:`ivy.Container` class, the :code:`ivy.Array` class and the stateful API. These parts are labelled as (c) in the image below.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/dependency_graph_with_compiler.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 
