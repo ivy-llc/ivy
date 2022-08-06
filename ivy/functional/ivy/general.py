@@ -2030,7 +2030,21 @@ def set_min_denominator(val: float) -> None:
 
 
 def get_min_base() -> float:
-    """Get the global minimum base used by ivy for numerically stable power raising."""
+    """
+    Gets the global minimum base used by ivy for numerically stable power raising.
+
+    Returns
+    -------
+    ret
+        Global minimum base number
+
+    Examples
+    --------
+    >>> x = ivy.get_min_base()
+    >>> print(x)
+    1e-05    
+    
+    """
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
 
