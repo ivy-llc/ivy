@@ -59,6 +59,37 @@ class ArrayWithDataTypes(abc.ABC):
     def broadcast_to(
         self: ivy.Array, shape: Tuple[int, ...], out: Optional[ivy.Array] = None
     ) -> ivy.Array:
+        """
+        `ivy.Array` instance method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to be broadcasted.
+        shape
+            desired shape to be broadcasted to.
+        out
+            Optional array to store the broadcasted array.
+
+        Returns
+        -------
+        ret
+            Returns the broadcasted array of shape 'shape'
+
+        Examples
+        --------
+        With :code: `ivy.Array` instance method:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.broadcast_to((3,3))
+        >>> print(y)
+        ivy.array([[1, 2, 3],
+                   [1, 2, 3],
+                   [1, 2, 3]])
+        """
         return ivy.broadcast_to(x=self._data, shape=shape, out=out)
 
     def can_cast(self: ivy.Array, to: ivy.Dtype) -> bool:

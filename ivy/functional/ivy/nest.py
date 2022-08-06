@@ -729,7 +729,7 @@ def copy_nest(
     nest: Union[ivy.Array, ivy.NativeArray, Iterable],
     include_derived: bool = False,
     to_mutable: bool = False,
-) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
+) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """Copies a nest deeply, but without copying leaves of the nest, only the nest
     lists, tuples and dicts are copied.
 
@@ -748,6 +748,33 @@ def copy_nest(
     -------
     ret
         The copied nest.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> nest = ivy.array([[1.,2.,3.],[7.,8.,9.]])
+    >>> copied_nest = ivy.copy_nest(nest)
+    >>> print(copied_nest)
+    ivy.array([[1., 2., 3.],
+            [7., 8., 9.]])    
+
+    With :code:`Iterable` input:
+
+    >>> nest = [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
+    >>> copied_nest = ivy.copy_nest(nest, include_derived = True)
+    >>> print(copied_nest)
+    [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
+
+    >>> nest = ([23, 25, 1337], [63, 98, 6])
+    >>> copied_nest = ivy.copy_nest(nest, to_mutable = True)
+    >>> print(copied_nest)
+    [[23, 25, 1337], [63, 98, 6]]
+
+    >>> nest = {'first': [23., 24., 25], 'second': [46., 48., 50]}
+    >>> copied_nest = ivy.copy_nest(nest)
+    >>> print(copied_nest)
+    {'first': [23.0, 24.0, 25], 'second': [46.0, 48.0, 50]}
 
     """
     class_instance = type(nest)
