@@ -524,13 +524,14 @@ def f_n_calls():
 def assert_all_close(
     ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
-    assert (
-        ret_np.dtype is ret_from_np.dtype
-    ), "the return with a {} backend produced data type of {}, while the return with" " a {} backend returned a data type of {}.".format(
-        ground_truth_backend,
-        ret_from_np.dtype,
-        ivy.current_backend_str(),
-        ret_np.dtype,
+    assert ret_np.dtype is ret_from_np.dtype, (
+        "the return with a {} backend produced data type of {}, while the return with"
+        " a {} backend returned a data type of {}.".format(
+            ground_truth_backend,
+            ret_from_np.dtype,
+            ivy.current_backend_str(),
+            ret_np.dtype,
+        )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
@@ -806,7 +807,6 @@ def create_args_kwargs(
     native_array_flags=None,
     container_flags=None,
 ):
-
     # extract all arrays from the arguments and keyword arguments
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
@@ -2019,8 +2019,9 @@ def get_shape(
     min_dim_size=1,
     max_dim_size=10,
 ):
-    """Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size] of size drawn from
-    min_num_dims to max_num_dims. Useful for randomly drawing the shape of an array.
+    """Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size]
+     of size drawn from min_num_dims to max_num_dims. Useful for randomly
+     drawing the shape of an array.
 
     Parameters
     ----------
