@@ -760,13 +760,13 @@ def lamb_update(
     mw_tm1: Union[ivy.Array, ivy.NativeArray],
     vw_tm1: Union[ivy.Array, ivy.NativeArray],
     step: Union[int, float],
-    beta1=0.9,
-    beta2=0.999,
-    epsilon=1e-7,
-    max_trust_ratio=10,
-    decay_lambda=0,
-    inplace=None,
-    stop_gradients=True,
+    beta1: Union[int,float]= 0.9,
+    beta2: Union[int,float]=0.999,
+    epsilon: float =1e-7,
+    max_trust_ratio: Union[int,float]=10,
+    decay_lambda: Union[int,float]=0,
+    inplace: bool = None,
+    stop_gradients: bool =True,
 ) -> ivy.Array:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying LAMB method.
@@ -791,7 +791,7 @@ def lamb_update(
     beta2
         second moment of gradient forgetting factor (Default value = 0.999)
     epsilon
-        divisor during adam update, preventing division by zero (Default value = 1e-7)
+        divisor during lamb update, preventing division by zero (Default value = 1e-7)
     max_trust_ratio
         The maximum value for the trust ratio. Default is 10.
     decay_lambda
