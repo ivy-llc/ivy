@@ -7,3 +7,13 @@ from . import non_linear_activation_functions
 from .non_linear_activation_functions import *
 from . import creation_ops
 from .creation_ops import *
+from . import comparison_ops
+from comparison_ops import *
+from . import random_sampling
+from random_sampling import *
+from . import reduction_ops
+from reduction_ops import *
+from . import spectral_ops
+from spectral_ops import *
+from . import tensor_functions
+from tensor_functions import *
