@@ -53,6 +53,34 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
+    def has_nans(self: ivy.Array, include_infs: bool = True):
+        """
+        ivy.Array instance method variant of ivy.has_nans. This method simply wraps the
+        function, and so the docstring for ivy.has_nans also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        include_infs
+            Whether to include ``+infinity`` and ``-infinity`` in the check.
+            Default is True.
+
+        Returns
+        -------
+        ret
+            Boolean as to whether the array contains nans.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.has_nans()
+        >>> print(y)
+        False
+        """
+        return ivy.has_nans(self, include_infs)
+
     def unstack(self: ivy.Array, axis: int, keepdims: bool = False) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unstack. This method simply
         wraps the function, and so the docstring for ivy.unstack also applies to
@@ -389,3 +417,44 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.clip_vector_norm(self, max_norm, p, out=out)
+
+    def clip_matrix_norm(
+        self: ivy.Array,
+        max_norm: float,
+        p: float = 2.0,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.clip_matrix_norm. This method simply
+        wraps the function, and so the docstring for ivy.clip_matrix_norm also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        max_norm
+            The maximum value of the array norm.
+        p
+            The p-value for computing the p-norm. Default is 2.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the matrix norm downscaled to the max norm if needed.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([[0., 1., 2.]])
+        >>> y = x.clip_matrix_norm(2.0)
+        >>> print(y)
+        ivy.array([[0.   , 0.894, 1.79 ]])
+
+        """
+        return ivy.clip_matrix_norm(self, max_norm, p, out=out)
