@@ -1,8 +1,5 @@
-from datetime import timedelta
-
 import hypothesis.extra.numpy as hnp
-import numpy as np
-from hypothesis import given, strategies as st, settings
+from hypothesis import given, strategies as st
 
 # local
 import ivy.functional.backends.numpy as ivy_np
@@ -20,7 +17,6 @@ def _broadcastable_trio(draw):
     x1 = draw(hnp.arrays(dtype, x1_shape))
     x2 = draw(hnp.arrays(dtype, x2_shape))
     return cond, x1, x2, dtype
-
 
 
 @given(
@@ -56,5 +52,3 @@ def test_numpy_where(
         x1=x1,
         x2=x2,
     )
-
-# input_dtypes, as_variable_flags, with_out, and native_array_flags

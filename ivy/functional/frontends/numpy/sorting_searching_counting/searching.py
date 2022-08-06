@@ -9,4 +9,4 @@ def where(cond, x1=None, x2=None, /):
     elif x1 is not None and x2 is not None :
         return ivy.where(cond, x1, x2)
     else :
-        raise TypeError(f'where takes either 1 or 3 arguments')
+        raise TypeError("where takes either 1 or 3 arguments")
