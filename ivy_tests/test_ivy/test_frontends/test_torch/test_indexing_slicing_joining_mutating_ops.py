@@ -100,7 +100,7 @@ def test_torch_reshape(
     fw,
     copy,
 ):
-    input_dtype, value, shape=dtype_value_shape
+    input_dtype, value, shape = dtype_value_shape
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -115,5 +115,3 @@ def test_torch_reshape(
         copy=copy,
         out=None,
     )
-
-
