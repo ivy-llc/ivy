@@ -1713,6 +1713,18 @@ def dtype_values_axis(
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, *, shape):
+    """ Draws a random shape with the same number of elements as the given shape.
+        Parameters
+        ----------
+        draw
+            special function that draws data randomly (but is reproducible) from a given
+            data-set (ex. list).
+        shape
+            list/strategy/tuple of integers representing an array shape.
+        Returns
+        -------
+        A strategy that draws a tuple.
+        """
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
     size = 1 if len(shape) == 0 else math.prod(shape)
@@ -1727,6 +1739,19 @@ def reshape_shapes(draw, *, shape):
 # taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
 @st.composite
 def subsets(draw, *, elements):
+    """ Draws a subset of elements from the given elements.
+
+        Parameters
+        ----------
+        draw
+            special function that draws data randomly (but is reproducible) from a given
+            data-set (ex. list).
+        elements
+            set of elements to be drawn from.
+        Returns
+        -------
+        A strategy that draws a subset of elements.
+        """
     return tuple(e for e in elements if draw(st.booleans()))
 
 
@@ -1831,6 +1856,39 @@ def array_values(
     allow_negative=True,
     safety_factor=0.95,
 ):
+    """ Draws a list (of lists) of a given shape containing values of a given data type.
+
+        Parameters
+        ----------
+        draw
+            special function that draws data randomly (but is reproducible) from a given
+            data-set (ex. list).
+        dtype
+            data type of the elements of the list.
+        shape
+            shape of the required list.
+        min_value
+            minimum value of elements in the list.
+        max_value
+            maximum value of elements in the list.
+        allow_nan
+            if True, allow Nans in the list.
+        allow_subnormal
+            if True, allow subnormals in the list.
+        allow_inf
+            if True, allow inf in the list.
+        exclude_min
+            if True, exclude the minimum limit.
+        exclude_max
+            if True, exclude the maximum limit.
+        allow_negative
+            if True, allow negative numbers.
+        safety_factor
+            Ratio of max_value to maximum allowed number in the data type
+        Returns
+        -------
+        A strategy that draws a list.
+        """
     exclude_min = exclude_min if ivy.exists(min_value) else False
     exclude_max = exclude_max if ivy.exists(max_value) else False
     size = 1
@@ -1942,6 +2000,29 @@ def get_shape(
     min_dim_size=1,
     max_dim_size=10,
 ):
+    """ Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size] of size drawn from
+        min_num_dims to max_num_dims. Useful for randomly drawing the shape of an array.
+
+        Parameters
+        ----------
+        draw
+            special function that draws data randomly (but is reproducible) from a given
+            data-set (ex. list).
+        allow_none
+            if True, allow for the result to be None.
+        min_num_dims
+            minimum size of the tuple.
+        max_num_dims
+            maximum size of the tuple.
+        min_dim_size
+            minimum value of each integer in the tuple.
+        max_dim_size
+            maximum value of each integer in the tuple.
+
+        Returns
+        -------
+        A strategy that draws a tuple.
+        """
     if allow_none:
         shape = draw(
             st.none()
