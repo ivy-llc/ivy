@@ -22,12 +22,12 @@ import ivy.functional.backends.torch as ivy_torch
         allow_inf=False,
     ),
     alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=helpers.list_of_length(x=st.booleans(), length=2),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.add"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    native_array=st.booleans(),
 )
 def test_torch_add(
     dtype_and_x,
