@@ -61,6 +61,7 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 def get_ivy_numpy():
+    """Import Numpy module from ivy"""
     try:
         import ivy.functional.backends.numpy
     except ImportError:
@@ -69,6 +70,7 @@ def get_ivy_numpy():
 
 
 def get_ivy_jax():
+    """Import JAX module from ivy"""
     try:
         import ivy.functional.backends.jax
     except ImportError:
@@ -77,6 +79,7 @@ def get_ivy_jax():
 
 
 def get_ivy_tensorflow():
+    """Import Tensorflow module from ivy"""
     try:
         import ivy.functional.backends.tensorflow
     except ImportError:
@@ -85,6 +88,7 @@ def get_ivy_tensorflow():
 
 
 def get_ivy_torch():
+    """Import Torch module from ivy"""
     try:
         import ivy.functional.backends.torch
     except ImportError:
@@ -93,6 +97,7 @@ def get_ivy_torch():
 
 
 def get_ivy_mxnet():
+    """Import MXNET module from ivy"""
     try:
         import ivy.functional.backends.mxnet
     except ImportError:
@@ -142,6 +147,20 @@ def _convert_vars(
 
 
 def np_call(func, *args, **kwargs):
+    """Call a given function and return the result as a Numpy Array.
+
+    Parameters
+    ----------
+    func
+        The given function (callable).
+    args
+        The arguments to be given.
+    kwargs
+        The keywords args to be given.
+    Returns
+    -------
+    The result of the function call as a Numpy Array
+    """
     ret = func(*args, **kwargs)
     if isinstance(ret, (list, tuple)):
         return ivy.to_native(ret, nested=True)
@@ -505,14 +524,13 @@ def f_n_calls():
 def assert_all_close(
     ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
-    assert ret_np.dtype is ret_from_np.dtype, (
-        "the return with a {} backend produced data type of {}, while the return with"
-        " a {} backend returned a data type of {}.".format(
-            ground_truth_backend,
-            ret_from_np.dtype,
-            ivy.current_backend_str(),
-            ret_np.dtype,
-        )
+    assert (
+        ret_np.dtype is ret_from_np.dtype
+    ), "the return with a {} backend produced data type of {}, while the return with" " a {} backend returned a data type of {}.".format(
+        ground_truth_backend,
+        ret_from_np.dtype,
+        ivy.current_backend_str(),
+        ret_np.dtype,
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
@@ -1579,6 +1597,7 @@ def valid_axes(draw, *, ndim=None, size_bounds=None):
 
 @st.composite
 def integers(draw, *, min_value=None, max_value=None):
+
     if isinstance(min_value, str):
         min_value = draw(st.shared(st.integers(), key=min_value))
     if isinstance(max_value, str):
@@ -1713,18 +1732,18 @@ def dtype_values_axis(
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, *, shape):
-    """ Draws a random shape with the same number of elements as the given shape.
-        Parameters
-        ----------
-        draw
-            special function that draws data randomly (but is reproducible) from a given
-            data-set (ex. list).
-        shape
-            list/strategy/tuple of integers representing an array shape.
-        Returns
-        -------
-        A strategy that draws a tuple.
-        """
+    """Draws a random shape with the same number of elements as the given shape.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    shape
+        list/strategy/tuple of integers representing an array shape.
+    Returns
+    -------
+    A strategy that draws a tuple.
+    """
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
     size = 1 if len(shape) == 0 else math.prod(shape)
@@ -1739,19 +1758,19 @@ def reshape_shapes(draw, *, shape):
 # taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
 @st.composite
 def subsets(draw, *, elements):
-    """ Draws a subset of elements from the given elements.
+    """Draws a subset of elements from the given elements.
 
-        Parameters
-        ----------
-        draw
-            special function that draws data randomly (but is reproducible) from a given
-            data-set (ex. list).
-        elements
-            set of elements to be drawn from.
-        Returns
-        -------
-        A strategy that draws a subset of elements.
-        """
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    elements
+        set of elements to be drawn from.
+    Returns
+    -------
+    A strategy that draws a subset of elements.
+    """
     return tuple(e for e in elements if draw(st.booleans()))
 
 
@@ -1856,39 +1875,39 @@ def array_values(
     allow_negative=True,
     safety_factor=0.95,
 ):
-    """ Draws a list (of lists) of a given shape containing values of a given data type.
+    """Draws a list (of lists) of a given shape containing values of a given data type.
 
-        Parameters
-        ----------
-        draw
-            special function that draws data randomly (but is reproducible) from a given
-            data-set (ex. list).
-        dtype
-            data type of the elements of the list.
-        shape
-            shape of the required list.
-        min_value
-            minimum value of elements in the list.
-        max_value
-            maximum value of elements in the list.
-        allow_nan
-            if True, allow Nans in the list.
-        allow_subnormal
-            if True, allow subnormals in the list.
-        allow_inf
-            if True, allow inf in the list.
-        exclude_min
-            if True, exclude the minimum limit.
-        exclude_max
-            if True, exclude the maximum limit.
-        allow_negative
-            if True, allow negative numbers.
-        safety_factor
-            Ratio of max_value to maximum allowed number in the data type
-        Returns
-        -------
-        A strategy that draws a list.
-        """
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    dtype
+        data type of the elements of the list.
+    shape
+        shape of the required list.
+    min_value
+        minimum value of elements in the list.
+    max_value
+        maximum value of elements in the list.
+    allow_nan
+        if True, allow Nans in the list.
+    allow_subnormal
+        if True, allow subnormals in the list.
+    allow_inf
+        if True, allow inf in the list.
+    exclude_min
+        if True, exclude the minimum limit.
+    exclude_max
+        if True, exclude the maximum limit.
+    allow_negative
+        if True, allow negative numbers.
+    safety_factor
+        Ratio of max_value to maximum allowed number in the data type
+    Returns
+    -------
+    A strategy that draws a list.
+    """
     exclude_min = exclude_min if ivy.exists(min_value) else False
     exclude_max = exclude_max if ivy.exists(max_value) else False
     size = 1
@@ -2000,29 +2019,29 @@ def get_shape(
     min_dim_size=1,
     max_dim_size=10,
 ):
-    """ Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size] of size drawn from
-        min_num_dims to max_num_dims. Useful for randomly drawing the shape of an array.
+    """Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size] of size drawn from
+    min_num_dims to max_num_dims. Useful for randomly drawing the shape of an array.
 
-        Parameters
-        ----------
-        draw
-            special function that draws data randomly (but is reproducible) from a given
-            data-set (ex. list).
-        allow_none
-            if True, allow for the result to be None.
-        min_num_dims
-            minimum size of the tuple.
-        max_num_dims
-            maximum size of the tuple.
-        min_dim_size
-            minimum value of each integer in the tuple.
-        max_dim_size
-            maximum value of each integer in the tuple.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    allow_none
+        if True, allow for the result to be None.
+    min_num_dims
+        minimum size of the tuple.
+    max_num_dims
+        maximum size of the tuple.
+    min_dim_size
+        minimum value of each integer in the tuple.
+    max_dim_size
+        maximum value of each integer in the tuple.
 
-        Returns
-        -------
-        A strategy that draws a tuple.
-        """
+    Returns
+    -------
+    A strategy that draws a tuple.
+    """
     if allow_none:
         shape = draw(
             st.none()
