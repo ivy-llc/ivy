@@ -70,3 +70,126 @@ def test_torch_cat(
         dim=unique_idx,
         out=None,
     )
+
+    
+# transpose
+@given(
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_torch.valid_float_dtypes))
+        ),
+        ret_shape=True,
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.transpose"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_transpose(
+    dtype_value_shape,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, value, shape = dtype_value_shape
+    num_dims = len(shape)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_name="transpose",
+        input=np.asarray(value, dtype=input_dtype),
+        dim0 = helpers.integers(min_value=-num_dims, max_value=num_dims - 1),
+        dim1 = helpers.integers(min_value=-num_dims, max_value=num_dims - 1),
+        out=None,
+    )
+
+
+# swapaxes
+@given(
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_torch.valid_float_dtypes))
+        ),
+        ret_shape=True,
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.swapaxes"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_swapaxes(
+    dtype_value_shape,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, value, shape = dtype_value_shape
+    num_dims = len(shape)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_name="swapaxes",
+        input=np.asarray(value, dtype=input_dtype),
+        axis0 = helpers.integers(min_value=-num_dims, max_value=num_dims - 1),
+        axis1 = helpers.integers(min_value=-num_dims, max_value=num_dims - 1),
+        out=None,
+    )
+
+
+# swapdims
+@given(
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_torch.valid_float_dtypes))
+        ),
+        ret_shape=True,
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.swapdims"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_swapdims(
+    dtype_value_shape,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, value, shape = dtype_value_shape
+    num_dims = len(shape)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_name="swapdims",
+        input=np.asarray(value, dtype=input_dtype),
+        dim0 = helpers.integers(min_value=-num_dims, max_value=num_dims - 1),
+        dim1 = helpers.integers(min_value=-num_dims, max_value=num_dims - 1),
+        out=None,
+    )
