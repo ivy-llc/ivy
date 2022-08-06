@@ -328,7 +328,9 @@ def trim(*, docstring):
     return "\n".join(trimmed)
 
 
-def docstring_examples_run(*, fn, from_container=False, from_array=False):
+def docstring_examples_run(
+    *, fn, from_container=False, from_array=False, num_sig_fig=3
+):
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
@@ -367,6 +369,8 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
             end_index = trimmed_docstring.index("", index)
             p_output = trimmed_docstring[index + 1 : end_index]
             p_output = ("").join(p_output).replace(" ", "")
+            if parsed_output != "":
+                parsed_output += ","
             parsed_output += p_output
 
     if end_index == -1:
@@ -382,6 +386,8 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
         for line in executable_lines:
             # noinspection PyBroadException
             try:
+                if f.getvalue() != "" and f.getvalue()[-2] != ",":
+                    print(",")
                 exec(line)
             except Exception as e:
                 print(e, " ", ivy.current_backend_str(), " ", line)
@@ -389,6 +395,7 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
     output = f.getvalue()
     output = output.rstrip()
     output = output.replace(" ", "").replace("\n", "")
+    output = output.rstrip(",")
 
     # handling cases when the stdout contains ANSI colour codes
     # 7-bit C1 ANSI sequences
@@ -413,20 +420,49 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
     # print("Putput: ", parsed_output)
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
-    if not (output == parsed_output):
-        print(
-            "output for ",
-            fn_name,
-            " on run: ",
-            output,
-            "\noutput in docs :",
-            parsed_output,
-        )
-        ivy.warn(
-            "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
-        )
-        return False
-    return True
+    sig_fig = float("1e-" + str(num_sig_fig))
+    numeric_pattern = re.compile(
+        r"""
+            [\{\}\(\)\[\]]|\w+:
+        """,
+        re.VERBOSE,
+    )
+    num_output = output.replace("ivy.array", "")
+    num_output = numeric_pattern.sub("", num_output)
+    num_parsed_output = parsed_output.replace("ivy.array", "")
+    num_parsed_output = numeric_pattern.sub("", num_parsed_output)
+    num_output = num_output.split(",")
+    num_parsed_output = num_parsed_output.split(",")
+    docstr_result = True
+    for (doc_u, doc_v) in zip(num_output, num_parsed_output):
+        try:
+            docstr_result = np.allclose(
+                np.nan_to_num(complex(doc_u)),
+                np.nan_to_num(complex(doc_v)),
+                rtol=sig_fig,
+            )
+        except Exception:
+            if str(doc_u) != str(doc_v):
+                docstr_result = False
+        if not docstr_result:
+            print(
+                "output for ",
+                fn_name,
+                " on run: ",
+                output,
+                "\noutput in docs :",
+                parsed_output,
+                "\n",
+                doc_u,
+                " != ",
+                doc_v,
+                "\n",
+            )
+            ivy.warn(
+                "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
+            )
+            break
+    return docstr_result
 
 
 def var_fn(x, *, dtype=None, device=None):
@@ -467,17 +503,17 @@ def f_n_calls():
 
 
 def assert_all_close(
-        ret_np,
-        ret_from_np,
-        rtol=1e-05,
-        atol=1e-08,
-        ground_truth_backend='TensorFlow'):
-    assert ret_np.dtype is ret_from_np.dtype, \
-        ("the return with a {} backend produced data type of {}, while the return with"
-         " a {} backend returned a data type of {}.".format(ground_truth_backend,
-                                                            ret_from_np.dtype,
-                                                            ivy.current_backend_str(),
-                                                            ret_np.dtype))
+    ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
+):
+    assert ret_np.dtype is ret_from_np.dtype, (
+        "the return with a {} backend produced data type of {}, while the return with"
+        " a {} backend returned a data type of {}.".format(
+            ground_truth_backend,
+            ret_from_np.dtype,
+            ivy.current_backend_str(),
+            ret_np.dtype,
+        )
+    )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
     else:
@@ -523,12 +559,13 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
 
 
 def value_test(
-        *,
-        ret_np_flat,
-        ret_from_np_flat,
-        rtol=None,
-        atol=1e-6,
-        ground_truth_backend='TensorFlow'):
+    *,
+    ret_np_flat,
+    ret_from_np_flat,
+    rtol=None,
+    atol=1e-6,
+    ground_truth_backend="TensorFlow",
+):
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_from_np_flat) != list:
@@ -548,7 +585,8 @@ def value_test(
                 ret_from_np,
                 rtol=rtol,
                 atol=atol,
-                ground_truth_backend=ground_truth_backend)
+                ground_truth_backend=ground_truth_backend,
+            )
     else:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
             assert_all_close(
@@ -556,7 +594,8 @@ def value_test(
                 ret_from_np,
                 rtol=rtol,
                 atol=atol,
-                ground_truth_backend=ground_truth_backend)
+                ground_truth_backend=ground_truth_backend,
+            )
 
 
 def args_to_container(array_args):
@@ -1262,7 +1301,7 @@ def test_function(
         ret_from_np_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
-        ground_truth_backend=ground_truth_backend
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -2106,14 +2145,16 @@ def get_bounds(draw, *, dtype):
 
 
 @st.composite
-def get_axis(draw,
-             *,
-             shape,
-             allow_none=False,
-             sorted=True,
-             unique=True,
-             min_size=1,
-             max_size=None):
+def get_axis(
+    draw,
+    *,
+    shape,
+    allow_none=False,
+    sorted=True,
+    unique=True,
+    min_size=1,
+    max_size=None,
+):
     """Draws one or more axis for the given shape.
 
     Parameters
@@ -2159,12 +2200,11 @@ def get_axis(draw,
 
     if allow_none:
         if axes == 0:
-            axis = draw(st.none()
-                        | st.just(0)
-                        | st.lists(
-                            st.just(0),
-                            min_size=min_size,
-                            max_size=max_size))
+            axis = draw(
+                st.none()
+                | st.just(0)
+                | st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            )
         else:
             axis = draw(
                 st.none()
@@ -2178,11 +2218,9 @@ def get_axis(draw,
             )
     else:
         if axes == 0:
-            axis = draw(st.just(0)
-                        | st.lists(
-                            st.just(0),
-                            min_size=min_size,
-                            max_size=max_size))
+            axis = draw(
+                st.just(0) | st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            )
         else:
             axis = draw(
                 st.integers(-axes, axes - 1)
@@ -2195,6 +2233,7 @@ def get_axis(draw,
             )
     if type(axis) == list:
         if sorted:
+
             def sort_key(ele, max_len):
                 if ele < 0:
                     return ele + max_len - 1
@@ -2281,7 +2320,8 @@ def handle_cmd_line_args(test_fn):
 
 
 def gradient_incompatible_function(*, fn):
-    return \
-        not ivy.supports_gradients \
-        and hasattr(fn, "computes_gradients") \
+    return (
+        not ivy.supports_gradients
+        and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
+    )
