@@ -14,3 +14,10 @@ def tan(input, *, out=None):
 
 
 tan.unsupported_dtypes = ("float16",)
+
+def exp(x, * , out = None):
+    return ivy.exp(x,out = None)
+
+exp.unsupported_dtypes = ("float16",)    
+
+
