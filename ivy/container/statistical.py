@@ -12,8 +12,7 @@ from ivy.container.base import ContainerBase
 class ContainerWithStatistical(ContainerBase):
     @staticmethod
     def static_min(
-        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -28,7 +27,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Parameters
         ----------
-        x1
+        x
             first input array or container. Should have a numeric data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -65,8 +64,7 @@ class ContainerWithStatistical(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "min",
-            x1,
-            x2,
+            x,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
