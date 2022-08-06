@@ -1382,6 +1382,18 @@ def test_frontend_function(
     input_dtypes, as_variable_flags, native_array_flags = as_lists(
         input_dtypes, as_variable_flags, native_array_flags
     )
+    # make all lists equal in length
+    num_arrays = max(
+        len(input_dtypes),
+        len(as_variable_flags),
+        len(native_array_flags),
+    )
+    if len(input_dtypes) < num_arrays:
+        input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
+    if len(as_variable_flags) < num_arrays:
+        as_variable_flags = [as_variable_flags[0] for _ in range(num_arrays)]
+    if len(native_array_flags) < num_arrays:
+        native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
 
     # update variable flags to be compatible with float dtype and with_out args
     as_variable_flags = [
