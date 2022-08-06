@@ -2,11 +2,10 @@
 
 # global
 import abc
-from typing import Union, Optional
+from typing import Optional, Union
 
 # local
 import ivy
-
 
 # Base #
 # -----#
@@ -92,7 +91,7 @@ class Optimizer(abc.ABC):
 
     def _step_fn(
         self, v: ivy.Container, grads: ivy.Container, ignore_missing: bool = False
-    ):
+    ) -> ivy.Container:
         """
         Calls the custom child step function implementation
 
@@ -117,7 +116,7 @@ class Optimizer(abc.ABC):
     # Abstract #
 
     @abc.abstractmethod
-    def set_state(self, state: ivy.Container):
+    def set_state(self, state: ivy.Container) -> ivy.Container:
         """
         Set state of the optimizer.
 
@@ -132,7 +131,7 @@ class Optimizer(abc.ABC):
 
     def step(
         self, v: ivy.Container, grads: ivy.Container, ignore_missing: bool = False
-    ):
+    ) -> ivy.Container:
         """
         Update nested variables container v from overridden private self._step
 
@@ -194,7 +193,7 @@ class SGD(Optimizer):
 
     # Custom Step
 
-    def _step(self, v: ivy.Container, grads: ivy.Container):
+    def _step(self, v: ivy.Container, grads: ivy.Container) -> ivy.Container:
         """
         Update nested variables container v by gradient descent step,
         using nested gradients container.
@@ -220,7 +219,7 @@ class SGD(Optimizer):
             self._stop_gradients,
         )
 
-    def set_state(self, state: ivy.container):
+    def set_state(self, state: ivy.container) -> ivy.Container:
         """
         Set state of the optimizer.
 
@@ -232,7 +231,7 @@ class SGD(Optimizer):
         pass
 
     @property
-    def state(self):
+    def state(self) -> ivy.Container:
 
         return ivy.Container({})
 
@@ -273,7 +272,7 @@ class LARS(Optimizer):
 
     # Custom Step
 
-    def _step(self, v: ivy.Container, grads: ivy.Container):
+    def _step(self, v: ivy.Container, grads: ivy.Container) -> ivy.Container:
         """
         Update nested variables container v by gradient descent step, using nested
         gradients container.
@@ -300,7 +299,7 @@ class LARS(Optimizer):
             self._stop_gradients,
         )
 
-    def set_state(self, state: ivy.container):
+    def set_state(self, state: ivy.container) -> ivy.Container:
         """
         Set state of the optimizer.
 
@@ -370,7 +369,7 @@ class Adam(Optimizer):
 
     # Custom Step
 
-    def _step(self, v: ivy.Container, grads: ivy.Container):
+    def _step(self, v: ivy.Container, grads: ivy.Container) -> ivy.Container:
         """
         Update nested variables container v by Adam update step,
         using nested grads container.
@@ -408,7 +407,7 @@ class Adam(Optimizer):
         )
         return new_v
 
-    def set_state(self, state: ivy.container):
+    def set_state(self, state: ivy.container) -> ivy.Container:
         """
         Set state of the optimizer.
 
@@ -434,7 +433,7 @@ class LAMB(Optimizer):
         beta2: float = 0.999,
         epsilon: float = 1e-07,
         max_trust_ratio: float = 10,
-        decay_lambda: float = 0,
+        decay_lambda: float = 0.0,
         inplace: bool = True,
         stop_gradients: bool = True,
         compile_on_next_step: bool = False,
@@ -486,7 +485,7 @@ class LAMB(Optimizer):
 
     # Custom Step
 
-    def _step(self, v: ivy.container, grads: ivy.container):
+    def _step(self, v: ivy.container, grads: ivy.container) -> ivy.Container:
         """
         Update nested variables container v by LAMB update step,
         using nested grads container.
@@ -525,7 +524,7 @@ class LAMB(Optimizer):
         )
         return new_v
 
-    def set_state(self, state: ivy.container):
+    def set_state(self, state: ivy.container) -> ivy.Container:
         """Set state of the optimizer.
 
         Parameters

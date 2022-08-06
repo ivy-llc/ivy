@@ -5,7 +5,7 @@ from ivy.stateful.module import Module
 
 
 class Sequential(Module):
-    def __init__(self, *sub_modules, device=None, v=None, dtype=None):
+    def __init__(self, *sub_modules, device: str = None, v=None, dtype=None):
         """
         A sequential container. Modules will be added to it in the order they are
         passed in the constructor.
@@ -36,7 +36,7 @@ class Sequential(Module):
         self._submodules = list(sub_modules)
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _forward(self, inputs):
+    def _forward(self, inputs: ivy.tensor.Tensor) -> ivy.tensor.Tensor:
         """
         Perform forward pass of the Linear layer.
 

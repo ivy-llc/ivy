@@ -10,7 +10,7 @@ class GELU(Module):
         """Applies the GELU activation function."""
         Module.__init__(self)
 
-    def _forward(self, inputs):
+    def _forward(self, inputs: ivy.tensor.Tensor) -> ivy.tensor.Tensor:
         """
         Perform forward pass of the GELU activation.
 
@@ -33,7 +33,7 @@ class GEGLU(Module):
         """Applies the GEGLU activation function."""
         Module.__init__(self)
 
-    def _forward(self, inputs):
+    def _forward(self, inputs: ivy.tensor.Tensor) -> ivy.tensor.Tensor:
         """
         Perform forward pass of the GEGLU activation.
 

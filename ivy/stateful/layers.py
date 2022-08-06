@@ -1,10 +1,11 @@
 """Collection of Ivy neural network layers as stateful classes."""
 
 # local
-import ivy
-from ivy.stateful.module import Module
-from ivy.stateful.initializers import Zeros, GlorotUniform
+from typing import Tuple
 
+import ivy
+from ivy.stateful.initializers import GlorotUniform, Zeros
+from ivy.stateful.module import Module
 
 # Linear #
 # -------#
@@ -13,12 +14,12 @@ from ivy.stateful.initializers import Zeros, GlorotUniform
 class Linear(Module):
     def __init__(
         self,
-        input_channels,
-        output_channels,
+        input_channels: int,
+        output_channels: int,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
-        with_bias=True,
-        device=None,
+        with_bias: bool = True,
+        device: str = "cpu",
         v=None,
         dtype=None,
     ):
@@ -61,7 +62,7 @@ class Linear(Module):
         self._with_bias = with_bias
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device: str = "cpu", dtype=None) -> dict:
         """
         Create internal variables for the layer
 
@@ -95,7 +96,7 @@ class Linear(Module):
             )
         return v
 
-    def _forward(self, inputs):
+    def _forward(self, inputs: ivy.tensor.Tensor) -> ivy.tensor.Tensor:
         """
         Perform forward pass of the Linear layer.
 
@@ -118,7 +119,7 @@ class Linear(Module):
 
 
 class Dropout(Module):
-    def __init__(self, prob, scale=True, dtype=None):
+    def __init__(self, prob: float, scale: bool = True, dtype=None):
         """
         Dropout layer. The layer randomly zeroes some of the elements of the input
         tensor with probability p using samples from a Bernoull distribution.
@@ -157,7 +158,7 @@ class Dropout(Module):
         """
         return {}
 
-    def _forward(self, inputs, dtype=None):
+    def _forward(self, inputs: ivy.tensor.Tensor, dtype=None) -> ivy.tensor.Tensor:
         """
         Perform forward pass of the Linear layer.
 
@@ -186,17 +187,17 @@ class MultiHeadAttention(Module):
     def __init__(
         self,
         query_dim,
-        num_heads=8,
-        head_dim=64,
-        dropout_rate=0.0,
+        num_heads: int = 8,
+        head_dim: float = 64,
+        dropout_rate: float = 0.0,
         context_dim=None,
-        scale=None,
-        with_to_q_fn=True,
-        with_to_kv_fn=True,
-        with_to_out_fn=True,
-        device=None,
+        scale: float = None,
+        with_to_q_fn: bool = True,
+        with_to_kv_fn: bool = True,
+        with_to_out_fn: bool = True,
+        device: str = "cpu",
         v=None,
-        build_mode="on_init",
+        build_mode: str = "on_init",
         dtype=None,
     ):
         """
@@ -307,7 +308,7 @@ class MultiHeadAttention(Module):
             else None
         )
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device: str = "cpu", dtype=None) -> ivy.Container:
         """
         Parameters
         ----------
@@ -456,7 +457,7 @@ class Conv1D(Module):
             ),
         }
 
-    def _forward(self, inputs):
+    def _forward(self, inputs->ivy.Tensor) -> ivy.Tensor:
         """
         Perform forward pass of the Conv1D layer.
 
@@ -487,17 +488,17 @@ class Conv1D(Module):
 class Conv1DTranspose(Module):
     def __init__(
         self,
-        input_channels,
-        output_channels,
-        filter_size,
-        strides,
-        padding,
+        input_channels: int,
+        output_channels: int,
+        filter_size: int,
+        strides: int,
+        padding: int,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
-        output_shape=None,
-        data_format="NWC",
-        dilations=1,
-        device=None,
+        output_shape =None,
+        data_format:str ="NWC",
+        dilations:int=1,
+        device:str="cpu",
         v=None,
         dtype=None,
     ):
@@ -555,7 +556,7 @@ class Conv1DTranspose(Module):
         self._dilations = dilations
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device:str = 'cpu', dtype=None)-> dict:
         """Create internal variables for the layer
 
         Parameters
@@ -580,7 +581,7 @@ class Conv1DTranspose(Module):
             ),
         }
 
-    def _forward(self, inputs):
+    def _forward(self, inputs: ivy.tensor.Tensor)->ivy.tensor.Tensor:
         """Perform forward pass of the Conv1DTranspose layer.
 
         Parameters
@@ -611,16 +612,16 @@ class Conv1DTranspose(Module):
 class Conv2D(Module):
     def __init__(
         self,
-        input_channels,
-        output_channels,
+        input_channels: int,
+        output_channels: int,
         filter_shape,
         strides,
         padding,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
-        data_format="NHWC",
-        dilations=1,
-        device=None,
+        data_format:str="NHWC",
+        dilations:int=1,
+        device:str="cpu",
         v=None,
         dtype=None,
     ):
@@ -674,7 +675,7 @@ class Conv2D(Module):
         self._dilations = dilations
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device:str = 'cpu', dtype=None)-> dict:
         """Create internal variables for the layer
 
         Parameters
@@ -730,17 +731,17 @@ class Conv2D(Module):
 class Conv2DTranspose(Module):
     def __init__(
         self,
-        input_channels,
-        output_channels,
+        input_channels: int,
+        output_channels: int,
         filter_shape,
-        strides,
+        strides: int,
         padding,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
         output_shape=None,
-        data_format="NHWC",
-        dilations=1,
-        device=None,
+        data_format:str="NHWC",
+        dilations:int=1,
+        device:str="cpu",
         v=None,
         dtype=None,
     ):
@@ -797,7 +798,7 @@ class Conv2DTranspose(Module):
         self._dilations = dilations
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device:str = 'cpu', dtype=None)->dict:
         """Create internal variables for the layer
 
         Parameters
@@ -823,7 +824,7 @@ class Conv2DTranspose(Module):
             ),
         }
 
-    def _forward(self, inputs):
+    def _forward(self, inputs: ivy.tensor.Tensor)-> ivy.tensor.Tensor:
         """Perform forward pass of the Conv2DTranspose layer.
 
         Parameters
@@ -854,15 +855,15 @@ class Conv2DTranspose(Module):
 class DepthwiseConv2D(Module):
     def __init__(
         self,
-        num_channels,
+        num_channels: int,
         filter_shape,
         strides,
         padding,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
-        data_format="NHWC",
-        dilations=1,
-        device=None,
+        data_format:str="NHWC",
+        dilations:int=1,
+        device:str = 'cpu',
         v=None,
         dtype=None,
     ):
@@ -914,7 +915,7 @@ class DepthwiseConv2D(Module):
         self._dilations = dilations
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype):
+    def _create_variables(self, device:str = 'cpu', dtype = None) -> dict:
         """Create internal variables for the layer
 
         Parameters
@@ -940,7 +941,7 @@ class DepthwiseConv2D(Module):
             ),
         }
 
-    def _forward(self, inputs):
+    def _forward(self, inputs:ivy.tensor.Tensor) -> ivy.tensor.Tensor:
         """Perform forward pass of the DepthwiseConv2D layer.
 
         Parameters
@@ -970,16 +971,16 @@ class DepthwiseConv2D(Module):
 class Conv3D(Module):
     def __init__(
         self,
-        input_channels,
-        output_channels,
+        input_channels: int,
+        output_channels: int,
         filter_shape,
         strides,
         padding,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
-        data_format="NDHWC",
-        dilations=1,
-        device=None,
+        data_format:str="NDHWC",
+        dilations:int=1,
+        device:str='cpu',
         v=None,
         dtype=None,
     ):
@@ -1033,7 +1034,7 @@ class Conv3D(Module):
         self._dilations = dilations
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device:str = 'cpu', dtype=None):
         """Create internal variables for the layer
 
         Parameters
@@ -1089,17 +1090,17 @@ class Conv3D(Module):
 class Conv3DTranspose(Module):
     def __init__(
         self,
-        input_channels,
-        output_channels,
-        filter_shape,
+        input_channels: int,
+        output_channels: int,
+        filter_shape: Tuple[int, int, int],
         strides,
         padding,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
         output_shape=None,
-        data_format="NDHWC",
-        dilations=1,
-        device=None,
+        data_format:str="NDHWC",
+        dilation:int=1,
+        device:str='cpu',
         v=None,
         dtype=None,
     ):
@@ -1157,7 +1158,7 @@ class Conv3DTranspose(Module):
         self.dtype = dtype
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device:str = 'cpu', dtype=None):
         """Create internal variables for the layer
 
         Parameters
@@ -1218,13 +1219,13 @@ class Conv3DTranspose(Module):
 class LSTM(Module):
     def __init__(
         self,
-        input_channels,
-        output_channels,
+        input_channels: int,
+        output_channels: int,
         weight_initializer=GlorotUniform(),
-        num_layers=1,
-        return_sequence=True,
-        return_state=True,
-        device=None,
+        num_layers:int=1,
+        return_sequence:bool=True,
+        return_state:bool=True,
+        device:str='cpu',
         v=None,
         dtype=None,
     ):
@@ -1266,7 +1267,7 @@ class LSTM(Module):
 
     # Public #
 
-    def get_initial_state(self, batch_shape, dtype=None):
+    def get_initial_state(self, batch_shape, dtype=None)->Tuple[ivy.tensor.Tensor, ivy.tensor.Tensor]:
         """Get the initial state of the hidden and cell states, if not provided
         explicitly
 
@@ -1292,7 +1293,7 @@ class LSTM(Module):
 
     # Overridden
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device:str = 'cpu', dtype=None):
         """Create internal variables for the layer
 
         Parameters
@@ -1346,7 +1347,7 @@ class LSTM(Module):
         )
         return {"input": input_weights, "recurrent": recurrent_weights}
 
-    def _forward(self, inputs, initial_state=None):
+    def _forward(self, inputs:ivy.tensor.Tensor, initial_state: Tuple(list, list)=None) -> Tuple(ivy.tensor.Tensor, Tuple(list, list)):
         """Perform forward pass of the LSTM layer.
 
         Parameters

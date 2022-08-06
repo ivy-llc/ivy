@@ -2,18 +2,18 @@
 
 # local
 import ivy
+from ivy.stateful.initializers import Ones, Zeros
 from ivy.stateful.module import Module
-from ivy.stateful.initializers import Zeros, Ones
 
 
 class LayerNorm(Module):
     def __init__(
         self,
-        normalized_shape,
-        epsilon=None,
-        elementwise_affine=True,
-        new_std=None,
-        device=None,
+        normalized_shape: tuple,
+        epsilon: float = None,
+        elementwise_affine: bool = True,
+        new_std: float = None,
+        device: str = None,
         v=None,
         dtype=None,
     ):
@@ -48,7 +48,7 @@ class LayerNorm(Module):
         self._offset_init = Zeros()
         Module.__init__(self, device, v, dtype=dtype)
 
-    def _create_variables(self, device, dtype=None):
+    def _create_variables(self, device, dtype=None) -> dict:
         """Create internal variables for the layer"""
         if self._elementwise_affine:
             return {
@@ -61,7 +61,7 @@ class LayerNorm(Module):
             }
         return {}
 
-    def _forward(self, inputs):
+    def _forward(self, inputs) -> ivy.tensor.Tensor:
         """
         Perform forward pass of the LayerNorm layer.
 

@@ -1,7 +1,6 @@
 # local
 import ivy
 
-
 # Constant #
 # ---------#
 
@@ -11,8 +10,8 @@ class Constant:
         self._constant = constant
 
     def create_variables(
-        self, var_shape, device, fan_out=None, fan_in=None, dtype=None
-    ):
+        self, var_shape, device: str, fan_out=None, fan_in=None, dtype=None
+    ) -> ivy.variable:
         """Create internal variables for the layer"""
         return ivy.variable(
             ivy.full(var_shape, self._constant, device=device, dtype=dtype),
@@ -34,7 +33,7 @@ class Ones(Constant):
 
 
 class Uniform:
-    def __init__(self, numerator, fan_mode, power, gain):
+    def __init__(self, numerator, fan_mode: str, power, gain):
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
             raise Exception(
                 "Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | "
@@ -46,7 +45,12 @@ class Uniform:
         self._gain = gain
 
     def create_variables(
-        self, var_shape, device, fan_out=None, fan_in=None, dtype=None
+        self,
+        var_shape: tuple,
+        device: str,
+        fan_out: float = None,
+        fan_in: float = None,
+        dtype=None,
     ):
         """Create internal variables for the layer"""
         if self._fan_mode == "fan_in":
@@ -106,7 +110,7 @@ class Siren(Uniform):
 
 
 class KaimingNormal:
-    def __init__(self, mean=0, fan_mode="fan_in"):
+    def __init__(self, mean: float = 0, fan_mode: str = "fan_in"):
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
             raise Exception(
                 "Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | "
@@ -116,7 +120,12 @@ class KaimingNormal:
         self._fan_mode = fan_mode
 
     def create_variables(
-        self, var_shape, device, fan_out=None, fan_in=None, negative_slope=0.0
+        self,
+        var_shape: tuple,
+        device: str,
+        fan_out: float = None,
+        fan_in: float = None,
+        negative_slope: float = 0.0,
     ):
         """Create internal variables for the layer"""
         if self._fan_mode == "fan_in":
