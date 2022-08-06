@@ -24,8 +24,9 @@ from ivy.func_wrapper import (
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
-    bias: Union[ivy.Array, ivy.NativeArray] = None,
+    /,
     *,
+    bias: Union[ivy.Array, ivy.NativeArray] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
@@ -95,10 +96,11 @@ def linear(
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
+    /,
+    *,
     scale: bool = True,
     dtype: ivy.Dtype = None,
-    *,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Randomly zeroes some elements of the input tensor with probability p using
     samples from a Bernoulli distribution.
@@ -143,8 +145,9 @@ def scaled_dot_product_attention(
     k: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],
     scale: float,
-    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    /,
     *,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies scaled dot product attention to inputs x using optional mask.
@@ -394,13 +397,18 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
-scaled_dot_product_attention.unsupported_dtypes = {'torch': ('float16', )}
+scaled_dot_product_attention.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("float16",),
+}
 
 
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale,
     num_heads,
+    /,
+    *,
     context: Union[ivy.Array, ivy.NativeArray] = None,
     mask: Union[ivy.Array, ivy.NativeArray] = None,
     to_q_fn: Callable = None,
@@ -409,7 +417,6 @@ def multi_head_attention(
     to_q_v=None,
     to_kv_v=None,
     to_out_v=None,
-    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies multi-head attention to inputs x.
@@ -495,7 +502,10 @@ def multi_head_attention(
     return ret
 
 
-multi_head_attention.unsupported_dtypes = {"torch": ("float16", )}
+multi_head_attention.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("float16",),
+}
 
 
 # Convolutions #
@@ -509,9 +519,10 @@ def conv1d(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: int,
     padding: str,
+    /,
+    *,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D convolution given 3-D input x and filters arrays.
@@ -586,10 +597,11 @@ def conv1d_transpose(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: int,
     padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
@@ -634,9 +646,10 @@ def conv2d(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
@@ -724,14 +737,15 @@ def conv2d(
 @handle_out_argument
 @handle_nestable
 def conv2d_transpose(
-    x,
-    filters,
-    strides,
-    padding,
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NHWC",
-    dilations=1,
-    *,
+    dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
@@ -776,9 +790,10 @@ def depthwise_conv2d(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: Union[str, List[int]],
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -893,9 +908,10 @@ def conv3d(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: int,
     padding: str,
+    /,
+    *,
     data_format: str = "NDHWC",
     dilations: int = 1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
@@ -955,10 +971,11 @@ def conv3d_transpose(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: Union[str, List[int]],
+    /,
+    *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
@@ -1087,6 +1104,8 @@ def lstm_update(
     init_c: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[ivy.Array, ivy.NativeArray],
     recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
@@ -1170,4 +1189,4 @@ def lstm_update(
     return ivy.concat(hts_list, -2), ct
 
 
-lstm_update.unsupported_dtypes = {'torch': ('float16', )}
+lstm_update.unsupported_dtypes = {"torch": ("float16",)}
