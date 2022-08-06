@@ -186,7 +186,11 @@ def x_and_scaled_attention(draw, dtypes):
     v = draw(helpers.array_values(dtype=dtype, shape=v_shape, min_value=0, max_value=1))
     mask = draw(
         helpers.array_values(
-            dtype=dtype, shape=mask_shape, min_value=0, max_value=1, safety_factor=2
+            dtype=dtype,
+            shape=mask_shape,
+            min_value=0,
+            max_value=1,
+            large_value_safety_factor=2,
         )
     )
     return dtype, q, k, v, mask, scale

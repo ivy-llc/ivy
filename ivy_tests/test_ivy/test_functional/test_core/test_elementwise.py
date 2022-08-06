@@ -819,7 +819,7 @@ def test_floor(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=2,
         allow_inf=False,
-        safety_factor=0.5,
+        large_value_safety_factor=0.5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
     data=st.data(),
