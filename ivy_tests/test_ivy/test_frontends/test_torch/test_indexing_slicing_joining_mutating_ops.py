@@ -4,6 +4,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
 
 
@@ -76,7 +77,9 @@ def test_torch_cat(
 @given(
     dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_torch.valid_float_dtypes))
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
         ),
         ret_shape=True,
     ),
