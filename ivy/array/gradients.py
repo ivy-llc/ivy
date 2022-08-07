@@ -72,8 +72,9 @@ class ArrayWithGradients(abc.ABC):
 
     def stop_gradient(
         self: ivy.Array,
-        preserve_type: bool = True,
+        /,
         *,
+        preserve_type: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -97,7 +98,7 @@ class ArrayWithGradients(abc.ABC):
         ret
             The same array x, but with no gradient information.
         """
-        return ivy.stop_gradient(self, preserve_type, out=out)
+        return ivy.stop_gradient(self, preserve_type=preserve_type, out=out)
 
     def adam_step(
         self: ivy.Array,
