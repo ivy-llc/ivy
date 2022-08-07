@@ -1,4 +1,4 @@
-name: test-core-ivy
+name: test-nn-ivy
 on: [push, pull_request]
 permissions:
   actions: read
@@ -7,9 +7,7 @@ jobs:
      strategy:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
-         submodules: [test_creation, test_device, test_dtype, test_elementwise, test_general, test_gradients, test_linalg
-                     test_manipulation, test_meta, test_nest, test_random, test_searching, test_set, test_sorting, test_statistical
-                     test_utility]
+         submodules: [test_activations, test_layers, test_losses, test_norms]
      continue-on-error: true
      runs-on: ubuntu-latest
      steps:
@@ -27,12 +25,12 @@ jobs:
              ivy/.hypothesis
            key: ${{ runner.os }}-hypothesis
 
-       - name: Run Functional-Core Tests
+       - name: Run Functional-NN Tests
          id: tests
          run: |
            cd ivy
            mkdir -p .hypothesis
-           ./test_ivy_core.sh ${{ matrix.backends }} ${{ matrix.submodules }}
+           ./test_ivy_nn.sh ${{ matrix.backends }} ${{ matrix.submodules }}
 
        - name: print-result
          run: echo ${{ steps.tests.outcome }}
