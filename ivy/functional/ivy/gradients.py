@@ -6,6 +6,7 @@ from typing import Union, Optional
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
+    inputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     inputs_to_native_arrays,
@@ -302,7 +303,7 @@ def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     preserve_type: bool = True,
     *,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Stops gradient computation.
 
@@ -383,15 +384,17 @@ def value_and_grad(func):
 # Optimizer Steps #
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 def adam_step(
     dcdw: Union[ivy.Array, ivy.NativeArray],
     mw: Union[ivy.Array, ivy.NativeArray],
     vw: Union[ivy.Array, ivy.NativeArray],
     step: Union[int, float],
-    beta1=0.9,
-    beta2=0.999,
-    epsilon=1e-7,
+    /,
+    *,
+    beta1: float = 0.9,
+    beta2: float = 0.999,
+    epsilon: float = 1e-7,
 ) -> ivy.Array:
     """Compute adam step delta, given the derivatives of some cost c with respect
     to weights ws, using ADAM update. `[reference]
@@ -522,7 +525,7 @@ def adam_step(
         b: ivy.array([0.216, 0.384, 0.6])
     })
     """
-    step = float(ivy.to_scalar(step))
+    step = float(step)
     mw = beta1 * mw + (1 - beta1) * dcdw
     dcdw_sqrd = dcdw**2
     vw = beta2 * vw + (1 - beta2) * dcdw_sqrd
@@ -535,13 +538,15 @@ def adam_step(
 # Optimizer Updates #
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
     effective_grad: Union[ivy.Array, ivy.NativeArray],
     lr: Union[float, ivy.Array, ivy.NativeArray],
-    inplace=None,
-    stop_gradients=True,
+    /,
+    *,
+    stop_gradients: bool = True,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Update weights ws of some function, given the true or effective derivatives of
     some cost c with respect to ws, [dc/dw for w in ws].
@@ -556,15 +561,12 @@ def optimizer_update(
     lr
         Learning rate(s), the rate(s) at which the weights should be updated relative to
         the gradient.
-    inplace
-        Whether to perform the operation inplace, for backends which support inplace
-        variable updates, and handle gradients behind the scenes such as PyTorch. If the
-        update step should form part of a computation graph (i.e. higher order
-        optimization), then this should be set to False. Default is True, provided the
-        backend framework supports it.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
         Default is True.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -572,25 +574,24 @@ def optimizer_update(
         The new function weights ws_new, following the optimizer updates.
 
     """
-    inplace = ivy.default(inplace, ivy.inplace_variables_supported())
     deltas = effective_grad * lr
-    if inplace:
-        w = ivy.inplace_decrement(w, deltas)
-    else:
-        w = w - deltas
-
+    w = w - deltas
     if stop_gradients:
-        return ivy.stop_gradient(w, preserve_type=True)
+        return ivy.stop_gradient(w, preserve_type=True, out=out)
+    if ivy.exists(out):
+        ivy.inplace_update(out, w)
     return w
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 def gradient_descent_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
     lr: Union[float, ivy.Array, ivy.NativeArray],
-    inplace=None,
-    stop_gradients=True,
+    /,
+    *,
+    stop_gradients: bool = True,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws].
@@ -604,15 +605,12 @@ def gradient_descent_update(
     lr
         Learning rate(s), the rate(s) at which the weights should be updated relative to
         the gradient.
-    inplace
-        Whether to perform the operation inplace, for backends which support inplace
-        variable updates, and handle gradients behind the scenes such as PyTorch. If the
-        update step should form part of a computation graph (i.e. higher order
-        optimization), then this should be set to False. Default is True, provided the
-        backend framework supports it.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
         Default is True.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -660,17 +658,19 @@ def gradient_descent_update(
             b: ivy.array([2.88, 4.69, 1.47])
         }
     """
-    return ivy.optimizer_update(w, dcdw, lr, inplace, stop_gradients)
+    return ivy.optimizer_update(w, dcdw, lr, stop_gradients=stop_gradients, out=out)
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
     lr: Union[float, ivy.Array, ivy.NativeArray],
-    decay_lambda=0,
-    inplace=None,
-    stop_gradients=True,
+    /,
+    *,
+    decay_lambda: float = 0,
+    stop_gradients: bool = True,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling
@@ -687,15 +687,12 @@ def lars_update(
         gradient.
     decay_lambda
         The factor used for weight decay. Default is zero.
-    inplace
-        Whether to perform the operation inplace, for backends which support inplace
-        variable updates, and handle gradients behind the scenes such as PyTorch. If the
-        update step should form part of a computation graph (i.e. higher order
-        optimization), then this should be set to False. Default is True, provided the
-        backend framework supports it.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
         Default is True.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -707,10 +704,12 @@ def lars_update(
     lr = ivy.stable_divide(w_norm * lr, ivy.vector_norm(dcdw))
     if decay_lambda > 0:
         lr /= w_norm * decay_lambda
-    return ivy.gradient_descent_update(w, dcdw, lr, inplace, stop_gradients)
+    return ivy.gradient_descent_update(
+        w, dcdw, lr, stop_gradients=stop_gradients, out=out
+    )
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 def adam_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -718,11 +717,13 @@ def adam_update(
     mw_tm1: Union[ivy.Array, ivy.NativeArray],
     vw_tm1: Union[ivy.Array, ivy.NativeArray],
     step: int,
-    beta1=0.9,
-    beta2=0.999,
-    epsilon=1e-7,
-    inplace=None,
-    stop_gradients=True,
+    /,
+    *,
+    beta1: float = 0.9,
+    beta2: float = 0.999,
+    epsilon: float = 1e-7,
+    stop_gradients: bool = True,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, using ADAM update. `[reference]
@@ -743,22 +744,19 @@ def adam_update(
     vw_tm1
         running average of second moments of the gradients, from the previous time-step.
     step
-        training step
+        training step.
     beta1
-        gradient forgetting factor (Default value = 0.9)
+        gradient forgetting factor (Default value = 0.9).
     beta2
-        second moment of gradient forgetting factor (Default value = 0.999)
+        second moment of gradient forgetting factor (Default value = 0.999).
     epsilon
-        divisor during adam update, preventing division by zero (Default value = 1e-7)
-    inplace
-        Whether to perform the operation inplace, for backends which support inplace
-        variable updates, and handle gradients behind the scenes such as PyTorch. If the
-        update step should form part of a computation graph (i.e. higher order
-        optimization), then this should be set to False. Default is True, provided the
-        backend framework supports it.
+        divisor during adam update, preventing division by zero (Default value = 1e-7).
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
         Default is True.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -767,13 +765,19 @@ def adam_update(
         updates.
 
     """
-    effective_grads, mw, vw = adam_step(
-        dcdw, mw_tm1, vw_tm1, step, beta1, beta2, epsilon
+    effective_grads, mw, vw = ivy.adam_step(
+        dcdw, mw_tm1, vw_tm1, step, beta1=beta1, beta2=beta2, epsilon=epsilon
     )
-    return ivy.optimizer_update(w, effective_grads, lr, inplace, stop_gradients), mw, vw
+    return (
+        ivy.optimizer_update(
+            w, effective_grads, lr, stop_gradients=stop_gradients, out=out
+        ),
+        mw,
+        vw,
+    )
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -781,13 +785,15 @@ def lamb_update(
     mw_tm1: Union[ivy.Array, ivy.NativeArray],
     vw_tm1: Union[ivy.Array, ivy.NativeArray],
     step: int,
-    beta1=0.9,
-    beta2=0.999,
-    epsilon=1e-7,
-    max_trust_ratio=10,
-    decay_lambda=0,
-    inplace=None,
-    stop_gradients=True,
+    /,
+    *,
+    beta1: float = 0.9,
+    beta2: float = 0.999,
+    epsilon: float = 1e-7,
+    max_trust_ratio: Union[int, float] = 10,
+    decay_lambda: float = 0,
+    stop_gradients: bool = True,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying LAMB method.
@@ -806,39 +812,42 @@ def lamb_update(
     vw_tm1
         running average of second moments of the gradients, from the previous time-step.
     step
-        training step
+        training step.
     beta1
-        gradient forgetting factor (Default value = 0.9)
+        gradient forgetting factor (Default value = 0.9).
     beta2
-        second moment of gradient forgetting factor (Default value = 0.999)
+        second moment of gradient forgetting factor (Default value = 0.999).
     epsilon
-        divisor during adam update, preventing division by zero (Default value = 1e-7)
+        divisor during adam update, preventing division by zero (Default value = 1e-7).
     max_trust_ratio
         The maximum value for the trust ratio. Default is 10.
     decay_lambda
         The factor used for weight decay. Default is zero.
-    inplace
-        Whether to perform the operation inplace, for backends which support inplace
-        variable updates, and handle gradients behind the scenes such as PyTorch. If the
-        update step should form part of a computation graph (i.e. higher order
-        optimization), then this should be set to False. Default is True, provided the
-        backend framework supports it.
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
         Default is True.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
-        The new function weights ws_new, following the LARS updates.
+        The new function weights ws_new, following the LAMB updates.
 
     """
     r1 = ivy.vector_norm(w)
-    eff_grads, mw, vw = ivy.adam_step(dcdw, mw_tm1, vw_tm1, step, beta1, beta2, epsilon)
+    eff_grads, mw, vw = ivy.adam_step(
+        dcdw, mw_tm1, vw_tm1, step, beta1=beta1, beta2=beta2, epsilon=epsilon
+    )
     if decay_lambda > 0:
         r2 = ivy.vector_norm(eff_grads + decay_lambda * w)
     else:
         r2 = ivy.vector_norm(eff_grads)
     r = ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
     lr = r * lr
-    return ivy.optimizer_update(w, eff_grads, lr, inplace, stop_gradients), mw, vw
+    return (
+        ivy.optimizer_update(w, eff_grads, lr, stop_gradients=stop_gradients, out=out),
+        mw,
+        vw,
+    )
