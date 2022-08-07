@@ -1777,7 +1777,6 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
 
     Examples
     --------
-
     with: if the function is executed without any exception
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
