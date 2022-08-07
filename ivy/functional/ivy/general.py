@@ -1783,7 +1783,7 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.try_else_none(ivy.add,x, y)
     >>> print(y)
-    ivy.all_equal
+    ivy.add
 
     with: if the function is executed with an exception
     >>> x = ivy.array([1, 2, 3])
@@ -1793,9 +1793,9 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     None
 
     """
-    try:
-        fn(args,kwargs)
-        return fn
+    try: 
+        fn(*args, **kwargs)
+        return fn 
     except: return None
 
 
