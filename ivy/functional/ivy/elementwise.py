@@ -3520,30 +3520,32 @@ def logical_or(
 
     Examples
     --------
-
-    
+    With :code:`ivy.Array` input:
     >>> x = ivy.array([True, False, True])
     >>> y = ivy.array([True, True, False])
-    >>> ivy.logical_or(x, y)
+    >>> print(ivy.logical_or(x, y))
     ivy.array([ True,  True,  True])
 
     >>> x = ivy.array([[False, False, True], [True, False, True]])
     >>> y = ivy.array([[False, True, False], [True, True, False]])
     >>> z = ivy.zeros_like(x)
     >>> ivy.logical_or(x, y, out=z)
+    >>> print(z)
     ivy.array([[False,  True,  True],
        [ True,  True,  True]])
 
     >>> x = ivy.array([False, 3, 0])
     >>> y = ivy.array([2, True, False])
     >>> ivy.logical_or(x, y, out=x)
+    >>> print(x)
     ivy.array([ True,  True, False])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([True, False, False])
     >>> y = ivy.native_array([2, True, False])
-    >>> ivy.logical_or(x, y)
+    >>> z = ivy.logical_or(x, y)
+    >>> print(z)
     ivy.array([ True,  True, False])
 
     With :code:`ivy.Container` input:
@@ -3552,7 +3554,8 @@ def logical_or(
                             b=ivy.array([True, False, True]))
     >>> y = ivy.Container(a=ivy.array([False, True, False]), \
                             b=ivy.array([True, True, False]))
-    >>> ivy.logical_or(x, y)
+    >>> z = ivy.logical_or(x, y)
+    >>> print(z)
     {
         a: ivy.array([False, True, True]),
         b: ivy.array([True, True, True])
@@ -3562,20 +3565,28 @@ def logical_or(
 
     >>> x = ivy.array([False, 3, 0])
     >>> y = ivy.array([2, True, False])
-    >>> 
-    >>> x.logical_or(y)
+    >>> z = x.logical_or(y)
+    >>> print(z)
     ivy.array([ True,  True, False])
 
     Using :code:`ivy.Container` instance method:
     
     >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
     >>> y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))
-    >>> x.logical_or(y)
+    >>> z = x.logical_or(y)
+    >>> print(z)
     {
         a: ivy.array([False, True, True]),
         b: ivy.array([True, True, True])
     }
 
+    With :code:`ivy.Container` static method:
+
+    >>> x = ivy.array([True, False, True])
+    >>> y = ivy.array([True, True, False])
+    >>> z = ivy.Container.static_logical_or(x, y)
+    >>> print(z)
+    ivy.array([ True,  True,  True])
     """
     return ivy.current_backend(x1, x2).logical_or(x1, x2, out=out)
 

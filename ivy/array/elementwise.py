@@ -1324,14 +1324,13 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-
         Using :code:`ivy.Array` instance method:
 
         >>> x = ivy.array([False, 3, 0])
         >>> y = ivy.array([2, True, False])
-        >>> 
-        >>> x.logical_or(y)
-        ivy.array([ True,  True, False])
+        >>> z = x.logical_or(y)
+        >>> print(z)
+        vy.array([ True,  True, False])
         """
         return ivy.logical_or(self._data, x2, out=out)
 

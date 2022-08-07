@@ -4449,6 +4449,14 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([True, False, True])
+        >>> y = ivy.array([True, True, False])
+        >>> z = ivy.Container.static_logical_or(x, y)
+        >>> print(z)
+        ivy.array([ True,  True,  True])
         """
         return ContainerBase.multi_map_in_static_method(
             "logical_or",
@@ -4515,12 +4523,12 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-
         Using :code:`ivy.Container` instance method:
-        
+
         >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
         >>> y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))
-        >>> x.logical_or(y)
+        >>> z = x.logical_or(y)
+        >>> print(z)
         {
             a: ivy.array([False, True, True]),
             b: ivy.array([True, True, True])
