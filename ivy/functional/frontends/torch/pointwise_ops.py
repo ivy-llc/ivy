@@ -15,7 +15,6 @@ def tan(input, *, out=None):
 
 tan.unsupported_dtypes = ("float16",)
 
-
 def cos(input, *, out=None):
     return ivy.cos(input, out=out)
 
@@ -39,3 +38,9 @@ acos.unsupported_dtypes = ("float16",)
 
 def abs(input, *, out=None):
     return ivy.abs(input, out=out)
+
+
+def exp(x, * , out = None):
+    return ivy.exp(x,out = None)
+
+exp.unsupported_dtypes = ("float16",)
