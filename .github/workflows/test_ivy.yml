@@ -1,6 +1,7 @@
 name: test-core-ivy
 on: [push, pull_request]
-permissions: read-all
+permissions:
+  actions: read
 jobs:
    run-nightly-tests:
      strategy:
