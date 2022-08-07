@@ -48,11 +48,11 @@ def test_torch_add(
         fw=fw,
         frontend="torch",
         fn_name="add",
+        rtol=1e-04,
         input=np.asarray(x[0], dtype=input_dtype[0]),
         other=np.asarray(x[1], dtype=input_dtype[1]),
         alpha=alpha,
         out=None,
-        rtol=1e-04,
     )
 
 
@@ -112,7 +112,12 @@ def test_torch_tan(
     native_array=st.booleans(),
 )
 def test_torch_abs(
-    dtype_and_x, as_variable, with_out, num_positional_args, native_array, fw,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
