@@ -70,6 +70,25 @@ class ArrayWithGradients(abc.ABC):
         """
         return ivy.is_variable(self, exclusive)
 
+    def variable_data(self: ivy.Array) -> bool:
+        """
+        ivy.Array instance method variant of ivy.variable_data. This method simply wraps
+        the function, and so the docstring for ivy.variable_data also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            An ivy variable.
+
+        Returns
+        -------
+        ret
+            The internal data stored by the variable
+
+        """
+        return ivy.variable_data(self)
+
     def stop_gradient(
         self: ivy.Array,
         /,

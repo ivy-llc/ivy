@@ -107,33 +107,27 @@ def test_is_variable(
 
 
 # variable data
-@pytest.mark.parametrize("object_in", [[], [0.0], [1], [True], [[1.0, 2.0]]])
-@pytest.mark.parametrize("dtype", ["float16", "float32", "float64"])
-def test_variable_data(object_in, dtype, device, call):
-    if call is helpers.tf_graph_call:
-        # cannot create variables as part of compiled tf graph
-        pytest.skip()
-    if call in [helpers.mx_call] and dtype == "int16":
-        # mxnet does not support int16
-        pytest.skip()
-    if len(object_in) == 0 and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    # smoke test
-    var = ivy.variable(ivy.array(object_in, dtype=dtype, device=device))
-    var_data = ivy.variable_data(var)
-    # type test
-    if call is not helpers.np_call:
-        # numpy does not support variables
-        assert ivy.is_variable(var)
-        if call is not helpers.mx_call:
-            # jax variables and their data are the same instance
-            assert not ivy.is_variable(var_data, exclusive=True)
-        assert ivy.is_ivy_array(var_data)
-    # cardinality test
-    assert var_data.shape == var.shape
-    # value test
-    assert np.allclose(ivy.to_numpy(var), ivy.to_numpy(var_data))
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+    ),
+    data=st.data(),
+)
+@handle_cmd_line_args
+def test_variable_data(dtype_and_x, native_array, container, instance_method, fw):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        with_out=False,
+        as_variable_flags=True,
+        num_positional_args=1,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="variable_data",
+        x=np.asarray(x, dtype=dtype),
+    )
 
 
 # stop_gradient

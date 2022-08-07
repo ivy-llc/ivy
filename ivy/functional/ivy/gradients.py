@@ -275,7 +275,6 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def variable_data(x):
     """Some backends wrap arrays in a dedicated variable class. For those frameworks,
