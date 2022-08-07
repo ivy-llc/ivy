@@ -16,9 +16,10 @@ class ContainerWithLayers(ContainerBase):
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: Union[str, List[int]],
+        /,
+        *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -67,9 +68,9 @@ class ContainerWithLayers(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "depthwise_conv2d",
             x,
-            filters=filters,
-            strides=strides,
-            padding=padding,
+            filters,
+            strides,
+            padding,
             data_format=data_format,
             dilations=dilations,
             out=out,
@@ -80,9 +81,10 @@ class ContainerWithLayers(ContainerBase):
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: Union[str, List[int]],
+        /,
+        *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -125,19 +127,26 @@ class ContainerWithLayers(ContainerBase):
         [1, 64, 64, 3]
         """
         return self.static_depthwise_conv2d(
-            self, filters, strides, padding, data_format, dilations, out=out
+            self,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
         )
-    
+
     @staticmethod
     def static_conv1d(
-            x: ivy.Container,
-            filters: Union[ivy.Array, ivy.NativeArray],
-            strides: int,
-            padding: str,
-            data_format: str = "NWC",
-            dilations: int = 1,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: ivy.Container,
+        filters: Union[ivy.Array, ivy.NativeArray],
+        strides: int,
+        padding: str,
+        /,
+        *,
+        data_format: str = "NWC",
+        dilations: int = 1,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.conv1d. This method simply
@@ -185,23 +194,24 @@ class ContainerWithLayers(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "conv1d",
             x,
-            filters=filters,
-            strides=strides,
-            padding=padding,
+            filters,
+            strides,
+            padding,
             data_format=data_format,
             dilations=dilations,
             out=out,
         )
- 
+
     def conv1d(
-            self: ivy.Container,
-            filters: Union[ivy.Array, ivy.NativeArray],
-            strides: int,
-            padding: str,
-            data_format: str = "NWC",
-            dilations: int = 1,
-            *,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        filters: Union[ivy.Array, ivy.NativeArray],
+        strides: int,
+        padding: str,
+        /,
+        *,
+        data_format: str = "NWC",
+        dilations: int = 1,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.conv1d. This method simply
@@ -247,5 +257,11 @@ class ContainerWithLayers(ContainerBase):
         }
         """
         return self.static_conv1d(
-            self, filters, strides, padding, data_format, dilations, out=out
+            self,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
         )
