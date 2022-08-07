@@ -33,8 +33,6 @@ jobs:
            mkdir -p .hypothesis
            ./test_ivy.sh ${{ matrix.backends }} ${{ matrix.submodules }}
          continue-on-error: true
+
        - name: print-result
-         env:
-           OUTCOME: ${{ steps.tests.outcome }}
-           run: |
-             echo "$OUTCOME"
+         run: echo ${{ steps.tests.outcome }}
