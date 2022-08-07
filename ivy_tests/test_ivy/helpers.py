@@ -524,13 +524,14 @@ def f_n_calls():
 def assert_all_close(
     ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
-    assert (
-        ret_np.dtype is ret_from_np.dtype
-    ), "the return with a {} backend produced data type of {}, while the return with" " a {} backend returned a data type of {}.".format(
-        ground_truth_backend,
-        ret_from_np.dtype,
-        ivy.current_backend_str(),
-        ret_np.dtype,
+    assert ret_np.dtype is ret_from_np.dtype, (
+        "the return with a {} backend produced data type of {}, while the return with"
+        " a {} backend returned a data type of {}.".format(
+            ground_truth_backend,
+            ret_from_np.dtype,
+            ivy.current_backend_str(),
+            ret_np.dtype,
+        )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
@@ -806,7 +807,6 @@ def create_args_kwargs(
     native_array_flags=None,
     container_flags=None,
 ):
-
     # extract all arrays from the arguments and keyword arguments
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
@@ -1382,6 +1382,18 @@ def test_frontend_function(
     input_dtypes, as_variable_flags, native_array_flags = as_lists(
         input_dtypes, as_variable_flags, native_array_flags
     )
+    # make all lists equal in length
+    num_arrays = max(
+        len(input_dtypes),
+        len(as_variable_flags),
+        len(native_array_flags),
+    )
+    if len(input_dtypes) < num_arrays:
+        input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
+    if len(as_variable_flags) < num_arrays:
+        as_variable_flags = [as_variable_flags[0] for _ in range(num_arrays)]
+    if len(native_array_flags) < num_arrays:
+        native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
 
     # update variable flags to be compatible with float dtype and with_out args
     as_variable_flags = [
@@ -2061,8 +2073,9 @@ def get_shape(
     min_dim_size=1,
     max_dim_size=10,
 ):
-    """Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size] of size drawn from
-    min_num_dims to max_num_dims. Useful for randomly drawing the shape of an array.
+    """Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size]
+     of size drawn from min_num_dims to max_num_dims. Useful for randomly
+     drawing the shape of an array.
 
     Parameters
     ----------
