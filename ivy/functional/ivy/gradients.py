@@ -832,15 +832,15 @@ def lamb_update(
     >>> mw_tm1 = ivy.zeros((3,3))
     >>> vw_tm1 = ivy.zeros(3)
     >>> step = ivy.array(1)
-    >>> beta1=0.9,
-    >>> beta2=0.999,
-    >>> epsilon=1e-7,
-    >>> max_trust_ratio=10,
-    >>> decay_lambda=0,
-    >>> inplace=None,
+    >>> beta1=0.9
+    >>> beta2=0.999
+    >>> epsilon=1e-7
+    >>> max_trust_ratio=10
+    >>> decay_lambda=0
+    >>> inplace=None
     >>> stop_gradients=True
     >>> new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1,beta2,\
-                      epsilon,max_trust_ratio,decay_lambda,inplace,stop_gradients)
+                      epsilon,max_trust_ratio,decay_lambda,inplace,stop_gradients)  
     >>> print(new_weights)
     (ivy.array([[ 0.639,  1.64 ,  2.64 ],
         [ 3.64 ,  5.64 ,  0.639],
