@@ -4,6 +4,7 @@ permissions:
   actions: read
 jobs:
    run-nightly-tests:
+     continue-on-error: false
      strategy:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
@@ -32,7 +33,6 @@ jobs:
            cd ivy
            mkdir -p .hypothesis
            ./test_ivy.sh ${{ matrix.backends }} ${{ matrix.submodules }}
-         continue-on-error: false
 
        - name: print-result
          run: echo ${{ steps.tests.outcome }}
