@@ -206,5 +206,3 @@ def test_numpy_arccos(
         subok=True,
         test_values=False,
     )
-
-    
