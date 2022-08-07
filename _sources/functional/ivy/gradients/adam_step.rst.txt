@@ -5,8 +5,6 @@ adam_step
 
 .. autofunction:: ivy.array.array_methods.adam_step
 
-.. autofunction:: ivy.container.container_methods.static_adam_step
-
 .. autofunction:: ivy.container.container_methods.adam_step
 |
 | **Supported Frameworks:**
@@ -37,5 +35,4 @@ adam_step
    adam_step/adam_step_functional.rst
    adam_step/adam_step_array.rst
    adam_step/adam_step_container.rst
-   adam_step/static_adam_step_container.rst
 
