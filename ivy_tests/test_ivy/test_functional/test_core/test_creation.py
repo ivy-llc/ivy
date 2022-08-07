@@ -2,17 +2,16 @@
 """Collection of tests for creation functions."""
 
 # global
+
+import hypothesis.extra.numpy as hnp
 import numpy as np
 from hypothesis import given, strategies as st
-from hypothesis import settings
 
 # local
 import ivy
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-import ivy.functional.backends.numpy as ivy_np
-import hypothesis.extra.numpy as hnp
-from datetime import timedelta
 
 
 # native_array
@@ -61,14 +60,14 @@ def test_native_array(
 # linspace
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_float_dtypes,
         num_arrays=2,
         min_value=None,
         max_value=None,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
         shared_dtype=True,
         safety_factor=0.5,
     ),
@@ -104,11 +103,12 @@ def test_linspace(
         axis=axis,
         device=device,
         dtype=dtype[0],
+        rtol_=1e-3,
+        atol_=1e-3,
     )
 
 
 # logspace
-@settings(deadline=timedelta(milliseconds=5000))
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
@@ -118,7 +118,7 @@ def test_linspace(
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
         shared_dtype=True,
         safety_factor=0.5,
     ),
@@ -150,8 +150,8 @@ def test_logspace(
         instance_method=False,
         fw=fw,
         fn_name="logspace",
-        rtol_=(1,),  # if its less then one it'll test for inf
-        atol_=(1e-06,),
+        rtol_=1,  # if its less then one it'll test for inf
+        atol_=1e-06,
         test_values=True,
         start=np.asarray(start_stop[0], dtype=dtype[0]),
         stop=np.asarray(start_stop[1], dtype=dtype[1]),
@@ -364,7 +364,6 @@ def test_eye(
     num_positional_args,
     fw,
 ):
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
