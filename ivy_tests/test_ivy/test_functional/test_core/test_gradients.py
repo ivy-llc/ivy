@@ -339,90 +339,57 @@ def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
 
 
 # adam_update
-@pytest.mark.parametrize(
-    "ws_n_grads_n_lr_n_wsnew",
-    [
-        (
-            Container({"w": [3.0]}),
-            Container({"w": [6.0]}),
-            0.1,
-            Container({"w": [2.96837726]}),
-        )
-    ],
+@given(
+    dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
+    step=st.integers(min_value=1, max_value=100),
+    beta1_n_beta2_n_epsilon=helpers.lists(
+        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=32),
+        min_size=3,
+        max_size=3,
+    ),
+    stopgrad=st.booleans(),
+    data=st.data(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
-    # smoke test
-    ws_raw, dcdws_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
-    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
-    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    mw = dcdws
-    vw = dcdws.map(lambda x, _: x**2)
-    ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
-    # type test
-    assert isinstance(ws_new, dict)
-    assert isinstance(mw_new, dict)
-    assert isinstance(vw_new, dict)
-    # cardinality test
-    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-        assert w_new.shape == w_true_new.shape
-    for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
-        assert m_new.shape == m_orig.shape
-    for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
-        assert v_new.shape == v_orig.shape
-    # value test
-    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support internal function definitions
-        return
-
-
-# layerwise_adam_update
-@pytest.mark.parametrize(
-    "ws_n_grads_n_lr_n_wsnew",
-    [
-        (
-            Container({"a": [3.0], "b": [3.0]}),
-            Container({"a": [6.0], "b": [6.0]}),
-            Container({"a": [0.1], "b": [0.2]}),
-            Container({"a": [2.9683773], "b": [2.9367545]}),
-        )
-    ],
-)
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
-    # smoke test
-    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
-    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
-    lr = lr_raw.map(lambda x, _: ivy.array(x))
-    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    mw = dcdws
-    vw = dcdws.map(lambda x, _: x**2)
-    ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
-    # type test
-    assert isinstance(ws_new, dict)
-    assert isinstance(mw_new, dict)
-    assert isinstance(vw_new, dict)
-    # cardinality test
-    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-        assert w_new.shape == w_true_new.shape
-    for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
-        assert m_new.shape == m_orig.shape
-    for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
-        assert v_new.shape == v_orig.shape
-    # value test
-    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support internal function definitions
-        return
+@handle_cmd_line_args
+def test_adam_update(
+    dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr,
+    step,
+    beta1_n_beta2_n_epsilon,
+    stopgrad,
+    as_variable,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
+    (
+        beta1,
+        beta2,
+        epsilon,
+    ) = beta1_n_beta2_n_epsilon
+    stop_gradients = stopgrad
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        with_out=False,
+        as_variable_flags=as_variable,
+        num_positional_args=6,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="adam_update",
+        w=np.asarray(w, dtype=input_dtypes[0]),
+        dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
+        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
+        mw_tm1=np.asarray(mw_tm1, input_dtypes[2]),
+        vw_tm1=np.asarray(vw_tm1, dtype=input_dtypes[3]),
+        step=step,
+        beta1=beta1,
+        beta2=beta2,
+        epsilon=epsilon,
+        stop_gradients=stop_gradients,
+    )
 
 
 # lamb_update
