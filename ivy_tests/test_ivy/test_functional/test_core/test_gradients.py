@@ -137,33 +137,31 @@ def test_variable_data(object_in, dtype, device, call):
 
 
 # stop_gradient
-@pytest.mark.parametrize("x_raw", [[0.0]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [("array", ivy.array), ("var", helpers.var_fn)])
-def test_stop_gradient(x_raw, dtype, tensor_fn, device, call):
-    # smoke test
-    fn_name, tensor_fn = tensor_fn
-    x = tensor_fn(x_raw, dtype=dtype, device=device)
-    ret = ivy.stop_gradient(x)
-    # type test
-    if fn_name == "array":
-        assert ivy.is_ivy_array(ret)
-    elif call is not helpers.np_call:
-        # Numpy does not support variables, is_variable() always returns False
-        assert ivy.is_variable(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    if call is not helpers.tf_graph_call:
-        # Tf graph mode cannot create variables as part of the computation graph
-        assert np.array_equal(
-            call(ivy.stop_gradient, x),
-            np.array(x_raw, dtype=dtype),
-        )
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support attribute setting
-        return
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+    ),
+    preserve_type=st.booleans(),
+    data=st.data(),
+)
+@handle_cmd_line_args
+def test_stop_gradient(
+    dtype_and_x, preserve_type, with_out, native_array, container, instance_method, fw
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        with_out=with_out,
+        as_variable_flags=True,
+        num_positional_args=1,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="stop_gradient",
+        x=np.asarray(x, dtype=dtype),
+        preserve_type=preserve_type,
+    )
 
 
 # execute_with_gradients
