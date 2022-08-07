@@ -15,7 +15,7 @@ from ivy.container import Container
 
 
 @st.composite
-def get_gradient_arguments_with_lr(draw, *, num_arrays=1):
+def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
     dtypes, arrays, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_float_dtypes,
@@ -29,6 +29,8 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1):
         )
     )
     dtype = dtypes[0]
+    if no_lr:
+        return dtypes, arrays
     lr = draw(
         st.one_of(
             st.floats(min_value=0.0, max_value=1.0, exclude_min=True, width=32),
@@ -232,6 +234,55 @@ def test_execute_with_gradients(
     else:
         for (g, g_true) in zip(dydxs.values(), true_dydxs.values()):
             assert np.allclose(ivy.to_numpy(g), g_true)
+
+
+# adam_step
+@given(
+    dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(num_arrays=3, no_lr=True),
+    step=st.integers(min_value=1, max_value=100),
+    beta1_n_beta2_n_epsilon=helpers.lists(
+        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=32),
+        min_size=3,
+        max_size=3,
+    ),
+    data=st.data(),
+)
+@handle_cmd_line_args
+def test_adam_step(
+    *,
+    dtype_n_dcdw_n_mw_n_vw,
+    step,
+    beta1_n_beta2_n_epsilon,
+    as_variable,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtypes, [dcdw, mw, vw] = dtype_n_dcdw_n_mw_n_vw
+    (
+        beta1,
+        beta2,
+        epsilon,
+    ) = beta1_n_beta2_n_epsilon
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        with_out=False,
+        as_variable_flags=as_variable,
+        num_positional_args=4,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="adam_step",
+        dcdw=np.asarray(dcdw, dtype=input_dtypes[0]),
+        mw=np.asarray(mw, input_dtypes[1]),
+        vw=np.asarray(vw, dtype=input_dtypes[2]),
+        step=step,
+        beta1=beta1,
+        beta2=beta2,
+        epsilon=epsilon,
+    )
 
 
 # optimizer_update
@@ -472,4 +523,3 @@ def test_lamb_update(
 # stop_gradient
 # execute_with_gradients
 # adam_step
-# optimizer_update
