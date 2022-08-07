@@ -303,39 +303,40 @@ def test_layerwise_gradient_descent_update(
 
 
 # lars_update
-@pytest.mark.parametrize(
-    "ws_n_grads_n_lr_n_wsnew",
-    [
-        (
-            Container({"a": [3.0], "b": [3.0]}),
-            Container({"a": [6.0], "b": [6.0]}),
-            Container({"a": [0.1], "b": [0.2]}),
-            Container({"a": [2.7], "b": [2.4]}),
-        )
-    ],
+@given(
+    dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
+    decay_lambda=st.floats(min_value=0, max_value=1, exclude_min=True, width=32),
+    stop_gradients=st.booleans(),
+    data=st.data(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, device, call):
-    # smoke test
-    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
-    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
-    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
-    lr = lr_raw.map(lambda x, _: ivy.array(x))
-    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
-    ws_new = ivy.lars_update(ws, dcdws, lr)
-    # type test
-    assert isinstance(ws_new, dict)
-    # cardinality test
-    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-        assert w_new.shape == w_true_new.shape
-    # value test
-    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
-        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support internal function definitions
-        return
+@handle_cmd_line_args
+def test_lars_update(
+    dtype_n_ws_n_dcdw_n_lr,
+    decay_lambda,
+    stop_gradients,
+    as_variable,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        with_out=False,
+        as_variable_flags=as_variable,
+        num_positional_args=3,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="lars_update",
+        w=np.asarray(w, dtype=input_dtypes[0]),
+        dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
+        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
+        decay_lambda=decay_lambda,
+        stop_gradients=stop_gradients,
+    )
 
 
 # adam_update
@@ -407,7 +408,7 @@ def test_adam_update(
     stopgrad=st.booleans(),
     data=st.data(),
 )
-@helpers.handle_cmd_line_args
+@handle_cmd_line_args
 def test_lamb_update(
     *,
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr,
