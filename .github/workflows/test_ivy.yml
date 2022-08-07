@@ -27,10 +27,14 @@ jobs:
            key: ${{ runner.os }}-hypothesis
 
        - name: Run Activations Tests
+         id: tests
          run: |
            cd ivy
            mkdir -p .hypothesis
            ./test_ivy.sh ${{ matrix.backends }} ${{ matrix.submodules }}
          continue-on-error: true
-       - name: Outcome diplay
-       - run : echo ${{ steps.tests.outcome }}
+       - name: print-result
+         env:
+           OUTCOME: ${{ steps.tests.outcome }}
+           run: |
+             echo "$OUTCOME"
