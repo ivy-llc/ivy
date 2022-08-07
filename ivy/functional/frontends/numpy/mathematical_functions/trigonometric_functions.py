@@ -67,6 +67,7 @@ def arcsin(
 
 arcsin.unsupported_dtypes = {"torch": ("float16",)}
 
+
 def arccos(
     x,
     /,
@@ -87,3 +88,4 @@ def arccos(
 
 
 arcsin.unsupported_dtypes = {"torch": ("float16",)}
+
