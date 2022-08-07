@@ -234,6 +234,41 @@ def test_execute_with_gradients(
             assert np.allclose(ivy.to_numpy(g), g_true)
 
 
+# optimizer_update
+@given(
+    dtype_n_ws_n_effgrad_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
+    stop_gradients=st.booleans(),
+    data=st.data(),
+)
+@handle_cmd_line_args
+def test_optimizer_update(
+    dtype_n_ws_n_effgrad_n_lr,
+    stop_gradients,
+    with_out,
+    as_variable,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtypes, [w, effective_grad], lr = dtype_n_ws_n_effgrad_n_lr
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        with_out=with_out,
+        as_variable_flags=as_variable,
+        num_positional_args=3,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="optimizer_update",
+        w=np.asarray(w, dtype=input_dtypes[0]),
+        effective_grad=np.asarray(effective_grad, dtype=input_dtypes[1]),
+        lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
+        stop_gradients=stop_gradients,
+    )
+
+
 # gradient_descent_update
 @given(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
