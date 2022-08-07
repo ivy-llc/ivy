@@ -34,5 +34,9 @@ jobs:
            ./test_ivy.sh ${{ matrix.backends }} ${{ matrix.submodules }}
          continue-on-error: true
 
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
        - name: print-result
          run: echo ${{ steps.tests.outcome }}
