@@ -1758,16 +1758,15 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
 
 
 @handle_nestable
-def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, None] :
-    """Try and return the function, otherwise return None if an exception was raised
-    during function execution.
+def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, None]:
+    """Try and return the function, otherwise return None if an exception was raised during function execution.
 
     Parameters
     ----------
     fn
         Function to try and call and return.
     args
-        list of arguments
+        list of arguments.
     kwargs
         dictionay of keyword arguments
 
