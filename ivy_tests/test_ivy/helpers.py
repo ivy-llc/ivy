@@ -1626,6 +1626,48 @@ def dtype_and_values(
     ret_shape=False,
     dtype=None,
 ):
+    """Draws a list of arrays with elements from the given corresponding data types.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    available_dtypes
+        if dtype is None, data types are drawn from this list randomly.
+    num_arrays
+        Number of arrays to be drawn.
+    min_value
+        minimum value of elements in each array.
+    max_value
+        maximum value of elements in each array.
+    safety_factor
+        Ratio of max_value to maximum allowed number in the data type.
+    allow_inf
+        if True, allow inf in the arrays.
+    exclude_min
+        if True, exclude the minimum limit.
+    exclude_max
+        if True, exclude the maximum limit.
+    min_num_dims
+        minimum size of the shape tuple.
+    max_num_dims
+        maximum size of the shape tuple.
+    min_dim_size
+        minimum value of each integer in the shape tuple.
+    max_dim_size
+        maximum value of each integer in the shape tuple.
+    shape
+        shape of the arrays in the list.
+    shared_dtype
+        if True, if dtype is None, a single shared dtype is drawn for all arrays.
+    ret_shape
+        if True, the shape of the arrays is also returned.
+    dtype
+        A list of data types for the given arrays.
+    Returns
+    -------
+    A strategy that draws a list of arrays(as lists).
+    """
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
     if isinstance(max_dim_size, st._internal.SearchStrategy):
