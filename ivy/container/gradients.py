@@ -439,7 +439,7 @@ class ContainerWithGradients(ContainerBase):
         Returns
         -------
         ret
-            The new weights , following the gradient descent updates.
+            The new weights , following the lars updates.
         Examples
         --------
         With :code: `ivy.container` inputs:
@@ -529,7 +529,7 @@ class ContainerWithGradients(ContainerBase):
         Returns
         -------
         ret
-            The new weights , following the gradient descent updates.
+            The new weights , following the lars updates.
         Examples
         --------
         With :code: `ivy.container` inputs:
