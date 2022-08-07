@@ -10,7 +10,7 @@ between different ML frameworks. This part is labelled as (b) in the image below
 The code conversion tools described on this page are works in progress, as indicated by the the construction signs 🚧.
 This is in keeping with the rest of the documentation.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/dependency_graph_with_compiler.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 
