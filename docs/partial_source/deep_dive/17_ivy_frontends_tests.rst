@@ -1,4 +1,4 @@
-Ivy Frontend tests
+Ivy Frontend Tests
 ====================
 
 .. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
@@ -224,13 +224,13 @@ ivy.tan()
             out=None,
         )
 
-* We use :code:`ivy_tf.valid_float_dtypes` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for TensorFlow.
+* We use :code:`ivy_torch.valid_float_dtypes` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for PyTorch.
 * Torch accepts both Torch and NumPy data-types so we create a :code:`tuple` of the two as :code:`available_dtypes`.
 
 ivy.full()
 ^^^^^^^^^^
 
-Here we are going to look at an example of a function that does not consume an :code:`array`. 
+Here we are going to look at an example of a function that does not consume an :code:`array`.
 This is the creation function :code:`full()`, which takes an array shape as an argument to create an array and filled with elements of a given value.
 This function requires us to create extra methods for generating :code:`shape` and :code:`fill value`, these use the :code:`shared` hypothesis strategy.
 
@@ -258,9 +258,9 @@ This function requires us to create extra methods for generating :code:`shape` a
         dtype = draw(_dtypes())[0]
         if ivy.is_uint_dtype(dtype):
             return draw(st.integers(0, 5))
-        if ivy.is_int_dtype(dtype):
+        elif ivy.is_int_dtype(dtype):
             return draw(st.integers(-5, 5))
-            return draw(st.floats(-5, 5))
+        return draw(st.floats(-5, 5))
 
 
     @given(
@@ -411,7 +411,7 @@ This function requires us to create extra methods for generating :code:`shape` a
         dtypes=_dtypes(),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.tensorflow.fill"
-        ),  
+        ),
     )
     def test_tensorflow_full(
         shape,
@@ -511,8 +511,8 @@ This function requires us to create extra methods for generating :code:`shape` a
             frontend="torch",
             fn_name="full",
             size=shape,
-            dtype=dtypes[0],
             fill_value=fill_value,
+            dtype=dtypes[0],
             device=device,
             requires_grad=requires_grad,
         )

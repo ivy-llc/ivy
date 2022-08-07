@@ -399,6 +399,7 @@ def test_iinfo(
         type=type,
         test_values=False,
     )
+
     if not ivy.exists(ret):
         return
     mach_lims, mach_lims_np = ret
@@ -463,6 +464,7 @@ def test_as_ivy_dtype(
     if isinstance(input_dtype, str):
         assert isinstance(res, str)
         return
+
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(
         input_dtype, str
     ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
@@ -491,6 +493,7 @@ def test_as_native_dtype(
     if isinstance(input_dtype, ivy.NativeDtype):
         assert isinstance(res, ivy.NativeDtype)
         return
+
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(
         input_dtype, str
     ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
@@ -858,7 +861,7 @@ def test_default_int_dtype(input, int_dtype, as_native):
 
 
 @st.composite
-def dtytes_list(draw):
+def dtypes_list(draw):
     num = draw(st.one_of(st.integers(min_value=1, max_value=5)))
     return draw(
         st.lists(
@@ -870,7 +873,7 @@ def dtytes_list(draw):
 
 
 # function_unsupported_dtypes
-@given(supported_dtypes=dtytes_list())
+@given(supported_dtypes=dtypes_list())
 def test_function_supported_dtypes(
     supported_dtypes,
 ):
@@ -884,7 +887,7 @@ def test_function_supported_dtypes(
 
 
 # function_unsupported_dtypes
-@given(unsupported_dtypes=dtytes_list())
+@given(unsupported_dtypes=dtypes_list())
 def test_function_unsupported_dtypes(
     unsupported_dtypes,
 ):

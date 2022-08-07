@@ -38,7 +38,7 @@ def argsort(
             ret = tf.argsort(
                 tf.convert_to_tensor(x), axis=axis, direction="ASCENDING", stable=stable
             )
-    return ret
+    return tf.cast(ret, dtype=tf.int64)
 
 
 def sort(
@@ -62,3 +62,13 @@ def sort(
         else:
             ret = tf.sort(tf.convert_to_tensor(x), axis=axis, direction="ASCENDING")
     return ret
+
+
+def searchsorted(
+    x1: Union[tf.Tensor, tf.Variable],
+    v: Union[tf.Tensor, tf.Variable],
+    side="left",
+    sorter=None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.searchsorted(x1, v, side=side)

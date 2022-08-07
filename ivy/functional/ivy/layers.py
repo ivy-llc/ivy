@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List, Any
+from typing import Optional, Tuple, Union, List, Any, Callable
 
 # local
 import ivy
@@ -24,8 +24,9 @@ from ivy.func_wrapper import (
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
-    bias: Union[ivy.Array, ivy.NativeArray] = None,
+    /,
     *,
+    bias: Union[ivy.Array, ivy.NativeArray] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
@@ -93,7 +94,13 @@ def linear(
 
 @handle_nestable
 def dropout(
-    x, prob, scale=True, dtype=None, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    scale: bool = True,
+    dtype: ivy.Dtype = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Randomly zeroes some elements of the input tensor with probability p using
     samples from a Bernoulli distribution.
@@ -138,8 +145,9 @@ def scaled_dot_product_attention(
     k: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],
     scale: float,
-    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    /,
     *,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies scaled dot product attention to inputs x using optional mask.
@@ -389,22 +397,28 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
-@to_native_arrays_and_back
+scaled_dot_product_attention.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("float16",),
+}
+
+
 def multi_head_attention(
-    x,
+    x: Union[ivy.Array, ivy.NativeArray],
     scale,
     num_heads,
-    context=None,
-    mask=None,
-    to_q_fn=None,
-    to_kv_fn=None,
-    to_out_fn=None,
+    /,
+    *,
+    context: Union[ivy.Array, ivy.NativeArray] = None,
+    mask: Union[ivy.Array, ivy.NativeArray] = None,
+    to_q_fn: Callable = None,
+    to_kv_fn: Callable = None,
+    to_out_fn: Callable = None,
     to_q_v=None,
     to_kv_v=None,
     to_out_v=None,
-    *,
-    out: Optional[ivy.Array] = None,
-):
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies multi-head attention to inputs x.
 
     Parameters
@@ -488,6 +502,12 @@ def multi_head_attention(
     return ret
 
 
+multi_head_attention.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("float16",),
+}
+
+
 # Convolutions #
 
 
@@ -499,9 +519,10 @@ def conv1d(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: int,
     padding: str,
+    /,
+    *,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D convolution given 3-D input x and filters arrays.
@@ -572,14 +593,15 @@ def conv1d(
 @handle_out_argument
 @handle_nestable
 def conv1d_transpose(
-    x,
-    filters,
-    strides,
-    padding,
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: int,
+    padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NWC",
-    dilations=1,
-    *,
+    dilations: int = 1,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
@@ -624,9 +646,10 @@ def conv2d(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
@@ -714,14 +737,15 @@ def conv2d(
 @handle_out_argument
 @handle_nestable
 def conv2d_transpose(
-    x,
-    filters,
-    strides,
-    padding,
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NHWC",
-    dilations=1,
-    *,
+    dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
@@ -766,9 +790,10 @@ def depthwise_conv2d(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int]],
     padding: Union[str, List[int]],
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -835,9 +860,9 @@ def depthwise_conv2d(
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC
-    >>> a = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
-    >>> b = ivy.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]).unsqueeze(-1) / 9.0
+    >>> x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC
+    >>> a = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(-1)
+    >>> b = ivy.array([[1., 1., 1.], [1., 1., 1.], [1., 1., 1.]]).expand_dims(-1) / 9.0
     >>> filters = ivy.Container(a = a, b = b)
     >>> y = ivy.depthwise_conv2d(x, filters, strides=1, padding='VALID', dilations=2)
     >>> print(y)
@@ -855,10 +880,10 @@ def depthwise_conv2d(
     With a mix of :code:`ivy.Array`, code:`ivy.NativeArray`
     and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.eye(6, 6).view(1, 6, 6, 1) #NHWC
-    >>> y = ivy.native_array(ivy.eye(6, 6, 1).view(1, 6, 6, 1))
+    >>> x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC
+    >>> y = ivy.native_array(ivy.eye(6, 6).reshape((1, 6, 6, 1)))
     >>> inp = ivy.Container(x = x, y = y)
-    >>> filter = ivy.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).unsqueeze(-1).float()
+    >>> filter = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(-1)
     >>> y = ivy.depthwise_conv2d(inp, filter, strides=1, padding='VALID', dilations=2)
     >>> print(y)
     {
@@ -883,9 +908,10 @@ def conv3d(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: int,
     padding: str,
+    /,
+    *,
     data_format: str = "NDHWC",
     dilations: int = 1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
@@ -945,10 +971,11 @@ def conv3d_transpose(
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: Union[str, List[int]],
+    /,
+    *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
@@ -1077,6 +1104,8 @@ def lstm_update(
     init_c: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[ivy.Array, ivy.NativeArray],
     recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
@@ -1158,3 +1187,6 @@ def lstm_update(
         hts_list.append(ivy.expand_dims(ht, -2))
 
     return ivy.concat(hts_list, -2), ct
+
+
+lstm_update.unsupported_dtypes = {"torch": ("float16",)}

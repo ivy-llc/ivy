@@ -35,10 +35,12 @@ def concat(
 
 
 def expand_dims(
-    x: JaxArray, axis: int = 0, *, out: Optional[JaxArray] = None
+    x: JaxArray,
+    axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> JaxArray:
     try:
-        return jnp.expand_dims(x, axis)
+        ret = jnp.expand_dims(x, axis)
+        return ret
     except ValueError as error:
         raise IndexError(error)
 
@@ -63,7 +65,8 @@ def permute_dims(
 def reshape(
     x: JaxArray,
     shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None
+    *,
+    copy: Optional[bool] = None,
 ) -> JaxArray:
     if copy:
         newarr = jnp.copy(x)

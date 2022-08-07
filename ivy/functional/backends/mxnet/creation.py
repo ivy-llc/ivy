@@ -99,7 +99,8 @@ def full(
     dtype: Optional[type] = None,
     device: Optional[mx.context.Context] = None,
 ) -> mx.nd.NDArray:
-    shape = ivy.shape_to_tuple(shape)
+    if isinstance(shape, int):
+        shape = (shape,)
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(
             mx.nd.full(

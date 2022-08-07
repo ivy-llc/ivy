@@ -73,8 +73,8 @@ def test_torch_full(
         frontend="torch",
         fn_name="full",
         size=shape,
-        dtype=dtypes[0],
         fill_value=fill_value,
+        dtype=dtypes[0],
         device=device,
         requires_grad=requires_grad,
     )

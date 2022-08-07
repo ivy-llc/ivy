@@ -5,8 +5,6 @@ from typing import Optional, Union, List, Dict
 import ivy
 from ivy.container.base import ContainerBase
 
-# ToDo: implement all methods here as public instance methods
-
 
 # noinspection PyMissingConstructor
 class ContainerWithRandom(ContainerBase):
@@ -562,6 +560,142 @@ class ContainerWithRandom(ContainerBase):
         )
 
     @staticmethod
+    def static_multinomial(
+        population_size: int,
+        num_samples: int,
+        batch_size: int = 1,
+        probs: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        replace: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.multinomial. This method
+        simply wraps the function, and so the docstring for ivy.multinomial also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        population_size
+            The size of the population from which to draw samples.
+        num_samples
+            Number of independent samples to draw from the population.
+        batch_size
+            Number of tensors to generate. Default is 1.
+        probs
+            The unnormalized probabilities for all elements in population,
+            default is uniform *[batch_shape, population_size]*
+        replace
+            Whether to replace samples once they've been drawn. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None)
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the parameterized normal distribution.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "multinomial",
+            population_size,
+            num_samples,
+            batch_size,
+            probs,
+            replace,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            device=device,
+            out=out,
+        )
+
+    def multinomial(
+        self: ivy.Container,
+        population_size: int,
+        num_samples: int,
+        batch_size: int = 1,
+        replace: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.multinomial. This method
+        simply wraps the function, and so the docstring for ivy.multinomial also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The unnormalized probabilities for all elements in population,
+            default is uniform *[batch_shape, population_size]*
+        population_size
+            The size of the population from which to draw samples.
+        num_samples
+            Number of independent samples to draw from the population.
+        batch_size
+            Number of tensors to generate. Default is 1.
+        replace
+            Whether to replace samples once they've been drawn. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            (Default value = None)
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the parameterized normal distribution.
+        """
+        return self.static_multinomial(
+            population_size,
+            num_samples,
+            batch_size,
+            self,
+            replace,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            device=device,
+            out=out,
+        )
+
+    @staticmethod
     def static_randint(
         low: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         high: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
@@ -832,5 +966,97 @@ class ContainerWithRandom(ContainerBase):
             map_sequences,
             device=device,
             dtype=dtype,
+            out=out,
+        )
+
+    @staticmethod
+    def static_shuffle(
+        x: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.shuffle. This method
+        simply wraps the function, and so the docstring for ivy.shuffle also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array or container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container object, shuffled along the first dimension.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "shuffle",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def shuffle(
+        self: ivy.Container,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.shuffle. This method
+        simply wraps the function, and so the docstring for ivy.shuffle also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container. Should have a numeric data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container object, shuffled along the first dimension.
+        """
+        return self.static_shuffle(
+            self,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out=out,
         )
