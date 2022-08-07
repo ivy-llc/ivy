@@ -32,3 +32,5 @@ jobs:
            mkdir -p .hypothesis
            ./test_ivy.sh ${{ matrix.backends }} ${{ matrix.submodules }}
          continue-on-error: true
+       - name: Outcome diplay
+       - run : echo ${{ steps.tests.outcome }}
