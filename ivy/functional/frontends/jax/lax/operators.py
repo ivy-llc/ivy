@@ -32,3 +32,10 @@ def sqrt(x):
      
 
 sqrt.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def qr(x, *, full_matrices=True):
+    return ivy.qr(x, "complete" if full_matrices else "reduced")
+
+
+qr.unsupported_dtypes=("float16",)
