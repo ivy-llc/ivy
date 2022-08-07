@@ -11,6 +11,8 @@ jobs:
      continue-on-error: true
      runs-on: ubuntu-latest
      steps:
+      -  name: Output Module/Backend
+         run: echo ${{ matrix.backends }} ${{ matrix.submodules}}
        - name: Checkout 🛎️Ivy
          uses: actions/checkout@v2
          with:
