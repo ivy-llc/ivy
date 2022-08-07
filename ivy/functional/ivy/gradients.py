@@ -689,7 +689,7 @@ def optimizer_update(
     if stop_gradients:
         return ivy.stop_gradient(w, preserve_type=True, out=out)
     if ivy.exists(out):
-        ivy.inplace_update(out, w)
+        return ivy.inplace_update(out, w)
     return w
 
 
