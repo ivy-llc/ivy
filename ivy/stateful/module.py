@@ -679,7 +679,7 @@ class Module(abc.ABC):
         if not from_call and self._build_mode == "on_call":
             return self.v
         if dtype:
-            dtype = ivy.default_dtype(dtype, as_native=True)
+            dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         else:
             dtype = ivy.default_dtype(self._dtype, as_native=True)
 
