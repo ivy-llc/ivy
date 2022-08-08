@@ -139,4 +139,3 @@ def sqrt(
 
 
 sqrt.unsupported_dtypes = {"torch": ("float16",)}
-
