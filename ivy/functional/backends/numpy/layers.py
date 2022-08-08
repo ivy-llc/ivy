@@ -31,7 +31,6 @@ def _handle_padding(x, strides, filters, padding):
             pad = max(filters - (x % strides), 0)
     else:
         pad = 0
-
     return pad
 
 
