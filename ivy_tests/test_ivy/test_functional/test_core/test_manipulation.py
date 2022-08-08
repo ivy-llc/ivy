@@ -538,7 +538,8 @@ def _repeat_helper(draw):
         if axis is not None else (1,)
     repeat = draw(
         helpers.dtype_and_values(
-            available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
+            available_dtypes=(ivy_np.int8, ivy_np.int16, 
+                              ivy_np.int32, ivy_np.int64),
             shape=repeat_shape,
             min_value=0,
             max_value=100,
