@@ -13,11 +13,10 @@ def _cast_for_unary_op(x):
 
 
 def _cast_for_binary_op(x1, x2, clamp=False):
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+
     if clamp:
-        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
-    else:
-        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return x1, x2
 
 
