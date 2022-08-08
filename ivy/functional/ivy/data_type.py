@@ -1396,15 +1396,15 @@ def is_int_dtype(
 def check_float(x):
     """
     Helper function to check if the input is a float or a float-like object.
-    
+
     Parameters
     ----------
-    x
+    x : any
         Input to check.
 
     Returns
     -------
-    ret
+    bool
         "True" if the input is a float or a float-like object, otherwise "False".
     """
     return isinstance(x, (int, np.float)) and not type(x) == bool
@@ -1420,12 +1420,12 @@ def is_float_dtype(
 
     Parameters
     ----------
-    dtype_in
+    dtype_in : Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
         The array or data type to check
 
     Returns
     -------
-    ret
+    bool
         Whether or not the array or data type is of a floating point dtype
 
     Examples
@@ -1464,11 +1464,7 @@ def is_float_dtype(
         return True if isinstance(dtype_in, (float, np.floating)) else False
     elif isinstance(dtype_in, (list, tuple, dict)):
         return (
-            True
-            if ivy.nested_indices_where(
-                dtype_in, check_float(dtype_in)
-            )
-            else False
+            True if ivy.nested_indices_where(dtype_in, check_float(dtype_in)) else False
         )
     return "float" in as_ivy_dtype(dtype_in)
 

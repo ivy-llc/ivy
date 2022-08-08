@@ -114,7 +114,7 @@ class ArrayWithDataTypes(abc.ABC):
 
         Returns
         -------
-        ret
+        bool
             Boolean value of whether the array is of type `float`.
         """
         return ivy.is_float_dtype(self._data)
