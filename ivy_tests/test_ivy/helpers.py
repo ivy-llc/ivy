@@ -1831,28 +1831,46 @@ def array_values(
                 max_value, round(9223372036854775807 * large_value_safety_factor)
             )
         elif dtype == "uint8":
-            min_value = ivy.default(min_value, 0)
+            min_value = ivy.default(
+                min_value, 1 if small_value_safety_factor < 1 else 0
+            )
             max_value = ivy.default(max_value, round(255 * large_value_safety_factor))
         elif dtype == "uint16":
-            min_value = ivy.default(min_value, 0)
+            min_value = ivy.default(
+                min_value, 1 if small_value_safety_factor < 1 else 0
+            )
             max_value = ivy.default(max_value, round(65535 * large_value_safety_factor))
         elif dtype == "uint32":
-            min_value = ivy.default(min_value, 0)
+            min_value = ivy.default(
+                min_value, 1 if small_value_safety_factor < 1 else 0
+            )
             max_value = ivy.default(
                 max_value, round(4294967295 * large_value_safety_factor)
             )
         elif dtype == "uint64":
-            min_value = ivy.default(min_value, 0)
+            min_value = ivy.default(
+                min_value, 1 if small_value_safety_factor < 1 else 0
+            )
             max_value = ivy.default(
                 max_value, round(18446744073709551615 * large_value_safety_factor)
             )
         values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
     elif dtype == "float16":
-        limit = math.log(2 - small_value_safety_factor) / math.log(2)
+        limit = math.log(small_value_safety_factor)
         values = draw(
             list_of_length(
                 x=st.floats(
                     min_value=min_value,
+                    max_value=round(-limit, -3),
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=16,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+                | st.floats(
+                    min_value=round(limit, -3),
                     max_value=max_value,
                     allow_nan=allow_nan,
                     allow_subnormal=allow_subnormal,
@@ -1860,17 +1878,27 @@ def array_values(
                     width=16,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                ).filter(lambda x: x <= -1 * limit or x >= limit),
+                ),
                 length=size,
             )
         )
         values = [v * large_value_safety_factor for v in values]
     elif dtype in ["float32", "bfloat16"]:
-        limit = math.log(2 - small_value_safety_factor) / math.log(2)
+        limit = math.log(small_value_safety_factor)
         values = draw(
             list_of_length(
                 x=st.floats(
                     min_value=min_value,
+                    max_value=round(-limit, -6),
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=32,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+                | st.floats(
+                    min_value=round(limit, -6),
                     max_value=max_value,
                     allow_nan=allow_nan,
                     allow_subnormal=allow_subnormal,
@@ -1878,17 +1906,27 @@ def array_values(
                     width=32,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                ).filter(lambda x: x <= -1 * limit or x >= limit),
+                ),
                 length=size,
             )
         )
         values = [v * large_value_safety_factor for v in values]
     elif dtype == "float64":
-        limit = math.log(2 - small_value_safety_factor) / math.log(2)
+        limit = math.log(small_value_safety_factor)
         values = draw(
             list_of_length(
                 x=st.floats(
                     min_value=min_value,
+                    max_value=round(-limit, -15),
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=64,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+                | st.floats(
+                    min_value=round(limit, -15),
                     max_value=max_value,
                     allow_nan=allow_nan,
                     allow_subnormal=allow_subnormal,
@@ -1896,7 +1934,7 @@ def array_values(
                     width=64,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                ).filter(lambda x: x <= -1 * limit or x >= limit),
+                ),
                 length=size,
             )
         )
