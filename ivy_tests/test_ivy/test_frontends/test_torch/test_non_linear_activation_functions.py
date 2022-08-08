@@ -57,7 +57,7 @@ def test_torch_sigmoid(
     alpha=st.floats(min_value=0, max_value=1, allow_infinity=False),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="leaky_relu",
+        fn_name="functional.frontends.torch.leaky_relu",
     ),
     native_array=st.booleans(),
 )
