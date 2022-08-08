@@ -75,12 +75,24 @@ def test_torch_cat(
 
 # swapaxes
 @given(
-    dtype_value_shape=helpers.dtype_and_values(
+    dtype_value=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes))
         ),
-        ret_shape=True,
+        shape=st.shared(
+            helpers.get_shape(min_num_dims=2),
+            key='shape')
+    ),
+    axis0=helpers.get_axis(
+            shape=st.shared(
+                helpers.get_shape(min_num_dims=2), key='shape')
+                    ).filter(lambda axis: isinstance(axis, int)
+    ),
+    axis1=helpers.get_axis(
+            shape=st.shared(
+                helpers.get_shape(min_num_dims=2), key='shape')
+                    ).filter(lambda axis: isinstance(axis, int)
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -88,28 +100,37 @@ def test_torch_cat(
         fn_name="functional.frontends.torch.swapaxes"
     ),
     native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+    data=st.data(),
 )
 def test_torch_swapaxes(
-    dtype_value_shape,
+    *,
+    data,
+    dtype_value,
+    axis0,
+    axis1,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    container,
+    instance_method,
     fw,
 ):
-    input_dtype, value, shape = dtype_value_shape
-    num_dims = len(shape)
+    input_dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
         fw=fw,
         frontend="torch",
         fn_name="swapaxes",
         input=np.asarray(value, dtype=input_dtype),
-        axis0=helpers.integers(min_value=-num_dims, max_value=num_dims - 1),
-        axis1=helpers.integers(min_value=-num_dims, max_value=num_dims - 1),
-        out=None,
+        axis0=axis0,
+        axis1=axis1,
     )
