@@ -7,8 +7,8 @@ jobs:
      strategy:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
-         submodules: [test_creation, test_device, test_dtype, test_elementwise, test_general, test_gradients, test_linalg,
-                     test_manipulation, test_meta, test_nest, test_random, test_searching, test_set, test_sorting, test_statistical,
+         submodules: [test_creation, test_device, test_dtype, test_elementwise, test_general, test_gradients, test_linalg,\
+                     test_manipulation, test_meta, test_nest, test_random, test_searching, test_set, test_sorting, test_statistical,\
                      test_utility]
      continue-on-error: true
      runs-on: ubuntu-latest
