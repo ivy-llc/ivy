@@ -201,7 +201,7 @@ def test_prod(
     assume(
         not (
             fw == "torch"
-            and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype))
+            and (input_dtype == "float16")
         )
     )
 

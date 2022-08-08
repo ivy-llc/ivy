@@ -348,5 +348,4 @@ def clip(
 
 clip.support_native_out = True
 
-
 clip.unsupported_dtypes = ("float16",)
