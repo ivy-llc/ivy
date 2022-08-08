@@ -10,8 +10,7 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithManipulation(ContainerBase):
-    def concat(
-        self: ivy.Container,
+    def static_concat(
         xs: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
@@ -25,12 +24,12 @@ class ContainerWithManipulation(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.concat. This method simply wraps the
-        function, and so the docstring for ivy.concat also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.concat. This method simply
+        wraps the function, and so the docstring for ivy.concat also applies to
+        this method with minimal changes.
         """
-        conts = [self]
-        arrays = [None]
+        conts = []
+        arrays = []
         for x in xs:
             if ivy.is_ivy_container(x):
                 conts.append(x)
@@ -50,6 +49,35 @@ class ContainerWithManipulation(ContainerBase):
                 prune_unapplied,
                 map_nests=map_nests,
             ),
+            out=out,
+        )
+
+    def concat(
+        self: ivy.Container,
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        axis: Optional[int] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_nests: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.concat. This method simply wraps the
+        function, and so the docstring for ivy.concat also applies to this method
+        with minimal changes.
+        """
+        return self.static_concat(
+            xs.insert(0, self),
+            axis,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_nests,
             out=out,
         )
 
@@ -105,7 +133,7 @@ class ContainerWithManipulation(ContainerBase):
                               b=ivy.array([3., 4.]), \
                               c=ivy.array([6., 7.]))
         >>> y = ivy.Container.static_expand_dims(x, axis=1)
-        >>> print(y)
+        >>> print(y)         
         {
             a: ivy.array([[0.],
                           [1.]]),
@@ -831,14 +859,27 @@ class ContainerWithManipulation(ContainerBase):
         function, and so the docstring for ivy.repeat also applies to this method
         with minimal changes.
         """
-        return ContainerBase.multi_map_in_static_method(
-            "stack",
-            arrays,
-            axis,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_nests=map_nests,
+        conts = []
+        arrays = []
+        for y in arrays:
+            if ivy.is_ivy_container(y):
+                conts.append(y)
+                arrays.append(None)
+            else:
+                arrays.append(y)
+        return ContainerBase.handle_inplace(
+            ContainerBase.multi_map(
+                lambda xs_, _: ivy.stack(
+                    arrays=[a if ivy.exists(a) else xs_.pop(0) for a in arrays], axis=axis
+                )
+                if ivy.is_array(xs_[0])
+                else xs_,
+                conts,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_nests=map_nests,
+            ),
             out=out,
         )
 
@@ -861,27 +902,14 @@ class ContainerWithManipulation(ContainerBase):
         simply wraps the function, and so the docstring for ivy.stack
         also applies to this method with minimal changes.
         """
-        conts = [self]
-        arrays = [None]
-        for y in arrays:
-            if ivy.is_ivy_container(y):
-                conts.append(y)
-                arrays.append(None)
-            else:
-                arrays.append(y)
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs_, _: ivy.stack(
-                    arrays=[a if ivy.exists(a) else xs_.pop(0) for a in arrays], axis=axis
-                )
-                if ivy.is_array(xs_[0])
-                else xs_,
-                conts,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_nests=map_nests,
-            ),
+        xs = xs.insert(0, self)
+        return self.static_stack(
+            xs,
+            axis,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_nests,
             out=out,
         )
 
