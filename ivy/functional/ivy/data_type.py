@@ -562,14 +562,14 @@ def result_type(
     >>> x = ivy.array([3, 4, 5])
     >>> y = ivy.array([3., 4., 5.])
     >>> print(ivy.result_type(x, y))
-    float32
+    float64
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3., 4, 7.5])
     >>> y = ivy.native_array([3, 4, 7])
     >>> print(ivy.result_type(x, y))
-    float32
+    float64
 
     With :code:`ivy.Dtype` input:
 
