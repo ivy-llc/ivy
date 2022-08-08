@@ -1803,6 +1803,8 @@ def promote_types_of_inputs(
         if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
             not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
         ):
+            x1 = ivy.asarray(x1)
+            x2 = ivy.asarray(x2)
             promoted = promote_types(x1.dtype, x2.dtype)
             x1 = ivy.asarray(x1, dtype=promoted)
             x2 = ivy.asarray(x2, dtype=promoted)
