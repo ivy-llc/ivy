@@ -97,6 +97,8 @@ def matrix_norm(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
+    if not isinstance(ret, np.ndarray):
+        ret = np.asarray(ret)
     return ret
 
 
