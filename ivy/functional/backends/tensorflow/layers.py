@@ -38,8 +38,6 @@ def conv1d(
     res = tf.nn.conv1d(x, filters, strides, padding, "NWC", dilations)
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -66,8 +64,6 @@ def conv1d_transpose(
     )
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -90,8 +86,6 @@ def conv2d(
     res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -127,8 +121,6 @@ def conv2d_transpose(
     )
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -155,8 +147,6 @@ def depthwise_conv2d(
     res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -181,8 +171,6 @@ def conv3d(
     res = tf.nn.conv3d(x, filters, strides, padding, "NDHWC", dilations)
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -217,14 +205,12 @@ def conv3d_transpose(
         new_w = _deconv_length(
             x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
         )
-        output_shape = [new_d, new_h, new_w]
+        output_shape = [x.shape[0], new_d, new_h, new_w, x.shape[-1]]
     res = tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, "NDHWC", dilations
     )
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
