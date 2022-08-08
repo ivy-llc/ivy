@@ -3404,7 +3404,7 @@ def logical_and(
         b=ivy.array([True, False, False]))
     >>> y = ivy.array([True, False, True])
     >>> ivy.logical_and(y, x, out=x)
-    >>> print(y)
+    >>> print(x)
     {
         a: ivy.array([False, False, True]),
         b: ivy.array([True, False, False])

@@ -725,8 +725,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.matrix_rank()
         >>> print(y)
         {
-            a: ivy.array(2.),
-            b: ivy.array(1.)
+            a: ivy.array(2),
+            b: ivy.array(1)
         }
         """
         return self.static_matrix_rank(

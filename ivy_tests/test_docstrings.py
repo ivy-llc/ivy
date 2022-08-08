@@ -60,11 +60,11 @@ def test_docstrings(backend):
 
     # skip list for array and container docstrings
     skip_arr_cont = [
-        "cross_entropy",
-        "logical_and",
-        "matrix_rank",
-        "depthwise_conv2d",
-        "log1p",
+        # "cross_entropy",
+        # "logical_and",
+        # "matrix_rank",
+        # "depthwise_conv2d",
+        # "log1p",
     ]
     currently_being_worked_on = [
         "logical_and",
