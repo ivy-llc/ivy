@@ -1,7 +1,8 @@
 # global
-import numpy as np
-from typing import Union, Optional, Callable
 import functools
+from typing import Union, Optional, Callable
+
+import numpy as np
 
 # local
 import ivy
@@ -14,6 +15,16 @@ except (ImportError, ModuleNotFoundError):
 
 def _cast_for_binary_op(x1, x2):
     return ivy.promote_types_of_inputs(x1, x2)
+
+
+def _clamp_bits(x1, x2):
+    x2 = np.clip(
+        x2,
+        np.array(0, dtype=x2.dtype),
+        np.array(np.dtype(x1.dtype).itemsize * 8 - 1),
+        dtype=x2.dtype,
+    )
+    return x1, x2
 
 
 # when inputs are 0 dimensional, numpy's functions return scalars
@@ -140,6 +151,7 @@ def bitwise_left_shift(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _clamp_bits(x1, x2)
     return np.left_shift(x1, x2, out=out)
 
 
@@ -168,6 +180,7 @@ def bitwise_right_shift(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _clamp_bits(x1, x2)
     return np.right_shift(x1, x2, out=out)
 
 
@@ -289,10 +302,7 @@ def floor_divide(
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     ret = np.floor_divide(x1, x2, out=out)
-    if (isinf(x1).any() and isfinite(x2).any()) or (
-        isfinite(x1).any() and isinf(x2).any()
-    ):
-        return ivy.full_like(ret, np.floor(np.divide(x1, x2)), dtype=ret.dtype)
+
     return ret
 
 
