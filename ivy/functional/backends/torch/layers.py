@@ -60,8 +60,6 @@ def conv1d(
     res = torch.nn.functional.conv1d(x, filters, None, strides, "valid", dilations)
     if data_format == "NWC":
         res = res.permute(0, 2, 1)
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -123,8 +121,6 @@ def conv1d_transpose(
         res = res[:, :, 0:-1]
     if data_format == "NWC":
         res = res.permute(0, 2, 1)
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -186,8 +182,6 @@ def conv2d(
     res = torch.nn.functional.conv2d(x, filters, None, strides, "valid", dilations)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -283,8 +277,6 @@ def conv2d_transpose(
         res = res[:, :, :, 0:-1]
     if data_format == "NHWC":
         res = res.permute(0, 2, 3, 1)
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -344,8 +336,6 @@ def depthwise_conv2d(
     )
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -415,8 +405,6 @@ def conv3d(
     res = torch.nn.functional.conv3d(x, filters, None, strides, "valid", dilations)
     if data_format == "NDHWC":
         res = res.permute(0, 2, 3, 4, 1)
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -528,8 +516,6 @@ def conv3d_transpose(
         res = res[:, :, :, :, 0:-1]
     if data_format == "NDHWC":
         res = res.permute(0, 2, 3, 4, 1)
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
