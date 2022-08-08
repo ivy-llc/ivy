@@ -706,8 +706,9 @@ def conv2d(
 
     With :code:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array(ivy.random_normal(0, 1, [1, 32, 32, 3]))
-    >>> filters = ivy.native_array(ivy.random_normal(0, 1, [3, 5, 3, 5])) #HWIO
+    >>> x = ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[1, 32, 32, 3]))
+    >>> filters = ivy.native_array(ivy.random_normal(mean=0, std=1, \
+                                   shape=[3, 5, 3, 5])) #HWIO
     >>> result = ivy.conv2d(x, filters, [2, 1], 'VALID') \
         #non-square filter with unequal stride and valid padding
     >>> print(result.shape)
