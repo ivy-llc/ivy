@@ -757,7 +757,7 @@ def copy_nest(
     >>> copied_nest = ivy.copy_nest(nest)
     >>> print(copied_nest)
     ivy.array([[1., 2., 3.],
-            [7., 8., 9.]])    
+            [7., 8., 9.]])
 
     With :code:`Iterable` input:
 

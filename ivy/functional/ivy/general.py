@@ -2042,8 +2042,8 @@ def get_min_base() -> float:
     --------
     >>> x = ivy.get_min_base()
     >>> print(x)
-    1e-05    
-    
+    1e-05
+
     """
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
