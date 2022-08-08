@@ -603,7 +603,7 @@ def squeeze(
     >>> x = ivy.array([[[[1, 2, 3]], [[4, 5, 6]]]])
     >>> ivy.squeeze(x, axis=2)
     >>> print(y)
-   ivy.array([[0,1],[2,3]])
+    ivy.array([[0,1],[2,3]])
 
     >>> x = ivy.array([[[0], [1], [2]]])
     >>> y = ivy.squeeze(x)
