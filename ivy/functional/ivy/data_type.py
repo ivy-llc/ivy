@@ -1432,16 +1432,20 @@ def is_float_dtype(
     --------
     With :code:`ivy.Dtype` input:
 
-    >>> print(ivy.is_float_dtype(ivy.float32))
+    >>> x = ivy.is_float_dtype(ivy.float32)
+    >>> print(x)
     True
 
-    >>> print(ivy.is_float_dtype(ivy.float64))
+    >>> x = ivy.is_float_dtype(ivy.int64)
+    >>> print(ivy.is_float_dtype(x))
     True
 
-    >>> print(ivy.is_float_dtype(ivy.int32))
+    >>> x = ivy.is_float_dtype(ivy.int32)
+    >>> print(ivy.is_float_dtype(x))
     False
 
-    >>> print(ivy.is_float_dtype(ivy.bool))
+    >>> x = ivy.is_float_dtype(ivy.bool)
+    >>> print(ivy.is_float_dtype(x))
     False
 
     >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x

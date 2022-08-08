@@ -567,6 +567,30 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` instance method variant of `ivy.is_float_dtype`.
+        This method simply wraps the function,
+        and so the docstring for `ivy.is_float_dtype`
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+
+        to_apply
+            Boolean indicating whether to apply the method to the key-chains. Default is False.
+
+        prune_unapplied
+            Boolean indicating whether to prune the key-chains that were not applied. Default is False.
+
+        map_sequences
+            Boolean indicating whether to map method to sequences (list, tuple). Default is False.
+
+        Examples
+        --------
+        
+        """
         return self.static_is_int_dtype(
             self,
             key_chains=key_chains,
