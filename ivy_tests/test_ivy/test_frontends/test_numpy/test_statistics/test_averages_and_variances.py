@@ -57,5 +57,8 @@ def test_numpy_mean(
         fn_name="mean",
         x=np.asarray(x, dtype=input_dtype),
         axis=None,
+        dtype=dtype,
+        out=None,
         keepdims=False,
+        where=where,
     )
