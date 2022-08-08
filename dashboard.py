@@ -1,13 +1,14 @@
+import sys
 import requests
 import json
 import emoji
 import pandas as pd
 
 
-url = "https://api.github.com/repos/unifyai/ivy/actions/runs?actor=Aarsh2001&branch=ci_solution"
+url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master"
 headers = {
     "Accept": "application/vnd.github+json",
-    "Authorization": "Bearer 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",
+    "Authorization": "Bearer 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",
 }
 functional_nn_dict = dict()
 functional_core_dict = dict()
@@ -76,10 +77,11 @@ def get_matrix_job_data():
 
 
 def main():
+    path = sys.argv[1]
     ivy_modules = get_matrix_job_data()
     for i, module in enumerate(ivy_modules):
         module_df = get_DataFrame(module)
-        module_df.to_html(f'/Users/aarsh/Desktop/{i}.html')
+        module_df.to_html(f'{path}/{i}.html')
 
 if __name__ == "__main__":
     main()
