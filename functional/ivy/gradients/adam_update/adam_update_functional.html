@@ -21,7 +21,7 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="ivy.Container.adam_update" href="adam_update_container.html" />
+    <link rel="next" title="ivy.Array.adam_update" href="adam_update_array.html" />
     <link rel="prev" title="adam_update" href="../adam_update.html" /> 
 </head>
 
@@ -77,8 +77,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../lars_update.html">lars_update</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../adam_update.html">adam_update</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.adam_update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adam_update_array.html">ivy.Array.adam_update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="adam_update_container.html">ivy.Container.adam_update</a></li>
-<li class="toctree-l3"><a class="reference internal" href="static_adam_update_container.html">ivy.Container.static_adam_update</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lamb_update.html">lamb_update</a></li>
@@ -157,7 +157,7 @@
 <h1>ivy.adam_update<a class="headerlink" href="#ivy-adam-update" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.gradients.adam_update">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">adam_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/gradients.html#adam_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.adam_update" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">adam_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/gradients.html#adam_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.adam_update" title="Permalink to this definition"></a></dt>
 <dd><p>Update weights ws of some function, given the derivatives of some cost c with
 respect to ws, using ADAM update. <a href="#id1"><span class="problematic" id="id2">`</span></a>[reference]</p>
 <p>&lt;<a class="reference external" href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam">https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam</a>&gt;`_</p>
@@ -170,17 +170,14 @@ respect to ws, using ADAM update. <a href="#id1"><span class="problematic" id="i
 the gradient.</p></li>
 <li><p><strong>mw_tm1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of the gradients, from the previous time-step.</p></li>
 <li><p><strong>vw_tm1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of second moments of the gradients, from the previous time-step.</p></li>
-<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – training step</p></li>
-<li><p><strong>beta1</strong> – gradient forgetting factor (Default value = 0.9)</p></li>
-<li><p><strong>beta2</strong> – second moment of gradient forgetting factor (Default value = 0.999)</p></li>
-<li><p><strong>epsilon</strong> – divisor during adam update, preventing division by zero (Default value = 1e-7)</p></li>
-<li><p><strong>inplace</strong> – Whether to perform the operation inplace, for backends which support inplace
-variable updates, and handle gradients behind the scenes such as PyTorch. If the
-update step should form part of a computation graph (i.e. higher order
-optimization), then this should be set to False. Default is True, provided the
-backend framework supports it.</p></li>
-<li><p><strong>stop_gradients</strong> – Whether to stop the gradients of the variables after each gradient step.
+<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – training step.</p></li>
+<li><p><strong>beta1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – gradient forgetting factor (Default value = 0.9). (default: <code class="docutils literal notranslate"><span class="pre">0.9</span></code>)</p></li>
+<li><p><strong>beta2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – second moment of gradient forgetting factor (Default value = 0.999). (default: <code class="docutils literal notranslate"><span class="pre">0.999</span></code>)</p></li>
+<li><p><strong>epsilon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – divisor during adam update, preventing division by zero (Default value = 1e-7). (default: <code class="docutils literal notranslate"><span class="pre">1e-07</span></code>)</p></li>
+<li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients of the variables after each gradient step. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 Default is True.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+inputs broadcast to.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -205,7 +202,7 @@ updates.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../adam_update.html" class="btn btn-neutral float-left" title="adam_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="adam_update_container.html" class="btn btn-neutral float-right" title="ivy.Container.adam_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="adam_update_array.html" class="btn btn-neutral float-right" title="ivy.Array.adam_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
