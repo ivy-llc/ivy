@@ -1,6 +1,7 @@
 # global
 import ivy
 
+
 def cos(
     x,
     /,
