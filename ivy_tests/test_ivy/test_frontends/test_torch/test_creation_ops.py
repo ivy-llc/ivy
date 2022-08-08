@@ -1,72 +1,80 @@
 # global
-import numpy as np
+import ivy
 from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
 
 
+# full
 @st.composite
-def _dtype_x_shape(draw):
+def _dtypes(draw):
     return draw(
-            helpers.dtype_and_values(
-                available_dtypes=tuple(
-                    set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_torch.valid_float_dtypes))),
-                ret_shape=True), 
-            )
+        st.shared(
+            helpers.list_of_length(
+                x=st.sampled_from(ivy_torch.valid_numeric_dtypes), length=1
+            ),
+            key="dtype",
+        )
+    )
 
 
 @st.composite
-def _integers(draw):
-    return draw(st.integers(min_value=-num_dims, max_value=num_dims-1))
+def _fill_value(draw):
+    dtype = draw(_dtypes())[0]
+    if ivy.is_uint_dtype(dtype):
+        return draw(st.integers(0, 5))
+    elif ivy.is_int_dtype(dtype):
+        return draw(st.integers(-5, 5))
+    return draw(st.floats(-5, 5))
 
 
 @st.composite
-def _lists(draw):
-    return draw(st.lists(elements=_integers(), min_size=1, max_size=num_dims, unique=True))
+def _requires_grad(draw):
+    dtype = draw(_dtypes())[0]
+    if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
+        return draw(st.just(False))
+    return draw(st.booleans())
 
 
-@st.composite
-def _tuples(draw):
-    return tuple(draw(_lists()))
-
-
-# flip
+# full
 @given(
-    dtype_value_shape=_dtype_x_shape(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.flip"
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
     ),
-    native_array=st.booleans(),
-    dims=st.one_of(_integers(), _lists(), _tuples()),
+    fill_value=_fill_value(),
+    dtypes=_dtypes(),
+    requires_grad=_requires_grad(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.full"
+    ),
 )
-def test_torch_flip(
-    dtype_value_shape,
-    as_variable,
-    with_out,
+def test_torch_full(
+    shape,
+    fill_value,
+    dtypes,
+    requires_grad,
+    device,
     num_positional_args,
-    native_array,
     fw,
-    dims,
 ):
-    input_dtype, value, shape = dtype_value_shape
-    global num_dims
-    num_dims = len(shape)
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
+        input_dtypes=dtypes,
+        as_variable_flags=False,
+        with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        native_array_flags=False,
         fw=fw,
         frontend="torch",
-        fn_name="flip",
-        input=np.asarray(value, dtype=input_dtype),
-        dims=dims,
-        out=None,
+        fn_name="full",
+        size=shape,
+        fill_value=fill_value,
+        dtype=dtypes[0],
+        device=device,
+        requires_grad=requires_grad,
     )
