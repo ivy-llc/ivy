@@ -540,7 +540,7 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the inverse sine of each element in ``x``. 
+            a container containing the inverse sine of each element in ``x``.
             The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
 
