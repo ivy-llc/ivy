@@ -4038,6 +4038,89 @@ def positive(
     ret
         A new array with the positive value of each element in ``x``.
 
+         Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([2,3,5,7])
+    >>> y = ivy.positive(x)
+    >>> print(y)
+    ivy.array([2, 3, 5, 7])
+
+    >>> x = ivy.array([0,-1,-0.5,2,3])
+    >>> y = ivy.zeros(5)
+    >>> ivy.positive(x,out=y)
+    >>> print(y)
+    ivy.array([ 0. , -1. , -0.5,  2. ,  3. ])
+
+    >>> x = ivy.array([[1.1,2.2,3.3], \
+                       [-4.4,-5.5,-6.6]])
+    >>> ivy.positive(x,out=x)
+    >>> print(x)
+    ivy.array([[ 1.1,  2.2,  3.3],
+       [-4.4, -5.5, -6.6]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-1.1,-1,0,1,1.1])
+    >>> y = ivy.positive(x)
+    >>> print(y)
+    ivy.array([-1.1, -1. ,  0. ,  1. ,  1.1])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.,1.,2.]),\
+                         b=ivy.array([3.,4.,-5.]))
+    >>> y = ivy.positive(x)
+    >>> print(y)
+    {
+    a: ivy.array([0., 1., 2.]),
+    b: ivy.array([3., 4., -5.])
+    }
+
+    Instance Method Examples
+    -------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([-1.1,-1,0,-0,1,1.1])
+    >>> y = x.positive()
+    >>> print(y)
+    ivy.array([-1.1, -1. ,  0. ,  0. ,  1. ,  1.1])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),\
+                         b=ivy.array([-4.4,5,-6.6]))
+    >>> y = x.positive()
+    >>> print(y)
+    {
+    a: ivy.array([1, 2, 3]),
+    b: ivy.array([-4.4, 5., -6.6])
+    }
+
+    Operator Examples
+    -----------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([1,2,3])
+    >>> y = x
+    >>> print(y)
+    ivy.array([1,2,3])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1,2,3]),\
+                         b=ivy.array([-4.4,5,-6.6]))
+    >>> y = x
+    >>> print(y)
+    {
+    a: ivy.array([1, 2, 3]),
+    b: ivy.array([-4.4, 5., -6.6])
+    }
+
     """
     return ivy.current_backend(x).positive(x, out=out)
 
