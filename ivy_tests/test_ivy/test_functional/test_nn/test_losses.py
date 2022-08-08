@@ -63,11 +63,11 @@ def test_cross_entropy(
         instance_method=instance_method,
         fw=fw,
         fn_name="cross_entropy",
+        rtol_=1e-03,
         true=np.asarray(true, dtype=true_dtype),
         pred=np.asarray(pred, dtype=pred_dtype),
         axis=axis,
         epsilon=epsilon,
-        rtol_=1e-03,
     )
 
 
