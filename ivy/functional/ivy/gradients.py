@@ -878,11 +878,11 @@ def lamb_update(
 
     With :code: `ivy.container` inputs:
 
-    >>> w = ivy.Container(a=ivy.array([1.,2,3]))
-    >>> dcdw = ivy.Container(a=ivy.array([3,4,5]))
-    >>> mw_tm1 = ivy.Container(a=ivy.array([0,0,0]))
-    >>> vw_tm1 = ivy.Container(a=ivy.array([0]))
-    >>> lr = ivy.array(1)
+    >>> w = ivy.Container(a=ivy.array([1.,2.,3.]))
+    >>> dcdw = ivy.Container(a=ivy.array([3.,4.,5.]))
+    >>> mw_tm1 = ivy.Container(a=ivy.array([0.,0.,0.]))
+    >>> vw_tm1 = ivy.Container(a=ivy.array([0.]))
+    >>> lr = ivy.array(1.)
     >>> step=ivy.array([2])
     >>> new_weights = ivy.lamb_update(w,dcdw,mw_tm1,vw_tm1,lr,step)
     >>> print(new_weights)
@@ -891,7 +891,7 @@ def lamb_update(
     }, {
         a: ivy.array([0.3, 0.4, 0.5])
     }, {
-        a: ivy.array([1.01, 1.02, 1.02])
+        a: ivy.array([1.01, 1.01, 1.02])
     })
     
 
