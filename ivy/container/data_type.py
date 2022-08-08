@@ -586,10 +586,6 @@ class ContainerWithDataTypes(ContainerBase):
 
         map_sequences
             Boolean indicating whether to map method to sequences (list, tuple). Default is False.
-
-        Examples
-        --------
-        
         """
         return self.static_is_int_dtype(
             self,
