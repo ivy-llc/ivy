@@ -23,7 +23,7 @@ class DefaultDevice:
         Returns
         -------
         ret
- 				    None
+            None
         
 	      This function conforms to the `Array API Standard <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
         `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
