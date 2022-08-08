@@ -562,14 +562,14 @@ def result_type(
     >>> x = ivy.array([3, 4, 5])
     >>> y = ivy.array([3., 4., 5.])
     >>> print(ivy.result_type(x, y))
-    float64
+    float32
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3., 4, 7.5])
     >>> y = ivy.native_array([3, 4, 7])
     >>> print(ivy.result_type(x, y))
-    float64
+    float32
 
     With :code:`ivy.Dtype` input:
 
@@ -1746,60 +1746,60 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
     with :code:`ivy.Dtype` inputs:
 
     >>> print(ivy.valid_dtype(None))
-        True
+    True
 
-    >>> print(ivy.valid_dtype(dtype_in = 'float16'))
-        True
+    >>> print(ivy.valid_dtype('float16'))
+    True
 
     >>> print(ivy.valid_dtype('float32'))
-        True
+    True
 
     >>> print(ivy.valid_dtype(ivy.float64))
-        True
+    True
 
     >>> print(ivy.valid_dtype('bool'))
-        True
+    True
 
     >>> print(ivy.valid_dtype(ivy.int8))
-        True
+    True
 
     >>> print(ivy.valid_dtype(ivy.int64))
-        True
+    True
 
     >>> print(ivy.valid_dtype(ivy.uint8))
-        True
+    True
 
     with :code:`ivy.NativeDtype` inputs:
 
     >>> print(ivy.valid_dtype('native_bool'))
-        False
+    False
 
     >>> print(ivy.valid_dtype(ivy.native_float16))
-        True
+    True
 
     >>> print(ivy.valid_dtype(ivy.native_float32))
-        True
+    True
 
     >>> print(ivy.valid_dtype('native_float64'))
-        False
+    False
 
     >>> print(ivy.valid_dtype(ivy.native_int8))
-        True
+    True
 
     >>> print(ivy.valid_dtype(ivy.native_int16))
-        True
+    True
 
     >>> print(ivy.valid_dtype('native_int32'))
-        False
+    False
 
     >>> print(ivy.valid_dtype(ivy.native_int64))
-        True
+    True
 
     >>> print(ivy.valid_dtype(ivy.native_uint8))
-        True
+    True
 
     >>> print(ivy.valid_dtype('native_uint64'))
-        False
+    False
     """
     if dtype_in is None:
         return True
