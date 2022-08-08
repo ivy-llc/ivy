@@ -4337,6 +4337,8 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using 'ivy.Container' instance
 
+        Using 'ivy.Container' instance
+
         >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
         >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
         >>> k = ivy.Container(a=ivy.array([True, False, True]), \
@@ -4350,29 +4352,26 @@ class ContainerWithElementwise(ContainerBase):
         >>> x = j.logical_and(m)
         >>> y = m.logical_and(n)
         >>> z = k.logical_and(l)
-
         >>> print(w)
         {
             a: ivy.array([True, False, False, False])
         }
-
         >>> print(x)
         {
             a: ivy.array([False, True, False, False])
         }
-
         >>> print(y)
             ivy.array([False, False, False, False])
-
         >>> print(z)
         {
-            a: ivy.array([True, False, True]),
-            b: ivy.array([False, False, False])
+            a:ivy.array([True,False,True]),
+            b:ivy.array([False,False,False])
         }
         """
         return self.static_logical_and(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
+
 
     @staticmethod
     def static_logical_not(
