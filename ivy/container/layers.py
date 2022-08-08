@@ -122,7 +122,7 @@ class ContainerWithLayers(ContainerBase):
         >>> b = ivy.randint(0, 255, (1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> inp = ivy.Container(a=a, b=b)
         >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
-        >>> y = inp.depthwise_conv2d(filters, strides=2, padding='SAME')
+        >>> y = inp.depthwise_conv2d(filters, 2, 'SAME')
         >>> print(y.shape)
         [1, 64, 64, 3]
         """
@@ -182,7 +182,7 @@ class ContainerWithLayers(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([[[2., 3., 4.], [5., 6., 7.]]]), \
                               b =ivy.array([[[7., 8., 9.], [10., 11., 12]]]))
         >>> filters = ivy.array([[[0., 0.5, 1.], [0.25, 0.5, 0.75], [-0.5, 0., 0.5 ]]])
-        >>> result= ivy.Container.static_conv1d(x,filters,strides=(1,),padding='VALID')
+        >>> result= ivy.Container.static_conv1d(x,filters,(1,),'VALID')
         >>> print(result)
         {
             a: ivy.array([[[-1.25, 2.5, 6.25], \
@@ -247,7 +247,7 @@ class ContainerWithLayers(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([[[2., 3., 4.], [5., 6., 7.]]]), \
                               b =ivy.array([[[7., 8., 9.], [10., 11., 12]]]))
         >>> filters = ivy.array([[[0., 0.5, 1.], [0.25, 0.5, 0.75], [-0.5, 0., 0.5 ]]])
-        >>> result= x.conv1d(filters, strides=(1,), padding='VALID')
+        >>> result= x.conv1d(filters, (1,), 'VALID')
         >>> print(result)
         {
             a: ivy.array([[[-1.25, 2.5, 6.25], \
