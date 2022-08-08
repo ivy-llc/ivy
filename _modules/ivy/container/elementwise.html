@@ -4390,18 +4390,18 @@
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_logical_and(m, n)</span>
 <span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_logical_and(k, l)</span>
 
-<span class="sd">        &gt;&gt;&gt; print(w)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([True, False, False, False])</span>
 <span class="sd">        }</span>
+
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([False, True, False, False])</span>
 <span class="sd">        }</span>
+
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, False, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">            ivy.array([False, False, False, False])</span>
+
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([True, False, True]),</span>
@@ -4481,22 +4481,16 @@
 <span class="sd">        &gt;&gt;&gt; z = k.logical_and(l)</span>
 
 <span class="sd">        &gt;&gt;&gt; print(w)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">        {a:ivy.array([True,False,False,False])}</span>
+
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, True, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">        {a:ivy.array([False,True,False,False])}</span>
+
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, False, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">            ivy.array([False, False, False, False])</span>
+
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, True]),</span>
-<span class="sd">            b: ivy.array([False, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">        {a:ivy.array([True,False,True]),b:ivy.array([False,False,False])}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_logical_and</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>

@@ -452,6 +452,41 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The same array x, but with no gradient information.</span>
+<span class="sd">    </span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.stop_gradient(x, preserve_type=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([1., 2., 3.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.zeros((2, 3))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.stop_gradient(x, preserve_type=False, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[0., 0., 0.],</span>
+<span class="sd">               [0., 0., 0.]])</span>
+
+<span class="sd">    with :code: `ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">                        b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.stop_gradient(x, preserve_type=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0., 1., 2.]),</span>
+<span class="sd">        b: ivy.array([3., 4., 5.])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">                        b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.stop_gradient(x, preserve_type=True, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0., 1., 2.]),</span>
+<span class="sd">        b: ivy.array([3., 4., 5.])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -699,6 +734,82 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The new function weights ws_new, following the optimizer updates.</span>
+<span class="sd">    </span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; w = ivy.array([1., 2., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; effective_grad = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; lr = 3e-4</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)</span>
+<span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
+<span class="sd">    ivy.array([1., 2., 3.])</span>
+
+<span class="sd">    &gt;&gt;&gt; w = ivy.array([1., 2., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; effective_grad = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; lr = 3e-4</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\</span>
+<span class="sd">                                    inplace=False, stop_gradients=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
+<span class="sd">    ivy.array([1., 2., 3.])</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; w = ivy.array([[1., 2.],[4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; effective_grad = ivy.array([[4., 5.],[7., 8.]])</span>
+<span class="sd">    &gt;&gt;&gt; lr = ivy.array([3e-4, 1e-2])</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\</span>
+<span class="sd">                                    inplace=False, stop_gradients=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
+<span class="sd">    ivy.array([[0.999, 1.95],</span>
+<span class="sd">               [4., 4.92]])</span>
+
+<span class="sd">    &gt;&gt;&gt; w = ivy.array([1., 2., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; effective_grad = ivy.array([4., 5., 6.])</span>
+<span class="sd">    &gt;&gt;&gt; lr = ivy.array([3e-4])</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\</span>
+<span class="sd">                                    stop_gradients=False, inplace=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
+<span class="sd">    ivy.array([0.999, 2., 3.])</span>
+<span class="sd">    </span>
+<span class="sd">    with :code: `ivy.Container` inputs:</span>
+<span class="sd">        </span>
+<span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">                        b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
+<span class="sd">                                    b=ivy.array([0., 0., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; lr = 3e-4</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)</span>
+<span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0., 1., 2.]),</span>
+<span class="sd">        b: ivy.array([3., 4., 5.])</span>
+<span class="sd">    }</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">                        b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
+<span class="sd">                                    b=ivy.array([0., 0., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; lr = 3e-4</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\</span>
+<span class="sd">                                    stop_gradients=True, inplace=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0., 1., 2.]),</span>
+<span class="sd">        b: ivy.array([3., 4., 5.])</span>
+<span class="sd">    }</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
+<span class="sd">                        b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
+<span class="sd">                                    b=ivy.array([0., 0., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; lr = ivy.array([3e-4])</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\</span>
+<span class="sd">                                    stop_gradients=False, inplace=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0., 1., 2.]),</span>
+<span class="sd">        b: ivy.array([3., 4., 5.])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">inplace</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_variables_supported</span><span class="p">())</span>
