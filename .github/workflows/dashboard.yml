@@ -15,6 +15,12 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+      - name: Install Libraies
+      - uses: BSFishy/pip-action@v1
+        with:
+          packages: |
+            emoji==2.0.0
+            pandas==1.4.3
       - name: run python file
         env:
           WORKING_DIR: ${GITHUB_WORKSPACE}
