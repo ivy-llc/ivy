@@ -46,3 +46,12 @@ def subtract(input, other, *, alpha=1, out=None):
 
 
 subtract.unsupported_dtypes = ("float16",)
+
+
+def exp(input, *, out=None):
+    return ivy.exp(input, out=out)
+
+
+exp.unsupported_dtypes = ("float16",)
+
+
