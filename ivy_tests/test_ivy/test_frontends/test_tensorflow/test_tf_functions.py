@@ -257,4 +257,3 @@ def test_tensorflow_subtract(
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
-
