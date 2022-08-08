@@ -246,7 +246,7 @@ The PyTorch-specific implementation is as follows:
         return torch.full(
             shape_to_tuple(shape),
             fill_value,
-            dtype=ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True),
+            dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
             device=device,
         )
 
