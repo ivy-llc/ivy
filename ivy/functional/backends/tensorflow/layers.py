@@ -38,6 +38,8 @@ def conv1d(
     res = tf.nn.conv1d(x, filters, strides, padding, "NWC", dilations)
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
@@ -64,6 +66,8 @@ def conv1d_transpose(
     )
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
@@ -123,6 +127,8 @@ def conv2d_transpose(
     )
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
@@ -149,6 +155,8 @@ def depthwise_conv2d(
     res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
@@ -173,6 +181,8 @@ def conv3d(
     res = tf.nn.conv3d(x, filters, strides, padding, "NDHWC", dilations)
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
@@ -213,6 +223,8 @@ def conv3d_transpose(
     )
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
