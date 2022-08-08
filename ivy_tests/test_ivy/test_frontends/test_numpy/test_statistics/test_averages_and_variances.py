@@ -21,10 +21,14 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
         fn_name="ivy.functional.frontends.numpy.mean"
     ),
     native_array=helpers.array_bools(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
 def test_numpy_mean(
     *,
     dtype_and_x,
+    dtype,
+    where,
     as_variable,
     with_out,
     num_positional_args,
@@ -34,6 +38,12 @@ def test_numpy_mean(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    where = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
