@@ -4,11 +4,10 @@ import emoji
 import pandas as pd
 
 
-url = "https://api.github.com/repos/unifyai/ivy/actions/runs?actor=Aarsh2001&branch=postman3"
+url = "https://api.github.com/repos/unifyai/ivy/actions/runs?actor=Aarsh2001&branch=ci_solution"
 headers = {
     "Accept": "application/vnd.github+json",
-    "branch": "postman3",
-    "Authorization": "Bearer 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",
+    "Authorization": "Bearer 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",
 }
 functional_nn_dict = dict()
 functional_core_dict = dict()
