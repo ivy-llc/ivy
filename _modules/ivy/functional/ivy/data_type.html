@@ -691,14 +691,14 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 4, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([3., 4., 5.])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.result_type(x, y))</span>
-<span class="sd">    float64</span>
+<span class="sd">    float32</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([3., 4, 7.5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array([3, 4, 7])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.result_type(x, y))</span>
-<span class="sd">    float64</span>
+<span class="sd">    float32</span>
 
 <span class="sd">    With :code:`ivy.Dtype` input:</span>
 
@@ -1875,60 +1875,60 @@
 <span class="sd">    with :code:`ivy.Dtype` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(None))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
-<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(dtype_in = &#39;float16&#39;))</span>
-<span class="sd">        True</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;float16&#39;))</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;float32&#39;))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.float64))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;bool&#39;))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.int8))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.int64))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.uint8))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    with :code:`ivy.NativeDtype` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;native_bool&#39;))</span>
-<span class="sd">        False</span>
+<span class="sd">    False</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_float16))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_float32))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;native_float64&#39;))</span>
-<span class="sd">        False</span>
+<span class="sd">    False</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_int8))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_int16))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;native_int32&#39;))</span>
-<span class="sd">        False</span>
+<span class="sd">    False</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_int64))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.native_uint8))</span>
-<span class="sd">        True</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;native_uint64&#39;))</span>
-<span class="sd">        False</span>
+<span class="sd">    False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dtype_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
