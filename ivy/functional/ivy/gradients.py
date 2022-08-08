@@ -823,7 +823,8 @@ def lamb_update(
     >>> step = ivy.array(1)
     >>> new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step)
     >>> print(new_weights)
-    (ivy.array([0.784, 1.78 , 2.78 ]), ivy.array([0.05, 0.02, 0.01]), ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
+    (ivy.array([0.784, 1.78 , 2.78 ]), ivy.array([0.05, 0.02, 0.01]), \
+    ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
 
 
     >>> w = ivy.array([[1., 2, 3],[4, 6, 1],[1, 0, 7]])
