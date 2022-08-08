@@ -14,9 +14,10 @@ class ArrayWithLayers(abc.ABC):
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: Union[str, List[int]],
+        /,
+        *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -57,7 +58,13 @@ class ArrayWithLayers(abc.ABC):
         (1, 64, 64, 3)
         """
         return ivy.depthwise_conv2d(
-            self._data, filters, strides, padding, data_format, dilations, out=out
+            self._data,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
         )
 
     def conv1d(
@@ -65,9 +72,10 @@ class ArrayWithLayers(abc.ABC):
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: int,
         padding: str,
+        /,
+        *,
         data_format: str = "NWC",
         dilations: int = 1,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -111,5 +119,11 @@ class ArrayWithLayers(abc.ABC):
                     [11., 20.]]])
         """
         return ivy.conv1d(
-            self._data, filters, strides, padding, data_format, dilations, out=out
+            self._data,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
         )
