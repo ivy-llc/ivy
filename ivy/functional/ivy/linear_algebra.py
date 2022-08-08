@@ -1183,7 +1183,7 @@ def svdvals(
 
     >>> error = (SS - S).abs()
     >>> print(error)
-    ivy.array([0., 0.])
+    ivy.array([0.,0.])
 
     With :code:`ivy.NativeArray` input:
 

@@ -198,7 +198,7 @@ def infer_dtype(fn: Callable) -> Callable:
         # find the first array argument, if required
         arr = None if ivy.exists(dtype) else _get_first_array(*args, **kwargs)
         # infer the correct data type
-        dtype = ivy.default_dtype(dtype, item=arr, as_native=True)
+        dtype = ivy.default_dtype(dtype=dtype, item=arr, as_native=True)
         # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
 
