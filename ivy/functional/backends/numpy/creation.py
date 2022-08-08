@@ -62,7 +62,7 @@ def asarray(
         else:
             return _to_device(np.asarray(object_in, dtype=dtype), device=device)
     else:
-        dtype = default_dtype(dtype, object_in)
+        dtype = default_dtype(dtype=dtype, item=object_in)
     if copy is True:
         return _to_device(np.copy(np.asarray(object_in, dtype=dtype)), device=device)
     else:
@@ -121,7 +121,7 @@ def full(
     device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     return _to_device(
         np.full(shape, fill_value, dtype),
