@@ -57,6 +57,34 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, grads, *rest)
 
 
+def value_and_grad(func):
+    grad_fn = lambda xs: ivy.to_native(func(xs))
+
+    def callback_fn(xs):
+        y = grad_fn(xs)
+
+        def autograd_fn(x):
+            x = ivy.to_native(x)
+            grad = torch.autograd.grad(y, x, allow_unused=True)[0]
+            grad = (
+                grad
+                if grad is not None
+                else ivy.to_native(ivy.zeros_like(ivy.to_ivy(x)))
+            )
+            grad = ivy.to_ivy(grad)
+            return grad
+
+        grads = ivy.nested_map(
+            xs,
+            autograd_fn,
+            include_derived=True,
+        )
+        y = ivy.to_ivy(y)
+        return y, grads
+
+    return callback_fn
+
+
 def stop_gradient(
     x: Optional[torch.Tensor],
     preserve_type: bool = True,

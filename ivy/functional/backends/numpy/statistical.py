@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union, Optional, Sequence
 
 # local
 import ivy
@@ -134,9 +134,9 @@ sum.support_native_out = True
 
 def var(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:

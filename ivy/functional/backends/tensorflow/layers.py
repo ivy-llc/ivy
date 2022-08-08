@@ -9,38 +9,69 @@ from tensorflow.python.types.core import Tensor
 import ivy
 
 
+def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
+
+    # Get the dilated kernel size
+    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
+
+    if padding == "VALID":
+        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
+    elif padding == "SAME":
+        dim_size = dim_size * stride_size
+
+    return dim_size
+
+
 def conv1d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: int,
     padding: str,
+    /,
+    *,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
     res = tf.nn.conv1d(x, filters, strides, padding, "NWC", dilations)
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
 def conv1d_transpose(
-    x,
-    filters,
-    strides,
-    padding,
-    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format="NWC",
-    dilations=1,
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
+    strides: int,
+    padding: str,
+    /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: str = "NWC",
+    dilations: int = 1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    return tf.nn.conv1d_transpose(
-        x, filters, output_shape, strides, padding, data_format, dilations
+    if data_format == "NCW":
+        x = tf.transpose(x, (0, 2, 1))
+    if output_shape is None:
+        output_shape = list(
+            _deconv_length(x.shape[1], strides, filters.shape[0], padding, dilations)
+        )
+    res = tf.nn.conv1d_transpose(
+        x, filters, [1, output_shape[0], 1], strides, padding, "NWC", dilations
     )
+    if data_format == "NCW":
+        res = tf.transpose(res, (0, 2, 1))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
+    return res
+
+
+conv1d_transpose.unsupported_devices = ("cpu",)
 
 
 def conv2d(
@@ -48,33 +79,57 @@ def conv2d(
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: int = 1,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
     res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
 def conv2d_transpose(
-    x,
-    filters,
-    strides,
-    padding,
-    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format="NHWC",
-    dilations=1,
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: str = "NHWC",
+    dilations=1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    return tf.nn.conv2d_transpose(
-        x, filters, output_shape, strides, padding, data_format, dilations
+    if isinstance(strides, int):
+        strides = [strides] * 2
+    elif len(strides) == 1:
+        strides = (strides[0]) * 2
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    if output_shape is None:
+        new_h = _deconv_length(
+            x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
+        )
+        new_w = _deconv_length(
+            x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
+        )
+        output_shape = [new_h, new_w]
+    res = tf.nn.conv2d_transpose(
+        x, filters, output_shape, strides, padding, "NHWC", dilations
     )
+    if data_format == "NCHW":
+        return tf.transpose(res, (0, 3, 1, 2))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
+    return res
 
 
 conv2d_transpose.unsupported_devices = ("cpu",)
@@ -85,10 +140,11 @@ def depthwise_conv2d(
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int]],
     padding: Union[str, List[int]],
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -99,6 +155,8 @@ def depthwise_conv2d(
     res = tf.nn.depthwise_conv2d(x, filters, strides, padding, "NHWC", dilations)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
@@ -108,10 +166,11 @@ def conv3d(
     filters,
     strides,
     padding,
+    /,
+    *,
     data_format="NDHWC",
     dilations=1,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
     dilations = (
@@ -122,10 +181,12 @@ def conv3d(
     res = tf.nn.conv3d(x, filters, strides, padding, "NDHWC", dilations)
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
-conv3d.unsupported_device = ("cpu",)
+conv3d.unsupported_devices = ("cpu",)
 
 
 def conv3d_transpose(
@@ -133,12 +194,38 @@ def conv3d_transpose(
     filters: Tensor,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
     padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
     dilations: int = 1,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tensor:
-    return tf.nn.conv3d_transpose(
-        x, filters, output_shape, strides, padding, data_format, dilations
+    strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
+    dilations = (
+        [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
     )
+    if data_format == "NCDHW":
+        x = tf.transpose(x, (0, 2, 3, 4, 1))
+    if output_shape is None:
+        new_d = _deconv_length(
+            x.shape[1], strides[0], filters.shape[0], padding, dilations[0]
+        )
+        new_h = _deconv_length(
+            x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
+        )
+        new_w = _deconv_length(
+            x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
+        )
+        output_shape = [new_d, new_h, new_w]
+    res = tf.nn.conv3d_transpose(
+        x, filters, output_shape, strides, padding, "NDHWC", dilations
+    )
+    if data_format == "NCDHW":
+        return tf.transpose(res, (0, 4, 1, 2, 3))
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
+    return res
+
+
+conv3d_transpose.unsupported_devices = ("cpu",)

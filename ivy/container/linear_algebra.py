@@ -725,8 +725,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.matrix_rank()
         >>> print(y)
         {
-            a: ivy.array(2.),
-            b: ivy.array(1.)
+            a: ivy.array(2),
+            b: ivy.array(1)
         }
         """
         return self.static_matrix_rank(
@@ -1167,7 +1167,82 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-    ):
+    ) -> ivy.Container:
+        r"""
+        ivy.Container static method variant of ivy.vector_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.vector_norm also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array. Should have a floating-point data type.
+        axis
+            If an integer, ``axis`` specifies the axis (dimension)
+            along which to compute vector norms. If an n-tuple,
+            ``axis`` specifies the axes (dimensions) along
+            which to compute batched vector norms. If ``None``, the
+             vector norm must be computed over all array values
+             (i.e., equivalent to computing the vector norm of
+            a flattened array). Negative indices must be
+            supported. Default: ``None``.
+        keepdims
+            If ``True``, the axes (dimensions) specified by ``axis``
+            must be included in the result as singleton dimensions,
+            and, accordingly, the result must be compatible
+            with the input array (see :ref:`broadcasting`). Otherwise,
+            if ``False``, the axes (dimensions) specified by ``axis`` must
+            not be included in the result. Default: ``False``.
+        ord
+            order of the norm. The following mathematical norms must be supported:
+
+            +------------------+----------------------------+
+            | ord              | description                |
+            +==================+============================+
+            | 1                | L1-norm (Manhattan)        |
+            +------------------+----------------------------+
+            | 2                | L2-norm (Euclidean)        |
+            +------------------+----------------------------+
+            | inf              | infinity norm              |
+            +------------------+----------------------------+
+            | (int,float >= 1) | p-norm                     |
+            +------------------+----------------------------+
+
+            The following non-mathematical "norms" must be supported:
+
+            +------------------+--------------------------------+
+            | ord              | description                    |
+            +==================+================================+
+            | 0                | sum(a != 0)                    |
+            +------------------+--------------------------------+
+            | -1               | 1./sum(1./abs(a))              |
+            +------------------+--------------------------------+
+            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | # noqa
+            +------------------+--------------------------------+
+            | -inf             | min(abs(a))                    |
+            +------------------+--------------------------------+
+            | (int,float < 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |
+            +------------------+--------------------------------+
+
+            Default: ``2``.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the vector norms. If ``axis`` is
+            ``None``, the returned array must be a zero-dimensional
+            array containing a vector norm. If ``axis`` is
+            a scalar value (``int`` or ``float``), the returned array
+            must have a rank which is one less than the rank of ``x``.
+            If ``axis`` is a ``n``-tuple, the returned array must have
+             a rank which is ``n`` less than the rank of ``x``. The returned
+            array must have a floating-point data type determined
+            by :ref:`type-promotion`.
+
+        """
         return ContainerBase.multi_map_in_static_method(
             "vector_norm",
             x,
@@ -1193,6 +1268,79 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        r"""
+        ivy.Container instance method variant of ivy.vector_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.vector_norm also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a floating-point data type.
+        axis
+            If an integer, ``axis`` specifies the axis (dimension)
+            along which to compute vector norms. If an n-tuple, ``axis``
+            specifies the axes (dimensions) along which to compute
+            batched vector norms. If ``None``, the vector norm must be
+            computed over all array values (i.e., equivalent to computing
+            the vector norm of a flattened array). Negative indices must
+            be supported. Default: ``None``.
+        keepdims
+            If ``True``, the axes (dimensions) specified by ``axis`` must
+            be included in the result as singleton dimensions, and, accordingly,
+            the result must be compatible with the input array
+            (see :ref:`broadcasting`).Otherwise, if ``False``, the axes
+            (dimensions) specified by ``axis`` must not be included in
+            the result. Default: ``False``.
+        ord
+            order of the norm. The following mathematical norms must be supported:
+
+            +------------------+----------------------------+
+            | ord              | description                |
+            +==================+============================+
+            | 1                | L1-norm (Manhattan)        |
+            +------------------+----------------------------+
+            | 2                | L2-norm (Euclidean)        |
+            +------------------+----------------------------+
+            | inf              | infinity norm              |
+            +------------------+----------------------------+
+            | (int,float >= 1) | p-norm                     |
+            +------------------+----------------------------+
+
+            The following non-mathematical "norms" must be supported:
+
+            +------------------+--------------------------------+
+            | ord              | description                    |
+            +==================+================================+
+            | 0                | sum(a != 0)                    |
+            +------------------+--------------------------------+
+            | -1               | 1./sum(1./abs(a))              |
+            +------------------+--------------------------------+
+            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | # noqa
+            +------------------+--------------------------------+
+            | -inf             | min(abs(a))                    |
+            +------------------+--------------------------------+
+            | (int,float < 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |
+            +------------------+--------------------------------+
+
+            Default: ``2``.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the vector norms. If ``axis`` is ``None``,
+            the returned array must be a zero-dimensional array containing
+            a vector norm. If ``axis`` is a scalar value (``int`` or ``float``),
+            the returned array must have a rank which is one less than the
+            rank of ``x``. If ``axis`` is a ``n``-tuple, the returned
+            array must have a rank which is ``n`` less than the rank of
+            ``x``. The returned array must have a floating-point data type
+            determined by :ref:`type-promotion`.
+
+        """
         return self.static_vector_norm(
             self,
             axis,

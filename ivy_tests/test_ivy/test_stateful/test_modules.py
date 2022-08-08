@@ -150,7 +150,7 @@ def test_module_w_list_training(bs_ic_oc, device, compile_graph, call):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_w_partial_v(bs_ic_oc, device, compile_graph, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     if call is helpers.mx_call:
@@ -224,7 +224,7 @@ class ModuleWithNoneAttribute(ivy.Module):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_w_none_attribute(bs_ic_oc, device, compile_graph, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -262,7 +262,7 @@ class TrainableModuleWithDuplicate(ivy.Module):
 @pytest.mark.parametrize("same_layer", [True, False])
 def test_module_training_with_duplicate(bs_c, same_layer, device, compile_graph, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, channels = bs_c
@@ -324,7 +324,7 @@ class TrainableModuleWithDict(ivy.Module):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_w_dict_training(bs_ic_oc, device, compile_graph, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -388,7 +388,7 @@ class WithCustomVarStructure(ivy.Module):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_with_custom_var_structure(bs_ic_oc, device, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -427,7 +427,7 @@ class WithNestedModules(ivy.Module):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_top_variables(bs_ic_oc, device, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -464,7 +464,7 @@ def test_top_variables(bs_ic_oc, device, call):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_top_module(bs_ic_oc, device, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -490,7 +490,7 @@ def test_top_module(bs_ic_oc, device, call):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_v_with_top_v_key_chains(bs_ic_oc, device, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -548,7 +548,7 @@ def test_v_with_top_v_key_chains(bs_ic_oc, device, call):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_depth(bs_ic_oc, device, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -572,7 +572,7 @@ def test_module_depth(bs_ic_oc, device, call):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_height(bs_ic_oc, device, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -596,7 +596,7 @@ def test_module_height(bs_ic_oc, device, call):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_sub_modules(bs_ic_oc, device, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -626,7 +626,7 @@ def test_sub_modules(bs_ic_oc, device, call):
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_track_submod_rets(bs_ic_oc, device, call):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == 'numpy':
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
