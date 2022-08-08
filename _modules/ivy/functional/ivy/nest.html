@@ -662,70 +662,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        x following the application of fn to each of its iterated items.</span>
-<span class="sd">    </span>
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`int` inputs:</span>
+<span class="sd">        x following the applicable of fn to each of it&#39;s iterated items.</span>
 
-<span class="sd">    &gt;&gt;&gt; def special_square(x : float) -&gt; float : return np.square(x)</span>
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = special_square, \</span>
-<span class="sd">                          constant = None, \</span>
-<span class="sd">                          unique = {&#39;x&#39; : [1,2,3]}, \</span>
-<span class="sd">                          mean = False)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    [1, 4, 9]</span>
-
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = special_square, \</span>
-<span class="sd">                          constant = None, \</span>
-<span class="sd">                          unique = {&#39;x&#39;:[0,1,2]},\</span>
-<span class="sd">                          mean = True)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    1.6666666666666667</span>
-
-<span class="sd">    &gt;&gt;&gt; def special_pow(x:float,y:float) -&gt;float : return np.power(x,y)</span>
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = special_pow, \</span>
-<span class="sd">                          constant = {&#39;y&#39;:[0,1]}, \</span>
-<span class="sd">                          unique = {&#39;x&#39;:[1,2,3]}, \</span>
-<span class="sd">                          mean = False)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    [array([1,1]),</span>
-<span class="sd">    array([1,2]),</span>
-<span class="sd">    array([1,3])]</span>
-
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = special_pow, \</span>
-<span class="sd">                          constant = {&#39;y&#39;:[0,1]}, \</span>
-<span class="sd">                          unique = {&#39;x&#39;:[1,2,3]}, \</span>
-<span class="sd">                          mean = True)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    [1. 2.]</span>
-
-<span class="sd">    With :code:`float` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; def linear_model(w:float, x:float, b:float) -&gt; float: return w*x + b</span>
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = linear_model, \</span>
-<span class="sd">                          constant = {&#39;w&#39;:10., &#39;b&#39;:1.}, \</span>
-<span class="sd">                          unique = {&#39;x&#39;:[0.,1.,2.]}, \</span>
-<span class="sd">                          mean = False)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    [1.0, 11.0, 21.0]</span>
-
-<span class="sd">    With :code:`ivy.Array` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = linear_model, \</span>
-<span class="sd">        constant = {&#39;w&#39;:ivy.array([1.,0.,1.]), &#39;b&#39;:ivy.array([0.,10.,100.])}, \</span>
-<span class="sd">        unique = {&#39;x&#39;:[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \</span>
-<span class="sd">        mean = False)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    [ivy.array([0., 10., 100.]),</span>
-<span class="sd">    ivy.array([1., 10., 101.])]</span>
-
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = linear_model, \</span>
-<span class="sd">        constant = {&#39;w&#39;:ivy.array([1.,0.,1.]), &#39;b&#39;:ivy.array([0.,10.,100.])}, \</span>
-<span class="sd">        unique = {&#39;x&#39;:[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \</span>
-<span class="sd">        mean = True)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    ivy.array([  0.5,  10. , 100. ])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="p">{})</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">unique</span><span class="p">,</span> <span class="p">{})</span>
@@ -736,8 +674,7 @@
         <span class="p">)</span>
     <span class="p">]</span>
     <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
-        <span class="n">rets</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span>
-
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">rets</span></div>
 
 
@@ -949,7 +886,7 @@
 <span class="sd">    &gt;&gt;&gt; copied_nest = ivy.copy_nest(nest)</span>
 <span class="sd">    &gt;&gt;&gt; print(copied_nest)</span>
 <span class="sd">    ivy.array([[1., 2., 3.],</span>
-<span class="sd">            [7., 8., 9.]])</span>
+<span class="sd">            [7., 8., 9.]])    </span>
 
 <span class="sd">    With :code:`Iterable` input:</span>
 
