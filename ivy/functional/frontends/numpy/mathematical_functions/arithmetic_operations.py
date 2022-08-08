@@ -69,8 +69,8 @@ def divide(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-    
-    
+
+
 def multiply(
     x1,
     x2,
@@ -93,3 +93,26 @@ def multiply(
 
 
 multiply.unsupported_dtypes = {"torch": ("float16",)}
+
+
+# square
+def square(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.square(x, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+square.unsupported_dtypes = {"torch": ("float16",)}
