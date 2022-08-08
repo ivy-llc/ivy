@@ -662,11 +662,10 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        x following the applicable of fn to each of it&#39;s iterated items.</span>
+<span class="sd">        x following the application of fn to each of its iterated items.</span>
 <span class="sd">    </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-
 <span class="sd">    With :code:`int` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; def special_square(x : float) -&gt; float : return np.square(x)</span>
@@ -734,7 +733,8 @@
     <span class="n">rets</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">r</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">_map</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="o">*</span><span class="n">uv</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">uv</span><span class="p">)))),</span> <span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">lambda</span> <span class="o">*</span><span class="n">uv</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">uv</span><span class="p">)))),</span> <span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">)</span>
     <span class="p">]</span>
     <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
         <span class="n">rets</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span>
