@@ -1239,7 +1239,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1, 2]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.to_list()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {a:[0,1,2]}</span>
+<span class="sd">    [ivy.array([0,1,2])]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
@@ -1353,7 +1353,7 @@
     <span class="k">return</span> <span class="n">ret</span></div>
 
 
-<div class="viewcode-block" id="clip_matrix_norm"><a class="viewcode-back" href="../../../../functional/ivy/general/clip_matrix_norm/clip_matrix_norm_functional.html#ivy.functional.ivy.general.clip_matrix_norm">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="clip_matrix_norm"><a class="viewcode-back" href="../../../../functional/ivy/general/clip_matrix_norm.html#ivy.functional.ivy.general.clip_matrix_norm">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">clip_matrix_norm</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1381,75 +1381,9 @@
 <span class="sd">    ret</span>
 <span class="sd">        An array with the matrix norm downscaled to the max norm if needed.</span>
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
-
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 2.0)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[0.   , 0.894, 1.79 ]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 3.0, 1.0)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[ 0.0353, -0.424 ,  1.31  ],</span>
-<span class="sd">               [ 0.    ,  2.58  , -0.176 ]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[5., 4.], [-2., 6.]], \</span>
-<span class="sd">                       [[3., 7.], [0., -5.]]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.empty((2, 2, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[[ 0.339,  0.271],</span>
-<span class="sd">                [-0.135,  0.406]],</span>
-<span class="sd">               [[ 0.168,  0.391],</span>
-<span class="sd">                [ 0.   , -0.279]]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1.], \</span>
-<span class="sd">                       [2., 3.]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 5.0, 1.0, out=x)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    ivy.array([[0., 1.],</span>
-<span class="sd">               [2., 3.]])</span>
-
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 2.0)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[0.   , 0.894, 1.79 ]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 3.0, 1.0)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[ 0.0353, -0.424 ,  1.31  ],</span>
-<span class="sd">               [ 0.    ,  2.58  , -0.176 ]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[5., 4.], [-2., 6.]], \</span>
-<span class="sd">                       [[3., 7.], [0., -5.]]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.empty((2, 2, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[[ 0.339,  0.271],</span>
-<span class="sd">                [-0.135,  0.406]],</span>
-<span class="sd">               [[ 0.168,  0.391],</span>
-<span class="sd">                [ 0.   , -0.279]]])</span>
-
-<span class="sd">    With :code:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \</span>
-<span class="sd">                          b=ivy.array([[3., 4., 5.]]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 2.0)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([[0., 0.894, 1.79]]),</span>
-<span class="sd">        b: ivy.array([[0.849, 1.13, 1.41]])</span>
-<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">norms</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matrix_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">ratios</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">max_norm</span><span class="p">,</span> <span class="n">norms</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">ratios</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">max_norm</span><span class="p">,</span> <span class="n">norms</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
@@ -2159,21 +2093,7 @@
 
 
 <div class="viewcode-block" id="get_min_base"><a class="viewcode-back" href="../../../../functional/ivy/general/get_min_base.html#ivy.functional.ivy.general.get_min_base">[docs]</a><span class="k">def</span> <span class="nf">get_min_base</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Gets the global minimum base used by ivy for numerically stable power raising.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Global minimum base number</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.get_min_base()</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    1e-05</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Get the global minimum base used by ivy for numerically stable power raising.&quot;&quot;&quot;</span>
     <span class="c1"># noinspection PyProtectedMember</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span></div>
 

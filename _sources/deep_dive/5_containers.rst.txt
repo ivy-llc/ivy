@@ -374,12 +374,3 @@ This should have hopefully given you a good feel for containers, and how these a
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `containers discussion`_,
 or reach out on `discord`_ in the `containers channel`_!
-
-
-**Video**
-
-.. raw:: html
-
-    <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/oHcoYFi2rvI" class="video">
-    </iframe>

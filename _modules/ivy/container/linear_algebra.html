@@ -150,21 +150,6 @@
         <span class="n">map_nests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Examples</span>
-<span class="sd">        ------------------------</span>
-
-<span class="sd">        With :code:`ivy.Container` instance inputs:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5., 2.]), b=ivy.array([2., 1.]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 2.]))</span>
-<span class="sd">        &gt;&gt;&gt; z = x.matmul(y)</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array(39.),</span>
-<span class="sd">            b: ivy.array(8.)</span>
-<span class="sd">        }</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kw</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">conts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x2</span><span class="p">):</span>
@@ -869,8 +854,8 @@
 <span class="sd">        &gt;&gt;&gt; y = x.matrix_rank()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: ivy.array(2),</span>
-<span class="sd">            b: ivy.array(1)</span>
+<span class="sd">            a: ivy.array(2.),</span>
+<span class="sd">            b: ivy.array(1.)</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_matrix_rank</span><span class="p">(</span>
@@ -1312,7 +1297,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container static method variant of ivy.vector_norm.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring for</span>
 <span class="sd">        ivy.vector_norm also applies to this method with minimal changes.</span>
@@ -1361,11 +1346,11 @@
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -1               | 1./sum(1./abs(a))              |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
-<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | </span>
+<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | </span>
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -inf             | min(abs(a))                    |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
-<span class="sd">            | (int,float &lt; 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |</span>
+<span class="sd">            | (int,float &lt; 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
 
 <span class="sd">            Default: ``2``.</span>
@@ -1412,7 +1397,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container instance method variant of ivy.vector_norm.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring for</span>
 <span class="sd">        ivy.vector_norm also applies to this method with minimal changes.</span>
@@ -1460,11 +1445,11 @@
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -1               | 1./sum(1./abs(a))              |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
-<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | </span>
+<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | </span>
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -inf             | min(abs(a))                    |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
-<span class="sd">            | (int,float &lt; 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |</span>
+<span class="sd">            | (int,float &lt; 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
 
 <span class="sd">            Default: ``2``.</span>

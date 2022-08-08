@@ -66,9 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Ivy Frontends</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#basic">Basic</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#compositions">Compositions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#further-examples">Further Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
@@ -166,10 +164,8 @@ framework-specific frontend functional APIs, which play an important role in cod
 transpilations, as explained <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html">here</a>.</p>
 <p>Let’s start with some examples to have a better idea on Ivy Frontends!</p>
 </section>
-<section id="basic">
-<h2>Basic<a class="headerlink" href="#basic" title="Permalink to this heading"></a></h2>
-<p><strong>NOTE:</strong> Type hints, docstrings and examples are not required when working on
-frontend methods.</p>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
 <p><strong>Jax</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/jax/lax/operators.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -334,49 +330,7 @@ support the <code class="code docutils literal notranslate"><span class="pre">fl
 according to the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a> directory. By referring to the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan">torch.tan</a> documentation,
 we code its positional and keyword arguments accordingly, then return with
 <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> to link the operation to the backend framework.</p>
-</section>
-<section id="compositions">
-<h2>Compositions<a class="headerlink" href="#compositions" title="Permalink to this heading"></a></h2>
-<p>Sometimes, certain frontend methods meet special criteria:</p>
-<ul class="simple">
-<li><p>it is unique to a particular frontend framework, and does not exist in the other
-frontends, or</p></li>
-<li><p>it has extra features than the original backend method</p></li>
-</ul>
-<p>In such cases, compositions are required to recover the original behaviours.</p>
-<p><strong>Examples</strong></p>
-<p>In the native TensorFlow method <code class="code docutils literal notranslate"><span class="pre">tf.cumprod()</span></code>, it supports an extra
-argument - <code class="code docutils literal notranslate"><span class="pre">reverse</span></code>, which returns a flipped result if True. However,
-the backend <code class="code docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code> does not come with this argument, thus not
-supporting this behaviour by default.</p>
-<p><strong>Ivy</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/general.py</span>
-<span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">exclusive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>To enable this behaviour, we will need to incorporate methods that resemble the
-required behaviour. For example, we can reverse the result by calling
-<code class="code docutils literal notranslate"><span class="pre">ivy.flip()</span></code> after running <code class="code docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>.</p>
-<p><strong>TensorFlow Frontend</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math/general.py</span>
-<span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ret</span>
-</pre></div>
-</div>
-<p>Through compositions, we can easily meet the desired objectives.</p>
-</section>
-<section id="further-examples">
-<h2>Further Examples<a class="headerlink" href="#further-examples" title="Permalink to this heading"></a></h2>
+<p><strong>More Examples</strong></p>
 <p>Additional examples for each framework on concatenation is added for better understanding!</p>
 <p><strong>Jax</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/jax/lax/operators.py</span>
