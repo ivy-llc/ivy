@@ -63,6 +63,7 @@ For example, the code for :code:`ivy.tan` in :code:`ivy/functional/ivy/elementwi
 
     def tan(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -75,6 +76,7 @@ The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
 
     def tan(
         x: torch.Tensor,
+        /,
         *,
         out: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
@@ -103,9 +105,10 @@ For example, the implementation of :code:`ivy.cross_entropy` in :code:`ivy/funct
     def cross_entropy(
         true: Union[ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)

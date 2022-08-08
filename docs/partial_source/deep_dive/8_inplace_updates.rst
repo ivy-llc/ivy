@@ -209,35 +209,35 @@ The implementations of :code:`ivy.tan` for each backend are as follows.
 
 .. code-block:: python
 
-    def tan(x: JaxArray) -> JaxArray:
+    def tan(x: JaxArray, /) -> JaxArray:
         return jnp.tan(x)
 
 **MXNet** (no :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: mx.NDArray) -> mx.NDArray:
+    def tan(x: mx.NDArray, /) -> mx.NDArray:
         return mx.nd.tan(x)
 
 **NumPy** (includes :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    def tan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
         return np.tan(x, out=out)
 
 **TensorFlow** (no :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: Tensor) -> Tensor:
+    def tan(x: Tensor, /) -> Tensor:
         return tf.tan(x)
 
 **PyTorch** (includes :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
         return torch.tan(x, out=out)
 
 
@@ -276,9 +276,10 @@ We'll use :code:`ivy.cross_entropy` as an example:
     def cross_entropy(
         true: Union[ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Optional[int] = -1,
         epsilon: Optional[float] = 1e-7,
-        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)

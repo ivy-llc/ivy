@@ -130,8 +130,9 @@ hints should be placed in separate lines as shown below:
 
     def all(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

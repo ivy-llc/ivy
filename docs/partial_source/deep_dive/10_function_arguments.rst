@@ -39,6 +39,7 @@ We present both the Ivy API signature and also a backend-specific signature for 
     @handle_out_argument
     def tan(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
@@ -46,6 +47,7 @@ We present both the Ivy API signature and also a backend-specific signature for 
     # PyTorch
     def tan(
         x: torch.Tensor,
+        /,
         *,
         out: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
@@ -57,16 +59,19 @@ We present both the Ivy API signature and also a backend-specific signature for 
     @handle_out_argument
     def roll(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         shift: Union[int, Sequence[int]],
-        axis: Optional[Union[int, Sequence[int]]] = None,
         *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
 
     # NumPy
     def roll(
         x: np.ndarray,
+        /,
         shift: Union[int, Sequence[int]],
+        *,
         axis: Optional[Union[int, Sequence[int]]] = None,
     ) -> np.ndarray:
 
@@ -78,6 +83,7 @@ We present both the Ivy API signature and also a backend-specific signature for 
     def add(
         x1: Union[ivy.Array, ivy.NativeArray, float],
         x2: Union[ivy.Array, ivy.NativeArray, float],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, float]:
@@ -85,7 +91,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
     # TensorFlow
     def add(
         x1: Union[tf.Tensor, tf.Variable, float],
-        x2: Union[tf.Tensor, tf.Variable, float]
+        x2: Union[tf.Tensor, tf.Variable, float],
+        /,
     ) -> Union[tf.Tensor, tf.Variable, float]:
 
 .. code-block:: python
