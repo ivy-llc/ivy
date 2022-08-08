@@ -1,0 +1,23 @@
+name: CI Dashboard
+on:
+  workflow_run:
+    workflows: [test-nn-ivy, test-stateful-ivy, test-core-ivy]
+    types:
+      - completed
+    branch: master
+jobs:
+  Trigger-Dashboard:
+    name: Trigger Dashboard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checks
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+      - name: run python file
+        env:
+          WORKING_DIR: ${GITHUB_WORKSPACE}
+        run: |
+            cd ivy
+            python3 dashboard.py $WORKING_DIR

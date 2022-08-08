@@ -182,8 +182,6 @@ def conv2d(
     res = torch.nn.functional.conv2d(x, filters, None, strides, "valid", dilations)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -309,7 +307,7 @@ def depthwise_conv2d(
     filter_shape = [f_h_after_dilation, f_w_after_dilation]
     dims_in = filters.shape[-1]
     filters = torch.unsqueeze(filters, -1)
-    filters = filters.permute(3, 2, 0, 1)
+    filters = filters.permute(2, 3, 0, 1)
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
