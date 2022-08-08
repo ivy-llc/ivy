@@ -2104,7 +2104,6 @@ def get_shape(
     -------
     A strategy that draws a tuple.
     """
-
     if allow_none:
         shape = draw(
             st.none()

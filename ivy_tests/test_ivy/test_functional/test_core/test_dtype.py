@@ -516,7 +516,7 @@ def test_closest_valid_dtype(
 
 # default_dtype
 @given(
-    input_dtype=st.sampled_from(ivy.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_native=st.booleans(),
 )
 def test_default_dtype(
