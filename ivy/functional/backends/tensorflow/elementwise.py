@@ -299,7 +299,7 @@ def log10(
 def log1p(
     x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not ivy.is_float_dtype(x):
+    if ivy.is_int_dtype(x):
         x=tf.cast(x,dtype=ivy.default_float_dtype())
     return tf.math.log1p(x)
 
