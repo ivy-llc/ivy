@@ -193,13 +193,13 @@ def test_tensorflow_full(
 
 # mutiply
 @given(
-    dtype_and_x=helpers.dtype_and_values(
+        dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
         num_arrays=2,
         shared_dtype=True,
-    ),
+    ), 
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.multiply"
