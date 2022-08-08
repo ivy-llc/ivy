@@ -83,12 +83,12 @@ def test_torch_cat(
             key='shape')),
     axis0=helpers.get_axis(
         shape=st.shared(
-            helpers.get_shape(min_num_dims=2), key='shape')
-            ).filter(lambda axis: isinstance(axis, int)),
+            helpers.get_shape(min_num_dims=2), key='shape')).filter(
+                lambda axis: isinstance(axis, int)),
     axis1=helpers.get_axis(
         shape=st.shared(
-            helpers.get_shape(min_num_dims=2), key='shape')
-            ).filter(lambda axis: isinstance(axis, int)),
+            helpers.get_shape(min_num_dims=2), key='shape')).filter(
+                lambda axis: isinstance(axis, int)),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
