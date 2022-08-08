@@ -316,3 +316,4 @@ def test_tensorflow_hard_sigmoid(
         fn_name="activations.hard_sigmoid",
         x=np.asarray(x, dtype=input_dtype),
     )
+    

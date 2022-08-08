@@ -476,7 +476,7 @@ def used_mem_on_dev(
 
 
 def percent_used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], 
+    device: Union[ivy.Device, ivy.NativeDevice],
     process_specific: bool = False,
 ) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
@@ -509,7 +509,7 @@ def percent_used_mem_on_dev(
     >>> y = ivy.percent_used_mem_on_dev(device = x, process_specific = False)
     >>> print(y)
     0.7095597456708771
-    
+
     """
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
