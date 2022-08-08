@@ -725,8 +725,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.matrix_rank()
         >>> print(y)
         {
-            a: ivy.array(2.),
-            b: ivy.array(1.)
+            a: ivy.array(2),
+            b: ivy.array(1)
         }
         """
         return self.static_matrix_rank(
@@ -1168,7 +1168,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
+        r"""
         ivy.Container static method variant of ivy.vector_norm.
         This method simply wraps the function, and so the docstring for
         ivy.vector_norm also applies to this method with minimal changes.
@@ -1268,7 +1268,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
+        r"""
         ivy.Container instance method variant of ivy.vector_norm.
         This method simply wraps the function, and so the docstring for
         ivy.vector_norm also applies to this method with minimal changes.
