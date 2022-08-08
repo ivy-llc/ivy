@@ -9,9 +9,10 @@ import ivy
 class ArrayWithRandom(abc.ABC):
     def random_uniform(
         self: ivy.Array,
+        /,
+        *,
         high: Union[float, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -92,9 +93,9 @@ class ArrayWithRandom(abc.ABC):
         ivy.array([12.1, 14. ])
         """
         return ivy.random_uniform(
-            self._data,
-            high,
-            shape,
+            low=self._data,
+            high=high,
+            shape=shape,
             device=device,
             dtype=dtype,
             out=out,
@@ -102,9 +103,10 @@ class ArrayWithRandom(abc.ABC):
 
     def random_normal(
         self: ivy.Array,
+        /,
+        *,
         std: Union[float, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -183,9 +185,9 @@ class ArrayWithRandom(abc.ABC):
         ivy.array([ 4.32, 42.2 ])
         """
         return ivy.random_normal(
-            self._data,
-            std,
-            shape,
+            mean=self._data,
+            std=std,
+            shape=shape,
             device=device,
             dtype=dtype,
             out=out,
@@ -195,9 +197,10 @@ class ArrayWithRandom(abc.ABC):
         self: ivy.Array,
         population_size: int,
         num_samples: int,
+        /,
+        *,
         batch_size: int = 1,
         replace: bool = True,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -233,9 +236,9 @@ class ArrayWithRandom(abc.ABC):
         return ivy.multinomial(
             population_size,
             num_samples,
-            batch_size,
-            self._data,
-            replace,
+            batch_size=batch_size,
+            probs=self._data,
+            replace=replace,
             device=device,
             out=out,
         )
@@ -243,8 +246,9 @@ class ArrayWithRandom(abc.ABC):
     def randint(
         self: ivy.Array,
         high: Union[int, ivy.Array, ivy.NativeArray],
-        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+        /,
         *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -325,13 +329,13 @@ class ArrayWithRandom(abc.ABC):
         return ivy.randint(
             self._data,
             high,
-            shape,
+            shape=shape,
             device=device,
             dtype=dtype,
             out=out,
         )
 
-    def shuffle(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def shuffle(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """ivy.Array instance method variant of ivy.shuffle. This method simply
         wraps the function, and so the docstring for ivy.shuffle also applies to
         this method with minimal changes.

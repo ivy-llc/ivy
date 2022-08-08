@@ -10,6 +10,7 @@ from ivy.container.base import ContainerBase
 class ContainerWithRandom(ContainerBase):
     @staticmethod
     def static_random_uniform(
+        *,
         low: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 0.0,
         high: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
@@ -17,7 +18,6 @@ class ContainerWithRandom(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
@@ -93,9 +93,9 @@ class ContainerWithRandom(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "random_uniform",
-            low,
-            high,
-            shape,
+            low=low,
+            high=high,
+            shape=shape,
             device=device,
             dtype=dtype,
             key_chains=key_chains,
@@ -107,13 +107,14 @@ class ContainerWithRandom(ContainerBase):
 
     def random_uniform(
         self: ivy.Container,
+        /,
+        *,
         high: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
@@ -273,13 +274,13 @@ class ContainerWithRandom(ContainerBase):
         }
         """
         return self.static_random_uniform(
-            self,
-            high,
-            shape,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            low=self,
+            high=high,
+            shape=shape,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             device=device,
             dtype=dtype,
             out=out,
@@ -287,6 +288,7 @@ class ContainerWithRandom(ContainerBase):
 
     @staticmethod
     def static_random_normal(
+        *,
         mean: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 0.0,
         std: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
@@ -294,7 +296,6 @@ class ContainerWithRandom(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
@@ -368,9 +369,9 @@ class ContainerWithRandom(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method(
             "random_normal",
-            mean,
-            std,
-            shape,
+            mean=mean,
+            std=std,
+            shape=shape,
             device=device,
             dtype=dtype,
             key_chains=key_chains,
@@ -382,13 +383,14 @@ class ContainerWithRandom(ContainerBase):
 
     def random_normal(
         self: ivy.Container,
+        /,
+        *,
         std: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
@@ -547,13 +549,13 @@ class ContainerWithRandom(ContainerBase):
         }
         """
         return self.static_random_normal(
-            self,
-            std,
-            shape,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            mean=self,
+            std=std,
+            shape=shape,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             device=device,
             dtype=dtype,
             out=out,
@@ -563,6 +565,8 @@ class ContainerWithRandom(ContainerBase):
     def static_multinomial(
         population_size: int,
         num_samples: int,
+        /,
+        *,
         batch_size: int = 1,
         probs: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
         replace: bool = True,
@@ -570,7 +574,6 @@ class ContainerWithRandom(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -617,9 +620,9 @@ class ContainerWithRandom(ContainerBase):
             "multinomial",
             population_size,
             num_samples,
-            batch_size,
-            probs,
-            replace,
+            batch_size=batch_size,
+            probs=probs,
+            replace=replace,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -632,13 +635,14 @@ class ContainerWithRandom(ContainerBase):
         self: ivy.Container,
         population_size: int,
         num_samples: int,
+        /,
+        *,
         batch_size: int = 1,
         replace: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -684,13 +688,13 @@ class ContainerWithRandom(ContainerBase):
         return self.static_multinomial(
             population_size,
             num_samples,
-            batch_size,
-            self,
-            replace,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            batch_size=batch_size,
+            probs=self,
+            replace=replace,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             device=device,
             out=out,
         )
@@ -699,12 +703,13 @@ class ContainerWithRandom(ContainerBase):
     def static_randint(
         low: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         high: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
@@ -780,7 +785,7 @@ class ContainerWithRandom(ContainerBase):
             "randint",
             low,
             high,
-            shape,
+            shape=shape,
             device=device,
             dtype=dtype,
             key_chains=key_chains,
@@ -793,12 +798,13 @@ class ContainerWithRandom(ContainerBase):
     def randint(
         self: ivy.Container,
         high: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
@@ -959,11 +965,11 @@ class ContainerWithRandom(ContainerBase):
         return self.static_randint(
             self,
             high,
-            shape,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            shape=shape,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             device=device,
             dtype=dtype,
             out=out,
@@ -972,11 +978,12 @@ class ContainerWithRandom(ContainerBase):
     @staticmethod
     def static_shuffle(
         x: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.shuffle. This method
@@ -1018,11 +1025,12 @@ class ContainerWithRandom(ContainerBase):
 
     def shuffle(
         self: ivy.Container,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.shuffle. This method
@@ -1054,9 +1062,9 @@ class ContainerWithRandom(ContainerBase):
         """
         return self.static_shuffle(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
