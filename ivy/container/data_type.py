@@ -576,16 +576,23 @@ class ContainerWithDataTypes(ContainerBase):
         Parameters
         ----------
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to.
+            Default is None.
 
         to_apply
-            Boolean indicating whether to apply the method to the key-chains. Default is False.
-
+            Boolean indicating whether to apply the
+            method to the key-chains. Default is False.
         prune_unapplied
-            Boolean indicating whether to prune the key-chains that were not applied. Default is False.
-
+            Boolean indicating whether to prune the
+            key-chains that were not applied. Default is False.
         map_sequences
-            Boolean indicating whether to map method to sequences (list, tuple). Default is False.
+            Boolean indicating whether to map method
+            to sequences (list, tuple). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean of whether the input is of a float dtype.
         """
         return self.static_is_int_dtype(
             self,
