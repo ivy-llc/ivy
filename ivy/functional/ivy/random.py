@@ -66,10 +66,10 @@ def _check_valid_scale(std):
 @infer_dtype
 @handle_nestable
 def random_uniform(
+    *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     high: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
@@ -163,7 +163,7 @@ def random_uniform(
     ivy.array([5. , 7.3])
     """
     return ivy.current_backend().random_uniform(
-        low, high, shape, device=device, dtype=dtype, out=out
+        low=low, high=high, shape=shape, device=device, dtype=dtype, out=out
     )
 
 
@@ -173,10 +173,10 @@ def random_uniform(
 @infer_dtype
 @handle_nestable
 def random_normal(
+    *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -267,7 +267,7 @@ def random_normal(
     ivy.array([12.4, 11. ])
     """
     return ivy.current_backend().random_normal(
-        mean, std, shape, dtype=dtype, device=device, out=out
+        mean=mean, std=std, shape=shape, dtype=dtype, device=device, out=out
     )
 
 
@@ -278,10 +278,11 @@ def random_normal(
 def multinomial(
     population_size: int,
     num_samples: int,
+    /,
+    *,
     batch_size: int = 1,
     probs: Union[ivy.Array, ivy.NativeArray] = None,
     replace: bool = True,
-    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.array:
@@ -363,7 +364,13 @@ def multinomial(
 
     """
     return ivy.current_backend().multinomial(
-        population_size, num_samples, batch_size, probs, replace, device=device, out=out
+        population_size,
+        num_samples,
+        batch_size=batch_size,
+        probs=probs,
+        replace=replace,
+        device=device,
+        out=out,
     )
 
 
@@ -374,8 +381,9 @@ def multinomial(
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    /,
     *,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
@@ -434,12 +442,12 @@ def randint(
 
     """
     return ivy.current_backend().randint(
-        low, high, shape, device=device, dtype=dtype, out=out
+        low, high, shape=shape, device=device, dtype=dtype, out=out
     )
 
 
 @handle_nestable
-def seed(seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
     Parameters
@@ -453,14 +461,14 @@ def seed(seed_value: int = 0) -> None:
     >>> ivy.seed(42)
 
     """
-    return ivy.current_backend().seed(seed_value)
+    return ivy.current_backend().seed(seed_value=seed_value)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def shuffle(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.
 
