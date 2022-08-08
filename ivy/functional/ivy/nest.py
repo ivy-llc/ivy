@@ -598,7 +598,6 @@ def map(
     >>> print(results)
     ivy.array([  0.5,  10. , 100. ])
     """
-
     c = ivy.default(constant, {})
     u = ivy.default(unique, {})
     rets = [
