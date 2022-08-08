@@ -67,3 +67,16 @@ def jac(func: Callable):
         return ivy.to_ivy(tape.jacobian(y, x_in))
 
     return callback_fn
+
+
+def grad(func: Callable):
+    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+
+    def callback_fn(x_in):
+        with tf.GradientTape() as tape:
+            x_in = ivy.to_native(ivy.array(x_in))
+            tape.watch(x_in)
+            y = grad_fn(x_in)
+        return ivy.to_ivy(tape.gradient(y, x_in))
+
+    return callback_fn

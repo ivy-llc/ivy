@@ -783,21 +783,18 @@ def lamb_update(
 
 @to_native_arrays_and_back
 def jac(func):
-    """Call function func with input of xs variables, and return func's Jacobian partial
-    derivatives.
+    """Call function func, and return func's Jacobian partial derivatives.
 
     Parameters
     ----------
     func
         Function for which we compute the gradients of the output with respect to xs
         input.
-    x
-        Variables for which to compute the function gradients with respective to.
 
     Returns
     -------
     ret
-        the Jacobian matrix
+        the Jacobian function
 
     Functional Examples
     -------------------
@@ -811,3 +808,31 @@ def jac(func):
         ivy.array([0.667, 1.   , 1.33 ])
     """
     return current_backend(None).jac(func)
+
+
+@to_native_arrays_and_back
+def grad(func):
+    """Call function func, and return func's gradients.
+
+    Parameters
+    ----------
+    func
+        Function for which we compute the gradients of the output with respect to xs
+        input.
+
+    Returns
+    -------
+    ret
+        the grad function
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+
+    >>> def f(x):
+    >>>     return ivy.tanh(x)
+    >>> gradients = ivy.grad(f)
+    >>> print(gradients(2.))
+        ivy.array(0.07065082)
+    """
+    return current_backend(None).grad(func)

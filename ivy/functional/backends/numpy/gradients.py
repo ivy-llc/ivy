@@ -51,3 +51,11 @@ def jac(func):
         "returns None in place of function gradients."
     )
     return None
+
+
+def grad(func):
+    logging.warning(
+        "NumPy does not support autograd, 'grad'"
+        "returns None in place of function gradients."
+    )
+    return None
