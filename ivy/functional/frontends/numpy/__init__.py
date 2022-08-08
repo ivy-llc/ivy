@@ -11,3 +11,7 @@ from . import mathematical_functions
 from .mathematical_functions import *
 from . import statistics
 from .statistics import *
+
+from . import fft
+from . import matrix
+from . import ufunc
