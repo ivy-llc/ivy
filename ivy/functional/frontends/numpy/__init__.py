@@ -5,6 +5,8 @@ from . import fft
 from .fft import *
 from . import indexing_routines
 from .indexing_routines import *
+from . import logic
+from .logic import *
 from . import manipulation_routines
 from .manipulation_routines import *
 from . import mathematical_functions
