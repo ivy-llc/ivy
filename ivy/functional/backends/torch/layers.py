@@ -31,10 +31,11 @@ def conv1d(
     filters: torch.Tensor,
     strides: int,
     padding: str,
+    /,
+    *,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, tuple):
         strides = strides[0]
@@ -71,23 +72,24 @@ def conv1d_transpose(
     filters,
     strides: int,
     padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ):
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(2, 1, 0)
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
-    new_w = _deconv_length(x.shape[2], strides, filter_shape[0], padding, dilations)
-    output_shape = [new_w]
+    if output_shape is None:
+        new_w = _deconv_length(x.shape[2], strides, filter_shape[0], padding, dilations)
+        output_shape = [new_w]
     not_valid_h = False
     if padding == "VALID":
         padding_list: List[int] = [0]
         out_w = _out_shape(x.shape[2], strides, 0, dilations, filters.shape[2])
-        output_padding = [max(new_w - out_w, 0)]
     elif padding == "SAME":
         filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         if output_shape[0] % strides == 0:
@@ -100,12 +102,12 @@ def conv1d_transpose(
         pad_w_ = pad_w // 2
         out_w = _out_shape(x.shape[2], strides, pad_w_, dilations, filters.shape[2])
         padding_list = [pad_w_]
-        output_padding = [max(new_w - out_w, 0)]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
+    output_padding = [max(output_shape[0] - out_w, 0)]
     res = torch.nn.functional.conv_transpose1d(
         x,
         filters,
@@ -131,10 +133,11 @@ def conv2d(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
         strides = (strides, strides)
@@ -179,6 +182,8 @@ def conv2d(
     res = torch.nn.functional.conv2d(x, filters, None, strides, "valid", dilations)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
+    if ivy.exists(out):
+        ivy.inplace_update(res, out)
     return res
 
 
@@ -191,11 +196,12 @@ def conv2d_transpose(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     output_shape=None,
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -285,10 +291,11 @@ def depthwise_conv2d(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
@@ -343,10 +350,11 @@ def conv3d(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ):
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
@@ -411,11 +419,12 @@ def conv3d_transpose(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
@@ -423,16 +432,17 @@ def conv3d_transpose(
     filters = filters.permute(3, 4, 0, 1, 2)
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
-    new_d = _deconv_length(
-        x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
-    )
-    new_h = _deconv_length(
-        x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
-    )
-    new_w = _deconv_length(
-        x.shape[4], strides[2], filter_shape[2], padding, dilations[2]
-    )
-    output_shape = [new_d, new_h, new_w]
+    if output_shape is None:
+        new_d = _deconv_length(
+            x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
+        )
+        new_h = _deconv_length(
+            x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
+        )
+        new_w = _deconv_length(
+            x.shape[4], strides[2], filter_shape[2], padding, dilations[2]
+        )
+        output_shape = [new_d, new_h, new_w]
     not_valid_h = False
     not_valid_d = False
     not_valid_w = False
@@ -441,11 +451,6 @@ def conv3d_transpose(
         out_d = _out_shape(x.shape[2], strides[0], 0, dilations[0], filters.shape[2])
         out_h = _out_shape(x.shape[3], strides[1], 0, dilations[1], filters.shape[3])
         out_w = _out_shape(x.shape[4], strides[1], 0, dilations[2], filters.shape[4])
-        output_padding = [
-            max(new_d - out_d, 0),
-            max(new_h - out_h, 0),
-            max(new_w - out_w, 0),
-        ]
     elif padding == "SAME":
         filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
         filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
@@ -486,16 +491,16 @@ def conv3d_transpose(
             x.shape[4], strides[2], pad_w_, dilations[2], filters.shape[4]
         )
         padding_list = [pad_d_, pad_h_, pad_w_]
-        output_padding = [
-            max(new_d - out_d, 0),
-            max(new_h - out_h, 0),
-            max(new_w - out_w, 0),
-        ]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
+    output_padding = [
+        max(output_shape[0] - out_d, 0),
+        max(output_shape[1] - out_h, 0),
+        max(output_shape[2] - out_w, 0),
+    ]
     res = torch.nn.functional.conv_transpose3d(
         x,
         filters,

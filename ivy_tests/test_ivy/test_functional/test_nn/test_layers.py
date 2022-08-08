@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -354,7 +354,7 @@ def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
 
 
 @st.composite
-def x_and_filters(
+def _x_and_filters(
     draw,
     dtypes,
     data_format,
@@ -550,7 +550,7 @@ def x_and_filters(
 
 # conv1d
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NWC", "NCW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -600,7 +600,7 @@ def test_conv1d(
 
 # conv1d_transpose
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NWC", "NCW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -645,7 +645,7 @@ def test_conv1d_transpose(
         filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
-        output_shape=None,
+        output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
     )
@@ -653,7 +653,7 @@ def test_conv1d_transpose(
 
 # conv2d
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -701,7 +701,7 @@ def test_conv2d(
 
 # conv2d_transpose
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -755,7 +755,7 @@ def test_conv2d_transpose(
 
 # depthwise_conv2d
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -778,8 +778,8 @@ def test_depthwise_conv2d(
     fw,
     device,
 ):
-
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    assume(not (fw == "tensorflow" and dilations > 1 and stride > 1))
     dtype = [dtype] * 2
     as_variable = [as_variable, as_variable]
     native_array = [native_array, native_array]
@@ -806,7 +806,7 @@ def test_depthwise_conv2d(
 
 # conv3d
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NDHWC", "NCDHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -855,7 +855,7 @@ def test_conv3d(
 
 # conv3d_transpose
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NDHWC", "NCDHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -897,7 +897,7 @@ def test_conv3d_transpose(
         filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
-        output_shape=None,
+        output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
     )
