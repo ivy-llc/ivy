@@ -157,9 +157,11 @@ def np_call(func, *args, **kwargs):
         The arguments to be given.
     kwargs
         The keywords args to be given.
+
     Returns
     -------
-    The result of the function call as a Numpy Array
+    ret
+        The result of the function call as a Numpy Array
     """
     ret = func(*args, **kwargs)
     if isinstance(ret, (list, tuple)):
@@ -1639,6 +1641,7 @@ def dtype_and_values(
     dtype=None,
 ):
     """Draws a list of arrays with elements from the given corresponding data types.
+
     Parameters
     ----------
     draw
@@ -1676,6 +1679,7 @@ def dtype_and_values(
         if True, the shape of the arrays is also returned.
     dtype
         A list of data types for the given arrays.
+
     Returns
     -------
     A strategy that draws a list of arrays(as lists).
@@ -1787,6 +1791,7 @@ def dtype_values_axis(
 @st.composite
 def reshape_shapes(draw, *, shape):
     """Draws a random shape with the same number of elements as the given shape.
+
     Parameters
     ----------
     draw
@@ -1794,6 +1799,7 @@ def reshape_shapes(draw, *, shape):
         data-set (ex. list).
     shape
         list/strategy/tuple of integers representing an array shape.
+
     Returns
     -------
     A strategy that draws a tuple.
@@ -1821,6 +1827,7 @@ def subsets(draw, *, elements):
         data-set (ex. list).
     elements
         set of elements to be drawn from.
+
     Returns
     -------
     A strategy that draws a subset of elements.

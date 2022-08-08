@@ -225,7 +225,7 @@ def test_scaled_dot_product_attention(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -311,7 +311,7 @@ def test_multi_head_attention(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -562,6 +562,7 @@ def test_conv1d(
     *,
     data,
     x_f_d_df,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -578,7 +579,7 @@ def test_conv1d(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -613,6 +614,7 @@ def test_conv1d_transpose(
     *,
     data,
     x_f_d_df,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -629,7 +631,7 @@ def test_conv1d_transpose(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -665,6 +667,7 @@ def test_conv2d(
     *,
     data,
     x_f_d_df,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -679,7 +682,7 @@ def test_conv2d(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -730,7 +733,7 @@ def test_conv2d_transpose(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -766,6 +769,7 @@ def test_conv2d_transpose(
 def test_depthwise_conv2d(
     *,
     x_f_d_df,
+    with_out,
     num_positional_args,
     as_variable,
     native_array,
@@ -783,7 +787,7 @@ def test_depthwise_conv2d(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -818,6 +822,7 @@ def test_conv3d(
     *,
     data,
     x_f_d_df,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -832,7 +837,7 @@ def test_conv3d(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -867,6 +872,7 @@ def test_conv3d(
 def test_conv3d_transpose(
     *,
     x_f_d_df,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -881,7 +887,7 @@ def test_conv3d_transpose(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
