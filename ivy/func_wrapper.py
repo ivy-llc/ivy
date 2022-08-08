@@ -198,7 +198,7 @@ def infer_dtype(fn: Callable) -> Callable:
         # find the first array argument, if required
         arr = None if ivy.exists(dtype) else _get_first_array(*args, **kwargs)
         # infer the correct data type
-        dtype = ivy.default_dtype(dtype, item=arr, as_native=True)
+        dtype = ivy.default_dtype(dtype=dtype, item=arr, as_native=True)
         # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
 
@@ -365,30 +365,22 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
-        if hasattr(original, "array_spec"):
-            to_wrap.array_spec = original.array_spec
-        if hasattr(original, "infer_device") and not hasattr(to_wrap, "infer_device"):
-            to_wrap = infer_device(to_wrap)
-        if hasattr(original, "infer_dtype") and not hasattr(to_wrap, "infer_dtype"):
-            to_wrap = infer_dtype(to_wrap)
-        if hasattr(original, "outputs_to_ivy_arrays") and not hasattr(
-            to_wrap, "outputs_to_ivy_arrays"
-        ):
-            to_wrap = outputs_to_ivy_arrays(to_wrap)
-        if hasattr(original, "inputs_to_native_arrays") and not hasattr(
-            to_wrap, "inputs_to_native_arrays"
-        ):
-            to_wrap = inputs_to_native_arrays(to_wrap)
-        if hasattr(original, "inputs_to_ivy_arrays") and not hasattr(
-            to_wrap, "inputs_to_ivy_arrays"
-        ):
-            to_wrap = inputs_to_ivy_arrays(to_wrap)
-        if hasattr(original, "handle_out_argument") and not hasattr(
-            to_wrap, "handle_out_argument"
-        ):
-            to_wrap = handle_out_argument(to_wrap)
-        if hasattr(original, "handle_nestable") and not hasattr(
-            to_wrap, "handle_nestable"
-        ):
-            to_wrap = handle_nestable(to_wrap)
+        # set attributes
+        for attr in original.__dict__.keys():
+            # private attribute or decorator
+            if attr.startswith("_") or hasattr(ivy, attr) or attr == "handles_out_arg":
+                continue
+            setattr(to_wrap, attr, getattr(original, attr))
+        # wrap decorators (sequence matters)
+        for attr in [
+            "infer_device",
+            "infer_dtype",
+            "outputs_to_ivy_arrays",
+            "inputs_to_native_arrays",
+            "inputs_to_ivy_arrays",
+            "handle_out_argument",
+            "handle_nestable",
+        ]:
+            if hasattr(original, attr) and not hasattr(to_wrap, attr):
+                to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap
