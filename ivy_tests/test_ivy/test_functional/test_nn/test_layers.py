@@ -350,7 +350,7 @@ def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
 
 
 @st.composite
-def x_and_filters(
+def _x_and_filters(
     draw,
     dtypes,
     data_format,
@@ -546,7 +546,7 @@ def x_and_filters(
 
 # conv1d
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NWC", "NCW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -596,7 +596,7 @@ def test_conv1d(
 
 # conv1d_transpose
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NWC", "NCW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -649,7 +649,7 @@ def test_conv1d_transpose(
 
 # conv2d
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -697,7 +697,7 @@ def test_conv2d(
 
 # conv2d_transpose
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -751,7 +751,7 @@ def test_conv2d_transpose(
 
 # depthwise_conv2d
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -802,7 +802,7 @@ def test_depthwise_conv2d(
 
 # conv3d
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NDHWC", "NCDHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -851,7 +851,7 @@ def test_conv3d(
 
 # conv3d_transpose
 @given(
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
         data_format=st.sampled_from(["NDHWC", "NCDHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
