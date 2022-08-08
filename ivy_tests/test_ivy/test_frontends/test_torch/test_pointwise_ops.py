@@ -172,7 +172,8 @@ def test_torch_log(
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
-    
+
+
 # cos
 @given(
     dtype_and_x=helpers.dtype_and_values(
