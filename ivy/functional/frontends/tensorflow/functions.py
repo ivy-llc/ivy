@@ -27,6 +27,27 @@ def fill(dims, value, name="full"):
 fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
+def multiply(x, y, name=None):
+    return ivy.multiply(x, y)
+
+
+multiply.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def subtract(x, y, name=None):
+    return ivy.subtract(x, y)
+
+
+subtract.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def logical_xor(x, y, name='LogicalXor'):
+    return ivy.logical_xor(x, y)
+
+
+logical_xor.supported_dtypes = {"torch": ("bool", "bool")}
+
+
 def hard_sigmoid(x):
     point_two = ivy.full(x.shape, 0.2)
     point_five = ivy.full(x.shape, 0.5)
