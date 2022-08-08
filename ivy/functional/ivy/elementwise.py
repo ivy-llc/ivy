@@ -4052,7 +4052,7 @@ def positive(
     >>> y = ivy.zeros(5)
     >>> ivy.positive(x,out=y)
     >>> print(y)
-    ivy.array([ 0. , -1. , -0.5,  2. ,  3. ])
+    ivy.array([0., -1., -0.5,  2.,  3.])
 
     >>> x = ivy.array([[1.1,2.2,3.3], \
                        [-4.4,-5.5,-6.6]])
@@ -4066,7 +4066,7 @@ def positive(
     >>> x = ivy.native_array([-1.1,-1,0,1,1.1])
     >>> y = ivy.positive(x)
     >>> print(y)
-    ivy.array([-1.1, -1. ,  0. ,  1. ,  1.1])
+    ivy.array([-1.1, -1.,  0.,  1.,  1.1])
 
     With :code:`ivy.Container` input:
 
@@ -4087,7 +4087,7 @@ def positive(
     >>> x = ivy.array([-1.1,-1,0,-0,1,1.1])
     >>> y = x.positive()
     >>> print(y)
-    ivy.array([-1.1, -1. ,  0. ,  0. ,  1. ,  1.1])
+    ivy.array([-1.1, -1.,  0.,  0.,  1.,  1.1])
 
     Using :code:`ivy.Container` instance method:
 
