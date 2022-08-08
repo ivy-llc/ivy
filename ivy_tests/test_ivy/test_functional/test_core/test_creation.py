@@ -150,7 +150,7 @@ def test_logspace(
         instance_method=False,
         fw=fw,
         fn_name="logspace",
-        rtol_=1,  # if its less then one it'll test for inf
+        rtol_=1,  # if It's less than one it'll test for inf
         atol_=1e-06,
         test_values=True,
         start=np.asarray(start_stop[0], dtype=dtype[0]),
@@ -285,7 +285,7 @@ def test_empty(
     ivy.set_backend("tensorflow")
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
-    ivy.unset_backend
+    ivy.unset_backend()
 
 
 # empty_like
@@ -335,7 +335,7 @@ def test_empty_like(
     ivy.set_backend("tensorflow")
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
-    ivy.unset_backend
+    ivy.unset_backend()
 
 
 # eye
@@ -410,7 +410,7 @@ def test_from_dlpack(
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
+        as_variable_flags=False,  # can't convert variables
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
