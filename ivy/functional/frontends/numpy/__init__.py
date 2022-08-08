@@ -13,5 +13,7 @@ from . import random
 from .random import *
 from . import sorting_searching_counting
 from .sorting_searching_counting import *
+from . import statistics
+from .statistics import *
 from . import ufunc
 from .ufunc import *
