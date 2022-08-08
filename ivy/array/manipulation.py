@@ -17,8 +17,9 @@ class ArrayWithManipulation(abc.ABC):
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
-        axis: Optional[int] = 0,
+        /,
         *,
+        axis: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -29,12 +30,15 @@ class ArrayWithManipulation(abc.ABC):
         Parameters
         ----------
         self
-            input arrays to join. The arrays must have the same shape, except in the dimension specified by axis.
+            input arrays to join. The arrays must have the same shape, except in the
+            dimension specified by axis.
         axis
-            axis along which the arrays will be joined. If axis is None, arrays must be flattened before concatenation. If axis is negative, axis on which to join arrays is determined by counting from the top. Default: 0.
+            axis along which the arrays will be joined. If axis is None, arrays
+            must be flattened before concatenation. If axis is negative, axis on
+            which to join arrays is determined by counting from the top. Default: 0.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -44,56 +48,11 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.concat([self._data] + xs, axis, out=out)
 
-    def split(
-        self: ivy.Array,
-        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
-        axis: int = 0,
-        with_remainder: bool = False,
-    ) -> List[ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.split. This method simply
-        wraps the function, and so the docstring for ivy.split also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            array to be divided into sub-arrays.
-        num_or_size_splits
-            Number of equal arrays to divide the array into along the given axis if an
-            integer. The size of each split element if a sequence of integers. Default
-            is to divide into as many 1-dimensional arrays as the axis dimension.
-        axis
-            The axis along which to split, default is 0.
-        with_remainder
-            If the tensor does not split evenly, then store the last remainder entry.
-            Default is False.
-
-        Returns
-        -------
-            A list of sub-arrays.
-
-        """
-        return ivy.split(self._data, num_or_size_splits, axis, with_remainder)
-
-    def flip(
-        self: ivy.Array,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.flip. This method simply
-        wraps the function, and so the docstring for ivy.flip also applies
-        to this method with minimal changes.
-
-        """
-        return ivy.flip(self._data, axis, out=out)
-
     def expand_dims(
         self: ivy.Array,
-        axis: Union[int, Tuple[int], List[int]] = 0,
+        /,
         *,
+        axis: Union[int, Tuple[int], List[int]] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -128,8 +87,39 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.expand_dims(self._data, axis, out=out)
 
+    def flip(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.flip. This method simply
+        wraps the function, and so the docstring for ivy.flip also applies
+        to this method with minimal changes.
+
+        """
+        return ivy.flip(self._data, axis, out=out)
+
+    def permute_dims(
+        self: ivy.Array,
+        /,
+        axes: Tuple[int, ...],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.permute_dims. This method simply
+        wraps the function, and so the docstring for ivy.permute_dims also applies
+        to this method with minimal changes.
+
+        """
+        return ivy.permute_dims(self._data, axes, out=out)
+
     def reshape(
         self: ivy.Array,
+        /,
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
         *,
         copy: Optional[bool] = None,
@@ -176,25 +166,12 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.reshape(self._data, shape, copy=copy, out=out)
 
-    def permute_dims(
-        self: ivy.Array,
-        axes: Tuple[int, ...],
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.permute_dims. This method simply
-        wraps the function, and so the docstring for ivy.permute_dims also applies
-        to this method with minimal changes.
-
-        """
-        return ivy.permute_dims(self._data, axes, out=out)
-
     def roll(
         self: ivy.Array,
+        /,
         shift: Union[int, Sequence[int]],
-        axis: Optional[Union[int, Sequence[int]]] = None,
         *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -240,6 +217,7 @@ class ArrayWithManipulation(abc.ABC):
 
     def squeeze(
         self: ivy.Array,
+        /,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         *,
         out: Optional[ivy.Array] = None,
@@ -264,8 +242,9 @@ class ArrayWithManipulation(abc.ABC):
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
-        axis: Optional[int] = 0,
+        /,
         *,
+        axis: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -279,6 +258,7 @@ class ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         x_min: Union[Number, ivy.Array, ivy.NativeArray],
         x_max: Union[Number, ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -314,11 +294,27 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.clip(self._data, x_min=x_min, x_max=x_max, out=out)
 
+    def constant_pad(
+        self: ivy.Array,
+        /,
+        pad_width: Iterable[Tuple[int]],
+        *,
+        value: Optional[Number] = 0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.constant_pad. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+        """
+        return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
+
     def repeat(
         self: ivy.Array,
+        /,
         repeats: Union[int, Iterable[int]],
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
         *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -335,8 +331,58 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.repeat(self._data, repeats=repeats, axis=axis, out=out)
 
+    def split(
+        self: ivy.Array,
+        /,
+        *,
+        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+        axis: int = 0,
+        with_remainder: bool = False,
+    ) -> List[ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.split. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            array to be divided into sub-arrays.
+        num_or_size_splits
+            Number of equal arrays to divide the array into along the given axis if an
+            integer. The size of each split element if a sequence of integers. Default
+            is to divide into as many 1-dimensional arrays as the axis dimension.
+        axis
+            The axis along which to split, default is 0.
+        with_remainder
+            If the tensor does not split evenly, then store the last remainder entry.
+            Default is False.
+
+        Returns
+        -------
+            A list of sub-arrays.
+
+        """
+        return ivy.split(self._data, num_or_size_splits, axis, with_remainder)
+
+    def swapaxes(
+        self: ivy.Array,
+        axis0: int,
+        axis1: int,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.swap_axes. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+        """
+        return ivy.swapaxes(self._data, axis0=axis0, axis1=axis1, out=out)
+
     def tile(
         self: ivy.Array,
+        /,
         reps: Iterable[int],
         *,
         out: Optional[ivy.Array] = None,
@@ -348,22 +394,9 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.tile(self._data, reps=reps, out=out)
 
-    def constant_pad(
-        self: ivy.Array,
-        pad_width: Iterable[Tuple[int]],
-        value: Number = 0,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.constant_pad. This method simply
-        wraps the function, and so the docstring for ivy.split also applies
-        to this method with minimal changes.
-        """
-        return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
-
     def zero_pad(
         self: ivy.Array,
+        /,
         pad_width: Iterable[Tuple[int]],
         *,
         out: Optional[ivy.Array] = None,
@@ -374,17 +407,3 @@ class ArrayWithManipulation(abc.ABC):
         to this method with minimal changes.
         """
         return ivy.zero_pad(self._data, pad_width=pad_width, out=out)
-
-    def swapaxes(
-        self: ivy.Array,
-        axis0: int,
-        axis1: int,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.swap_axes. This method simply
-        wraps the function, and so the docstring for ivy.split also applies
-        to this method with minimal changes.
-        """
-        return ivy.swapaxes(self._data, axis0=axis0, axis1=axis1, out=out)

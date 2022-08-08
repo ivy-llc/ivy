@@ -44,8 +44,8 @@ def concat(
         List[Union[ivy.Array, ivy.NativeArray]],
     ],
     /,
-    axis: Optional[int] = 0,
     *,
+    axis: Optional[int] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Joins a sequence of arrays along an existing axis.
@@ -53,9 +53,12 @@ def concat(
     Parameters
     ----------
     xs
-        input arrays to join. The arrays must have the same shape, except in the dimension specified by axis.
+        input arrays to join. The arrays must have the same shape, except in the
+        dimension specified by axis.
     axis
-        axis along which the arrays will be joined. If axis is None, arrays are flattened before concatenation. If axis is negative, the axis is along which to join is determined by counting from the last dimension. Default: 0.
+        axis along which the arrays will be joined. If axis is None, arrays are
+        flattened before concatenation. If axis is negative, the axis is along which
+        to join is determined by counting from the last dimension. Default: 0.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -63,11 +66,12 @@ def concat(
     Returns
     -------
     ret
-        an output array containing the concatenated values. If the input arrays have different data types, normal Type Promotion Rules apply.
+        an output array containing the concatenated values. If the input arrays have
+        different data types, normal Type Promotion Rules apply.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html#signatures.manipulation_functions.concat>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html#signatures.manipulation_functions.concat>`_ # noqa: E501
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -92,8 +96,8 @@ def concat(
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    axis: Union[int, Tuple[int], List[int]],
     *,
+    axis: Union[int, Tuple[int], List[int]],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Expands the shape of an array by inserting a new axis (dimension) of size one
@@ -214,8 +218,8 @@ def expand_dims(
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Reverses the order of elements in an array along the given axis. The shape of the
@@ -327,8 +331,8 @@ def flip(
 @handle_nestable
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
-    axes: Tuple[int, ...],
     /,
+    axes: Tuple[int, ...],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -353,7 +357,7 @@ def permute_dims(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa: E501
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -369,8 +373,8 @@ def permute_dims(
 @handle_nestable
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
-    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     /,
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
@@ -403,7 +407,7 @@ def reshape(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html#signatures.manipulation_functions.reshape>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.reshape.html#signatures.manipulation_functions.reshape>`_ # noqa: E501
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -475,10 +479,10 @@ def reshape(
 @handle_nestable
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-    shift: Union[int, Sequence[int]],
     /,
-    axis: Optional[Union[int, Sequence[int]]] = None,
+    shift: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Rolls array elements along a specified axis. Array elements that roll beyond the
@@ -631,7 +635,7 @@ def squeeze(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.squeeze.html#signatures.manipulation_functions.squeeze>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.squeeze.html#signatures.manipulation_functions.squeeze>`_ # noqa: E501
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -701,9 +705,9 @@ def stack(
     arrays: Union[
         Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray], List[ivy.NativeArray]
     ],
-    axis: int = 0,
     /,
     *,
+    axis: Optional[int] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Joins a sequence of arrays along a new axis.
@@ -740,7 +744,7 @@ def stack(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html#signatures.manipulation_functions.stack>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html#signatures.manipulation_functions.stack>`_ # noqa: E501
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -886,10 +890,10 @@ def clip(
 @handle_nestable
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
-    pad_width: Iterable[Tuple[int]],
-    value: Number = 0,
     /,
+    pad_width: Iterable[Tuple[int]],
     *,
+    value: Optional[Number] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Pads an array with a constant value.
@@ -926,10 +930,10 @@ def constant_pad(
 @handle_nestable
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
-    repeats: Union[int, Iterable[int]],
-    axis: int = None,
     /,
+    repeats: Union[int, Iterable[int]],
     *,
+    axis: int = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Repeat values along a given dimension.
@@ -990,11 +994,11 @@ def repeat(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
+    *,
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
@@ -1199,8 +1203,8 @@ def swapaxes(
 @handle_nestable
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
-    reps: Iterable[int],
     /,
+    reps: Iterable[int],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1234,8 +1238,8 @@ def tile(
 @handle_nestable
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
-    pad_width: Iterable[Tuple[int]],
     /,
+    pad_width: Iterable[Tuple[int]],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:

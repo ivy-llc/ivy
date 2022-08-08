@@ -467,17 +467,17 @@ def f_n_calls():
 
 
 def assert_all_close(
-        ret_np,
-        ret_from_np,
-        rtol=1e-05,
-        atol=1e-08,
-        ground_truth_backend='TensorFlow'):
-    assert ret_np.dtype is ret_from_np.dtype, \
-        ("the return with a {} backend produced data type of {}, while the return with"
-         " a {} backend returned a data type of {}.".format(ground_truth_backend,
-                                                            ret_from_np.dtype,
-                                                            ivy.current_backend_str(),
-                                                            ret_np.dtype))
+    ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
+):
+    assert ret_np.dtype is ret_from_np.dtype, (
+        "the return with a {} backend produced data type of {}, while the return with"
+        " a {} backend returned a data type of {}.".format(
+            ground_truth_backend,
+            ret_from_np.dtype,
+            ivy.current_backend_str(),
+            ret_np.dtype,
+        )
+    )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
     else:
@@ -523,12 +523,13 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
 
 
 def value_test(
-        *,
-        ret_np_flat,
-        ret_from_np_flat,
-        rtol=None,
-        atol=1e-6,
-        ground_truth_backend='TensorFlow'):
+    *,
+    ret_np_flat,
+    ret_from_np_flat,
+    rtol=None,
+    atol=1e-6,
+    ground_truth_backend="TensorFlow",
+):
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_from_np_flat) != list:
@@ -548,7 +549,8 @@ def value_test(
                 ret_from_np,
                 rtol=rtol,
                 atol=atol,
-                ground_truth_backend=ground_truth_backend)
+                ground_truth_backend=ground_truth_backend,
+            )
     else:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
             assert_all_close(
@@ -556,7 +558,8 @@ def value_test(
                 ret_from_np,
                 rtol=rtol,
                 atol=atol,
-                ground_truth_backend=ground_truth_backend)
+                ground_truth_backend=ground_truth_backend,
+            )
 
 
 def args_to_container(array_args):
@@ -1262,7 +1265,7 @@ def test_function(
         ret_from_np_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
-        ground_truth_backend=ground_truth_backend
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -2109,14 +2112,18 @@ def get_bounds(draw, *, dtype):
 
 # For Review
 @st.composite
-def get_axis(draw,
-             *,
-             shape,
-             allow_none=False,
-             sorted=True,
-             unique=True,
-             min_size=1,
-             max_size=None):
+def get_axis(
+    draw,
+    *,
+    shape,
+    allow_none=False,
+    sorted=True,
+    unique=True,
+    min_size=1,
+    max_size=None,
+    force_tuple=False,
+    force_int=False,
+):
     """Draws one or more axis for the given shape.
 
     Parameters
@@ -2141,11 +2148,23 @@ def get_axis(draw,
         int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
         axes drawn.
         If None and unique is True, then it is set to the number of axes in the shape
+    force_tuple
+        boolean, if true, all axis will be returned as a tuple. If force_tuple and
+        force_int are true, then an AssertionError is raised
+    force_int
+        boolean, if true, all axis will be returned as an int. If force_tuple and
+        force_int are true, then an AssertionError is raised
 
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
+    assert not (force_int and force_tuple), (
+        "Cannot return an int and a tuple. If "
+        "both are valid then set 'force_int' "
+        "and 'force_tuple' to False."
+    )
+
     # Draw values from any strategies given
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
@@ -2160,44 +2179,36 @@ def get_axis(draw,
     if max_size is None and unique:
         max_size = max(axes, min_size)
 
+    valid_strategies = []
+
     if allow_none:
+        valid_strategies.append(st.none())
+
+    if not force_tuple:
         if axes == 0:
-            axis = draw(st.none()
-                        | st.just(0)
-                        | st.lists(
-                            st.just(0),
-                            min_size=min_size,
-                            max_size=max_size))
+            valid_strategies.append(st.just(0))
         else:
-            axis = draw(
-                st.none()
-                | st.integers(-axes, axes - 1)
-                | st.lists(
+            valid_strategies.append(st.integers(-axes, axes - 1))
+    if not force_int:
+        if axes == 0:
+            valid_strategies.append(
+                st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            )
+        else:
+            valid_strategies.append(
+                st.lists(
                     st.integers(-axes, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
                 )
             )
-    else:
-        if axes == 0:
-            axis = draw(st.just(0)
-                        | st.lists(
-                            st.just(0),
-                            min_size=min_size,
-                            max_size=max_size))
-        else:
-            axis = draw(
-                st.integers(-axes, axes - 1)
-                | st.lists(
-                    st.integers(-axes, axes - 1),
-                    min_size=min_size,
-                    max_size=max_size,
-                    unique_by=unique_by,
-                )
-            )
+
+    axis = draw(st.one_of(*valid_strategies))
+
     if type(axis) == list:
         if sorted:
+
             def sort_key(ele, max_len):
                 if ele < 0:
                     return ele + max_len - 1
@@ -2284,7 +2295,8 @@ def handle_cmd_line_args(test_fn):
 
 
 def gradient_incompatible_function(*, fn):
-    return \
-        not ivy.supports_gradients \
-        and hasattr(fn, "computes_gradients") \
+    return (
+        not ivy.supports_gradients
+        and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
+    )
