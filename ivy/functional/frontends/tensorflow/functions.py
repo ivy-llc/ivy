@@ -39,3 +39,10 @@ def subtract(x, y, name=None):
 
 
 subtract.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def logical_xor(x, y, name='LogicalXor'):
+    return ivy.logical_xor(x, y)
+
+
+logical_xor.supported_dtypes = {"torch": ("bool", "bool")}
