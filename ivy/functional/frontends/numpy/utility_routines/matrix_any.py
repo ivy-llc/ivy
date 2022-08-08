@@ -1,6 +1,7 @@
 import numpy as np
 import ivy
 
+
 def any(
     x,
     axis=None,
@@ -23,11 +24,11 @@ def any(
                 elif w.shape[currDim] == 1:
                     listFinalShapes.append(x.shape[currDim])
                 currDim -= 1
-            while(-currDim <= len(xx.shape)):
+            while (-currDim <= len(xx.shape)):
                 listFinalShapes.append(xx.shape[currDim]) 
                 currDim -= 1
             w = np.tile(w, tuple(listFinalShapes[::-1])) 
         xx = xx * w
-    xx = ivy.array(xx)			
+    xx = ivy.array(xx)
     return ivy.any(xx, axis, keepdims, out=out)
 		
