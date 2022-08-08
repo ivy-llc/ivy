@@ -79,7 +79,7 @@ class ArrayWithSet(abc.ABC):
           --------
 
         >>> x = ivy.array([0.3,0.4,0.7,0.4,0.2,0.8,0.5])
-        >>> y = ivy.unique_inverse(x)
+        >>> y = x.unique_inverse()
         >>> print(y)
         unique_inverse(values=ivy.array([0.2, 0.3, 0.4, 0.5, 0.7, 0.8]), inverse_indices=ivy.array([1, 2, 4, 2, 0, 5, 3]))
 
