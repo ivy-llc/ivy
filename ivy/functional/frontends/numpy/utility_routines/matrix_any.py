@@ -30,5 +30,4 @@ def any(
             w = np.tile(w, tuple(listFinalShapes[::-1])) 
         xx = xx * w
     xx = ivy.array(xx)
-    return ivy.any(xx, axis, keepdims, out=out)
-		
+    return ivy.any(xx, axis, keepdims, out=out)	
