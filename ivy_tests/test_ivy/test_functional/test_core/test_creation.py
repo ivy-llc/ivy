@@ -544,7 +544,7 @@ def test_full_like(
 
 # ToDo: create arrays which are not only 1-d
 array_shape = st.shared(
-    st.lists(st.integers(min_value=1, max_value=10), min_size=1, max_size=1),
+    st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=1),
     key="array_shape",
 )
 dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="dtype")
@@ -552,7 +552,7 @@ dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="dtyp
 
 @given(
     arrays=st.lists(
-        hnp.arrays(dtype=dtype_shared, shape=array_shape), min_size=1, max_size=10
+        hnp.arrays(dtype=dtype_shared, shape=array_shape), min_size=1, max_size=5
     ),
     indexing=st.sampled_from(["xy", "ij"]),
     dtype=dtype_shared,
