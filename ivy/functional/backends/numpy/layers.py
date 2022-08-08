@@ -4,8 +4,6 @@
 import numpy as np
 from typing import Union, Tuple, Optional, List
 
-import ivy
-
 
 def _add_dilations(x, dilations, axis):
     return np.insert(
@@ -33,7 +31,6 @@ def _handle_padding(x, strides, filters, padding):
             pad = max(filters - (x % strides), 0)
     else:
         pad = 0
-
     return pad
 
 
@@ -70,8 +67,6 @@ def conv1d(
     )
     if data_format == "NCW":
         res = np.transpose(res, (0, 2, 1))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -119,8 +114,6 @@ def conv1d_transpose(
     )
     if data_format == "NCW":
         res = np.transpose(res, (0, 2, 1))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -209,8 +202,6 @@ def conv2d(
     res = np.sum(mult, (3, 4, 5))
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -283,8 +274,6 @@ def conv2d_transpose(
     )
     if data_format == "NCHW":
         res = np.transpose(res, (0, 3, 1, 2))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -332,8 +321,6 @@ def depthwise_conv2d(
             outputs = np.append(outputs, output, axis=-1)
         else:
             outputs = np.append(outputs, np.transpose(output, (0, 3, 1, 2)), axis=1)
-    if ivy.exists(out):
-        ivy.inplace_update(outputs, out)
     return outputs
 
 
@@ -444,8 +431,6 @@ def conv3d(
     res = np.sum(mult, (4, 5, 6, 7))
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -535,6 +520,4 @@ def conv3d_transpose(
     )
     if data_format == "NCDHW":
         res = np.transpose(res, (0, 4, 1, 2, 3))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
