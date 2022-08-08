@@ -261,7 +261,7 @@ def test_randint(
 )
 def test_seed(seed_val):
     # smoke test
-    ivy.seed(seed_val)
+    ivy.seed(seed_value=seed_val)
 
 
 # shuffle
