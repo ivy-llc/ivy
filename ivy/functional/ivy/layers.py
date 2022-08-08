@@ -695,7 +695,8 @@ def conv2d(
     >>> filters = ivy.array([[[[0.]],[[1.]],[[0.]]], \
                              [[[0.]],[[1.]], [[0.]]], \
                              [[[0.]],[[1.]], [[0.]]]]) #HWIO
-    >>> result = ivy.conv2d(x, filters, (1,), 'SAME', data_format='NHWC', dilations= (1,))
+    >>> result = ivy.conv2d(x, filters, (1,), 'SAME', data_format='NHWC',\
+     dilations= (1,))
     >>> print(result)
     ivy.array([[
               [[2.],[4.],[6.]],
