@@ -667,6 +667,72 @@ def matmul(
     -   if x1 is an array having shape (..., M, K), x2 is an array having shape
         (..., L, N), and K != L.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.__matmul__.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([2., 0., 3.])
+    >>> y = ivy.array([4., 1., 8.])
+    >>> z = ivy.matmul(x, y)
+    >>> print(z)
+    ivy.array(32.)
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([[1., 2.],  \
+                            [0., 1.]]) 
+    >>> y = ivy.native_array([[2., 0.],  \
+                            [0., 3.]])
+    >>> z = ivy.matmul(x, y)
+    >>> print(z)
+    ivy.array([[2., 6.],
+                [0., 3.]])
+    
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([5., 1.]), b=ivy.array([1., 0.]))
+    >>> y = ivy.Container(a=ivy.array([4., 7.]), b=ivy.array([3., 0.]))
+    >>> z = ivy.matmul(x,y)
+    >>> print(z)
+    {
+        a: ivy.array(27.),
+        b: ivy.array(3.)
+    }
+    
+    With a combination of :code:`ivy.Array`
+    and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([9., 0.])
+    >>> y = ivy.Container(a=ivy.array([2., 1.]), b=ivy.array([1., 0.]))
+    >>> z = ivy.matmul(x, y)
+    >>> print(z)
+    {
+        a: ivy.array(18.),
+        b: ivy.array(9.)
+    }
+
+    With a combination of :code:`ivy.NativeArray`
+    and :code:`ivy.Array` inputs:
+    
+    >>> x = ivy.native_array([[1., 2.], \
+                            [0., 3.]])
+    >>> y = ivy.array([[1.], \
+                        [3.]])
+    >>> z = ivy.matmul(x, y)
+    >>> print(z)
+    ivy.array([[7.],
+               [9.]])
+
     """
     return current_backend(x1).matmul(x1, x2, out=out)
 
