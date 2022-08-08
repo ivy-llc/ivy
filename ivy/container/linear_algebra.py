@@ -725,8 +725,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.matrix_rank()
         >>> print(y)
         {
-            a: ivy.array(2.),
-            b: ivy.array(1.)
+            a: ivy.array(2),
+            b: ivy.array(1)
         }
         """
         return self.static_matrix_rank(
@@ -1217,11 +1217,11 @@ class ContainerWithLinearAlgebra(ContainerBase):
             +------------------+--------------------------------+
             | -1               | 1./sum(1./abs(a))              |
             +------------------+--------------------------------+
-            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | # noqa
+            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | # noqa
             +------------------+--------------------------------+
             | -inf             | min(abs(a))                    |
             +------------------+--------------------------------+
-            | (int,float < 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |
+            | (int,float < 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |
             +------------------+--------------------------------+
 
             Default: ``2``.
@@ -1316,11 +1316,11 @@ class ContainerWithLinearAlgebra(ContainerBase):
             +------------------+--------------------------------+
             | -1               | 1./sum(1./abs(a))              |
             +------------------+--------------------------------+
-            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | # noqa
+            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | # noqa
             +------------------+--------------------------------+
             | -inf             | min(abs(a))                    |
             +------------------+--------------------------------+
-            | (int,float < 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |
+            | (int,float < 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |
             +------------------+--------------------------------+
 
             Default: ``2``.

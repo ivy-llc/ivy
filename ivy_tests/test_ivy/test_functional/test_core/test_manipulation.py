@@ -464,8 +464,6 @@ def _stack_helper(draw):
 
 
 # stack
-
-
 @given(
     dtypes_arrays_axis=_stack_helper(),
     as_variable=helpers.array_bools(
@@ -635,8 +633,6 @@ def _tile_helper(draw):
 
 
 # tile
-
-
 @given(
     dtype_value_repeat=_tile_helper(),
     as_variable=helpers.array_bools(
