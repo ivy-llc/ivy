@@ -23,7 +23,7 @@ after you've gone through the higher level overview which is covered in this *de
 
 | All eight fall into one of the three categories as follows:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/dependency_graph_with_compiler.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 
