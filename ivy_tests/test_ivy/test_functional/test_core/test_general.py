@@ -307,7 +307,7 @@ def test_to_list(x0_n_x1_n_res, device, call, fw):
 
 # shape
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(ivy_np.valid_dtypes),
+    x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     as_array=st.booleans(),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name='shape'),
@@ -880,75 +880,75 @@ def test_scatter_nd(
 
 
 # gather
-@given(
-    params_n_indices_n_axis=helpers.array_and_indices_and_axis(
-        last_dim_same_size=False,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10
-    ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name='gather'),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-    container=helpers.list_of_length(x=st.booleans(), length=2),
-    instance_method=st.booleans(),
-)
-def test_gather(params_n_indices_n_axis, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
-    params, indices, axis = params_n_indices_n_axis
-    params_dtype, params = params
-    indices_dtype, indices = indices
-    helpers.test_function(
-        input_dtypes=[params_dtype, indices_dtype],
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="gather",
-        params=np.asarray(params, dtype=params_dtype),
-        indices=np.asarray(indices, dtype=indices_dtype),
-        axis=axis
-    )
+# @given(
+#     params_n_indices_n_axis=helpers.array_and_indices_and_axis(
+#         last_dim_same_size=False,
+#         allow_inf=False,
+#         min_num_dims=1,
+#         max_num_dims=5,
+#         min_dim_size=1,
+#         max_dim_size=10
+#     ),
+#     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+#     with_out=st.booleans(),
+#     num_positional_args=helpers.num_positional_args(fn_name='gather'),
+#     native_array=helpers.list_of_length(x=st.booleans(), length=2),
+#     container=helpers.list_of_length(x=st.booleans(), length=2),
+#     instance_method=st.booleans(),
+# )
+# def test_gather(params_n_indices_n_axis, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
+#     params, indices, axis = params_n_indices_n_axis
+#     params_dtype, params = params
+#     indices_dtype, indices = indices
+#     helpers.test_function(
+#         input_dtypes=[params_dtype, indices_dtype],
+#         as_variable_flags=as_variable,
+#         with_out=with_out,
+#         num_positional_args=num_positional_args,
+#         native_array_flags=native_array,
+#         container_flags=container,
+#         instance_method=instance_method,
+#         fw=fw,
+#         fn_name="gather",
+#         params=np.asarray(params, dtype=params_dtype),
+#         indices=np.asarray(indices, dtype=indices_dtype),
+#         axis=axis
+#     )
 
 
 # gather_nd
-@given(
-    params_n_ndindices=helpers.array_and_ndindices(
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10
-    ),
-    ndindices_dtype=st.sampled_from(["int32", "int64"]),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name='gather_nd'),
-    native_array=helpers.list_of_length(st.booleans(), 2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
-)
-def test_gather_nd(params_n_ndindices, ndindices_dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
-    params, ndindices = params_n_ndindices
-    params_dtype, params = params
-    helpers.test_function(
-        input_dtypes=[params_dtype, ndindices_dtype],
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="gather_nd",
-        params=np.asarray(params, dtype=params_dtype),
-        indices=np.asarray(ndindices, dtype=ndindices_dtype)
-    )
+# @given(
+#     params_n_ndindices=helpers.array_and_ndindices(
+#         allow_inf=False,
+#         min_num_dims=1,
+#         max_num_dims=5,
+#         min_dim_size=1,
+#         max_dim_size=10
+#     ),
+#     ndindices_dtype=st.sampled_from(["int32", "int64"]),
+#     as_variable=helpers.list_of_length(st.booleans(), 2),
+#     with_out=st.booleans(),
+#     num_positional_args=helpers.num_positional_args(fn_name='gather_nd'),
+#     native_array=helpers.list_of_length(st.booleans(), 2),
+#     container=helpers.list_of_length(st.booleans(), 2),
+#     instance_method=st.booleans(),
+# )
+# def test_gather_nd(params_n_ndindices, ndindices_dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
+#     params, ndindices = params_n_ndindices
+#     params_dtype, params = params
+#     helpers.test_function(
+#         input_dtypes=[params_dtype, ndindices_dtype],
+#         as_variable_flags=as_variable,
+#         with_out=with_out,
+#         num_positional_args=num_positional_args,
+#         native_array_flags=native_array,
+#         container_flags=container,
+#         instance_method=instance_method,
+#         fw=fw,
+#         fn_name="gather_nd",
+#         params=np.asarray(params, dtype=params_dtype),
+#         indices=np.asarray(ndindices, dtype=ndindices_dtype)
+#     )
 
 # exists
 
@@ -957,7 +957,7 @@ def test_gather_nd(params_n_ndindices, ndindices_dtype, as_variable, with_out, n
     x=st.one_of(
         st.none(), 
         helpers.dtype_and_values(
-            ivy_np.valid_numeric_dtypes,
+            available_dtypes=ivy_np.valid_numeric_dtypes,
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=1), 
@@ -979,7 +979,7 @@ def test_exists(x):
     x=st.one_of(
         st.none(), 
         helpers.dtype_and_values(
-            ivy_np.valid_numeric_dtypes,
+            available_dtypes=ivy_np.valid_numeric_dtypes,
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=2), 
@@ -987,7 +987,7 @@ def test_exists(x):
     ), 
     default_val=st.one_of(
         helpers.dtype_and_values(
-            ivy_np.valid_numeric_dtypes,
+            available_dtypes=ivy_np.valid_numeric_dtypes,
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=2,
@@ -1207,7 +1207,7 @@ def test_explicit_ivy_framework_handles(device, call):
 # einops_rearrange
 @given(
     x=helpers.dtype_and_values(
-        ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_numeric_dtypes,
         allow_inf=False,
         min_num_dims=3,
         max_num_dims=3,
@@ -1252,7 +1252,7 @@ def test_einops_rearrange(x, pattern_and_axes_lengths, with_out, as_variable, nu
 
 @given(
     x=helpers.dtype_and_values(
-        ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_numeric_dtypes,
         allow_inf=False,
         min_num_dims=3,
         max_num_dims=3,
@@ -1464,18 +1464,115 @@ def test_inplace_increment(x_val_and_dtypes, tensor_fn, device):
         assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x_inplace))
         return
 
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes
+        ),
+    exclusive=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="is_ivy_array"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_is_ivy_array(x_val_and_dtypes, exclusive, as_variable, num_positional_args, native_array, container, fw):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+    input_dtypes=dtype,
+    as_variable_flags=as_variable,
+    with_out=False,
+    num_positional_args=num_positional_args,
+    native_array_flags=native_array,
+    container_flags=container,
+    instance_method=False,
+    fw=fw,
+    fn_name='is_ivy_array',
+    x=np.asarray(x, dtype=dtype),
+    exclusive=exclusive
+    )
 
-def test_is_ivy_array():
-    return
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes
+        ),
+    exclusive=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="is_array"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_is_array(x_val_and_dtypes, exclusive, as_variable, num_positional_args, native_array, container, fw):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+    input_dtypes=dtype,
+    as_variable_flags=as_variable,
+    with_out=False,
+    num_positional_args=num_positional_args,
+    native_array_flags=native_array,
+    container_flags=container,
+    instance_method=False,
+    fw=fw,
+    fn_name='is_array',
+    x=np.asarray(x, dtype=dtype),
+    exclusive=exclusive
+    )
 
-def test_is_array():
-    return
 
-def test_is_ivy_container():
-    return
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes
+        ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="is_ivy_container"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_is_ivy_container(x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+    input_dtypes=dtype,
+    as_variable_flags=as_variable,
+    with_out=False,
+    num_positional_args=num_positional_args,
+    native_array_flags=native_array,
+    container_flags=container,
+    instance_method=False,
+    fw=fw,
+    fn_name='is_ivy_container',
+    x=np.asarray(x, dtype=dtype),
+    )
 
-def test_all_equal():
-    return
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes,
+        num_arrays=2,
+        min_num_dims=1
+        ),
+    equality_matrix=st.booleans(),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    num_positional_args=st.integers(min_value=2, max_value=3),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2)
+)
+def test_all_equal(x_val_and_dtypes, equality_matrix, as_variable, num_positional_args, native_array, container, fw):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+    input_dtypes=dtype,
+    as_variable_flags=as_variable,
+    with_out=False,
+    num_positional_args=num_positional_args,
+    native_array_flags=native_array,
+    container_flags=container,
+    instance_method=False,
+    fw=fw,
+    fn_name='all_equal',
+    x0=np.asarray(x[0], dtype=dtype[0]),
+    x1=np.asarray(x[1], dtype=dtype[1]),
+    equality_matrix=equality_matrix
+    )
 
 def test_clip_matrix_norm():
     return

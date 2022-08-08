@@ -1288,8 +1288,9 @@ def clip_vector_norm(
         ret = ivy.inplace_update(out, ret)
     return ret
 
+clip_vector_norm.unsupported_dtypes = {"torch": ("float16",)}
 
-@to_native_arrays_and_back
+
 @handle_nestable
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1321,6 +1322,8 @@ def clip_matrix_norm(
     norms = ivy.matrix_norm(x, p, keepdims=True)
     ratios = ivy.maximum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
+
+clip_matrix_norm.unsupported_dtypes = { 'jax': ('float16',), 'numpy': ('float16',), 'tensorflow': ('float16',), "torch": ("float16",)}
 
 
 @to_native_arrays_and_back

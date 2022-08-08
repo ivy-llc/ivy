@@ -158,7 +158,7 @@ def scatter_flat(
     updates: torch.Tensor,
     size: Optional[int] = None,
     reduction: str = "sum",
-    *
+    *,
     out: Optional[torch.Tensor] = None,
 ):
     target = out
