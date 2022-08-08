@@ -153,9 +153,8 @@
 <span class="k">def</span> <span class="nf">linear</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">weight</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">bias</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Applies a linear transformation to the incoming data: y = x * t(weight) + bias.</span>
@@ -225,11 +224,10 @@
 <span class="k">def</span> <span class="nf">dropout</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">scale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Randomly zeroes some elements of the input tensor with probability p using</span>
 <span class="sd">    samples from a Bernoulli distribution.</span>
@@ -274,9 +272,8 @@
     <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">v</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Applies scaled dot product attention to inputs x using optional mask.</span>
@@ -324,7 +321,7 @@
 <span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
 <span class="sd">    &gt;&gt;&gt; k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[[4.04,5.03],[4.3,5.3],[4.3,5.3]]])</span>
 
@@ -333,7 +330,7 @@
 <span class="sd">    &gt;&gt;&gt; k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
 <span class="sd">    &gt;&gt;&gt; mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])</span>
 
@@ -341,7 +338,7 @@
 <span class="sd">    &gt;&gt;&gt; k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])</span>
 <span class="sd">    &gt;&gt;&gt; out = ivy.zeros(shape=(1, 3, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.scaled_dot_product_attention(q, k, v, 1, out=out)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.scaled_dot_product_attention(q, k, v, scale=1, out=out)</span>
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])</span>
 
@@ -350,7 +347,7 @@
 <span class="sd">    &gt;&gt;&gt; q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
 <span class="sd">    &gt;&gt;&gt; k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[[4.04,5.03],[4.3,5.3],[4.3,5.3]]])</span>
 
@@ -358,7 +355,7 @@
 <span class="sd">    &gt;&gt;&gt; k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
 <span class="sd">    &gt;&gt;&gt; mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])</span>
 
@@ -366,7 +363,7 @@
 <span class="sd">    &gt;&gt;&gt; k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])</span>
 <span class="sd">    &gt;&gt;&gt; out = ivy.zeros(shape=(1, 3, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.scaled_dot_product_attention(q, k, v, 1, out=out)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.scaled_dot_product_attention(q, k, v, scale=1, out=out)</span>
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])</span>
 
@@ -379,7 +376,7 @@
 <span class="sd">    b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),\</span>
 <span class="sd">    b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    {a:ivy.array([[[4.27,5.4],[4.4,5.6],[4.4,5.6]]]),b:ivy.array([[[4.35,5.54],[4.4,5.6],[4.4,5.6]]])}</span>
 
@@ -393,7 +390,7 @@
 <span class="sd">    &gt;&gt;&gt; mask = \</span>
 <span class="sd">    ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),\</span>
 <span class="sd">    b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]]))</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([[[4.27, 5.4],</span>
@@ -409,7 +406,7 @@
 <span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
 <span class="sd">    &gt;&gt;&gt; k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[</span>
 <span class="sd">            [4.04, 5.03],</span>
@@ -421,7 +418,7 @@
 <span class="sd">    &gt;&gt;&gt; k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])</span>
 <span class="sd">    &gt;&gt;&gt; out = ivy.zeros(shape=(1, 3, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.scaled_dot_product_attention(q, k, v, 1, out=out)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.scaled_dot_product_attention(q, k, v, scale=1, out=out)</span>
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])</span>
 
@@ -431,7 +428,7 @@
 <span class="sd">    &gt;&gt;&gt; k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),\</span>
 <span class="sd">    b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([[[4.14, 5.13],</span>
@@ -452,7 +449,7 @@
 <span class="sd">    &gt;&gt;&gt; k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])</span>
 <span class="sd">    &gt;&gt;&gt; mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])</span>
 
@@ -461,7 +458,7 @@
 <span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])</span>
 <span class="sd">    &gt;&gt;&gt; mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])</span>
 <span class="sd">    &gt;&gt;&gt; out = ivy.zeros(shape=(1, 3, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask, out=out)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask, out=out)</span>
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([[[nan, nan],[nan, nan],[nan, nan]]])</span>
 
@@ -476,7 +473,7 @@
 <span class="sd">    &gt;&gt;&gt; mask = \</span>
 <span class="sd">    ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),\</span>
 <span class="sd">    b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]]))</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1, mask=mask)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([[[4.27, 5.4],</span>
@@ -494,7 +491,7 @@
 <span class="sd">    b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))</span>
 <span class="sd">    &gt;&gt;&gt; v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])</span>
 <span class="sd">    &gt;&gt;&gt; mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, 1)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.scaled_dot_product_attention(q, k, v, scale=1)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([[[4.14, 5.13],</span>
@@ -526,18 +523,13 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;... q k, ... k f -&gt; ... q f&quot;</span><span class="p">,</span> <span class="n">attn</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<span class="n">scaled_dot_product_attention</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
-    <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
-<span class="p">}</span>
+<span class="n">scaled_dot_product_attention</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">,</span> <span class="p">)}</span>
 
 
 <div class="viewcode-block" id="multi_head_attention"><a class="viewcode-back" href="../../../../functional/ivy/layers/multi_head_attention.html#ivy.functional.ivy.layers.multi_head_attention">[docs]</a><span class="k">def</span> <span class="nf">multi_head_attention</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">scale</span><span class="p">,</span>
     <span class="n">num_heads</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">context</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">mask</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">to_q_fn</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -546,6 +538,7 @@
     <span class="n">to_q_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">to_kv_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">to_out_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Applies multi-head attention to inputs x.</span>
@@ -619,7 +612,7 @@
         <span class="n">mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_repeat</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="s2">&quot;... q k -&gt; ... h q k&quot;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">num_heads</span><span class="p">)</span>
 
     <span class="c1"># BS x H x Q x F</span>
-    <span class="n">sdpa</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">scaled_dot_product_attention</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">sdpa</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">scaled_dot_product_attention</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
 
     <span class="c1"># BS x Q x (HxF)</span>
     <span class="n">sdpa</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="n">sdpa</span><span class="p">,</span> <span class="s2">&quot;... h q f -&gt; ... q (h f)&quot;</span><span class="p">)</span>
@@ -631,10 +624,7 @@
     <span class="k">return</span> <span class="n">ret</span></div>
 
 
-<span class="n">multi_head_attention</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
-    <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
-<span class="p">}</span>
+<span class="n">multi_head_attention</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="p">)}</span>
 
 
 <span class="c1"># Convolutions #</span>
@@ -648,10 +638,9 @@
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">strides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NWC&quot;</span><span class="p">,</span>
     <span class="n">dilations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Computes a 1-D convolution given 3-D input x and filters arrays.</span>
@@ -686,7 +675,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.conv1d(x, filters, (1,), &#39;SAME&#39;, data_format=&#39;NWC&#39;,dilations= (1,))</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.conv1d(x, filters, (1,), &#39;SAME&#39;, &#39;NWC&#39;, (1,))</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[[0.], [3.], [0.]]])</span>
 
@@ -694,7 +683,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[1., 3.], [2., 4.], [5., 7]]])</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.native_array([[[0., 1.], [1., 0.]]])</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.conv1d(x, filters, (2,),&#39;VALID&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.conv1d(x, filters, strides= (2,), padding=&#39;VALID&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[[3., 1.], \</span>
 <span class="sd">                [7., 5.]]])</span>
@@ -705,7 +694,7 @@
 <span class="sd">                                       [10.8, 7.6, 4.9], [6.1, 2.2, 9.5]]]), \</span>
 <span class="sd">                          b= ivy.array([[[8.8, 7.7, 6.6], [1.1, 2.2, 3.5]]]))</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.array([[[1., 0., 1.], [0., 1., 0.], [1., 1., 0.]]])</span>
-<span class="sd">    &gt;&gt;&gt; result  = ivy.conv1d(x, filters, 3, &#39;VALID&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; result  = ivy.conv1d(x, filters, strides= 3, padding=&#39;VALID&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    {</span>
 <span class="sd">            a: ivy.array([[[6., 7.9, 1.2], \</span>
@@ -726,11 +715,10 @@
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">strides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">output_shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NWC&quot;</span><span class="p">,</span>
     <span class="n">dilations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Computes a 1-D transpose convolution given 3-D input x and filters arrays.</span>
@@ -775,10 +763,9 @@
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
     <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
     <span class="n">dilations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Computes a 2-D convolution given 4-D input x and filters arrays.</span>
@@ -824,8 +811,7 @@
 <span class="sd">    &gt;&gt;&gt; filters = ivy.array([[[[0.]],[[1.]],[[0.]]], \</span>
 <span class="sd">                             [[[0.]],[[1.]], [[0.]]], \</span>
 <span class="sd">                             [[[0.]],[[1.]], [[0.]]]]) #HWIO</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.conv2d(x, filters, (1,), &#39;SAME&#39;, data_format=&#39;NHWC&#39;,\</span>
-<span class="sd">     dilations= (1,))</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.conv2d(x, filters, (1,), &#39;SAME&#39;, &#39;NHWC&#39;, (1,))</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[</span>
 <span class="sd">              [[2.],[4.],[6.]],</span>
@@ -835,10 +821,9 @@
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[1, 32, 32, 3]))</span>
-<span class="sd">    &gt;&gt;&gt; filters = ivy.native_array(ivy.random_normal(mean=0, std=1, \</span>
-<span class="sd">                                   shape=[3, 5, 3, 5])) #HWIO</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.conv2d(x, filters, [2, 1], &#39;VALID&#39;) \</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array(ivy.random_normal(0, 1, [1, 32, 32, 3]))</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.native_array(ivy.random_normal(0, 1, [3, 5, 3, 5])) #HWIO</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.conv2d(x, filters, strides = [2, 1], padding = &#39;VALID&#39;) \</span>
 <span class="sd">        #non-square filter with unequal stride and valid padding</span>
 <span class="sd">    &gt;&gt;&gt; print(result.shape)</span>
 <span class="sd">    (1, 15, 28, 5)</span>
@@ -868,15 +853,14 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">conv2d_transpose</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
-    <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">filters</span><span class="p">,</span>
+    <span class="n">strides</span><span class="p">,</span>
+    <span class="n">padding</span><span class="p">,</span>
     <span class="n">output_shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
-    <span class="n">dilations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Computes a 2-D transpose convolution given 4-D input x and filters arrays.</span>
@@ -921,10 +905,9 @@
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
     <span class="n">padding</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
     <span class="n">dilations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -964,20 +947,20 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(0, 1, [1, 28, 28, 3]) #NHWC</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [3, 3, 3]) #HWI (I == d_in)</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(x, filters, (1, 1), &#39;VALID&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding=&#39;VALID&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 26, 26, 3)</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(0, 1, [1, 32, 32, 3]) #NHWC</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros_like(x)</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [5, 5, 3]) #HWI (I == d_in)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.depthwise_conv2d(x, filters, [2, 2], &#39;SAME&#39;, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.depthwise_conv2d(x, filters, strides=[2, 2], padding=&#39;SAME&#39;, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 16, 16, 3)</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(0, 1, [1, 64, 64, 32]) #NHWC</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [4, 4, 32]) #HWI (I == d_in)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.depthwise_conv2d(x, filters, [1, 1], &#39;VALID&#39;, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding=&#39;VALID&#39;, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x.shape)</span>
 <span class="sd">    (1, 61, 61, 32)</span>
 
@@ -985,7 +968,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array(ivy.random_normal(0, 1, [1, 7, 7, 64])) #NHWC</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.native_array(ivy.random_normal(0, 1, [3, 3, 64])) #HWI (I == d_in)</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(x, filters, [1, 1], &#39;SAME&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(x, filters, strides=[1, 1], padding=&#39;SAME&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 7, 7, 64)</span>
 
@@ -995,7 +978,7 @@
 <span class="sd">    &gt;&gt;&gt; a = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(-1)</span>
 <span class="sd">    &gt;&gt;&gt; b = ivy.array([[1., 1., 1.], [1., 1., 1.], [1., 1., 1.]]).expand_dims(-1) / 9.0</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.Container(a = a, b = b)</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(x, filters, 1, &#39;VALID&#39;, dilations=2)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(x, filters, strides=1, padding=&#39;VALID&#39;, dilations=2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([[[[-6.],</span>
@@ -1015,7 +998,7 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array(ivy.eye(6, 6).reshape((1, 6, 6, 1)))</span>
 <span class="sd">    &gt;&gt;&gt; inp = ivy.Container(x = x, y = y)</span>
 <span class="sd">    &gt;&gt;&gt; filter = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(-1)</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(inp, filter, 1, &#39;VALID&#39;, dilations=2)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(inp, filter, strides=1, padding=&#39;VALID&#39;, dilations=2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
 <span class="sd">        x: ivy.array([[[[-6.],</span>
@@ -1039,10 +1022,9 @@
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">strides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NDHWC&quot;</span><span class="p">,</span>
     <span class="n">dilations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Computes a 3-D convolution given 5-D input x and filters arrays.</span>
@@ -1077,7 +1059,7 @@
 <span class="sd">    &gt;&gt;&gt; x2 = [[[3.],[4.]],[[3.],[4.]],[[3.],[4.]]]</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[x1,x2]]) #NDHWC</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO</span>
-<span class="sd">    &gt;&gt;&gt; result = ivy.conv3d( x, filters, 1, &#39;VALID&#39;,data_format=&quot;NDHWC&quot;, dilations= 1)</span>
+<span class="sd">    &gt;&gt;&gt; result = ivy.conv3d( x, filters, 1, &#39;VALID&#39;,&quot;NDHWC&quot;, 1)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[</span>
 <span class="sd">        [</span>
@@ -1102,11 +1084,10 @@
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
     <span class="n">padding</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">output_shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NDHWC&quot;</span><span class="p">,</span>
     <span class="n">dilations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Computes a 3-D transpose convolution given 5-D input x and filters arrays.</span>
@@ -1235,8 +1216,6 @@
     <span class="n">init_c</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">recurrent_kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">bias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">recurrent_bias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
@@ -1320,7 +1299,7 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">hts_list</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">ct</span></div>
 
 
-<span class="n">lstm_update</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
+<span class="n">lstm_update</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">,</span> <span class="p">)}</span>
 </pre></div>
 
            </div>
