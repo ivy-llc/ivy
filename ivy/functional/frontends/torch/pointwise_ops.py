@@ -46,3 +46,9 @@ def log(input, *, out=None):
 
 
 log.unsupported_dtypes = ("float16",)
+
+def subtract(input, other, *, alpha=1, out=None):
+    return ivy.subtract(input, other * alpha, out=out)
+
+
+subtract.unsupported_dtypes = ("float16",)

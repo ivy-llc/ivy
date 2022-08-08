@@ -417,3 +417,44 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.clip_vector_norm(self, max_norm, p, out=out)
+
+    def clip_matrix_norm(
+        self: ivy.Array,
+        max_norm: float,
+        p: float = 2.0,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.clip_matrix_norm. This method simply
+        wraps the function, and so the docstring for ivy.clip_matrix_norm also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        max_norm
+            The maximum value of the array norm.
+        p
+            The p-value for computing the p-norm. Default is 2.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the matrix norm downscaled to the max norm if needed.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([[0., 1., 2.]])
+        >>> y = x.clip_matrix_norm(2.0)
+        >>> print(y)
+        ivy.array([[0.   , 0.894, 1.79 ]])
+
+        """
+        return ivy.clip_matrix_norm(self, max_norm, p, out=out)
