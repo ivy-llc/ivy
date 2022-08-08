@@ -13,6 +13,8 @@ from ivy.backend_handler import current_backend
 # noinspection PyShadowingBuiltins
 def compile(
     func: Callable,
+    /,
+    *,
     dynamic: bool = True,
     example_inputs: Optional[Union[Any, Sequence[Any]]] = None,
     static_argnums: Optional[Union[int, Iterable[int]]] = None,
@@ -44,5 +46,9 @@ def compile(
         The handle to the newly compiled function.
     """
     return current_backend(example_inputs).compile(
-        func, dynamic, example_inputs, static_argnums, static_argnames
+        func,
+        dynamic=dynamic,
+        example_inputs=example_inputs,
+        static_argnums=static_argnums,
+        static_argnames=static_argnames,
     )
