@@ -1559,6 +1559,7 @@ def dtype_and_values(
     min_value=None,
     max_value=None,
     large_value_safety_factor=0.95,
+    small_value_safety_factor=0.95,
     allow_inf=False,
     exclude_min=False,
     exclude_max=False,
@@ -1613,6 +1614,7 @@ def dtype_and_values(
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                     large_value_safety_factor=large_value_safety_factor,
+                    small_value_safety_factor=small_value_safety_factor,
                 )
             )
         )
@@ -1793,8 +1795,8 @@ def array_values(
     exclude_min=True,
     exclude_max=True,
     allow_negative=True,
-    large_value_safety_factor=0.95,
-    small_value_safety_factor=1,
+    large_value_safety_factor=1.1,
+    small_value_safety_factor=1.1,
 ):
     exclude_min = exclude_min if ivy.exists(min_value) else False
     exclude_max = exclude_max if ivy.exists(max_value) else False
@@ -1829,18 +1831,18 @@ def array_values(
                 max_value, round(9223372036854775807 * large_value_safety_factor)
             )
         elif dtype == "uint8":
-            min_value = ivy.default(min_value, round(0 * large_value_safety_factor))
+            min_value = ivy.default(min_value, 0)
             max_value = ivy.default(max_value, round(255 * large_value_safety_factor))
         elif dtype == "uint16":
-            min_value = ivy.default(min_value, round(0 * large_value_safety_factor))
+            min_value = ivy.default(min_value, 0)
             max_value = ivy.default(max_value, round(65535 * large_value_safety_factor))
         elif dtype == "uint32":
-            min_value = ivy.default(min_value, round(0 * large_value_safety_factor))
+            min_value = ivy.default(min_value, 0)
             max_value = ivy.default(
                 max_value, round(4294967295 * large_value_safety_factor)
             )
         elif dtype == "uint64":
-            min_value = ivy.default(min_value, round(0 * large_value_safety_factor))
+            min_value = ivy.default(min_value, 0)
             max_value = ivy.default(
                 max_value, round(18446744073709551615 * large_value_safety_factor)
             )
