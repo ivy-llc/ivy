@@ -23,7 +23,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="native_array"),
@@ -209,7 +209,7 @@ def test_arange(
         min_num_dims=0,
         max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="asarray"),
     data=st.data(),
@@ -249,7 +249,7 @@ def test_asarray(
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="empty"),
@@ -282,7 +282,7 @@ def test_empty(
     if not ivy.exists(ret):
         return
     res, res_np = ret
-    ivy.set_backend('tensorflow')
+    ivy.set_backend("tensorflow")
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
     ivy.unset_backend
@@ -294,9 +294,9 @@ def test_empty(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=1,
         min_num_dims=1,
-        max_num_dims=10,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="empty_like"),
     data=st.data(),
@@ -332,7 +332,7 @@ def test_empty_like(
     if not ivy.exists(ret):
         return
     res, res_np = ret
-    ivy.set_backend('tensorflow')
+    ivy.set_backend("tensorflow")
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
     ivy.unset_backend
@@ -391,7 +391,7 @@ def test_eye(
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="from_dlpack"),
     data=st.data(),
@@ -451,7 +451,7 @@ def _fill_value(draw):
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     fill_value=_fill_value(),
     dtypes=_dtypes(),
@@ -493,9 +493,9 @@ def _dtype_and_values(draw):
             available_dtypes=ivy_np.valid_numeric_dtypes,
             num_arrays=1,
             min_num_dims=1,
-            max_num_dims=10,
+            max_num_dims=5,
             min_dim_size=1,
-            max_dim_size=10,
+            max_dim_size=5,
             dtype=draw(_dtypes()),
         )
     )
@@ -594,9 +594,9 @@ def test_meshgrid(
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
-        max_num_dims=10,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="ones"),
@@ -634,9 +634,9 @@ def test_ones(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=1,
         min_num_dims=1,
-        max_num_dims=10,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     num_positional_args=st.integers(0, 1),
     data=st.data(),
@@ -676,9 +676,9 @@ def test_ones_like(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=1,
         min_num_dims=2,
-        max_num_dims=10,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     k=st.integers(-10, 10),
     num_positional_args=helpers.num_positional_args(fn_name="tril"),
@@ -719,9 +719,9 @@ def test_tril(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=1,
         min_num_dims=2,
-        max_num_dims=10,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     k=st.integers(-10, 10),
     num_positional_args=helpers.num_positional_args(fn_name="triu"),
@@ -761,9 +761,9 @@ def test_triu(
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
-        max_num_dims=10,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="zeros"),
@@ -801,9 +801,9 @@ def test_zeros(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=1,
         min_num_dims=1,
-        max_num_dims=10,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="zeros_like"),
     data=st.data(),
