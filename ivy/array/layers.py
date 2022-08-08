@@ -14,9 +14,10 @@ class ArrayWithLayers(abc.ABC):
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: Union[str, List[int]],
+        /,
+        *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -52,12 +53,18 @@ class ArrayWithLayers(abc.ABC):
         --------
         >>> x = ivy.randint(0, 255, (1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
-        >>> y = x.depthwise_conv2d(filters, strides=2, padding='SAME')
+        >>> y = x.depthwise_conv2d(filters, 2, 'SAME')
         >>> print(y.shape)
         (1, 64, 64, 3)
         """
         return ivy.depthwise_conv2d(
-            self._data, filters, strides, padding, data_format, dilations, out=out
+            self._data,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
         )
 
     def conv1d(
@@ -65,9 +72,10 @@ class ArrayWithLayers(abc.ABC):
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: int,
         padding: str,
+        /,
+        *,
         data_format: str = "NWC",
         dilations: int = 1,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -103,7 +111,7 @@ class ArrayWithLayers(abc.ABC):
         --------
          >>> x = ivy.array([[[1., 2.], [3., 4.], [6., 7.], [9., 11.]]])  # NWC
         >>> filters = ivy.array([[[0., 1.], [1., 1.]]])  # WIO (I == C)
-        >>> result = x.conv1d(filters, strides=(1,), padding='VALID')
+        >>> result = x.conv1d(filters, (1,), 'VALID')
         >>> print(result)
         ivy.array([[[ 2.,  3.], \
                     [ 4.,  7.], \
@@ -111,5 +119,11 @@ class ArrayWithLayers(abc.ABC):
                     [11., 20.]]])
         """
         return ivy.conv1d(
-            self._data, filters, strides, padding, data_format, dilations, out=out
+            self._data,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
         )
