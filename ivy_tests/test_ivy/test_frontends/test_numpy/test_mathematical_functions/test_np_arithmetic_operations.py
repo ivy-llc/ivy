@@ -111,6 +111,7 @@ def test_numpy_subtract(
         test_values=False,
     )
 
+
 # divide
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -160,7 +161,8 @@ def test_numpy_divide(
         dtype=dtype,
         subok=True,
         test_values=False,
-    )    
+    )
+    
 
 # multiply
 @given(
