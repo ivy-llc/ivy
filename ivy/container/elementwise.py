@@ -540,7 +540,7 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the inverse sine of each element in ``x``. 
+            a container containing the inverse sine of each element in ``x``.
             The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
 
@@ -554,7 +554,7 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([0., -0.524, -1.57]),
             b: ivy.array([0.1, 0.927, nan])
         }
-        
+
         >>> x = ivy.Container(a=ivy.array([0.4, 0.9, -0.9]),\
                               b=ivy.array([[4, -3, -0.2]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
@@ -586,7 +586,7 @@ class ContainerWithElementwise(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.asin.
-        This method simply wraps the function, and so the docstring for 
+        This method simply wraps the function, and so the docstring for
         ivy.asin also applies to this method with minimal changes.
 
         Parameters
@@ -624,7 +624,7 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([0., 0.524, 1.57]),
             b: ivy.array([nan, 0.927, nan])
         }
-        
+
         >>> x = ivy.Container(a=ivy.array([12., 1.5, 0.]),\
                               b=ivy.array([-0.85, 0.6, 0.3]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
