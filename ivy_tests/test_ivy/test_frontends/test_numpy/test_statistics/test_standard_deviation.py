@@ -10,7 +10,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 #std
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(),
     with_out=st.booleans(),
@@ -32,6 +32,7 @@ def test_numpy_std(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    input_dtype=[input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -48,10 +49,12 @@ def test_numpy_std(
         fw=fw,
         frontend="numpy",
         fn_name="std",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=np.asarray(x, dtype=input_dtype),
         axis=None,
         dtype=dtype,
         out=None,
         keepdims=False,
         where=where,
+        test_values=False,
     )
+    
