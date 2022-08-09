@@ -1,8 +1,6 @@
 # flake8: noqa
 from . import creation_routines
 from .creation_routines import *
-from . import indexing_routines
-from .indexing_routines import *
 from . import logic
 from .logic import *
 from . import manipulation_routines
