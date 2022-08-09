@@ -1413,7 +1413,8 @@ def check_float(x):
 @inputs_to_native_arrays
 @handle_nestable
 def is_float_dtype(
-    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
+    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
+    out: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number] = None,
 ) -> bool:
     """
     Determine whether the input data type is a float dtype.

@@ -166,6 +166,7 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
 
+
         Examples
         --------
         With :code:`ivy.Container` inputs:
@@ -566,6 +567,7 @@ class ContainerWithDataTypes(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        out: ivy.Container = None,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.is_float_dtype`.
@@ -575,6 +577,9 @@ class ContainerWithDataTypes(ContainerBase):
 
         Parameters
         ----------
+        self : ivy.Container
+            The `ivy.Container` instance to call `ivy.is_float_dtype` on.
+
         key_chains : Union[List[str], Dict[str, str]]
             The key-chains to apply or not apply the method to.
             Default is None.
@@ -593,8 +598,34 @@ class ContainerWithDataTypes(ContainerBase):
 
         Returns
         -------
-        bool
+        ret
             Boolean of whether the input is of a float dtype.
+
+        Examples
+        --------
+        >>> x = ivy.is_float_dtype(ivy.float32)
+        >>> print(x)
+        True
+
+        >>> x = ivy.is_float_dtype(ivy.int64)
+        >>> print(ivy.is_float_dtype(x))
+        True
+
+        >>> x = ivy.is_float_dtype(ivy.int32)
+        >>> print(ivy.is_float_dtype(x))
+        False
+
+        >>> x = ivy.is_float_dtype(ivy.bool)
+        >>> print(ivy.is_float_dtype(x))
+        False
+
+        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x
+        >>> print(ivy.is_float_dtype(arr))
+        True
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
+        >>> print(x.a.dtype, x.b.dtype)
+        float32 int32
         """
         return self.static_is_int_dtype(
             self,
