@@ -210,7 +210,7 @@ def test_torch_tanh(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="sigmoid",
+        fn_name="tanh",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
