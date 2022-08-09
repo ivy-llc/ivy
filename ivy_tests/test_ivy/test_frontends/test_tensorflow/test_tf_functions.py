@@ -78,7 +78,7 @@ def _arrays_idx_n_dtypes(draw):
             arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
         )
     )
-    unique_idx = draw(helpers.integers(min_value=0, max_value=num_dims - 1))
+    unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
         helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
     )
@@ -262,9 +262,7 @@ def test_tensorflow_subtract(
 # logical_xor
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            [ivy.bool]
-        ),
+        available_dtypes=tuple([ivy.bool]),
         num_arrays=2,
         shared_dtype=True,
     ),

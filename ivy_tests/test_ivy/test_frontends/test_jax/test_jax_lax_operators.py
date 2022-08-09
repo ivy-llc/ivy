@@ -88,7 +88,7 @@ def _arrays_idx_n_dtypes(draw):
             arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
         )
     )
-    unique_idx = draw(helpers.integers(min_value=0, max_value=num_dims - 1))
+    unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
         helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
     )

@@ -1649,29 +1649,6 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
 
 
 @st.composite
-def integers(draw, *, min_value=None, max_value=None):
-    """Draws an integer from the range min_value to max_value.
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    min_value
-        least value of the drawn integer.
-    max_value
-        max value of the drawn integer.
-    Returns
-    -------
-    A strategy that draws a list of dtype and arrays (as lists).
-    """
-    if isinstance(min_value, str):
-        min_value = draw(st.shared(st.integers(), key=min_value))
-    if isinstance(max_value, str):
-        max_value = draw(st.shared(st.integers(), key=max_value))
-    return draw(st.integers(min_value=min_value, max_value=max_value))
-
-
-@st.composite
 def dtype_and_values(
     draw,
     *,
@@ -1877,7 +1854,7 @@ def dtype_values_axis(
         return dtype, values, None
     if shape is not None:
         return dtype, values, draw(get_axis(shape=shape))
-    axis = draw(integers(min_value=min_axis, max_value=max_axis))
+    axis = draw(ints(min_value=min_axis, max_value=max_axis))
     return dtype, values, axis
 
 
@@ -2543,7 +2520,7 @@ def num_positional_args(draw, *, fn_name: str = None):
         elif param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1
     return draw(
-        integers(min_value=num_positional_only, max_value=(total - num_keyword_only))
+        ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
     )
 
 
