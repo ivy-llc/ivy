@@ -121,7 +121,9 @@ def inplace_decrement(x, val):
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> Union[ivy.Array, ivy.Container]:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(x_native + val_native)
@@ -235,7 +237,6 @@ def scatter_nd(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
             tf.cast(tensor, dtype=updates.dtype)

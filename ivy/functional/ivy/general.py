@@ -2042,8 +2042,8 @@ def get_min_base() -> float:
     --------
     >>> x = ivy.get_min_base()
     >>> print(x)
-    1e-05    
-    
+    1e-05
+
     """
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
@@ -2423,7 +2423,7 @@ def inplace_decrement(
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
-) -> ivy.Array:
+) -> Union[ivy.Array, ivy.Container]:
     """Perform in-place increment for the input array.
 
     Parameters
@@ -2437,6 +2437,45 @@ def inplace_increment(
     -------
     ret
         The array following the in-place increment.
+
+    Examples
+    --------
+
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([[5.3, 7., 0.],\
+                        [6.8, 8, 3.9],\
+                        [0., 10., 6.3]])
+    >>> y = ivy.inplace_increment(x, 3.)
+    >>> print(y)
+    ivy.array([[ 8.3, 10.,  3.],
+       [ 9.8, 11.,  6.9],
+       [ 3., 13.,  9.3]])
+
+     With :code:`ivy.NativeArray` input:
+
+     >>> x = ivy.native_array([10, 20, 30])
+     >>> y = ivy.inplace_increment(x, [1, 2, 3])
+     >>> print(y)
+     ivy.array([11, 22, 33])
+
+    With :code:`ivy.Container` input
+    >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+    >>> y = ivy.inplace_increment(x, 2.5)
+    >>> print(y)
+    {
+        a: ivy.array([2.5, 17.5, 32.5]),
+        b: ivy.array([2.5, 27.5, 52.5])
+    }
+
+
+    >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+    >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+    >>> z = ivy.inplace_increment(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([0., 30., 60.]),
+        b: ivy.array([0., 50., 100.])
+    }
 
     """
     return current_backend(x).inplace_increment(x, val)
