@@ -243,6 +243,8 @@ def get_backend(backend: Optional[str] = None):
     # otherwise `backend` argument will be used
     if backend is None:
         backend = ivy.current_backend()
+        if not backend_stack:
+            return ""
     elif isinstance(backend, str):
         backend = importlib.import_module(_backend_dict[backend])
     for k, v in ivy_original_dict.items():

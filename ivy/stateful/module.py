@@ -125,7 +125,7 @@ class Module(abc.ABC):
                 del kw["v"]
             v = v_fn(self.v)
             if not with_grads:
-                v = v.stop_gradients()
+                v = v.stop_gradient()
             return fn(*a, **kw, v=v)
 
         new_fn.wrapped = True
@@ -370,7 +370,7 @@ class Module(abc.ABC):
         if v is not None:
             v_orig = self.v
             if not with_grads:
-                v = v.stop_gradients()
+                v = v.stop_gradient()
             self.v = (
                 Container(v, **v.config) if isinstance(v, Container) else Container(v)
             )
@@ -381,7 +381,7 @@ class Module(abc.ABC):
             return self.__call__(*args, with_grads=with_grads, **kwargs)
         elif not with_grads:
             v_orig = self.v
-            self.v = v_orig.stop_gradients()
+            self.v = v_orig.stop_gradient()
             ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig
             return ret
@@ -679,7 +679,7 @@ class Module(abc.ABC):
         if not from_call and self._build_mode == "on_call":
             return self.v
         if dtype:
-            dtype = ivy.default_dtype(dtype, as_native=True)
+            dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         else:
             dtype = ivy.default_dtype(self._dtype, as_native=True)
 

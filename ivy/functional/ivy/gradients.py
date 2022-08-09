@@ -323,6 +323,41 @@ def stop_gradient(
     -------
     ret
         The same array x, but with no gradient information.
+    
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.stop_gradient(x, preserve_type=True)
+    >>> print(y)
+    ivy.array([1., 2., 3.])
+
+    >>> x = ivy.zeros((2, 3))
+    >>> ivy.stop_gradient(x, preserve_type=False, out=x)
+    >>> print(x)
+    ivy.array([[0., 0., 0.],
+               [0., 0., 0.]])
+
+    with :code: `ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                        b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.stop_gradient(x, preserve_type=False)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                        b=ivy.array([3., 4., 5.]))
+    >>> ivy.stop_gradient(x, preserve_type=True, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
 
     """
     return current_backend(x).stop_gradient(x, preserve_type, out=out)
@@ -355,6 +390,29 @@ def execute_with_gradients(func, xs, retain_grads=False):
 
     """
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
+
+
+execute_with_gradients.computes_gradients = True
+
+
+@to_native_arrays_and_back
+def value_and_grad(func):
+    """
+    Create a function that evaluates both func and the gradient of func.
+
+    Parameters
+    ----------
+    func
+        Function for which we compute the gradients of the output with respect to xs
+        input.
+
+    Returns
+    -------
+    ret
+        A function that returns both func and the gradient of func.
+
+    """
+    return current_backend(None).value_and_grad(func)
 
 
 # Optimizer Steps #
@@ -547,6 +605,82 @@ def optimizer_update(
     -------
     ret
         The new function weights ws_new, following the optimizer updates.
+    
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+
+    >>> w = ivy.array([1., 2., 3.])
+    >>> effective_grad = ivy.zeros(3)
+    >>> lr = 3e-4
+    >>> ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)
+    >>> print(ws_new)
+    ivy.array([1., 2., 3.])
+
+    >>> w = ivy.array([1., 2., 3.])
+    >>> effective_grad = ivy.zeros(3)
+    >>> lr = 3e-4
+    >>> ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
+                                    inplace=False, stop_gradients=True)
+    >>> print(ws_new)
+    ivy.array([1., 2., 3.])
+    
+    >>> w = ivy.array([[1., 2.],[4., 5.]])
+    >>> effective_grad = ivy.array([[4., 5.],[7., 8.]])
+    >>> lr = ivy.array([3e-4, 1e-2])
+    >>> ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
+                                    inplace=False, stop_gradients=True)
+    >>> print(ws_new)
+    ivy.array([[0.999, 1.95],
+               [4., 4.92]])
+
+    >>> w = ivy.array([1., 2., 3.])
+    >>> effective_grad = ivy.array([4., 5., 6.])
+    >>> lr = ivy.array([3e-4])
+    >>> ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
+                                    stop_gradients=False, inplace=True)
+    >>> print(ws_new)
+    ivy.array([0.999, 2., 3.])
+    
+    with :code: `ivy.Container` inputs:
+        
+    >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                        b=ivy.array([3., 4., 5.]))
+    >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                                    b=ivy.array([0., 0., 0.]))
+    >>> lr = 3e-4
+    >>> ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)
+    >>> print(ws_new)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
+    
+    >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                        b=ivy.array([3., 4., 5.]))
+    >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                                    b=ivy.array([0., 0., 0.]))
+    >>> lr = 3e-4
+    >>> ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
+                                    stop_gradients=True, inplace=True)
+    >>> print(ws_new)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
+    
+    >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                        b=ivy.array([3., 4., 5.]))
+    >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                                    b=ivy.array([0., 0., 0.]))
+    >>> lr = ivy.array([3e-4])
+    >>> ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\
+                                    stop_gradients=False, inplace=False)
+    >>> print(ws_new)
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.])
+    }
 
     """
     inplace = ivy.default(inplace, ivy.inplace_variables_supported())
@@ -594,8 +728,48 @@ def gradient_descent_update(
     Returns
     -------
     ret
-        The new function weights ws_new, following the gradient descent updates.
+        The new weights, following the gradient descent updates.
 
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+    >>> w = ivy.array([[1., 2, 3],\
+                        [4, 6, 1],\
+                        [1, 0, 7]])
+    >>> dcdw = ivy.array([[0.5, 0.2, 0.1],\
+                        [0.3, 0.6, 0.4],\
+                        [0.4, 0.7, 0.2]])
+    >>> lr = ivy.array(0.1)
+    >>> NewWeights = ivy.gradient_descent_update(w,\
+                                                dcdw,\
+                                                lr,\
+                                                inplace=False,\
+                                                stop_gradients=True)
+    >>> print(NewWeights)
+        ivy.array([[ 0.95,  1.98,  2.99],
+                    [ 3.97,  5.94,  0.96],
+                    [ 0.96, -0.07,  6.98]])
+
+    >>> w = ivy.array([1., 2., 3.])
+    >>> dcdw = ivy.array([0.5, 0.2, 0.1])
+    >>> lr = ivy.array(0.3)
+    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace=True)
+    >>> print(w)
+        ivy.array([0.85, 1.94, 2.97])
+
+    With :code: `ivy.container` inputs:
+
+    >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                          b=ivy.array([3.48, 5.72, 1.98]))
+    >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
+                             b=ivy.array([2., 3.42, 1.69]))
+    >>> lr = ivy.array(0.3)
+    >>> ivy.gradient_descent_update(w, dcdw, lr, inplace=True)
+    >>> print(w)
+        {
+            a: ivy.array([0.85, 1.94, 2.97]),
+            b: ivy.array([2.88, 4.69, 1.47])
+        }
     """
     return ivy.optimizer_update(w, dcdw, lr, inplace, stop_gradients)
 
