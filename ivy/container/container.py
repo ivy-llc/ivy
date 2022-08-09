@@ -348,7 +348,41 @@ class Container(
         Examples
         --------
 
-        
+        With :code:`Number` instances at the leaves:
+
+        >>> x = ivy.Container(a=128, b=43)
+        >>> y = ivy.Container(a=5, b=3)
+        >>> z = x >> y
+        >>> print(z)
+        {
+            a: 4,
+            b: 5
+        }
+
+        With :code:`ivy.Array` instances at the leaves:
+
+        >>> x = ivy.Container(a=ivy.array([16, 40, 120]),\
+                              b=ivy.array([15, 45, 143]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]), \
+                              b=ivy.array([0, 3, 4]))
+        >>> z = x >> y
+        >>> print(z)
+        {
+            a: ivy.array([8, 10, 15]),
+            b: ivy.array([15, 5, 8])
+        }
+
+        With a mix of :code:`ivy.Container` and :code:`ivy.Array` instances:
+
+        >>> x = ivy.Container(a=ivy.array([16, 40, 120]),\
+                              b=ivy.array([15, 45, 143]))
+        >>> y = ivy.array([1, 2, 3])
+        >>> z = x >> y
+        >>> print(z)
+        {
+            a: ivy.array([8, 10, 15]),
+            b: ivy.array([7, 11, 17])
+        }
         """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
@@ -379,11 +413,16 @@ class Container(
 
         Examples
         --------
+        
         >>> a = 64
-        >>> b = ivy.Container(a = [0, 1, 2], b = [3, 4, 5])
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]), \
+                              b = ivy.array([3, 4, 5]))
         >>> y = a >> b
         >>> print(y)
-        ivy.array([32, 16,  8])
+        {
+            a: ivy.array([64, 32, 16]),
+            b: ivy.array([8, 4, 2])
+        }
         """
         return self.map(lambda x, kc: other >> x, map_sequences=True)
 
