@@ -5,4 +5,4 @@ def det(input, name=None):
     return ivy.det(input)
 
 
-det.unsupported_dtypes = ("bfloat16",)
+det.unsupported_dtypes = ("float16", "bfloat16")
