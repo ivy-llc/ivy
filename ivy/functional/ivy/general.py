@@ -352,15 +352,23 @@ def copy_array(
 ) -> ivy.Array:
     """Copy an array.
 
+    Parameters
+    ----------
+    x
+        input array.
+
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
     Returns
     -------
     ret
         a copy of the input array ``x``.
 
-    Functional Examples
+    Examples
     --------
-
-    With :code:`ivy.Array` input:
+    With one :code:`ivy.Array` input:
 
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.copy_array(x)
@@ -373,28 +381,17 @@ def copy_array(
     ivy.array([1, 0, 1, 1])
 
     >>> x = ivy.array([1, 0, 1, -1])
-    >>> y = ivy.copy_array(x)
+    >>> y = ivy.zeros((1, 4))
+    >>> ivy.copy_array(x, out=y)
     >>> print(y)
     ivy.array([1, 0, 1, -1])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-1, 0, 1])
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    ivy.array([-1, 0, 1])
-
-    >>> x = ivy.native_array([1, 0, 1, 1])
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> ivy.copy_array(x, out=x)
+    >>> print(x)
     ivy.array([1, 0, 1, 1])
 
-    >>> x = ivy.native_array([1, 0, 1, -1])
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    ivy.array([1, 0, 1, -1])
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+    With one :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
     >>> y = ivy.copy_array(x)
@@ -412,84 +409,18 @@ def copy_array(
         b: ivy.array([-1, 0, 1, 1, 1, 0])
     }
 
+    With one :code:`ivy.Container` static method:
+
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]),\
-                          c=ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1]),
-        b: ivy.array([-1, 0, 1, 1, 1, 0]),
-        c: ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1])
-    }
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1])
-    }
-
-    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]),\
-                          b=ivy.native_array([-1, 0, 1, 1, 1, 0]))
-    >>> y = ivy.copy_array(x)
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.Container.static_copy_array(x)
     >>> print(y)
     {
         a: ivy.array([-1, 0, 1]),
         b: ivy.array([-1, 0, 1, 1, 1, 0])
     }
-
-    >>> x = ivy.Container(a=ivy.native_array([-1, 0, 1]),\
-                          b=ivy.native_array([-1, 0, 1, 1, 1, 0]),\
-                          c=ivy.native_array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1]),
-        b: ivy.array([-1, 0, 1, 1, 1, 0]),
-        c: ivy.array([-1, 0, 1, 1, 1, 0, 1, 0, -1, -1])
-    }
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array`\
-                                        and :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.native_array([-1, 0, 1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1]),
-        b: ivy.array([-1, 0, 1])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),\
-                          b=ivy.native_array([1, 0, 1, 1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([1, 0, 1, 1]),
-        b: ivy.array([1, 0, 1, 1])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1, 0, 1, -1]),\
-                          b=ivy.native_array([1, 0, 1, -1]),\
-                          c=ivy.native_array([1, 0, 1, -1, 1, 1, 0]),\
-                          d=ivy.array([1, 0, 1, -1, 0, 1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([1, 0, 1, -1]),
-        b: ivy.array([1, 0, 1, -1]),
-        c: ivy.array([1, 0, 1, -1, 1, 1, 0]),
-        d: ivy.array([1, 0, 1, -1, 0, 1])
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance method:
+    
+    With one :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([-1, 0, 1])
     >>> y = x.copy_array()
@@ -500,11 +431,17 @@ def copy_array(
     >>> y = x.copy_array()
     >>> print(y)
     ivy.array([1, 0, 1, 1])
+    
+    With :code:`ivy.Container` instance method:
 
-    >>> x = ivy.array([1, 0, 1, -1])
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1]))
     >>> y = x.copy_array()
     >>> print(y)
-    ivy.array([1, 0, 1, -1])
+    {
+        a: ivy.array([1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1])
+    }
 
     """
     return current_backend(x).copy_array(x, out=out)
@@ -1173,7 +1110,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
     >>> y = x.to_list()
     >>> print(y)
-    [ivy.array([0,1,2])]
+    {a:[0,1,2]}
 
     """
     return current_backend(x).to_list(x)
@@ -1315,9 +1252,75 @@ def clip_matrix_norm(
     ret
         An array with the matrix norm downscaled to the max norm if needed.
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[0., 1., 2.]])
+    >>> y = ivy.clip_matrix_norm(x, 2.0)
+    >>> print(y)
+    ivy.array([[0.   , 0.894, 1.79 ]])
+
+    >>> x = ivy.array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])
+    >>> y = ivy.clip_matrix_norm(x, 3.0, 1.0)
+    >>> print(y)
+    ivy.array([[ 0.0353, -0.424 ,  1.31  ],
+               [ 0.    ,  2.58  , -0.176 ]])
+
+    >>> x = ivy.array([[[5., 4.], [-2., 6.]], \
+                       [[3., 7.], [0., -5.]]])
+    >>> y = ivy.empty((2, 2, 2))
+    >>> ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)
+    >>> print(y)
+    ivy.array([[[ 0.339,  0.271],
+                [-0.135,  0.406]],
+               [[ 0.168,  0.391],
+                [ 0.   , -0.279]]])
+
+    >>> x = ivy.array([[0., 1.], \
+                       [2., 3.]])
+    >>> ivy.clip_matrix_norm(x, 5.0, 1.0, out=x)
+    >>> print(x)
+    ivy.array([[0., 1.],
+               [2., 3.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[0., 1., 2.]])
+    >>> y = ivy.clip_matrix_norm(x, 2.0)
+    >>> print(y)
+    ivy.array([[0.   , 0.894, 1.79 ]])
+
+    >>> x = ivy.native_array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])
+    >>> y = ivy.clip_matrix_norm(x, 3.0, 1.0)
+    >>> print(y)
+    ivy.array([[ 0.0353, -0.424 ,  1.31  ],
+               [ 0.    ,  2.58  , -0.176 ]])
+
+    >>> x = ivy.native_array([[[5., 4.], [-2., 6.]], \
+                       [[3., 7.], [0., -5.]]])
+    >>> y = ivy.empty((2, 2, 2))
+    >>> ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)
+    >>> print(y)
+    ivy.array([[[ 0.339,  0.271],
+                [-0.135,  0.406]],
+               [[ 0.168,  0.391],
+                [ 0.   , -0.279]]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
+                          b=ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.clip_matrix_norm(x, 2.0)
+    >>> print(y)
+    {
+        a: ivy.array([[0., 0.894, 1.79]]),
+        b: ivy.array([[0.849, 1.13, 1.41]])
+    }
     """
     norms = ivy.matrix_norm(x, p, keepdims=True)
-    ratios = ivy.maximum(ivy.stable_divide(max_norm, norms), 1.0)
+    ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
 
 
@@ -1489,12 +1492,89 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     x
         Input array.
     include_infs
-        Whether to include infs and -infs in the check. Default is True.
+        Whether to include ``+infinity`` and ``-infinity`` in the check. Default is True.
 
     Returns
     -------
     ret
         Boolean as to whether the array contains nans.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    False
+
+    >>> x = ivy.array([float('nan'), 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([float('inf'), 2, 3])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([float('inf'), 2, 3])
+    >>> y = ivy.has_nans(x, False)
+    >>> print(y)
+    False
+
+    With :code: `ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1, 2, 3, float('nan')])
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    True
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.has_nans(x)
+    >>> print(y)
+    {
+        a: false,
+        b: false
+    }
+
+    With one :code:`ivy.Container` static method:
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.Container.static_has_nans(x)
+    >>> print(y)
+    {
+        a: false,
+        b: false
+    }
+
+     With one :code:`ivy.Array` instance method:
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = x.has_nans()
+    >>> print(y)
+    False
+
+    With :code:`ivy.Container` instance method:
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1]))
+    >>> y = x.has_nans()
+    >>> print(y)
+    {
+        a: false,
+        b: false
+    }
 
     """
     return ivy.value_is_nan(ivy.sum(x), include_infs)
@@ -1692,11 +1772,29 @@ def try_else_none(fn):
 
 
 def arg_names(receiver):
-    """Get the expected keyword arguments for a function or class constructor.
+    """
+    Gets the expected keyword arguments for a function or class constructor.
 
     Parameters
     ----------
     receiver
+        Function or class constructor
+
+    Returns
+    -------
+    ret
+        List containing the keyword arguments' names for a function or class constructor
+
+    Examples
+    --------
+    >>> x = ivy.arg_names(ivy.tan)
+    >>> print(x)
+    ['x', 'out']
+
+    >>> x = ivy.arg_names(ivy.optimizers.Adam)
+    >>> print(x)
+    ['lr', 'beta1', 'beta2', 'epsilon', 'inplace',
+    'stop_gradients', 'compile_on_next_step', 'device']
 
     """
     return list(inspect.signature(receiver).parameters.keys())
@@ -1932,7 +2030,21 @@ def set_min_denominator(val: float) -> None:
 
 
 def get_min_base() -> float:
-    """Get the global minimum base used by ivy for numerically stable power raising."""
+    """
+    Gets the global minimum base used by ivy for numerically stable power raising.
+
+    Returns
+    -------
+    ret
+        Global minimum base number
+
+    Examples
+    --------
+    >>> x = ivy.get_min_base()
+    >>> print(x)
+    1e-05
+
+    """
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
 
@@ -2089,13 +2201,29 @@ def print_all_arrays_in_memory():
 
 
 def set_queue_timeout(timeout):
-    """Set the global queue timeout values (in seconds). Default value without this
-    function being called is 10 seconds.
+    """
+    Set the global queue timeout value (in seconds)
+    Default value without this function being called is 15 seconds.
 
     Parameters
     ----------
     timeout
-        The timeout to set in seconds.
+        The timeout when waiting for containers to arrive from the queues.
+        To be set in seconds.
+
+
+    Examples
+    --------
+    >> x = ivy.queue_timeout()
+    >> print(x)
+    15.0
+
+    To set the timeout for example 30 seconds
+
+    >> ivy.set_queue_timeout(30)
+    >> y = ivy.queue_timeout()
+    >> print(y)
+    30
 
     """
     global TIMEOUT
@@ -2114,12 +2242,12 @@ def queue_timeout():
 
 def tmp_dir():
     """Get the path for directory that saves temporary files.
-    
+
     Returns
     -------
     ret
         The path of directory that saves temporary files.
-    
+
     """
     return TMP_DIR
 
