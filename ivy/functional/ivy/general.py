@@ -2885,9 +2885,9 @@ def multiprocessing(context: str = None):
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns indices or true elements in an input boolean array.
+    """Returns indices for true elements in an input boolean array.
 
     Parameters
     ----------
@@ -2902,6 +2902,33 @@ def indices_where(
     ret
         Indices for where the boolean array is True.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([True, False, True, False, True])
+    >>> print(ivy.indices_where(x))
+    ivy.array([0, 2, 4])
+
+    >>> x = ivy.array([False])
+    >>> print(ivy.indices_where(x))
+    ivy.array([])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([True, True, False])
+    >>> print(ivy.indices_where(x))
+    ivy.array([0, 1])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([True, False]), \
+                          b=ivy.array([True, True]))
+    >>> print(ivy.indices_where(x))
+    {
+        a: ivy.array(0),
+        b: ivy.array(0,1)
+    }
     """
     return current_backend(x).indices_where(x, out=out)
 
