@@ -15,6 +15,15 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+      - name: Install Dependencies
+        run: |
+           python -m pip --upgrade pip
+           pip install emoji
+           pip install pandas
       - name: run python file
         env:
           WORKING_DIR: ${GITHUB_WORKSPACE}
