@@ -11,6 +11,7 @@ import numpy as np
 import math
 from typing import Union, List
 from hypothesis import assume
+import hypothesis.extra.numpy as nph  # noqa
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 cmd_line_args = (
@@ -53,7 +54,6 @@ except ImportError:
     mx = None
     mx_nd = None
 from hypothesis import strategies as st
-import hypothesis.extra.numpy as nph
 
 # local
 import ivy
@@ -61,6 +61,7 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 def get_ivy_numpy():
+    """Import Numpy module from ivy"""
     try:
         import ivy.functional.backends.numpy
     except ImportError:
@@ -69,6 +70,7 @@ def get_ivy_numpy():
 
 
 def get_ivy_jax():
+    """Import JAX module from ivy"""
     try:
         import ivy.functional.backends.jax
     except ImportError:
@@ -77,6 +79,7 @@ def get_ivy_jax():
 
 
 def get_ivy_tensorflow():
+    """Import Tensorflow module from ivy"""
     try:
         import ivy.functional.backends.tensorflow
     except ImportError:
@@ -85,6 +88,7 @@ def get_ivy_tensorflow():
 
 
 def get_ivy_torch():
+    """Import Torch module from ivy"""
     try:
         import ivy.functional.backends.torch
     except ImportError:
@@ -93,6 +97,7 @@ def get_ivy_torch():
 
 
 def get_ivy_mxnet():
+    """Import MXNET module from ivy"""
     try:
         import ivy.functional.backends.mxnet
     except ImportError:
@@ -142,6 +147,22 @@ def _convert_vars(
 
 
 def np_call(func, *args, **kwargs):
+    """Call a given function and return the result as a Numpy Array.
+
+    Parameters
+    ----------
+    func
+        The given function (callable).
+    args
+        The arguments to be given.
+    kwargs
+        The keywords args to be given.
+
+    Returns
+    -------
+    ret
+        The result of the function call as a Numpy Array
+    """
     ret = func(*args, **kwargs)
     if isinstance(ret, (list, tuple)):
         return ivy.to_native(ret, nested=True)
@@ -328,7 +349,9 @@ def trim(*, docstring):
     return "\n".join(trimmed)
 
 
-def docstring_examples_run(*, fn, from_container=False, from_array=False):
+def docstring_examples_run(
+    *, fn, from_container=False, from_array=False, num_sig_fig=3
+):
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
@@ -367,6 +390,8 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
             end_index = trimmed_docstring.index("", index)
             p_output = trimmed_docstring[index + 1 : end_index]
             p_output = ("").join(p_output).replace(" ", "")
+            if parsed_output != "":
+                parsed_output += ","
             parsed_output += p_output
 
     if end_index == -1:
@@ -382,6 +407,8 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
         for line in executable_lines:
             # noinspection PyBroadException
             try:
+                if f.getvalue() != "" and f.getvalue()[-2] != ",":
+                    print(",")
                 exec(line)
             except Exception as e:
                 print(e, " ", ivy.current_backend_str(), " ", line)
@@ -389,6 +416,7 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
     output = f.getvalue()
     output = output.rstrip()
     output = output.replace(" ", "").replace("\n", "")
+    output = output.rstrip(",")
 
     # handling cases when the stdout contains ANSI colour codes
     # 7-bit C1 ANSI sequences
@@ -413,20 +441,49 @@ def docstring_examples_run(*, fn, from_container=False, from_array=False):
     # print("Putput: ", parsed_output)
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
-    if not (output == parsed_output):
-        print(
-            "output for ",
-            fn_name,
-            " on run: ",
-            output,
-            "\noutput in docs :",
-            parsed_output,
-        )
-        ivy.warn(
-            "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
-        )
-        return False
-    return True
+    sig_fig = float("1e-" + str(num_sig_fig))
+    numeric_pattern = re.compile(
+        r"""
+            [\{\}\(\)\[\]]|\w+:
+        """,
+        re.VERBOSE,
+    )
+    num_output = output.replace("ivy.array", "")
+    num_output = numeric_pattern.sub("", num_output)
+    num_parsed_output = parsed_output.replace("ivy.array", "")
+    num_parsed_output = numeric_pattern.sub("", num_parsed_output)
+    num_output = num_output.split(",")
+    num_parsed_output = num_parsed_output.split(",")
+    docstr_result = True
+    for (doc_u, doc_v) in zip(num_output, num_parsed_output):
+        try:
+            docstr_result = np.allclose(
+                np.nan_to_num(complex(doc_u)),
+                np.nan_to_num(complex(doc_v)),
+                rtol=sig_fig,
+            )
+        except Exception:
+            if str(doc_u) != str(doc_v):
+                docstr_result = False
+        if not docstr_result:
+            print(
+                "output for ",
+                fn_name,
+                " on run: ",
+                output,
+                "\noutput in docs :",
+                parsed_output,
+                "\n",
+                doc_u,
+                " != ",
+                doc_v,
+                "\n",
+            )
+            ivy.warn(
+                "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
+            )
+            break
+    return docstr_result
 
 
 def var_fn(x, *, dtype=None, device=None):
@@ -466,11 +523,16 @@ def f_n_calls():
     ]
 
 
-def assert_all_close(ret_np, ret_from_np, rtol=1e-05, atol=1e-08,ground_truth_backend='TensorFlow'):
+def assert_all_close(
+    ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
+):
     assert ret_np.dtype is ret_from_np.dtype, (
-        "the return with a {} backend produced data type of {}, "
-        "while the return with a {} backend returned a data type of {}.".format(ground_truth_backend,
-            ret_from_np.dtype, ivy.current_backend_str(), ret_np.dtype
+        "the return with a {} backend produced data type of {}, while the return with"
+        " a {} backend returned a data type of {}.".format(
+            ground_truth_backend,
+            ret_from_np.dtype,
+            ivy.current_backend_str(),
+            ret_np.dtype,
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
@@ -517,7 +579,14 @@ def get_ret_and_flattened_array(func, *args, **kwargs):
     return ret, flatten(ret=ret)
 
 
-def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6,ground_truth_backend='TensorFlow'):
+def value_test(
+    *,
+    ret_np_flat,
+    ret_from_np_flat,
+    rtol=None,
+    atol=1e-6,
+    ground_truth_backend="TensorFlow",
+):
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_from_np_flat) != list:
@@ -532,10 +601,22 @@ def value_test(*, ret_np_flat, ret_from_np_flat, rtol=None, atol=1e-6,ground_tru
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
             rtol = TOLERANCE_DICT.get(str(ret_from_np.dtype), 1e-03)
-            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol,ground_truth_backend=ground_truth_backend)
+            assert_all_close(
+                ret_np,
+                ret_from_np,
+                rtol=rtol,
+                atol=atol,
+                ground_truth_backend=ground_truth_backend,
+            )
     else:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-            assert_all_close(ret_np, ret_from_np, rtol=rtol, atol=atol,ground_truth_backend=ground_truth_backend)
+            assert_all_close(
+                ret_np,
+                ret_from_np,
+                rtol=rtol,
+                atol=atol,
+                ground_truth_backend=ground_truth_backend,
+            )
 
 
 def args_to_container(array_args):
@@ -728,7 +809,6 @@ def create_args_kwargs(
     native_array_flags=None,
     container_flags=None,
 ):
-
     # extract all arrays from the arguments and keyword arguments
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
@@ -1241,7 +1321,7 @@ def test_function(
         ret_from_np_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
-        ground_truth_backend=ground_truth_backend
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -1304,6 +1384,18 @@ def test_frontend_function(
     input_dtypes, as_variable_flags, native_array_flags = as_lists(
         input_dtypes, as_variable_flags, native_array_flags
     )
+    # make all lists equal in length
+    num_arrays = max(
+        len(input_dtypes),
+        len(as_variable_flags),
+        len(native_array_flags),
+    )
+    if len(input_dtypes) < num_arrays:
+        input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
+    if len(as_variable_flags) < num_arrays:
+        as_variable_flags = [as_variable_flags[0] for _ in range(num_arrays)]
+    if len(native_array_flags) < num_arrays:
+        native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
 
     # update variable flags to be compatible with float dtype and with_out args
     as_variable_flags = [
@@ -1358,6 +1450,7 @@ def test_frontend_function(
     if test_unsupported:
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
         return
+
     ret = frontend_fn(*args, **kwargs)
 
     # assert idx of return if the idx of the out array provided
@@ -1468,6 +1561,22 @@ def array_dtypes(
     available_dtypes=ivy_np.valid_float_dtypes,
     shared_dtype=False,
 ):
+    """Draws a list of data types.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    num_arrays
+        number of data types to be drawn.
+    available_dtypes
+        universe of available data types.
+    shared_dtype
+        if True, all data types in the list are same.
+    Returns
+    -------
+    A strategy that draws a list.
+    """
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if num_arrays == 1:
@@ -1493,12 +1602,45 @@ def array_bools(
     *,
     num_arrays=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays"),
 ):
+    """Draws a boolean list of a given size.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    num_arrays
+        size of the list.
+    Returns
+    -------
+    A strategy that draws a list.
+    """
     size = num_arrays if isinstance(num_arrays, int) else draw(num_arrays)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
 @st.composite
 def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
+    """Draws a list from the dataset arg.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    arg
+        dataset of elements.
+    min_size
+        least size of the list.
+    max_size
+        max size of the list.
+    size_bounds
+        if min_size or max_size is None, draw them randomly from the range
+        [size_bounds[0], size_bounds[1]].
+
+    Returns
+    -------
+    A strategy that draws a list.
+    """
     ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
     if isinstance(min_size, str):
         min_size = draw(st.shared(ints, key=min_size))
@@ -1508,17 +1650,22 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
 
 
 @st.composite
-def valid_axes(draw, *, ndim=None, size_bounds=None):
-    ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
-    dims = draw(st.shared(ints, key=ndim))
-    any_axis_strategy = (
-        st.none() | st.integers(-dims, dims - 1) | nph.valid_tuple_axes(dims)
-    )
-    return draw(any_axis_strategy)
-
-
-@st.composite
 def integers(draw, *, min_value=None, max_value=None):
+    """Draws an integer from the range min_value to max_value.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    min_value
+        least value of the drawn integer.
+    max_value
+        max value of the drawn integer.
+    Returns
+    -------
+    A strategy that draws a list of dtype and arrays (as lists).
+    """
+
     if isinstance(min_value, str):
         min_value = draw(st.shared(st.integers(), key=min_value))
     if isinstance(max_value, str):
@@ -1547,6 +1694,50 @@ def dtype_and_values(
     ret_shape=False,
     dtype=None,
 ):
+    """Draws a list of arrays with elements from the given corresponding data types.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    available_dtypes
+        if dtype is None, data types are drawn from this list randomly.
+    num_arrays
+        Number of arrays to be drawn.
+    min_value
+        minimum value of elements in each array.
+    max_value
+        maximum value of elements in each array.
+    safety_factor
+        Ratio of max_value to maximum allowed number in the data type.
+    allow_inf
+        if True, allow inf in the arrays.
+    exclude_min
+        if True, exclude the minimum limit.
+    exclude_max
+        if True, exclude the maximum limit.
+    min_num_dims
+        minimum size of the shape tuple.
+    max_num_dims
+        maximum size of the shape tuple.
+    min_dim_size
+        minimum value of each integer in the shape tuple.
+    max_dim_size
+        maximum value of each integer in the shape tuple.
+    shape
+        shape of the arrays in the list.
+    shared_dtype
+        if True, if dtype is None, a single shared dtype is drawn for all arrays.
+    ret_shape
+        if True, the shape of the arrays is also returned.
+    dtype
+        A list of data types for the given arrays.
+
+    Returns
+    -------
+    A strategy that draws a list of dtype and arrays (as lists).
+    """
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
     if isinstance(max_dim_size, st._internal.SearchStrategy):
@@ -1620,6 +1811,49 @@ def dtype_values_axis(
     max_axis=None,
     ret_shape=False,
 ):
+    """Draws an array with elements from the given data type, and a random axis of
+    the array.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    available_dtypes
+        if dtype is None, data type is drawn from this list randomly.
+    min_value
+        minimum value of elements in the array.
+    max_value
+        maximum value of elements in the array.
+    allow_inf
+        if True, allow inf in the array.
+    exclude_min
+        if True, exclude the minimum limit.
+    exclude_max
+        if True, exclude the maximum limit.
+    min_num_dims
+        minimum size of the shape tuple.
+    max_num_dims
+        maximum size of the shape tuple.
+    min_dim_size
+        minimum value of each integer in the shape tuple.
+    max_dim_size
+        maximum value of each integer in the shape tuple.
+    shape
+        shape of the array. if None, a random shape is drawn.
+    shared_dtype
+        if True, if dtype is None, a single shared dtype is drawn for all arrays.
+    min_axis
+        if shape is None, axis is drawn from the range [min_axis, max_axis].
+    max_axis
+        if shape is None, axis is drawn from the range [min_axis, max_axis].
+    ret_shape
+        if True, the shape of the arrays is also returned.
+
+    Returns
+    -------
+    A strategy that draws a dtype, an array (as list), and an axis.
+    """
     results = draw(
         dtype_and_values(
             available_dtypes=available_dtypes,
@@ -1653,6 +1887,22 @@ def dtype_values_axis(
 # https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
 @st.composite
 def reshape_shapes(draw, *, shape):
+    """Draws a random shape with the same number of elements as the given shape.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    shape
+        list/strategy/tuple of integers representing an array shape.
+
+    Returns
+    -------
+    A strategy that draws a tuple.
+    """
+    if isinstance(shape, st._internal.SearchStrategy):
+        shape = draw(shape)
     size = 1 if len(shape) == 0 else math.prod(shape)
     rshape = draw(st.lists(st.integers(0)).filter(lambda s: math.prod(s) == size))
     # assume(all(side <= MAX_SIDE for side in rshape))
@@ -1665,6 +1915,20 @@ def reshape_shapes(draw, *, shape):
 # taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
 @st.composite
 def subsets(draw, *, elements):
+    """Draws a subset of elements from the given elements.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    elements
+        set of elements to be drawn from.
+
+    Returns
+    -------
+    A strategy that draws a subset of elements.
+    """
     return tuple(e for e in elements if draw(st.booleans()))
 
 
@@ -1769,6 +2033,39 @@ def array_values(
     allow_negative=True,
     safety_factor=0.95,
 ):
+    """Draws a list (of lists) of a given shape containing values of a given data type.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    dtype
+        data type of the elements of the list.
+    shape
+        shape of the required list.
+    min_value
+        minimum value of elements in the list.
+    max_value
+        maximum value of elements in the list.
+    allow_nan
+        if True, allow Nans in the list.
+    allow_subnormal
+        if True, allow subnormals in the list.
+    allow_inf
+        if True, allow inf in the list.
+    exclude_min
+        if True, exclude the minimum limit.
+    exclude_max
+        if True, exclude the maximum limit.
+    allow_negative
+        if True, allow negative numbers.
+    safety_factor
+        Ratio of max_value to maximum allowed number in the data type
+    Returns
+    -------
+    A strategy that draws a list.
+    """
     exclude_min = exclude_min if ivy.exists(min_value) else False
     exclude_max = exclude_max if ivy.exists(max_value) else False
     size = 1
@@ -1880,6 +2177,30 @@ def get_shape(
     min_dim_size=1,
     max_dim_size=10,
 ):
+    """Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size]
+     of size drawn from min_num_dims to max_num_dims. Useful for randomly
+     drawing the shape of an array.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    allow_none
+        if True, allow for the result to be None.
+    min_num_dims
+        minimum size of the tuple.
+    max_num_dims
+        maximum size of the tuple.
+    min_dim_size
+        minimum value of each integer in the tuple.
+    max_dim_size
+        maximum value of each integer in the tuple.
+
+    Returns
+    -------
+    A strategy that draws a tuple.
+    """
     if allow_none:
         shape = draw(
             st.none()
@@ -2083,14 +2404,16 @@ def get_bounds(draw, *, dtype):
 
 
 @st.composite
-def get_axis(draw,
-             *,
-             shape,
-             allow_none=False,
-             sorted=True,
-             unique=True,
-             min_size=1,
-             max_size=None):
+def get_axis(
+    draw,
+    *,
+    shape,
+    allow_none=False,
+    sorted=True,
+    unique=True,
+    min_size=1,
+    max_size=None,
+):
     """Draws one or more axis for the given shape.
 
     Parameters
@@ -2099,24 +2422,28 @@ def get_axis(draw,
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
     shape
-        shape of the array as a tuple, or a hypothesis strategy from which the shape will be drawn
+        shape of the array as a tuple, or a hypothesis strategy from which the shape
+        will be drawn
     allow_none
         boolean; if True, allow None to be drawn
     sorted
-        boolean; if True, and a tuple of axes is drawn, tuple is sorted in increasing fashion
+        boolean; if True, and a tuple of axes is drawn, tuple is sorted in increasing
+        fashion
     unique
         boolean; if True, and a tuple of axes is drawn, all axes drawn will be unique
     min_size
-        int or hypothesis strategy; if a tuple of axes is drawn, the minimum number of axes drawn
+        int or hypothesis strategy; if a tuple of axes is drawn, the minimum number of
+        axes drawn
     max_size
-        int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of axes drawn. If None and unique is True, then it is set
-        to the number of axes in the shape
+        int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
+        axes drawn.
+        If None and unique is True, then it is set to the number of axes in the shape
 
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
-    #Draw values from any strategies given
+    # Draw values from any strategies given
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
     if isinstance(min_size, st._internal.SearchStrategy):
@@ -2124,21 +2451,19 @@ def get_axis(draw,
     if isinstance(max_size, st._internal.SearchStrategy):
         max_size = draw(max_size)
 
-
     axes = len(shape)
     unique_by = (lambda x: shape[x]) if unique else None
 
     if max_size is None and unique:
-        max_size=axes
+        max_size = max(axes, min_size)
 
     if allow_none:
         if axes == 0:
-            axis = draw(st.none()
-                        | st.just(0)
-                        | st.lists(
-                            st.just(0),
-                            min_size=min_size,
-                            max_size=max_size))
+            axis = draw(
+                st.none()
+                | st.just(0)
+                | st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            )
         else:
             axis = draw(
                 st.none()
@@ -2152,11 +2477,9 @@ def get_axis(draw,
             )
     else:
         if axes == 0:
-            axis = draw(st.just(0)
-                        | st.lists(
-                            st.just(0),
-                            min_size=min_size,
-                            max_size=max_size))
+            axis = draw(
+                st.just(0) | st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            )
         else:
             axis = draw(
                 st.integers(-axes, axes - 1)
@@ -2169,6 +2492,7 @@ def get_axis(draw,
             )
     if type(axis) == list:
         if sorted:
+
             def sort_key(ele, max_len):
                 if ele < 0:
                     return ele + max_len - 1
@@ -2253,5 +2577,10 @@ def handle_cmd_line_args(test_fn):
 
     return new_fn
 
-def gradient_incompatible_function(*,fn):
-    return not ivy.supports_gradients and hasattr(fn, "computes_gradients") and fn.computes_gradients
+
+def gradient_incompatible_function(*, fn):
+    return (
+        not ivy.supports_gradients
+        and hasattr(fn, "computes_gradients")
+        and fn.computes_gradients
+    )

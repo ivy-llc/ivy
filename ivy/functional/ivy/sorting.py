@@ -63,9 +63,8 @@ def argsort(
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With: code:`ivy.Array` input:
 
     >>> x = ivy.array([3,1,2])
