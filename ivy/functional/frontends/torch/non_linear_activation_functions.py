@@ -9,9 +9,7 @@ def sigmoid(input, out=None):
 sigmoid.unsupported_dtypes = ("float16",)
 
 
-def softmax(input, dim=None, dtype=None):
-    if dtype:
-        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
+def softmax(input, dim=None):
     return ivy.softmax(input, axis=dim)
 
 
