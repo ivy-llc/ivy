@@ -325,30 +325,6 @@ class ContainerWithGradients(ContainerBase):
         a gradients:  ivy.array([2., 2., 2.])
         b function output:  ivy.array([25., 25., 25.])
         b gradients:  ivy.array([10., 10., 10.])
-
-        >>> linear = ivy.Linear(3,1)
-        >>> func = lambda x: linear(x)
-        >>> xs = ivy.Container(
-        >>>            a=ivy.array([1.,1.,1.]),
-        >>>            b =ivy.array([5.,5.,5.]),
-        >>>            c=ivy.array([1.,0.,1.]) )
-        >>> results = ivy.Container.static_execute_with_gradients(func, \
-                    xs)
-        >>> a_func_output, a_grads = results['a']
-        >>> b_func_output, b_grads = results['b']
-        >>> c_func_output, c_grads = results['c']
-        >>> print("a function output: ", a_func_output)
-        >>> print("a gradients: ", a_grads)
-        >>> print("b function output: ", b_func_output)
-        >>> print("b gradients: ", b_grads)
-        >>> print("c function output: ", c_func_output)
-        >>> print("c gradients: ", c_grads)
-        a function output:  ivy.array([-0.104])
-        a gradients:  ivy.array([ 0.138,  0.971, -1.21 ])
-        b function output:  ivy.array([-0.521])
-        b gradients:  ivy.array([ 0.138,  0.971, -1.21 ])
-        c function output:  ivy.array([-1.08])
-        c gradients:  ivy.array([ 0.138,  0.971, -1.21 ])
         """
         return ContainerBase.multi_map_in_static_method(
             "execute_with_gradients",
@@ -427,28 +403,6 @@ class ContainerWithGradients(ContainerBase):
         b function output:  ivy.array([25., 25., 25.])
         b gradients:  ivy.array([10., 10., 10.])
 
-
-        >>> linear = ivy.Linear(3,1)
-        >>> func = lambda x: linear(x)
-        >>> xs = ivy.Container(a=ivy.array([1.,1.,1.]), \
-            b =ivy.array([5.,5.,5.]), \
-            c=ivy.array([1.,0.,1.]) )
-        >>> results = xs.execute_with_gradients(func)
-        >>> a_func_output, a_grads = results['a']
-        >>> b_func_output, b_grads = results['b']
-        >>> c_func_output, c_grads = results['c']
-        >>> print("a function output: ", a_func_output)
-        >>> print("a gradients: ", a_grads)
-        >>> print("b function output: ", b_func_output)
-        >>> print("b gradients: ", b_grads)
-        >>> print("c function output: ", c_func_output)
-        >>> print("c gradients: ", c_grads)
-        a function output:  ivy.array([2.36])
-        a gradients:  ivy.array([1.15  , 1.12  , 0.0972])
-        b function output:  ivy.array([11.8])
-        b gradients:  ivy.array([1.15  , 1.12  , 0.0972])
-        c function output:  ivy.array([1.24])
-        c gradients:  ivy.array([1.15  , 1.12  , 0.0972])
         """
         return self.static_execute_with_gradients(
             func,

@@ -417,18 +417,6 @@ def execute_with_gradients(func: Callable,
     >>> print("grads: ", grads)
     function output:  ivy.array(54.)
     grads:  ivy.array([ 2.,  1., 10.])
-
-    >>> ivy.set_backend('tensorflow')
-    >>> linear = ivy.Linear(3,1)
-    >>> func = lambda x : linear(x)
-    >>> xs = ivy.array([1.,2.,5.])
-    >>> results = ivy.execute_with_gradients(func, \
-                xs)
-    >>> func_output,grads = results
-    >>> print("function output: ", func_output)
-    >>> print("grads: ", grads)
-    function output:  ivy.array([-0.811])
-    grads:  ivy.array([-0.898 , -0.204 ,  0.0988])
     
     With :code:`ivy.NativeArray` input:
 
