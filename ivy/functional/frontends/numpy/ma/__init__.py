@@ -1,5 +1,6 @@
 # flake8: noqa
 from . import MaskedArray
+from . import masked_array
 
 from . import from_existing_data
 from .from_existing_data import *
