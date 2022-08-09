@@ -1611,7 +1611,6 @@ def valid_axes(draw, *, ndim=None, size_bounds=None):
 
 @st.composite
 def integers(draw, *, min_value=None, max_value=None):
-
     if isinstance(min_value, str):
         min_value = draw(st.shared(st.integers(), key=min_value))
     if isinstance(max_value, str):
@@ -2487,3 +2486,56 @@ def gradient_incompatible_function(*, fn):
         and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
     )
+
+
+@st.composite
+def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
+    """Draws an arbitrarily sized list of integers with a safety factor
+    applied to values.
+
+    Parameters
+    ----------
+    min_value
+        minimum value of integers generated.
+
+    max_value
+        maximum value of integers generated.
+
+    safety_factor
+        default = 0.95. Only values which are 95% or less than the edge of
+        the limit for a given dtype are generated.
+
+    Returns
+    -------
+    ret
+        list of integers.
+
+    """
+    dtype = draw(st.sampled_from(ivy_np.valid_int_dtypes))
+
+    if dtype == "int8":
+        min_value = ivy.default(min_value, round(-128 * safety_factor))
+        max_value = ivy.default(max_value, round(127 * safety_factor))
+    elif dtype == "int16":
+        min_value = ivy.default(min_value, round(-32768 * safety_factor))
+        max_value = ivy.default(max_value, round(32767 * safety_factor))
+    elif dtype == "int32":
+        min_value = ivy.default(min_value, round(-2147483648 * safety_factor))
+        max_value = ivy.default(max_value, round(2147483647 * safety_factor))
+    elif dtype == "int64":
+        min_value = ivy.default(min_value, round(-9223372036854775808 * safety_factor))
+        max_value = ivy.default(max_value, round(9223372036854775807 * safety_factor))
+    elif dtype == "uint8":
+        min_value = ivy.default(min_value, round(0 * safety_factor))
+        max_value = ivy.default(max_value, round(255 * safety_factor))
+    elif dtype == "uint16":
+        min_value = ivy.default(min_value, round(0 * safety_factor))
+        max_value = ivy.default(max_value, round(65535 * safety_factor))
+    elif dtype == "uint32":
+        min_value = ivy.default(min_value, round(0 * safety_factor))
+        max_value = ivy.default(max_value, round(4294967295 * safety_factor))
+    elif dtype == "uint64":
+        min_value = ivy.default(min_value, round(0 * safety_factor))
+        max_value = ivy.default(max_value, round(18446744073709551615 * safety_factor))
+
+    return draw(st.integers(min_value, max_value))
