@@ -40,8 +40,7 @@ def tanh(
 
 
 def softmax(
-    x: JaxArray,
-    axis: Optional[int] = None,
+    x: JaxArray, axis: Optional[int] = None, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     exp_x = jnp.exp(x)
     return exp_x / jnp.sum(exp_x, axis, keepdims=True)

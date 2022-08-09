@@ -43,10 +43,7 @@ def tanh(
     return tf.nn.tanh(x)
 
 
-def softmax(
-    x: Tensor,
-    axis: Optional[int] = None,
-) -> Tensor:
+def softmax(x: Tensor, axis: Optional[int] = None, *, out: Tensor = None) -> Tensor:
     return tf.exp(x) / tf.reduce_sum(tf.exp(x), axis, keepdims=True)
 
 

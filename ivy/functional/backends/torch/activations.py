@@ -53,7 +53,9 @@ def sigmoid(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 sigmoid.unsupported_dtypes = ("float16",)
 
 
-def softmax(x: torch.Tensor, axis: Optional[int] = None) -> torch.Tensor:
+def softmax(
+    x: torch.Tensor, axis: Optional[int] = None, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if axis is None:
         axis = -1
     exp_x = torch.exp(x)

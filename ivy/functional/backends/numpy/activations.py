@@ -44,8 +44,7 @@ def tanh(x: np.ndarray) -> np.ndarray:
 
 
 def softmax(
-    x: np.ndarray,
-    axis: Optional[int] = None,
+    x: np.ndarray, axis: Optional[int] = None, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     exp_x = np.exp(x)
     return exp_x / np.sum(exp_x, axis, keepdims=True)
