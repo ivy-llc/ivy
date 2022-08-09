@@ -1578,3 +1578,141 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_clip_matrix_norm(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        max_norm: float,
+        p: float = 2.0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.clip_matrix_norm. This method
+        simply wraps the function, and so the docstring for ivy.clip_matrix_norm
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array containing elements to clip.
+        max_norm
+            The maximum value of the array norm.
+        p
+            The p-value for computing the p-norm. Default is 2.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the matrix norm downscaled to the max norm if needed.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
+                              b=ivy.array([[3., 4., 5.]]))
+        >>> y = ivy.Container.static_clip_matrix_norm(x, 2.0)
+        >>> print(y)
+        {
+            a: ivy.array([[0., 0.894, 1.79]]),
+            b: ivy.array([[0.849, 1.13, 1.41]])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "clip_matrix_norm",
+            x,
+            max_norm,
+            p,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def clip_matrix_norm(
+        self: ivy.Container,
+        max_norm: float,
+        p: float = 2.0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.clip_matrix_norm. This method
+        simply wraps the function, and so the docstring for ivy.clip_matrix_norm
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array containing elements to clip.
+        max_norm
+            The maximum value of the array norm.
+        p
+            The p-value for computing the p-norm. Default is 2.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the matrix norm downscaled to the max norm if needed.
+
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
+                              b=ivy.array([[3., 4., 5.]]))
+        >>> y = x.clip_matrix_norm(2.0, 1.0)
+        >>> print(y)
+        {
+            a: ivy.array([[0., 1., 2.]]),
+            b: ivy.array([[1.2, 1.6, 2.]])
+        }
+
+        """
+        return self.static_clip_matrix_norm(
+            self,
+            max_norm,
+            p,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
+        )
