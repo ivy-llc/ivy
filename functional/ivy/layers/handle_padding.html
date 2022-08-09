@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>total_mem_on_dev &mdash; Ivy 1.0 documentation</title>
+  <title>handle_padding &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="used_mem_on_dev" href="used_mem_on_dev.html" />
-    <link rel="prev" title="clear_mem_on_dev" href="clear_mem_on_dev.html" /> 
+    <link rel="next" title="deconv_length" href="deconv_length.html" />
+    <link rel="prev" title="lstm_update" href="lstm_update.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -58,38 +58,27 @@
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../device.html">Device</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="get_all_ivy_arrays_on_dev.html">get_all_ivy_arrays_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="num_ivy_arrays_on_dev.html">num_ivy_arrays_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="print_all_ivy_arrays_on_dev.html">print_all_ivy_arrays_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev.html">dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="as_ivy_dev.html">as_ivy_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="as_native_dev.html">as_native_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clear_mem_on_dev.html">clear_mem_on_dev</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">total_mem_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="used_mem_on_dev.html">used_mem_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="percent_used_mem_on_dev.html">percent_used_mem_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_util.html">dev_util</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gpu_is_available.html">gpu_is_available</a></li>
-<li class="toctree-l2"><a class="reference internal" href="num_cpu_cores.html">num_cpu_cores</a></li>
-<li class="toctree-l2"><a class="reference internal" href="num_gpus.html">num_gpus</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
-<li class="toctree-l2"><a class="reference internal" href="default_device.html">default_device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_default_device.html">set_default_device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unset_default_device.html">unset_default_device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="to_device.html">to_device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="split_factor.html">split_factor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_split_factor.html">set_split_factor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_unsupported_devices.html">function_unsupported_devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_supported_devices.html">function_supported_devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../layers.html">Layers</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="linear.html">linear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dropout.html">dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaled_dot_product_attention.html">scaled_dot_product_attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_head_attention.html">multi_head_attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv1d.html">conv1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv1d_transpose.html">conv1d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv2d.html">conv2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv2d_transpose.html">conv2d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depthwise_conv2d.html">depthwise_conv2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv3d.html">conv3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conv3d_transpose.html">conv3d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lstm_update.html">lstm_update</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">handle_padding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deconv_length.html">deconv_length</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../manipulation.html">Manipulation</a></li>
@@ -146,10 +135,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-                    <li><a href="../device.html">Device</a> &raquo;</li>
-      <li>total_mem_on_dev</li>
+                    <li><a href="../layers.html">Layers</a> &raquo;</li>
+      <li>handle_padding</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/device/total_mem_on_dev.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/layers/handle_padding.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -157,36 +146,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="total-mem-on-dev">
-<h1>total_mem_on_dev<a class="headerlink" href="#total-mem-on-dev" title="Permalink to this heading"></a></h1>
+  <section id="handle-padding">
+<h1>handle_padding<a class="headerlink" href="#handle-padding" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.device.total_mem_on_dev">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">total_mem_on_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/device.html#total_mem_on_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.device.total_mem_on_dev" title="Permalink to this definition"></a></dt>
-<dd><p>Get the total amount of memory (in GB) for a given device string. In case of CPU,
-the total RAM is returned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device string to convert to native device handle.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – The total memory on the device in GB.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">total_mem_on_dev</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">53.66700032</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">total_mem_on_dev</span><span class="p">(</span><span class="s2">&quot;gpu:0&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">8.589934592</span>
-</pre></div>
-</div>
-</dd></dl>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.handle_padding">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">handle_padding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#handle_padding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.handle_padding" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <div class="line-block">
 <div class="line"><br /></div>
@@ -199,8 +164,8 @@ the total RAM is returned.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="clear_mem_on_dev.html" class="btn btn-neutral float-left" title="clear_mem_on_dev" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="used_mem_on_dev.html" class="btn btn-neutral float-right" title="used_mem_on_dev" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="lstm_update.html" class="btn btn-neutral float-left" title="lstm_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deconv_length.html" class="btn btn-neutral float-right" title="deconv_length" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
