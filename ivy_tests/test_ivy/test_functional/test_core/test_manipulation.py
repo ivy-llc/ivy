@@ -15,16 +15,24 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @st.composite
 def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(st.integers(1, 4), key="num_dims"))
-    num_arrays = draw(st.shared(st.integers(2, 4), key="num_arrays"))
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+    )
     common_shape = draw(
         helpers.lists(
-            arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
+            arg=helpers.ints(min_value=2, max_value=3),
+            min_size=num_dims - 1,
+            max_size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
+        helpers.lists(
+            arg=helpers.ints(min_value=2, max_value=3),
+            min_size=num_arrays,
+            max_size=num_arrays,
+        )
     )
     xs = list()
     input_dtypes = draw(helpers.array_dtypes())
@@ -290,14 +298,22 @@ def test_reshape(
     shift=helpers.dtype_and_values(
         available_dtypes=[ivy.int32, ivy.int64],
         max_num_dims=1,
-        min_dim_size=st.shared(st.integers(1, 2147483647), key="shift_length"),
-        max_dim_size=st.shared(st.integers(1, 2147483647), key="shift_length"),
+        min_dim_size=st.shared(
+            helpers.ints(min_value=1, max_value=2147483647), key="shift_length"
+        ),
+        max_dim_size=st.shared(
+            helpers.ints(min_value=1, max_value=2147483647), key="shift_length"
+        ),
     ),
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
         unique=False,
-        min_size=st.shared(st.integers(1, 2147483647), key="shift_length"),
-        max_size=st.shared(st.integers(1, 2147483647), key="shift_length"),
+        min_size=st.shared(
+            helpers.ints(min_value=1, max_value=2147483647), key="shift_length"
+        ),
+        max_size=st.shared(
+            helpers.ints(min_value=1, max_value=2147483647), key="shift_length"
+        ),
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -402,10 +418,12 @@ def test_squeeze(
 @st.composite
 def _stack_helper(draw):
     shape = tuple(
-        draw(st.lists(st.integers(min_value=1, max_value=10), min_size=0, max_size=5))
+        draw(st.lists(helpers.ints(min_value=1, max_value=10), min_size=0, max_size=5))
     )
-    axis = draw(st.integers(min_value=-len(shape), max_value=len(shape)))
-    num_arrays = draw(st.shared(st.integers(1, 3), key="num_arrays"))
+    axis = draw(helpers.ints(min_value=-len(shape), max_value=len(shape)))
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=1, max_value=3), key="num_arrays")
+    )
     dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
     dtypes_arrays = draw(
         st.lists(
@@ -421,15 +439,15 @@ def _stack_helper(draw):
 @given(
     dtypes_arrays_axis=_stack_helper(),
     as_variable=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
+        num_arrays=st.shared(helpers.ints(min_value=1, max_value=3), key="num_arrays")
     ),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="expand_dims"),
     native_array=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
+        num_arrays=st.shared(helpers.ints(min_value=1, max_value=3), key="num_arrays")
     ),
     container=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
+        num_arrays=st.shared(helpers.ints(min_value=1, max_value=3), key="num_arrays")
     ),
     instance_method=st.booleans(),
     data=st.data(),
@@ -518,7 +536,7 @@ def _repeat_helper(draw):
         ),
         key="axis",
     ),
-    repeat=st.one_of(st.integers(1, 100), _repeat_helper()),
+    repeat=st.one_of(helpers.ints(min_value=1, max_value=100), _repeat_helper()),
     as_variable=helpers.array_bools(num_arrays=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="repeat"),
@@ -647,7 +665,10 @@ def _pad_helper(draw):
     pad_width = tuple(
         draw(
             st.lists(
-                st.tuples(st.integers(0, 100), st.integers(0, 100)),
+                st.tuples(
+                    helpers.ints(min_value=0, max_value=100),
+                    helpers.ints(min_value=0, max_value=100),
+                ),
                 min_size=len(shape),
                 max_size=len(shape),
             )
@@ -849,7 +870,9 @@ def test_clip(
 @st.composite
 def _split_helper(draw):
     noss_is_int = draw(
-        st.shared(st.integers(1, 2), key="noss_type").map(lambda x: x == 1)
+        st.shared(helpers.ints(min_value=1, max_value=2), key="noss_type").map(
+            lambda x: x == 1
+        )
     )
 
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
@@ -885,7 +908,7 @@ def _split_helper(draw):
 
 
 @given(
-    noss_type=st.shared(st.integers(1, 2), key="noss_type"),
+    noss_type=st.shared(helpers.ints(min_value=1, max_value=2), key="noss_type"),
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),

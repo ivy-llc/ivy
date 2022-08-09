@@ -522,6 +522,58 @@ def f_n_calls():
     ]
 
 
+@st.composite
+def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
+    """Draws an arbitrarily sized list of integers with a safety factor
+    applied to values.
+
+    Parameters
+    ----------
+    min_value
+        minimum value of integers generated.
+
+    max_value
+        maximum value of integers generated.
+
+    safety_factor
+        default = 0.95. Only values which are 95% or less than the edge of
+        the limit for a given dtype are generated.
+
+    Returns
+    -------
+    ret
+        list of integers.
+    """
+    dtype = draw(st.sampled_from(ivy_np.valid_int_dtypes))
+
+    if dtype == "int8":
+        min_value = ivy.default(min_value, round(-128 * safety_factor))
+        max_value = ivy.default(max_value, round(127 * safety_factor))
+    elif dtype == "int16":
+        min_value = ivy.default(min_value, round(-32768 * safety_factor))
+        max_value = ivy.default(max_value, round(32767 * safety_factor))
+    elif dtype == "int32":
+        min_value = ivy.default(min_value, round(-2147483648 * safety_factor))
+        max_value = ivy.default(max_value, round(2147483647 * safety_factor))
+    elif dtype == "int64":
+        min_value = ivy.default(min_value, round(-9223372036854775808 * safety_factor))
+        max_value = ivy.default(max_value, round(9223372036854775807 * safety_factor))
+    elif dtype == "uint8":
+        min_value = ivy.default(min_value, round(0 * safety_factor))
+        max_value = ivy.default(max_value, round(255 * safety_factor))
+    elif dtype == "uint16":
+        min_value = ivy.default(min_value, round(0 * safety_factor))
+        max_value = ivy.default(max_value, round(65535 * safety_factor))
+    elif dtype == "uint32":
+        min_value = ivy.default(min_value, round(0 * safety_factor))
+        max_value = ivy.default(max_value, round(4294967295 * safety_factor))
+    elif dtype == "uint64":
+        min_value = ivy.default(min_value, round(0 * safety_factor))
+        max_value = ivy.default(max_value, round(18446744073709551615 * safety_factor))
+
+    return draw(st.integers(min_value, max_value))
+
+
 def assert_all_close(
     ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
@@ -1556,7 +1608,7 @@ def test_frontend_function(
 def array_dtypes(
     draw,
     *,
-    num_arrays=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays"),
+    num_arrays=st.shared(ints(min_value=1, max_value=4), key="num_arrays"),
     available_dtypes=ivy_np.valid_float_dtypes,
     shared_dtype=False,
 ):
@@ -1599,7 +1651,7 @@ def array_dtypes(
 def array_bools(
     draw,
     *,
-    num_arrays=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays"),
+    num_arrays=st.shared(ints(min_value=1, max_value=4), key="num_arrays"),
 ):
     """Draws a boolean list of a given size.
     Parameters
@@ -1640,11 +1692,15 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
     -------
     A strategy that draws a list.
     """
-    ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
+    integers = (
+        ints(min_value=size_bounds[0], max_value=size_bounds[1])
+        if size_bounds
+        else ints()
+    )
     if isinstance(min_size, str):
-        min_size = draw(st.shared(ints, key=min_size))
+        min_size = draw(st.shared(integers, key=min_size))
     if isinstance(max_size, str):
-        max_size = draw(st.shared(ints, key=max_size))
+        max_size = draw(st.shared(integers, key=max_size))
     return draw(st.lists(arg, min_size=min_size, max_size=max_size))
 
 
@@ -1879,10 +1935,10 @@ def reshape_shapes(draw, *, shape):
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
     size = 1 if len(shape) == 0 else math.prod(shape)
-    rshape = draw(st.lists(st.integers(0)).filter(lambda s: math.prod(s) == size))
+    rshape = draw(st.lists(ints(min_value=0)).filter(lambda s: math.prod(s) == size))
     # assume(all(side <= MAX_SIDE for side in rshape))
     if len(rshape) != 0 and size > 0 and draw(st.booleans()):
-        index = draw(st.integers(0, len(rshape) - 1))
+        index = draw(ints(min_value=0, max_value=len(rshape) - 1))
         rshape[index] = -1
     return tuple(rshape)
 
@@ -1962,8 +2018,8 @@ def array_and_indices(
         array_and_indices=array_and_indices( last_dim_same_size= True)
     )
     """
-    x_num_dims = draw(st.integers(min_value=min_num_dims, max_value=max_num_dims))
-    x_dim_size = draw(st.integers(min_value=min_dim_size, max_value=max_dim_size))
+    x_num_dims = draw(ints(min_value=min_num_dims, max_value=max_num_dims))
+    x_dim_size = draw(ints(min_value=min_dim_size, max_value=max_dim_size))
     x = draw(
         dtype_and_values(
             available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -1976,8 +2032,8 @@ def array_and_indices(
         )
     )
     indices_shape = list(x[2])
-    if not (last_dim_same_size):
-        indices_dim_size = draw(st.integers(min_value=1, max_value=x_dim_size))
+    if not last_dim_same_size:
+        indices_dim_size = draw(ints(min_value=1, max_value=x_dim_size))
         indices_shape[-1] = indices_dim_size
     indices = draw(
         dtype_and_values(
@@ -2081,7 +2137,11 @@ def array_values(
             max_value = ivy.default(
                 max_value, round(18446744073709551615 * safety_factor)
             )
-        values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
+        values = draw(
+            list_of_length(
+                x=ints(min_value=min_value, max_value=max_value), length=size
+            )
+        )
     elif dtype == "float16":
         values = draw(
             list_of_length(
@@ -2180,7 +2240,7 @@ def get_shape(
         shape = draw(
             st.none()
             | st.lists(
-                st.integers(min_value=min_dim_size, max_value=max_dim_size),
+                ints(min_value=min_dim_size, max_value=max_dim_size),
                 min_size=min_num_dims,
                 max_size=max_num_dims,
             )
@@ -2188,7 +2248,7 @@ def get_shape(
     else:
         shape = draw(
             st.lists(
-                st.integers(min_value=min_dim_size, max_value=max_dim_size),
+                ints(min_value=min_dim_size, max_value=max_dim_size),
                 min_size=min_num_dims,
                 max_size=max_num_dims,
             )
@@ -2442,9 +2502,9 @@ def get_axis(
         else:
             axis = draw(
                 st.none()
-                | st.integers(-axes, axes - 1)
+                | ints(min_value=-axes, max_value=axes - 1)
                 | st.lists(
-                    st.integers(-axes, axes - 1),
+                    ints(min_value=-axes, max_value=axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
@@ -2457,9 +2517,9 @@ def get_axis(
             )
         else:
             axis = draw(
-                st.integers(-axes, axes - 1)
+                ints(min_value=-axes, max_value=axes - 1)
                 | st.lists(
-                    st.integers(-axes, axes - 1),
+                    ints(-axes, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
@@ -2559,56 +2619,3 @@ def gradient_incompatible_function(*, fn):
         and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
     )
-
-
-@st.composite
-def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
-    """Draws an arbitrarily sized list of integers with a safety factor
-    applied to values.
-
-    Parameters
-    ----------
-    min_value
-        minimum value of integers generated.
-
-    max_value
-        maximum value of integers generated.
-
-    safety_factor
-        default = 0.95. Only values which are 95% or less than the edge of
-        the limit for a given dtype are generated.
-
-    Returns
-    -------
-    ret
-        list of integers.
-
-    """
-    dtype = draw(st.sampled_from(ivy_np.valid_int_dtypes))
-
-    if dtype == "int8":
-        min_value = ivy.default(min_value, round(-128 * safety_factor))
-        max_value = ivy.default(max_value, round(127 * safety_factor))
-    elif dtype == "int16":
-        min_value = ivy.default(min_value, round(-32768 * safety_factor))
-        max_value = ivy.default(max_value, round(32767 * safety_factor))
-    elif dtype == "int32":
-        min_value = ivy.default(min_value, round(-2147483648 * safety_factor))
-        max_value = ivy.default(max_value, round(2147483647 * safety_factor))
-    elif dtype == "int64":
-        min_value = ivy.default(min_value, round(-9223372036854775808 * safety_factor))
-        max_value = ivy.default(max_value, round(9223372036854775807 * safety_factor))
-    elif dtype == "uint8":
-        min_value = ivy.default(min_value, round(0 * safety_factor))
-        max_value = ivy.default(max_value, round(255 * safety_factor))
-    elif dtype == "uint16":
-        min_value = ivy.default(min_value, round(0 * safety_factor))
-        max_value = ivy.default(max_value, round(65535 * safety_factor))
-    elif dtype == "uint32":
-        min_value = ivy.default(min_value, round(0 * safety_factor))
-        max_value = ivy.default(max_value, round(4294967295 * safety_factor))
-    elif dtype == "uint64":
-        min_value = ivy.default(min_value, round(0 * safety_factor))
-        max_value = ivy.default(max_value, round(18446744073709551615 * safety_factor))
-
-    return draw(st.integers(min_value, max_value))

@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @st.composite
 def statistical_dtype_values(draw, *, function):
     dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
-    size = draw(st.integers(1, 10))
+    size = draw(helpers.ints(min_value=1, max_value=10))
     if dtype == "float16":
         max_value = 2048
     elif dtype == "float32":
@@ -198,12 +198,7 @@ def test_prod(
     input_dtype, x = dtype_and_x
 
     # torch implementation exhibits strange behaviour
-    assume(
-        not (
-            fw == "torch"
-            and (input_dtype == "float16")
-        )
-    )
+    assume(not (fw == "torch" and (input_dtype == "float16")))
 
     helpers.test_function(
         input_dtypes=input_dtype,
