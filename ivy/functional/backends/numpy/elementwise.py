@@ -1,11 +1,11 @@
 # global
-import functools
-from typing import Union, Optional, Callable
+from typing import Union, Optional
 
 import numpy as np
 
 # local
 import ivy
+from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 try:
     from scipy.special import erf as _erf
@@ -29,13 +29,6 @@ def _clamp_bits(x1, x2):
 
 # when inputs are 0 dimensional, numpy's functions return scalars
 # so we use this wrapper to ensure outputs are always numpy arrays
-def _handle_0_dim_output(function: Callable) -> Callable:
-    @functools.wraps(function)
-    def new_function(*args, **kwargs):
-        ret = function(*args, **kwargs)
-        return np.asarray(ret) if not isinstance(ret, np.ndarray) else ret
-
-    return new_function
 
 
 @_handle_0_dim_output
