@@ -1733,7 +1733,7 @@ def array_and_indices(
     )
     indices_shape = list(x[2])
     if not (last_dim_same_size):
-        indices_dim_size = draw(st.integers(min_value=1, max_value=x_dim_size))
+        indices_dim_size = draw(st.integers(min_value=1, max_value=x[2][-1]))
         indices_shape[-1] = indices_dim_size
     indices = draw(
         dtype_and_values(
