@@ -11,6 +11,7 @@ import numpy as np
 import math
 from typing import Union, List
 from hypothesis import assume
+import hypothesis.extra.numpy as nph  # noqa
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 cmd_line_args = (
