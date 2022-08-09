@@ -2,6 +2,7 @@
 
 # global
 import sys
+import ivy
 
 import numpy as np
 from hypothesis import given, strategies as st
@@ -134,6 +135,25 @@ def _get_dtype_and_matrix(draw):
             max_value=5,
         )
     )
+
+
+@st.composite
+def _get_dtype_and_symm_matrix(draw):
+    input_dtype = draw(st.shared(st.sampled_from(ivy_np.valid_float_dtypes)))
+    random_size = draw(st.integers(min_value=2, max_value=4))
+
+    x = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([random_size, random_size]),
+            min_value=2,
+            max_value=5,
+        )
+    )
+    x_ivy_array = ivy.array(x)
+    x_ivy_symm_array = (x_ivy_array + x_ivy_array.T) / 2
+    x_symm = ivy.to_list(x_ivy_symm_array)
+    return input_dtype, x_symm
 
 
 @st.composite
@@ -354,7 +374,7 @@ def test_det(
 
 # eigh
 @given(
-    dtype_x=_get_dtype_and_matrix(),
+    dtype_x=_get_dtype_and_symm_matrix(),
     num_positional_args=helpers.num_positional_args(fn_name="eigh"),
     data=st.data(),
 )
@@ -390,13 +410,12 @@ def test_eigh(
         return
 
     ret, ret_from_np = results
-    # flattened array returns
-    ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
-        ret=ret, ret_from_gt=ret_from_np
-    )
+    # flatten results
+    ret_flatten = helpers.flatten(ret=ret)
+    ret_from_np_flatten = helpers.flatten(ret=ret_from_np)
 
     # value test
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+    for ret_np, ret_from_np in zip(ret_flatten, ret_from_np_flatten):
         helpers.assert_all_close(
             np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2
         )
@@ -404,7 +423,7 @@ def test_eigh(
 
 # eigvalsh
 @given(
-    dtype_x=_get_dtype_and_matrix(),
+    dtype_x=_get_dtype_and_symm_matrix(),
     num_positional_args=helpers.num_positional_args(fn_name="eigvalsh"),
     data=st.data(),
 )
