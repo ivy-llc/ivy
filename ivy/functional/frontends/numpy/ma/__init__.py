@@ -29,3 +29,17 @@ from . import to_a_ndarray
 from .to_a_ndarray import *
 from . import filling_a_masked_array
 from .filling_a_masked_array import *
+from . import arithmetic
+from .arithmetic import *
+from . import minimum_maximum
+from .minimum_maximum import *
+from . import sorting
+from .sorting import *
+from . import algebra
+from .algebra import *
+from . import polynomial_fit
+from .polynomial_fit import *
+from . import clipping_and_rounding
+from .clipping_and_rounding import *
+from . import miscellanea
+from .miscellanea import *
