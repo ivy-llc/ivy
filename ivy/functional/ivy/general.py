@@ -1759,7 +1759,8 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
 
 @handle_nestable
 def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, None]:
-    """Try and return the function, otherwise return None if an exception was raised during function execution.
+    """Try and return the function, otherwise return None
+        if an exception was raised during function execution.
 
     Parameters
     ----------
@@ -1781,21 +1782,22 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.try_else_none(ivy.add,x, y)
-    >>> print(y)
+    >>> print(z)
     ivy.add
 
     with: if the function is executed with an exception
     >>> x = ivy.array([1, 2, 3])
     >>> y = 'hemant'
     >>> z = ivy.try_else_none(ivy.add,x, y)
-    >>> print(y)
+    >>> print(z)
     None
 
     """
     try: 
-        fn(*args, **kwargs)
+        _ = fn(*args, **kwargs)
         return fn 
-    except: return None
+    except Exception: 
+        return None
 
 
 def arg_names(receiver):
