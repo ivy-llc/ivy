@@ -178,7 +178,9 @@ class ArrayWithCreation(abc.ABC):
         """
         return ivy.zeros_like(self._data, dtype=dtype, device=device, out=out)
 
-    def tril(self: ivy.Array, /, k: int = 0, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def tril(
+        self: ivy.Array, /, k: int = 0, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tril. This method simply wraps the
         function, and so the docstring for ivy.tril also applies to this method
@@ -208,7 +210,9 @@ class ArrayWithCreation(abc.ABC):
         """
         return ivy.tril(self._data, k, out=out)
 
-    def triu(self: ivy.Array, /, k: int = 0, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def triu(
+        self: ivy.Array, /, k: int = 0, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.triu. This method simply wraps the
         function, and so the docstring for ivy.triu also applies to this method
