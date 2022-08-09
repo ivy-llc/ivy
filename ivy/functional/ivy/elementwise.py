@@ -1257,54 +1257,70 @@ def bitwise_right_shift(
     >>> print(y)
     ivy.array([2, 1, 1])
 
-    >>> a = ivy.array([32, 40, 55])
+    >>> a = ivy.array([[32, 40, 55], [16, 33, 170]])
     >>> b = ivy.array([5, 2, 1])
     >>> ivy.bitwise_right_shift(a, b, out=y)
     >>> print(y)
-    ivy.array([ 1, 10, 27])
+    ivy.array([[ 1, 10, 27],
+               [ 0,  8, 85]])
 
-    >>> a = ivy.array([5, 10, 64])
-    >>> b = ivy.array([2])
+    >>> a = ivy.array([[10, 64], \
+                       [43, 87], \
+                       [5, 37]])
+    >>> b = ivy.array([1, 3])
     >>> ivy.bitwise_right_shift(a, b, out=a)
     >>> print(a)
-    ivy.array([ 1, 2, 16])
+    ivy.array([[ 5,  8],
+               [21, 10],
+               [ 2,  4]])
 
     With :code: `ivy.NativeArray` input:
 
-    >>> a = ivy.native_array([2, 3, 4])
-    >>> b = ivy.native_array([0, 1, 2])
-    >>> y = ivy.bitwise_right_shift(a, b)
-    >>> print(y)
-    ivy.array([2, 1, 1])
-
-    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
-
-    >>> a = ivy.array([32, 40, 55])
+    >>> a = ivy.native_array([[32, 40, 55], [16, 33, 170]])
     >>> b = ivy.native_array([5, 2, 1])
     >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
-    ivy.array([ 1, 10, 27])
+    ivy.array([[ 1, 10, 27],
+               [ 0,  8, 85]])
+
+    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> a = ivy.array([[10, 64], \
+                       [43, 87], \
+                       [5, 37]])
+    >>> b = ivy.native_array([1, 3])
+    >>> y = ivy.bitwise_right_shift(a, b)
+    >>> print(y)
+    ivy.array([[ 5,  8],
+               [21, 10],
+               [ 2,  4]])
 
     With one :code:`ivy.Container` input:
 
-    >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
-    >>> b = ivy.array([0, 1, 2])
+    >>> a = ivy.Container(a = ivy.array([100, 200]), \
+                          b = ivy.array([125, 243]))
+    >>> b = ivy.array([3, 6])
     >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
     {
-        a: ivy.array([2, 1, 1]),
-        b: ivy.array([5, 5, 16])
+        a: ivy.array([12, 3]),
+        b: ivy.array([15, 3])
     }
 
     With multiple :code:`ivy.Container` inputs:
 
-    >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
-    >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([2]))
+    >>> a = ivy.Container(a = ivy.array([10, 25, 42]), \
+                          b = ivy.array([64, 65]), \
+                          c = ivy.array([200, 225, 255]))
+    >>> b = ivy.Container(a = ivy.array([0, 1, 2]), \
+                          b = ivy.array([6]), \
+                          c = ivy.array([4, 5, 6]))
     >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
     {
-        a: ivy.array([2, 1, 1]),
-        b: ivy.array([1, 2, 16])
+        a: ivy.array([10, 12, 10]),
+        b: ivy.array([1, 1]),
+        c: ivy.array([12, 7, 3])
     }
     """
     return ivy.current_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)

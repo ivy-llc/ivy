@@ -646,6 +646,7 @@ class Array(
 
         Examples
         --------
+        
         >>> a = 32
         >>> b = ivy.array([0, 1, 2])
         >>> y = a >> b
