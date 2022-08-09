@@ -1,13 +1,12 @@
 import hypothesis.extra.numpy as hnp
 from hypothesis import given, strategies as st
-from ivy import FloatDtype
 import numpy as np
 
 # local
 import ivy.functional.backends.numpy as ivy_np
-from ivy.functional.backends.numpy.data_type import dtype
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
 
 @st.composite
 def _broadcastable_trio(draw):
