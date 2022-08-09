@@ -24,7 +24,7 @@ def array_equal(x0: np.ndarray, x1: np.ndarray) -> bool:
     return np.array_equal(x0, x1)
 
 
-def to_numpy(x: np.ndarray, copy: bool=True) -> np.ndarray:
+def to_numpy(x: np.ndarray, copy: bool = True) -> np.ndarray:
     if copy:
         return x.copy()
     else:

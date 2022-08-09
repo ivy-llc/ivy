@@ -32,7 +32,7 @@ def array_equal(x0: torch.Tensor, x1: torch.Tensor) -> bool:
     return torch.equal(x0, x1)
 
 
-def to_numpy(x: torch.Tensor, copy: bool=True) -> np.ndarray:
+def to_numpy(x: torch.Tensor, copy: bool = True) -> np.ndarray:
     if isinstance(x, (float, int, bool)):
         return x
     elif isinstance(x, np.ndarray):

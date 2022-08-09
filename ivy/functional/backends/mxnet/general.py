@@ -37,7 +37,7 @@ def array_equal(x0: mx.nd.NDArray, x1: mx.nd.NDArray) -> bool:
     return mx.nd.min(mx.nd.broadcast_equal(x0, x1)) == 1
 
 
-def to_numpy(x: mx.nd.NDArray, copy: bool=True) -> mx.nd.NDArray:
+def to_numpy(x: mx.nd.NDArray, copy: bool = True) -> mx.nd.NDArray:
     if isinstance(x, np.ndarray):
         return x
     else:

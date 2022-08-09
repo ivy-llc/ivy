@@ -12,11 +12,17 @@ import math
 from typing import Union, List
 from hypothesis import assume
 
-#local
+# local
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
-from ivy.functional.backends.numpy.general import is_native_array as is_numpy_native_array
-from ivy.functional.backends.tensorflow.general import is_native_array as is_tensorflow_native_array
-from ivy.functional.backends.torch.general import is_native_array   as is_torch_native_array
+from ivy.functional.backends.numpy.general import (
+    is_native_array as is_numpy_native_array,
+)
+from ivy.functional.backends.tensorflow.general import (
+    is_native_array as is_tensorflow_native_array,
+)
+from ivy.functional.backends.torch.general import (
+    is_native_array as is_torch_native_array,
+)
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -533,13 +539,14 @@ def f_n_calls():
 def assert_all_close(
     ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
-    assert (
-        ret_np.dtype is ret_from_np.dtype
-    ), "the return with a {} backend produced data type of {}, while the return with" " a {} backend returned a data type of {}.".format(
-        ground_truth_backend,
-        ret_from_np.dtype,
-        ivy.current_backend_str(),
-        ret_np.dtype,
+    assert ret_np.dtype is ret_from_np.dtype, (
+        "the return with a {} backend produced data type of {}, while the return with"
+        " a {} backend returned a data type of {}.".format(
+            ground_truth_backend,
+            ret_from_np.dtype,
+            ivy.current_backend_str(),
+            ret_np.dtype,
+        )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
@@ -566,23 +573,33 @@ def as_cont(*, x):
 def as_lists(*args):
     return (a if isinstance(a, list) else [a] for a in args)
 
+
 def flatten_fw(*, ret, fw):
     # flatten the return
     if not isinstance(ret, tuple):
         ret = (ret,)
-    if fw == 'jax':
-        ret_idxs = ivy.nested_indices_where(ret, lambda x:  ivy.is_ivy_array(x) or is_jax_native_array(x))
-    elif fw == 'numpy':
-        ret_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_ivy_array(x) or is_numpy_native_array(x))
-    elif fw == 'tensorflow':
-        ret_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_ivy_array(x) or is_tensorflow_native_array(x))
+    if fw == "jax":
+        ret_idxs = ivy.nested_indices_where(
+            ret, lambda x: ivy.is_ivy_array(x) or is_jax_native_array(x)
+        )
+    elif fw == "numpy":
+        ret_idxs = ivy.nested_indices_where(
+            ret, lambda x: ivy.is_ivy_array(x) or is_numpy_native_array(x)
+        )
+    elif fw == "tensorflow":
+        ret_idxs = ivy.nested_indices_where(
+            ret, lambda x: ivy.is_ivy_array(x) or is_tensorflow_native_array(x)
+        )
     else:
-        ret_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_ivy_array(x) or is_torch_native_array(x))
+        ret_idxs = ivy.nested_indices_where(
+            ret, lambda x: ivy.is_ivy_array(x) or is_torch_native_array(x)
+        )
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
 
     # convert the return to NumPy
     ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
     return ret_np_flat
+
 
 def flatten(*, ret):
     # flatten the return

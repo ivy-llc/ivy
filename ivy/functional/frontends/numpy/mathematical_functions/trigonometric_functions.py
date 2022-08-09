@@ -1,8 +1,9 @@
 # global
 import ivy
 
-#local
+# local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
+
 
 @from_zero_dim_arrays_to_float
 def cos(
@@ -26,6 +27,7 @@ def cos(
 
 cos.unsupported_dtypes = {"torch": ("float16",)}
 
+
 @from_zero_dim_arrays_to_float
 def sin(
     x,
@@ -47,6 +49,7 @@ def sin(
 
 
 sin.unsupported_dtypes = {"torch": ("float16",)}
+
 
 @from_zero_dim_arrays_to_float
 def tan(
@@ -70,17 +73,18 @@ def tan(
 
 tan.unsupported_dtypes = {"torch": ("float16",)}
 
+
 @from_zero_dim_arrays_to_float
 def arcsin(
     x,
     /,
     out=None,
-    *, 
-    where=True, 
-    casting='same_kind', 
-    order='K', 
-    dtype=None, 
-    subok=True
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
@@ -92,17 +96,18 @@ def arcsin(
 
 arcsin.unsupported_dtypes = {"torch": ("float16",)}
 
+
 @from_zero_dim_arrays_to_float
 def arccos(
     x,
     /,
-    out=None, 
-    *, 
-    where=True, 
-    casting='same_kind', 
-    order='K', 
-    dtype=None, 
-    subok=True
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))

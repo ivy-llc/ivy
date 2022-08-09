@@ -20,9 +20,13 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     if values is None:
         return
     ret, frontend_ret = values
-    ret_flat = [np.where(where, x, np.zeros_like(x)) for x in helpers.flatten_fw(ret=ret, fw=kwargs['fw'])]
+    ret_flat = [
+        np.where(where, x, np.zeros_like(x))
+        for x in helpers.flatten_fw(ret=ret, fw=kwargs["fw"])
+    ]
     frontend_ret_flat = [
-        np.where(where, x, np.zeros_like(x)) for x in helpers.flatten_fw(ret=frontend_ret, fw=kwargs['frontend'])
+        np.where(where, x, np.zeros_like(x))
+        for x in helpers.flatten_fw(ret=frontend_ret, fw=kwargs["frontend"])
     ]
     helpers.value_test(ret_np_flat=ret_flat, ret_from_np_flat=frontend_ret_flat)
 
