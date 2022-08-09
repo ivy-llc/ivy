@@ -1087,6 +1087,7 @@ def test_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+
     fn = getattr(ivy, fn_name)
     test_unsupported = check_unsupported_dtype(
         fn=fn, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
@@ -1155,6 +1156,7 @@ def test_function(
                 fn=instance.__getattribute__(fn_name), args=args, kwargs=kwargs
             )
             return
+
         ret, ret_np_flat = get_ret_and_flattened_array(
             instance.__getattribute__(fn_name), *args, **kwargs
         )
