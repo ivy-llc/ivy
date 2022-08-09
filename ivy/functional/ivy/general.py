@@ -1782,8 +1782,8 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.try_else_none(ivy.add,x, y)
-    >>> print(z)
-    ivy.add
+    >>> print(z.__name__)
+    add
 
     with: if the function is executed with an exception
     >>> x = ivy.array([1, 2, 3])
