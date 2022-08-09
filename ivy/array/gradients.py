@@ -138,7 +138,7 @@ class ArrayWithGradients(abc.ABC):
 
         Parameters
         ----------
-        w
+        Self
             Weights of the function to be updated.
         dcdw
             Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
