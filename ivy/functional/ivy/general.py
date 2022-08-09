@@ -1690,6 +1690,78 @@ def default(
     ret
         x if x exists (is not None), else default.
 
+    Functional Examples
+    ------------------
+    With :code:`Any` input:
+
+    >>> x = None
+    >>> y = ivy.default(x, "abc")
+    >>> print(y)
+    abc
+
+    >>> x = ""
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    ""
+
+    >>> x = []
+    >>> y = ivy.default(x, ivy.container(a = ivy.array([1, 2, 3]), b = ivy.array([4, 5, 6])), rev=True)
+    >>> print(y)
+    {
+        a: ivy.array([1, 2, 3]),
+        b: ivy.array([4, 5, 6])
+    }
+
+    >>> x = None
+    >>> y = ivy.default(x, "default_string", with_callable=True)
+    >>> print(y)
+    default_string
+
+    >>> x = lambda: "abc"
+    >>> y = ivy.default(x, "default_string", catch_expression=True)
+    >>> print(y)
+    abc
+
+    >>> x = lambda: a, b: a + b
+    >>> y = ivy.default(x, "error in calling x", catch_expression=True)
+    >>> print(y)
+    error in calling x
+
+    >>> x = lambda: a, b: a + b
+    >>> y = ivy.default(x, lamda: "error in calling x", catch_expression=True)
+    >>> print(y)
+    error in calling x
+
+    >>> x = lambda: "abc"
+    >>> y = ivy.default(x, "default_string", with_callable=True)
+    >>> print(y)
+    abc
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: "default_function_return", with_callable=True)
+    >>> print(y)
+    default_function_return
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: "default_function_return", with_callable=True, catch_exceptions=True)
+    >>> print(y)
+    default_function_return
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: "default_function_return", with_callable=True, catch_exceptions=True, rev=True)
+    >>> print(y)
+    default_function_return
+
+    >>> x = None
+    >>> y = ivy.default(x, lambda: "default_function_return", with_callable=True, catch_exceptions=True, rev=True)
+    >>> print(y)
+    default_function_return
+
+    >> x = lambda: "x"
+    >>> y = ivy.default(x, lambda: "default_function_return", with_callable=True, catch_exceptions=True, rev=True)
+    >>> print(y)
+    default_function_return
+
     """
     with_callable = catch_exceptions or with_callable
     if rev:
