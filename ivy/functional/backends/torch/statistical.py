@@ -7,6 +7,26 @@ from typing import Tuple, Union, Optional, Sequence
 import ivy
 
 
+def _new_var_fun(x, *, axis, correction, dtype):
+    output = x.to(dtype)
+    length = output.shape[axis]
+    divisor = length - correction
+    mean = torch.sum(output, dim=axis) / length
+    output = torch.abs(
+        output.to(dtype=dtype)
+        - torch.unsqueeze(mean, dim=axis)
+    )
+    output = output ** 2
+    output = torch.sum(output, axis=axis) / divisor
+    return output
+
+
+def _new_std_fun(x, *, axis, correction, dtype):
+    output = torch.sqrt(_new_var_fun(x, axis=axis, correction=correction, dtype=dtype))
+    output = torch.tensor(output, dtype=dtype)
+    return output
+
+
 # Array API Standard #
 # -------------------#
 
@@ -91,10 +111,7 @@ def prod(
             dtype = torch.float16
 
     dtype = ivy.as_native_dtype(dtype)
-    if out is None:
-        out = {}
-    else:
-        out = {"out": out}
+
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
         axis = x.dim() - 1
@@ -110,9 +127,9 @@ def prod(
                     ]
                 ),
                 dtype=dtype,
-                **out
+                out=out
             )
-    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, **out)
+    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
 
 
 prod.support_native_out = True
@@ -127,31 +144,33 @@ def std(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    if isinstance(axis, int):
-        return torch.std(x, dim=axis, keepdim=keepdims, unbiased=False, out=out)
-    dims = len(x.shape)
-    axis = tuple([i % dims for i in axis])
-    for i, a in enumerate(axis):
-        if i == len(axis) - 1:
-            x = torch.std(
+    dtype = x.dtype
+    if isinstance(axis, tuple):
+        ret = []
+        for i in axis:
+            ret.append(_new_std_fun(
                 x,
-                dim=a if keepdims else a - i,
-                keepdim=keepdims,
-                unbiased=False,
-                out=out,
+                axis=i,
+                correction=correction,
+                dtype=dtype)
             )
-        else:
-            x = torch.std(
-                x,
-                dim=a if keepdims else a - i,
-                keepdim=keepdims,
-                unbiased=False,
-                out=out,
-            )
-    return x
+        ret = torch.tensor(ret, dtype=dtype)
+    elif isinstance(axis, int):
+        ret = _new_std_fun(x, axis=axis, correction=correction, dtype=dtype)
+    else:
+        num = torch.numel(x)
+        ret = _new_std_fun(
+            torch.reshape(x, (num,)),
+            axis=0,
+            correction=correction,
+            dtype=dtype
+        )
+
+    if keepdims:
+        shape = tuple([1 if ret.shape.numel()<=1 else ret.shape[0]] \
+            + [1 for i in range(len(x.shape) - 1)])
+        ret = torch.reshape(ret, shape)
+    return ret
 
 
 std.support_native_out = True
@@ -203,10 +222,33 @@ def var(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False, out=out)
+    dtype = x.dtype
+    if isinstance(axis, tuple):
+        ret = []
+        for i in axis:
+            ret.append(_new_var_fun(
+                x,
+                axis=i,
+                correction=correction,
+                dtype=dtype)
+            )
+        ret = torch.tensor(ret, dtype=dtype)
+    elif isinstance(axis, int):
+        ret = _new_var_fun(x, axis=axis, correction=correction, dtype=dtype)
+    else:
+        num = torch.numel(x)
+        ret = _new_var_fun(
+            torch.reshape(x, (num,)),
+            axis=0,
+            correction=correction,
+            dtype=dtype
+        )
+
+    if keepdims:
+        shape = tuple([1 if ret.shape.numel()<=1 else ret.shape[0]] \
+            + [1 for i in range(len(x.shape) - 1)])
+        ret = torch.reshape(ret, shape)
+    return ret
 
 
 var.support_native_out = True
