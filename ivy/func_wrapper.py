@@ -391,7 +391,11 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
     """
     if key == "linalg":
         for linalg_k, linalg_v in to_wrap.__dict__.items():
-            if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
+            if (
+                isinstance(linalg_v, FunctionType)
+                and linalg_k != "namedtuple"
+                and not linalg_k.startswith("_")
+            ):
                 to_wrap.__dict__[linalg_k] = _wrap_function(
                     linalg_k, linalg_v, ivy.__dict__[linalg_k]
                 )

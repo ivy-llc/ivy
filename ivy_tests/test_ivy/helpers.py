@@ -11,6 +11,7 @@ import numpy as np
 import math
 from typing import Union, List
 from hypothesis import assume
+import hypothesis.extra.numpy as nph  # noqa
 
 # local
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
@@ -66,7 +67,6 @@ except ImportError:
     mx = None
     mx_nd = None
 from hypothesis import strategies as st
-import hypothesis.extra.numpy as nph
 
 # local
 import ivy
@@ -1490,6 +1490,7 @@ def test_frontend_function(
     if test_unsupported:
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
         return
+
     ret = frontend_fn(*args, **kwargs)
     ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
     # assert idx of return if the idx of the out array provided
@@ -1664,6 +1665,7 @@ def array_bools(
 @st.composite
 def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
     """Draws a list from the dataset arg.
+
     Parameters
     ----------
     draw
@@ -1676,7 +1678,9 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
     max_size
         max size of the list.
     size_bounds
-        if min_size or max_size is None, draw them randomly from the range [size_bounds[0], size_bounds[1]].
+        if min_size or max_size is None, draw them randomly from the range
+        [size_bounds[0], size_bounds[1]].
+
     Returns
     -------
     A strategy that draws a list.
@@ -1851,7 +1855,9 @@ def dtype_values_axis(
     max_axis=None,
     ret_shape=False,
 ):
-    """Draws an array with elements from the given data type, and a random axis of the array.
+    """Draws an array with elements from the given data type, and a random axis of
+    the array.
+
     Parameters
     ----------
     draw
@@ -1887,6 +1893,7 @@ def dtype_values_axis(
         if shape is None, axis is drawn from the range [min_axis, max_axis].
     ret_shape
         if True, the shape of the arrays is also returned.
+
     Returns
     -------
     A strategy that draws a dtype, an array (as list), and an axis.
