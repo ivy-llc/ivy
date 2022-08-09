@@ -157,9 +157,11 @@ def np_call(func, *args, **kwargs):
         The arguments to be given.
     kwargs
         The keywords args to be given.
+
     Returns
     -------
-    The result of the function call as a Numpy Array
+    ret
+        The result of the function call as a Numpy Array
     """
     ret = func(*args, **kwargs)
     if isinstance(ret, (list, tuple)):
@@ -524,14 +526,13 @@ def f_n_calls():
 def assert_all_close(
     ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
-    assert ret_np.dtype is ret_from_np.dtype, (
-        "the return with a {} backend produced data type of {}, while the return with"
-        " a {} backend returned a data type of {}.".format(
-            ground_truth_backend,
-            ret_from_np.dtype,
-            ivy.current_backend_str(),
-            ret_np.dtype,
-        )
+    assert (
+        ret_np.dtype is ret_from_np.dtype
+    ), "the return with a {} backend produced data type of {}, while the return with" " a {} backend returned a data type of {}.".format(
+        ground_truth_backend,
+        ret_from_np.dtype,
+        ivy.current_backend_str(),
+        ret_np.dtype,
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
@@ -1448,6 +1449,7 @@ def test_frontend_function(
     if test_unsupported:
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
         return
+
     ret = frontend_fn(*args, **kwargs)
 
     # assert idx of return if the idx of the out array provided
@@ -1558,6 +1560,22 @@ def array_dtypes(
     available_dtypes=ivy_np.valid_float_dtypes,
     shared_dtype=False,
 ):
+    """Draws a list of data types.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    num_arrays
+        number of data types to be drawn.
+    available_dtypes
+        universe of available data types.
+    shared_dtype
+        if True, all data types in the list are same.
+    Returns
+    -------
+    A strategy that draws a list.
+    """
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if num_arrays == 1:
@@ -1583,12 +1601,42 @@ def array_bools(
     *,
     num_arrays=st.shared(st.integers(min_value=1, max_value=4), key="num_arrays"),
 ):
+    """Draws a boolean list of a given size.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    num_arrays
+        size of the list.
+    Returns
+    -------
+    A strategy that draws a list.
+    """
     size = num_arrays if isinstance(num_arrays, int) else draw(num_arrays)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
 @st.composite
 def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
+    """Draws a list from the dataset arg.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    arg
+        dataset of elements.
+    min_size
+        least size of the list.
+    max_size
+        max size of the list.
+    size_bounds
+        if min_size or max_size is None, draw them randomly from the range [size_bounds[0], size_bounds[1]].
+    Returns
+    -------
+    A strategy that draws a list.
+    """
     ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
     if isinstance(min_size, str):
         min_size = draw(st.shared(ints, key=min_size))
@@ -1598,17 +1646,21 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
 
 
 @st.composite
-def valid_axes(draw, *, ndim=None, size_bounds=None):
-    ints = st.integers(size_bounds[0], size_bounds[1]) if size_bounds else st.integers()
-    dims = draw(st.shared(ints, key=ndim))
-    any_axis_strategy = (
-        st.none() | st.integers(-dims, dims - 1) | nph.valid_tuple_axes(dims)
-    )
-    return draw(any_axis_strategy)
-
-
-@st.composite
 def integers(draw, *, min_value=None, max_value=None):
+    """Draws an integer from the range min_value to max_value.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    min_value
+        least value of the drawn integer.
+    max_value
+        max value of the drawn integer.
+    Returns
+    -------
+    A strategy that draws a list of dtype and arrays (as lists).
+    """
 
     if isinstance(min_value, str):
         min_value = draw(st.shared(st.integers(), key=min_value))
@@ -1639,6 +1691,7 @@ def dtype_and_values(
     dtype=None,
 ):
     """Draws a list of arrays with elements from the given corresponding data types.
+
     Parameters
     ----------
     draw
@@ -1676,9 +1729,10 @@ def dtype_and_values(
         if True, the shape of the arrays is also returned.
     dtype
         A list of data types for the given arrays.
+
     Returns
     -------
-    A strategy that draws a list of arrays(as lists).
+    A strategy that draws a list of dtype and arrays (as lists).
     """
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
@@ -1753,6 +1807,46 @@ def dtype_values_axis(
     max_axis=None,
     ret_shape=False,
 ):
+    """Draws an array with elements from the given data type, and a random axis of the array.
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    available_dtypes
+        if dtype is None, data type is drawn from this list randomly.
+    min_value
+        minimum value of elements in the array.
+    max_value
+        maximum value of elements in the array.
+    allow_inf
+        if True, allow inf in the array.
+    exclude_min
+        if True, exclude the minimum limit.
+    exclude_max
+        if True, exclude the maximum limit.
+    min_num_dims
+        minimum size of the shape tuple.
+    max_num_dims
+        maximum size of the shape tuple.
+    min_dim_size
+        minimum value of each integer in the shape tuple.
+    max_dim_size
+        maximum value of each integer in the shape tuple.
+    shape
+        shape of the array. if None, a random shape is drawn.
+    shared_dtype
+        if True, if dtype is None, a single shared dtype is drawn for all arrays.
+    min_axis
+        if shape is None, axis is drawn from the range [min_axis, max_axis].
+    max_axis
+        if shape is None, axis is drawn from the range [min_axis, max_axis].
+    ret_shape
+        if True, the shape of the arrays is also returned.
+    Returns
+    -------
+    A strategy that draws a dtype, an array (as list), and an axis.
+    """
     results = draw(
         dtype_and_values(
             available_dtypes=available_dtypes,
@@ -1787,6 +1881,7 @@ def dtype_values_axis(
 @st.composite
 def reshape_shapes(draw, *, shape):
     """Draws a random shape with the same number of elements as the given shape.
+
     Parameters
     ----------
     draw
@@ -1794,6 +1889,7 @@ def reshape_shapes(draw, *, shape):
         data-set (ex. list).
     shape
         list/strategy/tuple of integers representing an array shape.
+
     Returns
     -------
     A strategy that draws a tuple.
@@ -1821,6 +1917,7 @@ def subsets(draw, *, elements):
         data-set (ex. list).
     elements
         set of elements to be drawn from.
+
     Returns
     -------
     A strategy that draws a subset of elements.

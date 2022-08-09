@@ -1110,7 +1110,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
     >>> y = x.to_list()
     >>> print(y)
-    [ivy.array([0,1,2])]
+    {a:[0,1,2]}
 
     """
     return current_backend(x).to_list(x)
@@ -2095,8 +2095,8 @@ def get_min_base() -> float:
     --------
     >>> x = ivy.get_min_base()
     >>> print(x)
-    1e-05    
-    
+    1e-05
+
     """
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
