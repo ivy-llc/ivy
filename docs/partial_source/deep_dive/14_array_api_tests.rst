@@ -9,12 +9,16 @@ Array API Tests
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`array api tests channel`: https://discord.com/channels/799879767196958751/982738404611592256
+.. _`test_array_api.sh`: https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh
 
 All functions which are present in the `Array API Standard`_ have a corresponding unit test in the
 `test suite`_ for the standard.
 
 The test suite is included in the ivy repository as a submodule in the folder `test_array_api`_,
 which we keep updated with the upstream test suite.
+
+Running the tests
+-----------------
 
 The entire test suite is run independently `for each backend`_ on every push to the repo.
 Therefore, every function which exists in the standard is thoroughly tested for
@@ -23,6 +27,36 @@ adherence to the standard on a continuous basis.
 You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
 functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
 'Details' -> 'Run [backend] Tests'.
+
+You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.
+
+Using bash file
+****
+
+Using the terminal, you can run our bash file `test_array_api.sh`_ and specify which framework backend you want to use.
+You can use the following command as an example.
+
+.. code-block:: none
+
+        /bin/bash -e ./test_array_api.sh  '<insert_chosen_backend>'
+
+You can change the argument with any of our other supported frameworks like 'tensorflow' or 'numpy'.
+
+Using IDE
+****
+If you prefer, you can also run a specific test or test file by using your IDE. To make this work, you should set the
+backend explicitly in the '_array_module.py' file. You can find it on the 'array_api_tests' submodule. At the beginning
+of the file, you will see the following line of code :code:`array_module = None`. You need to comment that line and add
+the following code:
+
+.. code-block:: none
+
+        import ivy as array_module
+        array_module.set_backend("<insert_chosen_backend>")
+
+After that, you can run the API test files as you typically would with other tests. Just make sure to not add these
+changes to your commit.
+
 
 **Round Up**
 

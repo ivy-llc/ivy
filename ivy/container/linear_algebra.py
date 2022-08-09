@@ -21,6 +21,21 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Examples
+        ------------------------
+
+        With :code:`ivy.Container` instance inputs:
+
+        >>> x = ivy.Container(a=ivy.array([5., 2.]), b=ivy.array([2., 1.]))
+        >>> y = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 2.]))
+        >>> z = x.matmul(y)
+        >>> print(z)
+        {
+            a: ivy.array(39.),
+            b: ivy.array(8.)
+        }
+        """
         kw = {}
         conts = {"x1": self}
         if ivy.is_array(x2):
@@ -211,6 +226,67 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.cross. 
+        This method simply wraps the function, and so the docstring
+        for ivy.cross also applies to this method with minimal changes.
+        
+        Parameters
+        ----------
+        x1
+            first input array. Should have a numeric data type.
+        x2
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        axis
+            the axis (dimension) of x1 and x2 containing the vectors for which to 
+            compute the cross product.vIf set to -1, the function computes the 
+            cross product for vectors defined by the last axis (dimension). 
+            Default: -1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+            
+        Returns
+        -------
+        ret
+            an array containing the element-wise products. The returned array must have
+            a data type determined by :ref:`type-promotion`.
+            
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+        
+        >>> x = ivy.array([9., 0., 3.])
+        >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
+        >>> z = ivy.Container.static_cross(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([-3., 3., 9.]),
+            b: ivy.array([0., -6., 0.])
+        }
+        
+        With multiple :code:`ivy.Container` inputs:
+        
+        >>> x = x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+        >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+        >>> z = ivy.Container.static_cross(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([0., 0., 35.]),
+            b: ivy.array([0., 6., 0.])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "cross",
             x1,
@@ -234,6 +310,54 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.cross. 
+        This method simply wraps the function, and so the docstring 
+        for ivy.cross also applies to this method with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type.
+        x2
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        axis
+            the axis (dimension) of x1 and x2 containing the vectors for which to 
+            compute (default: -1) the cross product.vIf set to -1, the function 
+            computes the cross product for vectors defined by the last axis (dimension).
+            Default: -1.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+            
+        Returns
+        -------
+        ret
+            an array containing the element-wise products. The returned array must have 
+            a data type determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
+        >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+        >>> z = x.cross(y)
+        >>> print(z)
+        {
+            a: ivy.array([0., 0., 35.]),
+            b: ivy.array([0., 6., 0.])
+        }
+        """
         return self.static_cross(
             self,
             x2,
@@ -616,8 +740,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.matrix_rank()
         >>> print(y)
         {
-            a: ivy.array(2.),
-            b: ivy.array(1.)
+            a: ivy.array(2),
+            b: ivy.array(1)
         }
         """
         return self.static_matrix_rank(
@@ -1058,7 +1182,82 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-    ):
+    ) -> ivy.Container:
+        r"""
+        ivy.Container static method variant of ivy.vector_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.vector_norm also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array. Should have a floating-point data type.
+        axis
+            If an integer, ``axis`` specifies the axis (dimension)
+            along which to compute vector norms. If an n-tuple,
+            ``axis`` specifies the axes (dimensions) along
+            which to compute batched vector norms. If ``None``, the
+             vector norm must be computed over all array values
+             (i.e., equivalent to computing the vector norm of
+            a flattened array). Negative indices must be
+            supported. Default: ``None``.
+        keepdims
+            If ``True``, the axes (dimensions) specified by ``axis``
+            must be included in the result as singleton dimensions,
+            and, accordingly, the result must be compatible
+            with the input array (see :ref:`broadcasting`). Otherwise,
+            if ``False``, the axes (dimensions) specified by ``axis`` must
+            not be included in the result. Default: ``False``.
+        ord
+            order of the norm. The following mathematical norms must be supported:
+
+            +------------------+----------------------------+
+            | ord              | description                |
+            +==================+============================+
+            | 1                | L1-norm (Manhattan)        |
+            +------------------+----------------------------+
+            | 2                | L2-norm (Euclidean)        |
+            +------------------+----------------------------+
+            | inf              | infinity norm              |
+            +------------------+----------------------------+
+            | (int,float >= 1) | p-norm                     |
+            +------------------+----------------------------+
+
+            The following non-mathematical "norms" must be supported:
+
+            +------------------+--------------------------------+
+            | ord              | description                    |
+            +==================+================================+
+            | 0                | sum(a != 0)                    |
+            +------------------+--------------------------------+
+            | -1               | 1./sum(1./abs(a))              |
+            +------------------+--------------------------------+
+            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | # noqa
+            +------------------+--------------------------------+
+            | -inf             | min(abs(a))                    |
+            +------------------+--------------------------------+
+            | (int,float < 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |
+            +------------------+--------------------------------+
+
+            Default: ``2``.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the vector norms. If ``axis`` is
+            ``None``, the returned array must be a zero-dimensional
+            array containing a vector norm. If ``axis`` is
+            a scalar value (``int`` or ``float``), the returned array
+            must have a rank which is one less than the rank of ``x``.
+            If ``axis`` is a ``n``-tuple, the returned array must have
+             a rank which is ``n`` less than the rank of ``x``. The returned
+            array must have a floating-point data type determined
+            by :ref:`type-promotion`.
+
+        """
         return ContainerBase.multi_map_in_static_method(
             "vector_norm",
             x,
@@ -1084,6 +1283,79 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        r"""
+        ivy.Container instance method variant of ivy.vector_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.vector_norm also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a floating-point data type.
+        axis
+            If an integer, ``axis`` specifies the axis (dimension)
+            along which to compute vector norms. If an n-tuple, ``axis``
+            specifies the axes (dimensions) along which to compute
+            batched vector norms. If ``None``, the vector norm must be
+            computed over all array values (i.e., equivalent to computing
+            the vector norm of a flattened array). Negative indices must
+            be supported. Default: ``None``.
+        keepdims
+            If ``True``, the axes (dimensions) specified by ``axis`` must
+            be included in the result as singleton dimensions, and, accordingly,
+            the result must be compatible with the input array
+            (see :ref:`broadcasting`).Otherwise, if ``False``, the axes
+            (dimensions) specified by ``axis`` must not be included in
+            the result. Default: ``False``.
+        ord
+            order of the norm. The following mathematical norms must be supported:
+
+            +------------------+----------------------------+
+            | ord              | description                |
+            +==================+============================+
+            | 1                | L1-norm (Manhattan)        |
+            +------------------+----------------------------+
+            | 2                | L2-norm (Euclidean)        |
+            +------------------+----------------------------+
+            | inf              | infinity norm              |
+            +------------------+----------------------------+
+            | (int,float >= 1) | p-norm                     |
+            +------------------+----------------------------+
+
+            The following non-mathematical "norms" must be supported:
+
+            +------------------+--------------------------------+
+            | ord              | description                    |
+            +==================+================================+
+            | 0                | sum(a != 0)                    |
+            +------------------+--------------------------------+
+            | -1               | 1./sum(1./abs(a))              |
+            +------------------+--------------------------------+
+            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | # noqa
+            +------------------+--------------------------------+
+            | -inf             | min(abs(a))                    |
+            +------------------+--------------------------------+
+            | (int,float < 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |
+            +------------------+--------------------------------+
+
+            Default: ``2``.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the vector norms. If ``axis`` is ``None``,
+            the returned array must be a zero-dimensional array containing
+            a vector norm. If ``axis`` is a scalar value (``int`` or ``float``),
+            the returned array must have a rank which is one less than the
+            rank of ``x``. If ``axis`` is a ``n``-tuple, the returned
+            array must have a rank which is ``n`` less than the rank of
+            ``x``. The returned array must have a floating-point data type
+            determined by :ref:`type-promotion`.
+
+        """
         return self.static_vector_norm(
             self,
             axis,

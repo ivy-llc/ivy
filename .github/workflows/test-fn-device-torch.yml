@@ -1,5 +1,8 @@
 name: test-fn-device-torch
-on: [push, pull_request]
+on:
+  push:
+  pull_request: 
+    types: [labeled, review_requested]
 jobs:
   run-nightly-tests:
     runs-on: ubuntu-latest
@@ -11,15 +14,39 @@ jobs:
           persist-credentials: false
           submodules: "recursive"
 
-      - name: Cache hypothesis
-        uses: actions/cache@v3
-        with:
-          path: |
-            ivy/.hypothesis
-          key: ${{ runner.os }}-hypothesis
+      # - name: Download artifact
+      #   uses: dawidd6/action-download-artifact@v2
+      #   with:
+      #     workflow: test-fn-device-torch.yml
+      #     name: hypothesis_fn_device_torch_zip
+      #     path: |
+      #       ivy/.hypothesis/
+
+      # - name: Unzip Hypothesis Examples
+      #   run: |
+      #     cd ivy/.hypothesis
+      #     unzip examples.zip
+      #     rm examples.zip
 
       - name: Run Device Tests
+        id: tests
         run: |
           cd ivy
           mkdir -p .hypothesis
           docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend torch ivy/ivy_tests/test_ivy/test_functional/test_core/test_device.py
+
+      - name: Zip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          zip -r examples.zip examples
+
+      - name: Upload hypothesis
+        uses: actions/upload-artifact@v3
+        with:
+          name: hypothesis_fn_device_torch_zip
+          path: |
+            ivy/.hypothesis/examples.zip
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1

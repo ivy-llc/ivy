@@ -38,7 +38,8 @@ concat.support_native_out = True
 
 
 def expand_dims(
-    x: np.ndarray, axis: int = 0, *, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> np.ndarray:
     ret = np.expand_dims(x, axis)
     return ret
