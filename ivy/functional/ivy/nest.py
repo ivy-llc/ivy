@@ -533,11 +533,10 @@ def map(
     Returns
     -------
     ret
-        x following the applicable of fn to each of it's iterated items.
+        x following the application of fn to each of its iterated items.
     
     Examples
     --------
-
     With :code:`int` inputs:
 
     >>> def special_square(x : float) -> float : return np.square(x)
@@ -599,13 +598,13 @@ def map(
     >>> print(results)
     ivy.array([  0.5,  10. , 100. ])
     """
-
     c = ivy.default(constant, {})
     u = ivy.default(unique, {})
     rets = [
         r
         for r in _map(
-            lambda *uv: fn(**dict(**c, **dict(zip(u.keys(), uv)))), *u.values())
+            lambda *uv: fn(**dict(**c, **dict(zip(u.keys(), uv)))), *u.values()
+        )
     ]
     if mean:
         rets = sum(rets) / len(rets)
@@ -821,7 +820,7 @@ def copy_nest(
     >>> copied_nest = ivy.copy_nest(nest)
     >>> print(copied_nest)
     ivy.array([[1., 2., 3.],
-            [7., 8., 9.]])    
+            [7., 8., 9.]])
 
     With :code:`Iterable` input:
 
