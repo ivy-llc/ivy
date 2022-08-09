@@ -10,6 +10,7 @@ from collections import namedtuple
 
 # Array API Standard #
 # -------------------#
+from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
 def cholesky(
@@ -89,6 +90,7 @@ def matmul(
 matmul.support_native_out = True
 
 
+@_handle_0_dim_output
 def matrix_norm(
     x: np.ndarray,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
@@ -97,8 +99,6 @@ def matrix_norm(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
-    if not isinstance(ret, np.ndarray):
-        ret = np.asarray(ret)
     return ret
 
 
