@@ -324,6 +324,69 @@ class Container(
     def __rxor__(self, other):
         return self.map(lambda x, kc: other != x, map_sequences=True)
 
+    def __rshift__(self, other):
+        """
+        ivy.Container special method for the right shift operator, calling 
+        :code:`operator.rshift` for each of the corresponding leaves of the
+        two containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have an integer data type.
+        other
+            second input array or container. Must be compatible with ``self`` 
+            (see :ref:`broadcasting`). Should have an integer data type. 
+            Each element must be greater than or equal to ``0``.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned array must have
+            a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+
+        
+        """
+        if isinstance(other, ivy.Container):
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.rshift(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.map(lambda x, kc: operator.rshift(x, other), map_sequences=True)
+
+    def __rrshift__(self, other):
+        """
+        ivy.Container reverse special method for the right shift operator, calling
+        :code:`operator.rshift` for each of the corresponding leaves of the two
+        containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have an integer data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have an integer data type. Each element
+            must be greater than or equal to ``0``.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results. The returned array must have
+            a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> a = 64
+        >>> b = ivy.Container(a = [0, 1, 2], b = [3, 4, 5])
+        >>> y = a >> b
+        >>> print(y)
+        ivy.array([32, 16,  8])
+        """
+        return self.map(lambda x, kc: other >> x, map_sequences=True)
+
     def __getstate__(self):
         state_dict = copy.copy(self.__dict__)
         state_dict["_local_ivy"] = ivy.try_else_none(
