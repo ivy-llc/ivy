@@ -7,6 +7,7 @@ Function Arguments
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`function arguments channel`: https://discord.com/channels/799879767196958751/982738240354254898
+.. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 
 Here, we explain how the function arguments differ between the placeholder implementation at
 :code:`ivy/functional/ivy/category_name.py`, and the backend-specific implementation at
@@ -118,7 +119,16 @@ We present both the Ivy API signature and also a backend-specific signature for 
         device: jaxlib.xla_extension.Device,
     ) -> JaxArray:
 
+
 Positional and Keyword Arguments
+------
+In both signatures, we follow the `Array API Standard`_ convention about positional and keyword arguments.
+
+* Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name.
+When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based
+solely on their order. This is indicated with an :code:`/` after all the position-only arguments.
+* Optional parameters must be keyword-only arguments.
+A :code:`*` must be added before any of the keyword-only arguments.
 
 Arrays
 ------

@@ -133,10 +133,14 @@ look something like the following, (explained in much more detail in the followi
 
 We follow the `Array API Standard convention`_ about positional and keyword arguments.
 
-* Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name. When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based solely on their order.
+* Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name.
+When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based
+solely on their order.
 * Optional parameters must be keyword-only arguments
 
-This convention makes it easier for us to modify functions in the future. Keyword-only parameters will mandate the use of argument names when calling functions, and this will allow us the flexibility to extend the function behaviour in future releases without breaking forward compatibility.
+This convention makes it easier for us to modify functions in the future. Keyword-only parameters will mandate the use
+of argument names when calling functions, and this will allow us the flexibility to extend the function behaviour in
+future releases without breaking forward compatibility.
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
 Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.

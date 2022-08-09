@@ -78,7 +78,7 @@ is not formatted in its own line, which caused a line to exceed the length limit
 .. code-block:: python
 
     def indices_where(
-        x: Union[ivy.Array, ivy.NativeArray], out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
 
 When a commit is attempted, `pre-commit` detects this through running the lint check,
@@ -105,6 +105,7 @@ saved and the related file(s) can now be staged and committed accordingly.
 
     def indices_where(
         x: Union[ivy.Array, ivy.NativeArray],
+        *,
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
 
