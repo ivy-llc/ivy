@@ -37,6 +37,13 @@ def acos(input, *, out=None):
 acos.unsupported_dtypes = ("float16",)
 
 
+def arccos(input, *, out=None):
+    return ivy.acos(input, out=out)
+
+
+arccos.unsupported_dtypes = ("float16",)
+
+
 def abs(input, *, out=None):
     return ivy.abs(input, out=out)
 
