@@ -336,7 +336,6 @@
 
 <div class="viewcode-block" id="asarray"><a class="viewcode-back" href="../../../functional/ivy/creation/asarray/asarray_array.html#ivy.array.array_methods.asarray">[docs]</a><span class="k">def</span> <span class="nf">asarray</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">copy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -372,7 +371,6 @@
 
 <div class="viewcode-block" id="full_like"><a class="viewcode-back" href="../../../functional/ivy/creation/full_like/full_like_array.html#ivy.array.array_methods.full_like">[docs]</a><span class="k">def</span> <span class="nf">full_like</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="n">fill_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -434,7 +432,6 @@
 
 <div class="viewcode-block" id="ones_like"><a class="viewcode-back" href="../../../functional/ivy/creation/ones_like/ones_like_array.html#ivy.array.array_methods.ones_like">[docs]</a><span class="k">def</span> <span class="nf">ones_like</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -470,7 +467,6 @@
 
 <div class="viewcode-block" id="zeros_like"><a class="viewcode-back" href="../../../functional/ivy/creation/zeros_like/zeros_like_array.html#ivy.array.array_methods.zeros_like">[docs]</a><span class="k">def</span> <span class="nf">zeros_like</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -504,9 +500,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="tril"><a class="viewcode-back" href="../../../functional/ivy/creation/tril/tril_array.html#ivy.array.array_methods.tril">[docs]</a><span class="k">def</span> <span class="nf">tril</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="tril"><a class="viewcode-back" href="../../../functional/ivy/creation/tril/tril_array.html#ivy.array.array_methods.tril">[docs]</a><span class="k">def</span> <span class="nf">tril</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.tril. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.tril also applies to this method</span>
@@ -537,9 +531,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="triu"><a class="viewcode-back" href="../../../functional/ivy/creation/triu/triu_array.html#ivy.array.array_methods.triu">[docs]</a><span class="k">def</span> <span class="nf">triu</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="triu"><a class="viewcode-back" href="../../../functional/ivy/creation/triu/triu_array.html#ivy.array.array_methods.triu">[docs]</a><span class="k">def</span> <span class="nf">triu</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.triu. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.triu also applies to this method</span>
@@ -572,7 +564,6 @@
 
 <div class="viewcode-block" id="empty_like"><a class="viewcode-back" href="../../../functional/ivy/creation/empty_like/empty_like_array.html#ivy.array.array_methods.empty_like">[docs]</a><span class="k">def</span> <span class="nf">empty_like</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -609,7 +600,6 @@
 
 <div class="viewcode-block" id="meshgrid"><a class="viewcode-back" href="../../../functional/ivy/creation/meshgrid/meshgrid_array.html#ivy.array.array_methods.meshgrid">[docs]</a><span class="k">def</span> <span class="nf">meshgrid</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">indexing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xy&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
@@ -644,7 +634,6 @@
 
 <div class="viewcode-block" id="from_dlpack"><a class="viewcode-back" href="../../../functional/ivy/creation/from_dlpack/from_dlpack_array.html#ivy.array.array_methods.from_dlpack">[docs]</a><span class="k">def</span> <span class="nf">from_dlpack</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -671,7 +660,6 @@
 
 <div class="viewcode-block" id="native_array"><a class="viewcode-back" href="../../../functional/ivy/creation/native_array/native_array_array.html#ivy.array.array_methods.native_array">[docs]</a><span class="k">def</span> <span class="nf">native_array</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3420,66 +3408,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="variable_data"><a class="viewcode-back" href="../../../functional/ivy/gradients/variable_data/variable_data_array.html#ivy.array.array_methods.variable_data">[docs]</a><span class="k">def</span> <span class="nf">variable_data</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.variable_data. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.variable_data also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        An ivy variable.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The internal data stored by the variable</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../functional/ivy/gradients/stop_gradient/stop_gradient_array.html#ivy.array.array_methods.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">preserve_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.stop_gradient. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.stop_gradient also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Array for which to stop the gradient.</span>
-<span class="sd">    preserve_type</span>
-<span class="sd">        Whether to preserve the input type (ivy.Variable or ivy.Array),</span>
-<span class="sd">        otherwise an array is always returned. Default is True.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a</span>
-<span class="sd">        shape that the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The same array x, but with no gradient information.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
 <div class="viewcode-block" id="adam_step"><a class="viewcode-back" href="../../../functional/ivy/gradients/adam_step/adam_step_array.html#ivy.array.array_methods.adam_step">[docs]</a><span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">vw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">beta1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
-    <span class="n">beta2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span><span class="p">,</span>
-    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
+    <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+    <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.adam_step. This method simply wraps the</span>
@@ -3526,53 +3462,12 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="optimizer_update"><a class="viewcode-back" href="../../../functional/ivy/gradients/optimizer_update/optimizer_update_array.html#ivy.array.array_methods.optimizer_update">[docs]</a><span class="k">def</span> <span class="nf">optimizer_update</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">effective_grad</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.optimizer_update. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.optimizer_update also applies</span>
-<span class="sd">    to this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Weights of the function to be updated.</span>
-<span class="sd">    effective_grad</span>
-<span class="sd">        Effective gradients of the cost c with respect to the weights ws,</span>
-<span class="sd">        [dc/dw for w in ws].</span>
-<span class="sd">    lr</span>
-<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated</span>
-<span class="sd">        relative to the gradient.</span>
-<span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
-<span class="sd">        Default is True.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The new function weights ws_new, following the optimizer updates.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
 <div class="viewcode-block" id="gradient_descent_update"><a class="viewcode-back" href="../../../functional/ivy/gradients/gradient_descent_update/gradient_descent_update_array.html#ivy.array.array_methods.gradient_descent_update">[docs]</a><span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.gradient_descent_update.</span>
@@ -3620,166 +3515,29 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="lars_update"><a class="viewcode-back" href="../../../functional/ivy/gradients/lars_update/lars_update_array.html#ivy.array.array_methods.lars_update">[docs]</a><span class="k">def</span> <span class="nf">lars_update</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">decay_lambda</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../functional/ivy/gradients/stop_gradient/stop_gradient_array.html#ivy.array.array_methods.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">preserve_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.lars_update. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.lars_update also applies to</span>
-<span class="sd">    this method with minimal changes.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Array instance method variant of ivy.stop_gradient. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.stop_gradient also applies</span>
+<span class="sd">    to this method with minimal changes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    self</span>
-<span class="sd">        Weights of the function to be updated.</span>
-<span class="sd">    dcdw</span>
-<span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    lr</span>
-<span class="sd">        Learning rate, the rate at which the weights should be updated relative to</span>
-<span class="sd">        the gradient.</span>
-<span class="sd">    decay_lambda</span>
-<span class="sd">        The factor used for weight decay. Default is zero.</span>
-<span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
-<span class="sd">        Default is True.</span>
+<span class="sd">        Array for which to stop the gradient.</span>
+<span class="sd">    preserve_type</span>
+<span class="sd">        Whether to preserve the input type (ivy.Variable or ivy.Array),</span>
+<span class="sd">        otherwise an array is always returned. Default is True.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a</span>
+<span class="sd">        shape that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        The new function weights ws_new, following the LARS updates.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../functional/ivy/gradients/adam_update/adam_update_array.html#ivy.array.array_methods.adam_update">[docs]</a><span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">mw_tm1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">vw_tm1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">beta1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
-    <span class="n">beta2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span><span class="p">,</span>
-    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
-    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.adam_update. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.adam_update also applies to</span>
-<span class="sd">    this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Weights of the function to be updated.</span>
-<span class="sd">    dcdw</span>
-<span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    lr</span>
-<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated</span>
-<span class="sd">        relative to the gradient.</span>
-<span class="sd">    mw_tm1</span>
-<span class="sd">        running average of the gradients, from the previous time-step.</span>
-<span class="sd">    vw_tm1</span>
-<span class="sd">        running average of second moments of the gradients, from the previous</span>
-<span class="sd">        time-step.</span>
-<span class="sd">    step</span>
-<span class="sd">        training step.</span>
-<span class="sd">    beta1</span>
-<span class="sd">        gradient forgetting factor (Default value = 0.9).</span>
-<span class="sd">    beta2</span>
-<span class="sd">        second moment of gradient forgetting factor (Default value = 0.999).</span>
-<span class="sd">    epsilon</span>
-<span class="sd">        divisor during adam update, preventing division by zero</span>
-<span class="sd">        (Default value = 1e-7).</span>
-<span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
-<span class="sd">        Default is True.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The new function weights ws_new, and also new mw and vw, following the adam</span>
-<span class="sd">        updates.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="lamb_update"><a class="viewcode-back" href="../../../functional/ivy/gradients/lamb_update/lamb_update_array.html#ivy.array.array_methods.lamb_update">[docs]</a><span class="k">def</span> <span class="nf">lamb_update</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">mw_tm1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">vw_tm1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">beta1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
-    <span class="n">beta2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span><span class="p">,</span>
-    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
-    <span class="n">max_trust_ratio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-    <span class="n">decay_lambda</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.lamb_update. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.lamb_update also applies to</span>
-<span class="sd">    this method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        Weights of the function to be updated.</span>
-<span class="sd">    dcdw</span>
-<span class="sd">        Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    lr</span>
-<span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated</span>
-<span class="sd">        relative to the gradient.</span>
-<span class="sd">    mw_tm1</span>
-<span class="sd">        running average of the gradients, from the previous time-step.</span>
-<span class="sd">    vw_tm1</span>
-<span class="sd">        running average of second moments of the gradients, from the previous</span>
-<span class="sd">        time-step.</span>
-<span class="sd">    step</span>
-<span class="sd">        training step.</span>
-<span class="sd">    beta1</span>
-<span class="sd">        gradient forgetting factor (Default value = 0.9).</span>
-<span class="sd">    beta2</span>
-<span class="sd">        second moment of gradient forgetting factor (Default value = 0.999).</span>
-<span class="sd">    epsilon</span>
-<span class="sd">        divisor during adam update, preventing division by zero</span>
-<span class="sd">        (Default value = 1e-7).</span>
-<span class="sd">    max_trust_ratio</span>
-<span class="sd">        The maximum value for the trust ratio. Default is 10.</span>
-<span class="sd">    decay_lambda</span>
-<span class="sd">        The factor used for weight decay. Default is zero.</span>
-<span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
-<span class="sd">        Default is True.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">        the inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The new function weights ws_new, following the LAMB updates.</span>
-
+<span class="sd">        The same array x, but with no gradient information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -3837,8 +3595,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0</span>
-<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.randint(0, 255, (1, 128, 128, 3)).astype(ivy.float32) / 255.0</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [3, 3, 3])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.depthwise_conv2d(filters, 2, &#39;SAME&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 64, 64, 3)</span>
@@ -3917,18 +3675,6 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Examples</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    With :code:`ivy.Array` instance inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 4.])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([3., 2.])</span>
-<span class="sd">    &gt;&gt;&gt; z = x.matmul(y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array(11.)</span>
-<span class="sd">    &quot;&quot;&quot;</span>        
     <span class="k">pass</span></div>
 
 

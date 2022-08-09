@@ -962,33 +962,29 @@
 <span class="sd">    --------</span>
 <span class="sd">    With :code:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3]) #NHWC</span>
-<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3]) #HWI (I == d_in)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(0, 1, [1, 28, 28, 3]) #NHWC</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [3, 3, 3]) #HWI (I == d_in)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(x, filters, (1, 1), &#39;VALID&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 26, 26, 3)</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 32, 32, 3]) #NHWC</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(0, 1, [1, 32, 32, 3]) #NHWC</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.zeros_like(x)</span>
-<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[5, 5, 3]) #HWI (I == d_in)</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [5, 5, 3]) #HWI (I == d_in)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.depthwise_conv2d(x, filters, [2, 2], &#39;SAME&#39;, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 16, 16, 3)</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 64, 64, 32]) #NHWC</span>
-<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[4, 4, 32]) #HWI (I == d_in)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(0, 1, [1, 64, 64, 32]) #NHWC</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [4, 4, 32]) #HWI (I == d_in)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.depthwise_conv2d(x, filters, [1, 1], &#39;VALID&#39;, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x.shape)</span>
 <span class="sd">    (1, 61, 61, 32)</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array( \</span>
-<span class="sd">        ivy.random_normal(mean=0, std=1, shape=[1, 7, 7, 64]) \</span>
-<span class="sd">    ) #NHWC</span>
-<span class="sd">    &gt;&gt;&gt; filters = ivy.native_array( \</span>
-<span class="sd">        ivy.random_normal(mean=0, std=1, shape=[3, 3, 64]) \</span>
-<span class="sd">    ) #HWI (I == d_in)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array(ivy.random_normal(0, 1, [1, 7, 7, 64])) #NHWC</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.native_array(ivy.random_normal(0, 1, [3, 3, 64])) #HWI (I == d_in)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.depthwise_conv2d(x, filters, [1, 1], &#39;SAME&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 7, 7, 64)</span>
@@ -1145,86 +1141,83 @@
 <span class="sd">    --------</span>
 <span class="sd">    With :code:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])</span>
-<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(0, 1, [1, 3, 28, 28, 3])</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [3, 3, 3, 3, 6])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, 2, &#39;SAME&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
-<span class="sd">    (1, 6, 56, 56, 6)</span>
+<span class="sd">    (1, 5, 55, 55, 6)</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array( \</span>
-<span class="sd">        ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64]) \</span>
-<span class="sd">    )</span>
-<span class="sd">    &gt;&gt;&gt; filters = ivy.native_array( \</span>
-<span class="sd">        ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32]) \</span>
-<span class="sd">    )</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array(ivy.random_normal(0, 1, [1, 7, 256, 256, 64]))</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 64, 32]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, [1, 1, 1], &#39;VALID&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 9, 258, 258, 32)</span>
 
 <span class="sd">    With :code: `ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.random_normal( \</span>
-<span class="sd">                                mean=0, std=1, shape=[1, 3, 28, 28, 3] \</span>
-<span class="sd">                               ), \</span>
-<span class="sd">    b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))</span>
-<span class="sd">    &gt;&gt;&gt; filters = ivy.Container(c = ivy.random_normal( \</span>
-<span class="sd">                                        mean=0, std=1, shape=[3, 3, 3, 3, 6] \</span>
-<span class="sd">                                    ), \</span>
-<span class="sd">    d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]),\</span>
+<span class="sd">    b = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]),\</span>
+<span class="sd">    d = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, 2, &#39;SAME&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
-<span class="sd">    [1, 6, 56, 56, 6]</span>
+<span class="sd">    (1, 5, 55, 55, 6)</span>
+
+
 
 <span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.full((1, 6, 6, 6, 1), 2.7)</span>
-<span class="sd">    &gt;&gt;&gt; a =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])</span>
-<span class="sd">    &gt;&gt;&gt; b =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; a =  ivy.random_normal(0, 1, [3, 3, 3, 1, 16])</span>
+<span class="sd">    &gt;&gt;&gt; b =  ivy.random_normal(0, 1, [3, 3, 3, 1, 32])</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.Container(a = a, b = b)</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, 1, &#39;VALID&#39;, dilations=1)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, 1, &#39;VALID&#39;, dilations=2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
-<span class="sd">    [1, 8, 8, 8, 1]</span>
+<span class="sd">    (1, 10, 10, 10, 16)</span>
 
 
 <span class="sd">    With a mix of :code:`ivy.Array`, :code:`ivy.NativeArray`</span>
 <span class="sd">    and :code:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.full((1, 6, 6, 6, 1), 1.23)</span>
-<span class="sd">    &gt;&gt;&gt; a =  ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))</span>
-<span class="sd">    &gt;&gt;&gt; b =  ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; a =  ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 1, 64]))</span>
+<span class="sd">    &gt;&gt;&gt; b =  ivy.native_array(ivy.random_normal(0, 1, [3, 3, 3, 1, 128]))</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.Container(a = a, b = b)</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, 1, &#39;VALID&#39;, dilations=1)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.conv3d_transpose(x, filters, 1, &#39;VALID&#39;, dilations=2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
-<span class="sd">    [1, 8, 8, 8, 1]</span>
+<span class="sd">    (1, 10, 10, 10, 64)</span>
+
+<span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
+<span class="sd">    (1, 10, 10, 10, 128)</span>
 
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
 
 <span class="sd">    Using :code:`ivy.Array` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])</span>
-<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(0, 1, [1, 3, 28, 28, 3])</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [3, 3, 3, 3, 6])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.conv3d_transpose(filters, 2, &#39;SAME&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
-<span class="sd">    (1, 6, 56, 56, 6)</span>
+<span class="sd">    (1, 5, 55, 55, 6)</span>
 
 <span class="sd">    Using :code:`ivy.Container` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.random_normal( \</span>
-<span class="sd">                                mean=0, std=1, shape=[1, 3, 28, 28, 3] \</span>
-<span class="sd">                              ), \</span>
-<span class="sd">    b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.random_normal(0, 1, [1, 3, 28, 28, 3])),</span>
+<span class="sd">    b = ivy.random_normal(0, 1, [1, 3, 28, 28, 3]))</span>
 
-<span class="sd">    &gt;&gt;&gt; filters = ivy.Container(c = ivy.random_normal( \</span>
-<span class="sd">                                        mean=0, std=1, shape=[3, 3, 3, 3, 3] \</span>
-<span class="sd">                                    ), \</span>
-<span class="sd">    d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 3]))</span>
+<span class="sd">    &gt;&gt;&gt; filters = ivy.Container(c = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))</span>
+<span class="sd">    d = ivy.random_normal(0, 1, [3, 3, 3, 3, 6]))</span>
 
-<span class="sd">    &gt;&gt;&gt; y = x.conv3d_transpose(filters, 2, &quot;SAME&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; y = x.conv3d_transpose(filters, 2, &#39;SAME&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
-<span class="sd">    (1, 6, 56, 56, 3)</span>
+<span class="sd">    (1, 5, 55, 55, 6)</span>
+
+<span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
+<span class="sd">    (1, 5, 55, 55, 6)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">conv3d_transpose</span><span class="p">(</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">dilations</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -1328,29 +1321,6 @@
 
 
 <span class="n">lstm_update</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
-
-
-<span class="c1"># Helpers #</span>
-
-
-<div class="viewcode-block" id="handle_padding"><a class="viewcode-back" href="../../../../functional/ivy/layers/handle_padding.html#ivy.functional.ivy.layers.handle_padding">[docs]</a><span class="k">def</span> <span class="nf">handle_padding</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">padding</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;SAME&quot;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">x</span> <span class="o">%</span> <span class="n">strides</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">pad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">filters</span> <span class="o">-</span> <span class="n">strides</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">pad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">filters</span> <span class="o">-</span> <span class="p">(</span><span class="n">x</span> <span class="o">%</span> <span class="n">strides</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">pad</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">return</span> <span class="n">pad</span></div>
-
-
-<div class="viewcode-block" id="deconv_length"><a class="viewcode-back" href="../../../../functional/ivy/layers/deconv_length.html#ivy.functional.ivy.layers.deconv_length">[docs]</a><span class="k">def</span> <span class="nf">deconv_length</span><span class="p">(</span><span class="n">dim_size</span><span class="p">,</span> <span class="n">stride_size</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">kernel_size</span> <span class="o">+</span> <span class="p">(</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dilation</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;VALID&quot;</span><span class="p">:</span>
-        <span class="n">dim_size</span> <span class="o">=</span> <span class="n">dim_size</span> <span class="o">*</span> <span class="n">stride_size</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="n">stride_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;SAME&quot;</span><span class="p">:</span>
-        <span class="n">dim_size</span> <span class="o">=</span> <span class="n">dim_size</span> <span class="o">*</span> <span class="n">stride_size</span>
-    <span class="k">return</span> <span class="n">dim_size</span></div>
 </pre></div>
 
            </div>

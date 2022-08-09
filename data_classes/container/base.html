@@ -1094,35 +1094,6 @@ Default is True.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.matrix_norm">
-<span class="sig-name descname"><span class="pre">matrix_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.matrix_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.matrix_norm" title="Permalink to this definition"></a></dt>
-<dd><p>Compute matrix p-norm for each array in the container.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>p</strong> – Order of the norm. Default is 2.</p></li>
-<li><p><strong>axis</strong> – If axis is an integer, it specifies the axis of x along which to compute the
-matrix norms. Default is None, in which case the flattened array is
-considered.</p></li>
-<li><p><strong>keepdims</strong> – If this is set to True, the axes which are normed over are left in the
-result as dimensions with size one. With this option the result will
-broadcast correctly against the original x. Default is False.</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is None.</p></li>
-<li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
-will be skipped. Default is True.</p></li>
-<li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied.
-Default is False.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
-<li><p><strong>ord</strong> – Default value = 2)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Container object with the matrix norms for each sub-array returned.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.max_depth">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_depth</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.max_depth" title="Permalink to this definition"></a></dt>
