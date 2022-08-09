@@ -1210,6 +1210,7 @@ def test_cholesky(
         fn_name="cholesky",
         x=x,
         upper=upper,
+        rtol_=1e-3,
     )
 
 
