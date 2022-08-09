@@ -796,16 +796,6 @@ def jac(func):
     ret
         the Jacobian function
 
-    Functional Examples
-    -------------------
-    With :code:`ivy.Array` inputs:
-
-    >>> x = ivy.array([1., 2., 3.])
-    >>> def f(x):
-    >>>     return ivy.mean(x * ivy.array([2.,3.,4.]))
-    >>> jacobian = ivy.jac(f)
-    >>> print(jacobian(x))
-        ivy.array([0.667, 1.   , 1.33 ])
     """
     return current_backend(None).jac(func)
 
@@ -825,14 +815,5 @@ def grad(func):
     ret
         the grad function
 
-    Functional Examples
-    -------------------
-    With :code:`ivy.Array` inputs:
-
-    >>> def f(x):
-    >>>     return ivy.tanh(x)
-    >>> gradients = ivy.grad(f)
-    >>> print(gradients(2.))
-        ivy.array(0.07065082)
     """
     return current_backend(None).grad(func)
