@@ -12,6 +12,13 @@ import math
 from typing import Union, List
 from hypothesis import assume
 
+#local
+from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
+from ivy.functional.backends.numpy.general import is_native_array as is_numpy_native_array
+from ivy.functional.backends.tensorflow.general import is_native_array as is_tensorflow_native_array
+from ivy.functional.backends.torch.general import is_native_array   as is_torch_native_array
+
+
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 cmd_line_args = (
     "as_variable",
@@ -559,6 +566,23 @@ def as_cont(*, x):
 def as_lists(*args):
     return (a if isinstance(a, list) else [a] for a in args)
 
+def flatten_fw(*, ret, fw):
+    # flatten the return
+    if not isinstance(ret, tuple):
+        ret = (ret,)
+    if fw == 'jax':
+        ret_idxs = ivy.nested_indices_where(ret, lambda x:  ivy.is_ivy_array(x) or is_jax_native_array(x))
+    elif fw == 'numpy':
+        ret_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_ivy_array(x) or is_numpy_native_array(x))
+    elif fw == 'tensorflow':
+        ret_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_ivy_array(x) or is_tensorflow_native_array(x))
+    else:
+        ret_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_ivy_array(x) or is_torch_native_array(x))
+    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+
+    # convert the return to NumPy
+    ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
+    return ret_np_flat
 
 def flatten(*, ret):
     # flatten the return
@@ -1450,7 +1474,7 @@ def test_frontend_function(
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
         return
     ret = frontend_fn(*args, **kwargs)
-
+    ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
     # assert idx of return if the idx of the out array provided
     out = ret
     if with_out:
@@ -1458,8 +1482,12 @@ def test_frontend_function(
         assert ivy.is_array(ret)
         if "out" in kwargs:
             kwargs["out"] = out
+            kwargs_ivy["out"] = out
         else:
             args[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
+            args_ivy = list(args_ivy)
+            args_ivy[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
+            args_ivy = tuple(args_ivy)
         ret = frontend_fn(*args, **kwargs)
 
         if ivy.native_inplace_support:

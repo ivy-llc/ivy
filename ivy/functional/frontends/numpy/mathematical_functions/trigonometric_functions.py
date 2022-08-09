@@ -1,7 +1,10 @@
 # global
 import ivy
 
+#local
+from ivy.func_wrapper import from_zero_dim_arrays_to_float
 
+@from_zero_dim_arrays_to_float
 def cos(
     x,
     /,
@@ -23,7 +26,7 @@ def cos(
 
 cos.unsupported_dtypes = {"torch": ("float16",)}
 
-
+@from_zero_dim_arrays_to_float
 def sin(
     x,
     /,
@@ -45,7 +48,7 @@ def sin(
 
 sin.unsupported_dtypes = {"torch": ("float16",)}
 
-
+@from_zero_dim_arrays_to_float
 def tan(
     x,
     /,
@@ -67,7 +70,7 @@ def tan(
 
 tan.unsupported_dtypes = {"torch": ("float16",)}
 
-
+@from_zero_dim_arrays_to_float
 def arcsin(
     x,
     /,
@@ -89,7 +92,7 @@ def arcsin(
 
 arcsin.unsupported_dtypes = {"torch": ("float16",)}
 
-
+@from_zero_dim_arrays_to_float
 def arccos(
     x,
     /,

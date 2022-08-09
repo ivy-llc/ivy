@@ -32,13 +32,21 @@ def array_equal(x0: torch.Tensor, x1: torch.Tensor) -> bool:
     return torch.equal(x0, x1)
 
 
-def to_numpy(x: torch.Tensor) -> np.ndarray:
-    if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
+def to_numpy(x: torch.Tensor, copy: bool=True) -> np.ndarray:
+    if isinstance(x, (float, int, bool)):
         return x
+    elif isinstance(x, np.ndarray):
+        if copy:
+            return x.copy()
+        else:
+            return x
     elif torch.is_tensor(x):
         if x.dtype is torch.bfloat16:
             x = x.to(torch.float16)
-        return x.detach().cpu().numpy()
+        if copy:
+            return x.detach().cpu().numpy()
+        else:
+            raise ValueError("Overwriting the same address is not supported for torch.")
     raise ValueError("Expected a pytorch tensor.")
 
 

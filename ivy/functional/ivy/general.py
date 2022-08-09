@@ -688,14 +688,15 @@ def all_equal(
 
 @inputs_to_native_arrays
 @handle_nestable
-def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
+def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool=True) -> np.ndarray:
     """Converts an array into a numpy array.
 
     Parameters
     ----------
     x
         input array
-
+    copy
+        whether to copy the array to a new address or not. Default is True.
     Returns
     -------
     ret
@@ -707,12 +708,12 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([-1, 0, 1])
-    >>> y = ivy.to_numpy(x)
+    >>> y = ivy.to_numpy(x, copy=False)
     >>> print(y)
     [-1  0  1]
 
     >>> x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
-    >>> y = ivy.to_numpy(x)
+    >>> y = ivy.to_numpy(x, copy=True)
     >>> print(y)
     [[-1  0  1]
     [-1  0  1]
@@ -815,7 +816,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     }
 
     """
-    return current_backend(x).to_numpy(x)
+    return current_backend(x).to_numpy(x, copy)
 
 
 @inputs_to_native_arrays
