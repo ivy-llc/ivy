@@ -398,7 +398,7 @@ def execute_with_gradients(func: Callable,
     >>> ivy.set_backend('tensorflow')
     >>> func = lambda x :100*x
     >>> xs = ivy.array([1.,2.,5.])
-    >>> results = ivy.execute_with_gradients(func, \ 
+    >>> results = ivy.execute_with_gradients(func, \
                 xs)
     >>> func_output,grads = results
     >>> print("function output: ", func_output)
