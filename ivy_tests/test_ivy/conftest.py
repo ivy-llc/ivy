@@ -27,11 +27,11 @@ TEST_CALL_METHODS: Dict[str, callable] = {
     "mxnet": helpers.mx_call,
 }
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
-    "as-variable": None,
-    "native-array": None,
-    "with-out": None,
-    "nestable": None,
-    "instance-method": None,
+    "as_variable": None,
+    "native_array": None,
+    "with_out": None,
+    "container": None,
+    "instance_method": None,
 }
 MAP_BOOL_FLAGS: Dict[str, bool] = {
     "true": True,
@@ -44,11 +44,17 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 
 def pytest_configure(config):
     num_examples = config.getoption("--num-examples")
+    deadline = config.getoption("--deadline")
+    deadline = deadline if deadline else 2000
     if num_examples is not None:
-        settings.register_profile("custom max_examples", max_examples=int(num_examples))
+        settings.register_profile(
+            "custom max_examples",
+            max_examples=int(num_examples),
+            deadline=int(deadline),
+        )
         settings.load_profile("custom max_examples")
     else:
-        settings.register_profile("default", max_examples=5)
+        settings.register_profile("default", max_examples=5, deadline=deadline)
         settings.load_profile("default")
 
 
@@ -123,33 +129,38 @@ def get_command_line_flags(request) -> Dict[str, bool]:
     o_f_s = request.config.getoption("--skip-out-testing")
     n_s = request.config.getoption("--skip-nestable-testing")
     i_m_f_s = request.config.getoption("--skip-instance-method-testing")
+    g_t_f_s = request.config.getoption("--skip-gradient-testing")
 
     a_v_f_w = request.config.getoption("--with-variable-testing")
     n_f_w = request.config.getoption("--with-native-array-testing")
     o_f_w = request.config.getoption("--with-out-testing")
     n_w = request.config.getoption("--with-nestable-testing")
     i_m_f_w = request.config.getoption("--with-instance-method-testing")
+    g_t_f_w = request.config.getoption("--with-gradient-testing")
 
-    no_extra_testing = request.config.getoption("--no-extra-testing")
+    no_extra_testing = MAP_BOOL_FLAGS[request.config.getoption("--no-extra-testing")]
 
     # mapping command line arguments, first element of the tuple is
     # the --skip flag, and the second is the --with flag
-    CONFIG_DICT["as-variable"] = (MAP_BOOL_FLAGS[a_v_f_s], MAP_BOOL_FLAGS[a_v_f_w])
-    CONFIG_DICT["native-array"] = (MAP_BOOL_FLAGS[n_f_s], MAP_BOOL_FLAGS[n_f_w])
-    CONFIG_DICT["with-out"] = (MAP_BOOL_FLAGS[o_f_s], MAP_BOOL_FLAGS[o_f_w])
-    CONFIG_DICT["nestable"] = (MAP_BOOL_FLAGS[n_s], MAP_BOOL_FLAGS[n_w])
-    CONFIG_DICT["instance-method"] = (MAP_BOOL_FLAGS[i_m_f_s], MAP_BOOL_FLAGS[i_m_f_w])
+    CONFIG_DICT["as_variable"] = (MAP_BOOL_FLAGS[a_v_f_s], MAP_BOOL_FLAGS[a_v_f_w])
+    CONFIG_DICT["native_array"] = (MAP_BOOL_FLAGS[n_f_s], MAP_BOOL_FLAGS[n_f_w])
+    CONFIG_DICT["with_out"] = (MAP_BOOL_FLAGS[o_f_s], MAP_BOOL_FLAGS[o_f_w])
+    CONFIG_DICT["container"] = (MAP_BOOL_FLAGS[n_s], MAP_BOOL_FLAGS[n_w])
+    CONFIG_DICT["instance_method"] = (MAP_BOOL_FLAGS[i_m_f_s], MAP_BOOL_FLAGS[i_m_f_w])
+    CONFIG_DICT["test_gradients"] = (MAP_BOOL_FLAGS[g_t_f_s], MAP_BOOL_FLAGS[g_t_f_w])
 
     # final mapping for hypothesis value generation
     for k, v in CONFIG_DICT.items():
         # when both flags are true
         if v[0] and v[1]:
             raise Exception(
-                f"--skip-{k}--testing and --with-{k}--testing flags cannot be used together"
+                f"--skip-{k}--testing and --with-{k}--testing flags cannot be used \
+                    together"
             )
         if v[1] and no_extra_testing:
             raise Exception(
-                f"--with-{k}--testing and --no-extra-testing flags cannot be used together "
+                f"--with-{k}--testing and --no-extra-testing flags cannot be used \
+                    together"
             )
         # skipping a test
         if v[0] or no_extra_testing:
@@ -175,12 +186,25 @@ def pytest_addoption(parser):
     parser.addoption("--skip-out-testing", action="store", default="false")
     parser.addoption("--skip-nestable-testing", action="store", default="false")
     parser.addoption("--skip-instance-method-testing", action="store", default="false")
+    parser.addoption("--skip-gradient-testing", action="store", default="false")
 
     parser.addoption("--with-variable-testing", action="store", default="false")
     parser.addoption("--with-native-array-testing", action="store", default="false")
     parser.addoption("--with-out-testing", action="store", default="false")
     parser.addoption("--with-nestable-testing", action="store", default="false")
     parser.addoption("--with-instance-method-testing", action="store", default="false")
+    parser.addoption("--with-gradient-testing", action="store", default="false")
 
     parser.addoption("--no-extra-testing", action="store", default="false")
-    parser.addoption("--num-examples", action="store", default=None, help="set max examples generated by Hypothesis")
+    parser.addoption(
+        "--num-examples",
+        action="store",
+        default=None,
+        help="set max examples generated by Hypothesis",
+    )
+    parser.addoption(
+        "--deadline",
+        action="store",
+        default=None,
+        help="set deadline for testing one example",
+    )

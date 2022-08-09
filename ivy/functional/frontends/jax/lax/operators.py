@@ -1,6 +1,5 @@
 # global
 import ivy
-from typing import Sequence, Any
 
 
 def add(x, y):
@@ -17,5 +16,26 @@ def tan(x):
 tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
-def concatenate(operands: Sequence[Any], dimension: int) -> Any:
+def concatenate(operands, dimension):
     return ivy.concat(operands, dimension)
+
+
+def full(shape, fill_value, dtype=None):
+    return ivy.full(shape, fill_value, dtype=dtype)
+
+
+full.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def abs(x):
+    return ivy.abs(x)
+
+
+abs.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def sqrt(x):
+    return ivy.sqrt(x)
+
+
+sqrt.unsupported_dtypes = {"torch": ("float16", "bfloat16")}

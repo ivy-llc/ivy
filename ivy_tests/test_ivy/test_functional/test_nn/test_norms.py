@@ -29,7 +29,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 def test_layer_norm(
     *,
-    data,
     dtype_x_normidxs,
     num_positional_args,
     scale,

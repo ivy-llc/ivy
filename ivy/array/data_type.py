@@ -59,6 +59,37 @@ class ArrayWithDataTypes(abc.ABC):
     def broadcast_to(
         self: ivy.Array, shape: Tuple[int, ...], out: Optional[ivy.Array] = None
     ) -> ivy.Array:
+        """
+        `ivy.Array` instance method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to be broadcasted.
+        shape
+            desired shape to be broadcasted to.
+        out
+            Optional array to store the broadcasted array.
+
+        Returns
+        -------
+        ret
+            Returns the broadcasted array of shape 'shape'
+
+        Examples
+        --------
+        With :code: `ivy.Array` instance method:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.broadcast_to((3,3))
+        >>> print(y)
+        ivy.array([[1, 2, 3],
+                   [1, 2, 3],
+                   [1, 2, 3]])
+        """
         return ivy.broadcast_to(x=self._data, shape=shape, out=out)
 
     def can_cast(self: ivy.Array, to: ivy.Dtype) -> bool:
@@ -116,4 +147,30 @@ class ArrayWithDataTypes(abc.ABC):
         self: ivy.Array,
         *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
     ) -> ivy.Dtype:
+        """
+        `ivy.Array` instance method variant of `ivy.result_type`. This method simply
+        wraps the function, and so the docstring for `ivy.result_type` also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array from which to cast.
+        arrays_and_dtypes
+            an arbitrary number of input arrays and/or dtypes.
+
+        Returns
+        -------
+        ret
+            the dtype resulting from an operation involving the input arrays and dtypes.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 1, 2])
+        >>> print(x.dtype)
+        int32
+
+        >>> x.result_type(ivy.float64)
+        <dtype:'float64'>
+        """
         return ivy.result_type(self._data, *arrays_and_dtypes)

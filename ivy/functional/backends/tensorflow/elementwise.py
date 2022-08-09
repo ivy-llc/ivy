@@ -1,8 +1,5 @@
 # global
-import numpy as np
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
-from tensorflow.experimental.numpy import any
 from typing import Union
 
 # local
@@ -10,15 +7,15 @@ import ivy
 
 
 def _cast_for_binary_op(x1, x2):
-    if isinstance(x1, Tensor):
-        if isinstance(x2, Tensor):
-            promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-            x1 = tf.cast(x1, promoted_type)
-            x2 = tf.cast(x2, promoted_type)
-        else:
-            x2 = tf.constant(x2, dtype=x1.dtype)
-    elif isinstance(x2, Tensor):
-        x1 = tf.constant(x1, dtype=x2.dtype)
+    return ivy.promote_types_of_inputs(x1, x2)
+
+
+def _clamp_bits(x1, x2):
+    x2 = tf.clip_by_value(
+        x2,
+        tf.constant(0, dtype=x2.dtype),
+        tf.constant(x1.dtype.size * 8 - 1, dtype=x2.dtype),
+    )
     return x1, x2
 
 
@@ -33,15 +30,11 @@ def abs(
         return tf.abs(x)
 
 
-def acos(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
-) -> Union[tf.Tensor, tf.Variable]:
+def acos(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.acos(x)
 
 
-def acosh(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
-) -> Union[tf.Tensor, tf.Variable]:
+def acosh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.acosh(x)
 
 
@@ -67,10 +60,8 @@ def asinh(
     return tf.asinh(x)
 
 
-def atan(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.atan(x)
+def atan(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.atan(x)
 
 
 def atan2(
@@ -83,9 +74,7 @@ def atan2(
     return tf.math.atan2(x1, x2)
 
 
-def atanh(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
-) -> Union[tf.Tensor, tf.Variable]:
+def atanh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.atanh(x)
 
 
@@ -118,6 +107,7 @@ def bitwise_left_shift(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _clamp_bits(x1, x2)
     return tf.bitwise.left_shift(x1, x2)
 
 
@@ -141,6 +131,7 @@ def bitwise_right_shift(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _clamp_bits(x1, x2)
     return tf.bitwise.right_shift(x1, x2)
 
 
@@ -185,7 +176,12 @@ def divide(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return tf.experimental.numpy.divide(x1, x2)
+    ret = tf.experimental.numpy.divide(x1, x2)
+    if ivy.is_float_dtype(x1.dtype):
+        ret = tf.cast(ret, dtype=x1.dtype)
+    else:
+        ret = tf.cast(ret, dtype=ivy.default_float_dtype(as_native=True))
+    return ret
 
 
 def equal(
@@ -226,21 +222,12 @@ def floor_divide(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    if (not np.all(x2)) or (np.any(x2) == -0):  # check for division by zero
-        ret = np.floor_divide(x1, x2)
-    else:
-        ret = tf.math.floordiv(x1, x2)
-
-    if (any(isinf(x1)) and any(isfinite(x2))) or (any(isfinite(x1)) and any(isinf(x2))):
-        return ivy.full_like(ret, floor(divide(x1, x2)), dtype=ret.dtype)
+    ret = tf.experimental.numpy.floor_divide(x1, x2)
     return ret
 
 
 def greater(
-    x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x1: Union[float, tf.Tensor, tf.Variable], x2: Union[float, tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.greater(x1, x2)
@@ -284,10 +271,7 @@ def isnan(
 
 
 def less(
-    x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable],
-    *,
-    out: Union[tf.Tensor, tf.Variable] = None
+    x1: Union[float, tf.Tensor, tf.Variable], x2: Union[float, tf.Tensor, tf.Variable]
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.less(x1, x2)
@@ -306,24 +290,32 @@ def less_equal(
 def log(
     x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_int_dtype(x):
+        x = tf.cast(x, dtype=ivy.default_float_dtype())
     return tf.math.log(x)
 
 
 def log10(
     x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_int_dtype(x):
+        x = tf.cast(x, dtype=ivy.default_float_dtype())
     return tf.math.log(x) / tf.math.log(tf.constant(10.0, x.dtype))
 
 
 def log1p(
     x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_int_dtype(x):
+        x = tf.cast(x, dtype=ivy.default_float_dtype())
     return tf.math.log1p(x)
 
 
 def log2(
     x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_int_dtype(x):
+        x = tf.cast(x, dtype=ivy.default_float_dtype())
     return tf.math.log(x) / tf.math.log(tf.constant(2.0, x.dtype))
 
 
@@ -390,6 +382,9 @@ def negative(
     return tf.negative(x)
 
 
+negative.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
+
+
 def not_equal(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -426,6 +421,9 @@ def pow(
     return tf.experimental.numpy.power(x1, x2)
 
 
+pow.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64", "float64")
+
+
 def remainder(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -433,8 +431,6 @@ def remainder(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    if (not np.all(x2)) or (np.any(x2) == -0) or (np.any(x1) == 0):
-        return ivy.asarray(np.remainder(x1, x2))
     return tf.experimental.numpy.remainder(x1, x2)
 
 
@@ -511,13 +507,16 @@ def trunc(
     ret = x
     if not ivy.is_array(x):
         raise Exception("Input must be array")
-    elif not ("int" in str(x.dtype) or ret.get_shape().ndims == 0):
-        ret = tf.tensor_scatter_nd_update(
-            ret, tf.where(tf.greater(x, 0)), tf.math.floor(x[x > 0])
-        )
-        ret = tf.tensor_scatter_nd_update(
-            ret, tf.where(tf.less(x, 0)), tf.math.ceil(x[x < 0])
-        )
+    elif not ("int" in str(x.dtype)):
+        if not ret.get_shape().ndims == 0:
+            ret = tf.tensor_scatter_nd_update(
+                x, tf.where(tf.greater(x, 0)), tf.math.floor(x[x > 0])
+            )
+            ret = tf.tensor_scatter_nd_update(
+                ret, tf.where(tf.less(x, 0)), tf.math.ceil(x[x < 0])
+            )
+        else:
+            ret = (tf.math.floor if ret > 0 else tf.math.ceil)(ret)
     return ret
 
 

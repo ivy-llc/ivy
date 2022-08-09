@@ -31,3 +31,14 @@ def sort(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+
+def searchsorted(
+    x: mx.nd.NDArray,
+    v: mx.nd.NDArray,
+    side="left",
+    sorter=None,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
+    res = mx.np.searchsorted(x, v, side=side)
+    return res

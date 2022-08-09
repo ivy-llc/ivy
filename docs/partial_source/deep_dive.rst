@@ -63,7 +63,13 @@ We're excited for you to get involved!  🦾
 | How we're borrowing the test suite from the Array API Standard 🤝
 |
 | (p) :ref:`Ivy Tests`
-| How to add new Ivy tests for each function ❓
+| How to add new tests for each Ivy function ❓
+|
+| (q) :ref:`Ivy Frontends`
+| How to implement frontend functions ➡️
+|
+| (r) :ref:`Ivy Frontend Tests`
+| How to add new tests for each frontend function ➡️❓
 
 .. toctree::
    :hidden:
@@ -86,3 +92,5 @@ We're excited for you to get involved!  🦾
    deep_dive/13_docstring_examples.rst
    deep_dive/14_array_api_tests.rst
    deep_dive/15_ivy_tests.rst
+   deep_dive/16_ivy_frontends.rst
+   deep_dive/17_ivy_frontends_tests.rst

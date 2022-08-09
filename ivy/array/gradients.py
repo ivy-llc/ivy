@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union
+from typing import Union, Optional
 
 # local
 import ivy
@@ -9,6 +9,35 @@ import ivy
 
 
 class ArrayWithGradients(abc.ABC):
+    def variable(self: ivy.Array) -> ivy.Variable:
+        """
+        ivy.Array instance method variant of ivy.variable. This method simply wraps
+        the function, and so the docstring for ivy.variable also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            An ivy array.
+
+        Returns
+        -------
+        ret
+            An ivy variable that supports gradient computation.
+
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> ivy.set_backend("tensorflow")
+        >>> x = ivy.array([2., 4., -1.])
+        >>> y = x.variable()
+        >>> y
+        ivy.array([ 2.,  4., -1.])
+        >>> ivy.unset_backend()
+        """
+        return ivy.variable(self)
+
     def is_variable(self: ivy.Array, exclusive: bool = False) -> bool:
         """
         ivy.Array instance method variant of ivy.is_variable. This method simply wraps
@@ -93,8 +122,60 @@ class ArrayWithGradients(abc.ABC):
             ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))
         """
         return ivy.adam_step(self, mw, vw, step, beta1, beta2, epsilon)
-    
-    def lars_update(
+
+    def gradient_descent_update(
+        self: ivy.Array,
+        dcdw: Union[ivy.Array, ivy.NativeArray],
+        lr: Union[float, ivy.Array, ivy.NativeArray],
+        inplace=None,
+        stop_gradients=True,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.gradient_descent_update.
+        This method simply wraps the function, and so the docstring for
+        ivy.gradient_descent_update also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        w
+            Weights of the function to be updated.
+        dcdw
+            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
+        lr
+            Learning rate, the rate at which the weights should be updated relative to the
+            gradient
+        inplace
+            Whether to perform the operation inplace, for backends which support inplace
+            variable updates, and handle gradients behind the scenes such as PyTorch. If the
+            update step should form part of a computation graph (i.e. higher order
+            optimization), then this should be set to False. Default is True, provided the
+            backend framework supports it
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is True.
+
+        Returns
+        -------
+        ret
+            The new weights, following the gradient descent updates.
+
+        Examples
+        --------
+        With :code: `ivy.Array` inputs:
+
+        >>> w = ivy.array([[[5., 3., 2.], [0., 4., 1.], [-2., 3., -1.]]])
+        >>> dcdw = ivy.array([[[0.5, 0.92, 0.1], [0.2, 0.7, 0.3], [0.3, 0.8, 0.01]]])
+        >>> lr = ivy.array(0.3)
+        >>> NewWeights = w.gradient_descent_update(dcdw, lr, inplace=False)
+        >>> print(NewWeights)
+            ivy.array([[[ 4.85,  2.72,  1.97],
+                        [-0.06,  3.79,  0.91],
+                        [-2.09,  2.76, -1.  ]]])
+        """
+        return ivy.gradient_descent_update(self, dcdw, lr, inplace, stop_gradients)
+     
+     def lars_update(
         self:ivy.Array,
         dcdw: Union[ivy.Array,ivy.NativeArray],
         lr: Union[float,ivy.Array, ivy.NativeArray],
@@ -151,3 +232,28 @@ class ArrayWithGradients(abc.ABC):
         
         return ivy.lars_update(self,dcdw, lr, inplace,stop_gradients)
         
+    def stop_gradient(
+        self: ivy.Array, preserve_type: bool = True, *, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.stop_gradient. This method simply
+        wraps the function, and so the docstring for ivy.stop_gradient also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array for which to stop the gradient.
+        preserve_type
+            Whether to preserve the input type (ivy.Variable or ivy.Array),
+            otherwise an array is always returned. Default is True.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The same array x, but with no gradient information.
+        """
+        return ivy.stop_gradient(self._data, preserve_type, out=out)

@@ -2,15 +2,16 @@
 """Collection of tests for creation functions."""
 
 # global
+
+import hypothesis.extra.numpy as hnp
 import numpy as np
 from hypothesis import given, strategies as st
 
 # local
 import ivy
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-import ivy.functional.backends.numpy as ivy_np
-import hypothesis.extra.numpy as hnp
 
 
 # native_array
@@ -31,7 +32,6 @@ import hypothesis.extra.numpy as hnp
 @handle_cmd_line_args
 def test_native_array(
     *,
-    data,
     dtype_and_x,
     as_variable,
     num_positional_args,
@@ -60,14 +60,14 @@ def test_native_array(
 # linspace
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_float_dtypes,
         num_arrays=2,
         min_value=None,
         max_value=None,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
         shared_dtype=True,
         safety_factor=0.5,
     ),
@@ -79,7 +79,6 @@ def test_native_array(
 @handle_cmd_line_args
 def test_linspace(
     *,
-    data,
     dtype_and_start_stop,
     num,
     axis,
@@ -104,20 +103,22 @@ def test_linspace(
         axis=axis,
         device=device,
         dtype=dtype[0],
+        rtol_=1e-3,
+        atol_=1e-3,
     )
 
 
 # logspace
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_float_dtypes,
         num_arrays=2,
         min_value=None,
         max_value=None,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
         shared_dtype=True,
         safety_factor=0.5,
     ),
@@ -130,7 +131,6 @@ def test_linspace(
 @handle_cmd_line_args
 def test_logspace(
     *,
-    data,
     dtype_and_start_stop,
     num,
     base,
@@ -150,8 +150,8 @@ def test_logspace(
         instance_method=False,
         fw=fw,
         fn_name="logspace",
-        rtol_=(1,),  # if its less then one it'll test for inf
-        atol_=(1e-06,),
+        rtol_=1,  # if its less then one it'll test for inf
+        atol_=1e-06,
         test_values=True,
         start=np.asarray(start_stop[0], dtype=dtype[0]),
         stop=np.asarray(start_stop[1], dtype=dtype[1]),
@@ -174,7 +174,6 @@ def test_logspace(
 @handle_cmd_line_args
 def test_arange(
     *,
-    data,
     start,
     stop,
     step,
@@ -218,7 +217,6 @@ def test_arange(
 @handle_cmd_line_args
 def test_asarray(
     *,
-    data,
     dtype_and_x,
     device,
     as_variable,
@@ -260,19 +258,16 @@ def test_asarray(
 @handle_cmd_line_args
 def test_empty(
     *,
-    data,
     shape,
     dtype,
     device,
-    with_out,
     num_positional_args,
     fw,
 ):
-
-    helpers.test_function(
+    ret = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=False,
         container_flags=False,
@@ -282,7 +277,15 @@ def test_empty(
         shape=shape,
         dtype=dtype,
         device=device,
+        test_values=False,
     )
+    if not ivy.exists(ret):
+        return
+    res, res_np = ret
+    ivy.set_backend('tensorflow')
+    assert res.shape == res_np.shape
+    assert res.dtype == res_np.dtype
+    ivy.unset_backend
 
 
 # empty_like
@@ -301,7 +304,6 @@ def test_empty(
 @handle_cmd_line_args
 def test_empty_like(
     *,
-    data,
     dtype_and_x,
     device,
     as_variable,
@@ -312,7 +314,7 @@ def test_empty_like(
     fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_function(
+    ret = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -325,7 +327,15 @@ def test_empty_like(
         x=np.asarray(x),
         dtype=dtype,
         device=device,
+        test_values=False,
     )
+    if not ivy.exists(ret):
+        return
+    res, res_np = ret
+    ivy.set_backend('tensorflow')
+    assert res.shape == res_np.shape
+    assert res.dtype == res_np.dtype
+    ivy.unset_backend
 
 
 # eye
@@ -343,7 +353,6 @@ def test_empty_like(
 @handle_cmd_line_args
 def test_eye(
     *,
-    data,
     n_rows,
     n_cols,
     k,
@@ -355,7 +364,6 @@ def test_eye(
     num_positional_args,
     fw,
 ):
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -391,7 +399,6 @@ def test_eye(
 @handle_cmd_line_args
 def test_from_dlpack(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -454,7 +461,6 @@ def _fill_value(draw):
 @handle_cmd_line_args
 def test_full(
     *,
-    data,
     shape,
     fill_value,
     dtypes,
@@ -505,7 +511,6 @@ def _dtype_and_values(draw):
 @handle_cmd_line_args
 def test_full_like(
     *,
-    data,
     dtype_and_x,
     device,
     as_variable,
@@ -556,7 +561,6 @@ dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="dtyp
 @handle_cmd_line_args
 def test_meshgrid(
     *,
-    data,
     arrays,
     indexing,
     dtype,
@@ -601,7 +605,6 @@ def test_meshgrid(
 @handle_cmd_line_args
 def test_ones(
     *,
-    data,
     shape,
     dtype,
     with_out,
@@ -641,7 +644,6 @@ def test_ones(
 @handle_cmd_line_args
 def test_ones_like(
     *,
-    data,
     dtype_and_x,
     device,
     as_variable,
@@ -685,7 +687,6 @@ def test_ones_like(
 @handle_cmd_line_args
 def test_tril(
     *,
-    data,
     dtype_and_x,
     k,
     as_variable,
@@ -729,7 +730,6 @@ def test_tril(
 @handle_cmd_line_args
 def test_triu(
     *,
-    data,
     dtype_and_x,
     k,
     as_variable,
@@ -772,7 +772,6 @@ def test_triu(
 @handle_cmd_line_args
 def test_zeros(
     *,
-    data,
     shape,
     dtype,
     device,
@@ -812,7 +811,6 @@ def test_zeros(
 @handle_cmd_line_args
 def test_zeros_like(
     *,
-    data,
     dtype_and_x,
     device,
     as_variable,

@@ -29,12 +29,13 @@ Example 1
             or (isinstance(fill_value, bool))
         ), "the fill_value and data type are not compatible"
 
-In the `full_like` function in `creation.py`, the types of `fill_value` and `dtype`
-has to be verified to avoid errors. This check has to be applied to all backends,
-which means the related code is common and identical. In this case, we can extract
-the code to be a helper function on its own, placed in its related submodule
-(`creation.py` here). In this example, the helper function is named as
-`_assert_fill_value_and_dtype_are_compatible`.
+In the :code:`full_like` function in :code:`creation.py`, the types of
+:code:`fill_value` and :code:`dtype` has to be verified to avoid errors. This
+check has to be applied to all backends, which means the related code is common
+and identical. In this case, we can extract the code to be a helper function on
+its own, placed in its related submodule (:code:`creation.py` here). In this
+example, the helper function is named as
+:code:`_assert_fill_value_and_dtype_are_compatible`.
 
 Then, we import this submodule-specific helper function to the respective backends,
 where examples for each backend is shown below.
@@ -140,12 +141,13 @@ Example 2
                     return False
         return True
 
-In the `function_supported_dtypes` and `function_unsupported_dtypes` functions
-in `data_type.py`, we have to ensure that the attributes `supported_dtypes` and
-`unsupported_dtypes` do not exist for the same backend. However, both of the
-functions only exist in the Ivy `data_type.py` submodule without backend
-implementations. Therefore, the purpose of creating the helper function -
-`_is_valid_dtypes_attributes` in this case is to keep code clean and readable.
+In the :code:`function_supported_dtypes` and :code:`function_unsupported_dtypes`
+functions in :code:`data_type.py`, we have to ensure that the attributes
+:code:`supported_dtypes` and :code:`unsupported_dtypes` do not exist for the
+same backend. However, both of the functions only exist in the Ivy
+:code:`data_type.py` submodule without backend implementations. Therefore, the
+purpose of creating the helper function - :code:`_is_valid_dtypes_attributes`
+in this case is to keep code clean and readable.
 
 As the functions and helper exist in the same submodule, we can directly use
 the helper function without importing.

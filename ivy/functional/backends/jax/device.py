@@ -32,7 +32,7 @@ def dev(
     x: JaxArray, as_native: bool = False
 ) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
-        return None
+        return ""
     try:
         dv = _to_array(x).device_buffer.device
         dv = dv()

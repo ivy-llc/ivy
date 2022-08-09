@@ -399,6 +399,7 @@ def test_iinfo(
         type=type,
         test_values=False,
     )
+
     if not ivy.exists(ret):
         return
     mach_lims, mach_lims_np = ret
@@ -463,6 +464,7 @@ def test_as_ivy_dtype(
     if isinstance(input_dtype, str):
         assert isinstance(res, str)
         return
+
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(
         input_dtype, str
     ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
@@ -491,6 +493,7 @@ def test_as_native_dtype(
     if isinstance(input_dtype, ivy.NativeDtype):
         assert isinstance(res, ivy.NativeDtype)
         return
+
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(
         input_dtype, str
     ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
@@ -513,14 +516,14 @@ def test_closest_valid_dtype(
 
 # default_dtype
 @given(
-    input_dtype=st.sampled_from(ivy.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_native=st.booleans(),
 )
 def test_default_dtype(
     input_dtype,
     as_native,
 ):
-    res = ivy.default_dtype(input_dtype, as_native)
+    res = ivy.default_dtype(dtype=input_dtype, as_native=as_native)
     assert (
         isinstance(input_dtype, ivy.Dtype)
         or isinstance(input_dtype, str)
@@ -821,13 +824,18 @@ def test_type_promote_arrays(
 )
 @pytest.mark.parametrize("as_native", [True, False])
 def test_default_float_dtype(input, float_dtype, as_native):
-    res = ivy.default_float_dtype(input, float_dtype, as_native)
+    res = ivy.default_float_dtype(
+        input=input, float_dtype=float_dtype, as_native=as_native
+    )
     assert (
         isinstance(res, ivy.Dtype)
         or isinstance(res, ivy.NativeDtype)
         or isinstance(res, str)
     )
-    assert ivy.default_float_dtype(None, None, False) == ivy.float32
+    assert (
+        ivy.default_float_dtype(input=None, float_dtype=None, as_native=False)
+        == ivy.float32
+    )
     assert ivy.default_float_dtype(float_dtype=ivy.float16) == ivy.float16
     assert ivy.default_float_dtype() == ivy.float32
 
@@ -846,19 +854,21 @@ def test_default_float_dtype(input, float_dtype, as_native):
 )
 @pytest.mark.parametrize("as_native", [True, False])
 def test_default_int_dtype(input, int_dtype, as_native):
-    res = ivy.default_int_dtype(input, int_dtype, as_native)
+    res = ivy.default_int_dtype(input=input, int_dtype=int_dtype, as_native=as_native)
     assert (
         isinstance(res, ivy.Dtype)
         or isinstance(res, ivy.NativeDtype)
         or isinstance(res, str)
     )
-    assert ivy.default_int_dtype(None, None, False) == ivy.int32
+    assert (
+        ivy.default_int_dtype(input=None, int_dtype=None, as_native=False) == ivy.int32
+    )
     assert ivy.default_int_dtype(int_dtype=ivy.int16) == ivy.int16
     assert ivy.default_int_dtype() == ivy.int32
 
 
 @st.composite
-def dtytes_list(draw):
+def dtypes_list(draw):
     num = draw(st.one_of(st.integers(min_value=1, max_value=5)))
     return draw(
         st.lists(
@@ -870,7 +880,7 @@ def dtytes_list(draw):
 
 
 # function_unsupported_dtypes
-@given(supported_dtypes=dtytes_list())
+@given(supported_dtypes=dtypes_list())
 def test_function_supported_dtypes(
     supported_dtypes,
 ):
@@ -884,7 +894,7 @@ def test_function_supported_dtypes(
 
 
 # function_unsupported_dtypes
-@given(unsupported_dtypes=dtytes_list())
+@given(unsupported_dtypes=dtypes_list())
 def test_function_unsupported_dtypes(
     unsupported_dtypes,
 ):

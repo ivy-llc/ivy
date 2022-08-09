@@ -51,7 +51,6 @@ def statistical_dtype_values(draw, *, function):
 @handle_cmd_line_args
 def test_min(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -86,7 +85,6 @@ def test_min(
 @handle_cmd_line_args
 def test_max(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -121,7 +119,6 @@ def test_max(
 @handle_cmd_line_args
 def test_mean(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -156,7 +153,6 @@ def test_mean(
 @handle_cmd_line_args
 def test_var(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -190,7 +186,6 @@ def test_var(
 @handle_cmd_line_args
 def test_prod(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -201,8 +196,15 @@ def test_prod(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if fw == "torch" and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype)):
-        return  # torch implementation exhibits strange behaviour
+
+    # torch implementation exhibits strange behaviour
+    assume(
+        not (
+            fw == "torch"
+            and (input_dtype == "float16")
+        )
+    )
+
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -226,7 +228,6 @@ def test_prod(
 @handle_cmd_line_args
 def test_sum(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -262,7 +263,6 @@ def test_sum(
 @handle_cmd_line_args
 def test_std(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -304,7 +304,7 @@ def test_std(
     data=st.data(),
 )
 @handle_cmd_line_args
-def test_einsum(*, data, eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call):
+def test_einsum(*, data, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device, call):
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
     operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]
@@ -327,7 +327,8 @@ def test_einsum(*, data, eq_n_op_n_shp, dtype, with_out, tensor_fn, device, call
     # out test
     if with_out:
         assert ret is out
-        if ivy.current_backend_str() in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            return
+
+        # these backends do not support native inplace updates
+        assume(not (fw in ["tensorflow", "jax"]))
+
         assert ret.data is out.data
