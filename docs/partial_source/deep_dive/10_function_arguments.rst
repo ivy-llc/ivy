@@ -125,10 +125,10 @@ Positional and Keyword Arguments
 In both signatures, we follow the `Array API Standard`_ convention about positional and keyword arguments.
 
 * Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name.
-When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based
-solely on their order. This is indicated with an :code:`/` after all the position-only arguments.
+    When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based
+    solely on their order. This is indicated with an :code:`/` after all the position-only arguments.
 * Optional parameters must be keyword-only arguments.
-A :code:`*` must be added before any of the keyword-only arguments.
+    A :code:`*` must be added before any of the keyword-only arguments.
 
 Arrays
 ------
