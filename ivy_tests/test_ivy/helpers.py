@@ -2100,7 +2100,11 @@ def array_values(
                 min_value, 1 if small_value_safety_factor < 1 else 0
             )
             max_value = ivy.default(
-                max_value, round(18446744073709551615 * large_value_safety_factor)
+                max_value,
+                min(
+                    18446744073709551615,
+                    round(18446744073709551615 * large_value_safety_factor),
+                ),
             )
         values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
     elif "int" in dtype:
@@ -2127,12 +2131,20 @@ def array_values(
             )
         elif dtype == "int64":
             min_value = ivy.default(
-                min_value, round(-9223372036854775808 * large_value_safety_factor)
+                min_value,
+                max(
+                    -9223372036854775808,
+                    round(-9223372036854775808 * large_value_safety_factor),
+                ),
             )
             max_neg_value = -1 if small_value_safety_factor > 1 else 0
             min_pos_value = 1 if small_value_safety_factor > 1 else 0
             max_value = ivy.default(
-                max_value, round(9223372036854775807 * large_value_safety_factor)
+                max_value,
+                min(
+                    9223372036854775807,
+                    round(9223372036854775807 * large_value_safety_factor),
+                ),
             )
         values = draw(
             list_of_length(
