@@ -86,8 +86,6 @@ def conv2d(
     res = tf.nn.conv2d(x, filters, strides, padding, "NHWC", dilations)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
     return res
 
 
@@ -207,7 +205,7 @@ def conv3d_transpose(
         new_w = _deconv_length(
             x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
         )
-        output_shape = [new_d, new_h, new_w]
+        output_shape = [x.shape[0], new_d, new_h, new_w, x.shape[-1]]
     res = tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, "NDHWC", dilations
     )
