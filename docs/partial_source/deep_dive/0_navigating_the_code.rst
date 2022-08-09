@@ -6,7 +6,7 @@ Navigating the Code
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`project structure channel`: https://discord.com/channels/799879767196958751/982737793476345888
-.. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#array-operators
+.. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 
 Categorization
 --------------
