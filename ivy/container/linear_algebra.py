@@ -21,6 +21,21 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_nests: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Examples
+        ------------------------
+
+        With :code:`ivy.Container` instance inputs:
+
+        >>> x = ivy.Container(a=ivy.array([5., 2.]), b=ivy.array([2., 1.]))
+        >>> y = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 2.]))
+        >>> z = x.matmul(y)
+        >>> print(z)
+        {
+            a: ivy.array(39.),
+            b: ivy.array(8.)
+        }
+        """
         kw = {}
         conts = {"x1": self}
         if ivy.is_array(x2):
