@@ -70,3 +70,62 @@ def test_torch_cat(
         dim=unique_idx,
         out=None,
     )
+
+    
+# composite strategy for input dimensions as permutations for frontends.torch.permute
+@st.composite
+def _permute_helper(draw):
+    shape = draw(st.shared(
+        helpers.get_shape(min_num_dims=1),
+        key='shape_value'
+    ))
+    dims = [x for x in range(len(shape))]
+    permutation = draw(st.permutations(dims))
+    return permutation
+
+
+# permute
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes))),
+        shape=st.shared(
+            helpers.get_shape(min_num_dims=1),
+            key='shape_value'
+        )),
+    permutation=_permute_helper(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.permute"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+    data=st.data(),
+)
+def test_permute(
+        *,
+        data,
+        dtype_value,
+        permutation,
+        as_variable,
+        num_positional_args,
+        native_array,
+        container,
+        instance_method,
+        fw,
+):
+    dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        frontend="torch",
+        fn_name="permute",
+        input=np.asarray(value, dtype=dtype),
+        dims=permutation,
+    )
