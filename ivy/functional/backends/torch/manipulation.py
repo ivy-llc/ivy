@@ -40,7 +40,12 @@ def expand_dims(
     ret = x.reshape(out_shape)
     return ret
 
-expand_dims.unsupported_dtypes = ("uint16", "uint32", "uint64",)
+
+expand_dims.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def flip(
@@ -64,7 +69,12 @@ def flip(
     ret = torch.flip(x, new_axis)
     return ret
 
-flip.unsupported_dtypes = ("uint16", "uint32", "uint64",)
+
+flip.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def permute_dims(
@@ -73,7 +83,12 @@ def permute_dims(
     ret = torch.permute(x, axes)
     return ret
 
-permute_dims.unsupported_dtypes = ("uint16", "uint32", "uint64",)
+
+permute_dims.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def reshape(
@@ -87,7 +102,12 @@ def reshape(
         return torch.reshape(newarr, shape)
     return torch.reshape(x, shape)
 
-reshape.unsupported_dtypes = ("uint16", "uint32", "uint64",)
+
+reshape.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def roll(
@@ -103,7 +123,12 @@ def roll(
 
     return torch.roll(x, shift, axis)
 
-roll.unsupported_dtypes = ("uint16", "uint32", "uint64",)
+
+roll.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def squeeze(
@@ -119,9 +144,7 @@ def squeeze(
                 "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
         if x.shape[axis] != 1:
-            raise ValueError(
-                f"Expected size of axis to be 1 but was {x.shape[axis]}"
-            )
+            raise ValueError(f"Expected size of axis to be 1 but was {x.shape[axis]}")
         return torch.squeeze(x, axis)
     if axis is None:
         return torch.squeeze(x)
@@ -144,7 +167,12 @@ def squeeze(
             x = torch.squeeze(x, i)
     return x
 
-squeeze.unsupported_dtypes = ("uint16", "uint32", "uint64",)
+
+squeeze.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def stack(
@@ -223,7 +251,16 @@ def repeat(
     ret = torch.repeat_interleave(x, repeats, axis)
     return ret
 
-repeat.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64", "int8", "int16", "float16")
+
+repeat.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "int8",
+    "int16",
+    "float16",
+)
 
 
 def tile(x: torch.Tensor, reps, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -232,7 +269,12 @@ def tile(x: torch.Tensor, reps, *, out: Optional[torch.Tensor] = None) -> torch.
     ret = x.repeat(reps)
     return ret
 
-tile.unsupported_dtypes = ("uint16", "uint32", "uint64",)
+
+tile.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 # noinspection PyUnresolvedReferences
@@ -255,6 +297,7 @@ def constant_pad(
     ret = torch.nn.functional.pad(x, pad_width_flat, mode="constant", value=value)
     return ret
 
+
 constant_pad.unsupported_dtypes = ("uint16", "uint32", "uint64")
 
 
@@ -263,7 +306,12 @@ def zero_pad(
 ):
     return constant_pad(x, pad_width, 0.0)
 
-zero_pad.unsupported_dtypes = ("uint16", "uint32", "uint64",)
+
+zero_pad.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def swapaxes(
@@ -272,7 +320,12 @@ def swapaxes(
     ret = torch.transpose(x, axis0, axis1)
     return ret
 
-swapaxes.unsupported_dtypes = ("uint16", "uint32", "uint64",)
+
+swapaxes.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def clip(
@@ -293,6 +346,5 @@ def clip(
 
 
 clip.support_native_out = True
-
 
 clip.unsupported_dtypes = ("float16",)

@@ -165,6 +165,9 @@ def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
         )
 
 
+as_native_dtype.unsupported_dtypes = ("bfloat16",)
+
+
 def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype

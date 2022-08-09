@@ -1,7 +1,8 @@
 # global
-import numpy as np
-from typing import Union, Optional, Callable
 import functools
+from typing import Union, Optional, Callable
+
+import numpy as np
 
 # local
 import ivy
@@ -13,13 +14,16 @@ except (ImportError, ModuleNotFoundError):
 
 
 def _cast_for_binary_op(x1, x2):
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            promoted_type = np.promote_types(x1.dtype, x2.dtype)
-            x1 = x1.astype(promoted_type)
-            x2 = x2.astype(promoted_type)
-        else:
-            x2 = np.asarray(x2, dtype=x1.dtype)
+    return ivy.promote_types_of_inputs(x1, x2)
+
+
+def _clamp_bits(x1, x2):
+    x2 = np.clip(
+        x2,
+        np.array(0, dtype=x2.dtype),
+        np.array(np.dtype(x1.dtype).itemsize * 8 - 1),
+        dtype=x2.dtype,
+    )
     return x1, x2
 
 
@@ -147,6 +151,7 @@ def bitwise_left_shift(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _clamp_bits(x1, x2)
     return np.left_shift(x1, x2, out=out)
 
 
@@ -175,6 +180,7 @@ def bitwise_right_shift(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = _clamp_bits(x1, x2)
     return np.right_shift(x1, x2, out=out)
 
 
@@ -233,7 +239,12 @@ def divide(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    return np.divide(x1, x2, out=out)
+    ret = np.divide(x1, x2)
+    if ivy.is_float_dtype(x1):
+        ret = np.asarray(ret, dtype=x1.dtype)
+    else:
+        ret = np.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
+    return ret
 
 
 divide.support_native_out = True
@@ -291,10 +302,7 @@ def floor_divide(
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     ret = np.floor_divide(x1, x2, out=out)
-    if (isinf(x1).any() and isfinite(x2).any()) or (
-        isfinite(x1).any() and isinf(x2).any()
-    ):
-        return ivy.full_like(ret, np.floor(np.divide(x1, x2)), dtype=ret.dtype)
+
     return ret
 
 
@@ -641,7 +649,10 @@ def erf(x, *, out: Optional[np.ndarray] = None):
         raise Exception(
             "scipy must be installed in order to call ivy.erf with a numpy backend."
         )
-    return _erf(x, out=out).astype(x.dtype)
+    ret = _erf(x, out=out)
+    if hasattr(x, "dtype"):
+        ret = np.asarray(_erf(x, out=out), dtype=x.dtype)
+    return ret
 
 
 erf.support_native_out = True
@@ -649,6 +660,7 @@ erf.support_native_out = True
 
 @_handle_0_dim_output
 def maximum(x1, x2, *, out: Optional[np.ndarray] = None):
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.maximum(x1, x2, out=out)
 
 
@@ -662,6 +674,7 @@ def minimum(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return np.minimum(x1, x2, out=out)
 
 
