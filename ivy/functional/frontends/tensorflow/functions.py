@@ -32,3 +32,10 @@ def subtract(x, y, name=None):
 
 
 subtract.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def difference(x, y, aminusb=True, validate_indices=True): 
+    return ivy.difference(x,y)
+
+
+subtract.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
