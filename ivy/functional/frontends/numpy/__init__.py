@@ -13,3 +13,6 @@ from . import statistics
 from .statistics import *
 
 from . import ma
+from . import fft
+from . import matrix
+from . import ufunc
