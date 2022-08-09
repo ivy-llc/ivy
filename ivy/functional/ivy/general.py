@@ -2670,11 +2670,8 @@ def gather(
         array, index array.
     axis
         optional int, the axis from which to gather from. Default is -1.
-    device
-        optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1',
-        'cpu' etc. Same as x if None.
     out
-        optional output array, for writing the result to.
+        optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
@@ -2776,7 +2773,10 @@ def gather(
         b: ivy.array([5., 6.])
     }
     """
-    return current_backend(params).gather(params, indices, axis, out=out)
+    res = current_backend(params, indices).gather(params, indices, axis)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 @to_native_arrays_and_back
