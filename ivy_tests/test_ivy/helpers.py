@@ -1449,6 +1449,7 @@ def test_frontend_function(
     if test_unsupported:
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
         return
+
     ret = frontend_fn(*args, **kwargs)
 
     # assert idx of return if the idx of the out array provided
