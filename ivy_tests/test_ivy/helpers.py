@@ -53,7 +53,6 @@ except ImportError:
     mx = None
     mx_nd = None
 from hypothesis import strategies as st
-import hypothesis.extra.numpy as nph
 
 # local
 import ivy
@@ -526,13 +525,14 @@ def f_n_calls():
 def assert_all_close(
     ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
-    assert (
-        ret_np.dtype is ret_from_np.dtype
-    ), "the return with a {} backend produced data type of {}, while the return with" " a {} backend returned a data type of {}.".format(
-        ground_truth_backend,
-        ret_from_np.dtype,
-        ivy.current_backend_str(),
-        ret_np.dtype,
+    assert ret_np.dtype is ret_from_np.dtype, (
+        "the return with a {} backend produced data type of {}, while the return with"
+        " a {} backend returned a data type of {}.".format(
+            ground_truth_backend,
+            ret_from_np.dtype,
+            ivy.current_backend_str(),
+            ret_np.dtype,
+        )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
@@ -1449,6 +1449,7 @@ def test_frontend_function(
     if test_unsupported:
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
         return
+
     ret = frontend_fn(*args, **kwargs)
 
     # assert idx of return if the idx of the out array provided
@@ -1619,6 +1620,7 @@ def array_bools(
 @st.composite
 def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
     """Draws a list from the dataset arg.
+
     Parameters
     ----------
     draw
@@ -1631,7 +1633,9 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
     max_size
         max size of the list.
     size_bounds
-        if min_size or max_size is None, draw them randomly from the range [size_bounds[0], size_bounds[1]].
+        if min_size or max_size is None, draw them randomly from the range
+        [size_bounds[0], size_bounds[1]].
+
     Returns
     -------
     A strategy that draws a list.
@@ -1806,7 +1810,9 @@ def dtype_values_axis(
     max_axis=None,
     ret_shape=False,
 ):
-    """Draws an array with elements from the given data type, and a random axis of the array.
+    """Draws an array with elements from the given data type, and a random axis of
+    the array.
+
     Parameters
     ----------
     draw
@@ -1842,6 +1848,7 @@ def dtype_values_axis(
         if shape is None, axis is drawn from the range [min_axis, max_axis].
     ret_shape
         if True, the shape of the arrays is also returned.
+
     Returns
     -------
     A strategy that draws a dtype, an array (as list), and an axis.
