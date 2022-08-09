@@ -38,3 +38,15 @@ def sort(
     else:
         ret = res
     return ret
+
+
+def searchsorted(
+    x: JaxArray,
+    v: JaxArray,
+    side="left",
+    sorter=None,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    res = jnp.asarray(jnp.searchsorted(x, v, side=side))
+    return res

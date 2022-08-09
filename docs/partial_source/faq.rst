@@ -35,10 +35,10 @@ which everything else in the framework depends.
 Our CI always tests against the latest version available on PyPI,
 and this has been the case since we started development.
 We do not lock-in any versions during our continuous testing,
-and we will contunue to always pull the latest version.
+and we will continue to always pull the latest version.
 
 In future, we hope to add explicit testing also for previous versions,
-so we can guaranteed backward compatibility for each backend.
+so we can guarantee backward compatibility for each backend.
 We will also add an option to select backend versions for the small minority of cases
 where changes in the backend functional APIs do cause breaking changes for Ivy.
 
@@ -95,7 +95,7 @@ TensorFlow eager and PyTorch allow you to use full python control flow, (loops, 
 dynamic dispatch, recursion) but there is no static computation graph. How will Ivy handle dynamic control flow?
 Will Ivy parse python ASTs?
 
-**A:** For now, Ivy will not support dynamic control flow by parsing ASTs. The dynamicism of :code:`for` loops and
+**A:** For now, Ivy will not support dynamic control flow by parsing ASTs. The dynamism of :code:`for` loops and
 :code:`while` loops will be ignored during compilation, and just the static trace which chains the array operations
 performed during the forward pass at compile time will be preserved.
 

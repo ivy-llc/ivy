@@ -64,8 +64,8 @@ def test_random_uniform(
     ret = helpers.flatten(ret=ret)
     ret_gt = helpers.flatten(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(u >= low) and ivy.all(u < high)
-        assert ivy.all(v >= low) and ivy.all(v < high)
+        assert ivy.all(u >= low) and ivy.all(u <= high)
+        assert ivy.all(v >= low) and ivy.all(v <= high)
 
 
 # random_normal
@@ -138,33 +138,60 @@ def _pop_size_num_samples_replace_n_probs(draw):
         helpers.array_values(
             dtype=prob_dtype,
             shape=[batch_size, num_samples],
-            min_value=0.0,
+            min_value=1.0013580322265625e-05,
             max_value=1.0,
+            exclude_min=True,
+            safety_factor=0.8,
         )
-        | st.just(None)
     )
     return prob_dtype, batch_size, population_size, num_samples, replace, probs
 
 
 # multinomial
-@given(everything=_pop_size_num_samples_replace_n_probs())
-def test_multinomial(everything, device, call, fw):
+@given(
+    everything=_pop_size_num_samples_replace_n_probs(),
+    num_positional_args=helpers.num_positional_args(fn_name="multinomial"),
+    data=st.data(),
+)
+@handle_cmd_line_args
+def test_multinomial(
+    *,
+    everything,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
-
     # tensorflow does not support multinomial without replacement
-    assume(not (fw == "tensorflow" and not replace or prob_dtype == "float64"))
-
-    # smoke test
-    probs = (
-        ivy.array(probs, dtype=prob_dtype, device=device)
-        if probs is not None
-        else probs
+    assume(not (fw == "tensorflow" and not replace))
+    ret, ret_gt = helpers.test_function(
+        input_dtypes=[prob_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        test_values=False,
+        ground_truth_backend="numpy",
+        fw=fw,
+        fn_name="multinomial",
+        population_size=population_size,
+        num_samples=num_samples,
+        batch_size=batch_size,
+        probs=np.asarray(probs, dtype=prob_dtype) if probs is not None else probs,
+        replace=replace,
+        device=device,
     )
-    ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == tuple([batch_size, num_samples])
+    ret = helpers.flatten(ret=ret)
+    ret_gt = helpers.flatten(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert u.dtype == v.dtype
 
 
 # randint
@@ -234,7 +261,7 @@ def test_randint(
 )
 def test_seed(seed_val):
     # smoke test
-    ivy.seed(seed_val)
+    ivy.seed(seed_value=seed_val)
 
 
 # shuffle

@@ -48,7 +48,7 @@ def asarray(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if isinstance(object_in, ivy.NativeArray) and dtype != "bool":
+    if isinstance(object_in, ivy.NativeArray) and not dtype:
         dtype = object_in.dtype
     elif (
         isinstance(object_in, (list, tuple, dict))
@@ -63,7 +63,7 @@ def asarray(
         else:
             return _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
     else:
-        dtype = default_dtype(dtype, object_in)
+        dtype = default_dtype(dtype=dtype, item=object_in)
 
     if copy is True:
         return _to_device(jnp.array(object_in, dtype=dtype, copy=True), device=device)
@@ -126,7 +126,7 @@ def full(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     return _to_device(
         jnp.full(shape, fill_value, dtype),
