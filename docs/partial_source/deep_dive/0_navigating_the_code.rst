@@ -6,6 +6,7 @@ Navigating the Code
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`project structure channel`: https://discord.com/channels/799879767196958751/982737793476345888
+.. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#array-operators
 
 Categorization
 --------------
@@ -129,6 +130,13 @@ look something like the following, (explained in much more detail in the followi
         Some cool examples go here
         """
         return ivy.current_backend(x).my_func(x, axes, dtype=dtype, device=device, out=out)
+
+We follow the `Array API Standard convention`_ about positional and keyword arguments.
+
+* Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name. When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based solely on their order.
+* Optional parameters must be keyword-only arguments
+
+This convention makes it easier for us to modify functions in the future. Keyword-only parameters will mandate the use of argument names when calling functions, and this will allow us the flexibility to extend the function behaviour in future releases without breaking forward compatibility.
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
 Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
