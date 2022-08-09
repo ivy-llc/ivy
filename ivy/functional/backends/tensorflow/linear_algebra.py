@@ -186,8 +186,6 @@ def matrix_norm(
             ret = x
         else:
             ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
-    elif ord == "fro":
-        ret = tf.linalg.norm(x, 2, axes, keepdims)
     else:
         ret = tf.linalg.norm(x, ord, axes, keepdims)
 
@@ -252,7 +250,7 @@ def matrix_rank(
         x = tf.expand_dims(x, 0)
         x, rtol = ivy.promote_types_of_inputs(x, rtol)
         ret = tf.linalg.matrix_rank(x, rtol)
-    ret = tf.cast(ret, ivy.default_float_dtype(as_native=True))
+    ret = tf.cast(ret, ivy.default_int_dtype(as_native=True))
     return ret
 
 

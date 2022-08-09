@@ -131,7 +131,7 @@ def squeeze(
             )
         ret = tf.squeeze(x, axis)
     elif axis is None:
-        ret = x
+        ret = tf.squeeze(x)
     else:
         if isinstance(axis, tuple):
             axis = list(axis)
