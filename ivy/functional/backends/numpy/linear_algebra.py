@@ -119,7 +119,7 @@ def matrix_rank(
         ret = np.linalg.matrix_rank(x)
     else:
         ret = np.linalg.matrix_rank(x, rtol)
-    ret = np.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
+    ret = np.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
     return ret
 
 

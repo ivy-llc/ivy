@@ -156,6 +156,21 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse sine of each element in ``self``. The
             returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([-1., 1., 4., 0.8])
+        >>> y = x.asin()
+        >>> print(y)
+        ivy.array([-1.57, 1.57, nan, 0.927])
+
+        >>> x = ivy.array([-3., -0.9, 1.5, 2.8])
+        >>> y = ivy.zeros(4)
+        >>> x.asin(out=y)
+        >>> print(y)
+        ivy.array([nan, -1.12, nan, nan])
         """
         return ivy.asin(self._data, out=out)
 
