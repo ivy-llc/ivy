@@ -78,8 +78,6 @@ class DefaultDevice:
         return self
 
     def __exit__(self,
-                 /,
-                 *,
                  exc_type,
                  exc_val,
                  exc_tb) -> Union[ivy.Device, str]:
@@ -916,15 +914,17 @@ def set_split_factor(factor: float,
 
 
 def split_func_call(
-    func: Callable,
-    inputs: Union[ivy.Array, ivy.NativeArray],
-    mode: str,
-    max_chunk_size: int = None,
-    chunk_size: int = None,
-    input_axes: Union[int, Iterable[int]] = 0,
-    output_axes: Union[int, Iterable[int]] = None,
-    stop_gradients: bool = False,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
+        func: Callable,
+        inputs: Union[ivy.Array, ivy.NativeArray],
+        mode: str,
+        /,
+        *,
+        max_chunk_size: int = None,
+        chunk_size: int = None,
+        input_axes: Union[int, Iterable[int]] = 0,
+        output_axes: Union[int, Iterable[int]] = None,
+        stop_gradients: bool = False,
+        device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Call a function by splitting its inputs along a given axis, and calling the
     function in chunks, rather than feeding the entire input array at once. This can be
