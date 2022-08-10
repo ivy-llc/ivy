@@ -1251,18 +1251,20 @@ def bitwise_right_shift(
 
     With :code:`ivy.Array` input:
 
-    >>> a = ivy.array([2, 3, 4])
-    >>> b = ivy.array([0, 1, 2])
+    >>> a = ivy.array([2, 9, 16, 31])
+    >>> b = ivy.array([0, 1, 2, 3])
     >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
-    ivy.array([2, 1, 1])
+    ivy.array([2, 4, 4, 3])
 
-    >>> a = ivy.array([[32, 40, 55], [16, 33, 170]])
+    >>> a = ivy.array([[32, 40, 55], \
+                       [16, 33, 170]])
     >>> b = ivy.array([5, 2, 1])
+    >>> y = ivy.zeros((2, 3))
     >>> ivy.bitwise_right_shift(a, b, out=y)
     >>> print(y)
-    ivy.array([[ 1, 10, 27],
-               [ 0,  8, 85]])
+    ivy.array([[ 1., 10., 27.],
+               [ 0.,  8., 85.]])
 
     >>> a = ivy.array([[10, 64], \
                        [43, 87], \
@@ -1276,7 +1278,8 @@ def bitwise_right_shift(
 
     With :code: `ivy.NativeArray` input:
 
-    >>> a = ivy.native_array([[32, 40, 55], [16, 33, 170]])
+    >>> a = ivy.native_array([[32, 40, 55], \
+                              [16, 33, 170]])
     >>> b = ivy.native_array([5, 2, 1])
     >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
