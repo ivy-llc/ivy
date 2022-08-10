@@ -299,11 +299,8 @@ class ContainerWithGradients(ContainerBase):
         >>> xs = ivy.Container(a = ivy.array([1.,1.,1.]))
         >>> results = ivy.Container.static_execute_with_gradients(func, \
             xs)
-        >>> func_output,grads = results['a']
-        >>> print("function output: ", func_output)
-        >>> print("grads: ", grads)
-        function output:  ivy.array([2., 2., 2.])
-        grads:  ivy.array([4., 4., 4.])
+        >>> print(results)
+        {a: (list[2], <class ivy.array.array.Array> shape=[3])}
         
         With multiple :code:`ivy.Container` inputs:
 
@@ -312,16 +309,11 @@ class ContainerWithGradients(ContainerBase):
             b =ivy.array([5.,5.,5.]))
         >>> results = ivy.Container.static_execute_with_gradients(func, \
                     xs)
-        >>> a_func_output, a_grads = results['a']
-        >>> b_func_output, b_grads = results['b']
-        >>> print("a function output: ", a_func_output)
-        >>> print("a gradients: ", a_grads)
-        >>> print("b function output: ", b_func_output)
-        >>> print("b gradients: ", b_grads)
-        a function output:  ivy.array([1., 1., 1.])
-        a gradients:  ivy.array([2., 2., 2.])
-        b function output:  ivy.array([25., 25., 25.])
-        b gradients:  ivy.array([10., 10., 10.])
+        >>> print(results)
+        {
+        a: (list[2], <class ivy.array.array.Array> shape=[3]),
+        b: (list[2], <class ivy.array.array.Array> shape=[3])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "execute_with_gradients",
@@ -376,11 +368,8 @@ class ContainerWithGradients(ContainerBase):
         >>> func = lambda x : 2*x**2
         >>> xs = ivy.Container(a = ivy.array([1.,1.,1.]))
         >>> results = xs.execute_with_gradients(func)
-        >>> func_output,grads = results['a']
-        >>> print("function output: ", func_output)
-        >>> print("grads: ", grads)
-        function output:  ivy.array([2., 2., 2.])
-        grads:  ivy.array([4., 4., 4.])
+        >>> print(results)
+        {a: (list[2], <class ivy.array.array.Array> shape=[3])}
 
         With multiple :code:`ivy.Container` inputs:
 
@@ -388,16 +377,9 @@ class ContainerWithGradients(ContainerBase):
         >>> xs = ivy.Container(a=ivy.array([1.,1.,1.]), \
             b =ivy.array([5.,5.,5.]))
         >>> results = xs.execute_with_gradients(func)
-        >>> a_func_output, a_grads = results['a']
-        >>> b_func_output, b_grads = results['b']
-        >>> print("a function output: ", a_func_output)
-        >>> print("a gradients: ", a_grads)
-        >>> print("b function output: ", b_func_output)
-        >>> print("b gradients: ", b_grads)
-        a function output:  ivy.array([1., 1., 1.])
-        a gradients:  ivy.array([2., 2., 2.])
-        b function output:  ivy.array([25., 25., 25.])
-        b gradients:  ivy.array([10., 10., 10.])
+        >>> print(results)
+        {a: (list[2], <class ivy.array.array.Array> shape=[3]),
+        b: (list[2], <class ivy.array.array.Array> shape=[3])}
         """
         return self.static_execute_with_gradients(
             func,
