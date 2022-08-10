@@ -2423,15 +2423,15 @@ def inplace_decrement(
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
-) -> Union[ivy.Array, ivy.Container]:
+) -> ivy.Array:
     """Perform in-place increment for the input array.
 
     Parameters
     ----------
     x
-        The array to increment.
+        The input array to be incremented by the defined value.
     val
-        The array to increment the variable with.
+        The value of increment.
 
     Returns
     -------
@@ -2440,7 +2440,6 @@ def inplace_increment(
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
     >>> x = ivy.array([[5.3, 7., 0.],\
                         [6.8, 8, 3.9],\
@@ -2452,7 +2451,6 @@ def inplace_increment(
        [ 3., 13.,  9.3]])
 
      With :code:`ivy.NativeArray` input:
-
      >>> x = ivy.native_array([10, 20, 30])
      >>> val = ivy.native_array([1, 2, 3])
      >>> y = ivy.inplace_increment(x, val)
