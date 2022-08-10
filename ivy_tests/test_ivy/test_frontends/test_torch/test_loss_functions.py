@@ -44,5 +44,4 @@ def test_torch_cross_entropy(
         fn_name="cross_entropy",
         input=np.asarray(x[0], dtype=input_dtype[0]),
         target=np.asarray(x[1], dtype=input_dtype[1]),
-        out=None,
     )
