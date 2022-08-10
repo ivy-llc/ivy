@@ -2,6 +2,7 @@
 
 # global
 from hypothesis import given, strategies as st
+import pytest
 import numpy as np
 
 # local
@@ -39,6 +40,11 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
     if isinstance(lr, list):
         dtypes += [dtype]
     return dtypes, arrays, lr
+
+
+@pytest.mark.parametrize("grads", [True, False])
+def test_with_grads(grads):
+    assert ivy.with_grads(with_grads=grads) == grads
 
 
 # variable
@@ -478,9 +484,3 @@ def test_lamb_update(
 # with_grads
 # set_with_grads
 # unset_with_grads
-# variable
-# is_variable
-# variable_data
-# stop_gradient
-# execute_with_gradients
-# adam_step

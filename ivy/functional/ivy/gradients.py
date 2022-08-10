@@ -39,7 +39,7 @@ class GradientTracking:
 # Gradient Mode #
 
 # noinspection PyShadowingNames
-def with_grads(with_grads: bool = None) -> bool:
+def with_grads(*, with_grads: bool = None) -> bool:
     """
     Enter a nested code space where gradients are computed. This method
     adds the with_grads component to the global list with_grads_stack
