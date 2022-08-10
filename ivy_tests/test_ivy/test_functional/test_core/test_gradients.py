@@ -217,6 +217,21 @@ def test_execute_with_gradients(
     )
 
 
+# value_and_grad
+def test_value_and_grad():
+    pass
+
+
+# jac
+def test_jac():
+    pass
+
+
+# grad
+def test_grad():
+    pass
+
+
 # adam_step
 @given(
     dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(num_arrays=3, no_lr=True),

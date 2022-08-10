@@ -414,6 +414,44 @@ def value_and_grad(func):
     return current_backend(None).value_and_grad(func)
 
 
+@to_native_arrays_and_back
+def jac(func):
+    """Call function func, and return func's Jacobian partial derivatives.
+
+    Parameters
+    ----------
+    func
+        Function for which we compute the gradients of the output with respect to xs
+        input.
+
+    Returns
+    -------
+    ret
+        the Jacobian function
+
+    """
+    return current_backend(None).jac(func)
+
+
+@to_native_arrays_and_back
+def grad(func):
+    """Call function func, and return func's gradients.
+
+    Parameters
+    ----------
+    func
+        Function for which we compute the gradients of the output with respect to xs
+        input.
+
+    Returns
+    -------
+    ret
+        the grad function
+
+    """
+    return current_backend(None).grad(func)
+
+
 # Optimizer Steps #
 
 
@@ -1078,41 +1116,3 @@ def lamb_update(
         mw,
         vw,
     )
-
-
-@to_native_arrays_and_back
-def jac(func):
-    """Call function func, and return func's Jacobian partial derivatives.
-
-    Parameters
-    ----------
-    func
-        Function for which we compute the gradients of the output with respect to xs
-        input.
-
-    Returns
-    -------
-    ret
-        the Jacobian function
-
-    """
-    return current_backend(None).jac(func)
-
-
-@to_native_arrays_and_back
-def grad(func):
-    """Call function func, and return func's gradients.
-
-    Parameters
-    ----------
-    func
-        Function for which we compute the gradients of the output with respect to xs
-        input.
-
-    Returns
-    -------
-    ret
-        the grad function
-
-    """
-    return current_backend(None).grad(func)
