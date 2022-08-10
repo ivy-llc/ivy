@@ -1889,12 +1889,12 @@ def current_backend_str() -> Union[str, None]:
     
     Examples
     --------
-    With default backend of NumPy
+    Without setting default backend of NumPy
 
     >>> print(ivy.current_backend_str)
-    "numpy"
+    ''
 
-    With default backend of NumPy
+    With setting default backend as 'torch'
 
     >>> ivy.set_backend('torch')
     >>> print(ivy.current_backend_str)
