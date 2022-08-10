@@ -3,7 +3,7 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -42,7 +42,8 @@ def test_fomaml_step_unique_vars(
 
     # Numpy does not support gradients, and jax does not support gradients on
     # custom nested classes
-    assume(not (fw == "numpy"))
+    if fw == "numpy":
+        return
 
     # config
     inner_learning_rate = 1e-2
@@ -190,7 +191,8 @@ def test_fomaml_step_shared_vars(
     # Numpy does not support gradients, jax does not support gradients on custom
     # nested classes, and mxnet does not support only_inputs argument to
     # mx.autograd.grad
-    assume(not (fw in ["numpy", "mxnet"]))
+    if fw == "numpy":
+        return
 
     # config
     inner_learning_rate = 1e-2
@@ -357,7 +359,8 @@ def test_fomaml_step_overlapping_vars(
     # Numpy does not support gradients, jax does not support gradients on custom
     # nested classes, and mxnet does not support only_inputs argument to
     # mx.autograd.grad
-    assume(not (fw in ["numpy", "mxnet"]))
+    if fw == "numpy":
+        return
 
     # config
     inner_learning_rate = 1e-2

@@ -1063,6 +1063,8 @@ def test_svd(
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        min_value=-10,
+        max_value=10,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_norm"),
     kd=st.booleans(),
