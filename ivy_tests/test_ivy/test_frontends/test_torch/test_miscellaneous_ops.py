@@ -16,18 +16,14 @@ import ivy.functional.backends.torch as ivy_torch
                 set(ivy_np.valid_float_dtypes).intersection(
                     set(ivy_torch.valid_float_dtypes)))),
     as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.flipud"),
+        fn_name="ivy.functional.frontends.torch.flipud"),
     native_array=st.booleans(),
-    data=st.data(),
 )
 def test_torch_flipud(
     *,
-    data,
     dtype_value,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -36,11 +32,10 @@ def test_torch_flipud(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_name="flipud",
         input=np.asarray(value, dtype=input_dtype),
-    )
+    )    
