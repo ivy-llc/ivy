@@ -1,10 +1,5 @@
 name: CI Dashboard
-on:
-  workflow_run:
-    workflows: [test-nn-ivy, test-stateful-ivy, test-core-ivy]
-    types:
-      - completed
-    branch: master
+on: [push, pull_request]
 jobs:
   Trigger-Dashboard:
     name: Trigger Dashboard
@@ -16,14 +11,12 @@ jobs:
           path: ivy
           persist-credentials: false
       - name: Setup Python
-        uses: actions/setup-python@v2
+      - uses: actions/setup-python@v1
+      - uses:  BSFishy/pip-action@v1
         with:
-          python-version: "3.x"
-      - name: Install Dependencies
-        run: |
-           python -m pip --upgrade pip
-           pip install emoji
-           pip install pandas
+           packages: |
+             emoji
+             pandas
       - name: run python file
         env:
           WORKING_DIR: ${GITHUB_WORKSPACE}
