@@ -296,11 +296,11 @@ class ContainerWithGradients(ContainerBase):
         With :code:`ivy.Container` input:
 
         >>> ivy.set_backend('tensorflow')
-        >>> z  = ivy.variable(ivy.array([2.,1.,100.]))
-        >>> func = lambda x :ivy.matmul(z,x)
+        >>> z = ivy.variable(ivy.array([2.,1.,100.]))
+        >>> func = lambda x : ivy.matmul(z,x)
         >>> xs = ivy.Container(a = ivy.array([1.,1.,1.]))
         >>> results = ivy.Container.static_execute_with_gradients(func, \
-                    xs)
+            xs)
         >>> func_output,grads = results['a']
         >>> print("function output: ", func_output)
         >>> print("grads: ", grads)
@@ -311,7 +311,7 @@ class ContainerWithGradients(ContainerBase):
 
         >>> func = lambda x: x**2
         >>> xs = ivy.Container(a=ivy.array([1.,1.,1.]), \
-                               b =ivy.array([5.,5.,5.]) )
+            b =ivy.array([5.,5.,5.]))
         >>> results = ivy.Container.static_execute_with_gradients(func, \
                     xs)
         >>> a_func_output, a_grads = results['a']
@@ -324,6 +324,7 @@ class ContainerWithGradients(ContainerBase):
         a gradients:  ivy.array([2., 2., 2.])
         b function output:  ivy.array([25., 25., 25.])
         b gradients:  ivy.array([10., 10., 10.])
+        >>> ivy.unset_backend()
         """
         return ContainerBase.multi_map_in_static_method(
             "execute_with_gradients",
