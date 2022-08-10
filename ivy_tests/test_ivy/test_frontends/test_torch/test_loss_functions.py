@@ -20,14 +20,12 @@ import ivy.functional.backends.torch as ivy_torch
         shared_dtype=True,
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_torch_cross_entropy(
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -36,7 +34,7 @@ def test_torch_cross_entropy(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
