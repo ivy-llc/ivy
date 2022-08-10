@@ -11,10 +11,11 @@ class ContainerWithSearching(ContainerBase):
     @staticmethod
     def static_argmax(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argmax. This method simply
@@ -49,10 +50,11 @@ class ContainerWithSearching(ContainerBase):
 
     def argmax(
         self: ivy.Container,
+        /,
+        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argmax. This method simply
@@ -89,7 +91,7 @@ class ContainerWithSearching(ContainerBase):
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argmin. This method simply
@@ -127,7 +129,7 @@ class ContainerWithSearching(ContainerBase):
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argmin. This method simply
@@ -206,7 +208,7 @@ class ContainerWithSearching(ContainerBase):
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.where. This method simply
@@ -241,7 +243,7 @@ class ContainerWithSearching(ContainerBase):
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.where. This method simply

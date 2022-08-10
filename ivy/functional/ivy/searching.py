@@ -20,9 +20,10 @@ from ivy.func_wrapper import (
 @handle_nestable
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, int]:
     """Returns the indices of the maximum values along a specified axis. When the
