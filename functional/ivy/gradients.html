@@ -77,8 +77,6 @@
 <li class="toctree-l2"><a class="reference internal" href="gradients/lars_update.html">lars_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/adam_update.html">adam_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/lamb_update.html">lamb_update</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradients/jac.html">jac</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradients/grad.html">grad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
@@ -351,21 +349,6 @@ extra function outputs</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.gradients.grad">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/gradients.html#grad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.grad" title="Permalink to this definition"></a></dt>
-<dd><p>Call function func, and return func’s gradients.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>func</strong> – Function for which we compute the gradients of the output with respect to xs
-input.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – the grad function</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.gradients.gradient_descent_update">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">gradient_descent_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/gradients.html#gradient_descent_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.gradient_descent_update" title="Permalink to this definition"></a></dt>
 <dd><p>Update weights ws of some function, given the derivatives of some cost c with
@@ -511,21 +494,6 @@ the same for general arrays. Default is False.</p></li>
 <span class="go">}</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.gradients.jac">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">jac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/gradients.html#jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.jac" title="Permalink to this definition"></a></dt>
-<dd><p>Call function func, and return func’s Jacobian partial derivatives.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>func</strong> – Function for which we compute the gradients of the output with respect to xs
-input.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – the Jacobian function</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
