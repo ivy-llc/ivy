@@ -435,7 +435,6 @@ def execute_with_gradients(func: Callable,
         a: ivy.array([4., 4., 4.]),
         b: ivy.array([20., 20., 20.])
     }
-    >>> ivy.unset_backend()
     """
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 

@@ -322,7 +322,6 @@ class ContainerWithGradients(ContainerBase):
         a gradients:  ivy.array([2., 2., 2.])
         b function output:  ivy.array([25., 25., 25.])
         b gradients:  ivy.array([10., 10., 10.])
-        >>> ivy.unset_backend()
         """
         return ContainerBase.multi_map_in_static_method(
             "execute_with_gradients",
@@ -399,7 +398,6 @@ class ContainerWithGradients(ContainerBase):
         a gradients:  ivy.array([2., 2., 2.])
         b function output:  ivy.array([25., 25., 25.])
         b gradients:  ivy.array([10., 10., 10.])
-        >>> ivy.unset_backend()
         """
         return self.static_execute_with_gradients(
             func,
