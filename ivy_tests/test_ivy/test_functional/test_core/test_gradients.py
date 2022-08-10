@@ -490,11 +490,3 @@ def test_lamb_update(
         decay_lambda=decay_lambda,
         stop_gradients=stop_gradients,
     )
-
-
-# Still to Add #
-# ---------------#
-
-# with_grads
-# set_with_grads
-# unset_with_grads
