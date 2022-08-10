@@ -1099,15 +1099,13 @@ def test_matrix_norm(
         keepdims=kd,
     )
 
-
 # matrix_rank
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes[1:],
-        min_num_dims=3,
-        max_num_dims=3,
-        min_dim_size=2,
-        max_dim_size=3,
+        min_num_dims=2,
+        min_value = -10000000000.0,
+        max_value= 10000000000.0
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
     rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
@@ -1138,6 +1136,7 @@ def test_matrix_rank(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_rank",
+        atol_=1.0
         x=np.asarray(x, dtype=dtype),
         rtol=1e-04,
     )
