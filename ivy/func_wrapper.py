@@ -160,6 +160,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
 
+
 def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -185,13 +186,15 @@ def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
         out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
         # check if out is None or out is not present in args and kwargs.
         out_args = out_arg_pos < len(args) and args[out_arg_pos] is None
-        out_kwargs = 'out' in kwargs and kwargs['out'] is None
-        if ret.shape == () and (out_args or out_kwargs): 
+        out_kwargs = "out" in kwargs and kwargs["out"] is None
+        if ret.shape == () and (out_args or out_kwargs):
             return float(ret)
         # convert to float from 0 dim
         return ret
+
     new_fn.zero_dim_arrays_to_float = True
     return new_fn
+
 
 def to_native_arrays_and_back(fn: Callable) -> Callable:
     """
