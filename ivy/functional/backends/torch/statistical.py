@@ -167,8 +167,9 @@ def std(
         )
 
     if keepdims:
-        shape = tuple([1 if ret.shape.numel()<=1 else ret.shape[0]] \
-            + [1 for i in range(len(x.shape) - 1)])
+        shape = [1 if ret.shape.numel() <= 1 else ret.shape[0]] \
+            + [1 for i in range(len(x.shape) - 1)]
+        shape = tuple(shape)
         ret = torch.reshape(ret, shape)
     return ret
 
@@ -245,8 +246,9 @@ def var(
         )
 
     if keepdims:
-        shape = tuple([1 if ret.shape.numel()<=1 else ret.shape[0]] \
-            + [1 for i in range(len(x.shape) - 1)])
+        shape = [1 if ret.shape.numel() <= 1 else ret.shape[0]] \
+            + [1 for i in range(len(x.shape) - 1)]
+        shape = tuple(shape)
         ret = torch.reshape(ret, shape)
     return ret
 
