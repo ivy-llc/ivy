@@ -2454,7 +2454,8 @@ def inplace_increment(
      With :code:`ivy.NativeArray` input:
 
      >>> x = ivy.native_array([10, 20, 30])
-     >>> y = ivy.inplace_increment(x, [1, 2, 3])
+     >>> val = ivy.native_array([1, 2, 3])
+     >>> y = ivy.inplace_increment(x, val)
      >>> print(y)
      ivy.array([11, 22, 33])
 
