@@ -55,14 +55,10 @@ def test_docstrings(backend):
         "det",
         "cumprod",
         "where",
-        "conv3d_transpose",
-        "depthwise_conv2d",
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = [
-        "depthwise_conv2d",
-    ]
+    skip_arr_cont = []
     currently_being_worked_on = []
 
     # comment out the line below in future to check for the functions in temp skip list
