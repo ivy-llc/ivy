@@ -24,8 +24,11 @@ def array_equal(x0: np.ndarray, x1: np.ndarray) -> bool:
     return np.array_equal(x0, x1)
 
 
-def to_numpy(x: np.ndarray) -> np.ndarray:
-    return x
+def to_numpy(x: np.ndarray, copy: bool = True) -> np.ndarray:
+    if copy:
+        return x.copy()
+    else:
+        return x
 
 
 def to_scalar(x: np.ndarray) -> Number:

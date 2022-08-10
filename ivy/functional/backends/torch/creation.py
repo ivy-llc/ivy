@@ -62,7 +62,7 @@ def arange(
         else:
             return torch.arange(start, stop, step=step, device=device, out=out)
     else:
-        dtype = as_native_dtype(default_dtype(dtype))
+        dtype = as_native_dtype(default_dtype(dtype=dtype))
         return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
 
 
@@ -93,7 +93,7 @@ def asarray(
     elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = as_native_dtype(as_ivy_dtype(object_in.dtype))
     else:
-        dtype = as_native_dtype((default_dtype(dtype, object_in)))
+        dtype = as_native_dtype((default_dtype(dtype=dtype, item=object_in)))
 
     if copy is True:
         return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
@@ -202,7 +202,7 @@ def full(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     if isinstance(shape, int):
         shape = (shape,)
@@ -442,3 +442,4 @@ def logspace(
 
 
 logspace.support_native_out = True
+logspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}
