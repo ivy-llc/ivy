@@ -20,9 +20,7 @@ import ivy.functional.backends.torch as ivy_torch
         shared_dtype=True,
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.cross_entropy"
-    ),
+    num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_torch_cross_entropy(
