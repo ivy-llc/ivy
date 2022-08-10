@@ -4,6 +4,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
 
 
@@ -101,11 +102,9 @@ def _permute_helper(draw):
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
-    data=st.data(),
 )
 def test_permute(
         *,
-        data,
         dtype_value,
         permutation,
         as_variable,
