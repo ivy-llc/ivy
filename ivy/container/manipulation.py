@@ -10,6 +10,7 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithManipulation(ContainerBase):
+    @staticmethod
     def static_concat(
         xs: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
@@ -902,9 +903,8 @@ class ContainerWithManipulation(ContainerBase):
         simply wraps the function, and so the docstring for ivy.stack
         also applies to this method with minimal changes.
         """
-        xs = xs.insert(0, self)
         return self.static_stack(
-            xs,
+            xs.insert(0, self),
             axis,
             key_chains,
             to_apply,
