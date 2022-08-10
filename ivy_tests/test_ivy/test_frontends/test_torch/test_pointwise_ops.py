@@ -252,7 +252,6 @@ def test_torch_acos(
 
 
 # sinh
-=======
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -289,11 +288,9 @@ def test_torch_sinh(
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
-
     
     
 # acosh
-
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -305,13 +302,12 @@ def test_torch_sinh(
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.sinh"
+        fn_name="functional.frontends.torch.acosh"
     ),
     native_array=st.booleans(),
 )
 
 def test_torch_acosh(
-
     dtype_and_x,
     as_variable,
     with_out,
