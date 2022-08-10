@@ -14,13 +14,18 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+
       - name: Setup Python
-      - uses: actions/setup-python@v3
+        uses: actions/setup-python@v3
+
+      - name: Install Libraries
       - uses: BSFishy/pip-action@v1
         with:
            packages: |
              emoji
              pandas
+
+      - name: Run Dashboard file
         env:
           WORKING_DIR: ${GITHUB_WORKSPACE}
       - run: |

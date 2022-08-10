@@ -124,7 +124,7 @@ def get_matrix_job_data():
 
 
 def main():
-    path = sys.argv([1])
+    path = sys.argv[1]
     ivy_modules = get_matrix_job_data()
     for i, module in enumerate(ivy_modules):
         module_df = get_DataFrame(module)
