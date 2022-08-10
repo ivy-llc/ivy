@@ -30,7 +30,7 @@ from .linear_functions import *
 from . import locally_disabling_gradient_computation
 from .locally_disabling_gradient_computation import *
 from . import loss_functions
-from .loss_functions import *
+from ivy.functional.frontends.torch.loss_functions import *
 from . import miscellaneous_ops
 from .miscellaneous_ops import *
 from . import pooling_functions
