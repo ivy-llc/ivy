@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-python@v3
 
       - name: Install Libraries
-      - uses: BSFishy/pip-action@v1
+        uses: BSFishy/pip-action@v1
         with:
            packages: |
              emoji
@@ -27,7 +27,8 @@ jobs:
 
       - name: Run Dashboard file
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WORKING_DIR: ${GITHUB_WORKSPACE}
-      - run: |
+        run: |
             cd ivy
-            python3 dashboard.py $WORKING_DIR
+            python3 dashboard.py "$WORKING_DIR" "$GITHUB_TOKEN"
