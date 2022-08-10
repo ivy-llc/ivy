@@ -290,6 +290,41 @@
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
+<div class="viewcode-block" id="from_zero_dim_arrays_to_float"><a class="viewcode-back" href="../../func_wrapper/from_zero_dim_arrays_to_float.html#ivy.func_wrapper.from_zero_dim_arrays_to_float">[docs]</a><span class="k">def</span> <span class="nf">from_zero_dim_arrays_to_float</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calls the function, and then converts all 0 dimensional array instances in</span>
+<span class="sd">        the function to float numbers if out argument is not provided.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args</span>
+<span class="sd">            The arguments to be passed to the function.</span>
+
+<span class="sd">        kwargs</span>
+<span class="sd">            The keyword arguments to be passed to the function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The return of the function, with 0 dimensional arrays as float numbers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># call unmodified function</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># get out arg index</span>
+        <span class="n">out_arg_pos</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arg_info</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)[</span><span class="s2">&quot;idx&quot;</span><span class="p">]</span>
+        <span class="c1"># check if out is None or out is not present in args and kwargs.</span>
+        <span class="n">out_args</span> <span class="o">=</span> <span class="n">out_arg_pos</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="n">out_arg_pos</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="n">out_kwargs</span> <span class="o">=</span> <span class="s2">&quot;out&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;out&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">out_args</span> <span class="ow">or</span> <span class="n">out_kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        <span class="c1"># convert to float from 0 dim</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="n">new_fn</span><span class="o">.</span><span class="n">zero_dim_arrays_to_float</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">new_fn</span></div>
+
+
 <div class="viewcode-block" id="to_native_arrays_and_back"><a class="viewcode-back" href="../../func_wrapper/to_native_arrays_and_back.html#ivy.func_wrapper.to_native_arrays_and_back">[docs]</a><span class="k">def</span> <span class="nf">to_native_arrays_and_back</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances</span>
