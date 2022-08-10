@@ -1675,3 +1675,56 @@ class ContainerWithGeneral(ContainerBase):
             map_sequences,
             out=out,
         )
+
+    def inplace_update(
+        self, dict_in: Union[ivy.Container, dict], **config
+    ) -> ivy.Container:
+        """Update the contents of this container inplace, using either a new dict or
+        container.
+
+        Parameters
+        ----------
+        dict_in
+            New dict or container to update the current container inplace with.
+        **config
+
+        """
+        # update config
+        self.update_config(**config)
+
+        # update container values inplace
+        if dict_in is None:
+            return
+        dict_types = tuple([dict] + ivy.container_types())
+        if isinstance(dict_in, dict_types):
+            dict_in = dict_in
+        elif isinstance(dict_in, tuple(self._types_to_iteratively_nest)):
+            dict_in = dict(
+                zip(
+                    [
+                        "it_{}".format(str(i).zfill(len(str(len(dict_in)))))
+                        for i in range(len(dict_in))
+                    ],
+                    dict_in,
+                )
+            )
+        else:
+            raise Exception("invalid input {}".format(dict_in))
+        items = sorted(dict_in.items()) if self._alphabetical_keys else dict_in.items()
+        for key, value in items:
+            if (
+                isinstance(value, dict_types)
+                and (
+                    not isinstance(value, ivy.Container)
+                    or self._rebuild_child_containers
+                )
+            ) or isinstance(value, tuple(self._types_to_iteratively_nest)):
+                self[key] = ivy.Container(value, **self._config)
+            else:
+                if self.get(key) is None:
+                    self[key] = value
+                else:
+                    if ivy.is_ivy_array(self[key]):
+                        self[key].data = value.data
+                    else:
+                        self[key] = value
