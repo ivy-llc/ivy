@@ -405,17 +405,6 @@ def execute_with_gradients(func: Callable,
     >>> print("grads: ", grads)
     function output:  ivy.array([100., 200., 500.])
     grads:  ivy.array([100., 100., 100.])
-
-    >>> z  = ivy.variable(ivy.array([2.,1.,10.]))
-    >>> func = lambda x :ivy.matmul(z,x)
-    >>> xs = ivy.array([1.,2.,5.])
-    >>> results = ivy.execute_with_gradients(func, \
-                xs) 
-    >>> func_output,grads = results
-    >>> print("function output: ", func_output)
-    >>> print("grads: ", grads)
-    function output:  ivy.array(54.)
-    grads:  ivy.array([ 2.,  1., 10.])
     
     With :code:`ivy.NativeArray` input:
 
@@ -446,6 +435,7 @@ def execute_with_gradients(func: Callable,
         a: ivy.array([4., 4., 4.]),
         b: ivy.array([20., 20., 20.])
     }
+    >>> ivy.unset_backend()
     """
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
