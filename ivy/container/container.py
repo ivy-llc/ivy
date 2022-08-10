@@ -342,8 +342,8 @@ class Container(
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned array must have
-            a data type determined by :ref:`type-promotion`.
+            a container containing the element-wise results. The returned array 
+            must have a data type determined by :ref:`type-promotion`.
 
         Examples
         --------
@@ -386,7 +386,8 @@ class Container(
         """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
-                lambda xs, _: operator.rshift(xs[0], xs[1]), [self, other], map_nests=True
+                lambda xs, _: operator.rshift(xs[0], xs[1]), 
+                [self, other], map_nests=True
             )
         return self.map(lambda x, kc: operator.rshift(x, other), map_sequences=True)
 
@@ -408,8 +409,8 @@ class Container(
         Returns
         -------
         ret
-            an array containing the element-wise results. The returned array must have
-            a data type determined by :ref:`type-promotion`.
+            an container containing the element-wise results. The returned array 
+            must have a data type determined by :ref:`type-promotion`.
 
         Examples
         --------
