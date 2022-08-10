@@ -127,13 +127,13 @@ def test_random_normal(
 @st.composite
 def _pop_size_num_samples_replace_n_probs(draw):
     prob_dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
-    batch_size = draw(st.integers(1, 5))
-    population_size = draw(st.integers(1, 20))
+    batch_size = draw(helpers.ints(min_value=1, max_value=5))
+    population_size = draw(helpers.ints(min_value=1, max_value=20))
     replace = draw(st.booleans())
     if replace:
-        num_samples = draw(st.integers(1, 20))
+        num_samples = draw(helpers.ints(min_value=1, max_value=20))
     else:
-        num_samples = draw(st.integers(1, population_size))
+        num_samples = draw(helpers.ints(min_value=1, max_value=population_size))
     probs = draw(
         helpers.array_values(
             dtype=prob_dtype,
@@ -257,7 +257,7 @@ def test_randint(
 
 # seed
 @given(
-    seed_val=st.integers(min_value=0, max_value=2147483647),
+    seed_val=helpers.ints(min_value=0, max_value=2147483647),
 )
 def test_seed(seed_val):
     # smoke test
