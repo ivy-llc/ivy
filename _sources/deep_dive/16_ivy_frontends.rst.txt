@@ -28,11 +28,8 @@ transpilations, as explained `here`_.
 
 Let's start with some examples to have a better idea on Ivy Frontends!
 
-Basic
------
-
-**NOTE:** Type hints, docstrings and examples are not required when working on
-frontend methods.
+Examples
+--------
 
 **Jax**
 
@@ -225,57 +222,7 @@ according to the `torch`_ directory. By referring to the `torch.tan`_ documentat
 we code its positional and keyword arguments accordingly, then return with
 :code:`ivy.tan` to link the operation to the backend framework.
 
-Compositions
-------------
-
-Sometimes, certain frontend methods meet special criteria:
-
-* it is unique to a particular frontend framework, and does not exist in the other
-  frontends, or
-* it has extra features than the original backend method
-
-In such cases, compositions are required to recover the original behaviours.
-
-**Examples**
-
-In the native TensorFlow method :code:`tf.cumprod()`, it supports an extra
-argument - :code:`reverse`, which returns a flipped result if True. However,
-the backend :code:`ivy.cumprod()` does not come with this argument, thus not
-supporting this behaviour by default.
-
-**Ivy**
-
-.. code-block:: python
-
-    # in ivy/functional/ivy/general.py
-    def cumprod(
-        x: Union[ivy.Array, ivy.NativeArray],
-        axis: int = 0,
-        exclusive: Optional[bool] = False,
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
-        return current_backend(x).cumprod(x, axis, exclusive, out=out)
-
-To enable this behaviour, we will need to incorporate methods that resemble the
-required behaviour. For example, we can reverse the result by calling
-:code:`ivy.flip()` after running :code:`ivy.cumprod()`.
-
-**TensorFlow Frontend**
-
-.. code-block:: python
-
-    # ivy/functional/frontends/tensorflow/math/general.py
-    def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
-        ret = ivy.cumprod(x, axis, exclusive)
-        if reverse:
-            return ivy.flip(ret, axis)
-        return ret
-
-Through compositions, we can easily meet the desired objectives.
-
-Further Examples
-----------------
+**More Examples**
 
 Additional examples for each framework on concatenation is added for better understanding!
 

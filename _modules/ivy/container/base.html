@@ -1754,6 +1754,274 @@
             <span class="p">)</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="ContainerBase.minimum"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.minimum">[docs]</a>    <span class="k">def</span> <span class="nf">minimum</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x2</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes the elementwise minimum between this container and another container</span>
+<span class="sd">        or number.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x2</span>
+<span class="sd">            The other container or number to compute the minimum against.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            Container object with all sub-arrays having the minimum values computed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">is_container</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_inplace</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x2</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">is_container</span> <span class="k">else</span> <span class="n">x2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                <span class="n">key_chains</span><span class="p">,</span>
+                <span class="n">to_apply</span><span class="p">,</span>
+                <span class="n">prune_unapplied</span><span class="p">,</span>
+                <span class="n">map_sequences</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerBase.maximum"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.maximum">[docs]</a>    <span class="k">def</span> <span class="nf">maximum</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x2</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes the elementwise maximum between this container and another container</span>
+<span class="sd">        or number.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other</span>
+<span class="sd">            The other container or number to compute the maximum against.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            Container object with all sub-arrays having the maximum values computed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">is_container</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_inplace</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x2</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">is_container</span> <span class="k">else</span> <span class="n">x2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                <span class="n">key_chains</span><span class="p">,</span>
+                <span class="n">to_apply</span><span class="p">,</span>
+                <span class="n">prune_unapplied</span><span class="p">,</span>
+                <span class="n">map_sequences</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerBase.clip"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.clip">[docs]</a>    <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x_min</span><span class="p">,</span>
+        <span class="n">x_max</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes the elementwise clipped values between this container and clip_min</span>
+<span class="sd">        and clip_max containers or numbers.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_min</span>
+<span class="sd">            The minimum container or number to clip against.</span>
+<span class="sd">        x_max</span>
+<span class="sd">            The maximum container or number to clip against.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            Container object with all sub-arrays having the clipped values returned.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_is_container</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
+        <span class="n">max_is_container</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_inplace</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span>
+                    <span class="n">x_min</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">min_is_container</span> <span class="k">else</span> <span class="n">x_min</span><span class="p">,</span>
+                    <span class="n">x_max</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">max_is_container</span> <span class="k">else</span> <span class="n">x_max</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                <span class="n">key_chains</span><span class="p">,</span>
+                <span class="n">to_apply</span><span class="p">,</span>
+                <span class="n">prune_unapplied</span><span class="p">,</span>
+                <span class="n">map_sequences</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerBase.vector_norm"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.vector_norm">[docs]</a>    <span class="k">def</span> <span class="nf">vector_norm</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">ord</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">global_norm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute vector p-norm for each array in the container.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ord</span>
+<span class="sd">            Order of the norm. Default is 2.</span>
+<span class="sd">        axis</span>
+<span class="sd">            If axis is an integer, it specifies the axis of x along which to compute the</span>
+<span class="sd">            vector norms. Default is None, in which case the flattened array is</span>
+<span class="sd">            considered.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            If this is set to True, the axes which are normed over are left in the</span>
+<span class="sd">            result as dimensions with size one. With this option the result will</span>
+<span class="sd">            broadcast correctly against the original x. Default is False.</span>
+<span class="sd">        global_norm</span>
+<span class="sd">            Whether to compute the norm across all the concattenated sub-arrays.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            Container object with the vector norms for each sub-array returned.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p_is_container</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">ord</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">global_norm</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p_is_container</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;global_norm can only be computed for scalar p argument,&quot;</span>
+                    <span class="s2">&quot;but found </span><span class="si">{}</span><span class="s2"> of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">ord</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="nb">ord</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">v</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                        <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="nb">ord</span><span class="p">)</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+                <span class="p">]</span>
+            <span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="nb">ord</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">,</span> <span class="nb">ord</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">p_is_container</span> <span class="k">else</span> <span class="nb">ord</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerBase.matrix_norm"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.matrix_norm">[docs]</a>    <span class="k">def</span> <span class="nf">matrix_norm</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">ord</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute matrix p-norm for each array in the container.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        p</span>
+<span class="sd">            Order of the norm. Default is 2.</span>
+<span class="sd">        axis</span>
+<span class="sd">            If axis is an integer, it specifies the axis of x along which to compute the</span>
+<span class="sd">            matrix norms. Default is None, in which case the flattened array is</span>
+<span class="sd">            considered.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            If this is set to True, the axes which are normed over are left in the</span>
+<span class="sd">            result as dimensions with size one. With this option the result will</span>
+<span class="sd">            broadcast correctly against the original x. Default is False.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">        ord</span>
+<span class="sd">            Default value = 2)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            Container object with the matrix norms for each sub-array returned.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">matrix_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">ord</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
 <div class="viewcode-block" id="ContainerBase.slice_via_key"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.slice_via_key">[docs]</a>    <span class="k">def</span> <span class="nf">slice_via_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get slice of container, based on key.</span>
 
@@ -2050,11 +2318,11 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filepath</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_data_file</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_jsonable</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">json_data_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.to_nested_list"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.to_nested_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_nested_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.to_list"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.to_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">return_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-                <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">to_nested_list</span><span class="p">())</span>
+                <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
             <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;_f&quot;</span><span class="p">:</span>
                 <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">return_list</span></div>

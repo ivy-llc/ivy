@@ -360,7 +360,7 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>We use <code class="code docutils literal notranslate"><span class="pre">ivy_torch.valid_float_dtypes</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">available_dtypes</span></code>, these are valid <code class="code docutils literal notranslate"><span class="pre">float</span></code> data types specifically for PyTorch.</p></li>
+<li><p>We use <code class="code docutils literal notranslate"><span class="pre">ivy_tf.valid_float_dtypes</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">available_dtypes</span></code>, these are valid <code class="code docutils literal notranslate"><span class="pre">float</span></code> data types specifically for TensorFlow.</p></li>
 <li><p>Torch accepts both Torch and NumPy data-types so we create a <code class="code docutils literal notranslate"><span class="pre">tuple</span></code> of the two as <code class="code docutils literal notranslate"><span class="pre">available_dtypes</span></code>.</p></li>
 </ul>
 </section>
@@ -389,9 +389,9 @@ This function requires us to create extra methods for generating <code class="co
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">_dtypes</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_uint_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-    <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
 
 <span class="nd">@given</span><span class="p">(</span>

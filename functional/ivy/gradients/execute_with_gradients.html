@@ -21,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="value_and_grad" href="value_and_grad.html" />
+    <link rel="next" title="ivy.execute_with_gradients" href="execute_with_gradients/execute_with_gradients_functional.html" />
     <link rel="prev" title="ivy.Container.stop_gradient" href="stop_gradient/stop_gradient_container.html" /> 
 </head>
 
@@ -69,7 +69,11 @@
 <li class="toctree-l2"><a class="reference internal" href="is_variable.html">is_variable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_data.html">variable_data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stop_gradient.html">stop_gradient</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">execute_with_gradients</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">execute_with_gradients</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="execute_with_gradients/execute_with_gradients_functional.html">ivy.execute_with_gradients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="execute_with_gradients/static_execute_with_gradients_container.html">ivy.Container.static_execute_with_gradients</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="value_and_grad.html">value_and_grad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adam_step.html">adam_step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optimizer_update.html">optimizer_update</a></li>
@@ -151,7 +155,7 @@
 <h1>execute_with_gradients<a class="headerlink" href="#execute-with-gradients" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.gradients.execute_with_gradients">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">execute_with_gradients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retain_grads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/gradients.html#execute_with_gradients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.execute_with_gradients" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">execute_with_gradients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retain_grads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/gradients.html#execute_with_gradients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.execute_with_gradients" title="Permalink to this definition"></a></dt>
 <dd><p>Call function func with input of xs variables, and return func first output y,
 the gradients [dy/dx for x in xs], and any other function outputs after the returned
 y value.</p>
@@ -171,11 +175,18 @@ extra function outputs</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_execute_with_gradients">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_execute_with_gradients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retain_grads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/gradients.html#ContainerWithGradients.static_execute_with_gradients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_execute_with_gradients" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
 
@@ -183,7 +194,7 @@ extra function outputs</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="stop_gradient/stop_gradient_container.html" class="btn btn-neutral float-left" title="ivy.Container.stop_gradient" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="value_and_grad.html" class="btn btn-neutral float-right" title="value_and_grad" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="execute_with_gradients/execute_with_gradients_functional.html" class="btn btn-neutral float-right" title="ivy.execute_with_gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
