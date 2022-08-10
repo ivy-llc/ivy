@@ -8,11 +8,16 @@ import pandas as pd
 url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master"
 headers = {
     "Accept": "application/vnd.github+json",
-    "Authorization": "Bearer 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",
+    "Authorization": "Bearer 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",
 }
 functional_nn_dict = dict()
 functional_core_dict = dict()
 stateful_dict = dict()
+output_files: dict = {
+    1: "functional_core_dashboard",
+    2: "functional_nn_dashboard",
+    3: "stateful_dashboard",
+}
 results = []
 
 
@@ -36,8 +41,8 @@ def workflow_results():
     for info in output["workflow_runs"]:
         if info["name"] not in (
             "test-core-ivy",
-            ("test-stateful-ivy"),
-            ("test-nn-ivy"),
+            "test-stateful-ivy",
+            "test-nn-ivy",
         ):
             continue
         results.append(
