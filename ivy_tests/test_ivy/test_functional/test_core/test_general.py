@@ -1399,6 +1399,15 @@ def test_inplace_increment(x_n_inc, tensor_fn, device, call):
     pytest.skip()
 
 
+@pytest.mark.parametrize("framework_str", ["numpy", "mxnet", "torch", "tensorflow", "jax"])
+def test_current_framework_str(framework_str):
+    ivy.set_backend(framework_str)
+    cur_fw = ivy.current_backend_str()
+    assert cur_fw in ["numpy", "mxnet", "torch", "tensorflow", "jax"]
+    assert cur_fw == framework_str
+    pytest.skip()
+
+
 # Still to Add #
 # ---------------#
 
