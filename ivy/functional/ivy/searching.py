@@ -219,7 +219,7 @@ def argmin(
 
 @to_native_arrays_and_back
 @handle_nestable
-def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
+def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
     Parameters

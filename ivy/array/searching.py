@@ -86,7 +86,7 @@ class ArrayWithSearching(abc.ABC):
         """
         return ivy.argmin(self._data, axis=axis, keepdims=keepdims, out=out)
 
-    def nonzero(self: ivy.Array):
+    def nonzero(self: ivy.Array, /) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.nonzero. This method simply
         wraps the function, and so the docstring for ivy.nonzero also applies
