@@ -13,7 +13,7 @@ from ivy_models.transformers.perceiver_io import PerceiverIOSpec, PerceiverIO
 # --------#
 
 def test_feedforward(device, f, call):
-    ivy.seed(0)
+    ivy.seed(seed_value=0)
     feedforward = FeedForward(4, device=device)
     x = ivy.random_uniform(shape=(1, 3, 4), device=device)
     ret = feedforward(x)
@@ -21,7 +21,7 @@ def test_feedforward(device, f, call):
 
 
 def test_prenorm(device, f, call):
-    ivy.seed(0)
+    ivy.seed(seed_value=0)
     att = ivy.MultiHeadAttention(4, device=device)
     prenorm = PreNorm(4, att, device=device)
     x = ivy.random_uniform(shape=(1, 3, 4), device=device)
