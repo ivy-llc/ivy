@@ -38,7 +38,7 @@ def test_jax_nn_relu(
 
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    alpha=st.sampled_from(ivy_jax.valid_numeric_dtypes),
+    negative_slope=st.sampled_from(ivy_jax.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.leaky_relu"
@@ -47,7 +47,7 @@ def test_jax_nn_relu(
 )
 def test_jax_nn_leaky_relu(
     dtype_and_x,
-    alpha,
+    negative_slope,
     as_variable,
     num_positional_args,
     native_array,
