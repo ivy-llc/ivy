@@ -306,7 +306,6 @@ def test_torch_sinh(
     ),
     native_array=st.booleans(),
 )
-
 def test_torch_acosh(
     dtype_and_x,
     as_variable,
@@ -342,12 +341,6 @@ def test_torch_acosh(
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.arccos"
-    ),
-    native_array=st.booleans(),
-)
-def test_torch_arccos(
-
         fn_name="functional.frontends.torch.arccos"
     ),
     native_array=st.booleans(),
