@@ -16,6 +16,7 @@ Func wrapper
    func_wrapper/inputs_to_native_arrays.rst
    func_wrapper/inputs_to_ivy_arrays.rst
    func_wrapper/outputs_to_ivy_arrays.rst
+   func_wrapper/from_zero_dim_arrays_to_float.rst
    func_wrapper/to_native_arrays_and_back.rst
    func_wrapper/infer_dtype.rst
    func_wrapper/infer_device.rst

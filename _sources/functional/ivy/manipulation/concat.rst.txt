@@ -6,8 +6,6 @@ concat
 .. autofunction:: ivy.array.array_methods.concat
 
 .. autofunction:: ivy.container.container_methods.concat
-
-.. autofunction:: ivy.container.container_methods.static_concat
 |
 | **Supported Frameworks:**
 
@@ -37,5 +35,4 @@ concat
    concat/concat_functional.rst
    concat/concat_array.rst
    concat/concat_container.rst
-   concat/static_concat_container.rst
 
