@@ -46,3 +46,10 @@ def logical_xor(x, y, name='LogicalXor'):
 
 
 logical_xor.supported_dtypes = {"torch": ("bool", "bool")}
+
+
+def logical_and(x, y, name='LogicalAnd'):
+    return ivy.logical_and(x, y)
+
+
+logical_and.supported_dtypes = {"torch": ("bool", "bool")}
