@@ -39,3 +39,10 @@ def sqrt(x):
 
 
 sqrt.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def square(x):
+    return ivy.square(x)
+
+
+square.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
