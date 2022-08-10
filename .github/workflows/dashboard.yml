@@ -23,6 +23,6 @@ jobs:
              pandas
         env:
           WORKING_DIR: ${GITHUB_WORKSPACE}
-        run: |
+      - run: |
             cd ivy
             python3 dashboard.py $WORKING_DIR
