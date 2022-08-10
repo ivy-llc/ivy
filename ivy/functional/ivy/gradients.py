@@ -400,11 +400,9 @@ def execute_with_gradients(func: Callable,
     >>> xs = ivy.array([1.,2.,5.])
     >>> results = ivy.execute_with_gradients(func, \
         xs)
-    >>> func_output,grads = results
-    >>> print("function output: ", func_output)
-    >>> print("grads: ", grads)
-    function output:  ivy.array([100., 200., 500.])
-    grads:  ivy.array([100., 100., 100.])
+    >>> print(results)
+    (ivy.array([100., 200., 500.]),
+     ivy.array([100., 100., 100.]))
     
     With :code:`ivy.NativeArray` input:
 
@@ -412,29 +410,23 @@ def execute_with_gradients(func: Callable,
     >>> xs = ivy.native_array([1.,2.,5.])
     >>> results = ivy.execute_with_gradients(func, \
         xs)
-    >>> func_output,grads = results
-    >>> print("function output: ", func_output)
-    >>> print("grads: ", grads)
-    function output:  ivy.array([ 1.,  4., 25.])
-    grads:  ivy.array([ 2.,  4., 10.])
+    >>> print(results)
+    (ivy.array([ 1.,  4., 25.]),
+     ivy.array([ 2.,  4., 10.]))
 
     With :code:`ivy.Container` input:
 
     >>> func = lambda x :2*x**2
     >>> xs = ivy.Container(a=ivy.array([1.,1.,1.]), \
         b =ivy.array([5.,5.,5.]))
-    >>> func_outputs,grads = ivy.execute_with_gradients(func, \
-                xs)
-    >>> print("function outputs: ", func_outputs)
-    >>> print("gradients: ",grads)
-    function outputs:  {
-        a: ivy.array([2., 2., 2.]),
-        b: ivy.array([50., 50., 50.])
-    }
-    gradients:  {
-        a: ivy.array([4., 4., 4.]),
-        b: ivy.array([20., 20., 20.])
-    }
+    >>> results = ivy.execute_with_gradients(func,xs)
+    >>> print(results)
+    ({
+    a: ivy.array([2., 2., 2.]),
+    b: ivy.array([50., 50., 50.])},
+    {a: ivy.array([4., 4., 4.]),
+    b: ivy.array([20., 20., 20.])
+    })
     """
     return current_backend(None).execute_with_gradients(func, xs, retain_grads)
 
