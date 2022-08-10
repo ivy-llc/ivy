@@ -15,34 +15,31 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
-def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(st.integers(1, 4), key="num_dims"))
-    num_arrays = draw(st.shared(st.integers(2, 4), key="num_arrays"))
-    common_shape = draw(
-        helpers.lists(
-            arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
-        )
-    )
-    unique_idx = draw(helpers.integers(min_value=0, max_value=num_dims - 1))
-    unique_dims = draw(
-        helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
-    )
-    xs = list()
-    input_dtypes = draw(helpers.array_dtypes())
-    for ud, dt in zip(unique_dims, input_dtypes):
-        x = draw(
-            helpers.array_values(
-                shape=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:],
-                dtype=dt,
+def _concat_helper(draw):
+    dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    print(shape, axis)
+    num_arrays = draw(st.integers(1, 5))
+    arrays = []
+    dtypes = [dtype for _ in range(num_arrays)]
+    for _ in range(num_arrays):
+        diff_dim_size = draw(st.integers(0, 10))
+        array_shape = list(shape)
+        array_shape[axis] = diff_dim_size
+
+        _, array = draw(
+            helpers.dtype_and_values(
+                available_dtypes=ivy_np.valid_dtypes, shape=tuple(array_shape)
             )
         )
-        xs.append(x)
-    return xs, input_dtypes, unique_idx
+        arrays.append(np.asarray(array, dtype=dtype))
+    return dtypes, arrays, axis
 
 
 # concat
 @given(
-    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    dtypes_arrays_axis=_concat_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="concat"),
     data=st.data(),
 )
@@ -50,7 +47,7 @@ def _arrays_idx_n_dtypes(draw):
 def test_concat(
     *,
     data,
-    xs_n_input_dtypes_n_unique_idx,
+    dtypes_arrays_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -59,10 +56,10 @@ def test_concat(
     instance_method,
     fw,
 ):
-    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    dtypes, arrays, axis = dtypes_arrays_axis
+
     helpers.test_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=1,
@@ -71,8 +68,8 @@ def test_concat(
         instance_method=instance_method,
         fw=fw,
         fn_name="concat",
-        xs=xs,
-        axis=unique_idx,
+        xs=arrays,
+        axis=axis,
     )
 
 
@@ -407,7 +404,6 @@ def test_squeeze(
 
 @st.composite
 def _stack_helper(draw):
-    print("Starting stack helper")
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="values_shape"))
     num_arrays = draw(st.shared(st.integers(1, 3), key="num_arrays"))
     dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
@@ -417,8 +413,6 @@ def _stack_helper(draw):
     for _ in range(num_arrays):
         _, array = draw(helpers.dtype_and_values(available_dtypes=[dtype], shape=shape))
         arrays.append(np.asarray(array, dtype=dtype))
-
-    print("Stack Helper Finished")
     return dtypes, arrays
 
 
@@ -464,7 +458,7 @@ def test_stack(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,

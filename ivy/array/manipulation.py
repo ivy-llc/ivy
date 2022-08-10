@@ -238,11 +238,11 @@ class ArrayWithManipulation(abc.ABC):
 
     def stack(
         self: ivy.Array,
+        /,
         arrays: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray]],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
-        /,
         *,
         axis: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
