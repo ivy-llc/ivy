@@ -345,11 +345,11 @@
             <span class="n">v</span><span class="p">,</span>
             <span class="n">grads</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">(),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
+            <span class="n">stop_gradients</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">,</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="SGD.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/SGD.html#ivy.stateful.optimizers.SGD.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">container</span><span class="p">):</span>
+<div class="viewcode-block" id="SGD.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/SGD.html#ivy.stateful.optimizers.SGD.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set state of the optimizer.</span>
 
@@ -424,12 +424,12 @@
             <span class="n">v</span><span class="p">,</span>
             <span class="n">grads</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">(),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_decay_lambda</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">,</span>
+            <span class="n">decay_lambda</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_decay_lambda</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
+            <span class="n">stop_gradients</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">,</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="LARS.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/LARS.html#ivy.stateful.optimizers.LARS.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">container</span><span class="p">):</span>
+<div class="viewcode-block" id="LARS.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/LARS.html#ivy.stateful.optimizers.LARS.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set state of the optimizer.</span>
 
@@ -529,15 +529,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">,</span>
+            <span class="n">beta1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span>
+            <span class="n">beta2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span>
+            <span class="n">epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
+            <span class="n">stop_gradients</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">new_v</span>
 
-<div class="viewcode-block" id="Adam.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/Adam.html#ivy.stateful.optimizers.Adam.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">container</span><span class="p">):</span>
+<div class="viewcode-block" id="Adam.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/Adam.html#ivy.stateful.optimizers.Adam.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set state of the optimizer.</span>
 
@@ -615,7 +615,7 @@
 
     <span class="c1"># Custom Step</span>
 
-    <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">container</span><span class="p">,</span> <span class="n">grads</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">container</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">grads</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update nested variables container v by LAMB update step,</span>
 <span class="sd">        using nested grads container.</span>
@@ -644,17 +644,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_max_trust_ratio</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_decay_lambda</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">,</span>
+            <span class="n">beta1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span>
+            <span class="n">beta2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span>
+            <span class="n">epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
+            <span class="n">max_trust_ratio</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_trust_ratio</span><span class="p">,</span>
+            <span class="n">decay_lambda</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_decay_lambda</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
+            <span class="n">stop_gradients</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">new_v</span>
 
-<div class="viewcode-block" id="LAMB.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/LAMB.html#ivy.stateful.optimizers.LAMB.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">container</span><span class="p">):</span>
+<div class="viewcode-block" id="LAMB.set_state"><a class="viewcode-back" href="../../../stateful/optimizers/LAMB.html#ivy.stateful.optimizers.LAMB.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set state of the optimizer.</span>
 
 <span class="sd">        Parameters</span>
