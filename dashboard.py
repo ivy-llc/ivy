@@ -1,4 +1,3 @@
-import sys
 import requests
 import json
 import emoji
@@ -78,11 +77,14 @@ def get_matrix_job_data():
                     functional_core_dict[submodule].append(
                         (backend, emoji.emojize(":x:", language="alias"))
                     )
-                else:
+                elif info["conclusion"] == "success":
                     functional_core_dict[submodule].append(
                         (backend, emoji.emojize(":white_check_mark:", language="alias"))
                     )
-
+                else:
+                    functional_core_dict[submodule].append(
+                        (backend, emoji.emojize(":clock9:", language="alias"))
+                    )
             elif name == "test-nn-ivy":
                 if submodule not in functional_nn_dict:
                     functional_nn_dict[submodule] = []
@@ -90,9 +92,13 @@ def get_matrix_job_data():
                     functional_nn_dict[submodule].append(
                         (backend, emoji.emojize(":x:", language="alias"))
                     )
-                else:
+                elif info["conclusion"] == "success":
                     functional_nn_dict[submodule].append(
                         (backend, emoji.emojize(":white_check_mark:", language="alias"))
+                    )
+                else:
+                    functional_nn_dict[submodule].append(
+                        (backend, emoji.emojize(":clock9:", language="alias"))
                     )
 
             elif name == "test-stateful-ivy":
@@ -102,20 +108,23 @@ def get_matrix_job_data():
                     stateful_dict[submodule].append(
                         (backend, emoji.emojize(":x:", language="alias"))
                     )
-                else:
+                elif info["conclusion"] == "success":
                     stateful_dict[submodule].append(
                         (backend, emoji.emojize(":white_check_mark:", language="alias"))
+                    )
+                else:
+                    stateful_dict[submodule].append(
+                        (backend, emoji.emojize(":clock9:", language="alias"))
                     )
 
     return (functional_core_dict, functional_nn_dict, stateful_dict)
 
 
 def main():
-    path = sys.argv[1]
     ivy_modules = get_matrix_job_data()
     for i, module in enumerate(ivy_modules):
         module_df = get_DataFrame(module)
-        module_df.to_html(f"{path}/{i}.html")
+        module_df.to_html(f"/Users/aarsh/Desktop/{i}.html")
 
 
 if __name__ == "__main__":
