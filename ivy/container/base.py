@@ -1519,7 +1519,13 @@ class ContainerBase(dict, abc.ABC):
             ) or isinstance(value, tuple(self._types_to_iteratively_nest)):
                 self[key] = ivy.Container(value, **self._config)
             else:
-                self[key] = value
+                if self.get(key) is None:
+                    self[key] = value
+                else:
+                    if ivy.is_ivy_array(self[key]):
+                        self[key].data = value.data
+                    else:
+                        self[key] = value
 
     def set_framework(self, ivyh):
         """Update the framework to use for the container.
