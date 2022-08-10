@@ -69,7 +69,7 @@ def test_native_array(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        safety_factor=0.5,
+        large_value_safety_factor=2,
     ),
     num=st.integers(1, 5),
     axis=st.none(),
@@ -120,7 +120,7 @@ def test_linspace(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        safety_factor=0.5,
+        large_value_safety_factor=2,
     ),
     num=st.integers(1, 5),
     base=st.floats(min_value=0.1, max_value=10.0),
@@ -282,7 +282,7 @@ def test_empty(
     if not ivy.exists(ret):
         return
     res, res_np = ret
-    ivy.set_backend('tensorflow')
+    ivy.set_backend("tensorflow")
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
     ivy.unset_backend
@@ -332,7 +332,7 @@ def test_empty_like(
     if not ivy.exists(ret):
         return
     res, res_np = ret
-    ivy.set_backend('tensorflow')
+    ivy.set_backend("tensorflow")
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
     ivy.unset_backend
