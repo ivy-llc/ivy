@@ -1051,7 +1051,7 @@ def _is_valid_devices_attributes(fn: Callable) -> bool:
 
 
 @handle_nestable
-def function_unsupported_devices(fn: Callable) -> Tuple:
+def function_unsupported_devices(fn: Callable, /) -> Tuple:
     """Returns the unsupported devices of the current backend's function.
 
     Parameters
@@ -1084,7 +1084,7 @@ def function_unsupported_devices(fn: Callable) -> Tuple:
 
 
 @handle_nestable
-def function_supported_devices(fn: Callable) -> Tuple:
+def function_supported_devices(fn: Callable, /) -> Tuple:
     """Returns the supported devices of the current backend's function.
 
     Parameters
