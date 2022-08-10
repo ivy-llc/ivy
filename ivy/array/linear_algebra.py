@@ -15,6 +15,18 @@ class ArrayWithLinearAlgebra(abc.ABC):
         *,
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
+        """
+        Examples
+        ------------------------
+
+        With :code:`ivy.Array` instance inputs:
+
+        >>> x = ivy.array([1., 4.])
+        >>> y = ivy.array([3., 2.])
+        >>> z = x.matmul(y)
+        >>> print(z)
+        ivy.array(11.)
+        """        
         return ivy.matmul(self._data, x2, out=out)
 
     def cholesky(
