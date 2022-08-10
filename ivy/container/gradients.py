@@ -292,20 +292,18 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-
         With :code:`ivy.Container` input:
 
         >>> ivy.set_backend('tensorflow')
-        >>> z = ivy.variable(ivy.array([2.,1.,100.]))
-        >>> func = lambda x : ivy.matmul(z,x)
+        >>> func = lambda x : 2*x**2
         >>> xs = ivy.Container(a = ivy.array([1.,1.,1.]))
         >>> results = ivy.Container.static_execute_with_gradients(func, \
             xs)
         >>> func_output,grads = results['a']
         >>> print("function output: ", func_output)
         >>> print("grads: ", grads)
-        function output:  ivy.array(103.)
-        grads:  ivy.array([  2.,   1., 100.])
+        function output:  ivy.array([2., 2., 2.])
+        grads:  ivy.array([4., 4., 4.])
         
         With multiple :code:`ivy.Container` inputs:
 
