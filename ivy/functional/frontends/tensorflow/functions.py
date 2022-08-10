@@ -46,3 +46,9 @@ def logical_xor(x, y, name='LogicalXor'):
 
 
 logical_xor.supported_dtypes = {"torch": ("bool", "bool")}
+
+
+def divide(x, y, name=None):
+    return ivy.divide(x, y)
+
+divide.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
