@@ -210,6 +210,7 @@ class ContainerWithSearching(ContainerBase):
         condition: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -245,6 +246,7 @@ class ContainerWithSearching(ContainerBase):
         self: ivy.Container,
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:

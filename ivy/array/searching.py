@@ -109,6 +109,7 @@ class ArrayWithSearching(abc.ABC):
         self: ivy.Array,
         x1: ivy.Array,
         x2: ivy.Array,
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
