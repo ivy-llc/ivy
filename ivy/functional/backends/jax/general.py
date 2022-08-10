@@ -51,8 +51,11 @@ def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-def to_numpy(x: JaxArray) -> np.ndarray:
-    return np.asarray(_to_array(x))
+def to_numpy(x: JaxArray, copy: bool = True) -> np.ndarray:
+    if copy:
+        return np.array(_to_array(x))
+    else:
+        return np.asarray(_to_array(x))
 
 
 def to_scalar(x: JaxArray) -> Number:

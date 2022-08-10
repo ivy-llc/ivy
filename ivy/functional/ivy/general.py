@@ -688,14 +688,15 @@ def all_equal(
 
 @inputs_to_native_arrays
 @handle_nestable
-def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
+def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndarray:
     """Converts an array into a numpy array.
 
     Parameters
     ----------
     x
         input array
-
+    copy
+        whether to copy the array to a new address or not. Default is True.
     Returns
     -------
     ret
@@ -707,12 +708,12 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([-1, 0, 1])
-    >>> y = ivy.to_numpy(x)
+    >>> y = ivy.to_numpy(x, copy=False)
     >>> print(y)
     [-1  0  1]
 
     >>> x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
-    >>> y = ivy.to_numpy(x)
+    >>> y = ivy.to_numpy(x, copy=True)
     >>> print(y)
     [[-1  0  1]
     [-1  0  1]
@@ -815,7 +816,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     }
 
     """
-    return current_backend(x).to_numpy(x)
+    return current_backend(x).to_numpy(x, copy)
 
 
 @inputs_to_native_arrays
@@ -1811,17 +1812,46 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
 
 
 @handle_nestable
-def try_else_none(fn):
-    """Try and return the function, otherwise return None if an exception was raised
-    during function execution.
+def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, None]:
+    """Try and return the function, otherwise return None
+        if an exception was raised during function execution.
 
     Parameters
     ----------
     fn
         Function to try and call and return.
+    args
+        list of arguments.
+    kwargs
+        dictionay of keyword arguments
+
+    Returns
+    -------
+        Either the function itself or None if an exception was raised
+        during function execution.
+
+    Examples
+    --------
+    with: if the function is executed without any exception
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = ivy.try_else_none(ivy.add,x, y)
+    >>> print(z.__name__)
+    add
+
+    with: if the function is executed with an exception
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = 'hemant'
+    >>> z = ivy.try_else_none(ivy.add,x, y)
+    >>> print(z)
+    None
 
     """
-    return default(fn, None, True)
+    try: 
+        _ = fn(*args, **kwargs)
+        return fn 
+    except Exception: 
+        return None
 
 
 def arg_names(receiver):
