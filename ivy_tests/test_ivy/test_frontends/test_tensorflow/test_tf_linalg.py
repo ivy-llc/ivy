@@ -8,7 +8,7 @@ import ivy.functional.backends.tensorflow as ivy_tf
 
 
 @st.composite
-def _det_arrays(draw):
+def _get_dtype_and_matrix(draw):
     arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
     random_size = draw(st.integers(min_value=1, max_value=4))
     shape = (*arbitrary_dims, random_size, random_size)
@@ -23,7 +23,7 @@ def _det_arrays(draw):
 
 
 @given(
-    dtype_and_input=_det_arrays(),
+    dtype_and_input=_get_dtype_and_matrix(),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.det"
