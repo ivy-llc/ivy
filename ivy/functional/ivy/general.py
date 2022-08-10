@@ -1877,13 +1877,28 @@ def cache_fn(func: Callable) -> Callable:
 
 
 def current_backend_str() -> Union[str, None]:
-    """Summary.
+    """Return framework string
+
+    Parameters
+    ----------
 
     Returns
     -------
     ret
         The framework string.
+    
+    Examples
+    --------
+    With default backend of NumPy
 
+    >>> print(ivy.current_backend_str)
+    "numpy"
+
+    With default backend of NumPy
+
+    >>> ivy.set_backend('torch')
+    >>> print(ivy.current_backend_str)
+    "torch"
     """
     fw = current_backend()
     if not backend_stack:
