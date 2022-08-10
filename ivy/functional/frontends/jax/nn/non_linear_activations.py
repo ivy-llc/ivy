@@ -13,10 +13,3 @@ def leaky_relu(x, alpha=0.01):
 
 
 leaky_relu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
-def gelu(x):
-    return ivy.gelu(x)
-
-
-gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
