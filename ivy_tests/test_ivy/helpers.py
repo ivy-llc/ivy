@@ -1725,7 +1725,8 @@ def dtype_and_values(
     num_arrays=1,
     min_value=None,
     max_value=None,
-    safety_factor=0.95,
+    large_value_safety_factor=1.1,
+    small_value_safety_factor=1.1,
     allow_inf=False,
     exclude_min=False,
     exclude_max=False,
@@ -1823,7 +1824,8 @@ def dtype_and_values(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    safety_factor=safety_factor,
+                    large_value_safety_factor=large_value_safety_factor,
+                    small_value_safety_factor=small_value_safety_factor,
                 )
             )
         )
@@ -2075,7 +2077,8 @@ def array_values(
     exclude_min=True,
     exclude_max=True,
     allow_negative=True,
-    safety_factor=0.95,
+    large_value_safety_factor=1.1,
+    small_value_safety_factor=1.1,
 ):
     """Draws a list (of lists) of a given shape containing values of a given data type.
 
@@ -2119,44 +2122,121 @@ def array_values(
         for dim in shape:
             size *= dim
     values = None
-    if "int" in dtype:
-        if dtype == "int8":
-            min_value = ivy.default(min_value, round(-128 * safety_factor))
-            max_value = ivy.default(max_value, round(127 * safety_factor))
-        elif dtype == "int16":
-            min_value = ivy.default(min_value, round(-32768 * safety_factor))
-            max_value = ivy.default(max_value, round(32767 * safety_factor))
-        elif dtype == "int32":
-            min_value = ivy.default(min_value, round(-2147483648 * safety_factor))
-            max_value = ivy.default(max_value, round(2147483647 * safety_factor))
-        elif dtype == "int64":
+    if "uint" in dtype:
+        if dtype == "uint8":
             min_value = ivy.default(
-                min_value, round(-9223372036854775808 * safety_factor)
+                min_value, 1 if small_value_safety_factor < 1 else 0
             )
-            max_value = ivy.default(
-                max_value, round(9223372036854775807 * safety_factor)
-            )
-        elif dtype == "uint8":
-            min_value = ivy.default(min_value, round(0 * safety_factor))
-            max_value = ivy.default(max_value, round(255 * safety_factor))
+            max_value = ivy.default(max_value, round(255 * large_value_safety_factor))
         elif dtype == "uint16":
-            min_value = ivy.default(min_value, round(0 * safety_factor))
-            max_value = ivy.default(max_value, round(65535 * safety_factor))
+            min_value = ivy.default(
+                min_value, 1 if small_value_safety_factor < 1 else 0
+            )
+            max_value = ivy.default(max_value, round(65535 * large_value_safety_factor))
         elif dtype == "uint32":
-            min_value = ivy.default(min_value, round(0 * safety_factor))
-            max_value = ivy.default(max_value, round(4294967295 * safety_factor))
-        elif dtype == "uint64":
-            min_value = ivy.default(min_value, round(0 * safety_factor))
+            min_value = ivy.default(
+                min_value, 1 if small_value_safety_factor < 1 else 0
+            )
             max_value = ivy.default(
-                max_value, round(18446744073709551615 * safety_factor)
+                max_value, round(4294967295 * large_value_safety_factor)
+            )
+        elif dtype == "uint64":
+            min_value = ivy.default(
+                min_value, 1 if small_value_safety_factor < 1 else 0
+            )
+            max_value = ivy.default(
+                max_value,
+                min(
+                    18446744073709551615,
+                    round(18446744073709551615 * large_value_safety_factor),
+                ),
             )
         values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
+    elif "int" in dtype:
+        if dtype == "int8":
+            min_value = ivy.default(min_value, round(-128 * large_value_safety_factor))
+            max_neg_value = -1 if small_value_safety_factor > 1 else 0
+            min_pos_value = 1 if small_value_safety_factor > 1 else 0
+            max_value = ivy.default(max_value, round(127 * large_value_safety_factor))
+
+        elif dtype == "int16":
+            min_value = ivy.default(
+                min_value, round(-32768 * large_value_safety_factor)
+            )
+            max_neg_value = -1 if small_value_safety_factor > 1 else 0
+            min_pos_value = 1 if small_value_safety_factor > 1 else 0
+            max_value = ivy.default(max_value, round(32767 * large_value_safety_factor))
+
+        elif dtype == "int32":
+            min_value = ivy.default(
+                min_value, round(-2147483648 * large_value_safety_factor)
+            )
+            max_neg_value = -1 if small_value_safety_factor > 1 else 0
+            min_pos_value = 1 if small_value_safety_factor > 1 else 0
+            max_value = ivy.default(
+                max_value, round(2147483647 * large_value_safety_factor)
+            )
+
+        elif dtype == "int64":
+            min_value = ivy.default(
+                min_value,
+                max(
+                    -9223372036854775808,
+                    round(-9223372036854775808 * large_value_safety_factor),
+                ),
+            )
+            max_neg_value = -1 if small_value_safety_factor > 1 else 0
+            min_pos_value = 1 if small_value_safety_factor > 1 else 0
+            max_value = ivy.default(
+                max_value,
+                min(
+                    9223372036854775807,
+                    round(9223372036854775807 * large_value_safety_factor),
+                ),
+            )
+
+        if max_value and min_pos_value > max_value:
+            max_value, min_pos_value = min_pos_value, max_value
+
+        if min_value and min_value > max_neg_value:
+            max_neg_value, min_value = min_value, max_neg_value
+
+        values = draw(
+            list_of_length(
+                x=st.integers(min_value, max_neg_value)
+                | st.integers(min_pos_value, max_value),
+                length=size,
+            )
+        )
     elif dtype == "float16":
+        limit = math.log(small_value_safety_factor)
+        min_value_neg = min_value
+        max_value_neg = round(-1 * limit, -3)
+
+        if min_value_neg and min_value_neg > max_value_neg:
+            max_value_neg, min_value_neg = min_value_neg, max_value_neg
+
+        min_value_pos = round(limit, -3)
+        max_value_pos = max_value
+
+        if max_value_pos and min_value_pos > max_value_pos:
+            max_value_pos, min_value_pos = min_value_pos, max_value_pos
+
         values = draw(
             list_of_length(
                 x=st.floats(
-                    min_value=min_value,
-                    max_value=max_value,
+                    min_value=min_value_neg,
+                    max_value=max_value_neg,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=16,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+                | st.floats(
+                    min_value=min_value_pos,
+                    max_value=max_value_pos,
                     allow_nan=allow_nan,
                     allow_subnormal=allow_subnormal,
                     allow_infinity=allow_inf,
@@ -2167,12 +2247,36 @@ def array_values(
                 length=size,
             )
         )
+        values = [v * large_value_safety_factor for v in values]
     elif dtype in ["float32", "bfloat16"]:
+        limit = math.log(small_value_safety_factor)
+        min_value_neg = min_value
+        max_value_neg = round(-1 * limit, -6)
+
+        if min_value_neg and min_value_neg > max_value_neg:
+            max_value_neg, min_value_neg = min_value_neg, max_value_neg
+
+        min_value_pos = round(limit, -6)
+        max_value_pos = max_value
+
+        if max_value_pos and min_value_pos > max_value_pos:
+            max_value_pos, min_value_pos = min_value_pos, max_value_pos
+
         values = draw(
             list_of_length(
                 x=st.floats(
-                    min_value=min_value,
-                    max_value=max_value,
+                    min_value=min_value_neg,
+                    max_value=max_value_neg,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=32,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+                | st.floats(
+                    min_value=min_value_pos,
+                    max_value=max_value_pos,
                     allow_nan=allow_nan,
                     allow_subnormal=allow_subnormal,
                     allow_infinity=allow_inf,
@@ -2183,13 +2287,37 @@ def array_values(
                 length=size,
             )
         )
-        values = [v * safety_factor for v in values]
+        values = [v * large_value_safety_factor for v in values]
     elif dtype == "float64":
+        limit = math.log(small_value_safety_factor)
+
+        min_value_neg = min_value
+        max_value_neg = round(-1 * limit, -15)
+
+        if min_value_neg and min_value_neg > max_value_neg:
+            max_value_neg, min_value_neg = min_value_neg, max_value_neg
+
+        min_value_pos = round(limit, -15)
+        max_value_pos = max_value
+
+        if max_value_pos and min_value_pos > max_value_pos:
+            max_value_pos, min_value_pos = min_value_pos, max_value_pos
+
         values = draw(
             list_of_length(
                 x=st.floats(
-                    min_value=min_value,
-                    max_value=max_value,
+                    min_value=min_value_neg,
+                    max_value=max_value_neg,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=64,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+                | st.floats(
+                    min_value=min_value_pos,
+                    max_value=max_value_pos,
                     allow_nan=allow_nan,
                     allow_subnormal=allow_subnormal,
                     allow_infinity=allow_inf,
@@ -2200,7 +2328,7 @@ def array_values(
                 length=size,
             )
         )
-        values = [v * safety_factor for v in values]
+        values = [v * large_value_safety_factor for v in values]
     elif dtype == "bool":
         values = draw(list_of_length(x=st.booleans(), length=size))
     array = np.array(values)
