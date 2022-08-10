@@ -47,6 +47,12 @@ def test_with_grads(grads):
     assert ivy.with_grads(with_grads=grads) == grads
 
 
+@pytest.mark.parametrize("grads", [True, False])
+def test_set_with_grads(grads):
+    ivy.set_with_grads(grads)
+    assert ivy.with_grads(with_grads=None) == grads
+
+
 # variable
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
