@@ -1,3 +1,4 @@
+import sys
 import requests
 import json
 import emoji
@@ -5,6 +6,7 @@ import pandas as pd
 
 
 url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master"
+
 headers = {
     "Accept": "application/vnd.github+json",
     "Authorization": "Bearer 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",
@@ -12,10 +14,11 @@ headers = {
 functional_nn_dict = dict()
 functional_core_dict = dict()
 stateful_dict = dict()
+
 output_files: dict = {
-    1: "functional_core_dashboard",
-    2: "functional_nn_dashboard",
-    3: "stateful_dashboard",
+    0: "functional_core_dashboard",
+    1: "functional_nn_dashboard",
+    2: "stateful_dashboard",
 }
 results = []
 
@@ -121,10 +124,11 @@ def get_matrix_job_data():
 
 
 def main():
+    path = sys.argv([1])
     ivy_modules = get_matrix_job_data()
     for i, module in enumerate(ivy_modules):
         module_df = get_DataFrame(module)
-        module_df.to_html(f"/Users/aarsh/Desktop/{i}.html")
+        module_df.to_html(f"{path}/{output_files[i]}.html")
 
 
 if __name__ == "__main__":

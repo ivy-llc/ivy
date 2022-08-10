@@ -1,5 +1,9 @@
 name: CI Dashboard
-on: [push, pull_request]
+on:
+  workflow_run:
+    workflows: [test-nn-ivy, test-stateful-ivy, test-core-ivy]
+    types:
+      - completed
 jobs:
   Trigger-Dashboard:
     name: Trigger Dashboard
@@ -12,7 +16,7 @@ jobs:
           persist-credentials: false
       - name: Setup Python
       - uses: actions/setup-python@v1
-      - uses:  BSFishy/pip-action@v1
+      - uses: BSFishy/pip-action@v1
         with:
            packages: |
              emoji
