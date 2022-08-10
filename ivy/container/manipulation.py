@@ -843,7 +843,7 @@ class ContainerWithManipulation(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_nests: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -851,27 +851,14 @@ class ContainerWithManipulation(ContainerBase):
         function, and so the docstring for ivy.stack also applies to this method
         with minimal changes.
         """
-        conts = []
-        arrays = []
-        for y in xs:
-            if ivy.is_ivy_container(y):
-                conts.append(y)
-                arrays.append(None)
-            else:
-                arrays.append(y)
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs_, _: ivy.stack(
-                    [a if ivy.exists(a) else xs_.pop(0) for a in arrays], axis=axis
-                )
-                if ivy.is_array(xs_[0])
-                else xs_,
-                conts,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_nests=map_nests,
-            ),
+        return ContainerBase.multi_map_in_static_method(
+            "stack",
+            xs,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -887,7 +874,7 @@ class ContainerWithManipulation(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_nests: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -902,7 +889,7 @@ class ContainerWithManipulation(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_nests=map_nests,
+            map_sequences=map_sequences,
             out=out,
         )
 

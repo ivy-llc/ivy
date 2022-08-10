@@ -19,7 +19,6 @@ def _concat_helper(draw):
     dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
     shape = draw(helpers.get_shape(min_num_dims=1))
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    print(shape, axis)
     num_arrays = draw(st.integers(1, 5))
     arrays = []
     dtypes = [dtype for _ in range(num_arrays)]
