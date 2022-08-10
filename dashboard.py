@@ -6,13 +6,20 @@ import pandas as pd
 
 
 url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master"
+
 headers = {
     "Accept": "application/vnd.github+json",
-    "Authorization": "Bearer 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",
+    "Authorization": "Bearer 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",
 }
 functional_nn_dict = dict()
 functional_core_dict = dict()
 stateful_dict = dict()
+
+output_files: dict = {
+    0: "functional_core_dashboard",
+    1: "functional_nn_dashboard",
+    2: "stateful_dashboard",
+}
 results = []
 
 
@@ -36,8 +43,8 @@ def workflow_results():
     for info in output["workflow_runs"]:
         if info["name"] not in (
             "test-core-ivy",
-            ("test-stateful-ivy"),
-            ("test-nn-ivy"),
+            "test-stateful-ivy",
+            "test-nn-ivy",
         ):
             continue
         results.append(
@@ -73,11 +80,14 @@ def get_matrix_job_data():
                     functional_core_dict[submodule].append(
                         (backend, emoji.emojize(":x:", language="alias"))
                     )
-                else:
+                elif info["conclusion"] == "success":
                     functional_core_dict[submodule].append(
                         (backend, emoji.emojize(":white_check_mark:", language="alias"))
                     )
-
+                else:
+                    functional_core_dict[submodule].append(
+                        (backend, emoji.emojize(":clock9:", language="alias"))
+                    )
             elif name == "test-nn-ivy":
                 if submodule not in functional_nn_dict:
                     functional_nn_dict[submodule] = []
@@ -85,9 +95,13 @@ def get_matrix_job_data():
                     functional_nn_dict[submodule].append(
                         (backend, emoji.emojize(":x:", language="alias"))
                     )
-                else:
+                elif info["conclusion"] == "success":
                     functional_nn_dict[submodule].append(
                         (backend, emoji.emojize(":white_check_mark:", language="alias"))
+                    )
+                else:
+                    functional_nn_dict[submodule].append(
+                        (backend, emoji.emojize(":clock9:", language="alias"))
                     )
 
             elif name == "test-stateful-ivy":
@@ -97,9 +111,13 @@ def get_matrix_job_data():
                     stateful_dict[submodule].append(
                         (backend, emoji.emojize(":x:", language="alias"))
                     )
-                else:
+                elif info["conclusion"] == "success":
                     stateful_dict[submodule].append(
                         (backend, emoji.emojize(":white_check_mark:", language="alias"))
+                    )
+                else:
+                    stateful_dict[submodule].append(
+                        (backend, emoji.emojize(":clock9:", language="alias"))
                     )
 
     return (functional_core_dict, functional_nn_dict, stateful_dict)
@@ -110,7 +128,7 @@ def main():
     ivy_modules = get_matrix_job_data()
     for i, module in enumerate(ivy_modules):
         module_df = get_DataFrame(module)
-        module_df.to_html(f"{path}/{i}.html")
+        module_df.to_html(f"{path}/{output_files[i]}.html")
 
 
 if __name__ == "__main__":
