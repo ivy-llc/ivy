@@ -208,20 +208,15 @@ class ArrayWithGradients(abc.ABC):
         >>> ivy.set_backend('tensorflow')
         >>> func = lambda x :x**2
         >>> xs =ivy.array([1.,0.,10.])
-        >>> func_output,grads = xs.execute_with_gradients(func)
-        >>> print("function output: ", func_output)
-        >>> print("grads: ", grads)
-        function output:  ivy.array([  1.,   0., 100.])
-        grads:  ivy.array([ 2.,  0., 20.])
+        >>> results = xs.execute_with_gradients(func)
+        >>> print(results)
+        (ivy.array([  1.,   0., 100.]), ivy.array([ 2.,  0., 20.]))
 
         >>> func = lambda x :2*x**2
         >>> xs = ivy.array([1.,1.,1.])
-        >>> func_output, grads  = xs.execute_with_gradients(func)
-        >>> print("function output: ", func_output)
-        >>> print("grads: ", grads)
-        function output:  ivy.array([2., 2., 2.])
-        grads:  ivy.array([4., 4., 4.])    
-        >>> ivy.unset_backend()
+        >>> results  = xs.execute_with_gradients(func)
+        >>> print(results)
+        (ivy.array([2., 2., 2.]), ivy.array([4., 4., 4.]))
         """
         return ivy.execute_with_gradients(
             func,
