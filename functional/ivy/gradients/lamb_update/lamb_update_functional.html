@@ -21,7 +21,7 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="ivy.Array.lamb_update" href="lamb_update_array.html" />
+    <link rel="next" title="ivy.Container.lamb_update" href="lamb_update_container.html" />
     <link rel="prev" title="lamb_update" href="../lamb_update.html" /> 
 </head>
 
@@ -71,8 +71,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../stop_gradient.html">stop_gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../value_and_grad.html">value_and_grad</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../jac.html">jac</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../grad.html">grad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../adam_step.html">adam_step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optimizer_update.html">optimizer_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gradient_descent_update.html">gradient_descent_update</a></li>
@@ -80,8 +78,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../adam_update.html">adam_update</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../lamb_update.html">lamb_update</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.lamb_update</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lamb_update_array.html">ivy.Array.lamb_update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lamb_update_container.html">ivy.Container.lamb_update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_lamb_update_container.html">ivy.Container.static_lamb_update</a></li>
 </ul>
 </li>
 </ul>
@@ -159,7 +157,7 @@
 <h1>ivy.lamb_update<a class="headerlink" href="#ivy-lamb-update" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.gradients.lamb_update">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">lamb_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_trust_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decay_lambda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/gradients.html#lamb_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.lamb_update" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">lamb_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_trust_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decay_lambda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/gradients.html#lamb_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.lamb_update" title="Permalink to this definition"></a></dt>
 <dd><p>Update weights ws of some function, given the derivatives of some cost c with
 respect to ws, [dc/dw for w in ws], by applying LAMB method.</p>
 <dl class="field-list simple">
@@ -171,135 +169,28 @@ respect to ws, [dc/dw for w in ws], by applying LAMB method.</p>
 the gradient.</p></li>
 <li><p><strong>mw_tm1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of the gradients, from the previous time-step.</p></li>
 <li><p><strong>vw_tm1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of second moments of the gradients, from the previous time-step.</p></li>
-<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – training step.</p></li>
-<li><p><strong>beta1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – gradient forgetting factor (Default value = 0.9). (default: <code class="docutils literal notranslate"><span class="pre">0.9</span></code>)</p></li>
-<li><p><strong>beta2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – second moment of gradient forgetting factor (Default value = 0.999). (default: <code class="docutils literal notranslate"><span class="pre">0.999</span></code>)</p></li>
-<li><p><strong>epsilon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – divisor during adam update, preventing division by zero (Default value = 1e-7). (default: <code class="docutils literal notranslate"><span class="pre">1e-07</span></code>)</p></li>
-<li><p><strong>max_trust_ratio</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – The maximum value for the trust ratio. (Default value = 10) (default: <code class="docutils literal notranslate"><span class="pre">10</span></code>)</p></li>
-<li><p><strong>decay_lambda</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The factor used for weight decay. (Default value = 0). (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
-<li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients of the variables after each gradient step. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – training step</p></li>
+<li><p><strong>beta1</strong> – gradient forgetting factor (Default value = 0.9)</p></li>
+<li><p><strong>beta2</strong> – second moment of gradient forgetting factor (Default value = 0.999)</p></li>
+<li><p><strong>epsilon</strong> – divisor during adam update, preventing division by zero (Default value = 1e-7)</p></li>
+<li><p><strong>max_trust_ratio</strong> – The maximum value for the trust ratio. Default is 10.</p></li>
+<li><p><strong>decay_lambda</strong> – The factor used for weight decay. Default is zero.</p></li>
+<li><p><strong>inplace</strong> – Whether to perform the operation inplace, for backends which support inplace
+variable updates, and handle gradients behind the scenes such as PyTorch. If the
+update step should form part of a computation graph (i.e. higher order
+optimization), then this should be set to False. Default is True, provided the
+backend framework supports it.</p></li>
+<li><p><strong>stop_gradients</strong> – Whether to stop the gradients of the variables after each gradient step.
 Default is True.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-inputs broadcast to.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – The new function weights ws_new, following the LAMB updates.</p>
+<dd class="field-odd"><p><em>ret</em> – The new function weights ws_new, following the LARS updates.</p>
 </dd>
 </dl>
-<p class="rubric">Functional Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">vw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">new_weights</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lamb_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">dcdw</span><span class="p">,</span><span class="n">lr</span><span class="p">,</span><span class="n">mw_tm1</span><span class="p">,</span><span class="n">vw_tm1</span><span class="p">,</span><span class="n">step</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">new_weights</span><span class="p">)</span>
-<span class="go">(ivy.array([0.784, 1.78 , 2.78 ]), ivy.array([0.05, 0.02, 0.01]),     ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">vw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">max_trust_ratio</span><span class="o">=</span><span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">inplace</span><span class="o">=</span><span class="kc">None</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">new_weights</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lamb_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">dcdw</span><span class="p">,</span><span class="n">lr</span><span class="p">,</span><span class="n">mw_tm1</span><span class="p">,</span><span class="n">vw_tm1</span><span class="p">,</span><span class="n">step</span><span class="p">,</span><span class="n">beta1</span><span class="p">,</span><span class="n">beta2</span><span class="p">,</span>                      <span class="n">epsilon</span><span class="p">,</span><span class="n">max_trust_ratio</span><span class="p">,</span><span class="n">decay_lambda</span><span class="p">,</span><span class="n">inplace</span><span class="p">,</span><span class="n">stop_gradients</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">new_weights</span><span class="p">)</span>
-<span class="go">(ivy.array([[ 0.639,  1.64 ,  2.64 ],</span>
-<span class="go">    [ 3.64 ,  5.64 ,  0.639],</span>
-<span class="go">    [ 0.639, -0.361,  6.64 ]]), ivy.array([[0.05, 0.02, 0.01],</span>
-<span class="go">    [0.03, 0.06, 0.04],</span>
-<span class="go">    [0.04, 0.07, 0.02]]), ivy.array([[2.5e-04, 4.0e-05, 1.0e-05],</span>
-<span class="go">    [9.0e-05, 3.6e-04, 1.6e-04],</span>
-<span class="go">    [1.6e-04, 4.9e-04, 4.0e-05]]))</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">0.2</span><span class="p">],[</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.3</span><span class="p">],[</span><span class="mf">0.6</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.1</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lr</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">vw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">beta1</span><span class="o">=</span><span class="mf">0.8</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">beta2</span><span class="o">=</span><span class="mf">0.76</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">max_trust_ratio</span><span class="o">=</span><span class="mf">5.7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">decay_lambda</span><span class="o">=</span><span class="mi">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">stop_gradients</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">new_weights</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lamb_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">dcdw</span><span class="p">,</span><span class="n">lr</span><span class="p">,</span><span class="n">mw_tm1</span><span class="p">,</span><span class="n">vw_tm1</span><span class="p">,</span><span class="n">step</span><span class="p">,</span><span class="n">beta1</span><span class="p">,</span><span class="n">beta2</span><span class="p">,</span>                        <span class="n">epsilon</span><span class="p">,</span><span class="n">max_trust_ratio</span><span class="p">,</span><span class="n">decay_lambda</span><span class="p">,</span><span class="n">inplace</span><span class="p">,</span><span class="n">stop_gradients</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">new_weights</span><span class="p">)</span>
-<span class="go">(ivy.array([[ 0.922 ,  1.92  ,  2.92  ],</span>
-<span class="go">    [ 3.92  ,  5.92  ,  1.92  ],</span>
-<span class="go">    [ 0.922 , -0.0782,  3.92  ]]), ivy.array([[0.1 , 0.06, 0.04],</span>
-<span class="go">    [0.02, 0.16, 0.06],</span>
-<span class="go">    [0.12, 0.14, 0.02]]), ivy.array([[0.06  , 0.0216, 0.0096],</span>
-<span class="go">    [0.0024, 0.154 , 0.0216],</span>
-<span class="go">    [0.0864, 0.118 , 0.0024]]))</span>
-</pre></div>
-</div>
-<p>With :code: <cite>ivy.container</cite> inputs:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">3.</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span><span class="mf">4.</span><span class="p">,</span><span class="mf">5.</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">vw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">step</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">new_weights</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lamb_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">dcdw</span><span class="p">,</span><span class="n">mw_tm1</span><span class="p">,</span><span class="n">vw_tm1</span><span class="p">,</span><span class="n">lr</span><span class="p">,</span><span class="n">step</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">new_weights</span><span class="p">)</span>
-<span class="go">({</span>
-<span class="go">    a: ivy.array([1., 2., 3.])</span>
-<span class="go">}, {</span>
-<span class="go">    a: ivy.array([0.3, 0.4, 0.5])</span>
-<span class="go">}, {</span>
-<span class="go">    a: ivy.array([1.01, 1.01, 1.02])</span>
-<span class="go">})</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">5.</span><span class="p">]),</span>                          <span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span><span class="mf">4.</span><span class="p">,</span><span class="mf">2.</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">0.6</span><span class="p">]),</span>                             <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span><span class="mf">0.4</span><span class="p">,</span><span class="mf">0.7</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]),</span>                               <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">]))</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,]),</span>                               <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.4</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">beta1</span> <span class="o">=</span> <span class="mf">0.9</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">beta2</span> <span class="o">=</span> <span class="mf">0.999</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">max_trust_ratio</span><span class="o">=</span><span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">inplace</span><span class="o">=</span><span class="kc">None</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lr</span> <span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">new_weights</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lamb_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">dcdw</span><span class="p">,</span><span class="n">lr</span><span class="p">,</span><span class="n">mw_tm1</span><span class="p">,</span><span class="n">vw_tm1</span><span class="p">,</span><span class="n">step</span><span class="p">,</span><span class="n">beta1</span><span class="p">,</span><span class="n">beta2</span><span class="p">,</span>                        <span class="n">epsilon</span><span class="p">,</span><span class="n">max_trust_ratio</span><span class="p">,</span><span class="n">decay_lambda</span><span class="p">,</span><span class="n">inplace</span><span class="p">,</span><span class="n">stop_gradients</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">new_weights</span><span class="p">)</span>
-<span class="go">({</span>
-<span class="go">    a: ivy.array([-0.708, 1.29, 3.29]),</span>
-<span class="go">    b: ivy.array([1.45, 2.45, 0.445])</span>
-<span class="go">}, {</span>
-<span class="go">    a: ivy.array([0.02, 0.03, 0.06]),</span>
-<span class="go">    b: ivy.array([0.06, 0.04, 0.07])</span>
-<span class="go">}, {</span>
-<span class="go">    a: ivy.array([4.0e-05, 9.0e-05, 3.6e-04]),</span>
-<span class="go">    b: ivy.array([0.00036, 0.00016, 0.00049])</span>
-<span class="go">})</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <div class="line-block">
@@ -314,7 +205,7 @@ inputs broadcast to.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../lamb_update.html" class="btn btn-neutral float-left" title="lamb_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="lamb_update_array.html" class="btn btn-neutral float-right" title="ivy.Array.lamb_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="lamb_update_container.html" class="btn btn-neutral float-right" title="ivy.Container.lamb_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
