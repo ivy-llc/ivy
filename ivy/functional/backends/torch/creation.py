@@ -442,3 +442,4 @@ def logspace(
 
 
 logspace.support_native_out = True
+logspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}
