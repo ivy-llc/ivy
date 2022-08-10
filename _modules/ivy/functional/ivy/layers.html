@@ -1328,6 +1328,29 @@
 
 
 <span class="n">lstm_update</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
+
+
+<span class="c1"># Helpers #</span>
+
+
+<div class="viewcode-block" id="handle_padding"><a class="viewcode-back" href="../../../../functional/ivy/layers/handle_padding.html#ivy.functional.ivy.layers.handle_padding">[docs]</a><span class="k">def</span> <span class="nf">handle_padding</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">padding</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;SAME&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">%</span> <span class="n">strides</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">filters</span> <span class="o">-</span> <span class="n">strides</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">filters</span> <span class="o">-</span> <span class="p">(</span><span class="n">x</span> <span class="o">%</span> <span class="n">strides</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">pad</span></div>
+
+
+<div class="viewcode-block" id="deconv_length"><a class="viewcode-back" href="../../../../functional/ivy/layers/deconv_length.html#ivy.functional.ivy.layers.deconv_length">[docs]</a><span class="k">def</span> <span class="nf">deconv_length</span><span class="p">(</span><span class="n">dim_size</span><span class="p">,</span> <span class="n">stride_size</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">kernel_size</span> <span class="o">+</span> <span class="p">(</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dilation</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;VALID&quot;</span><span class="p">:</span>
+        <span class="n">dim_size</span> <span class="o">=</span> <span class="n">dim_size</span> <span class="o">*</span> <span class="n">stride_size</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="n">stride_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;SAME&quot;</span><span class="p">:</span>
+        <span class="n">dim_size</span> <span class="o">=</span> <span class="n">dim_size</span> <span class="o">*</span> <span class="n">stride_size</span>
+    <span class="k">return</span> <span class="n">dim_size</span></div>
 </pre></div>
 
            </div>
