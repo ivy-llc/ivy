@@ -186,7 +186,11 @@ def x_and_scaled_attention(draw, dtypes):
     v = draw(helpers.array_values(dtype=dtype, shape=v_shape, min_value=0, max_value=1))
     mask = draw(
         helpers.array_values(
-            dtype=dtype, shape=mask_shape, min_value=0, max_value=1, safety_factor=2
+            dtype=dtype,
+            shape=mask_shape,
+            min_value=0,
+            max_value=1,
+            large_value_safety_factor=2,
         )
     )
     return dtype, q, k, v, mask, scale
@@ -225,7 +229,7 @@ def test_scaled_dot_product_attention(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -311,7 +315,7 @@ def test_multi_head_attention(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -562,6 +566,7 @@ def test_conv1d(
     *,
     data,
     x_f_d_df,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -578,7 +583,7 @@ def test_conv1d(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -613,6 +618,7 @@ def test_conv1d_transpose(
     *,
     data,
     x_f_d_df,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -622,6 +628,7 @@ def test_conv1d_transpose(
     device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape = x_f_d_df
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     dtype = [dtype] * 2
     as_variable = [as_variable, as_variable]
     native_array = [native_array, native_array]
@@ -629,7 +636,7 @@ def test_conv1d_transpose(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -665,6 +672,7 @@ def test_conv2d(
     *,
     data,
     x_f_d_df,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -679,7 +687,7 @@ def test_conv2d(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -723,6 +731,7 @@ def test_conv2d_transpose(
     device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape = x_f_d_df
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     dtype = [dtype] * 2
     as_variable = [as_variable, as_variable]
     native_array = [native_array, native_array]
@@ -730,7 +739,7 @@ def test_conv2d_transpose(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -766,6 +775,7 @@ def test_conv2d_transpose(
 def test_depthwise_conv2d(
     *,
     x_f_d_df,
+    with_out,
     num_positional_args,
     as_variable,
     native_array,
@@ -783,7 +793,7 @@ def test_depthwise_conv2d(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -818,6 +828,7 @@ def test_conv3d(
     *,
     data,
     x_f_d_df,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -832,7 +843,7 @@ def test_conv3d(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -867,6 +878,7 @@ def test_conv3d(
 def test_conv3d_transpose(
     *,
     x_f_d_df,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -876,12 +888,13 @@ def test_conv3d_transpose(
     device,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape = x_f_d_df
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     dtype = [dtype] * 2
 
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
