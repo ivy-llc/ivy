@@ -554,7 +554,9 @@ def list_of_length(*, x, length):
 
 
 def as_cont(*, x):
-    return ivy.Container({"a": x, "b": {"c": x, "d": x}})
+    return ivy.Container(
+        {"a": ivy.copy_array(x), "b": {"c": ivy.copy_array(x), "d": ivy.copy_array(x)}}
+    )
 
 
 def as_lists(*args):
@@ -1148,6 +1150,8 @@ def test_function(
     )
 
     fn = getattr(ivy, fn_name)
+    if gradient_incompatible_function(fn=fn):
+        return
     test_unsupported = check_unsupported_dtype(
         fn=fn, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )

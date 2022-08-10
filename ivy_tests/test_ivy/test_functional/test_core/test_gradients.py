@@ -1,8 +1,6 @@
 """Collection of tests for unified gradient functions."""
 
 # global
-from numbers import Number
-import pytest
 from hypothesis import given, strategies as st
 import numpy as np
 
@@ -11,7 +9,6 @@ import ivy
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy.container import Container
 
 
 @st.composite
@@ -160,38 +157,43 @@ def test_stop_gradient(
 
 # execute_with_gradients
 @given(
-    fun=lambda xs: ivy.nested_indices_where(nest=xs, fn=lambda _: True, ),
-    dtypes_and_xs=helpers.dtype_and_values(),
+    dtype_and_xs=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1, min_dim_size=1
+    ),
     retain_grads=st.booleans(),
     container_flag=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="execute_with_gradients"),
-    data=st.data()
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_execute_with_gradients(
-        *,
-        fun,
-        dtype_and_xs,
-        retain_grads,
-        container_flag,
-        num_positional_args,
-        native_array,
-        instance_method,
-        fw,
+    *,
+    dtype_and_xs,
+    retain_grads,
+    container_flag,
+    native_array,
+    fw,
 ):
-    dtypes, xs = dtype_and_xs
+    def func(xs):
+        array_idxs = ivy.nested_indices_where(xs, ivy.is_ivy_array)
+        array_vals = ivy.multi_index_nest(xs, array_idxs)
+        final_array = ivy.stack(array_vals)
+        ret = ivy.sum(final_array)
+        return ret
+
+    dtype, xs = dtype_and_xs
     helpers.test_function(
-        input_dtypes=dtypes,
-        as_variable_flags=[False, True, False],
+        input_dtypes=dtype,
+        as_variable_flags=True,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container_flag,
-        instance_method=instance_method,
+        instance_method=False,
         fw=fw,
         fn_name="execute_with_gradients",
-        func=fun,
-        xs=xs,
-        retain_grads=retain_grads
+        func=func,
+        xs=np.asarray(xs, dtype=dtype),
+        retain_grads=retain_grads,
     )
 
 

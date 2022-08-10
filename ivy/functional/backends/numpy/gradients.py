@@ -2,6 +2,7 @@
 
 # global
 import logging
+import ivy
 
 
 def variable(x):
@@ -27,6 +28,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         "NumPy does not support autograd, "
         "'execute_with_gradients' returns None in place of function gradients."
     )
+    xs = ivy.to_ivy(xs)
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
