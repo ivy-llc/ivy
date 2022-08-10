@@ -184,12 +184,3 @@ This should have hopefully given you a good feel for devices, and how these are 
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `devices discussion`_,
 or reach out on `discord`_ in the `devices channel`_!
-
-
-**Video**
-
-.. raw:: html
-
-    <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/-Y1Ofk72TLY" class="video">
-    </iframe>
