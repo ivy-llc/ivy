@@ -929,9 +929,9 @@ def lamb_update(
     epsilon
         divisor during adam update, preventing division by zero (Default value = 1e-7).
     max_trust_ratio
-        The maximum value for the trust ratio. Default is 10.
+        The maximum value for the trust ratio. (Default value = 10)
     decay_lambda
-        The factor used for weight decay. Default is zero.
+        The factor used for weight decay. (Default value = 0).
     stop_gradients
         Whether to stop the gradients of the variables after each gradient step.
         Default is True.
@@ -943,6 +943,124 @@ def lamb_update(
     -------
     ret
         The new function weights ws_new, following the LAMB updates.
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` inputs:
+
+    >>> w = ivy.array([1., 2, 3])
+    >>> dcdw = ivy.array([0.5,0.2,0.1])
+    >>> lr = ivy.array(0.1)
+    >>> vw_tm1 = ivy.zeros(1)
+    >>> mw_tm1 = ivy.zeros(3)
+    >>> step = ivy.array(1)
+    >>> new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step)
+    >>> print(new_weights)
+    (ivy.array([0.784, 1.78 , 2.78 ]), ivy.array([0.05, 0.02, 0.01]), \
+    ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))
+
+
+    >>> w = ivy.array([[1., 2, 3],[4, 6, 1],[1, 0, 7]])
+    >>> dcdw = ivy.array([[0.5, 0.2, 0.1],[0.3, 0.6, 0.4],[0.4, 0.7, 0.2]])
+    >>> lr = ivy.array(0.1)
+    >>> mw_tm1 = ivy.zeros((3,3))
+    >>> vw_tm1 = ivy.zeros(3)
+    >>> step = ivy.array(1)
+    >>> beta1=0.9
+    >>> beta2=0.999
+    >>> epsilon=1e-7
+    >>> max_trust_ratio=10
+    >>> decay_lambda=0
+    >>> inplace=None
+    >>> stop_gradients=True
+    >>> new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1,beta2,\
+                      epsilon,max_trust_ratio,decay_lambda,inplace,stop_gradients)  
+    >>> print(new_weights)
+    (ivy.array([[ 0.639,  1.64 ,  2.64 ],
+        [ 3.64 ,  5.64 ,  0.639],
+        [ 0.639, -0.361,  6.64 ]]), ivy.array([[0.05, 0.02, 0.01],
+        [0.03, 0.06, 0.04],
+        [0.04, 0.07, 0.02]]), ivy.array([[2.5e-04, 4.0e-05, 1.0e-05],
+        [9.0e-05, 3.6e-04, 1.6e-04],
+        [1.6e-04, 4.9e-04, 4.0e-05]]))
+
+
+    >>> w = ivy.array([[1.,2,3],[4,6,2],[1,0,4]])
+    >>> dcdw = ivy.array([[0.5,0.3,0.2],[0.1,0.8,0.3],[0.6,0.7,0.1]])
+    >>> lr=ivy.array(0.1)
+    >>> mw_tm1 = ivy.zeros((3,3))
+    >>> vw_tm1 = ivy.zeros(3)
+    >>> step = ivy.array(1)
+    >>> beta1=0.8
+    >>> beta2=0.76
+    >>> epsilon=1e-4
+    >>> max_trust_ratio=5.7
+    >>> decay_lambda=1
+    >>> inplace=False
+    >>> stop_gradients = False
+    >>> new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1,beta2,\
+                        epsilon,max_trust_ratio,decay_lambda,inplace,stop_gradients)
+    >>> print(new_weights)
+    (ivy.array([[ 0.922 ,  1.92  ,  2.92  ],
+        [ 3.92  ,  5.92  ,  1.92  ],
+        [ 0.922 , -0.0782,  3.92  ]]), ivy.array([[0.1 , 0.06, 0.04],
+        [0.02, 0.16, 0.06],
+        [0.12, 0.14, 0.02]]), ivy.array([[0.06  , 0.0216, 0.0096],
+        [0.0024, 0.154 , 0.0216],
+        [0.0864, 0.118 , 0.0024]]))
+
+
+    With :code: `ivy.container` inputs:
+
+    >>> w = ivy.Container(a=ivy.array([1.,2.,3.]))
+    >>> dcdw = ivy.Container(a=ivy.array([3.,4.,5.]))
+    >>> mw_tm1 = ivy.Container(a=ivy.array([0.,0.,0.]))
+    >>> vw_tm1 = ivy.Container(a=ivy.array([0.]))
+    >>> lr = ivy.array(1.)
+    >>> step=ivy.array([2])
+    >>> new_weights = ivy.lamb_update(w,dcdw,mw_tm1,vw_tm1,lr,step)
+    >>> print(new_weights)
+    ({
+        a: ivy.array([1., 2., 3.])
+    }, {
+        a: ivy.array([0.3, 0.4, 0.5])
+    }, {
+        a: ivy.array([1.01, 1.01, 1.02])
+    })
+    
+
+    >>> w = ivy.Container(a=ivy.array([1.,3.,5.]),\
+                          b = ivy.array([3.,4.,2.]))
+    >>> dcdw = ivy.Container(a=ivy.array([0.2,0.3,0.6]),\
+                             b=ivy.array([0.6,0.4,0.7]))
+    >>> mw_tm1 = ivy.Container(a=ivy.array([0.,0.,0.]),\
+                               b=ivy.array([0.,0.,0.]))
+
+    >>> vw_tm1 = ivy.Container(a=ivy.array([0.,]),\
+                               b=ivy.array([0.,]))
+    >>> step = ivy.array([3.4])
+    >>> beta1 = 0.9
+    >>> beta2 = 0.999
+    >>> epsilon = 1e-7
+    >>> max_trust_ratio=10
+    >>> decay_lambda=0
+    >>> inplace=None
+    >>> stop_gradients=True
+    >>> lr =ivy.array(0.5)
+    >>> new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1,beta2,\
+                        epsilon,max_trust_ratio,decay_lambda,inplace,stop_gradients)
+    
+    >>> print(new_weights)
+    ({
+        a: ivy.array([-0.708, 1.29, 3.29]),
+        b: ivy.array([1.45, 2.45, 0.445])
+    }, {
+        a: ivy.array([0.02, 0.03, 0.06]),
+        b: ivy.array([0.06, 0.04, 0.07])
+    }, {
+        a: ivy.array([4.0e-05, 9.0e-05, 3.6e-04]),
+        b: ivy.array([0.00036, 0.00016, 0.00049])
+    })
 
     """
     r1 = ivy.vector_norm(w)
