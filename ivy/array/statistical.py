@@ -115,7 +115,13 @@ class ArrayWithStatistical(abc.ABC):
         ivy.array([0.667, 0.667, 9.33 ])
 
         """
-        return ivy.var(self._data, axis, correction, keepdims, out=out)
+        return ivy.var(
+            self._data,
+            axis=axis,
+            correction=correction,
+            keepdims=keepdims,
+            out=out
+        )
 
     def prod(
         self: ivy.Array,
@@ -125,7 +131,7 @@ class ArrayWithStatistical(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.prod(self._data, axis, keepdims, dtype=dtype, out=out)
+        return ivy.prod(self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
     def sum(
         self: ivy.Array,
