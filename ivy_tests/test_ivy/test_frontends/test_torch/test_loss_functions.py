@@ -37,7 +37,7 @@ def test_torch_cross_entropy(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="cross_entropy",
+        fn_name="loss_functions.cross_entropy",
         input=np.asarray(x[0], dtype=input_dtype[0]),
         target=np.asarray(x[1], dtype=input_dtype[1]),
     )
