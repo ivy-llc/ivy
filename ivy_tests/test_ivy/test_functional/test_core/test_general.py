@@ -1399,6 +1399,19 @@ def test_inplace_increment(x_n_inc, tensor_fn, device, call):
     pytest.skip()
 
 
+@pytest.mark.parametrize("backend_str", [None,"numpy", "mxnet", "torch", "tensorflow", "jax"])
+def test_current_backend_str(backend_str):
+    if backend_str:
+        ivy.set_backend(backend_str)
+        cur_fw = ivy.current_backend_str()
+        assert cur_fw in ["numpy", "mxnet", "torch", "tensorflow", "jax"]
+        assert cur_fw == backend_str
+    else:
+        inital_fw = ivy.current_backend_str()
+        assert inital_fw == ''
+    pytest.skip()
+
+
 # Still to Add #
 # ---------------#
 
