@@ -14,20 +14,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
-# Helper #
-##########
-
-# Calculate tolerance for linear interpolation.
-def _linear_tolerance(x, atol, rtol):
-    forward_diff = x[0] - np.nextafter(x[0], x[-1])
-    backward_diff = x[-1] - np.nextafter(x[-1], x[0])
-    return (
-        max(abs(forward_diff), abs(backward_diff))
-        + atol
-        + rtol * max(abs(x[0]), abs(x[-1]))
-    )
-
-
 # native_array
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -83,7 +69,8 @@ def test_native_array(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        large_value_safety_factor=2,
+        small_value_safety_factor=0.5,
+        large_value_safety_factor=0.5,
     ),
     num=st.integers(1, 5),
     axis=st.none(),
@@ -101,8 +88,7 @@ def test_linspace(
     fw,
 ):
     dtype, start_stop = dtype_and_start_stop
-    ret = helpers.test_function(
-        test_values=False,
+    helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
         with_out=False,
@@ -120,22 +106,6 @@ def test_linspace(
         dtype=dtype[0],
     )
 
-    # Make sure something is returned
-    if not ret:
-        return
-
-    ret_base, ret_gt = ret
-
-    axis = -1 if axis is None else axis
-    ret_base, ret_gt = np.asarray(ret_base)[0], np.asarray(ret_gt)[0]
-
-    # Custom dynamic tolerance just for linspace
-    tol = np.apply_along_axis(
-        lambda x: _linear_tolerance(x, atol=1e-3, rtol=1e-3), axis, ret_base
-    )
-    tol = np.expand_dims(tol, axis)
-    assert np.all(np.abs(ret_base - ret_gt) <= tol)
-
 
 # logspace
 @given(
@@ -149,7 +119,8 @@ def test_linspace(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        large_value_safety_factor=2,
+        small_value_safety_factor=0.5,
+        large_value_safety_factor=0.5,
     ),
     num=st.integers(1, 5),
     base=st.floats(min_value=0.1, max_value=10.0),
