@@ -399,14 +399,13 @@ def execute_with_gradients(func: Callable,
     >>> func = lambda x :100*x
     >>> xs = ivy.array([1.,2.,5.])
     >>> results = ivy.execute_with_gradients(func, \
-                xs)
+        xs)
     >>> func_output,grads = results
     >>> print("function output: ", func_output)
     >>> print("grads: ", grads)
     function output:  ivy.array([100., 200., 500.])
     grads:  ivy.array([100., 100., 100.])
 
-    >>> ivy.set_backend('tensorflow')
     >>> z  = ivy.variable(ivy.array([2.,1.,10.]))
     >>> func = lambda x :ivy.matmul(z,x)
     >>> xs = ivy.array([1.,2.,5.])
@@ -420,11 +419,10 @@ def execute_with_gradients(func: Callable,
     
     With :code:`ivy.NativeArray` input:
 
-    >>> ivy.set_backend('tensorflow')
     >>> func = lambda x :x**2
     >>> xs = ivy.native_array([1.,2.,5.])
     >>> results = ivy.execute_with_gradients(func, \
-                xs)
+        xs)
     >>> func_output,grads = results
     >>> print("function output: ", func_output)
     >>> print("grads: ", grads)
@@ -433,11 +431,9 @@ def execute_with_gradients(func: Callable,
 
     With :code:`ivy.Container` input:
 
-    >>> ivy.set_backend('tensorflow')
     >>> func = lambda x :2*x**2
-    >>> xs = ivy.Container(
-    >>>    a=ivy.array([1.,1.,1.]),
-    >>>    b =ivy.array([5.,5.,5.]) )
+    >>> xs = ivy.Container(a=ivy.array([1.,1.,1.]), \
+        b =ivy.array([5.,5.,5.]))
     >>> func_outputs,grads = ivy.execute_with_gradients(func, \
                 xs)
     >>> print("function outputs: ", func_outputs)

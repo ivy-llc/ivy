@@ -214,7 +214,6 @@ class ArrayWithGradients(abc.ABC):
         function output:  ivy.array([  1.,   0., 100.])
         grads:  ivy.array([ 2.,  0., 20.])
 
-        >>> ivy.set_backend('tensorflow')
         >>> z  = ivy.variable(ivy.array([2.,1.,100.]))
         >>> func = lambda x :ivy.matmul(z,x)
         >>> xs = ivy.array([1.,1.,1.])

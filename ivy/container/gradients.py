@@ -310,9 +310,8 @@ class ContainerWithGradients(ContainerBase):
         With multiple :code:`ivy.Container` inputs:
 
         >>> func = lambda x: x**2
-        >>> xs = ivy.Container(
-        >>>            a=ivy.array([1.,1.,1.]),
-        >>>            b =ivy.array([5.,5.,5.]) )
+        >>> xs = ivy.Container(a=ivy.array([1.,1.,1.]), \
+                               b =ivy.array([5.,5.,5.]) )
         >>> results = ivy.Container.static_execute_with_gradients(func, \
                     xs)
         >>> a_func_output, a_grads = results['a']
@@ -390,7 +389,7 @@ class ContainerWithGradients(ContainerBase):
 
         >>> func = lambda x: x**2
         >>> xs = ivy.Container(a=ivy.array([1.,1.,1.]), \
-                b =ivy.array([5.,5.,5.]) )
+            b =ivy.array([5.,5.,5.]))
         >>> results = xs.execute_with_gradients(func)
         >>> a_func_output, a_grads = results['a']
         >>> b_func_output, b_grads = results['b']
