@@ -1713,7 +1713,7 @@ def default(
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.default(x, ivy.array([4, 5, 6]), with_callable=True)
     >>> print(y)
-    [1, 2, 3]
+    ivy.array([1, 2, 3])
 
     """
     with_callable = catch_exceptions or with_callable
