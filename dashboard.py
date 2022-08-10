@@ -5,7 +5,7 @@ import emoji
 import pandas as pd
 
 
-url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master"
+url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&exclude_pull_requests=true"
 
 headers = {
     "Accept": "application/vnd.github+json",
