@@ -75,7 +75,6 @@
 <li class="toctree-l3"><a class="reference internal" href="adam_step_functional.html">ivy.adam_step</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Array.adam_step</a></li>
 <li class="toctree-l3"><a class="reference internal" href="adam_step_container.html">ivy.Container.adam_step</a></li>
-<li class="toctree-l3"><a class="reference internal" href="static_adam_step_container.html">ivy.Container.static_adam_step</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../optimizer_update.html">optimizer_update</a></li>
@@ -83,6 +82,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../lars_update.html">lars_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../adam_update.html">adam_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lamb_update.html">lamb_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jac.html">jac</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../grad.html">grad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
@@ -158,7 +159,7 @@
 <h1>ivy.Array.adam_step<a class="headerlink" href="#ivy-array-adam-step" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.array.array_methods.adam_step">
-<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">adam_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/gradients.html#ArrayWithGradients.adam_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.adam_step" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">adam_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/gradients.html#ArrayWithGradients.adam_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.adam_step" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of <a href="../adam_step/adam_step_functional.html">ivy.adam_step</a>. This method simply wraps the
 function, and so the docstring for <a href="../adam_step/adam_step_functional.html">ivy.adam_step</a> also applies to this method
 with minimal changes.</p>
@@ -169,9 +170,9 @@ with minimal changes.</p>
 <li><p><strong>mw</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of the gradients.</p></li>
 <li><p><strong>vw</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of second moments of the gradients.</p></li>
 <li><p><strong>step</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – training step.</p></li>
-<li><p><strong>beta1</strong> – gradient forgetting factor (Default value = 0.9).</p></li>
-<li><p><strong>beta2</strong> – second moment of gradient forgetting factor (Default value = 0.999).</p></li>
-<li><p><strong>epsilon</strong> – divisor during adam update, preventing division by zero
+<li><p><strong>beta1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – gradient forgetting factor (Default value = 0.9). (default: <code class="docutils literal notranslate"><span class="pre">0.9</span></code>)</p></li>
+<li><p><strong>beta2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – second moment of gradient forgetting factor (Default value = 0.999). (default: <code class="docutils literal notranslate"><span class="pre">0.999</span></code>)</p></li>
+<li><p><strong>epsilon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – divisor during adam update, preventing division by zero (default: <code class="docutils literal notranslate"><span class="pre">1e-07</span></code>)
 (Default value = 1e-7).</p></li>
 </ul>
 </dd>

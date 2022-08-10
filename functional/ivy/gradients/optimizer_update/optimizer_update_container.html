@@ -21,8 +21,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="ivy.Container.static_optimizer_update" href="static_optimizer_update_container.html" />
-    <link rel="prev" title="ivy.optimizer_update" href="optimizer_update_functional.html" /> 
+    <link rel="next" title="gradient_descent_update" href="../gradient_descent_update.html" />
+    <link rel="prev" title="ivy.Array.optimizer_update" href="optimizer_update_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -74,14 +74,16 @@
 <li class="toctree-l2"><a class="reference internal" href="../adam_step.html">adam_step</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../optimizer_update.html">optimizer_update</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="optimizer_update_functional.html">ivy.optimizer_update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimizer_update_array.html">ivy.Array.optimizer_update</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.optimizer_update</a></li>
-<li class="toctree-l3"><a class="reference internal" href="static_optimizer_update_container.html">ivy.Container.static_optimizer_update</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../gradient_descent_update.html">gradient_descent_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lars_update.html">lars_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../adam_update.html">adam_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lamb_update.html">lamb_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jac.html">jac</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../grad.html">grad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
@@ -157,10 +159,28 @@
 <h1>ivy.Container.optimizer_update<a class="headerlink" href="#ivy-container-optimizer-update" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.container_methods.optimizer_update">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">optimizer_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effective_grad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/gradients.html#ContainerWithGradients.optimizer_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.optimizer_update" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">optimizer_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effective_grad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/gradients.html#ContainerWithGradients.optimizer_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.optimizer_update" title="Permalink to this definition"></a></dt>
+<dd><p>Update weights ws of some function, given the true or effective derivatives
+of some cost c with respect to ws, [dc/dw for w in ws].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – Weights of the function to be updated.</p></li>
+<li><p><strong>effective_grad</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – Effective gradients of the cost c with respect to the weights ws,
+[dc/dw for w in ws].</p></li>
+<li><p><strong>lr</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – Learning rate(s), the rate(s) at which the weights should be updated
+relative to the gradient.</p></li>
+<li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients of the variables after each gradient step. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+Default is True.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output container, for writing the result to. It must have a shape (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The new function weights ws_new, following the optimizer updates.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -176,8 +196,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="optimizer_update_functional.html" class="btn btn-neutral float-left" title="ivy.optimizer_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="static_optimizer_update_container.html" class="btn btn-neutral float-right" title="ivy.Container.static_optimizer_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="optimizer_update_array.html" class="btn btn-neutral float-left" title="ivy.Array.optimizer_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../gradient_descent_update.html" class="btn btn-neutral float-right" title="gradient_descent_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
