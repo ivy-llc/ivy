@@ -9,9 +9,9 @@ import ivy.functional.backends.tensorflow as ivy_tf
 
 @st.composite
 def _det_arrays(draw):
-    arbitrary_dims = draw(st.lists(st.integers(min_value=1, max_value=10), max_size=5))
-    m = draw(st.integers(min_value=1, max_value=20))
-    shape = (*arbitrary_dims, m, m)
+    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
+    random_size = draw(st.integers(min_value=1, max_value=4))
+    shape = (*arbitrary_dims, random_size, random_size)
     return draw(
         helpers.dtype_and_values(
             available_dtypes=ivy_tf.valid_float_dtypes,
@@ -43,7 +43,5 @@ def test_tensorflow_det(
         fw=fw,
         frontend="tensorflow",
         fn_name="linalg.det",
-        rtol=1e-5,
-        atol=1e-5,
         input=np.asarray(x, dtype=input_dtype),
     )
