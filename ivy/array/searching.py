@@ -48,9 +48,10 @@ class ArrayWithSearching(abc.ABC):
 
     def argmin(
         self: ivy.Array,
+        /,
+        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """

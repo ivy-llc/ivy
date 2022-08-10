@@ -88,9 +88,10 @@ class ContainerWithSearching(ContainerBase):
     @staticmethod
     def static_argmin(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -126,9 +127,10 @@ class ContainerWithSearching(ContainerBase):
 
     def argmin(
         self: ivy.Container,
+        /,
+        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """

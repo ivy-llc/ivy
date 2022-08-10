@@ -117,9 +117,10 @@ def argmax(
 @handle_nestable
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, int]:
     """Returns the indices of the minimum values along a specified axis. When the
