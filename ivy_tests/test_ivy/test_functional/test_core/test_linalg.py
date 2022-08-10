@@ -704,8 +704,6 @@ def test_solve(
         min_num_dims=2,
     ),
     num_positional_args=st.integers(0, 1),
-    a=st.integers(1, 50),
-    b=st.integers(1, 50),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -1057,9 +1055,8 @@ def test_svd(
 
     ret, ret_from_np = results
     # flattened array returns
-    ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
-        ret=ret, ret_from_gt=ret_from_np
-    )
+    ret_np_flat = helpers.flatten(ret=ret)
+    ret_from_np_flat = helpers.flatten(ret=ret_from_np)
 
     # value test
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
