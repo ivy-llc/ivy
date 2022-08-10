@@ -25,3 +25,9 @@ def fill(dims, value, name="full"):
 
 
 fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+def argmax(values, axis, name=None):
+    return ivy.argmax(values, axis)
+
+
+argmax.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
