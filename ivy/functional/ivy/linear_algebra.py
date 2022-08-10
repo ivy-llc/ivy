@@ -169,7 +169,7 @@ def cross(
         type.
     axis
         the axis (dimension) of x1 and x2 containing the vectors for which to compute
-        the cross product.vIf set to -1, the function computes the cross product for
+        the cross product. If set to -1, the function computes the cross product for
         vectors defined by the last axis (dimension). Default: -1.
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -236,7 +236,7 @@ def cross(
     With a combination of :code:`ivy.NativeArray`
     and :code:`ivy.Array` inputs:
 
-    2. Axis = 0: changing vector definition
+    Axis = 0: changing vector definition
 
     >>> x = ivy.native_array([[1., 2.], \
                               [4., 5.], \
@@ -249,28 +249,6 @@ def cross(
     ivy.array([[ 0.,  0.],
                [7.,  8.],
                [ -4., -5.]])
-
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance inputs:
-
-    >>> x = ivy.array([1., 0., 0.])
-    >>> y = ivy.array([0., 1., 0.])
-    >>> z = x.cross(y)
-    >>> print(z)
-    ivy.array([0., 0., 1.])
-
-    With :code:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
-    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
-    >>> z = x.cross(y)
-    >>> print(z)
-    {
-    a: ivy.array([0., 0., 35.]),
-    b: ivy.array([0., 6., 0.])
-    }
 
     """
     return current_backend(x1).cross(x1, x2, axis, out=out)

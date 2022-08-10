@@ -253,7 +253,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         With :code:`ivy.Container` inputs:
         >>> x1 = ivy.Container.static_cross(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
         >>> x2 = ivy.Container.static_cross(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
-        >>> z = x.static_cross(x1,x2)
+        >>> z = ivy.Container.static_cross(x1,x2)
         >>> print(z)
         {
         a: ivy.array([0., 0., 35.]),
@@ -334,14 +334,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
         This function conforms to the `Array API Standard
         <https://data-apis.org/array-api/latest/>`_.
 
-        Functional Examples
-        --------
+        Instance Method Examples
+        ------------------------
 
         With :code:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
         >>> x2 = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
-        >>> z = x1.cross(x2)
+        >>> z = x1.cross(x1, x2)
         >>> print(z)
         {
         a: ivy.array([0., 0., 35.]),
@@ -351,26 +351,12 @@ class ContainerWithLinearAlgebra(ContainerBase):
         With a combination of :code:`ivy.Array`
         and :code:`ivy.Container` inputs:
 
-        >>> x1 = ivy.array([9., 0., 3.])
-        >>> x2 = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
-        >>> z = x1.cross(x2)
+        >>> x = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
+        >>> y = ivy.array([9., 0., 3.])
+        >>> z = ivy.cross(x,y)
         >>> print(z)
         {
-        a: ivy.array([-3., 3., 9.]),
-        b: ivy.array([0., -6., 0.])
-        }
-
-        Instance Method Examples
-        ------------------------
-
-        With :code:`ivy.Container` inputs:
-
-        >>> x1 = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
-        >>> x2 = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
-        >>> z = x1.cross(x2)
-        >>> print(z)
-        {
-        a: ivy.array([0., 0., 35.]),
+        a: ivy.array([3., -3., 9.]),
         b: ivy.array([0., 6., 0.])
         }
 
