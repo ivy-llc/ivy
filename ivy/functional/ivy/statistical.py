@@ -1,4 +1,4 @@
-# global
+ # global
 from typing import Union, Tuple, Optional, Sequence
 
 # local
