@@ -17,7 +17,7 @@ Data Types
 .. _`original definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/__init__.py#L225
 .. _`new definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16
 .. _`handled`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/backend_handler.py#L194
-.. _`data_type.py`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py
+.. _`data_type.py`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py
 .. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
 .. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555
