@@ -180,7 +180,7 @@ def matrix_norm(
             tf.reduce_sum(tf.abs(x), axis=axes[0], keepdims=True), axis=axes
         )
     elif ord == -2:
-        ret = tf.reduce_min(x, axis=(-2, -1), keepdims=keepdims)
+        ret = tf.reduce_min(tf.linalg.svd(x, compute_uv=False), axis=(-2, -1), keepdims=keepdims)
     elif ord == "nuc":
         if tf.size(x).numpy() == 0:
             ret = x

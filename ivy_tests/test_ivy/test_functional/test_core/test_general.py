@@ -1574,8 +1574,48 @@ def test_all_equal(x_val_and_dtypes, equality_matrix, as_variable, num_positiona
     equality_matrix=equality_matrix
     )
 
-def test_clip_matrix_norm():
-    return
+
+@given(
+    x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=2),
+    max_norm=st.floats(),
+    p=st.sampled_from([ 1, 2, float('inf'), 'fro', 'nuc']),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="clip_matrix_norm"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_clip_matrix_norm(
+    x,
+    max_norm,
+    p,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw,
+):
+    dtype, x = x[0], x[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="clip_matrix_norm",
+        rtol_=1e-5,
+        x=np.asarray(x, dtype=dtype),
+        max_norm=max_norm,
+        p=p,
+    )
 
 def test_value_is_nan():
     return
