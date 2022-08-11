@@ -1708,7 +1708,7 @@ def default(
     >>> x = ivy.array([4, 5, 6])
     >>> y = ivy.default(x, ivy.array([1, 2, 3]), rev=True)
     >>> print(y)
-    ivy.array([4, 5, 6])
+    ivy.array([1, 2, 3])
 
     >>> x = lambda: ivy.array([1, 2, 3])
     >>> y = ivy.default(x, ivy.array([4, 5, 6]), with_callable=True)
