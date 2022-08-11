@@ -685,8 +685,8 @@ def value_test(
     if type(ret_np_from_gt_flat) != list:
         ret_np_from_gt_flat = [ret_np_from_gt_flat]
     assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
-        "len(ret_np_flat) != len(ret_from_np_flat):\n\n"
-        "ret_np_flat:\n\n{}\n\nret_from_np_flat:\n\n{}".format(
+        "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
+        "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
             ret_np_flat, ret_np_from_gt_flat
         )
     )
