@@ -107,6 +107,7 @@ def test_torch_leaky_relu(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)
             )
+        ),
         min_num_dims=1,
     ),
     as_variable=st.booleans(),
