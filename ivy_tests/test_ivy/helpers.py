@@ -660,16 +660,16 @@ def flatten(*, ret):
     return ivy.multi_index_nest(ret, ret_idxs)
 
 
-def flatten_and_to_numpy(*, ret):
+def flatten_and_to_np(*, ret):
     # flatten the return
     ret_flat = flatten(ret=ret)
     # convert the return to NumPy
     return [ivy.to_numpy(x) for x in ret_flat]
 
 
-def get_ret_and_flattened_array(func, *args, **kwargs):
+def get_ret_and_flattened_np_array(func, *args, **kwargs):
     ret = func(*args, **kwargs)
-    return ret, flatten_and_to_numpy(ret=ret)
+    return ret, flatten_and_to_np(ret=ret)
 
 
 def value_test(
@@ -752,7 +752,7 @@ def gradient_test(
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
-    _, ret_np_flat = get_ret_and_flattened_array(
+    _, ret_np_flat = get_ret_and_flattened_np_array(
         ivy.execute_with_gradients, grad_fn, xs
     )
     grads_np_flat = ret_np_flat[1]
@@ -776,7 +776,7 @@ def gradient_test(
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
-    _, ret_np_from_gt_flat = get_ret_and_flattened_array(
+    _, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ivy.execute_with_gradients, grad_fn, xs
     )
     grads_np_from_gt_flat = ret_np_from_gt_flat[1]
@@ -1071,7 +1071,9 @@ def test_method(
     )
     # run
     ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
-    ret, ret_np_flat = get_ret_and_flattened_array(ins, *calling_args, **calling_kwargs)
+    ret, ret_np_flat = get_ret_and_flattened_np_array(
+        ins, *calling_args, **calling_kwargs
+    )
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     calling_args_gt, calling_kwargs_gt, _, _, _ = create_args_kwargs(
@@ -1087,7 +1089,7 @@ def test_method(
         as_variable_flags=as_variable_flags_constructor,
     )
     ins_gt = ivy.__dict__[class_name](*constructor_args_gt, **constructor_kwargs_gt)
-    ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_array(
+    ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ins_gt, *calling_args_gt, **calling_kwargs_gt
     )
     ivy.unset_backend()
@@ -1309,7 +1311,7 @@ def test_function(
             )
             return
 
-        ret, ret_np_flat = get_ret_and_flattened_array(
+        ret, ret_np_flat = get_ret_and_flattened_np_array(
             instance.__getattribute__(fn_name), *args, **kwargs
         )
     else:
@@ -1318,7 +1320,7 @@ def test_function(
                 fn=ivy.__dict__[fn_name], args=args, kwargs=kwargs
             )
             return
-        ret, ret_np_flat = get_ret_and_flattened_array(
+        ret, ret_np_flat = get_ret_and_flattened_np_array(
             ivy.__dict__[fn_name], *args, **kwargs
         )
     # assert idx of return if the idx of the out array provided
@@ -1330,11 +1332,11 @@ def test_function(
         else:
             assert ivy.is_array(ret)
         if instance_method:
-            ret, ret_np_flat = get_ret_and_flattened_array(
+            ret, ret_np_flat = get_ret_and_flattened_np_array(
                 instance.__getattribute__(fn_name), *args, **kwargs, out=out
             )
         else:
-            ret, ret_np_flat = get_ret_and_flattened_array(
+            ret, ret_np_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name], *args, **kwargs, out=out
             )
         assert ret is out
@@ -1377,7 +1379,7 @@ def test_function(
             )
             ivy.unset_backend()
             return
-        ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_array(
+        ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
             ivy.__dict__[fn_name], *args, **kwargs
         )
     except Exception as e:
@@ -1635,7 +1637,7 @@ def test_frontend_function(
         return ret, frontend_ret
 
     # flatten the return
-    ret_np_flat = flatten_and_to_numpy(ret=ret)
+    ret_np_flat = flatten_and_to_np(ret=ret)
 
     # value tests, iterating through each array in the flattened returns
     value_test(
