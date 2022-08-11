@@ -8,6 +8,7 @@ import termcolor
 import numpy as np
 import json
 
+
 try:
     # noinspection PyPackageRequirements
     import h5py
@@ -1624,59 +1625,6 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-
-
-    def matrix_norm(
-        self,
-        ord=2,
-        keepdims=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Compute matrix p-norm for each array in the container.
-
-        Parameters
-        ----------
-        p
-            Order of the norm. Default is 2.
-        axis
-            If axis is an integer, it specifies the axis of x along which to compute the
-            matrix norms. Default is None, in which case the flattened array is
-            considered.
-        keepdims
-            If this is set to True, the axes which are normed over are left in the
-            result as dimensions with size one. With this option the result will
-            broadcast correctly against the original x. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        ord
-            Default value = 2)
-
-        Returns
-        -------
-            Container object with the matrix norms for each sub-array returned.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def slice_via_key(self, slice_key):
         """Get slice of container, based on key.
 
@@ -1973,11 +1921,11 @@ class ContainerBase(dict, abc.ABC):
         with open(json_filepath, "w+") as json_data_file:
             json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
 
-    def to_list(self):
+    def to_nested_list(self):
         return_list = list()
         for key, value in self.items():
             if isinstance(value, ivy.Container):
-                return_list.append(value.to_list())
+                return_list.append(value.to_nested_list())
             elif value is not None and key != "_f":
                 return_list.append(value)
         return return_list

@@ -37,7 +37,7 @@ def dtype_value1_value2_axis(
             max_dim_size=max_dim_size,
         )
     )
-    axis = draw(st.integers(0, len(shape)))
+    axis = draw(helpers.ints(min_value=0, max_value=len(shape)))
     # make sure there is a dim with specific dim size
     shape = list(shape)
     shape = shape[:axis] + [specific_dim_size] + shape[axis:]
@@ -89,7 +89,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
             max_dim_size=max_dim_size,
         )
     )
-    axis = draw(st.integers(1, len(shape)))
+    axis = draw(helpers.ints(min_value=1, max_value=len(shape)))
 
     dtype = draw(st.sampled_from(available_dtypes))
 
@@ -124,7 +124,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
 def _get_dtype_and_matrix(draw):
     # batch_shape, shared, random_size
     input_dtype = draw(st.shared(st.sampled_from(ivy_np.valid_float_dtypes)))
-    random_size = draw(st.integers(min_value=2, max_value=4))
+    random_size = draw(helpers.ints(min_value=2, max_value=4))
     batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
     return input_dtype, draw(
         helpers.array_values(
@@ -143,9 +143,9 @@ def _get_first_matrix_and_dtype(draw):
         st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="shared_dtype")
     )
     shared_size = draw(
-        st.shared(st.integers(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    random_size = draw(st.integers(min_value=2, max_value=4))
+    random_size = draw(helpers.ints(min_value=2, max_value=4))
     batch_shape = draw(
         st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
     )
@@ -166,9 +166,9 @@ def _get_second_matrix_and_dtype(draw):
         st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="shared_dtype")
     )
     shared_size = draw(
-        st.shared(st.integers(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    random_size = draw(st.integers(min_value=2, max_value=4))
+    random_size = draw(helpers.ints(min_value=2, max_value=4))
     batch_shape = draw(
         st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
     )
@@ -238,10 +238,10 @@ def test_vector_to_skew_symmetric_matrix(
         available_dtypes=ivy_np.valid_float_dtypes,
         min_value=0,
         max_value=50,
-        shape=st.integers(2, 8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_power"),
-    n=st.integers(1, 8),
+    n=helpers.ints(min_value=1, max_value=8),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -385,15 +385,12 @@ def test_eigh(
         fn_name="eigh",
         x=x,
         test_values=False,
+        return_flat_np_arrays=True,
     )
     if results is None:
         return
 
-    ret, ret_from_np = results
-    # flattened array returns
-    ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
-        ret=ret, ret_from_gt=ret_from_np
-    )
+    ret_np_flat, ret_from_np_flat = results
 
     # value test
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
@@ -442,7 +439,7 @@ def test_eigvalsh(
         available_dtypes=ivy_np.valid_float_dtypes,
         min_value=0,
         max_value=50,
-        shape=st.integers(2, 20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
     data=st.data(),
@@ -565,7 +562,7 @@ def test_outer(
         available_dtypes=ivy_np.valid_float_dtypes,
         min_value=0,
         max_value=50,
-        shape=st.integers(2, 20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
     data=st.data(),
@@ -606,7 +603,7 @@ def _get_first_matrix(draw):
         st.shared(st.sampled_from(ivy_np.valid_float_dtypes), key="shared_dtype")
     )
     shared_size = draw(
-        st.shared(st.integers(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
     return input_dtype, draw(
         helpers.array_values(
@@ -625,7 +622,7 @@ def _get_second_matrix(draw):
         st.shared(st.sampled_from(ivy_np.valid_float_dtypes), key="shared_dtype")
     )
     shared_size = draw(
-        st.shared(st.integers(min_value=2, max_value=4), key="shared_size")
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
     return input_dtype, draw(
         helpers.array_values(
@@ -684,9 +681,9 @@ def test_solve(
         max_value=50,
         min_num_dims=2,
     ),
-    num_positional_args=st.integers(0, 1),
-    a=st.integers(1, 50),
-    b=st.integers(1, 50),
+    num_positional_args=helpers.ints(min_value=0, max_value=1),
+    a=helpers.ints(min_value=1, max_value=50),
+    b=helpers.ints(min_value=1, max_value=50),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -779,7 +776,7 @@ def test_tensordot(
         max_dim_size=50,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="trace"),
-    offset=st.integers(-10, 10),
+    offset=helpers.ints(min_value=-10, max_value=10),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -871,7 +868,7 @@ def test_vecdot(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="vector_norm"),
     kd=st.booleans(),
-    ord=st.integers(1, 2),
+    ord=helpers.ints(min_value=1, max_value=2),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -1063,10 +1060,12 @@ def test_svd(
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        min_value=-10,
+        max_value=10,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_norm"),
     kd=st.booleans(),
-    ord=st.integers(1, 2) | st.sampled_from(("fro", "nuc")),
+    ord=helpers.ints(min_value=1, max_value=2) | st.sampled_from(("fro", "nuc")),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -1149,7 +1148,7 @@ def test_matrix_rank(
         available_dtypes=ivy_np.valid_float_dtypes,
         min_value=0,
         max_value=10,
-        shape=st.integers(2, 5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1])) != 0
@@ -1247,10 +1246,10 @@ def test_cross(
         max_dim_size=50,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="diagonal"),
-    offset=st.integers(-10, 50),
-    axes=st.lists(st.integers(-2, 1), min_size=2, max_size=2, unique=True).filter(
-        lambda axes: axes[0] % 2 != axes[1] % 2
-    ),
+    offset=helpers.ints(min_value=-10, max_value=50),
+    axes=st.lists(
+        helpers.ints(min_value=-2, max_value=1), min_size=2, max_size=2, unique=True
+    ).filter(lambda axes: axes[0] % 2 != axes[1] % 2),
     data=st.data(),
 )
 @handle_cmd_line_args

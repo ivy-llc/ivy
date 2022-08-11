@@ -37,7 +37,7 @@ def array_equal(x0: mx.nd.NDArray, x1: mx.nd.NDArray) -> bool:
     return mx.nd.min(mx.nd.broadcast_equal(x0, x1)) == 1
 
 
-def to_numpy(x: mx.nd.NDArray) -> mx.nd.NDArray:
+def to_numpy(x: mx.nd.NDArray, copy: bool = True) -> mx.nd.NDArray:
     if isinstance(x, np.ndarray):
         return x
     else:
@@ -112,7 +112,10 @@ def inplace_decrement(x, val):
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, mx.nd.NDArray],
+    val: Union[ivy.Array, mx.nd.NDArray],
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native[:] += val_native
     if ivy.is_ivy_array(x):

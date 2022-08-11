@@ -38,7 +38,7 @@ def searchsorted(
     side="left",
     sorter=None,
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
     return torch.searchsorted(x, v, side=side)
