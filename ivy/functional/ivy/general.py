@@ -708,7 +708,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndar
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([-1, 0, 1])
-    >>> y = ivy.to_numpy(x, copy=False)
+    >>> y = ivy.to_numpy(x, copy=True)
     >>> print(y)
     [-1  0  1]
 
@@ -1838,10 +1838,10 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     None
 
     """
-    try: 
+    try:
         _ = fn(*args, **kwargs)
-        return fn 
-    except Exception: 
+        return fn
+    except Exception:
         return None
 
 
