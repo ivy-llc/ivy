@@ -1122,6 +1122,7 @@ def test_function(
     test_gradients: bool = False,
     ground_truth_backend: str = "tensorflow",
     device_: str = "cpu",
+    return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
 ):
     """Tests a function that consumes (or returns) arrays for the current backend
@@ -1162,6 +1163,11 @@ def test_function(
         if True, test for the correctness of gradients.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
+    device_
+        The device on which to create arrays
+    return_flat_np_arrays
+        If test_values is False, this flag dictates whether the original returns are
+        returned, or whether the flattened numpy arrays are returned.
     all_as_kwargs_np
         input arguments to the function as keyword arguments.
 
@@ -1409,6 +1415,8 @@ def test_function(
 
     # assuming value test will be handled manually in the test function
     if not test_values:
+        if return_flat_np_arrays:
+            return ret_np_flat, ret_np_from_gt_flat
         return ret, ret_from_gt
     # value test
     value_test(
