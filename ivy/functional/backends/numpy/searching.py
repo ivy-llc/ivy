@@ -5,9 +5,10 @@ import numpy as np
 
 def argmax(
     x: np.ndarray,
+    /,
+    *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmax(x, axis=axis, keepdims=keepdims, out=out)
@@ -20,9 +21,10 @@ argmax.support_native_out = True
 
 def argmin(
     x: np.ndarray,
+    /,
+    *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmin(x, axis=axis, keepdims=keepdims, out=out)

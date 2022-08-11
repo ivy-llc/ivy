@@ -7,10 +7,11 @@ from ivy.functional.backends.jax import JaxArray
 
 def argmax(
     x: JaxArray,
+    /,
+    *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.argmax(x, axis=axis, out=out, keepdims=keepdims)
 
@@ -23,7 +24,7 @@ def argmin(
     axis: Optional[int] = None,
     keepdims: bool = False,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.argmin(x, axis=axis, out=out, keepdims=keepdims)
 
