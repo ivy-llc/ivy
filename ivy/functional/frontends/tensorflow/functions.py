@@ -27,12 +27,12 @@ def fill(dims, value, name="full"):
 fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
-
 def multiply(x, y, name=None):
     return ivy.multiply(x, y)
 
 
 multiply.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
 
 def subtract(x, y, name=None):
     return ivy.subtract(x, y)
@@ -40,3 +40,9 @@ def subtract(x, y, name=None):
 
 subtract.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
+
+def average(x, y, name=None):
+    return ivy.average(x, y)
+
+
+average.unsupported_dtypes = {"torch": ("float16", "bfload16")}
