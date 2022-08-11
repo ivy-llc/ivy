@@ -3,7 +3,7 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -19,12 +19,12 @@ import ivy_tests.test_ivy.helpers as helpers
 
 # fomaml step unique vars
 @given(
-    inner_grad_steps=st.integers(1, 3),
+    inner_grad_steps=helpers.ints(min_value=1, max_value=3),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
     batched=st.booleans(),
     stop_gradients=st.booleans(),
-    num_tasks=st.integers(1, 2),
+    num_tasks=helpers.ints(min_value=1, max_value=2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
 def test_fomaml_step_unique_vars(
@@ -42,7 +42,8 @@ def test_fomaml_step_unique_vars(
 
     # Numpy does not support gradients, and jax does not support gradients on
     # custom nested classes
-    assume(not (fw == "numpy"))
+    if fw == "numpy":
+        return
 
     # config
     inner_learning_rate = 1e-2
@@ -167,12 +168,12 @@ def test_fomaml_step_unique_vars(
 
 # fomaml step shared vars
 @given(
-    inner_grad_steps=st.integers(1, 3),
+    inner_grad_steps=helpers.ints(min_value=1, max_value=3),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
     batched=st.booleans(),
     stop_gradients=st.booleans(),
-    num_tasks=st.integers(1, 2),
+    num_tasks=helpers.ints(min_value=1, max_value=2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
 def test_fomaml_step_shared_vars(
@@ -190,7 +191,8 @@ def test_fomaml_step_shared_vars(
     # Numpy does not support gradients, jax does not support gradients on custom
     # nested classes, and mxnet does not support only_inputs argument to
     # mx.autograd.grad
-    assume(not (fw in ["numpy", "mxnet"]))
+    if fw == "numpy":
+        return
 
     # config
     inner_learning_rate = 1e-2
@@ -334,12 +336,12 @@ def test_fomaml_step_shared_vars(
 
 # fomaml step overlapping vars
 @given(
-    inner_grad_steps=st.integers(1, 3),
+    inner_grad_steps=helpers.ints(min_value=1, max_value=3),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
     batched=st.booleans(),
     stop_gradients=st.booleans(),
-    num_tasks=st.integers(1, 2),
+    num_tasks=helpers.ints(min_value=1, max_value=2),
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
 def test_fomaml_step_overlapping_vars(
@@ -357,7 +359,8 @@ def test_fomaml_step_overlapping_vars(
     # Numpy does not support gradients, jax does not support gradients on custom
     # nested classes, and mxnet does not support only_inputs argument to
     # mx.autograd.grad
-    assume(not (fw in ["numpy", "mxnet"]))
+    if fw == "numpy":
+        return
 
     # config
     inner_learning_rate = 1e-2
