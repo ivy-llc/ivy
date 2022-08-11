@@ -21,12 +21,19 @@ jobs:
            persist-credentials: false
            submodules: "recursive"
 
-       - name: Cache hypothesis
-         uses: actions/cache@v3
-         with:
-           path: |
-             ivy/.hypothesis
-           key: ${{ runner.os }}-hypothesis
+      # - name: Download artifact
+      #   uses: dawidd6/action-download-artifact@v2
+      #   with:
+      #     workflow: test-fn-activations-torch.yml
+      #     name: hypothesis_test_ivy_stateful_zip
+      #     path: |
+      #       ivy/.hypothesis/
+
+      # - name: Unzip Hypothesis Examples
+      #   run: |
+      #     cd ivy/.hypothesis
+      #     unzip examples.zip
+      #     rm examples.zip
 
        - name: Run Stateful Tests
          id: tests
@@ -34,3 +41,19 @@ jobs:
            cd ivy
            mkdir -p .hypothesis
            ./test_ivy_stateful.sh ${{ matrix.backends }} ${{ matrix.submodules }}
+
+       - name: Zip Hypothesis Examples
+         run: |
+           cd ivy/.hypothesis
+           zip -r examples.zip examples
+
+       - name: Upload hypothesis
+         uses: actions/upload-artifact@v3
+         with:
+           name: hypothesis_test_ivy_stateful_zip
+           path: |
+             ivy/.hypothesis/examples.zip
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
