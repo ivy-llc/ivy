@@ -37,11 +37,9 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 
 **Useful Notes**
 
-* There are more :code:`dtype` sets than :code:`valid_float_dtypes`, there is also :code:`valid_int_dtypes`, :code:`valid_numeric_dtypes` and many more! It's important 
-when writing Ivy Frontend tests to pick the most appropriate :code:`dtype` set to ensure thorough testing!
+* There are more :code:`dtype` sets than :code:`valid_float_dtypes`, there is also :code:`valid_int_dtypes`, :code:`valid_numeric_dtypes` and many more! It's important when writing Ivy Frontend tests to pick the most appropriate :code:`dtype` set to ensure thorough testing!
 
-* The :code:`test_frontend_function` argument :code:`fn_tree` refers to the frontend function's reference in its native namespace not just the function name.
-For example :code:`lax.tan` for Jax or :code:`nn.functional.relu` for PyTorch.
+* The :code:`test_frontend_function` argument :code:`fn_tree` refers to the frontend function's reference in its native namespace not just the function name. For example :code:`lax.tan` for Jax or :code:`nn.functional.relu` for PyTorch.
 
 To get a better understanding for writing frontend tests lets run through some examples!
 
