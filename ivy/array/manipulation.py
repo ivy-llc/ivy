@@ -46,7 +46,7 @@ class ArrayWithManipulation(abc.ABC):
             an output array containing the concatenated values.
 
         """
-        return ivy.concat([self._data] + xs, axis, out=out)
+        return ivy.concat([self._data] + xs, axis=axis, out=out)
 
     def expand_dims(
         self: ivy.Array,
@@ -85,7 +85,7 @@ class ArrayWithManipulation(abc.ABC):
         >>> print(y)
         ivy.array([[-4.7, -2.3,  0.7]])
         """
-        return ivy.expand_dims(self._data, axis, out=out)
+        return ivy.expand_dims(self._data, axis=axis, out=out)
 
     def flip(
         self: ivy.Array,
@@ -100,7 +100,7 @@ class ArrayWithManipulation(abc.ABC):
         to this method with minimal changes.
 
         """
-        return ivy.flip(self._data, axis, out=out)
+        return ivy.flip(self._data, axis=axis, out=out)
 
     def permute_dims(
         self: ivy.Array,
@@ -252,7 +252,7 @@ class ArrayWithManipulation(abc.ABC):
         wraps the function, and so the docstring for ivy.stack also applies
         to this method with minimal changes.
         """
-        return ivy.stack([self._data] + arrays, axis, out=out)
+        return ivy.stack([self._data] + arrays, axis=axis, out=out)
 
     def clip(
         self: ivy.Array,
@@ -292,7 +292,7 @@ class ArrayWithManipulation(abc.ABC):
         >>> print(y)
         ivy.array([1., 1., 2., 3., 4., 5., 5., 5., 5., 5.])
         """
-        return ivy.clip(self._data, x_min=x_min, x_max=x_max, out=out)
+        return ivy.clip(self._data, x_min, x_max, out=out)
 
     def constant_pad(
         self: ivy.Array,
@@ -363,7 +363,12 @@ class ArrayWithManipulation(abc.ABC):
             A list of sub-arrays.
 
         """
-        return ivy.split(self._data, num_or_size_splits, axis, with_remainder)
+        return ivy.split(
+            self._data,
+            num_or_size_splits=num_or_size_splits,
+            axis=axis,
+            with_remainder=with_remainder,
+        )
 
     def swapaxes(
         self: ivy.Array,
@@ -378,7 +383,7 @@ class ArrayWithManipulation(abc.ABC):
         wraps the function, and so the docstring for ivy.split also applies
         to this method with minimal changes.
         """
-        return ivy.swapaxes(self._data, axis0=axis0, axis1=axis1, out=out)
+        return ivy.swapaxes(self._data, axis0, axis1, out=out)
 
     def tile(
         self: ivy.Array,

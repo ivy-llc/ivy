@@ -33,7 +33,7 @@ class ContainerWithManipulation(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "concat",
             xs,
-            axis,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -75,12 +75,13 @@ class ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_expand_dims(
         x: ivy.Container,
+        /,
+        *,
         axis: Union[int, Tuple[int], List[int]] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -153,7 +154,7 @@ class ContainerWithManipulation(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "expand_dims",
             x,
-            axis,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -163,12 +164,13 @@ class ContainerWithManipulation(ContainerBase):
 
     def expand_dims(
         self: ivy.Container,
+        /,
+        *,
         axis: Union[int, Tuple[int], List[int]] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -211,17 +213,19 @@ class ContainerWithManipulation(ContainerBase):
         """
         return self.static_expand_dims(
             self,
-            axis,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
     @staticmethod
     def static_split(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
         axis: int = 0,
         with_remainder: bool = False,
@@ -267,9 +271,9 @@ class ContainerWithManipulation(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "split",
             x,
-            num_or_size_splits,
-            axis,
-            with_remainder,
+            num_or_size_splits=num_or_size_splits,
+            axis=axis,
+            with_remainder=with_remainder,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -278,6 +282,8 @@ class ContainerWithManipulation(ContainerBase):
 
     def split(
         self: ivy.Container,
+        /,
+        *,
         num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
         axis: int = 0,
         with_remainder: bool = False,
@@ -322,24 +328,25 @@ class ContainerWithManipulation(ContainerBase):
         """
         return self.static_split(
             self,
-            num_or_size_splits,
-            axis,
-            with_remainder,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            num_or_size_splits=num_or_size_splits,
+            axis=axis,
+            with_remainder=with_remainder,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
     def static_permute_dims(
         x: ivy.Container,
+        /,
         axes: Tuple[int, ...],
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -360,12 +367,13 @@ class ContainerWithManipulation(ContainerBase):
 
     def permute_dims(
         self: ivy.Container,
+        /,
         axes: Tuple[int, ...],
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -376,22 +384,23 @@ class ContainerWithManipulation(ContainerBase):
         return self.static_permute_dims(
             self,
             axes,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
     @staticmethod
     def static_flip(
         x: ivy.Container,
+        /,
+        *,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -402,7 +411,7 @@ class ContainerWithManipulation(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "flip",
             x,
-            axis,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -412,12 +421,13 @@ class ContainerWithManipulation(ContainerBase):
 
     def flip(
         self: ivy.Container,
+        /,
+        *,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -427,23 +437,24 @@ class ContainerWithManipulation(ContainerBase):
         """
         return self.static_flip(
             self,
-            axis,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
     @staticmethod
     def static_reshape(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -521,12 +532,13 @@ class ContainerWithManipulation(ContainerBase):
 
     def reshape(
         self: ivy.Container,
+        /,
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -586,10 +598,10 @@ class ContainerWithManipulation(ContainerBase):
         return self.static_reshape(
             self,
             shape,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             copy=copy,
             out=out,
         )
@@ -597,13 +609,14 @@ class ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_roll(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         shift: Union[int, Tuple[int, ...], ivy.Container],
+        *,
         axis: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -677,7 +690,7 @@ class ContainerWithManipulation(ContainerBase):
             "roll",
             x,
             shift,
-            axis,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -687,13 +700,14 @@ class ContainerWithManipulation(ContainerBase):
 
     def roll(
         self: ivy.Container,
+        /,
         shift: Union[int, Sequence[int], ivy.Container],
+        *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -751,34 +765,35 @@ class ContainerWithManipulation(ContainerBase):
         return self.static_roll(
             self,
             shift,
-            axis,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
     @staticmethod
     def static_squeeze(
         x: ivy.Container,
+        /,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.squeze. This method simply
+        ivy.Container static method variant of ivy.squeeze. This method simply
         wraps the function, and so the docstring for ivy.squeeze also applies to
         this method with minimal changes.
         """
         return ContainerBase.multi_map_in_static_method(
             "squeeze",
             x,
-            axis,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -788,12 +803,13 @@ class ContainerWithManipulation(ContainerBase):
 
     def squeeze(
         self: ivy.Container,
+        /,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -823,11 +839,11 @@ class ContainerWithManipulation(ContainerBase):
         """
         return self.static_squeeze(
             self,
-            axis,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -854,7 +870,7 @@ class ContainerWithManipulation(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "stack",
             xs,
-            axis,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -896,13 +912,14 @@ class ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_repeat(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         repeats: Union[int, Iterable[int]],
+        *,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -924,7 +941,7 @@ class ContainerWithManipulation(ContainerBase):
             "repeat",
             x,
             repeats,
-            axis,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -934,13 +951,14 @@ class ContainerWithManipulation(ContainerBase):
 
     def repeat(
         self: ivy.Container,
+        /,
         repeats: Union[int, Iterable[int]],
+        *,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -961,23 +979,24 @@ class ContainerWithManipulation(ContainerBase):
         return self.static_repeat(
             self,
             repeats,
-            axis,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
     @staticmethod
     def static_tile(
         x: ivy.Container,
+        /,
         reps: Iterable[int],
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -998,12 +1017,13 @@ class ContainerWithManipulation(ContainerBase):
 
     def tile(
         self: ivy.Container,
+        /,
         reps: Iterable[int],
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1014,23 +1034,24 @@ class ContainerWithManipulation(ContainerBase):
         return self.static_tile(
             self,
             reps,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
     @staticmethod
     def static_constant_pad(
         x: ivy.Container,
-        pad_width: Union[ivy.Array, ivy.NativeArray],
+        /,
+        pad_width: Iterable[Tuple[int]],
+        *,
         value: Number = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1042,7 +1063,7 @@ class ContainerWithManipulation(ContainerBase):
             "constant_pad",
             x,
             pad_width,
-            value,
+            value=value,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1052,13 +1073,14 @@ class ContainerWithManipulation(ContainerBase):
 
     def constant_pad(
         self: ivy.Container,
+        /,
         pad_width: Iterable[Tuple[int]],
+        *,
         value: Number = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1069,23 +1091,24 @@ class ContainerWithManipulation(ContainerBase):
         return self.static_constant_pad(
             self,
             pad_width,
-            value,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            value=value,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
     @staticmethod
     def static_zero_pad(
         x: ivy.Container,
+        /,
         pad_width: Iterable[Tuple[int]],
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1106,12 +1129,13 @@ class ContainerWithManipulation(ContainerBase):
 
     def zero_pad(
         self: ivy.Container,
+        /,
         pad_width: Iterable[Tuple[int]],
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1122,10 +1146,10 @@ class ContainerWithManipulation(ContainerBase):
         return self.static_zero_pad(
             self,
             pad_width,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -1134,11 +1158,12 @@ class ContainerWithManipulation(ContainerBase):
         x: ivy.Container,
         axis0: int,
         axis1: int,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1162,11 +1187,12 @@ class ContainerWithManipulation(ContainerBase):
         self: ivy.Container,
         axis0: int,
         axis1: int,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1178,10 +1204,10 @@ class ContainerWithManipulation(ContainerBase):
             self,
             axis0,
             axis1,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -1190,11 +1216,12 @@ class ContainerWithManipulation(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
         x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1272,11 +1299,12 @@ class ContainerWithManipulation(ContainerBase):
         self: ivy.Container,
         x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
         x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1326,9 +1354,9 @@ class ContainerWithManipulation(ContainerBase):
             self,
             x_min,
             x_max,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )

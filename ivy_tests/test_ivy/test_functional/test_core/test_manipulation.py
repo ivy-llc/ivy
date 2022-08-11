@@ -17,29 +17,40 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @st.composite
 def _concat_helper(draw):
     dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
-    shape = draw(helpers.get_shape(min_num_dims=1))
+    shape = list(draw(helpers.get_shape(min_num_dims=1)))
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    num_arrays = draw(st.integers(1, 5))
+    num_arrays = draw(st.shared(st.integers(1, 5), key="num_arrays"))
     arrays = []
     dtypes = [dtype for _ in range(num_arrays)]
-    for _ in range(num_arrays):
-        diff_dim_size = draw(st.integers(0, 10))
-        array_shape = list(shape)
-        array_shape[axis] = diff_dim_size
 
-        _, array = draw(
-            helpers.dtype_and_values(
-                available_dtypes=ivy_np.valid_dtypes, shape=tuple(array_shape)
-            )
-        )
+    for i in range(num_arrays):
+        array_shape = shape[:]
+        array_shape[axis] = draw(st.integers(1, 10))
+        array_shape = tuple(array_shape)
+
+        array = draw(helpers.array_values(dtype=dtype, shape=array_shape))
         arrays.append(np.asarray(array, dtype=dtype))
+        if len(shape) != len(arrays[-1].shape):
+            print(shape, arrays[-1].shape, array_shape)
     return dtypes, arrays, axis
 
 
 # concat
+@settings(max_examples=100)
 @given(
     dtypes_arrays_axis=_concat_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="concat"),
+    instance_method=st.booleans(),
+    with_out=st.booleans(),
+    as_variable=helpers.array_bools(
+        num_arrays=st.shared(st.integers(1, 5), key="num_arrays")
+    ),
+    native_array=helpers.array_bools(
+        num_arrays=st.shared(st.integers(1, 5), key="num_arrays")
+    ),
+    container=helpers.array_bools(
+        num_arrays=st.shared(st.integers(1, 5), key="num_arrays")
+    ),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -61,7 +72,7 @@ def test_concat(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -111,7 +122,7 @@ def test_expand_dims(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -163,7 +174,7 @@ def test_flip(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -217,7 +228,7 @@ def test_permute_dims(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -264,7 +275,7 @@ def test_reshape(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -332,7 +343,7 @@ def test_roll(
         input_dtypes=value_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -390,7 +401,7 @@ def test_squeeze(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -457,7 +468,7 @@ def test_stack(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -510,7 +521,7 @@ def test_clip(
         input_dtypes=[x_dtype, min_dtype, max_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=3,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -570,7 +581,7 @@ def test_constant_pad(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -667,7 +678,7 @@ def test_repeat(
         input_dtypes=value_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -767,7 +778,7 @@ def test_split(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -822,7 +833,7 @@ def test_swapaxes(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=3,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -890,7 +901,7 @@ def test_tile(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -902,7 +913,7 @@ def test_tile(
 
 
 # zero_pad
-@settings(deadline=500)
+@settings(deadline=750)
 @given(
     dtype_value_pad_width=_pad_helper(),
     as_variable=st.booleans(),
@@ -933,7 +944,7 @@ def test_zero_pad(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
