@@ -6,6 +6,7 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
+
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes[1:],
@@ -16,7 +17,7 @@ import ivy.functional.backends.numpy as ivy_np
     as_variable=st.booleans(),
     native_array=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-    fn_name="ivy.functional.frontends.tensorflow.matrix_rank"
+        fn_name="ivy.functional.frontends.tensorflow.matrix_rank"
     ),
     tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
     data=st.data()
