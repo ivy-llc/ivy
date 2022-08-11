@@ -7,4 +7,4 @@ def hard_sigmoid(x):
     return x
 
 
-fill.unsupported_dtypes = {"torch": "float16"}
+hard_sigmoid.unsupported_dtypes = {"torch": "float16"}
