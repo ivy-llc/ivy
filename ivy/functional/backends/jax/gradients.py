@@ -6,7 +6,7 @@ import jax.lax as jlax
 import jaxlib
 from jaxlib.xla_extension import Buffer
 from ivy.functional.backends.jax import JaxArray
-from typing import Optional
+from typing import Optional, Callable
 
 
 # local
@@ -54,7 +54,31 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, grads, *rest)
 
 
+def value_and_grad(func):
+    grad_fn = lambda xs: ivy.to_native(func(xs))
+
+    def callback_fn(xs):
+        xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
+        ret = jax.value_and_grad(grad_fn)(xs)
+        ret = ivy.nested_map(ret, lambda x: ivy.to_ivy(x), include_derived=True)
+        return ret
+
+    return callback_fn
+
+
 def stop_gradient(
     x: JaxArray, preserve_type: bool = True, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jlax.stop_gradient(x)
+
+
+def jac(func: Callable):
+    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    callback_fn = lambda x_in: ivy.to_ivy(jax.jacfwd(grad_fn)((ivy.to_native(x_in))))
+    return callback_fn
+
+
+def grad(func: Callable):
+    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    callback_fn = lambda x_in: ivy.to_ivy(jax.grad(grad_fn)(ivy.to_native(x_in)))
+    return callback_fn
