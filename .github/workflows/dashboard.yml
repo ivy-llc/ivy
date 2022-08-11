@@ -1,9 +1,5 @@
 name: CI Dashboard
-on:
-  workflow_run:
-    workflows: [test-nn-ivy, test-stateful-ivy, test-core-ivy]
-    types:
-      - completed
+on: [push]
 jobs:
   Trigger-Dashboard:
     name: Trigger Dashboard
