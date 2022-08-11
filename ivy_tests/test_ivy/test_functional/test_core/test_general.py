@@ -1655,7 +1655,7 @@ def test_queue_timeout():
 def test_tmp_dir():
     return
 
-def test_set_tmp_dir(x):
+def test_set_tmp_dir():
     return
 
 @given(
