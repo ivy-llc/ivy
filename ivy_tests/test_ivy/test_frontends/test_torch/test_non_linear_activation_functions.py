@@ -54,7 +54,6 @@ def test_torch_sigmoid(
             )
         )
     ),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.leaky_relu"
     ),
@@ -62,7 +61,6 @@ def test_torch_sigmoid(
 )
 def test_torch_leaky_relu(
     dtype_and_x,
-    with_out,
     num_positional_args,
     fw,
     alpha,
@@ -71,12 +69,12 @@ def test_torch_leaky_relu(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=False,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=False,
         fw=fw,
         frontend="torch",
-        fn_name="leaky_relu",
+        fn_name="nn.functional.leaky_relu",
         input=np.asarray(x, dtype=input_dtype),
-        alpha=alpha,
+        negative_slope=alpha,
     )

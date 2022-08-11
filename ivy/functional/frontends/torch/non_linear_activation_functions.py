@@ -9,8 +9,8 @@ def sigmoid(input, out=None):
 sigmoid.unsupported_dtypes = ("float16",)
 
 
-def leaky_relu(input, alpha=0.01):
-    return ivy.leaky_relu(input, alpha)
+def leaky_relu(input, negative_slope=0.01):
+    return ivy.leaky_relu(input, negative_slope)
 
 
 leaky_relu.unsupported_dtypes = ("float16",)
