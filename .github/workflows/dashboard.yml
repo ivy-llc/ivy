@@ -1,9 +1,5 @@
 name: CI Dashboard
-on:
-  workflow_run:
-    workflows: [test-nn-ivy, test-stateful-ivy, test-core-ivy]
-    types:
-      - completed
+on: [push]
 jobs:
   Trigger-Dashboard:
     name: Trigger Dashboard
@@ -17,17 +13,21 @@ jobs:
 
       - name: Setup Python
         uses: actions/setup-python@v3
+        with:
+          python-version: '3.10' 
 
       - name: Install Libraries
-      - uses: BSFishy/pip-action@v1
+        uses: BSFishy/pip-action@v1
         with:
            packages: |
+             requests
              emoji
              pandas
 
       - name: Run Dashboard file
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WORKING_DIR: ${GITHUB_WORKSPACE}
-      - run: |
+        run: |
             cd ivy
-            python3 dashboard.py $WORKING_DIR
+            python3 dashboard.py "$WORKING_DIR" "$GITHUB_TOKEN"

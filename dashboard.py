@@ -5,11 +5,11 @@ import emoji
 import pandas as pd
 
 
-url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master"
+url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&exclude_pull_requests=true&status=completed"
 
 headers = {
     "Accept": "application/vnd.github+json",
-    "Authorization": "Bearer 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",
+    "Authorization": "",
 }
 functional_nn_dict = dict()
 functional_core_dict = dict()
@@ -23,7 +23,8 @@ output_files: dict = {
 results = []
 
 
-def get_api_results(url, headers):
+def get_api_results(url, token, headers):
+    headers["Authorization"] = "Bearer " + token
     response = requests.request("GET", url, headers=headers)
     return json.loads(response.text)
 
@@ -38,8 +39,8 @@ def get_DataFrame(result_dict: dict) -> pd.DataFrame:
     return data
 
 
-def workflow_results():
-    output = get_api_results(url, headers)
+def workflow_results(token):
+    output = get_api_results(url, token, headers)
     for info in output["workflow_runs"]:
         if info["name"] not in (
             "test-core-ivy",
@@ -63,12 +64,12 @@ def workflow_results():
     return workflow_df
 
 
-def get_matrix_job_data():
+def get_matrix_job_data(token):
     # list all workflows running for the branch
-    workflow_df = workflow_results()
+    workflow_df = workflow_results(token)
     # extract jobs from the workflows above
     for name, jobs_url in zip(workflow_df["name"], workflow_df["jobs_url"]):
-        for info in get_api_results(jobs_url + "?per_page=100", headers)["jobs"]:
+        for info in get_api_results(jobs_url + "?per_page=100", token, headers)["jobs"]:
             # extract backend and submodule name from json
             backend = info["name"].strip("run-nightly-tests")[2:-1].split(",")[0]
             submodule = info["name"].strip("run-nightly-tests")[2:-1].split(",")[1]
@@ -124,8 +125,8 @@ def get_matrix_job_data():
 
 
 def main():
-    path = sys.argv[1]
-    ivy_modules = get_matrix_job_data()
+    path, token = (str(sys.argv[1]), str(sys.argv[2]))
+    ivy_modules = get_matrix_job_data(token)
     for i, module in enumerate(ivy_modules):
         module_df = get_DataFrame(module)
         module_df.to_html(f"{path}/{output_files[i]}.html")
