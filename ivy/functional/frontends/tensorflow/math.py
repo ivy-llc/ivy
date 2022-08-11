@@ -47,4 +47,5 @@ divide.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 def logical_or(x, y, name='LogicalOr'):
     return ivy.logical_or(x, y)
 
+
 logical_or.supported_dtypes = {"torch": ("bool", "bool")}
