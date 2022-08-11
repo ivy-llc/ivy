@@ -682,8 +682,6 @@ def test_solve(
         min_num_dims=2,
     ),
     num_positional_args=helpers.ints(min_value=0, max_value=1),
-    a=helpers.ints(min_value=1, max_value=50),
-    b=helpers.ints(min_value=1, max_value=50),
     data=st.data(),
 )
 @handle_cmd_line_args
