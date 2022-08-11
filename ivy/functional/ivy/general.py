@@ -688,14 +688,15 @@ def all_equal(
 
 @inputs_to_native_arrays
 @handle_nestable
-def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
+def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndarray:
     """Converts an array into a numpy array.
 
     Parameters
     ----------
     x
         input array
-
+    copy
+        whether to copy the array to a new address or not. Default is True.
     Returns
     -------
     ret
@@ -707,12 +708,12 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([-1, 0, 1])
-    >>> y = ivy.to_numpy(x)
+    >>> y = ivy.to_numpy(x, copy=True)
     >>> print(y)
     [-1  0  1]
 
     >>> x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
-    >>> y = ivy.to_numpy(x)
+    >>> y = ivy.to_numpy(x, copy=True)
     >>> print(y)
     [[-1  0  1]
     [-1  0  1]
@@ -815,7 +816,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray]) -> np.ndarray:
     }
 
     """
-    return current_backend(x).to_numpy(x)
+    return current_backend(x).to_numpy(x, copy)
 
 
 @inputs_to_native_arrays
@@ -1110,7 +1111,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
     >>> y = x.to_list()
     >>> print(y)
-    [ivy.array([0,1,2])]
+    {a:[0,1,2]}
 
     """
     return current_backend(x).to_list(x)
@@ -1252,9 +1253,75 @@ def clip_matrix_norm(
     ret
         An array with the matrix norm downscaled to the max norm if needed.
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[0., 1., 2.]])
+    >>> y = ivy.clip_matrix_norm(x, 2.0)
+    >>> print(y)
+    ivy.array([[0.   , 0.894, 1.79 ]])
+
+    >>> x = ivy.array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])
+    >>> y = ivy.clip_matrix_norm(x, 3.0, 1.0)
+    >>> print(y)
+    ivy.array([[ 0.0353, -0.424 ,  1.31  ],
+               [ 0.    ,  2.58  , -0.176 ]])
+
+    >>> x = ivy.array([[[5., 4.], [-2., 6.]], \
+                       [[3., 7.], [0., -5.]]])
+    >>> y = ivy.empty((2, 2, 2))
+    >>> ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)
+    >>> print(y)
+    ivy.array([[[ 0.339,  0.271],
+                [-0.135,  0.406]],
+               [[ 0.168,  0.391],
+                [ 0.   , -0.279]]])
+
+    >>> x = ivy.array([[0., 1.], \
+                       [2., 3.]])
+    >>> ivy.clip_matrix_norm(x, 5.0, 1.0, out=x)
+    >>> print(x)
+    ivy.array([[0., 1.],
+               [2., 3.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[0., 1., 2.]])
+    >>> y = ivy.clip_matrix_norm(x, 2.0)
+    >>> print(y)
+    ivy.array([[0.   , 0.894, 1.79 ]])
+
+    >>> x = ivy.native_array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])
+    >>> y = ivy.clip_matrix_norm(x, 3.0, 1.0)
+    >>> print(y)
+    ivy.array([[ 0.0353, -0.424 ,  1.31  ],
+               [ 0.    ,  2.58  , -0.176 ]])
+
+    >>> x = ivy.native_array([[[5., 4.], [-2., 6.]], \
+                       [[3., 7.], [0., -5.]]])
+    >>> y = ivy.empty((2, 2, 2))
+    >>> ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)
+    >>> print(y)
+    ivy.array([[[ 0.339,  0.271],
+                [-0.135,  0.406]],
+               [[ 0.168,  0.391],
+                [ 0.   , -0.279]]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
+                          b=ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.clip_matrix_norm(x, 2.0)
+    >>> print(y)
+    {
+        a: ivy.array([[0., 0.894, 1.79]]),
+        b: ivy.array([[0.849, 1.13, 1.41]])
+    }
     """
     norms = ivy.matrix_norm(x, p, keepdims=True)
-    ratios = ivy.maximum(ivy.stable_divide(max_norm, norms), 1.0)
+    ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
 
 
@@ -1692,17 +1759,46 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
 
 
 @handle_nestable
-def try_else_none(fn):
-    """Try and return the function, otherwise return None if an exception was raised
-    during function execution.
+def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, None]:
+    """Try and return the function, otherwise return None
+        if an exception was raised during function execution.
 
     Parameters
     ----------
     fn
         Function to try and call and return.
+    args
+        list of arguments.
+    kwargs
+        dictionay of keyword arguments
+
+    Returns
+    -------
+        Either the function itself or None if an exception was raised
+        during function execution.
+
+    Examples
+    --------
+    with: if the function is executed without any exception
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = ivy.try_else_none(ivy.add,x, y)
+    >>> print(z.__name__)
+    add
+
+    with: if the function is executed with an exception
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = 'hemant'
+    >>> z = ivy.try_else_none(ivy.add,x, y)
+    >>> print(z)
+    None
 
     """
-    return default(fn, None, True)
+    try:
+        _ = fn(*args, **kwargs)
+        return fn
+    except Exception:
+        return None
 
 
 def arg_names(receiver):
@@ -1964,7 +2060,21 @@ def set_min_denominator(val: float) -> None:
 
 
 def get_min_base() -> float:
-    """Get the global minimum base used by ivy for numerically stable power raising."""
+    """
+    Gets the global minimum base used by ivy for numerically stable power raising.
+
+    Returns
+    -------
+    ret
+        Global minimum base number
+
+    Examples
+    --------
+    >>> x = ivy.get_min_base()
+    >>> print(x)
+    1e-05
+
+    """
     # noinspection PyProtectedMember
     return ivy._MIN_BASE
 
