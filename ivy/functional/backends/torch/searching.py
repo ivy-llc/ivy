@@ -21,9 +21,10 @@ argmax.support_native_out = True
 
 def argmin(
     x: torch.Tensor,
+    /,
+    *,
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = torch.tensor(x)

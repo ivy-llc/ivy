@@ -19,9 +19,10 @@ def argmax(
 
 def argmin(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
