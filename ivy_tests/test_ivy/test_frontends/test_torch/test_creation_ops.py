@@ -24,9 +24,9 @@ def _dtypes(draw):
 def _fill_value(draw):
     dtype = draw(_dtypes())[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(st.integers(0, 5))
+        return draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
-        return draw(st.integers(-5, 5))
+        return draw(helpers.ints(min_value=-5, max_value=5))
     return draw(st.floats(-5, 5))
 
 
