@@ -450,7 +450,7 @@ def test_clip_vector_norm(
 #     ),
 #     as_variable=st.booleans(),
 #     with_out=st.booleans(),
-#     num_positional_args=st.integers(1, 2),
+#     num_positional_args=helpers.ints(min_value=1, max_value=2),
 #     native_array=st.booleans(),
 #     container=st.booleans(),
 #     instance_method=st.booleans(),
@@ -851,17 +851,14 @@ def test_scatter_flat(inds_n_upd_n_size_n_tnsr_n_wdup, red, dtype, tensor_fn, ca
     if red == "replace" and with_duplicates:
         # replace with duplicates give non-deterministic outputs
         return
+    inds_np = ivy.to_numpy(inds)
+    upd_np = ivy.to_numpy(upd)
+    tensor_np = ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor
+    with ivy.functional.backends.numpy.use:
+        true_np = ivy.scatter_flat(inds_np, upd_np, size, tensor_np, red).data
     assert np.allclose(
         call(ivy.scatter_flat, inds, upd, size, tensor, red),
-        np.asarray(
-            ivy.functional.backends.numpy.scatter_flat(
-                ivy.to_numpy(inds),
-                ivy.to_numpy(upd),
-                size,
-                ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor,
-                red,
-            )
-        ),
+        true_np,
     )
 
 
@@ -927,17 +924,13 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, call)
     if red == "replace" and with_duplicates:
         # replace with duplicates give non-deterministic outputs
         return
+    inds_np = ivy.to_numpy(inds)
+    upd_np = ivy.to_numpy(upd)
+    tensor_np = ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor
+    with ivy.functional.backends.numpy.use:
+        true_np = ivy.scatter_nd(inds_np, upd_np, shape, tensor_np, red).data
     ret = call(ivy.scatter_nd, inds, upd, shape, tensor, red)
-    true = np.asarray(
-        ivy.functional.backends.numpy.scatter_nd(
-            ivy.to_numpy(inds),
-            ivy.to_numpy(upd),
-            shape,
-            ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor,
-            red,
-        )
-    )
-    assert np.allclose(ret, true)
+    assert np.allclose(ret, true_np)
 
 
 # gather
