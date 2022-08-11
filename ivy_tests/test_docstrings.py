@@ -46,7 +46,7 @@ def test_docstrings(backend):
         "unique_all",
         "total_mem_on_dev",
     ]
-    # the temp skip list consists of function which have an issue with their
+    # the temp skip list consists of functions which have an issue with their
     # implementation
     skip_list_temp = [
         "outer",
@@ -55,14 +55,11 @@ def test_docstrings(backend):
         "det",
         "cumprod",
         "where",
-        "conv3d_transpose",
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = [
-        "cross_entropy",
-    ]
-    currently_being_worked_on = []
+    skip_arr_cont = ["layer_norm"]
+    currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp + currently_being_worked_on
@@ -71,12 +68,10 @@ def test_docstrings(backend):
         if k == "Array":
             for method_name in dir(v):
                 method = getattr(ivy.Array, method_name)
-                if method_name in skip_arr_cont \
-                        or helpers.gradient_incompatible_function(
-                    fn=method
-                ) \
-                        or helpers.docstring_examples_run(
-                    fn=method, from_array=True
+                if (
+                    method_name in skip_arr_cont
+                    or helpers.gradient_incompatible_function(fn=method)
+                    or helpers.docstring_examples_run(fn=method, from_array=True)
                 ):
                     continue
                 success = False
@@ -85,24 +80,20 @@ def test_docstrings(backend):
         elif k == "Container":
             for method_name in dir(v):
                 method = getattr(ivy.Container, method_name)
-                if method_name in skip_arr_cont \
-                        or helpers.gradient_incompatible_function(
-                        fn=method
-                ) \
-                        or helpers.docstring_examples_run(
-                    fn=method, from_container=True
+                if (
+                    method_name in skip_arr_cont
+                    or helpers.gradient_incompatible_function(fn=method)
+                    or helpers.docstring_examples_run(fn=method, from_container=True)
                 ):
                     continue
                 success = False
                 failures.append("Container." + method_name)
 
         else:
-            if k in to_skip \
-                    or helpers.gradient_incompatible_function(
-                    fn=v
-            ) \
-                    or helpers.docstring_examples_run(
-                    fn=v
+            if (
+                k in to_skip
+                or helpers.gradient_incompatible_function(fn=v)
+                or helpers.docstring_examples_run(fn=v)
             ):
                 continue
             success = False

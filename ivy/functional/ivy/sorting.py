@@ -63,9 +63,8 @@ def argsort(
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With: code:`ivy.Array` input:
 
     >>> x = ivy.array([3,1,2])
@@ -208,8 +207,8 @@ def sort(
 
     """
     return ivy.current_backend(x).sort(x, axis, descending, stable, out=out)
-    
-    
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -222,49 +221,50 @@ def searchsorted(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the inserted elements in a sorted array.
-    
+
     Parameters
     ----------
     x
         input array
     v
-        specific elements to insert in array x1  
+        specific elements to insert in array x1
     side
-        The specific elements' index is at the 'left' side or 
-        'right' side in the sorted array x1. If the side is 'left', the 
-        index of the first suitable location located is given. If 
+        The specific elements' index is at the 'left' side or
+        'right' side in the sorted array x1. If the side is 'left', the
+        index of the first suitable location located is given. If
         'right', return the last such index.
     out
-        optional output array, for writing the result to. 
+        optional output array, for writing the result to.
 
     Returns
     -------
     ret
-         An array of insertion points. 
+         An array of insertion points.
 
     Examples
     --------
     With：code:`ivy.Array` inputs:
-    
+
     >>> x1 = ivy.array([2,1,0])
     >>> x2 = ivy.array([1])
     >>> y  = ivy.searchsorted(x1,x2)
     >>> print(y)
     ivy.array([0])
-    
+
     >>> x1 = ivy.array([1,0,3,2])
     >>> x2 = ivy.array([3])
     >>> y  = ivy.searchsorted(x1, x2, side='right')
     >>> print(y)
     ivy.array([4])
-    
+
     >>> x1 = ivy.array([2,0,1,3])
     >>> x2 = ivy.array([3,1,9])
     >>> y  = ivy.searchsorted(x1, x2, side='left')
     >>> print(y)
     ivy.array([3,2,4])
-    """ 
+    """
     return ivy.current_backend(x, v).searchsorted(x, v, side=side, out=out)
+
 
 # Extra #
 # ------#
