@@ -1824,19 +1824,17 @@ def match_kwargs(
 
     Examples
     --------
-    >>> x = ivy.zeros(3)
-    >>> y = ivy.arange(3)
-    >>> kwargs = {'out': x, 'bias': y}
-    >>> add_first = ivy.match_kwargs(kwargs, ivy.elementwise.add, ivy.layers.linear)
-    >>> print(add_first)
+    >>> o = ivy.zeros(3)
+    >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
+    >>> x = ivy.match_kwargs(kwargs, ivy.elementwise.add, ivy.layers.linear)
+    >>> print(x)
     [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
 
-    >>> x = ivy.zeros(3)
-    >>> y = ivy.arange(3)
-    >>> kwargs = {'out': x, 'bias': y}
-    >>> linear_first = ivy.match_kwargs(kwargs, ivy.layers.linear, ivy.elementwise.add)
-    >>> print(linear_first)
-    [{'out': ivy.array([0, 1, 2]), 'bias': ivy.array([3, 4, 5])}, {}]
+    >>> o = ivy.zeros(3)
+    >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
+    >>> x = ivy.match_kwargs(kwargs, ivy.layers.linear, ivy.elementwise.add)
+    >>> print(x)
+    [{'out': ivy.array([0, 0, 0]), 'bias': ivy.array([0, 1, 2])}, {}]
 
     """
     split_kwargs = list()
