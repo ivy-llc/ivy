@@ -20,6 +20,7 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 def arange(
     start: float,
+    /,
     stop: Optional[float] = None,
     step: float = 1,
     *,
@@ -40,6 +41,7 @@ def arange(
 
 def asarray(
     object_in: Union[np.ndarray, List[float], Tuple[float]],
+    /,
     *,
     copy: Optional[bool] = None,
     dtype: Optional[np.dtype] = None,
@@ -80,7 +82,7 @@ def empty(
 
 
 def empty_like(
-    x: np.ndarray, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return _to_device(np.empty_like(x, dtype=dtype), device=device)
 
@@ -88,9 +90,10 @@ def empty_like(
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
+    /,
+    *,
     k: Optional[int] = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
-    *,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None
@@ -108,7 +111,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def from_dlpack(x, *, out: Optional[np.ndarray] = None):
+def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
     # noinspection PyProtectedMember
     return np.from_dlpack(x)
 
@@ -131,6 +134,7 @@ def full(
 
 def full_like(
     x: np.ndarray,
+    /,
     fill_value: float,
     *,
     dtype: np.dtype,
@@ -144,10 +148,11 @@ def full_like(
 def linspace(
     start: Union[np.ndarray, float],
     stop: Union[np.ndarray, float],
+    /,
     num: int,
+    *,
     axis: Optional[int] = None,
     endpoint: bool = True,
-    *,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None
@@ -180,16 +185,16 @@ def ones(
 
 
 def ones_like(
-    x: np.ndarray, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return _to_device(np.ones_like(x, dtype=dtype), device=device)
 
 
-def tril(x: np.ndarray, k: int = 0, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def tril(x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.tril(x, k)
 
 
-def triu(x: np.ndarray, k: int = 0, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def triu(x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.triu(x, k)
 
 
@@ -204,7 +209,7 @@ def zeros(
 
 
 def zeros_like(
-    x: np.ndarray, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return _to_device(np.zeros_like(x, dtype=dtype), device=device)
 
@@ -219,10 +224,11 @@ array = asarray
 def logspace(
     start: Union[np.ndarray, int],
     stop: Union[np.ndarray, int],
+    /,
     num: int,
+    *,
     base: float = 10.0,
     axis: Optional[int] = None,
-    *,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None

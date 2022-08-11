@@ -21,6 +21,7 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 def arange(
     start: float,
+    /,
     stop: Optional[float] = None,
     step: float = 1,
     *,
@@ -58,6 +59,7 @@ def arange(
 
 def asarray(
     object_in: Union[tf.Tensor, tf.Variable, List[float], Tuple[float]],
+    /,
     *,
     copy: Optional[bool] = None,
     dtype: tf.DType = None,
@@ -126,6 +128,7 @@ def empty(
 
 def empty_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     dtype: tf.DType,
     device: str,
@@ -138,9 +141,10 @@ def empty_like(
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
+    /,
+    *,
     k: Optional[int] = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
-    *,
     dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
@@ -189,7 +193,7 @@ eye.unsupported_dtypes = ("uint16",)
 
 # noinspection PyShadowingNames
 def from_dlpack(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable], /, *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     dlcapsule = tf.experimental.dlpack.to_dlpack(x)
     return tf.experimental.dlpack.from_dlpack(dlcapsule)
@@ -214,6 +218,7 @@ def full(
 
 def full_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     fill_value: Union[int, float],
     *,
     dtype: tf.DType,
@@ -228,10 +233,11 @@ def full_like(
 def linspace(
     start: Union[tf.Tensor, tf.Variable, float],
     stop: Union[tf.Tensor, tf.Variable, float],
+    /,
     num: int,
+    *,
     axis: Optional[int] = None,
     endpoint: bool = True,
-    *,
     dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
@@ -268,6 +274,7 @@ def ones(
 
 def ones_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     dtype: tf.DType,
     device: str,
@@ -279,8 +286,9 @@ def ones_like(
 
 def tril(
     x: Union[tf.Tensor, tf.Variable],
-    k: int = 0,
+    /,
     *,
+    k: int = 0,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.tril(x, k)
@@ -288,8 +296,9 @@ def tril(
 
 def triu(
     x: Union[tf.Tensor, tf.Variable],
-    k: int = 0,
+    /,
     *,
+    k: int = 0,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.triu(x, k)
@@ -308,6 +317,7 @@ def zeros(
 
 def zeros_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     dtype: tf.DType,
     device: str,
@@ -327,10 +337,11 @@ array = asarray
 def logspace(
     start: Union[tf.Tensor, tf.Variable, int],
     stop: Union[tf.Tensor, tf.Variable, int],
+    /,
     num: int,
+    *,
     base: float = 10.0,
     axis: Optional[int] = None,
-    *,
     dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
