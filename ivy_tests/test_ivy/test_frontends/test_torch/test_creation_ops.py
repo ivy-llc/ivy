@@ -71,7 +71,7 @@ def test_torch_full(
         native_array_flags=False,
         fw=fw,
         frontend="torch",
-        fn_name="full",
+        fn_tree="full",
         size=shape,
         fill_value=fill_value,
         dtype=dtypes[0],

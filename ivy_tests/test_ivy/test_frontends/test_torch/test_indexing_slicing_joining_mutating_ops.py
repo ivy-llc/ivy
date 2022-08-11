@@ -65,7 +65,7 @@ def test_torch_cat(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="cat",
+        fn_tree="cat",
         tensors=xs,
         dim=unique_idx,
         out=None,

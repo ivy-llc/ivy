@@ -47,7 +47,7 @@ def test_numpy_where(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="where",
+        fn_tree="where",
         cond=cond,
         x1=x1,
         x2=x2,
