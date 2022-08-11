@@ -164,11 +164,8 @@ It also enables other helpful perks, such as auto-completions in the IDE etc.
 API Special Methods
 --------------------
 
-As is the case for the :code:`ivy.Array`,
-most special methods of the :code:`ivy.Container` simply wrap a corresponding function in the functional API.
-
-The special methods which **do not** wrap functions in the functional API are implemented in `ContainerBase`_,
-which is the base abstract class for all containers.
+All non-operator special methods are implemented in `ContainerBase`_,
+which is the abstract base class for all containers.
 These special methods include
 `__repr__`_ which controls how the container is printed in the terminal,
 `__getattr__`_ that enables keys in the underlying :code:`dict` to be queried as attributes,
@@ -178,17 +175,22 @@ These special methods include
 `__contains__`_ that enables us to check for chains of keys in the underlying :code:`dict`,
 and `__getstate__`_ and `__setstate__`_ which combined enable the container to be pickled and unpickled.
 
-As for the special methods which are `implemented`_ in the main :code:`ivy.Container` class, they all make 
-calls to the standard operator functions.
+As for the special methods which are `implemented`_ in the main :code:`ivy.Container`
+class, they all make calls to the corresponding standard operator functions.
 
-As a result, the operator functions will make use of the special methods of the passed input objects.
-For instance, if the input contains one or more :code:`ivy.Array` objects, the operator function will 
-make calls to the special methods of those array objects. The special methods will in turn 
-call the suitable functions from the ivy functional API.
+As a result, the operator functions will make use of the special methods of the lefthand
+passed input objects if available, otherwise it will make use of the reverse special
+method of the righthand operand. For instance, if the lefthand operand at any given leaf
+of the container in an :code:`ivy.Array`, then the operator function will make calls to
+the special methods of this array object. As explained in the :ref:`Arrays` section of
+the Deep Dive, these special methods will in turn call the corresponding functions from
+the ivy functional API.
  
-Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make calls to
-:code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide`, respectively, if 
-the input contains any :code:`ivy.Array` objects.
+Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make
+calls to :code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and
+:code:`ivy.divide` respectively if the lefthand operand is an :code:`ivy.Array` object.
+Otherwise, these special methods will be called on whatever objects are at the leaves of
+the container, such as :code`int`, :code:`float`, :code`ivy.NativeArray` etc.
 
 Nestable Functions
 ------------------
@@ -372,3 +374,12 @@ This should have hopefully given you a good feel for containers, and how these a
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `containers discussion`_,
 or reach out on `discord`_ in the `containers channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/oHcoYFi2rvI" class="video">
+    </iframe>
