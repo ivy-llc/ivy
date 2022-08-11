@@ -152,9 +152,9 @@ def matrix_rank(
     elif rtol is None and out is not None:
         ret = torch.linalg.matrix_rank(x, out=out)
     elif rtol is not None and out is None:
-        ret = torch.linalg.matrix_rank(x,rtol)
+        ret = torch.linalg.matrix_rank(x, rtol)
     else:
-        ret = torch.linalg.matrix_rank(x,rtol, out=out)
+        ret = torch.linalg.matrix_rank(x, rtol, out=out)
 
     ret = torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
     return ret
