@@ -15,7 +15,6 @@ def tan(x):
 
 tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
-
 def concatenate(operands, dimension):
     return ivy.concat(operands, dimension)
 
@@ -39,3 +38,9 @@ def sqrt(x):
 
 
 sqrt.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+def sin(x):
+    return ivy.sin(x)
+
+
+sin.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
