@@ -40,7 +40,7 @@ def test_numpy_mean(
         as_variable=as_variable,
         native_array=native_array,
     )
-    np_frontend_helpers.test_function(
+    np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
