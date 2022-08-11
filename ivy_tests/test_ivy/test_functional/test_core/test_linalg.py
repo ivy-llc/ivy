@@ -1039,27 +1039,22 @@ def test_svd(
         x=np.asarray(x, dtype=dtype),
         full_matrices=fm,
         test_values=False,
+        return_flat_np_arrays=True,
     )
     if results is None:
         return
 
-    ret, ret_from_np = results
-    # flattened array returns
-    ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
-        ret=ret, ret_from_gt=ret_from_np
-    )
+    ret_np_flat, ret_from_np_flat = results
 
     # value test
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         num_cols = ret_np.shape[-2]
         for col_idx in range(num_cols):
             ret_np_col = ret_np[..., col_idx, :]
-            ret_np_col = np.where(ret_np_col[..., 0:1] < 0, ret_np_col * -1, ret_np_col)
             ret_from_np_col = ret_from_np[..., col_idx, :]
-            ret_from_np_col = np.where(
-                ret_from_np_col[..., 0:1] < 0, ret_from_np_col * -1, ret_from_np_col
+            helpers.assert_all_close(
+                np.abs(ret_np_col), np.abs(ret_from_np_col), rtol=1e-1, atol=1e-1
             )
-            helpers.assert_all_close(ret_np_col, ret_from_np_col, rtol=1e-1, atol=1e-1)
 
 
 # matrix_norm
