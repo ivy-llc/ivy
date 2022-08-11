@@ -42,3 +42,10 @@ def divide(x, y, name=None):
 
 
 divide.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def sqrt(x, name='sqrt'):
+    return ivy.sqrt(x)
+
+
+sqrt.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
