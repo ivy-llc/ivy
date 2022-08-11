@@ -65,42 +65,6 @@ def test_torch_sigmoid(
     )
 
 
-
-# leaky_relu
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        )
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.leaky_relu"
-    ),
-    alpha=st.floats(min_value=0, max_value=1),
-)
-def test_torch_leaky_relu(
-    dtype_and_x,
-    num_positional_args,
-    fw,
-    alpha,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=False,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=False,
-        fw=fw,
-        frontend="torch",
-        fn_name="nn.functional.leaky_relu",
-        input=np.asarray(x, dtype=input_dtype),
-        negative_slope=alpha,
-        ),
-
-
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -139,4 +103,40 @@ def test_torch_softmax(
         input=np.asarray(x, dtype=input_dtype),
         dim=axis,
         dtype=dtypes[0],
+    )
+
+
+# leaky_relu
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        )
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.leaky_relu"
+    ),
+    alpha=st.floats(min_value=0, max_value=1),
+)
+def test_torch_leaky_relu(
+    dtype_and_x,
+    num_positional_args,
+    fw,
+    alpha,
+):
+    input_dtype, x = dtype_and_x
+    
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        fw=fw,
+        frontend="torch",
+        fn_name="nn.functional.leaky_relu",
+        input=np.asarray(x, dtype=input_dtype),
+        negative_slope=alpha,
     )
