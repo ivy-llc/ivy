@@ -43,6 +43,7 @@ def where(
     condition: torch.Tensor,
     x1: torch.Tensor,
     x2: torch.Tensor,
+    /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

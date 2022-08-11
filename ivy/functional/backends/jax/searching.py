@@ -38,6 +38,11 @@ def nonzero(x: JaxArray) -> Tuple[JaxArray]:
 
 
 def where(
-    condition: JaxArray, x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None
+    condition: JaxArray,
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.where(condition, x1, x2)

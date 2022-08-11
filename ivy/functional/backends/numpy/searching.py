@@ -43,6 +43,7 @@ def where(
     condition: np.ndarray,
     x1: np.ndarray,
     x2: np.ndarray,
+    /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
