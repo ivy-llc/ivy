@@ -87,37 +87,38 @@ def _permute_helper(draw):
 
 # permute
 @given(
-    dtype_value=helpers.dtype_and_values(
+    dtype_value=helpers.dtype_values_axis(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes))),
-        shape=st.shared(
-            helpers.get_shape(min_num_dims=1),
-            key='shape_value'
-        )),
-    permutation=_permute_helper(),
+        shape=helpers.get_shape(min_num_dims=1),
+            
+    ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.permute"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
+    with_out=st.booleans(),
 )
 def test_permute(
         *,
-        dtype_value,
+        dtype_values_axis,
         permutation,
         as_variable,
         num_positional_args,
         native_array,
         container,
         instance_method,
+        with_out,
         fw,
 ):
-    dtype, value = dtype_value
+    dtype, value, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -126,5 +127,5 @@ def test_permute(
         frontend="torch",
         fn_name="permute",
         input=np.asarray(value, dtype=dtype),
-        dims=permutation,
+        dims=axis,
     )
