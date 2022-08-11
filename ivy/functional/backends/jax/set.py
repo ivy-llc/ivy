@@ -7,7 +7,10 @@ from collections import namedtuple
 from ivy.functional.backends.jax import JaxArray
 
 
-def unique_all(x: JaxArray) -> NamedTuple:
+def unique_all(
+    x: JaxArray,
+    /,
+) -> NamedTuple:
     UniqueAll = namedtuple(
         typename="unique_all",
         field_names=["values", "indices", "inverse_indices", "counts"],
@@ -47,7 +50,10 @@ def unique_all(x: JaxArray) -> NamedTuple:
     )
 
 
-def unique_counts(x: JaxArray) -> NamedTuple:
+def unique_counts(
+    x: JaxArray,
+    /,
+) -> NamedTuple:
     v, c = jnp.unique(x, return_counts=True)
     nan_count = jnp.count_nonzero(jnp.isnan(x))
     if nan_count > 1:
@@ -59,7 +65,10 @@ def unique_counts(x: JaxArray) -> NamedTuple:
     return uc(v, c)
 
 
-def unique_inverse(x: JaxArray) -> NamedTuple:
+def unique_inverse(
+    x: JaxArray,
+    /,
+) -> NamedTuple:
     out = namedtuple("unique_inverse", ["values", "inverse_indices"])
     values, inverse_indices = jnp.unique(x, return_inverse=True)
     nan_count = jnp.count_nonzero(jnp.isnan(x))

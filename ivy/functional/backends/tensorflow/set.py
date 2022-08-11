@@ -4,7 +4,10 @@ from typing import NamedTuple, Union, Optional
 from collections import namedtuple
 
 
-def unique_all(x: Union[tf.Tensor, tf.Variable]) -> NamedTuple:
+def unique_all(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+) -> NamedTuple:
     UniqueAll = namedtuple(
         typename="unique_all",
         field_names=["values", "indices", "inverse_indices", "counts"],
@@ -47,6 +50,7 @@ def unique_all(x: Union[tf.Tensor, tf.Variable]) -> NamedTuple:
 
 def unique_counts(
     x: Union[tf.Tensor, tf.Variable],
+    /,
 ) -> NamedTuple:
     uc = namedtuple("uc", ["values", "counts"])
     v, _, c = tf.unique_with_counts(tf.sort(tf.reshape(x, [-1])))
@@ -57,6 +61,7 @@ def unique_counts(
 
 def unique_inverse(
     x: Union[tf.Tensor, tf.Variable],
+    /,
 ) -> NamedTuple:
     out = namedtuple("unique_inverse", ["values", "inverse_indices"])
     flat_tensor = tf.reshape(x, -1)

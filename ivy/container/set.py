@@ -164,7 +164,11 @@ class ContainerWithSet(ContainerBase):
         }
         """
         return self.static_unique_counts(
-            self, key_chains, to_apply, prune_unapplied, map_sequences
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
