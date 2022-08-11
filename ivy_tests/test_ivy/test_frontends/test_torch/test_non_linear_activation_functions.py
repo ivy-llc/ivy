@@ -176,6 +176,7 @@ def test_torch_leaky_relu(
         negative_slope=alpha,
     )
 
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -187,7 +188,9 @@ def test_torch_leaky_relu(
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="tanh"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.tanh"
+    ),
     native_array=st.booleans(),
 )
 def test_torch_tanh(
