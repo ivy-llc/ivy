@@ -10,6 +10,7 @@ from collections import namedtuple
 
 # Array API Standard #
 # -------------------#
+from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
 def cholesky(
@@ -91,6 +92,7 @@ def matmul(
 matmul.support_native_out = True
 
 
+@_handle_0_dim_output
 def matrix_norm(
     x: np.ndarray,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
