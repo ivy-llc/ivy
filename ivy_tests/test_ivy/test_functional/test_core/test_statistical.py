@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @st.composite
 def statistical_dtype_values(draw, *, function):
     dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
-    size = draw(st.integers(1, 10))
+    size = draw(helpers.ints(min_value=1, max_value=10))
     if dtype == "float16":
         max_value = 2048
     elif dtype == "float32":
@@ -44,11 +44,12 @@ def statistical_dtype_values(draw, *, function):
     axis = draw(helpers.get_axis(shape=shape, allow_none=True))
     if function == "var" or function == "std":
         if isinstance(axis, int):
-            correction = draw(st.integers(-shape[axis], shape[axis] - 1)
-                              | st.floats(-shape[axis], shape[axis] - 1))
+            correction = draw(
+                st.integers(-shape[axis], shape[axis] - 1)
+                | st.floats(-shape[axis], shape[axis] - 1)
+            )
             return dtype, values, axis, correction
-        correction = draw(st.integers(-size, size - 1)
-                          | st.floats(-size, size - 1))
+        correction = draw(st.integers(-size, size - 1) | st.floats(-size, size - 1))
         return dtype, values, axis, correction
     return dtype, values, axis
 
@@ -166,7 +167,7 @@ def test_mean(
         rtol_=1e-1,
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
-        keepdims=keep_dims
+        keepdims=keep_dims,
     )
 
 
@@ -233,12 +234,7 @@ def test_prod(
     input_dtype, x, axis = dtype_and_x
 
     # torch implementation exhibits strange behaviour
-    assume(
-        not (
-            fw == "torch"
-            and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype))
-        )
-    )
+    assume(not (fw == "torch" and (input_dtype == "float16")))
 
     helpers.test_function(
         input_dtypes=input_dtype,
