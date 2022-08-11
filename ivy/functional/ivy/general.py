@@ -2599,8 +2599,8 @@ def scatter_nd(
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Scatter updates into a new array according to indices.
 
     Parameters
@@ -2629,6 +2629,26 @@ def scatter_nd(
     -------
     ret
         New array of given shape, with the values scattered at the indices.
+    
+    Examples
+    --------
+    scatter values into a zeros array
+    
+    >> indices = ivy.Array([4, 3, 1, 7])
+    >> updates = ivy.Array([9, 10, 11, 12])
+    >> shape = ivy.Array([8])
+    >> scatter = ivy.scatter_nd(indices, updates, shape)
+    >> print(scatter)
+    [0, 11, 0, 10, 9, 0, 0, 12]
+
+    scatter values into an array
+
+    >> arr = ivy.Array([1,2,3,4,5,6,7,8, 9, 10])
+    >> indices = ivy.Array([4, 3, 1, 7])
+    >> updates = ivy.Array([9, 10, 11, 12])
+    >> scatter = ivy.scatter_nd(indices, updates, arr)
+    >> print(scatter)
+    [1,11,3,10,9,6,7,12, 9, 10]
 
     """
     return current_backend(indices).scatter_nd(

@@ -173,6 +173,44 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.gather_nd(self, indices, out=out)
 
+    def scatter_nd(self: ivy.Array, 
+        indices:Union[ivy.Array, ivy.NativeArray], 
+        updates:Union[ivy.Array, ivy.NativeArray],
+        shape: Union[ivy.Array, ivy.NativeArray] = None,
+        reduction: str = "sum",
+        *,
+        out: Optional[ivy.Array] = None,
+        ) -> ivy.Array:
+        """
+        Scatter updates into an array according to indices.
+
+        Parameters
+        ----------
+        self
+            The tensor in which to scatter the results
+        indices
+            Tensor of indices
+        updates
+            values to update input tensor with
+
+        Returns
+        -------
+        ret
+            New array of given shape, with the values scattered at the indices.
+
+        Examples
+        --------
+        scatter values into an array
+
+        >> arr = ivy.Array([1,2,3,4,5,6,7,8, 9, 10])
+        >> indices = ivy.Array([4, 3, 1, 7])
+        >> updates = ivy.Array([9, 10, 11, 12])
+        >> scatter = arr.scatter_nd(indices, updates)
+        >> print(scatter)
+        [1,11,3,10,9,6,7,12, 9, 10]
+        """
+        return ivy.scatter_nd(indices, updates, shape, reduction, tensor=self, out=out)
+
     def einops_rearrange(
         self: ivy.Array,
         pattern: str,

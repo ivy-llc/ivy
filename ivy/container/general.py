@@ -644,6 +644,136 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
+    def static_scatter_nd(
+        params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        reduction: str = "sum",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.scatter_nd. This method simply wraps
+        the function, and so the docstring for ivy.scatter_nd also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        params
+            The container in which to scatter the values.
+        indices
+            Index array or container.
+        updates
+            values to update input tensor with
+        reduction
+            ...
+        shape
+            ...
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+            ``x`` if None.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ref
+            New container of given shape, with the values updated at the indices.
+
+        Examples
+        --------
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "scatter_nd",
+            indices,
+            updates,
+            shape,  
+            params,      
+            reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+    
+    def scatter_nd(
+        self: ivy.Container,
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        reduction: str = "sum",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Conatiner:
+        """
+        ivy.Container instance method variant of ivy.scatter_nd.
+        This method simply wraps the function, and so the docstring
+        for ivy.scatter_nd also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The container in which to scatter the values.
+        indices
+            Index array or container.
+        updates
+            values to update input tensor with
+        reduction
+            ...
+        shape
+            ...
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+            ``x`` if None.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container of given shape, with the values updated at the indices.
+
+        """
+        return self.static_scatter_nd(
+            indices, updates, shape, self, reduction, key_chains, 
+            to_apply, prune_unapplied, map_sequences, out=out
+        )
+
+    @staticmethod
     def static_gather_nd(
         params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
