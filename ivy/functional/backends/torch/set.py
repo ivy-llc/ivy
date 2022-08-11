@@ -74,7 +74,7 @@ unique_inverse.unsupported_dtypes = ("float16",)
 
 
 def unique_values(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     ret = torch.unique(x)
     return ret

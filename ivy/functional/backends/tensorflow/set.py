@@ -72,8 +72,9 @@ def unique_inverse(
 
 def unique_values(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.unique(tf.reshape(x, [-1]))[0]
     return tf.sort(ret)
