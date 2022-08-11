@@ -136,6 +136,7 @@ matrix_transpose.unsupported_dtypes = ("float16", "int8")
 def outer(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.outer(x1, x2, out=out)
 
 
