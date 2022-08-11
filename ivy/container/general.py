@@ -1676,6 +1676,48 @@ class ContainerWithGeneral(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_inplace_update(x, dict_in, **config) -> ivy.Container:
+        # update config
+        x.update_config(**config)
+
+        # update container values inplace
+        if dict_in is None:
+            return
+        dict_types = tuple([dict] + ivy.container_types())
+        if isinstance(dict_in, dict_types):
+            dict_in = dict_in
+        elif isinstance(dict_in, tuple(x._types_to_iteratively_nest)):
+            dict_in = dict(
+                zip(
+                    [
+                        "it_{}".format(str(i).zfill(len(str(len(dict_in)))))
+                        for i in range(len(dict_in))
+                    ],
+                    dict_in,
+                )
+            )
+        else:
+            raise Exception("invalid input {}".format(dict_in))
+        items = sorted(dict_in.items()) if x._alphabetical_keys else dict_in.items()
+        for key, value in items:
+            if (
+                isinstance(value, dict_types)
+                and (
+                    not isinstance(value, ivy.Container) or x._rebuild_child_containers
+                )
+            ) or isinstance(value, tuple(x._types_to_iteratively_nest)):
+                x[key] = ivy.Container(value, **x._config)
+            else:
+                if x.get(key) is None:
+                    x[key] = value
+                else:
+                    if ivy.is_ivy_array(x[key]):
+                        x[key].data = value.data
+                    else:
+                        x[key] = value
+        return x
+
     def inplace_update(
         self, dict_in: Union[ivy.Container, dict], **config
     ) -> ivy.Container:
@@ -1689,42 +1731,4 @@ class ContainerWithGeneral(ContainerBase):
         **config
 
         """
-        # update config
-        self.update_config(**config)
-
-        # update container values inplace
-        if dict_in is None:
-            return
-        dict_types = tuple([dict] + ivy.container_types())
-        if isinstance(dict_in, dict_types):
-            dict_in = dict_in
-        elif isinstance(dict_in, tuple(self._types_to_iteratively_nest)):
-            dict_in = dict(
-                zip(
-                    [
-                        "it_{}".format(str(i).zfill(len(str(len(dict_in)))))
-                        for i in range(len(dict_in))
-                    ],
-                    dict_in,
-                )
-            )
-        else:
-            raise Exception("invalid input {}".format(dict_in))
-        items = sorted(dict_in.items()) if self._alphabetical_keys else dict_in.items()
-        for key, value in items:
-            if (
-                isinstance(value, dict_types)
-                and (
-                    not isinstance(value, ivy.Container)
-                    or self._rebuild_child_containers
-                )
-            ) or isinstance(value, tuple(self._types_to_iteratively_nest)):
-                self[key] = ivy.Container(value, **self._config)
-            else:
-                if self.get(key) is None:
-                    self[key] = value
-                else:
-                    if ivy.is_ivy_array(self[key]):
-                        self[key].data = value.data
-                    else:
-                        self[key] = value
+        return self.static_inplace_update(self, dict_in, **config)
