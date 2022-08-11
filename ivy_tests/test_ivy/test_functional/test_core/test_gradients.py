@@ -218,18 +218,89 @@ def test_execute_with_gradients(
 
 
 # value_and_grad
-def test_value_and_grad():
-    pass
+@pytest.mark.parametrize(
+    "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
+)
+@pytest.mark.parametrize("dtype", ["float32", "float64"])
+@pytest.mark.parametrize(
+    "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
+)
+def test_value_and_grad(x, dtype, func, fw):
+    if fw == "numpy":
+        return
+    ivy.set_backend(fw)
+    var = ivy.variable(ivy.array(x, dtype=dtype))
+    fn = ivy.value_and_grad(func)
+    value, grad = fn(var)
+    value_np, grad_np = helpers.flatten(ret=value), helpers.flatten(ret=grad)
+    ivy.unset_backend()
+    ivy.set_backend("tensorflow")
+    var = ivy.variable(ivy.array(x, dtype=dtype))
+    fn = ivy.value_and_grad(func)
+    value_gt, grad_gt = fn(var)
+    value_np_from_gt, grad_np_from_gt = helpers.flatten(ret=value_gt), helpers.flatten(
+        ret=grad_gt
+    )
+    for value, value_from_gt in zip(value_np, value_np_from_gt):
+        assert value.shape == value_from_gt.shape
+        assert np.allclose(value, value_from_gt)
+    for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):
+        assert grad.shape == grad_from_gt.shape
+        assert np.allclose(grad, grad_from_gt)
 
 
 # jac
-def test_jac():
-    pass
+@pytest.mark.parametrize(
+    "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
+)
+@pytest.mark.parametrize("dtype", ["float32", "float64"])
+@pytest.mark.parametrize(
+    "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
+)
+def test_jac(x, dtype, func, fw):
+    if fw == "numpy":
+        return
+    ivy.set_backend(fw)
+    var = ivy.variable(ivy.array(x, dtype=dtype))
+    fn = ivy.jac(func)
+    jacobian = fn(var)
+    jacobian_np = helpers.flatten(ret=jacobian)
+    ivy.unset_backend()
+    ivy.set_backend("tensorflow")
+    var = ivy.variable(ivy.array(x, dtype=dtype))
+    fn = ivy.jac(func)
+    jacobian_gt = fn(var)
+    jacobian_np_from_gt = helpers.flatten(ret=jacobian_gt)
+    for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
+        assert jacobian.shape == jacobian_from_gt.shape
+        assert np.allclose(jacobian, jacobian_from_gt)
 
 
 # grad
-def test_grad():
-    pass
+@pytest.mark.parametrize(
+    "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
+)
+@pytest.mark.parametrize("dtype", ["float32", "float64"])
+@pytest.mark.parametrize(
+    "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
+)
+def test_grad(x, dtype, func, fw):
+    if fw == "numpy":
+        return
+    ivy.set_backend(fw)
+    var = ivy.variable(ivy.array(x, dtype=dtype))
+    fn = ivy.grad(func)
+    grad = fn(var)
+    grad_np = helpers.flatten(ret=grad)
+    ivy.unset_backend()
+    ivy.set_backend("tensorflow")
+    var = ivy.variable(ivy.array(x, dtype=dtype))
+    fn = ivy.grad(func)
+    grad_gt = fn(var)
+    grad_np_from_gt = helpers.flatten(ret=grad_gt)
+    for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):
+        assert grad.shape == grad_from_gt.shape
+        assert np.allclose(grad, grad_from_gt)
 
 
 # adam_step
