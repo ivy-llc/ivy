@@ -379,7 +379,11 @@ def test_bitwise_and(
 # bitwise_left_shift
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes, num_arrays=2, shared_dtype=True
+        available_dtypes=ivy.all_int_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
+        large_value_safety_factor=0.9,
+        small_value_safety_factor=0.9,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
     data=st.data(),
@@ -492,7 +496,11 @@ def test_bitwise_or(
 # bitwise_right_shift
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes, num_arrays=2, shared_dtype=True
+        available_dtypes=ivy.all_int_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
+        large_value_safety_factor=0.9,
+        small_value_safety_factor=0.9,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
     data=st.data(),
