@@ -1,5 +1,6 @@
 """Collection of tests for unified linear algebra functions."""
 
+
 # global
 import sys
 
@@ -1106,8 +1107,8 @@ def test_matrix_norm(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes[1:],
         min_num_dims=2,
-        min_value = -10000000000.0,
-        max_value= 10000000000.0
+        min_value =-10000000000.0,
+        max_value=10000000000.0
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
     rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
@@ -1127,7 +1128,7 @@ def test_matrix_rank(
     fw,
     rtol,
 ):
-    dtype, x = dtype_x
+    dtype, x =dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
