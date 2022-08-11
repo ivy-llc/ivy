@@ -2145,10 +2145,6 @@ def floor_divide(
         b: ivy.array([3., 4., 4.])
     }
     """
-    if isinstance(x1, float) or isinstance(x1, int):
-        x1 = ivy.array(x1, dtype=x1.dtype)
-    if isinstance(x2, float) or isinstance(x2, int):
-        x2 = ivy.array(x2, dtype=x2.dtype)
     return ivy.current_backend(x1, x2).floor_divide(x1, x2, out=out)
 
 
@@ -3372,49 +3368,43 @@ def logical_and(
     >>> x = ivy.array([True, True, False])
     >>> y = ivy.array([True, False, True])
     >>> print(ivy.logical_and(x, y))
-    ivy.array([True, False, False])
+    ivy.array([True,False,False])
 
     >>> ivy.logical_and(x, y, out=y)
     >>> print(y)
-    ivy.array([True, False, False])
+    ivy.array([True,False,False])
 
-    x = ivy.Container(a=ivy.array([False, True, True]), \
+    >>> x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
-    y = ivy.Container(a=ivy.array([True, True, False]), \
+    >>> y = ivy.Container(a=ivy.array([True, True, False]), \
         b=ivy.array([False, False, True]))
-    print(ivy.logical_and(y, x))
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([False, False, False])
-    }
+    >>> print(ivy.logical_and(y, x))
+    {a:ivy.array([False,True,False]),b:ivy.array([False,False,False])}
 
     >>> ivy.logical_and(y, x, out=y)
     >>> print(y)
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([False, False, False])
-    }
+    {a:ivy.array([False,True,False]),b:ivy.array([False,False,False])}
 
     >>> x = ivy.native_array([True, True, False])
     >>> y = ivy.native_array([True, False, True])
     >>> print(ivy.logical_and(x, y))
-    ivy.array([True, False, False])
+    ivy.array([True,False,False])
 
     >>> ivy.logical_and(x, y, out=y)
     >>> print(y)
-    ivy.array([True, False, False])
+    tensor([True,False,False])
 
     >>> x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
     >>> y = ivy.array([True, False, True])
     >>> print(ivy.logical_and(y, x))
-    {
-        a: ivy.array([False, False, True]),
-        b: ivy.array([True, False, False])
-    }
+    {a:ivy.array([False,False,True]),b:ivy.array([True,False,False])}
 
-    >>> ivy.logical_and(y, x, out=y)
-    >>> print(y)
+    >>> x = ivy.Container(a=ivy.array([False, True, True]), \
+        b=ivy.array([True, False, False]))
+    >>> y = ivy.array([True, False, True])
+    >>> ivy.logical_and(y, x, out=x)
+    >>> print(x)
     {
         a: ivy.array([False, False, True]),
         b: ivy.array([True, False, False])
