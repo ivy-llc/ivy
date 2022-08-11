@@ -279,7 +279,7 @@ def test_to_device(
 @st.composite
 def _axis(draw):
     max_val = draw(st.shared(helpers.ints(), key="num_dims"))
-    return draw(helpers.ints(min_value=0, max_val=max_val - 1))
+    return draw(helpers.ints(min_value=0, max_value=max_val - 1))
 
 
 @given(
