@@ -1713,7 +1713,7 @@ class ContainerWithGeneral(ContainerBase):
                     x[key] = value
                 else:
                     if ivy.is_ivy_array(x[key]):
-                        x[key].data = value.data
+                        ivy.inplace_update(x[key], value)
                     else:
                         x[key] = value
         return x
