@@ -675,24 +675,24 @@ def get_ret_and_flattened_np_array(func, *args, **kwargs):
 def value_test(
     *,
     ret_np_flat,
-    ret_from_np_flat,
+    ret_np_from_gt_flat,
     rtol=None,
     atol=1e-6,
     ground_truth_backend="TensorFlow",
 ):
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
-    if type(ret_from_np_flat) != list:
-        ret_from_np_flat = [ret_from_np_flat]
-    assert len(ret_np_flat) == len(ret_from_np_flat), (
+    if type(ret_np_from_gt_flat) != list:
+        ret_np_from_gt_flat = [ret_np_from_gt_flat]
+    assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
         "len(ret_np_flat) != len(ret_from_np_flat):\n\n"
         "ret_np_flat:\n\n{}\n\nret_from_np_flat:\n\n{}".format(
-            ret_np_flat, ret_from_np_flat
+            ret_np_flat, ret_np_from_gt_flat
         )
     )
     # value tests, iterating through each array in the flattened returns
     if not rtol:
-        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_np_from_gt_flat):
             rtol = TOLERANCE_DICT.get(str(ret_from_np.dtype), 1e-03)
             assert_all_close(
                 ret_np,
@@ -702,7 +702,7 @@ def value_test(
                 ground_truth_backend=ground_truth_backend,
             )
     else:
-        for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_np_from_gt_flat):
             assert_all_close(
                 ret_np,
                 ret_from_np,
@@ -784,7 +784,7 @@ def gradient_test(
     # value test
     value_test(
         ret_np_flat=grads_np_flat,
-        ret_from_np_flat=grads_np_from_gt_flat,
+        ret_np_from_gt_flat=grads_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
     )
@@ -1099,7 +1099,7 @@ def test_method(
     # value test
     value_test(
         ret_np_flat=ret_np_flat,
-        ret_from_np_flat=ret_np_from_gt_flat,
+        ret_np_from_gt_flat=ret_np_from_gt_flat,
         rtol=rtol,
         atol=atol,
     )
@@ -1421,7 +1421,7 @@ def test_function(
     # value test
     value_test(
         ret_np_flat=ret_np_flat,
-        ret_from_np_flat=ret_np_from_gt_flat,
+        ret_np_from_gt_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
         ground_truth_backend=ground_truth_backend,
@@ -1650,7 +1650,7 @@ def test_frontend_function(
     # value tests, iterating through each array in the flattened returns
     value_test(
         ret_np_flat=ret_np_flat,
-        ret_from_np_flat=frontend_ret_np_flat,
+        ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol,
         atol=atol,
     )
