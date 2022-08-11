@@ -38,8 +38,11 @@ def array_equal(
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
-def to_numpy(x: Union[tf.Tensor, tf.Variable]) -> np.ndarray:
-    return np.asarray(tf.convert_to_tensor(x))
+def to_numpy(x: Union[tf.Tensor, tf.Variable], copy: bool = True) -> np.ndarray:
+    if copy:
+        return np.array(tf.convert_to_tensor(x))
+    else:
+        return np.asarray(tf.convert_to_tensor(x))
 
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable]) -> Number:
@@ -121,7 +124,9 @@ def inplace_decrement(x, val):
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(x_native + val_native)
@@ -235,7 +240,6 @@ def scatter_nd(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
             tf.cast(tensor, dtype=updates.dtype)
