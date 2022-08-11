@@ -871,6 +871,36 @@ class ContainerWithRandom(ContainerBase):
         -------
         ret
             A container object, shuffled along the first dimension.
+
+        
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), b=ivy.array([[0.9,2.4],[7.6,5.4]]))
+        >>> ivy.Container.static_shuffle(x)
+            {
+                a: ivy.array([[6.5, 2.3], 
+                            [9.8, 7.6]]),
+                b: ivy.array([[0.9, 2.4], 
+                            [7.6, 5.4]])
+            }
+
+        >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
+        >>> ivy.Container.static_shuffle(x, out=z)
+            {
+                a: ivy.array([[6.5, 2.3], 
+                            [9.8, 7.6]]),
+                b: ivy.array([[0.9, 2.4], 
+                            [7.6, 5.4]])
+            }
+        >>> z
+            {
+                a: ivy.array([[6.5, 2.3], 
+                            [9.8, 7.6]]),
+                b: ivy.array([[0.9, 2.4], 
+                            [7.6, 5.4]])
+            }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "shuffle",
@@ -917,6 +947,71 @@ class ContainerWithRandom(ContainerBase):
         -------
         ret
             A container object, shuffled along the first dimension.
+
+        Examples
+        --------
+
+        With :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), b=ivy.array([[0.9,2.4],[7.6,5.4]]))
+        >>> x.shuffle()
+            {
+                a: ivy.array([[6.5, 2.3], 
+                            [9.8, 7.6]]),
+                b: ivy.array([[7.6, 5.4], 
+                            [0.9, 2.4]])
+            }
+
+        >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
+        >>> x.shuffle(out = z)
+            {
+                a: ivy.array([[6.5, 2.3], 
+                            [9.8, 7.6]]),
+                b: ivy.array([[0.9, 2.4], 
+                            [7.6, 5.4]])
+            }
+
+        >>> ivy.shuffle(x)
+            {
+                a: ivy.array([[6.5, 2.3], 
+                            [9.8, 7.6]]),
+                b: ivy.array([[0.9, 2.4], 
+                            [7.6, 5.4]])
+            }
+
+        >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
+        >>> ivy.shuffle(x, out = z)
+            {
+                a: ivy.array([[9.8, 7.6], 
+                            [6.5, 2.3]]),
+                b: ivy.array([[0.9, 2.4], 
+                            [7.6, 5.4]])
+            }
+
+
+
+        With :code:`ivy.Array` inputs:
+
+        >>> x = ivy.array([-1.2,-9.1,-3.4])
+        >>> x.shuffle()
+            ivy.array([-9.1, -1.2, -3.4])
+
+        >>> z = ivy.zeros(3, )
+        >>> x.shuffle(out = z)
+            ivy.array([-3.4, -9.1, -1.2])
+        >>> z
+            ivy.array([-3.4, -9.1, -1.2])
+
+        >>> ivy.shuffle(x)
+            ivy.array([-1.2, -9.1, -3.4])
+
+        >>> z = ivy.zeros(3, )
+        >>> ivy.shuffle(x, out = z)
+            ivy.array([-1.2, -3.4, -9.1])
+        >>> z
+            ivy.array([-1.2, -3.4, -9.1])
+
+            
         """
         return self.static_shuffle(
             self,
