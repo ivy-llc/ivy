@@ -240,6 +240,7 @@ def tensordot(
     return ret
 
 
+@_handle_0_dim_output
 def trace(
     x: np.ndarray, offset: int = 0, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
