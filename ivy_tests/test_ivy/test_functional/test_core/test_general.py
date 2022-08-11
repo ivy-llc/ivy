@@ -450,7 +450,7 @@ def test_clip_vector_norm(
 #     ),
 #     as_variable=st.booleans(),
 #     with_out=st.booleans(),
-#     num_positional_args=st.integers(1, 2),
+#     num_positional_args=helpers.ints(min_value=1, max_value=2),
 #     native_array=st.booleans(),
 #     container=st.booleans(),
 #     instance_method=st.booleans(),
