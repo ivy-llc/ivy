@@ -112,6 +112,40 @@ def test_numpy_subtract(
     )
 
 
+# vdot
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
+    ),
+    as_variable=helpers.array_bools(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.vdot"
+    ),
+    native_array=helpers.array_bools(),
+)
+def test_numpy_vdot(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_name="vdot",
+        a=np.asarray(x[0], dtype=input_dtype[0]),
+        b=np.asarray(x[1], dtype=input_dtype[1]),
+        test_values=False,
+    )
+
+
 # divide
 @given(
     dtype_and_x=helpers.dtype_and_values(
