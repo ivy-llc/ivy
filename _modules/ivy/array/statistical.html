@@ -225,22 +225,19 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0], \</span>
-<span class="sd">                           [3.0, 4.0, 5.0], \</span>
-<span class="sd">                           [6.0, 7.0, 8.0]])</span>
+<span class="sd">        [3.0, 4.0, 5.0], [6.0, 7.0, 8.0]])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.var()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array(6.6666665)</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0], \</span>
-<span class="sd">                           [3.0, 4.0, 5.0], \</span>
-<span class="sd">                           [6.0, 7.0, .08]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], \</span>
+<span class="sd">        [6.0, 7.0, .08]])</span>
 <span class="sd">        &gt;&gt;&gt; y = x.var(axis=0)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        ivy.array([6., 6., 4.1])</span>
+<span class="sd">        ivy.array([6. , 6. , 4.1])</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0], \</span>
-<span class="sd">                           [3.0, 4.0, 5.0], \</span>
-<span class="sd">                           [6.0, 7.0, .08]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], \</span>
+<span class="sd">        [6.0, 7.0, .08]])</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.array([0., 0., 0.])</span>
 <span class="sd">        &gt;&gt;&gt; x.var(axis=1, out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
@@ -248,7 +245,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">var</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="o">=</span><span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+            <span class="n">correction</span><span class="o">=</span><span class="n">correction</span><span class="p">,</span>
+            <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithStatistical.prod"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.prod">[docs]</a>    <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>

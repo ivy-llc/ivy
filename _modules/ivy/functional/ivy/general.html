@@ -837,7 +837,7 @@
 <span class="sd">    With :code:`ivy.Array` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1, 0, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.to_numpy(x, copy=True)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.to_numpy(x, copy=False)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    [-1  0  1]</span>
 
@@ -1923,10 +1923,10 @@
 <span class="sd">    None</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span> 
         <span class="n">_</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">fn</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fn</span> 
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> 
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
