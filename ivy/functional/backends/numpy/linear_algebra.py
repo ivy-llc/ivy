@@ -34,10 +34,9 @@ def cross(
     return ret
 
 
+@_handle_0_dim_output
 def det(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     ret = np.linalg.det(x)
-    if not isinstance(ret, np.ndarray):
-        return np.array(ret)
     return ret
 
 
