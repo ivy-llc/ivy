@@ -654,21 +654,22 @@ def flatten_fw(*, ret, fw):
 
 
 def flatten(*, ret):
-    # flatten the return
     if not isinstance(ret, tuple):
         ret = (ret,)
-
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
-    ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+    return ivy.multi_index_nest(ret, ret_idxs)
 
+
+def flatten_and_to_numpy(*, ret):
+    # flatten the return
+    ret_flat = flatten(ret=ret)
     # convert the return to NumPy
-    ret_np_flat = [ivy.to_numpy(x) for x in ret_flat]
-    return ret_np_flat
+    return [ivy.to_numpy(x) for x in ret_flat]
 
 
 def get_ret_and_flattened_array(func, *args, **kwargs):
     ret = func(*args, **kwargs)
-    return ret, flatten(ret=ret)
+    return ret, flatten_and_to_numpy(ret=ret)
 
 
 def value_test(
@@ -1634,7 +1635,7 @@ def test_frontend_function(
         return ret, frontend_ret
 
     # flatten the return
-    ret_np_flat = flatten(ret=ret)
+    ret_np_flat = flatten_and_to_numpy(ret=ret)
 
     # value tests, iterating through each array in the flattened returns
     value_test(
