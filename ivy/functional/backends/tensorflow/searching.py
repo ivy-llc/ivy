@@ -1,6 +1,7 @@
 # global
-import tensorflow as tf
 from typing import Optional, Union, Tuple
+
+import tensorflow as tf
 
 
 def argmax(
@@ -30,7 +31,10 @@ def argmin(
     return ret
 
 
-def nonzero(x: Union[tf.Tensor, tf.Variable]) -> Tuple[Union[tf.Tensor, tf.Variable]]:
+def nonzero(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+) -> Tuple[Union[tf.Tensor, tf.Variable]]:
     return tuple(tf.experimental.numpy.nonzero(x))
 
 

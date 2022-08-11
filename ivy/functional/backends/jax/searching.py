@@ -33,7 +33,10 @@ def argmin(
 argmin.support_native_out = True
 
 
-def nonzero(x: JaxArray) -> Tuple[JaxArray]:
+def nonzero(
+    x: JaxArray,
+    /,
+) -> Tuple[JaxArray]:
     return jnp.nonzero(x)
 
 

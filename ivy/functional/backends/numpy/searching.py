@@ -35,7 +35,10 @@ def argmin(
 argmin.support_native_out = True
 
 
-def nonzero(x: np.ndarray) -> Tuple[np.ndarray]:
+def nonzero(
+    x: np.ndarray,
+    /,
+) -> Tuple[np.ndarray]:
     return np.nonzero(x)
 
 

@@ -35,7 +35,10 @@ def argmin(
 argmin.support_native_out = True
 
 
-def nonzero(x: torch.Tensor) -> Tuple[torch.Tensor]:
+def nonzero(
+    x: torch.Tensor,
+    /,
+) -> Tuple[torch.Tensor]:
     return torch.nonzero(x, as_tuple=True)
 
 
