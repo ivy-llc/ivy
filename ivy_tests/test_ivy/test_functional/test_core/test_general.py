@@ -134,9 +134,6 @@ def test_copy_array(dtype_and_x, device, call, fw):
     # value test
     helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
     assert id(x) != id(ret)
-    # compilation test
-    # pytorch scripting does not support numpy conversion
-    assume(not (fw == "torch"))
 
 
 # array_equal
