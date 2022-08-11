@@ -35,6 +35,14 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 
 * :code:`np_frontend_helpers.test_frontend_function()` behaves identical to :code:`helpers.test_frontend_function()` but handles NumPy's optional :code:`where` argument
 
+**Useful Notes**
+
+* There are more :code:`dtype` sets than :code:`valid_float_dtypes`, there is also :code:`valid_int_dtypes`, :code:`valid_numeric_dtypes` and many more! It's important 
+when writing Ivy Frontend tests to pick the most appropriate :code:`dtype` set to ensure thorough testing!
+
+* The :code:`test_frontend_function` argument :code:`fn_tree` refers to the frontend function's reference in its native namespace not just the function name.
+For example :code:`lax.tan` for Jax or :code:`nn.functional.relu` for PyTorch.
+
 To get a better understanding for writing frontend tests lets run through some examples!
 
 Examples
@@ -182,6 +190,8 @@ ivy.tan()
         )
 
 * We use :code:`ivy_tf.valid_float_dtypes` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for TensorFlow.
+* We set :code:`fn_tree` to :code:`tan` which is the path to the function in the TensorFlow namespace.
+
 
 **PyTorch**
 
@@ -227,6 +237,7 @@ ivy.tan()
         )
 
 * We use :code:`ivy_tf.valid_float_dtypes` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for TensorFlow.
+* We set :code:`fn_tree` to :code:`tan` which is the path to the function in the PyTorch namespace.
 * Torch accepts both Torch and NumPy data-types so we create a :code:`tuple` of the two as :code:`available_dtypes`.
 
 ivy.full()
