@@ -2208,7 +2208,7 @@ def inplace_variables_supported(f=None):
 
 @inputs_to_native_arrays
 @handle_nestable
-def supports_inplace(x):
+def supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
     """Determine whether inplace operations are supported for the data type of x.
 
     Parameters
@@ -2231,7 +2231,7 @@ def supports_inplace(x):
 
 @inputs_to_native_arrays
 @handle_nestable
-def assert_supports_inplace(x):
+def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
     """Asserts that inplace operations are supported for x, else raises exception.
 
     Parameters

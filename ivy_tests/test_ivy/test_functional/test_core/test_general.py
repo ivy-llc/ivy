@@ -1580,8 +1580,32 @@ def test_clip_matrix_norm():
 def test_value_is_nan():
     return
 
-def test_has_nans():
-    return
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes
+    ),
+    include_infs=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="has_nans"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_has_nans(x_val_and_dtypes, include_infs, as_variable, num_positional_args, native_array, container, fw):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=True,
+        fw=fw,
+        fn_name='has_nans',
+        x=np.asarray(x, dtype=dtype),
+        include_infs=include_infs
+    )
 
 def test_shape_to_tuple():
     return
@@ -1631,14 +1655,61 @@ def test_queue_timeout():
 def test_tmp_dir():
     return
 
-def test_set_tmp_dir():
+def test_set_tmp_dir(x):
     return
 
-def test_supports_inplace():
-    return
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="supports_inplace"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_supports_inplace(x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=True,
+        fw=fw,
+        fn_name='supports_inplace',
+        x=np.asarray(x, dtype=dtype)
+    )
 
-def test_assert_supports_inplace():
-    return
+# Implementation of test_assert_supports_inplace is not complete
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="assert_supports_inplace"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_assert_supports_inplace(x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    if fw == "tensorflow" or fw == "jax":
+        return
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=True,
+        fw=fw,
+        fn_name='assert_supports_inplace',
+        x=ivy.array(x, dtype=dtype)
+    )
 
 def test_arg_info():
     return
