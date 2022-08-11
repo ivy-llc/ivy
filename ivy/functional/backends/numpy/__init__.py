@@ -88,6 +88,7 @@ native_inplace_support = False
 
 supports_gradients = False
 
+
 def closest_valid_dtype(type):
     if type is None:
         return ivy.default_dtype()

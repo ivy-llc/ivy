@@ -38,7 +38,7 @@ def searchsorted(
     v: mx.nd.NDArray,
     side="left",
     sorter=None,
-    out: Optional[mx.nd.NDArray] = None
+    out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     res = mx.np.searchsorted(x, v, side=side)
     return res
