@@ -851,17 +851,14 @@ def test_scatter_flat(inds_n_upd_n_size_n_tnsr_n_wdup, red, dtype, tensor_fn, ca
     if red == "replace" and with_duplicates:
         # replace with duplicates give non-deterministic outputs
         return
+    inds_np = ivy.to_numpy(inds)
+    upd_np = ivy.to_numpy(upd)
+    tensor_np = ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor
+    with ivy.functional.backends.numpy.use:
+        true_np = ivy.scatter_flat(inds_np, upd_np, size, tensor_np, red).data
     assert np.allclose(
         call(ivy.scatter_flat, inds, upd, size, tensor, red),
-        np.asarray(
-            ivy.functional.backends.numpy.scatter_flat(
-                ivy.to_numpy(inds),
-                ivy.to_numpy(upd),
-                size,
-                ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor,
-                red,
-            )
-        ),
+        true_np,
     )
 
 
