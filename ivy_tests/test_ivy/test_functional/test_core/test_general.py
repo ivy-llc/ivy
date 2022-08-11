@@ -888,6 +888,9 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, call)
             if ivy.current_backend_str() == "torch"
             else tensor_fn(tensor, dtype=dtype)
         )
+    inds_np = ivy.to_numpy(inds)
+    upd_np = ivy.to_numpy(upd)
+    tensor_np = ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor
     ret = ivy.scatter_nd(inds, upd, shape, tensor, red)
     # type test
     assert ivy.is_ivy_array(ret)
@@ -900,12 +903,8 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, call)
     if red == "replace" and with_duplicates:
         # replace with duplicates give non-deterministic outputs
         return
-    inds_np = ivy.to_numpy(inds)
-    upd_np = ivy.to_numpy(upd)
-    tensor_np = ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor
     with ivy.functional.backends.numpy.use:
         true_np = ivy.scatter_nd(inds_np, upd_np, shape, tensor_np, red).data
-    ret = call(ivy.scatter_nd, inds, upd, shape, tensor, red)
     assert np.allclose(ret, true_np)
 
 
