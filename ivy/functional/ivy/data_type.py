@@ -1438,19 +1438,19 @@ def is_float_dtype(
     True
 
     >>> x = ivy.is_float_dtype(ivy.int64)
-    >>> print(ivy.is_float_dtype(x))
+    >>> print(x)
     True
 
     >>> x = ivy.is_float_dtype(ivy.int32)
-    >>> print(ivy.is_float_dtype(x))
+    >>> print(x)
     False
 
     >>> x = ivy.is_float_dtype(ivy.bool)
-    >>> print(ivy.is_float_dtype(x))
+    >>> print(x)
     False
 
     >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x
-    >>> print(ivy.is_float_dtype(arr))
+    >>> print(arr)
     True
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))

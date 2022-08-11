@@ -552,6 +552,60 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `is_float_dtype`. This method
+        simply wraps this function, so the docstring of `is_float_dtype`
+        roughly applies to this method.
+
+        Parameters
+        ----------
+        dtype_in : ivy.Container
+            The input to check for float dtype.
+
+        key_chains : Optional[Union[List[str], Dict[str, str]]]
+            The key chains to use when mapping over the input.
+
+        to_apply : bool
+            Whether to apply the mapping over the input.
+
+        prune_unapplied : bool
+            Whether to prune the keys that were not applied.
+
+        map_sequences : bool
+            Boolean indicating whether to map method
+            to sequences (list, tuple). Default is False.
+
+        Returns
+        -------
+        ret : bool
+            Boolean indicating whether the input has float dtype.
+
+        Examples
+        --------
+        >>> x = ivy.static_is_float_dtype(ivy.float32)
+        >>> print(x)
+        True
+
+        >>> x = ivy.static_is_float_dtype(ivy.int64)
+        >>> print(x)
+        True
+
+        >>> x = ivy.static_is_float_dtype(ivy.int32)
+        >>> print(x)
+        False
+
+        >>> x = ivy.static_is_float_dtype(ivy.bool)
+        >>> print(x)
+        False
+
+        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x
+        >>> print(arr)
+        True
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
+        >>> print(x.a.dtype, x.b.dtype)
+        float32 int32
+        """
         return ContainerBase.multi_map_in_static_method(
             "is_float_dtype",
             dtype_in,
@@ -608,19 +662,19 @@ class ContainerWithDataTypes(ContainerBase):
         True
 
         >>> x = ivy.is_float_dtype(ivy.int64)
-        >>> print(ivy.is_float_dtype(x))
+        >>> print(x)
         True
 
         >>> x = ivy.is_float_dtype(ivy.int32)
-        >>> print(ivy.is_float_dtype(x))
+        >>> print(x)
         False
 
         >>> x = ivy.is_float_dtype(ivy.bool)
-        >>> print(ivy.is_float_dtype(x))
+        >>> print(x)
         False
 
         >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x
-        >>> print(ivy.is_float_dtype(arr))
+        >>> print(arr)
         True
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
