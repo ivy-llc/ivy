@@ -30,7 +30,7 @@ def _dtype_x_limited_axis(draw, *, allow_none=False):
     if allow_none and draw(st.booleans()):
         return dtype, x, None
 
-    axis = draw(st.integers(min_value=0, max_value=len(shape) - 1))
+    axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
     return dtype, x, axis
 
 
