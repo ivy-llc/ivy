@@ -465,12 +465,64 @@
 <span class="sd">    ret</span>
 <span class="sd">          Device handle for the array, in native framework format.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1,0,2])</span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    --------------------</span>
+
+<span class="sd">    With :code:&#39;ivy.Array&#39; input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 1, 4, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.dev(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    cpu</span>
+
+<span class="sd">    With :code:&#39;ivy.NativeArray&#39; input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[2, 5, 4], [3, 1, 5]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.dev(x, as_native=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    cpu</span>
+
+<span class="sd">    Array Instance Method Examples</span>
+<span class="sd">    ------------------------------</span>
+
+<span class="sd">    With :code:&#39;ivy.Array&#39; input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2, 5, 4, 1], [3, 1, 5, 2]])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.dev(as_native=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    cpu</span>
+
+<span class="sd">    Container Static Method Examples</span>
+<span class="sd">    ---------------------------------</span>
+
+<span class="sd">    With :code:&#39;ivy.Container&#39; input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),\</span>
+<span class="sd">                          b=ivy.native_array([1, 2, 4, 5, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; as_native = ivy.Container(a=True, b=False)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_dev(x, as_native=as_native)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: device(type=cpu),</span>
+<span class="sd">        b: cpu</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Container Instance Method Examples</span>
+<span class="sd">    ----------------------------</span>
+
+<span class="sd">    With :code:&#39;ivy.Container&#39; input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),\</span>
+<span class="sd">                          b=ivy.native_array([[1, 2], [4, 5]]))</span>
+<span class="sd">    &gt;&gt;&gt; as_native = ivy.Container(a=False, b=True)</span>
+<span class="sd">    &gt;&gt;&gt; y = x.dev(as_native=as_native)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: cpu,</span>
+<span class="sd">        b: device(type=cpu)</span>
+<span class="sd">    }</span>
+
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_native</span><span class="p">)</span></div>
 
