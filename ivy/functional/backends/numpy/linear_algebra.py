@@ -136,6 +136,7 @@ matrix_transpose.unsupported_dtypes = ("float16", "int8")
 def outer(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.outer(x1, x2, out=out)
 
 
@@ -177,6 +178,10 @@ def slogdet(
 ) -> Tuple[np.ndarray, np.ndarray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = np.linalg.slogdet(x)
+    sign = np.asarray(sign) if not isinstance(sign, np.ndarray) else sign
+    logabsdet = (
+        np.asarray(logabsdet) if not isinstance(logabsdet, np.ndarray) else logabsdet
+    )
     ret = results(sign, logabsdet)
     return ret
 
@@ -235,6 +240,7 @@ def tensordot(
     return ret
 
 
+@_handle_0_dim_output
 def trace(
     x: np.ndarray, offset: int = 0, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
