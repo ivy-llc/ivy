@@ -13,10 +13,6 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
-def _cast_for_binary_op(x1, x2):
-    return ivy.promote_types_of_inputs(x1, x2)
-
-
 def _clamp_bits(x1, x2):
     x2 = np.clip(
         x2,
@@ -62,7 +58,7 @@ def add(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.add(x1, x2, out=out)
 
 
@@ -97,7 +93,7 @@ atan.support_native_out = True
 def atan2(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.arctan2(x1, x2, out=out)
 
 
@@ -119,7 +115,7 @@ def bitwise_and(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.bitwise_and(x1, x2, out=out)
 
 
@@ -143,7 +139,7 @@ def bitwise_left_shift(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x1, x2 = _clamp_bits(x1, x2)
     return np.left_shift(x1, x2, out=out)
 
@@ -158,7 +154,7 @@ def bitwise_or(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.bitwise_or(x1, x2, out=out)
 
 
@@ -172,7 +168,7 @@ def bitwise_right_shift(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x1, x2 = _clamp_bits(x1, x2)
     return np.right_shift(x1, x2, out=out)
 
@@ -187,7 +183,7 @@ def bitwise_xor(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.bitwise_xor(x1, x2, out=out)
 
 
@@ -231,7 +227,7 @@ def divide(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = np.divide(x1, x2)
     if ivy.is_float_dtype(x1):
         ret = np.asarray(ret, dtype=x1.dtype)
@@ -293,7 +289,7 @@ def floor_divide(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = np.floor_divide(x1, x2, out=out)
 
     return ret
@@ -414,7 +410,7 @@ log2.support_native_out = True
 def logaddexp(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.logaddexp(x1, x2, out=out)
 
 
@@ -466,7 +462,7 @@ def multiply(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.multiply(x1, x2, out=out)
 
 
@@ -513,7 +509,7 @@ def pow(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.power(x1, x2, out=out)
 
 
@@ -527,7 +523,7 @@ def remainder(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.remainder(x1, x2, out=out)
 
 
@@ -595,7 +591,7 @@ def subtract(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.subtract(x1, x2, out=out)
 
 
@@ -653,7 +649,7 @@ erf.support_native_out = True
 
 @_handle_0_dim_output
 def maximum(x1, x2, *, out: Optional[np.ndarray] = None):
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.maximum(x1, x2, out=out)
 
 
@@ -667,7 +663,7 @@ def minimum(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.minimum(x1, x2, out=out)
 
 
