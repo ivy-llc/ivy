@@ -82,6 +82,7 @@ def test_native_array(
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        allow_inf=False,
         shared_dtype=True,
         large_value_safety_factor=2,
     ),
