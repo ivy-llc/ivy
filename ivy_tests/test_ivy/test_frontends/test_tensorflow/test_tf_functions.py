@@ -346,7 +346,6 @@ def test_tensorflow_divide(
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-
 def test_tensorflow_logical_or(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
