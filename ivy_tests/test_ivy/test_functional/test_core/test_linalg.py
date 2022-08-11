@@ -1138,7 +1138,7 @@ def test_matrix_rank(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_rank",
-        atol_=1.0
+        atol_=1.0,
         x=np.asarray(x, dtype=dtype),
         rtol=1e-04,
     )
