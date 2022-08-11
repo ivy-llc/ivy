@@ -177,6 +177,10 @@ def slogdet(
 ) -> Tuple[np.ndarray, np.ndarray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = np.linalg.slogdet(x)
+    sign = np.asarray(sign) if not isinstance(sign, np.ndarray) else sign
+    logabsdet = (
+        np.asarray(logabsdet) if not isinstance(logabsdet, np.ndarray) else logabsdet
+    )
     ret = results(sign, logabsdet)
     return ret
 
