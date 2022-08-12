@@ -25,6 +25,4 @@ Layers
    layers/conv3d.rst
    layers/conv3d_transpose.rst
    layers/lstm_update.rst
-   layers/handle_padding.rst
-   layers/deconv_length.rst
 

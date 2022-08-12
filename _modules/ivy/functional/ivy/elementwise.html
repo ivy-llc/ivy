@@ -149,7 +149,6 @@
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">abs</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -3498,43 +3497,49 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([True, True, False])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([True, False, True])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(x, y))</span>
-<span class="sd">    ivy.array([True,False,False])</span>
+<span class="sd">    ivy.array([True, False, False])</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.logical_and(x, y, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([True,False,False])</span>
+<span class="sd">    ivy.array([True, False, False])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]), \</span>
+<span class="sd">    x = ivy.Container(a=ivy.array([False, True, True]), \</span>
 <span class="sd">        b=ivy.array([True, False, False]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([True, True, False]), \</span>
+<span class="sd">    y = ivy.Container(a=ivy.array([True, True, False]), \</span>
 <span class="sd">        b=ivy.array([False, False, True]))</span>
-<span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(y, x))</span>
-<span class="sd">    {a:ivy.array([False,True,False]),b:ivy.array([False,False,False])}</span>
+<span class="sd">    print(ivy.logical_and(y, x))</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([False, True, False]),</span>
+<span class="sd">        b: ivy.array([False, False, False])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.logical_and(y, x, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {a:ivy.array([False,True,False]),b:ivy.array([False,False,False])}</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([False, True, False]),</span>
+<span class="sd">        b: ivy.array([False, False, False])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([True, True, False])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array([True, False, True])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(x, y))</span>
-<span class="sd">    ivy.array([True,False,False])</span>
+<span class="sd">    ivy.array([True, False, False])</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.logical_and(x, y, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    tensor([True,False,False])</span>
+<span class="sd">    ivy.array([True, False, False])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]), \</span>
 <span class="sd">        b=ivy.array([True, False, False]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([True, False, True])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(y, x))</span>
-<span class="sd">    {a:ivy.array([False,False,True]),b:ivy.array([True,False,False])}</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([False, False, True]),</span>
+<span class="sd">        b: ivy.array([True, False, False])</span>
+<span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]), \</span>
-<span class="sd">        b=ivy.array([True, False, False]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([True, False, True])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.logical_and(y, x, out=x)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.logical_and(y, x, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([False, False, True]),</span>
 <span class="sd">        b: ivy.array([True, False, False])</span>
