@@ -21,7 +21,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Linear algebra" href="../linear_algebra.html" />
+    <link rel="next" title="handle_padding" href="handle_padding.html" />
     <link rel="prev" title="conv3d_transpose" href="conv3d_transpose.html" /> 
 </head>
 
@@ -75,6 +75,8 @@
 <li class="toctree-l2"><a class="reference internal" href="conv3d.html">conv3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conv3d_transpose.html">conv3d_transpose</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">lstm_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="handle_padding.html">handle_padding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deconv_length.html">deconv_length</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
@@ -148,7 +150,7 @@
 <h1>lstm_update<a class="headerlink" href="#lstm-update" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.layers.lstm_update">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">lstm_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#lstm_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.lstm_update" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">lstm_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_kernel</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#lstm_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.lstm_update" title="Permalink to this definition"></a></dt>
 <dd><p>Perform long-short term memory update by unrolling time dimension of input array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -184,7 +186,7 @@ timestep <em>[batch_shape,out]</em></p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="conv3d_transpose.html" class="btn btn-neutral float-left" title="conv3d_transpose" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../linear_algebra.html" class="btn btn-neutral float-right" title="Linear algebra" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="handle_padding.html" class="btn btn-neutral float-right" title="handle_padding" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

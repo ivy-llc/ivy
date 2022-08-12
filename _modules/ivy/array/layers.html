@@ -143,9 +143,10 @@
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
         <span class="n">padding</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
         <span class="n">dilations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -179,14 +180,20 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.randint(0, 255, (1, 128, 128, 3)).astype(ivy.float32) / 255.0</span>
-<span class="sd">        &gt;&gt;&gt; filters = ivy.random_normal(0, 1, [3, 3, 3])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.depthwise_conv2d(filters, strides=2, padding=&#39;SAME&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0</span>
+<span class="sd">        &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.depthwise_conv2d(filters, 2, &#39;SAME&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">        (1, 64, 64, 3)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">depthwise_conv2d</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">dilations</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">filters</span><span class="p">,</span>
+            <span class="n">strides</span><span class="p">,</span>
+            <span class="n">padding</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+            <span class="n">dilations</span><span class="o">=</span><span class="n">dilations</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithLayers.conv1d"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.conv1d">[docs]</a>    <span class="k">def</span> <span class="nf">conv1d</span><span class="p">(</span>
@@ -194,9 +201,10 @@
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">strides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NWC&quot;</span><span class="p">,</span>
         <span class="n">dilations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -232,7 +240,7 @@
 <span class="sd">        --------</span>
 <span class="sd">         &gt;&gt;&gt; x = ivy.array([[[1., 2.], [3., 4.], [6., 7.], [9., 11.]]])  # NWC</span>
 <span class="sd">        &gt;&gt;&gt; filters = ivy.array([[[0., 1.], [1., 1.]]])  # WIO (I == C)</span>
-<span class="sd">        &gt;&gt;&gt; result = x.conv1d(filters, strides=(1,), padding=&#39;VALID&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; result = x.conv1d(filters, (1,), &#39;VALID&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(result)</span>
 <span class="sd">        ivy.array([[[ 2.,  3.], \</span>
 <span class="sd">                    [ 4.,  7.], \</span>
@@ -240,7 +248,13 @@
 <span class="sd">                    [11., 20.]]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">conv1d</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">dilations</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">filters</span><span class="p">,</span>
+            <span class="n">strides</span><span class="p">,</span>
+            <span class="n">padding</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+            <span class="n">dilations</span><span class="o">=</span><span class="n">dilations</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 </pre></div>
 
