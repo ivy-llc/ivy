@@ -618,20 +618,8 @@ def list_of_length(*, x, length):
     return st.lists(x, min_size=length, max_size=length)
 
 
-def as_cont(*, x, as_variable=False):
-    if as_variable:
-        return ivy.Container(
-            {
-                "a": ivy.variable(ivy.copy_array(x)),
-                "b": {
-                    "c": ivy.variable(ivy.copy_array(x)),
-                    "d": ivy.variable(ivy.copy_array(x)),
-                },
-            }
-        )
-    return ivy.Container(
-        {"a": ivy.copy_array(x), "b": {"c": ivy.copy_array(x), "d": ivy.copy_array(x)}}
-    )
+def as_cont(*, x):
+    return ivy.Container({"a": x, "b": {"c": x, "d": x}})
 
 
 def as_lists(*args):
@@ -950,12 +938,8 @@ def create_args_kwargs(
         ]
     if container_flags:
         arg_array_vals = [
-            as_cont(x=x, as_variable=v) if c else x
-            for x, c, v in zip(
-                arg_array_vals,
-                container_flags[:num_arg_vals],
-                as_variable_flags[:num_arg_vals],
-            )
+            as_cont(x=x) if c else x
+            for x, c in zip(arg_array_vals, container_flags[:num_arg_vals])
         ]
     args = ivy.copy_nest(args_np, to_mutable=True)
     ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)

@@ -182,7 +182,6 @@ def test_execute_with_gradients(
     *,
     dtype_and_xs,
     retain_grads,
-    container_flag,
     native_array,
     fw,
 ):
@@ -200,7 +199,7 @@ def test_execute_with_gradients(
         with_out=False,
         num_positional_args=2,
         native_array_flags=native_array,
-        container_flags=container_flag,
+        container_flags=False,
         instance_method=False,
         fw=fw,
         fn_name="execute_with_gradients",
@@ -357,6 +356,7 @@ def test_adam_step(
 def test_optimizer_update(
     dtype_n_ws_n_effgrad_n_lr,
     stop_gradients,
+    with_out,
     as_variable,
     native_array,
     container,
@@ -366,7 +366,7 @@ def test_optimizer_update(
     input_dtypes, [w, effective_grad], lr = dtype_n_ws_n_effgrad_n_lr
     helpers.test_function(
         input_dtypes=input_dtypes,
-        with_out=False,
+        with_out=with_out,
         as_variable_flags=as_variable,
         num_positional_args=3,
         native_array_flags=native_array,
