@@ -10,34 +10,40 @@ import ivy.functional.backends.torch as ivy_torch
 
 # cross_entropy
 @given(
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_and_input=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)
             )
         ),
-        num_arrays=2,
-        shared_dtype=True,
     ),
-    as_variable=st.booleans(),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        ),
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.cross_entropy"
+        fn_name="ivy.functional.frontends.torch.cross_entropy"
     ),
-    native_array=st.booleans(),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_torch_cross_entropy(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype_and_input, dtype_and_target, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    inputs_dtype, input = dtype_and_input
+    target_dtype, target = dtype_and_target
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[inputs_dtype, target_dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="cross_entropy",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        target=np.asarray(x[1], dtype=input_dtype[1]),
+        fn_tree="nn.functional.cross_entropy",
+        input=np.asarray(input, dtype=inputs_dtype),
+        target=np.asarray(target, dtype=target_dtype),
     )
