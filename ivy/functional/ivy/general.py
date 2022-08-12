@@ -1794,10 +1794,10 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     None
 
     """
-    try: 
+    try:
         _ = fn(*args, **kwargs)
-        return fn 
-    except Exception: 
+        return fn
+    except Exception:
         return None
 
 
@@ -2436,14 +2436,61 @@ def inplace_decrement(
     Parameters
     ----------
     x
-        The array to decrement.
+        The input array to be decremented by the defined value.
     val
-        The array to decrement the variable with.
+        The value of decrement.
 
     Returns
     -------
     ret
         The array following the in-place decrement.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([[5.3, 7., 0.],\
+                        [6.8, 8, 3.9],\
+                        [0., 10., 6.3]])
+    >>> y = ivy.inplace_decrement(x, 1.25)
+    >>> print(y)
+    ivy.array([[ 4.05,  5.75, -1.25],
+       [ 5.55,  6.75,  2.65],
+       [-1.25,  8.75,  5.05]])
+
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([-10, 24, -3])
+    >>> val = ivy.native_array([1, 2, 3])
+    >>> y = ivy.inplace_decrement(x, val)
+    >>> print(y)
+    ivy.array([-11,  22,  -6])
+
+    With :code:`ivy.Container` input
+    >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), b=ivy.array([0., -25., 50.]))
+    >>> y = ivy.inplace_decrement(x, 1.5)
+    >>> print(y)
+    {
+        a: ivy.array([-1., -6.5, 28.5]),
+        b: ivy.array([-1.5, -26.5, 48.5])
+    }
+
+
+    >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+    >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+    >>> z = ivy.inplace_decrement(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([0., 0., 0.]),
+        b: ivy.array([0., 0., 0.])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))
+    >>> y = ivy.Container(a=ivy.array([2., 5.5, 7.]), b=ivy.array([0., 25., 2.]))
+    >>> z = ivy.inplace_decrement(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([1., 1.5, 3.]),
+        b: ivy.array([0., 50., 3.5])
+    }
 
     """
     return current_backend(x).inplace_decrement(x, val)
