@@ -1781,7 +1781,8 @@ def dtype_values_axis(
     if not isinstance(values, list):
         return dtype, values, None
     if shape is not None:
-        return dtype, values, draw(get_axis(shape=shape))
+        return dtype, values, draw(
+            (shape=shape))
     axis = draw(integers(min_value=min_axis, max_value=max_axis))
     return dtype, values, axis
 
@@ -2316,6 +2317,7 @@ def get_axis(
     unique=True,
     min_size=1,
     max_size=None,
+    just_tuple=False,
 ):
     """Draws one or more axis for the given shape.
 
@@ -2341,6 +2343,9 @@ def get_axis(
         int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
         axes drawn.
         If None and unique is True, then it is set to the number of axes in the shape
+    just_tuple
+        boolean; if True, instead of randomly draw both integers and List[int], draw only List[int];
+        useful for functions that only takes a tuple[int] as axis input
 
     Returns
     -------
@@ -2367,6 +2372,15 @@ def get_axis(
                 | st.just(0)
                 | st.lists(st.just(0), min_size=min_size, max_size=max_size)
             )
+        elif just_tuple = True:
+            axis = draw(
+                st.none()
+                | st.lists(
+                    st.integers(-axes, axes - 1),
+                    min_size=min_size,
+                    max_size=max_size,
+                    unique_by=unique_by,
+                )
         else:
             axis = draw(
                 st.none()
@@ -2383,6 +2397,14 @@ def get_axis(
             axis = draw(
                 st.just(0) | st.lists(st.just(0), min_size=min_size, max_size=max_size)
             )
+        elif just_tuple = True:
+            axis = draw(
+                st.lists(
+                    st.integers(-axes, axes - 1),
+                    min_size=min_size,
+                    max_size=max_size,
+                    unique_by=unique_by,
+                )
         else:
             axis = draw(
                 st.integers(-axes, axes - 1)
