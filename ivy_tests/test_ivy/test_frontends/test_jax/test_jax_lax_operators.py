@@ -41,7 +41,7 @@ def test_jax_lax_add(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.add",
+        fn_tree="lax.add",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -73,7 +73,7 @@ def test_jax_lax_tan(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.tan",
+        fn_tree="lax.tan",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -81,16 +81,24 @@ def test_jax_lax_tan(
 # noinspection DuplicatedCode
 @st.composite
 def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(st.integers(1, 4), key="num_dims"))
-    num_arrays = draw(st.shared(st.integers(2, 4), key="num_arrays"))
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+    )
     common_shape = draw(
         helpers.lists(
-            arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
+            arg=helpers.ints(min_value=2, max_value=4),
+            min_size=num_dims - 1,
+            max_size=num_dims - 1,
         )
     )
-    unique_idx = draw(helpers.integers(min_value=0, max_value=num_dims - 1))
+    unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
+        helpers.lists(
+            arg=helpers.ints(min_value=2, max_value=3),
+            min_size=num_arrays,
+            max_size=num_arrays,
+        )
     )
     xs = list()
     available_dtypes = tuple(
@@ -136,7 +144,7 @@ def test_jax_lax_concat(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.concatenate",
+        fn_tree="lax.concatenate",
         operands=xs,
         dimension=unique_idx,
     )
@@ -159,9 +167,9 @@ def _dtypes(draw):
 def _fill_value(draw):
     dtype = draw(_dtypes())[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(st.integers(0, 5))
+        return draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
-        return draw(st.integers(-5, 5))
+        return draw(helpers.ints(min_value=-5, max_value=5))
     return draw(st.floats(-5, 5))
 
 
@@ -194,7 +202,7 @@ def test_jax_lax_full(
         native_array_flags=False,
         fw=fw,
         frontend="jax",
-        fn_name="lax.full",
+        fn_tree="lax.full",
         shape=shape,
         fill_value=fill_value,
         dtype=dtypes[0],
@@ -227,7 +235,7 @@ def test_jax_lax_abs(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.abs",
+        fn_tree="lax.abs",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -258,6 +266,6 @@ def test_jax_lax_sqrt(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.sqrt",
+        fn_tree="lax.sqrt",
         x=np.asarray(x, dtype=input_dtype),
     )
