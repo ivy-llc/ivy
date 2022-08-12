@@ -117,4 +117,4 @@ def arccos(
     return ret
 
 
-arcsin.unsupported_dtypes = {"torch": ("float16",)}
+arccos.unsupported_dtypes = {"torch": ("float16",)}
