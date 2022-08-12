@@ -316,7 +316,7 @@ otherwise, <code class="docutils literal notranslate"><span class="pre">False</s
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.data_type.ArrayWithDataTypes.is_float_dtype">
-<span class="sig-name descname"><span class="pre">is_float_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.is_float_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.is_float_dtype" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_float_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/data_type.html#ArrayWithDataTypes.is_float_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.data_type.ArrayWithDataTypes.is_float_dtype" title="Permalink to this definition"></a></dt>
 <dd><p><cite>ivy.Array</cite> instance method variant of <cite>ivy.is_float_dtype</cite>. This method simply
 checks to see if the array is of type <cite>float</cite>.</p>
 <dl class="field-list simple">
@@ -338,7 +338,7 @@ checks to see if the array is of type <cite>float</cite>.</p>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="go">True</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
@@ -351,7 +351,7 @@ checks to see if the array is of type <cite>float</cite>.</p>
 <span class="go">False</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">,</span> <span class="mf">4.3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="n">x</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">,</span> <span class="mf">4.3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
 <span class="go">True</span>
 </pre></div>

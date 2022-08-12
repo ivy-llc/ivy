@@ -1597,6 +1597,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span>
     <span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1622,7 +1623,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.int64)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    True</span>
+<span class="sd">    False</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.int32)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
@@ -1632,8 +1633,8 @@
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    False</span>
 
-<span class="sd">    &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x</span>
-<span class="sd">    &gt;&gt;&gt; print(arr)</span>
+<span class="sd">    &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)</span>
+<span class="sd">    &gt;&gt;&gt; print(arr.is_float_dtype())</span>
 <span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))</span>
@@ -1648,7 +1649,11 @@
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">))</span> <span class="k">else</span> <span class="kc">False</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="kc">True</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="n">check_float</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">))</span> <span class="k">else</span> <span class="kc">False</span>
+            <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span>
+                <span class="n">dtype_in</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="k">else</span> <span class="kc">False</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="s2">&quot;float&quot;</span> <span class="ow">in</span> <span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
