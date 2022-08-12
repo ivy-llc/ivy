@@ -19,7 +19,7 @@ import ivy.functional.backends.numpy as ivy_np
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.matrix_rank"
     ),
-    tolr= st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
     data=st.data()
 )
 def test_matrix_rank(
