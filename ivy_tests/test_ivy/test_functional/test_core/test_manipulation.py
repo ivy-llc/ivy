@@ -40,17 +40,6 @@ def _concat_helper(draw):
 @given(
     dtypes_arrays_axis=_concat_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="concat"),
-    instance_method=st.booleans(),
-    with_out=st.booleans(),
-    as_variable=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 5), key="num_arrays")
-    ),
-    native_array=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 5), key="num_arrays")
-    ),
-    container=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 5), key="num_arrays")
-    ),
     data=st.data(),
 )
 @handle_cmd_line_args
