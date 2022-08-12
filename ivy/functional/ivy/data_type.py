@@ -1518,9 +1518,7 @@ def is_float_dtype(
     elif isinstance(dtype_in, Number):
         return True if isinstance(dtype_in, (float, np.floating)) else False
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return (
-            True if ivy.nested_indices_where(dtype_in, check_float(dtype_in)) else False
-        )
+        return True if ivy.nested_indices_where(dtype_in, ivy.check_float) else False
     return "float" in as_ivy_dtype(dtype_in)
 
 
