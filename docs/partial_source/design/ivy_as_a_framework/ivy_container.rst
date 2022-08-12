@@ -17,7 +17,6 @@ A container can be constructed in a number of ways. All construction approaches 
 .. code-block:: python
 
    import ivy
-   ivy.set_framework('torch')
 
     dct = {'a': ivy.array([0.]),
            'b': {'c': ivy.array([1.]),
@@ -47,21 +46,19 @@ Representation
 
 .. code-block:: python
 
-   print(dct)
+    print(dct)
 
-   {'a': tensor([0.], device='cuda:0'), 'b'
-   : {'c': tensor([1.], device='cuda:0'), '
-   d': tensor([2.], device='cuda:0')}}
+    {'a': ivy.array([0.]), 'b': {'c': ivy.array([1.]), 'd': ivy.array([2.])}}
 
-   print(cnt)
+    print(cnt)
 
-   {
-       a: tensor([0.], device=cuda:0),
-       b: {
-           c: tensor([1.], device=cuda:0),
-           d: tensor([2.], device=cuda:0)
-       }
-   }
+    {
+        a: ivy.array([0.]),
+        b: {
+            c: ivy.array([1.]),
+            d: ivy.array([2.])
+        }
+    }
 
 If the container holds very large arrays, then their shapes are printed instead. Again, this does not happen with native Python Dicts.
 
@@ -73,35 +70,33 @@ If the container holds very large arrays, then their shapes are printed instead.
 
    print(dct)
 
-   {'a': tensor([[1., 1., 1.],
+   {'a': ivy.array([[1., 1., 1.],
            [1., 1., 1.],
            [1., 1., 1.],
            ...,
            [1., 1., 1.],
            [1., 1., 1.],
-           [1., 1., 1.]], device='cuda:0'), 'b': {'c'
-   : tensor([[0., 0., 0.,  ..., 0., 0., 0.],
-           [0., 0., 0.,  ..., 0., 0., 0.],
-           [0., 0., 0.,  ..., 0., 0., 0.]], device='c
-   uda:0'), 'd': tensor([[1., 1.],
+           [1., 1., 1.]]), 'b': {'c': ivy.array([[0., 0., 0., ..., 0., 0., 0.],
+           [0., 0., 0., ..., 0., 0., 0.],
+           [0., 0., 0., ..., 0., 0., 0.]]), 'd': ivy.array([[1., 1.],
            [1., 1.],
            [1., 1.],
            ...,
            [1., 1.],
            [1., 1.],
-           [1., 1.]], device='cuda:0')}}
+           [1., 1.]])}}
 
    cnt = ivy.Container(dct)
 
    print(cnt)
 
-   {
-       a: (<class torch.Tensor> shape=[1000, 3]),
-       b: {
-           c: (<class torch.Tensor> shape=[3, 1000]),
-           d: (<class torch.Tensor> shape=[1000, 2])
-       }
-   }
+    {
+        a: (<class ivy.array.array.Array> shape=[1000, 3]),
+        b: {
+            c: (<class ivy.array.array.Array> shape=[3, 1000]),
+            d: (<class ivy.array.array.Array> shape=[1000, 2])
+        }
+    }
 
 Recursive Methods
 ----------------
@@ -120,15 +115,15 @@ We can compute the mean of each sub-array:
 
 .. code-block:: python
 
-   print(cnt.reduce_mean())
+   print(cnt.mean())
 
    {
-       a: tensor([1.], device=cuda:0),
-       b: {
-           c: tensor([4.3333], device=cuda:0),
-           d: tensor([5.6667], device=cuda:0)
-       }
-   }
+        a: ivy.array(1.),
+        b: {
+            c: ivy.array(4.3333335),
+            d: ivy.array(5.6666665)
+        }
+    }
 
 Or we can flip each sub-array:
 
@@ -136,15 +131,15 @@ Or we can flip each sub-array:
 
    print(cnt.flip())
 
-   {
-       a: tensor([2., 1., 0.], device=cuda:0),
-       b: {
-           c: tensor([5., 6., 2.], device=cuda:0),
-           d: tensor([2., 5., 10.], device=cuda:0)
-       }
-   }
+    {
+        a: ivy.array([2., 1., 0.]),
+        b: {
+            c: ivy.array([5., 6., 2.]),
+            d: ivy.array([2., 5., 10.])
+        }
+    }
 
-There are 178 such functions for the :code:`ivy.Container` class in total, check out the `code <https://github.com/unifyai/ivy/blob/master/ivy/container.py>`_ or `docs <https://lets-unify.ai/ivy/core/container.html>`_ to see what they are!
+There are about 200 such functions for the :code:`ivy.Container` class in total, check out the `code <https://github.com/unifyai/ivy/tree/master/ivy/container>`_ or `docs <https://lets-unify.ai/ivy/core/container.html>`_ to see what they are!
 
 Built-ins
 ----------
@@ -166,12 +161,12 @@ All built-in methods also apply recursively. For example, performing a gradient 
    new_weights = weights - grads * lr
    print(new_weights)
 
-   {
-       linear: {
-           b: tensor([0.0600], device=cuda:0),
-           w: tensor([1.3100, 2.2400, 0.6900], device=cuda:0)
-       }
-   }
+    {
+        linear: {
+            b: ivy.array([0.06]),
+            w: ivy.array([1.31, 2.24, 0.69])
+        }
+    }
 
 Check out the section below on Ivy’s stateful API to see how the :code:`ivy.Container` is used for storing all network weights in :code:`ivy.Module` instances!
 
@@ -189,11 +184,11 @@ The keys in an :code:`ivy.Container` can be set and accessed by using either cla
 
    print(cnt)
 
-   {
-       a: tensor([0.], device=cuda:0),
-       b: tensor([1.], device=cuda:0),
-       c: tensor([2.], device=cuda:0)
-   }
+    {
+        a: ivy.array([0.]),
+        b: ivy.array([1.]),
+        c: ivy.array([2.])
+    }
 
    assert cnt.c is cnt['c']
 
@@ -207,17 +202,17 @@ Nested keys can also be set in one line, using either ‘/’ or ‘.’ as a de
 
    print(cnt)
 
-   {
-       a: tensor([0.], device=cuda:0),
-       b: {
-           c: tensor([1.], device=cuda:0)
-       },
-       d: {
-           e: {
-               f: tensor([2.], device=cuda:0)
-           }
-       }
-   }
+    {
+        a: ivy.array([0.]),
+        b: {
+            c: ivy.array([1.])
+        },
+        d: {
+            e: {
+                f: ivy.array([2.])
+            }
+        }
+    }
 
 One of the key benefits of using properties under the hood is the autocomplete support this introduces. Class attributes can be auto-completed when pressing tab midway through typing. This is not possible with Dicts.
 
@@ -237,7 +232,7 @@ One of the key benefits of using properties under the hood is the autocomplete s
    cnt.agent.total_h -> tab
    cnt.agent.total_height
 
-   tensor([1.], device='cuda:0')
+   ivy.array([1.])
 
 Saving and Loading
 ------------------
@@ -302,20 +297,20 @@ Comparing differences between containers can be achieved on a per-leaf basis. Th
 
 .. code-block:: python
 
-   cnt0 = ivy.Container({'a': ivy.array([0.]),
+    cnt0 = ivy.Container({'a': ivy.array([0.]),
                       'b': ivy.array([1.])})
-   cnt1 = cnt0.deep_copy()
-   cnt1.b = ivy.array([0.])
+    cnt1 = cnt0.deep_copy()
+    cnt1.b = ivy.array([0.])
 
-   print(ivy.Container.diff(cnt0, cnt1))
+    print(ivy.Container.diff(cnt0, cnt1))
 
-   {
-       a: tensor([0.], device=cuda:0),
-       b: {
-           diff_0: tensor([1.], device=cuda:0),
-           diff_1: tensor([0.], device=cuda:0)
-       }
-   }
+    {
+        a: ivy.array([0.]),
+        b: {
+            diff_0: ivy.array([1.]),
+            diff_1: ivy.array([0.])
+        }
+    }
 
 Or perhaps we saved JSON configuration files to disk for two different experiment runs, and then want to quickly see their differences. The :code:`ivy.Container.diff` method will also detect differences in the hierarchical structure and key name differences.
 
@@ -346,7 +341,6 @@ Or perhaps we saved JSON configuration files to disk for two different experimen
             diff_0: ADAM
         }
     }
-
 The :code:`ivy.Container.diff` method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
 
 Customized Representations
@@ -388,28 +382,28 @@ We can clip the depth of the printed container in order to make the structure of
 
     {
         decoder__l0: {
-            b: tensor([0.], device=cuda:0),
-            w: tensor([[0.]], device=cuda:0)
+            b: ivy.array([0.]),
+            w: ivy.array([[0.]])
         },
         decoder__l1: {
-            b: tensor([0.], device=cuda:0),
-            w: tensor([[0.]], device=cuda:0)
+            b: ivy.array([0.]),
+            w: ivy.array([[0.]])
         },
         encoder__l0: {
-            b: tensor([0.], device=cuda:0),
-            w: tensor([[0.]], device=cuda:0)
+            b: ivy.array([0.]),
+            w: ivy.array([[0.]])
         },
         encoder__l1: {
-            b: tensor([0.], device=cuda:0),
-            w: tensor([[0.]], device=cuda:0)
+            b: ivy.array([0.]),
+            w: ivy.array([[0.]])
         },
         l0: {
-            b: tensor([0.], device=cuda:0),
-            w: tensor([[0.]], device=cuda:0)
+            b: ivy.array([0.]),
+            w: ivy.array([[0.]])
         },
         l1: {
-            b: tensor([0.], device=cuda:0),
-            w: tensor([[0.]], device=cuda:0)
+            b: ivy.array([0.]),
+            w: ivy.array([[0.]])
         }
     }
 
@@ -422,24 +416,24 @@ Likewise, we can clip the height of the printed container in order to make the s
 
     {
         decoder: {
-            l0__b: tensor([0.], device=cuda:0),
-            l0__w: tensor([[0.]], device=cuda:0),
-            l1__b: tensor([0.], device=cuda:0),
-            l1__w: tensor([[0.]], device=cuda:0)
+            l0__b: ivy.array([0.]),
+            l0__w: ivy.array([[0.]]),
+            l1__b: ivy.array([0.]),
+            l1__w: ivy.array([[0.]])
         },
         encoder: {
-            l0__b: tensor([0.], device=cuda:0),
-            l0__w: tensor([[0.]], device=cuda:0),
-            l1__b: tensor([0.], device=cuda:0),
-            l1__w: tensor([[0.]], device=cuda:0)
+            l0__b: ivy.array([0.]),
+            l0__w: ivy.array([[0.]]),
+            l1__b: ivy.array([0.]),
+            l1__w: ivy.array([[0.]])
         },
         l0: {
-            b: tensor([0.], device=cuda:0),
-            w: tensor([[0.]], device=cuda:0)
+            b: ivy.array([0.]),
+            w: ivy.array([[0.]])
         },
         l1: {
-            b: tensor([0.], device=cuda:0),
-            w: tensor([[0.]], device=cuda:0)
+            b: ivy.array([0.]),
+            w: ivy.array([[0.]])
         }
     }
 

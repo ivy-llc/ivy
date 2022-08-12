@@ -11,6 +11,31 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithManipulation(ContainerBase):
+    @staticmethod
+    def static_concat(
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        axis: Optional[int] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "concat",
+            xs,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def concat(
         self: ivy.Container,
         xs: Union[
@@ -21,31 +46,17 @@ class ContainerWithManipulation(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_nests: bool = False,
+        map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        conts = [self]
-        arrays = [None]
-        for x in xs:
-            if ivy.is_ivy_container(x):
-                conts.append(x)
-                arrays.append(None)
-            else:
-                arrays.append(x)
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs_, _: ivy.concat(
-                    xs=[a if ivy.exists(a) else xs_.pop(0) for a in arrays], axis=axis
-                )
-                if ivy.is_array(xs_[0])
-                else xs_,
-                conts,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_nests=map_nests,
-            ),
+    ):
+        return self.static_concat(
+            [self] + xs,
+            axis,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out=out,
         )
 
@@ -199,6 +210,118 @@ class ContainerWithManipulation(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_split(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+        axis: int = 0,
+        with_remainder: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Union[ivy.Container, List[ivy.Container]]:
+        """
+        ivy.Container static method variant of ivy.split. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            array to be divided into sub-arrays.
+        num_or_size_splits
+            Number of equal arrays to divide the array into along the given axis if an
+            integer. The size of each split element if a sequence of integers. Default
+            is to divide into as many 1-dimensional arrays as the axis dimension.
+        axis
+            The axis along which to split, default is 0.
+        with_remainder
+            If the tensor does not split evenly, then store the last remainder entry.
+            Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+            A container with list of sub-arrays.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "split",
+            x,
+            num_or_size_splits,
+            axis,
+            with_remainder,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def split(
+        self: ivy.Container,
+        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+        axis: int = 0,
+        with_remainder: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Union[ivy.Container, List[ivy.Container]]:
+        """
+        ivy.Container instance method variant of ivy.split. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            array to be divided into sub-arrays.
+        num_or_size_splits
+            Number of equal arrays to divide the array into along the given axis if an
+            integer. The size of each split element if a sequence of integers. Default
+            is to divide into as many 1-dimensional arrays as the axis dimension.
+        axis
+            The axis along which to split, default is 0.
+        with_remainder
+            If the tensor does not split evenly, then store the last remainder entry.
+            Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+            A container with list of sub-arrays.
+
+        """
+        return self.static_split(
+            self,
+            num_or_size_splits,
+            axis,
+            with_remainder,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+        )
+
     def permute_dims(
         self: ivy.Container,
         axes: Tuple[int, ...],
@@ -266,8 +389,8 @@ class ContainerWithManipulation(ContainerBase):
             input container.
 
         shape
-            The new shape should be compatible with the original shape. 
-            One shape dimension can be -1. In this case, the value is 
+            The new shape should be compatible with the original shape.
+            One shape dimension can be -1. In this case, the value is
             inferred from the length of the array and remaining dimensions.
         copy
             boolean indicating whether or not to copy the input array.
@@ -293,7 +416,7 @@ class ContainerWithManipulation(ContainerBase):
         Returns
         -------
         ret
-            optional output container, for writing the result to. It must have a shape 
+            optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Examples

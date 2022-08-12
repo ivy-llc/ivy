@@ -147,7 +147,7 @@ def _train_task(
 
     # update variables
     if stop_gradients:
-        variables = variables.stop_gradients()
+        variables = variables.stop_gradient()
     if not batched:
         variables = variables.expand_dims(0)
 
@@ -259,7 +259,7 @@ def _train_tasks_with_for_loop(
         outer_v_seq = True
     else:
         outer_v_seq = False
-    for i, sub_batch in enumerate(batch.unstack(0, True, num_tasks)):
+    for i, sub_batch in enumerate(batch.unstack_conts(0, True, num_tasks)):
         if inner_sub_batch_fn is not None:
             inner_sub_batch = inner_sub_batch_fn(sub_batch)
         else:
@@ -383,6 +383,8 @@ def fomaml_step(
     variables: ivy.Container,
     inner_grad_steps: int,
     inner_learning_rate: float,
+    /,
+    *,
     inner_optimization_step: Callable = gradient_descent_update,
     inner_batch_fn: Optional[Callable] = None,
     outer_batch_fn: Optional[Callable] = None,
@@ -490,6 +492,9 @@ def fomaml_step(
     return cost, grads
 
 
+fomaml_step.computes_gradients = True
+
+
 @to_native_arrays_and_back
 def reptile_step(
     batch: ivy.Container,
@@ -497,6 +502,8 @@ def reptile_step(
     variables: ivy.Container,
     inner_grad_steps: int,
     inner_learning_rate: float,
+    /,
+    *,
     inner_optimization_step: Callable = gradient_descent_update,
     batched: bool = True,
     return_inner_v: Union[str, bool] = False,
@@ -573,6 +580,9 @@ def reptile_step(
     return cost, grads
 
 
+reptile_step.computes_gradients = True
+
+
 # Second Order
 
 
@@ -584,6 +594,8 @@ def maml_step(
     variables: ivy.Container,
     inner_grad_steps: int,
     inner_learning_rate: float,
+    /,
+    *,
     inner_optimization_step: Callable = gradient_descent_update,
     inner_batch_fn: Optional[Callable] = None,
     outer_batch_fn: Optional[Callable] = None,
@@ -691,3 +703,6 @@ def maml_step(
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
     return (cost, grads.sum(0), *rets)
+
+
+maml_step.computes_gradients = True

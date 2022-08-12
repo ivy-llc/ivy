@@ -217,6 +217,42 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array to be broadcasted.
+        shape
+            desired shape to be broadcasted to.
+        out
+            Optional array to store the broadcasted array.
+
+        Returns
+        -------
+        ret
+            Returns the broadcasted array of shape 'shape'
+
+        Examples
+        --------
+        With :code:`ivy.Container` static method:
+        >>> x = ivy.Container(a=ivy.array([1]),\
+            b=ivy.array([2]))
+        >>> y = ivy.Container.static_broadcast_to(x,(3, 1))
+        >>> print(y)
+        {
+            a: ivy.array([1],
+                         [1],
+                         [1]),
+            b: ivy.array([2],
+                         [2],
+                         [2])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "broadcast_to",
             x,
@@ -238,6 +274,43 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        `ivy.Container` instance method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to be broadcasted.
+        shape
+            desired shape to be broadcasted to.
+        out
+            Optional array to store the broadcasted array.
+
+        Returns
+        -------
+        ret
+            Returns the broadcasted array of shape 'shape'
+
+        Examples
+        --------
+        With :code: 'ivy.Container' instance method:
+        >>> x = ivy.Container(a=ivy.array([0, 0.5]),\
+            b=ivy.array([4, 5]))
+        >>> y = x.broadcast_to((3,2))
+        >>> print(y)
+        {
+            a: ivy.array([[0., 0.5],
+                          [0., 0.5],
+                          [0., 0.5]]),
+            b: ivy.array([[4, 5],
+                          [4, 5],
+                          [4, 5]])
+        }
+
+        """
         return self.static_broadcast_to(
             self,
             shape,

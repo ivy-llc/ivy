@@ -10,7 +10,7 @@ class ContainerWithGradients(ContainerBase):
     @staticmethod
     def static_variable(
         x: ivy.Container,
-        key_chains: Union[bool, ivy.Container] = False,
+        key_chains: Union[bool, ivy.Container] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
@@ -65,7 +65,7 @@ class ContainerWithGradients(ContainerBase):
 
     def variable(
         self: ivy.Container,
-        key_chains: Union[bool, ivy.Container] = False,
+        key_chains: Union[bool, ivy.Container] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
@@ -843,4 +843,108 @@ class ContainerWithGradients(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
+        )
+
+    @staticmethod
+    def static_stop_gradient(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        preserve_type: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stop_gradient. This method simply
+        wraps the function, and so the docstring for ivy.stop_gradient also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Array or Container for which to stop the gradient.
+        preserve_type
+            Whether to preserve the input type (ivy.Variable or ivy.Array),
+            otherwise an array is always returned. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The same array x, but with no gradient information.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "stop_gradient",
+            x,
+            preserve_type,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def stop_gradient(
+        self: ivy.Container,
+        preserve_type: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stop_gradient. This method simply
+        wraps the function, and so the docstring for ivy.stop_gradient also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container for which to stop the gradient.
+        preserve_type
+            Whether to preserve the input type (ivy.Variable or ivy.Array),
+            otherwise an array is always returned. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The same array x, but with no gradient information.
+        """
+        return self.static_stop_gradient(
+            self,
+            preserve_type,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
         )
