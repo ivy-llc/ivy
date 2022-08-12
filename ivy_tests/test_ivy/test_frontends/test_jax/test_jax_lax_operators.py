@@ -77,6 +77,7 @@ def test_jax_lax_tan(
         x=np.asarray(x, dtype=input_dtype),
     )
 
+
 # max
 @given(
     dtype_and_x=helpers.dtype_and_values(
