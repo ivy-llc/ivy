@@ -28,10 +28,11 @@ def _to_array(x):
 # ----#
 
 
-def dev(x: JaxArray,
-        /,
-        *,
-        as_native: bool = False
+def dev(
+    x: JaxArray,
+    /,
+    *,
+    as_native: bool = False,
 ) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return ""
@@ -45,11 +46,12 @@ def dev(x: JaxArray,
     return as_ivy_dev(dv)
 
 
-def to_device(x: JaxArray,
-              device: jaxlib.xla_extension.Device,
-              /,
-              *,
-              stream: Optional[int] = None
+def to_device(
+        x: JaxArray,
+        device: jaxlib.xla_extension.Device,
+        /,
+        *,
+        stream: Optional[int] = None
 ):
     if device is not None:
         cur_dev = as_ivy_dev(dev(x))

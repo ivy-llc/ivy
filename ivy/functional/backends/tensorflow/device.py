@@ -49,7 +49,7 @@ def to_device(
     return x
 
 
-def as_ivy_dev(device:str, /):
+def as_ivy_dev(device: str, /):
     if isinstance(device, str) and "/" not in device:
         return ivy.Device(device)
     dev_in_split = device[1:].split(":")[-2:]
@@ -62,7 +62,7 @@ def as_ivy_dev(device:str, /):
     return ivy.Device(":".join([dev_type, dev_idx]))
 
 
-def as_native_dev(device:str, /):
+def as_native_dev(device: str, /):
     if isinstance(device, str) and "/" in device:
         return device
     ret = "/" + ivy.Device(device).upper()
@@ -71,7 +71,7 @@ def as_native_dev(device:str, /):
     return ret
 
 
-def clear_mem_on_dev(device:str, /):
+def clear_mem_on_dev(device: str, /):
     return None
 
 
