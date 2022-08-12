@@ -108,7 +108,7 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         axis: int = -1,
         *,
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.gather. This method simply wraps the
