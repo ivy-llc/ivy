@@ -1,7 +1,9 @@
-name: CI Dashboard
-on: [push]
+name: test_dashboard
+on:
+  schedule:
+    - cron: "*/20 * * * *"
 jobs:
-  Trigger-Dashboard:
+  trigger-dashboard-script:
     name: Trigger Dashboard
     runs-on: ubuntu-latest
     steps:
