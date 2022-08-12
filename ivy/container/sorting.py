@@ -13,6 +13,8 @@ class ContainerWithSorting(ContainerBase):
     @staticmethod
     def static_argsort(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         axis: int = -1,
         descending: bool = False,
         stable: bool = True,
@@ -20,8 +22,7 @@ class ContainerWithSorting(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argsort. This method 
@@ -116,9 +117,9 @@ class ContainerWithSorting(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "argsort",
             x,
-            axis,
-            descending,
-            stable,
+            axis=axis,
+            descending=descending,
+            stable=stable,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -128,6 +129,8 @@ class ContainerWithSorting(ContainerBase):
 
     def argsort(
         self: ivy.Container,
+        /,
+        *,
         axis: int = -1,
         descending: bool = False,
         stable: bool = True,
@@ -135,8 +138,7 @@ class ContainerWithSorting(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argsort.
@@ -199,9 +201,9 @@ class ContainerWithSorting(ContainerBase):
         """
         return self.static_argsort(
             self,
-            axis,
-            descending,
-            stable,
+            axis=axis,
+            descending=descending,
+            stable=stable,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -212,6 +214,8 @@ class ContainerWithSorting(ContainerBase):
     @staticmethod
     def static_sort(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         axis: int = -1,
         descending: bool = False,
         stable: bool = True,
@@ -219,8 +223,7 @@ class ContainerWithSorting(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.sort. This method simply wraps the
@@ -252,9 +255,9 @@ class ContainerWithSorting(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "sort",
             x,
-            axis,
-            descending,
-            stable,
+            axis=axis,
+            descending=descending,
+            stable=stable,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -264,6 +267,8 @@ class ContainerWithSorting(ContainerBase):
 
     def sort(
         self: ivy.Container,
+        /,
+        *,
         axis: int = -1,
         descending: bool = False,
         stable: bool = True,
@@ -271,8 +276,7 @@ class ContainerWithSorting(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.sort. This method simply wraps the
@@ -325,62 +329,64 @@ class ContainerWithSorting(ContainerBase):
         """
         return self.static_sort(
             self,
-            axis,
-            descending,
-            stable,
+            axis=axis,
+            descending=descending,
+            stable=stable,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     @staticmethod
     def static_searchsorted(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         side="left",
         sorter=None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "searchsorted",
             x1,
             v,
-            side,
-            sorter,
+            side=side,
+            sorter=sorter,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     def searchsorted(
         self: ivy.Container,
         v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         side="left",
         sorter=None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_searchsorted(
             self,
             v,
-            side,
-            sorter,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            side=side,
+            sorter=sorter,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )

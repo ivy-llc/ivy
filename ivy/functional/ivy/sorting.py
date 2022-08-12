@@ -19,10 +19,11 @@ from ivy.func_wrapper import (
 @handle_nestable
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices that sort an array ``x`` along a specified axis.
@@ -92,7 +93,9 @@ def argsort(
         b: ivy.array([[0, 1], [1, 0]])
     }
     """
-    return ivy.current_backend(x).argsort(x, axis, descending, stable, out=out)
+    return ivy.current_backend(x).argsort(
+        x, axis=axis, descending=descending, stable=stable, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -100,10 +103,11 @@ def argsort(
 @handle_nestable
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a sorted copy of an array.
@@ -206,7 +210,9 @@ def sort(
     }
 
     """
-    return ivy.current_backend(x).sort(x, axis, descending, stable, out=out)
+    return ivy.current_backend(x).sort(
+        x, axis=axis, descending=descending, stable=stable, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -215,9 +221,10 @@ def sort(
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     side="left",
     sorter=None,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the inserted elements in a sorted array.
@@ -263,7 +270,9 @@ def searchsorted(
     >>> print(y)
     ivy.array([3,2,4])
     """
-    return ivy.current_backend(x, v).searchsorted(x, v, side=side, out=out)
+    return ivy.current_backend(x, v).searchsorted(
+        x, v, side=side, sorter=sorter, out=out
+    )
 
 
 # Extra #
