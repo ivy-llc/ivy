@@ -3596,7 +3596,7 @@ def logical_or(
     >>> y = ivy.array([2, True, False])
     >>> ivy.logical_or(x, y, out=x)
     >>> print(x)
-    ivy.array([ True,  True, False])
+    ivy.array([ 1,  1, 0])
 
     With :code:`ivy.NativeArray` input:
 

@@ -1352,7 +1352,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> y = ivy.array([2, True, False])
         >>> z = x.logical_or(y)
         >>> print(z)
-        vy.array([ True,  True, False])
+        ivy.array([ True,  True, False])
         """
         return ivy.logical_or(self._data, x2, out=out)
 
