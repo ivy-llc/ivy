@@ -1,7 +1,9 @@
-name: CI Dashboard
-on: [push]
+name: test_dashboard
+on:
+  schedule:
+    - cron: "*/20 * * * *"
 jobs:
-  Trigger-Dashboard:
+  trigger-dashboard-script:
     name: Trigger Dashboard
     runs-on: ubuntu-latest
     steps:
@@ -23,11 +25,11 @@ jobs:
              requests
              emoji
              pandas
+             PyGithub
 
       - name: Run Dashboard file
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WORKING_DIR: ${GITHUB_WORKSPACE}
         run: |
-            cd ivy
-            python3 dashboard.py "$WORKING_DIR" "$GITHUB_TOKEN"
+            cd ivy/automation_tools/dashboard_automation
+            python3 tests_dashboard.py "$GITHUB_TOKEN"
