@@ -61,9 +61,10 @@ class ContainerWithManipulation(ContainerBase):
         the function, and so the docstring for ivy.concat also applies to this method
         with minimal changes.
         """
-        xs.insert(0, self)
+        new_xs = xs.copy()
+        new_xs.insert(0, self.copy())
         return self.static_concat(
-            xs,
+            new_xs,
             axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -898,9 +899,10 @@ class ContainerWithManipulation(ContainerBase):
         simply wraps the function, and so the docstring for ivy.stack
         also applies to this method with minimal changes.
         """
-        xs.insert(0, self)
+        new_xs = xs.copy()
+        new_xs.insert(0, self.copy())
         return self.static_stack(
-            xs,
+            new_xs,
             axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
