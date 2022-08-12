@@ -81,6 +81,7 @@ def test_torch_cat(
     )
 
 
+# swapaxes
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -98,37 +99,26 @@ def test_torch_cat(
             helpers.get_shape(min_num_dims=2), key='shape')).filter(
                 lambda axis: isinstance(axis, int)),
     as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.swapaxes"),
     native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-    data=st.data(),
 )
 def test_torch_swapaxes(
     *,
-    data,
     dtype_value,
     axis0,
     axis1,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
-    instance_method,
     fw,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
         fw=fw,
         frontend="torch",
         fn_name="swapaxes",
