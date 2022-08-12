@@ -3,9 +3,11 @@ import requests
 import json
 import emoji
 import pandas as pd
+from github import Github
+from typing import Dict, Union, Tuple
 
 
-url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&exclude_pull_requests=true"
+url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&status=completed&per_page=100&page=2"
 
 headers = {
     "Accept": "application/vnd.github+json",
@@ -15,10 +17,12 @@ functional_nn_dict = dict()
 functional_core_dict = dict()
 stateful_dict = dict()
 
-output_files: dict = {
+config: Dict[Union[str, int], Union[str, type(emoji)]] = {
     0: "functional_core_dashboard",
     1: "functional_nn_dashboard",
     2: "stateful_dashboard",
+    "success": emoji.emojize(":white_check_mark:", language="alias"),
+    "failure": emoji.emojize(":x:", language="alias")
 }
 results = []
 
@@ -28,7 +32,6 @@ def get_api_results(url, token, headers):
     response = requests.request("GET", url, headers=headers)
     return json.loads(response.text)
 
-
 def get_DataFrame(result_dict: dict) -> pd.DataFrame:
     data = pd.DataFrame.from_dict(
         result_dict, orient="index", columns=["Numpy", "Torch", "Jax", "Tensorflow"]
@@ -37,6 +40,9 @@ def get_DataFrame(result_dict: dict) -> pd.DataFrame:
     for (index_label, row_series) in data.iterrows():
         data.at[index_label] = [row_series.values[i][1] for i in range(4)]
     return data
+
+def make_clickable(url, name):
+    return '<a href="{}" rel="noopener noreferrer" target="_blank">{}</a>'.format(url,name)
 
 
 def workflow_results(token):
@@ -77,59 +83,28 @@ def get_matrix_job_data(token):
             if name == "test-core-ivy":
                 if submodule not in functional_core_dict:
                     functional_core_dict[submodule] = []
-                if info["conclusion"] == "failure":
-                    functional_core_dict[submodule].append(
-                        (backend, emoji.emojize(":x:", language="alias"))
-                    )
-                elif info["conclusion"] == "success":
-                    functional_core_dict[submodule].append(
-                        (backend, emoji.emojize(":white_check_mark:", language="alias"))
-                    )
-                else:
-                    functional_core_dict[submodule].append(
-                        (backend, emoji.emojize(":clock9:", language="alias"))
-                    )
+                functional_core_dict[submodule].append((backend, make_clickable(info['html_url'], config[info['conclusion']])))
             elif name == "test-nn-ivy":
                 if submodule not in functional_nn_dict:
                     functional_nn_dict[submodule] = []
-                if info["conclusion"] == "failure":
-                    functional_nn_dict[submodule].append(
-                        (backend, emoji.emojize(":x:", language="alias"))
-                    )
-                elif info["conclusion"] == "success":
-                    functional_nn_dict[submodule].append(
-                        (backend, emoji.emojize(":white_check_mark:", language="alias"))
-                    )
-                else:
-                    functional_nn_dict[submodule].append(
-                        (backend, emoji.emojize(":clock9:", language="alias"))
-                    )
-
+                functional_nn_dict[submodule].append((backend, make_clickable(info['html_url'], config[info['conclusion']])))
             elif name == "test-stateful-ivy":
                 if submodule not in stateful_dict:
                     stateful_dict[submodule] = []
-                if info["conclusion"] == "failure":
-                    stateful_dict[submodule].append(
-                        (backend, emoji.emojize(":x:", language="alias"))
-                    )
-                elif info["conclusion"] == "success":
-                    stateful_dict[submodule].append(
-                        (backend, emoji.emojize(":white_check_mark:", language="alias"))
-                    )
-                else:
-                    stateful_dict[submodule].append(
-                        (backend, emoji.emojize(":clock9:", language="alias"))
-                    )
+                stateful_dict[submodule].append((backend, make_clickable(info['html_url'], config[info['conclusion']])))
 
     return (functional_core_dict, functional_nn_dict, stateful_dict)
 
 
 def main():
-    path, token = (str(sys.argv[1]), str(sys.argv[2]))
+    token = str(sys.argv[1])
+    g = Github(token)
+    repo = g.get_repo('unifyai/ivy')
     ivy_modules = get_matrix_job_data(token)
     for i, module in enumerate(ivy_modules):
         module_df = get_DataFrame(module)
-        module_df.to_html(f"{path}/{output_files[i]}.html")
+        file = repo.get_contents(f'test_dashboards/{config[i]}.md', ref = "master")
+        repo.update_file(file.path, f"update {config[i]}", module_df.to_markdown(), file.sha, branch ="master")
 
 
 if __name__ == "__main__":

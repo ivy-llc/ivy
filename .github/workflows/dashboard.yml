@@ -1,11 +1,9 @@
-name: CI Dashboard
+name: test_dashboard
 on:
-  workflow_run:
-    workflows: [test-nn-ivy, test-stateful-ivy, test-core-ivy]
-    types:
-      - completed
+  schedule:
+    - cron: "*/20 * * * *"
 jobs:
-  Trigger-Dashboard:
+  trigger-dashboard-script:
     name: Trigger Dashboard
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +22,6 @@ jobs:
         uses: BSFishy/pip-action@v1
         with:
            packages: |
-             json
              requests
              emoji
              pandas
@@ -32,7 +29,6 @@ jobs:
       - name: Run Dashboard file
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WORKING_DIR: ${GITHUB_WORKSPACE}
         run: |
-            cd ivy
-            python3 dashboard.py "$WORKING_DIR" "$GITHUB_TOKEN"
+            cd ivy/automation_tools/dashboard_automation
+            python3 tests_dashboard.py "$GITHUB_TOKEN"
