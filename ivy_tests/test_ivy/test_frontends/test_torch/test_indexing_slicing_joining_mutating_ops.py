@@ -10,16 +10,24 @@ import ivy.functional.backends.torch as ivy_torch
 # noinspection DuplicatedCode
 @st.composite
 def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(st.integers(1, 4), key="num_dims"))
-    num_arrays = draw(st.shared(st.integers(2, 4), key="num_arrays"))
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+    )
     common_shape = draw(
         helpers.lists(
-            arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
+            arg=helpers.ints(min_value=2, max_value=3),
+            min_size=num_dims - 1,
+            max_size=num_dims - 1,
         )
     )
-    unique_idx = draw(helpers.integers(min_value=0, max_value=num_dims - 1))
+    unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
+        helpers.lists(
+            arg=helpers.ints(min_value=2, max_value=3),
+            min_size=num_arrays,
+            max_size=num_arrays,
+        )
     )
     xs = list()
     available_dtypes = set(ivy_torch.valid_float_dtypes).intersection(
@@ -65,7 +73,7 @@ def test_torch_cat(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="cat",
+        fn_tree="cat",
         tensors=xs,
         dim=unique_idx,
         out=None,
