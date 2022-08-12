@@ -151,7 +151,7 @@ def test_dropout(
         scale=scale,
         dtype=dtype,
     )
-    ret = helpers.flatten(ret=ret)
+    ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:
         # cardinality test
         assert u.shape == x.shape
