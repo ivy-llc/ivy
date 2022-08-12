@@ -59,7 +59,7 @@ def test_numpy_full(
         native_array_flags=False,
         fw=fw,
         frontend="numpy",
-        fn_name="full",
+        fn_tree="full",
         shape=shape,
         fill_value=fill_value,
         dtype=dtypes[0],
