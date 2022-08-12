@@ -103,8 +103,8 @@ def main():
     ivy_modules = get_matrix_job_data(token)
     for i, module in enumerate(ivy_modules):
         module_df = get_DataFrame(module)
-        file = repo.get_contents(f'test_dashboards/{config[i]}.md', ref = "pygithub")
-        repo.update_file(file.path, f"update {config[i]}", module_df.to_markdown(), file.sha, branch ="pygithub")
+        file = repo.get_contents(f'test_dashboards/{config[i]}.md', ref = "master")
+        repo.update_file(file.path, f"update {config[i]}", module_df.to_markdown(), file.sha, branch ="master")
 
 
 if __name__ == "__main__":
