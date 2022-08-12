@@ -1699,6 +1699,7 @@ def test_stable_divide(dtype_and_x, as_variable, num_positional_args, native_arr
     )
 
 def test_stable_pow():
+    # Jiahan is working on this
     return
 
 def test_get_all_arrays_in_memory():
