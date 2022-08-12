@@ -4,6 +4,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
 
@@ -87,8 +88,8 @@ def test_torch_cat(
     native_array=helpers.array_bools(),
     with_out=st.booleans(),
 )
+@handle_cmd_line_args
 def test_permute(
-        *,
         dtype_values_axis,
         as_variable,
         num_positional_args,
