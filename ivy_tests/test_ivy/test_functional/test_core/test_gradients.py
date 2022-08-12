@@ -18,9 +18,6 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_float_dtypes,
             num_arrays=num_arrays,
-            min_value=1,
-            safety_factor=0.8,
-            exclude_min=True,
             min_num_dims=1,
             shared_dtype=True,
             ret_shape=True,
@@ -33,7 +30,7 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         st.one_of(
             st.floats(min_value=0.0, max_value=1.0, exclude_min=True, width=32),
             helpers.array_values(
-                dtype=dtype, shape=shape, min_value=0.0, exclude_min=True
+                dtype=dtype, shape=shape, min_value=0.0, max_value=1.0, exclude_min=True
             ),
         )
     )
@@ -56,22 +53,20 @@ def test_set_with_grads(grads):
 @pytest.mark.parametrize("grads", [True, False])
 def test_unset_with_grads(grads):
     ivy.set_with_grads(grads)
-    with_grad_stack = ivy.with_grads_stack.copy()
+    with_grads_stack = ivy.with_grads_stack.copy()
     ivy.unset_with_grads()
-    assert with_grad_stack[1:] == ivy.with_grads_stack
+    assert with_grads_stack[0:-1] == ivy.with_grads_stack
 
 
 # variable
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    num_positional_args=helpers.num_positional_args(fn_name="variable"),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_variable(
     *,
     dtype_and_x,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -82,7 +77,7 @@ def test_variable(
         input_dtypes=dtype,
         as_variable_flags=True,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -95,14 +90,12 @@ def test_variable(
 # is_variable
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    num_positional_args=helpers.num_positional_args(fn_name="is_variable"),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_is_variable(
     *,
     dtype_and_x,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -113,7 +106,7 @@ def test_is_variable(
         input_dtypes=dtype,
         as_variable_flags=True,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -125,9 +118,7 @@ def test_is_variable(
 
 # variable data
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -149,9 +140,7 @@ def test_variable_data(dtype_and_x, native_array, container, instance_method, fw
 
 # stop_gradient
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     preserve_type=st.booleans(),
     data=st.data(),
 )
@@ -178,7 +167,11 @@ def test_stop_gradient(
 # execute_with_gradients
 @given(
     dtype_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1, min_dim_size=1
+        available_dtypes=ivy_np.valid_float_dtypes,
+        min_num_dims=1,
+        min_dim_size=1,
+        min_value=0,
+        max_value=100,
     ),
     retain_grads=st.booleans(),
     container_flag=st.booleans(),
@@ -232,15 +225,17 @@ def test_value_and_grad(x, dtype, func, fw):
     var = ivy.variable(ivy.array(x, dtype=dtype))
     fn = ivy.value_and_grad(func)
     value, grad = fn(var)
-    value_np, grad_np = helpers.flatten(ret=value), helpers.flatten(ret=grad)
+    value_np, grad_np = helpers.flatten_and_to_np(ret=value), helpers.flatten_and_to_np(
+        ret=grad
+    )
     ivy.unset_backend()
     ivy.set_backend("tensorflow")
     var = ivy.variable(ivy.array(x, dtype=dtype))
     fn = ivy.value_and_grad(func)
     value_gt, grad_gt = fn(var)
-    value_np_from_gt, grad_np_from_gt = helpers.flatten(ret=value_gt), helpers.flatten(
-        ret=grad_gt
-    )
+    value_np_from_gt, grad_np_from_gt = helpers.flatten_and_to_np(
+        ret=value_gt
+    ), helpers.flatten_and_to_np(ret=grad_gt)
     for value, value_from_gt in zip(value_np, value_np_from_gt):
         assert value.shape == value_from_gt.shape
         assert np.allclose(value, value_from_gt)
@@ -264,13 +259,13 @@ def test_jac(x, dtype, func, fw):
     var = ivy.variable(ivy.array(x, dtype=dtype))
     fn = ivy.jac(func)
     jacobian = fn(var)
-    jacobian_np = helpers.flatten(ret=jacobian)
+    jacobian_np = helpers.flatten_and_to_np(ret=jacobian)
     ivy.unset_backend()
     ivy.set_backend("tensorflow")
     var = ivy.variable(ivy.array(x, dtype=dtype))
     fn = ivy.jac(func)
     jacobian_gt = fn(var)
-    jacobian_np_from_gt = helpers.flatten(ret=jacobian_gt)
+    jacobian_np_from_gt = helpers.flatten_and_to_np(ret=jacobian_gt)
     for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
         assert jacobian.shape == jacobian_from_gt.shape
         assert np.allclose(jacobian, jacobian_from_gt)
@@ -291,13 +286,13 @@ def test_grad(x, dtype, func, fw):
     var = ivy.variable(ivy.array(x, dtype=dtype))
     fn = ivy.grad(func)
     grad = fn(var)
-    grad_np = helpers.flatten(ret=grad)
+    grad_np = helpers.flatten_and_to_np(ret=grad)
     ivy.unset_backend()
     ivy.set_backend("tensorflow")
     var = ivy.variable(ivy.array(x, dtype=dtype))
     fn = ivy.grad(func)
     grad_gt = fn(var)
-    grad_np_from_gt = helpers.flatten(ret=grad_gt)
+    grad_np_from_gt = helpers.flatten_and_to_np(ret=grad_gt)
     for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):
         assert grad.shape == grad_from_gt.shape
         assert np.allclose(grad, grad_from_gt)
@@ -362,7 +357,6 @@ def test_adam_step(
 def test_optimizer_update(
     dtype_n_ws_n_effgrad_n_lr,
     stop_gradients,
-    with_out,
     as_variable,
     native_array,
     container,
@@ -372,7 +366,7 @@ def test_optimizer_update(
     input_dtypes, [w, effective_grad], lr = dtype_n_ws_n_effgrad_n_lr
     helpers.test_function(
         input_dtypes=input_dtypes,
-        with_out=with_out,
+        with_out=False,
         as_variable_flags=as_variable,
         num_positional_args=3,
         native_array_flags=native_array,
@@ -398,7 +392,6 @@ def test_gradient_descent_update(
     *,
     dtype_n_ws_n_dcdw_n_lr,
     stop_gradients,
-    with_out,
     as_variable,
     native_array,
     container,
@@ -408,7 +401,7 @@ def test_gradient_descent_update(
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     helpers.test_function(
         input_dtypes=input_dtypes,
-        with_out=with_out,
+        with_out=False,
         as_variable_flags=as_variable,
         num_positional_args=3,
         native_array_flags=native_array,
@@ -426,7 +419,7 @@ def test_gradient_descent_update(
 # lars_update
 @given(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
-    decay_lambda=st.floats(min_value=0, max_value=1, exclude_min=True, width=32),
+    decay_lambda=st.floats(min_value=0, max_value=1, exclude_min=True, width=16),
     stop_gradients=st.booleans(),
     data=st.data(),
 )

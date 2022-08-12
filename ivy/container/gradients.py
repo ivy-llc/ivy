@@ -10,7 +10,7 @@ class ContainerWithGradients(ContainerBase):
     @staticmethod
     def static_variable(
         x: ivy.Container,
-        key_chains: Union[bool, ivy.Container] = False,
+        key_chains: Union[bool, ivy.Container] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
@@ -65,7 +65,7 @@ class ContainerWithGradients(ContainerBase):
 
     def variable(
         self: ivy.Container,
-        key_chains: Union[bool, ivy.Container] = False,
+        key_chains: Union[bool, ivy.Container] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
@@ -120,11 +120,13 @@ class ContainerWithGradients(ContainerBase):
     @staticmethod
     def static_is_variable(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        exclusive: Union[bool, ivy.Container] = False,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        exclusive: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_variable. This method simply wraps
@@ -182,20 +184,22 @@ class ContainerWithGradients(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "is_variable",
             x,
-            exclusive,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            exclusive=exclusive,
         )
 
     def is_variable(
         self: ivy.Container,
-        exclusive: Union[bool, ivy.Container] = False,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        exclusive: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_variable. This method simply
@@ -251,7 +255,12 @@ class ContainerWithGradients(ContainerBase):
         }
         """
         return self.static_is_variable(
-            self, exclusive, key_chains, to_apply, prune_unapplied, map_sequences
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            exclusive=exclusive,
         )
 
     @staticmethod
