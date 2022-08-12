@@ -423,7 +423,7 @@ def test_eigh(
 
 # eigvalsh
 @given(
-    dtype_x=_get_dtype_and_matrix(),
+    dtype_x=_get_dtype_and_matrix(symmetric=True),
     num_positional_args=helpers.num_positional_args(fn_name="eigvalsh"),
     data=st.data(),
 )
