@@ -129,7 +129,7 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
         if as_variable:
             x = ivy.variable(x)
 
-        native_device = ivy.dev(x, True)
+        native_device = ivy.dev(x, as_native=True)
         ret = ivy.as_ivy_dev(native_device)
 
         # Type test
@@ -238,7 +238,7 @@ def test_to_device(
     out = ivy.zeros(ivy.shape(x), device=device, dtype=dtype) if with_out else None
 
     device = ivy.dev(x)
-    x_on_dev = ivy.to_device(x, device=device, stream=stream, out=out)
+    x_on_dev = ivy.to_device(x, device, stream=stream, out=out)
     dev_from_new_x = ivy.dev(x_on_dev)
 
     if with_out:
