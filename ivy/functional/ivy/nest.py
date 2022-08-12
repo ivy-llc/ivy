@@ -858,7 +858,7 @@ def copy_nest(
             return ret_list
         return class_instance(tuple(ret_list))
     elif check_fn(nest, list):
-        return class_instance([copy_nest(i, include_derived, to_mutable) for i in nest])
+        return class_instance([copy_nest(i, include_derived=include_derived, to_mutable=to_mutable) for i in nest])
     elif check_fn(nest, dict):
         class_instance = type(nest)
         return class_instance(
