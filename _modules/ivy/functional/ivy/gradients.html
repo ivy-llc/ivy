@@ -135,7 +135,6 @@
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">inputs_to_ivy_arrays</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">inputs_to_native_arrays</span><span class="p">,</span>
@@ -168,7 +167,7 @@
 <span class="c1"># Gradient Mode #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/with_grads.html#ivy.functional.ivy.gradients.with_grads">[docs]</a><span class="k">def</span> <span class="nf">with_grads</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">with_grads</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/with_grads.html#ivy.functional.ivy.gradients.with_grads">[docs]</a><span class="k">def</span> <span class="nf">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enter a nested code space where gradients are computed. This method</span>
 <span class="sd">    adds the with_grads component to the global list with_grads_stack</span>
@@ -286,10 +285,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        An ivy variable, supporting gradient computation.</span>
 
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :code:`ivy.Array` input:</span>
@@ -344,10 +339,6 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Boolean, true if x is a trainable variable, false otherwise.</span>
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -411,7 +402,8 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="variable_data"><a class="viewcode-back" href="../../../../functional/ivy/gradients/variable_data/variable_data_functional.html#ivy.functional.ivy.gradients.variable_data">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="variable_data"><a class="viewcode-back" href="../../../../functional/ivy/gradients/variable_data.html#ivy.functional.ivy.gradients.variable_data">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">variable_data</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Some backends wrap arrays in a dedicated variable class. For those frameworks,</span>
@@ -428,10 +420,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        The internal data stored by the variable</span>
 
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">variable_data</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
@@ -441,10 +429,9 @@
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">preserve_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Stops gradient computation.</span>
 
@@ -455,6 +442,8 @@
 <span class="sd">    preserve_type</span>
 <span class="sd">        Whether to preserve the input type (ivy.Variable or ivy.Array),</span>
 <span class="sd">        otherwise an array is always returned. Default is True.</span>
+<span class="sd">    preserve_type</span>
+<span class="sd">        bool, optional (Default value = True)</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -463,11 +452,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The same array x, but with no gradient information.</span>
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
+<span class="sd">    </span>
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 <span class="sd">    With :code:`ivy.Array` inputs:</span>
@@ -504,14 +489,14 @@
 <span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="n">preserve_type</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <span class="c1"># AutoGrad #</span>
 
 
-<div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../functional/ivy/gradients/execute_with_gradients.html#ivy.functional.ivy.gradients.execute_with_gradients">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
-<span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../functional/ivy/gradients/execute_with_gradients/execute_with_gradients_functional.html#ivy.functional.ivy.gradients.execute_with_gradients">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Call function func with input of xs variables, and return func first output y,</span>
 <span class="sd">    the gradients [dy/dx for x in xs], and any other function outputs after the returned</span>
 <span class="sd">    y value.</span>
@@ -559,58 +544,18 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="jac"><a class="viewcode-back" href="../../../../functional/ivy/gradients/jac.html#ivy.functional.ivy.gradients.jac">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s Jacobian partial derivatives.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    func</span>
-<span class="sd">        Function for which we compute the gradients of the output with respect to xs</span>
-<span class="sd">        input.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        the Jacobian function</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">jac</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/grad.html#ivy.functional.ivy.gradients.grad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s gradients.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    func</span>
-<span class="sd">        Function for which we compute the gradients of the output with respect to xs</span>
-<span class="sd">        input.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        the grad function</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
-
-
 <span class="c1"># Optimizer Steps #</span>
 
 
-<div class="viewcode-block" id="adam_step"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_step/adam_step_functional.html#ivy.functional.ivy.gradients.adam_step">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="adam_step"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_step/adam_step_functional.html#ivy.functional.ivy.gradients.adam_step">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">vw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">beta1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
-    <span class="n">beta2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span><span class="p">,</span>
-    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
+    <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+    <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Compute adam step delta, given the derivatives of some cost c with respect</span>
 <span class="sd">    to weights ws, using ADAM update. `[reference]</span>
@@ -660,7 +605,7 @@
 <span class="sd">    &gt;&gt;&gt; beta1 = 0.86</span>
 <span class="sd">    &gt;&gt;&gt; beta2 = 0.95</span>
 <span class="sd">    &gt;&gt;&gt; epsilon = 1e-6</span>
-<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon)</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)</span>
 <span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
 <span class="sd">        (ivy.array([[1., 1., -1.],</span>
 <span class="sd">                    [1., 1., 1.]]),</span>
@@ -698,7 +643,7 @@
 <span class="sd">    &gt;&gt;&gt; beta1 = 0.76</span>
 <span class="sd">    &gt;&gt;&gt; beta2 = 0.992</span>
 <span class="sd">    &gt;&gt;&gt; epsilon = 1e-5</span>
-<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon)</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)</span>
 <span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
 <span class="sd">        (ivy.array([0.209, -0.271, 0.0717, 0., 0.142, -0.209, 0.182]),</span>
 <span class="sd">         ivy.array([ 0.72, -0.96, 0.24, 0., 0.48, -0.72, 0.624]),</span>
@@ -728,7 +673,7 @@
 <span class="sd">    &gt;&gt;&gt; beta1 = 0.87</span>
 <span class="sd">    &gt;&gt;&gt; beta2 = 0.976</span>
 <span class="sd">    &gt;&gt;&gt; epsilon = 1e-5</span>
-<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon)</span>
+<span class="sd">    &gt;&gt;&gt; adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)</span>
 <span class="sd">    &gt;&gt;&gt; print(adam_step_delta)</span>
 <span class="sd">    ({</span>
 <span class="sd">        a: ivy.array([0., 0.626, 0.626]),</span>
@@ -741,7 +686,7 @@
 <span class="sd">        b: ivy.array([0.216, 0.384, 0.6])</span>
 <span class="sd">    })</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">step</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_scalar</span><span class="p">(</span><span class="n">step</span><span class="p">))</span>
     <span class="n">mw</span> <span class="o">=</span> <span class="n">beta1</span> <span class="o">*</span> <span class="n">mw</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw</span>
     <span class="n">dcdw_sqrd</span> <span class="o">=</span> <span class="n">dcdw</span><span class="o">**</span><span class="mi">2</span>
     <span class="n">vw</span> <span class="o">=</span> <span class="n">beta2</span> <span class="o">*</span> <span class="n">vw</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw_sqrd</span>
@@ -754,15 +699,13 @@
 <span class="c1"># Optimizer Updates #</span>
 
 
-<div class="viewcode-block" id="optimizer_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/optimizer_update/optimizer_update_functional.html#ivy.functional.ivy.gradients.optimizer_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="optimizer_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/optimizer_update/optimizer_update_functional.html#ivy.functional.ivy.gradients.optimizer_update">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">optimizer_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">effective_grad</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the true or effective derivatives of</span>
 <span class="sd">    some cost c with respect to ws, [dc/dw for w in ws].</span>
@@ -777,12 +720,15 @@
 <span class="sd">    lr</span>
 <span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to</span>
 <span class="sd">        the gradient.</span>
+<span class="sd">    inplace</span>
+<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch. If the</span>
+<span class="sd">        update step should form part of a computation graph (i.e. higher order</span>
+<span class="sd">        optimization), then this should be set to False. Default is True, provided the</span>
+<span class="sd">        backend framework supports it.</span>
 <span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
 <span class="sd">        Default is True.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -796,37 +742,33 @@
 <span class="sd">    &gt;&gt;&gt; w = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.zeros(3)</span>
 <span class="sd">    &gt;&gt;&gt; lr = 3e-4</span>
-<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w, effective_grad, lr)</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)</span>
 <span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
 <span class="sd">    ivy.array([1., 2., 3.])</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.zeros(3)</span>
 <span class="sd">    &gt;&gt;&gt; lr = 3e-4</span>
-<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w, effective_grad, lr,\</span>
-<span class="sd">                                    out=None, stop_gradients=True)</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\</span>
+<span class="sd">                                    inplace=False, stop_gradients=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
 <span class="sd">    ivy.array([1., 2., 3.])</span>
 <span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; w = ivy.array([[1., 2.],[4., 5.]])</span>
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.array([[4., 5.],[7., 8.]])</span>
 <span class="sd">    &gt;&gt;&gt; lr = ivy.array([3e-4, 1e-2])</span>
-<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w, effective_grad, lr, out=w)</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\</span>
+<span class="sd">                                    inplace=False, stop_gradients=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
-<span class="sd">    ivy.array([[0.999, 1.95],</span>
-<span class="sd">               [4., 4.92]])</span>
-<span class="sd">    &gt;&gt;&gt; print(w)</span>
 <span class="sd">    ivy.array([[0.999, 1.95],</span>
 <span class="sd">               [4., 4.92]])</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.array([4., 5., 6.])</span>
 <span class="sd">    &gt;&gt;&gt; lr = ivy.array([3e-4])</span>
-<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w, effective_grad, lr,\</span>
-<span class="sd">                                    stop_gradients=False, out=w)</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\</span>
+<span class="sd">                                    stop_gradients=False, inplace=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
-<span class="sd">    ivy.array([0.999, 2., 3.])</span>
-<span class="sd">    &gt;&gt;&gt; print(w)</span>
 <span class="sd">    ivy.array([0.999, 2., 3.])</span>
 <span class="sd">    </span>
 <span class="sd">    with :code: `ivy.Container` inputs:</span>
@@ -836,7 +778,7 @@
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
 <span class="sd">                                    b=ivy.array([0., 0., 0.]))</span>
 <span class="sd">    &gt;&gt;&gt; lr = 3e-4</span>
-<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w, effective_grad, lr)</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr)</span>
 <span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0., 1., 2.]),</span>
@@ -848,13 +790,9 @@
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
 <span class="sd">                                    b=ivy.array([0., 0., 0.]))</span>
 <span class="sd">    &gt;&gt;&gt; lr = 3e-4</span>
-<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w, effective_grad, lr, out=w)</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\</span>
+<span class="sd">                                    stop_gradients=True, inplace=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0., 1., 2.]),</span>
-<span class="sd">        b: ivy.array([3., 4., 5.])</span>
-<span class="sd">    }</span>
-<span class="sd">    &gt;&gt;&gt; print(w)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0., 1., 2.]),</span>
 <span class="sd">        b: ivy.array([3., 4., 5.])</span>
@@ -865,8 +803,8 @@
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
 <span class="sd">                                    b=ivy.array([0., 0., 0.]))</span>
 <span class="sd">    &gt;&gt;&gt; lr = ivy.array([3e-4])</span>
-<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w, effective_grad, lr,\</span>
-<span class="sd">                                    stop_gradients=False)</span>
+<span class="sd">    &gt;&gt;&gt; ws_new = ivy.optimizer_update(w=w, effective_grad=effective_grad, lr=lr,\</span>
+<span class="sd">                                    stop_gradients=False, inplace=False)</span>
 <span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0., 1., 2.]),</span>
@@ -874,24 +812,25 @@
 <span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">inplace</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_variables_supported</span><span class="p">())</span>
     <span class="n">deltas</span> <span class="o">=</span> <span class="n">effective_grad</span> <span class="o">*</span> <span class="n">lr</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">deltas</span>
+    <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_decrement</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">deltas</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">deltas</span>
+
     <span class="k">if</span> <span class="n">stop_gradients</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">w</span></div>
 
 
-<div class="viewcode-block" id="gradient_descent_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/gradient_descent_update/gradient_descent_update_functional.html#ivy.functional.ivy.gradients.gradient_descent_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="gradient_descent_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/gradient_descent_update/gradient_descent_update_functional.html#ivy.functional.ivy.gradients.gradient_descent_update">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
 <span class="sd">    respect to ws, [dc/dw for w in ws].</span>
@@ -905,12 +844,15 @@
 <span class="sd">    lr</span>
 <span class="sd">        Learning rate(s), the rate(s) at which the weights should be updated relative to</span>
 <span class="sd">        the gradient.</span>
+<span class="sd">    inplace</span>
+<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch. If the</span>
+<span class="sd">        update step should form part of a computation graph (i.e. higher order</span>
+<span class="sd">        optimization), then this should be set to False. Default is True, provided the</span>
+<span class="sd">        backend framework supports it.</span>
 <span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
 <span class="sd">        Default is True.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -958,19 +900,17 @@
 <span class="sd">            b: ivy.array([2.88, 4.69, 1.47])</span>
 <span class="sd">        }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="lars_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/lars_update/lars_update_functional.html#ivy.functional.ivy.gradients.lars_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="lars_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/lars_update/lars_update_functional.html#ivy.functional.ivy.gradients.lars_update">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">lars_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">decay_lambda</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
 <span class="sd">    respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling</span>
@@ -987,12 +927,15 @@
 <span class="sd">        gradient.</span>
 <span class="sd">    decay_lambda</span>
 <span class="sd">        The factor used for weight decay. Default is zero.</span>
+<span class="sd">    inplace</span>
+<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch. If the</span>
+<span class="sd">        update step should form part of a computation graph (i.e. higher order</span>
+<span class="sd">        optimization), then this should be set to False. Default is True, provided the</span>
+<span class="sd">        backend framework supports it.</span>
 <span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
 <span class="sd">        Default is True.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1004,12 +947,10 @@
     <span class="n">lr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">w_norm</span> <span class="o">*</span> <span class="n">lr</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">dcdw</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">decay_lambda</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">lr</span> <span class="o">/=</span> <span class="n">w_norm</span> <span class="o">*</span> <span class="n">decay_lambda</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span>
-        <span class="n">w</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_update/adam_update_functional.html#ivy.functional.ivy.gradients.adam_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/adam_update/adam_update_functional.html#ivy.functional.ivy.gradients.adam_update">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1017,13 +958,11 @@
     <span class="n">mw_tm1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">vw_tm1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">beta1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
-    <span class="n">beta2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span><span class="p">,</span>
-    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
-    <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+    <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
 <span class="sd">    respect to ws, using ADAM update. `[reference]</span>
@@ -1044,19 +983,22 @@
 <span class="sd">    vw_tm1</span>
 <span class="sd">        running average of second moments of the gradients, from the previous time-step.</span>
 <span class="sd">    step</span>
-<span class="sd">        training step.</span>
+<span class="sd">        training step</span>
 <span class="sd">    beta1</span>
-<span class="sd">        gradient forgetting factor (Default value = 0.9).</span>
+<span class="sd">        gradient forgetting factor (Default value = 0.9)</span>
 <span class="sd">    beta2</span>
-<span class="sd">        second moment of gradient forgetting factor (Default value = 0.999).</span>
+<span class="sd">        second moment of gradient forgetting factor (Default value = 0.999)</span>
 <span class="sd">    epsilon</span>
-<span class="sd">        divisor during adam update, preventing division by zero (Default value = 1e-7).</span>
+<span class="sd">        divisor during adam update, preventing division by zero (Default value = 1e-7)</span>
+<span class="sd">    inplace</span>
+<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch. If the</span>
+<span class="sd">        update step should form part of a computation graph (i.e. higher order</span>
+<span class="sd">        optimization), then this should be set to False. Default is True, provided the</span>
+<span class="sd">        backend framework supports it.</span>
 <span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
 <span class="sd">        Default is True.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1065,35 +1007,27 @@
 <span class="sd">        updates.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">effective_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span>
-        <span class="n">dcdw</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span>
+    <span class="n">effective_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">adam_step</span><span class="p">(</span>
+        <span class="n">dcdw</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span>
-            <span class="n">w</span><span class="p">,</span> <span class="n">effective_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-        <span class="p">),</span>
-        <span class="n">mw</span><span class="p">,</span>
-        <span class="n">vw</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">effective_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
 
 
-<div class="viewcode-block" id="lamb_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/lamb_update/lamb_update_functional.html#ivy.functional.ivy.gradients.lamb_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="lamb_update"><a class="viewcode-back" href="../../../../functional/ivy/gradients/lamb_update/lamb_update_functional.html#ivy.functional.ivy.gradients.lamb_update">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="k">def</span> <span class="nf">lamb_update</span><span class="p">(</span>
     <span class="n">w</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">mw_tm1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">vw_tm1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">beta1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
-    <span class="n">beta2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">beta1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
+    <span class="n">beta2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.999</span><span class="p">,</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
     <span class="n">max_trust_ratio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-    <span class="n">decay_lambda</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">decay_lambda</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Update weights ws of some function, given the derivatives of some cost c with</span>
 <span class="sd">    respect to ws, [dc/dw for w in ws], by applying LAMB method.</span>
@@ -1112,28 +1046,31 @@
 <span class="sd">    vw_tm1</span>
 <span class="sd">        running average of second moments of the gradients, from the previous time-step.</span>
 <span class="sd">    step</span>
-<span class="sd">        training step.</span>
+<span class="sd">        training step</span>
 <span class="sd">    beta1</span>
-<span class="sd">        gradient forgetting factor (Default value = 0.9).</span>
+<span class="sd">        gradient forgetting factor. (Default value = 0.9)</span>
 <span class="sd">    beta2</span>
-<span class="sd">        second moment of gradient forgetting factor (Default value = 0.999).</span>
+<span class="sd">        second moment of gradient forgetting factor. (Default value = 0.999)</span>
 <span class="sd">    epsilon</span>
-<span class="sd">        divisor during adam update, preventing division by zero (Default value = 1e-7).</span>
+<span class="sd">        divisor during lamb update, preventing division by zero. (Default value = 1e-7)</span>
 <span class="sd">    max_trust_ratio</span>
 <span class="sd">        The maximum value for the trust ratio. (Default value = 10)</span>
 <span class="sd">    decay_lambda</span>
-<span class="sd">        The factor used for weight decay. (Default value = 0).</span>
+<span class="sd">        The factor used for weight decay. (Default value = 0)</span>
+<span class="sd">    inplace</span>
+<span class="sd">        Whether to perform the operation inplace, for backends which support inplace</span>
+<span class="sd">        variable updates, and handle gradients behind the scenes such as PyTorch. If the</span>
+<span class="sd">        update step should form part of a computation graph (i.e. higher order</span>
+<span class="sd">        optimization), then this should be set to False. Default is True, provided the</span>
+<span class="sd">        backend framework supports it.</span>
 <span class="sd">    stop_gradients</span>
 <span class="sd">        Whether to stop the gradients of the variables after each gradient step.</span>
 <span class="sd">        Default is True.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        The new function weights ws_new, following the LAMB updates.</span>
+<span class="sd">        The new function weights ws_new, following the lamb updates.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
@@ -1157,15 +1094,15 @@
 <span class="sd">    &gt;&gt;&gt; mw_tm1 = ivy.zeros((3,3))</span>
 <span class="sd">    &gt;&gt;&gt; vw_tm1 = ivy.zeros(3)</span>
 <span class="sd">    &gt;&gt;&gt; step = ivy.array(1)</span>
-<span class="sd">    &gt;&gt;&gt; beta1 = 0.9</span>
-<span class="sd">    &gt;&gt;&gt; beta2 = 0.999</span>
-<span class="sd">    &gt;&gt;&gt; epsilon = 1e-7</span>
-<span class="sd">    &gt;&gt;&gt; max_trust_ratio = 10</span>
-<span class="sd">    &gt;&gt;&gt; decay_lambda = 0</span>
-<span class="sd">    &gt;&gt;&gt; out = None</span>
-<span class="sd">    &gt;&gt;&gt; stop_gradients = True</span>
-<span class="sd">    &gt;&gt;&gt; new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1=beta1,beta2=beta2,\</span>
-<span class="sd">                      epsilon=epsilon,max_trust_ratio=max_trust_ratio,decay_lamdba=decay_lambda,out=out,stop_gradients=stop_gradients)  </span>
+<span class="sd">    &gt;&gt;&gt; beta1=0.9</span>
+<span class="sd">    &gt;&gt;&gt; beta2=0.999</span>
+<span class="sd">    &gt;&gt;&gt; epsilon=1e-7</span>
+<span class="sd">    &gt;&gt;&gt; max_trust_ratio=10</span>
+<span class="sd">    &gt;&gt;&gt; decay_lambda=0</span>
+<span class="sd">    &gt;&gt;&gt; inplace=None</span>
+<span class="sd">    &gt;&gt;&gt; stop_gradients=True</span>
+<span class="sd">    &gt;&gt;&gt; new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1,beta2,\</span>
+<span class="sd">                      epsilon,max_trust_ratio,decay_lambda,inplace,stop_gradients)  </span>
 <span class="sd">    &gt;&gt;&gt; print(new_weights)</span>
 <span class="sd">    (ivy.array([[ 0.639,  1.64 ,  2.64 ],</span>
 <span class="sd">        [ 3.64 ,  5.64 ,  0.639],</span>
@@ -1182,15 +1119,15 @@
 <span class="sd">    &gt;&gt;&gt; mw_tm1 = ivy.zeros((3,3))</span>
 <span class="sd">    &gt;&gt;&gt; vw_tm1 = ivy.zeros(3)</span>
 <span class="sd">    &gt;&gt;&gt; step = ivy.array(1)</span>
-<span class="sd">    &gt;&gt;&gt; beta1 = 0.8</span>
-<span class="sd">    &gt;&gt;&gt; beta2 = 0.76</span>
-<span class="sd">    &gt;&gt;&gt; epsilon = 1e-4</span>
-<span class="sd">    &gt;&gt;&gt; max_trust_ratio = 5.7</span>
-<span class="sd">    &gt;&gt;&gt; decay_lambda = 1</span>
-<span class="sd">    &gt;&gt;&gt; out = w</span>
+<span class="sd">    &gt;&gt;&gt; beta1=0.8</span>
+<span class="sd">    &gt;&gt;&gt; beta2=0.76</span>
+<span class="sd">    &gt;&gt;&gt; epsilon=1e-4</span>
+<span class="sd">    &gt;&gt;&gt; max_trust_ratio=5.7</span>
+<span class="sd">    &gt;&gt;&gt; decay_lambda=1</span>
+<span class="sd">    &gt;&gt;&gt; inplace=False</span>
 <span class="sd">    &gt;&gt;&gt; stop_gradients = False</span>
-<span class="sd">    &gt;&gt;&gt; new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1=beta1,beta2=beta2,\</span>
-<span class="sd">                        epsilon=epsilon,max_trust_ratio=max_trust_ratio,decay_lambda=decay_lambda,out=out,stop_gradients=stop_gradients)</span>
+<span class="sd">    &gt;&gt;&gt; new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1,beta2,\</span>
+<span class="sd">                        epsilon,max_trust_ratio,decay_lambda,inplace,stop_gradients)</span>
 <span class="sd">    &gt;&gt;&gt; print(new_weights)</span>
 <span class="sd">    (ivy.array([[ 0.922 ,  1.92  ,  2.92  ],</span>
 <span class="sd">        [ 3.92  ,  5.92  ,  1.92  ],</span>
@@ -1199,10 +1136,7 @@
 <span class="sd">        [0.12, 0.14, 0.02]]), ivy.array([[0.06  , 0.0216, 0.0096],</span>
 <span class="sd">        [0.0024, 0.154 , 0.0216],</span>
 <span class="sd">        [0.0864, 0.118 , 0.0024]]))</span>
-<span class="sd">    &gt;&gt;&gt; print(w)</span>
-<span class="sd">    ivy.array([[ 0.922 ,  1.92  ,  2.92  ],</span>
-<span class="sd">        [ 3.92  ,  5.92  ,  1.92  ],</span>
-<span class="sd">        [ 0.922 , -0.0782,  3.92  ]])</span>
+
 
 <span class="sd">    With :code: `ivy.container` inputs:</span>
 
@@ -1236,12 +1170,13 @@
 <span class="sd">    &gt;&gt;&gt; beta1 = 0.9</span>
 <span class="sd">    &gt;&gt;&gt; beta2 = 0.999</span>
 <span class="sd">    &gt;&gt;&gt; epsilon = 1e-7</span>
-<span class="sd">    &gt;&gt;&gt; max_trust_ratio = 10</span>
-<span class="sd">    &gt;&gt;&gt; decay_lambda = 0</span>
-<span class="sd">    &gt;&gt;&gt; stop_gradients = True</span>
+<span class="sd">    &gt;&gt;&gt; max_trust_ratio=10</span>
+<span class="sd">    &gt;&gt;&gt; decay_lambda=0</span>
+<span class="sd">    &gt;&gt;&gt; inplace=None</span>
+<span class="sd">    &gt;&gt;&gt; stop_gradients=True</span>
 <span class="sd">    &gt;&gt;&gt; lr =ivy.array(0.5)</span>
-<span class="sd">    &gt;&gt;&gt; new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1=beta1,beta2=beta2,\</span>
-<span class="sd">                        epsilon=epsilon,max_trust_ratio=max_trust_ratio,decay_lambda=decay_lambda,stop_gradients=stop_gradients)</span>
+<span class="sd">    &gt;&gt;&gt; new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1,beta2,\</span>
+<span class="sd">                        epsilon,max_trust_ratio,decay_lambda,inplace,stop_gradients)</span>
 <span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; print(new_weights)</span>
 <span class="sd">    ({</span>
@@ -1255,22 +1190,55 @@
 <span class="sd">        b: ivy.array([0.00036, 0.00016, 0.00049])</span>
 <span class="sd">    })</span>
 
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">r1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-    <span class="n">eff_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span>
-        <span class="n">dcdw</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span>
-    <span class="p">)</span>
+    <span class="n">eff_grads</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span><span class="n">dcdw</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">decay_lambda</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">eff_grads</span> <span class="o">+</span> <span class="n">decay_lambda</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">eff_grads</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">max_trust_ratio</span><span class="p">)</span>
     <span class="n">lr</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">lr</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">eff_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span>
-        <span class="n">mw</span><span class="p">,</span>
-        <span class="n">vw</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">eff_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
+
+
+<div class="viewcode-block" id="jac"><a class="viewcode-back" href="../../../../functional/ivy/gradients/jac.html#ivy.functional.ivy.gradients.jac">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s Jacobian partial derivatives.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func</span>
+<span class="sd">        Function for which we compute the gradients of the output with respect to xs</span>
+<span class="sd">        input.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        the Jacobian function</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">jac</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/grad.html#ivy.functional.ivy.gradients.grad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s gradients.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func</span>
+<span class="sd">        Function for which we compute the gradients of the output with respect to xs</span>
+<span class="sd">        input.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        the grad function</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
