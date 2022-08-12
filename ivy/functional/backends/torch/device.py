@@ -32,9 +32,10 @@ def dev(x: torch.Tensor,
 
 def to_device(
         x: torch.Tensor,
+        device: torch.device,
         /,
         *,
-        device: torch.device, stream: Optional[int] = None
+        stream: Optional[int] = None
 ) -> torch.Tensor:
     if device is None:
         return x
