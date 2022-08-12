@@ -1662,6 +1662,7 @@ def test_current_framework_str():
 def test_get_min_denominator():
     return
 
+# Ankit is working on this
 def test_set_min_denominator():
     return
 
@@ -1746,7 +1747,6 @@ def test_supports_inplace(x_val_and_dtypes, as_variable, num_positional_args, na
         x=np.asarray(x, dtype=dtype)
     )
 
-# Implementation of test_assert_supports_inplace is not complete
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes
@@ -1771,6 +1771,7 @@ def test_assert_supports_inplace(x_val_and_dtypes, as_variable, num_positional_a
         instance_method=True,
         fw=fw,
         fn_name='assert_supports_inplace',
+        ground_truth_backend='numpy',
         x=np.asarray(x, dtype=dtype)
     )
 
