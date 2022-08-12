@@ -22,6 +22,38 @@ class ArrayWithManipulation(abc.ABC):
     ) -> ivy.Array:
         return ivy.concat([self._data] + xs, axis, out=out)
 
+    def split(
+        self: ivy.Array,
+        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
+        axis: int = 0,
+        with_remainder: bool = False,
+    ) -> List[ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.split. This method simply
+        wraps the function, and so the docstring for ivy.split also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            array to be divided into sub-arrays.
+        num_or_size_splits
+            Number of equal arrays to divide the array into along the given axis if an
+            integer. The size of each split element if a sequence of integers. Default
+            is to divide into as many 1-dimensional arrays as the axis dimension.
+        axis
+            The axis along which to split, default is 0.
+        with_remainder
+            If the tensor does not split evenly, then store the last remainder entry.
+            Default is False.
+
+        Returns
+        -------
+            A list of sub-arrays.
+
+        """
+        return ivy.split(self._data, num_or_size_splits, axis, with_remainder)
+
     def flip(
         self: ivy.Array,
         axis: Optional[Union[int, Tuple[int], List[int]]] = None,

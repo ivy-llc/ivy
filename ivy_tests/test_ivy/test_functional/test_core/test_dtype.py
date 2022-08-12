@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 
 # local
@@ -124,7 +124,7 @@ dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
 @st.composite
 def dtypes_shared(draw, num_dtypes):
     if isinstance(num_dtypes, str):
-        num_dtypes = draw(st.shared(st.integers(), key=num_dtypes))
+        num_dtypes = draw(st.shared(helpers.ints(), key=num_dtypes))
     return draw(
         st.shared(
             st.lists(
@@ -182,7 +182,7 @@ def test_astype(
 # broadcast arrays
 @st.composite
 def broadcastable_arrays(draw, dtypes):
-    num_arrays = st.shared(st.integers(2, 5), key="num_arrays")
+    num_arrays = st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays")
     shapes = draw(num_arrays.flatmap(mutually_broadcastable_shapes))
     dtypes = draw(dtypes)
     arrays = []
@@ -213,6 +213,7 @@ def test_broadcast_arrays(
     for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
     num_positional_args = len(kw)
+    print("input: ", kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -413,11 +414,13 @@ def test_iinfo(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.valid_dtypes,
-        num_arrays=st.shared(st.integers(2, 5), key="num_arrays"),
+        num_arrays=st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays"),
         shared_dtype=False,
     ),
     as_variable=st.booleans(),
-    num_positional_args=st.shared(st.integers(2, 5), key="num_arrays"),
+    num_positional_args=st.shared(
+        helpers.ints(min_value=2, max_value=5), key="num_arrays"
+    ),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -516,14 +519,16 @@ def test_closest_valid_dtype(
 
 # default_dtype
 @given(
-    input_dtype=st.sampled_from(ivy.valid_dtypes),
+    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_native=st.booleans(),
 )
 def test_default_dtype(
     input_dtype,
     as_native,
 ):
-    res = ivy.default_dtype(input_dtype, as_native)
+    assume(input_dtype in ivy.valid_dtypes)
+
+    res = ivy.default_dtype(dtype=input_dtype, as_native=as_native)
     assert (
         isinstance(input_dtype, ivy.Dtype)
         or isinstance(input_dtype, str)
@@ -539,7 +544,7 @@ def test_default_dtype(
     array=helpers.nph.arrays(
         dtype=dtype_shared,
         shape=helpers.lists(
-            arg=st.integers(1, 5),
+            arg=helpers.ints(min_value=1, max_value=5),
             min_size="num_dims",
             max_size="num_dims",
             size_bounds=[1, 5],
@@ -612,7 +617,7 @@ def test_dtype_bits(
     array=helpers.nph.arrays(
         dtype=dtype_shared,
         shape=helpers.lists(
-            arg=st.integers(1, 5),
+            arg=helpers.ints(min_value=1, max_value=5),
             min_size="num_dims",
             max_size="num_dims",
             size_bounds=[1, 5],
@@ -655,7 +660,7 @@ def test_is_bool_dtype(
     array=helpers.nph.arrays(
         dtype=dtype_shared,
         shape=helpers.lists(
-            arg=st.integers(1, 5),
+            arg=helpers.ints(min_value=1, max_value=5),
             min_size="num_dims",
             max_size="num_dims",
             size_bounds=[1, 5],
@@ -697,7 +702,7 @@ def test_is_float_dtype(
     array=helpers.nph.arrays(
         dtype=dtype_shared,
         shape=helpers.lists(
-            arg=st.integers(1, 5),
+            arg=helpers.ints(min_value=1, max_value=5),
             min_size="num_dims",
             max_size="num_dims",
             size_bounds=[1, 5],
@@ -824,13 +829,18 @@ def test_type_promote_arrays(
 )
 @pytest.mark.parametrize("as_native", [True, False])
 def test_default_float_dtype(input, float_dtype, as_native):
-    res = ivy.default_float_dtype(input, float_dtype, as_native)
+    res = ivy.default_float_dtype(
+        input=input, float_dtype=float_dtype, as_native=as_native
+    )
     assert (
         isinstance(res, ivy.Dtype)
         or isinstance(res, ivy.NativeDtype)
         or isinstance(res, str)
     )
-    assert ivy.default_float_dtype(None, None, False) == ivy.float32
+    assert (
+        ivy.default_float_dtype(input=None, float_dtype=None, as_native=False)
+        == ivy.float32
+    )
     assert ivy.default_float_dtype(float_dtype=ivy.float16) == ivy.float16
     assert ivy.default_float_dtype() == ivy.float32
 
@@ -849,20 +859,22 @@ def test_default_float_dtype(input, float_dtype, as_native):
 )
 @pytest.mark.parametrize("as_native", [True, False])
 def test_default_int_dtype(input, int_dtype, as_native):
-    res = ivy.default_int_dtype(input, int_dtype, as_native)
+    res = ivy.default_int_dtype(input=input, int_dtype=int_dtype, as_native=as_native)
     assert (
         isinstance(res, ivy.Dtype)
         or isinstance(res, ivy.NativeDtype)
         or isinstance(res, str)
     )
-    assert ivy.default_int_dtype(None, None, False) == ivy.int32
+    assert (
+        ivy.default_int_dtype(input=None, int_dtype=None, as_native=False) == ivy.int32
+    )
     assert ivy.default_int_dtype(int_dtype=ivy.int16) == ivy.int16
     assert ivy.default_int_dtype() == ivy.int32
 
 
 @st.composite
 def dtypes_list(draw):
-    num = draw(st.one_of(st.integers(min_value=1, max_value=5)))
+    num = draw(st.one_of(helpers.ints(min_value=1, max_value=5)))
     return draw(
         st.lists(
             st.sampled_from(ivy.valid_dtypes),
