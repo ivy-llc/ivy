@@ -652,7 +652,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Returns
         -------
-        ret
+        ret : bool
             Boolean of whether the input is of a float dtype.
 
         Examples
