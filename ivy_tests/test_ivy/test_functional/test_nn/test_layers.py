@@ -382,7 +382,7 @@ def _x_and_filters(
         else:
             filter_shape = draw(
                 st.tuples(
-                    st.ints(min_value=3, max_value=5),
+                    st.integers(min_value=3, max_value=5),
                     st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
                     st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
                 )
