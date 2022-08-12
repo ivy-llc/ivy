@@ -11,6 +11,10 @@ Ivy Tests
 .. _`continuous integration`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows
 .. _`search strategies`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
+.. _`finfo`: https://github.com/unifyai/ivy/blob/d8f1ffe8ebf38fa75161c1a9459170e95f3c82b6/ivy/functional/ivy/data_type.py#L276
+.. _`data generation`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337
+.. _`here`: https://lets-unify.ai/ivy/deep_dive/1_function_types.html#function-types
+.. _`test_default_int_dtype`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835
 .. _`sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
 .. _`lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
 .. _`booleans`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.booleans
@@ -84,8 +88,16 @@ as pytest skipping does not play nicely with hypothesis testing.
 
 Data Generation
 ---------------
+We aim to make the data generation for three out of the four kinds of ivy functions exhaustive; primary, compositional
+and mixed. Exhaustive data generation implies that all possible inputs and combinations of inputs are covered. Take
+`finfo`_ , for example. It can take either arrays or dtypes as input, hence the `data generation`_ reflects this using
+the bespoke search strategy :code:`_array_or_type`. However, such rigorous testing is not necessary for standalone functions
+(those that are entirely self-contained in the Ivy codebase without external references). These kinds of functions may
+only require standard Pytest testing using :code:`parametrize`, e.g. `test_default_int_dtype`_. For further clarity on
+the various function types in ivy, see `here`_.
+
 The way data is generated is described by the :code:`hypothesis.strategies` module which contains a variety of `methods`_
-that have been used widely in each of Ivy's functional and stateful submodule tests. An initialized strategy is a object
+that have been used widely in each of Ivy's functional and stateful submodule tests. An initialized strategy is an object
 that is used by Hypothesis to generate data for the test. For example, let's write a strategy that generates supported
 integer data types in Ivy -:
 
@@ -159,7 +171,7 @@ For example, this `line`_ here, can also be written as -:
 
 .. code-block:: python
 
-    st.one_of(st.none(), st.integers(-ndim, ndim -1))
+    st.one_of(st.none(), helpers.ints(min_value=-ndim, max_value=ndim -1))
 
 9. `shared`_ - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
 the same key will share the same value. For example, `here`_, the parameters, *input_dtype* and *as_variable* share
@@ -203,7 +215,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.ints(min_value=0, max_value=2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
     alpha=st.floats(),
@@ -297,7 +309,7 @@ returns -:
 .. code-block:: python
 
     #a sequence of floats with arbitrary lengths ranging from [1,5]
-    print_hypothesis_examples(array_dtypes(st.integers(1,5)))
+    print_hypothesis_examples(array_dtypes(helpers.ints(min_value=1, max_value=5)))
 
     ['float16', 'float32', 'float16', 'float16', 'float32']
     ['float64', 'float64', 'float32', 'float32', 'float16']
@@ -308,7 +320,7 @@ This function should be used whenever we are testing an ivy function that accept
 
 .. code-block:: python
 
-    print_hypothesis_examples(array_bools(na = st.integers(1,5)))
+    print_hypothesis_examples(array_bools(na = helpers.ints(min_value=1, max_value=5)))
 
     [False, True, True, False, True]
     [False]
@@ -321,12 +333,12 @@ for each input we have three boolean values associated with it that define addit
 3. **lists** - As the name suggests, we use it to generate lists composed of anything, as specified by the user. For example
 in `test_device`_ file, it is used to generate a list of array_shapes, in `test_manipulation`_, it is used to generate a list
 of common_shapes, and more in `test_layers`_. The function takes in 3 arguments, first is the strategy by which the elements
-are to be generated, in majority of the cases this is **st.integers**, with range specified, and the other arguments are
+are to be generated, in majority of the cases this is **helpers.ints**, with range specified, and the other arguments are
 sequence arguments as specified in **array_dtypes**. For example -:
 
 .. code-block:: python
 
-    print_hypothesis_examples(lists(st.integers(1,6), min_size = 0,max_size = 5))
+    print_hypothesis_examples(lists(helpers.ints(min_value=1, max_value=6), min_size = 0,max_size = 5))
 
     [2, 5, 6]
     [1]
@@ -337,14 +349,14 @@ The generated values are then passed to the array creation functions inside the 
 
 .. code-block:: python
 
-    print_hypothesis_examples(valid_axes(st.integers(2,3), size_bounds = [1,3]))
+    print_hypothesis_examples(valid_axes(helpers.ints(min_value=2, max_value=3), size_bounds = [1,3]))
 
     (-3, 1, -1)
     (1, -2)
 
 It should be used in functions which expect axes as a required or an optional argument.
 
-5. **integers** - This is similar to the *st.integers* strategy, with the only difference being that here the range can
+5. **integers** - This is similar to the *helpers.ints* strategy, with the only difference being that here the range can
 either be specified manually, or a shared key can be provided. The way shared keys work has been discussed in the
 *Important Strategies* sections above.
 

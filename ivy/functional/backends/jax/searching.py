@@ -1,7 +1,8 @@
+from typing import Optional, Tuple
+
 import jax.numpy as jnp
 
 from ivy.functional.backends.jax import JaxArray
-from typing import Optional
 
 
 def argmax(
@@ -30,7 +31,7 @@ def argmin(
 argmin.support_native_out = True
 
 
-def nonzero(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def nonzero(x: JaxArray) -> Tuple[JaxArray]:
     return jnp.nonzero(x)
 
 

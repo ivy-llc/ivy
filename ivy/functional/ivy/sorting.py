@@ -19,10 +19,11 @@ from ivy.func_wrapper import (
 @handle_nestable
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices that sort an array ``x`` along a specified axis.
@@ -63,9 +64,8 @@ def argsort(
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With: code:`ivy.Array` input:
 
     >>> x = ivy.array([3,1,2])
@@ -93,7 +93,9 @@ def argsort(
         b: ivy.array([[0, 1], [1, 0]])
     }
     """
-    return ivy.current_backend(x).argsort(x, axis, descending, stable, out=out)
+    return ivy.current_backend(x).argsort(
+        x, axis=axis, descending=descending, stable=stable, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -101,10 +103,11 @@ def argsort(
 @handle_nestable
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a sorted copy of an array.
@@ -138,7 +141,7 @@ def sort(
     Examples
     --------
     With：code:`ivy.Array` inputs:
-
+    
     >>> x = ivy.array([7, 8, 6])
     >>> y = ivy.sort(x)
     >>> print(y)
@@ -152,7 +155,7 @@ def sort(
                [[ 6. ,  0.3], [19. ,  0.5]]])
 
     With：code:`ivy.NativeArray` inputs:
-
+    
     >>> x = ivy.native_array([1.5, 3.2, 0.7, 2.5])
     >>> y = ivy.sort(x, -1, True, False)
     >>> print(y)
@@ -207,7 +210,69 @@ def sort(
     }
 
     """
-    return ivy.current_backend(x).sort(x, axis, descending, stable, out=out)
+    return ivy.current_backend(x).sort(
+        x, axis=axis, descending=descending, stable=stable, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def searchsorted(
+    x: Union[ivy.Array, ivy.NativeArray],
+    v: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    side="left",
+    sorter=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the indices of the inserted elements in a sorted array.
+
+    Parameters
+    ----------
+    x
+        input array
+    v
+        specific elements to insert in array x1
+    side
+        The specific elements' index is at the 'left' side or
+        'right' side in the sorted array x1. If the side is 'left', the
+        index of the first suitable location located is given. If
+        'right', return the last such index.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+         An array of insertion points.
+
+    Examples
+    --------
+    With：code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([2,1,0])
+    >>> x2 = ivy.array([1])
+    >>> y  = ivy.searchsorted(x1,x2)
+    >>> print(y)
+    ivy.array([0])
+
+    >>> x1 = ivy.array([1,0,3,2])
+    >>> x2 = ivy.array([3])
+    >>> y  = ivy.searchsorted(x1, x2, side='right')
+    >>> print(y)
+    ivy.array([4])
+
+    >>> x1 = ivy.array([2,0,1,3])
+    >>> x2 = ivy.array([3,1,9])
+    >>> y  = ivy.searchsorted(x1, x2, side='left')
+    >>> print(y)
+    ivy.array([3,2,4])
+    """
+    return ivy.current_backend(x, v).searchsorted(
+        x, v, side=side, sorter=sorter, out=out
+    )
 
 
 # Extra #

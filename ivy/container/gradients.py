@@ -10,7 +10,7 @@ class ContainerWithGradients(ContainerBase):
     @staticmethod
     def static_variable(
         x: ivy.Container,
-        key_chains: Union[bool, ivy.Container] = False,
+        key_chains: Union[bool, ivy.Container] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
@@ -65,7 +65,7 @@ class ContainerWithGradients(ContainerBase):
 
     def variable(
         self: ivy.Container,
-        key_chains: Union[bool, ivy.Container] = False,
+        key_chains: Union[bool, ivy.Container] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
@@ -453,9 +453,9 @@ class ContainerWithGradients(ContainerBase):
 
     @staticmethod
     def static_gradient_descent_update(
-        w,
-        dcdw,
-        lr,
+        w: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        dcdw: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        lr: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
         inplace=None,
         stop_gradients=True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -463,7 +463,79 @@ class ContainerWithGradients(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.gradient_descent_update.
+        This method simply wraps the function, and so the docstring for
+        ivy.gradient_descent_update also applies to this method
+        with minimal changes.
 
+        Parameters
+        ----------
+        w
+            Weights of the function to be updated.
+        dcdw
+            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
+        lr
+            Learning rate(s), the rate(s) at which the weights should be
+            updated relative to the gradient.
+        inplace
+            Whether to perform the operation inplace, for backends which support inplace
+            variable updates, and handle gradients behind the scenes such as PyTorch.
+            If the update step should form part of a computation graph
+            (i.e. higher order optimization), then this should be set to False.
+            Default is True, provided the backend framework supports it.
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is True.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            The new weights, following the gradient descent updates.
+
+        Examples
+        --------
+        With :code: `ivy.container` inputs:
+
+        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([3.48, 5.72, 1.98]))
+        >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
+                                 b=ivy.array([2., 3.42, 1.69]))
+        >>> lr = ivy.array(0.3)
+        >>> NewWeights = ivy.Container.static_gradient_descent_update(w,\
+                                                                    dcdw,\
+                                                                    lr,\
+                                                                    inplace=False)
+        >>> print(NewWeights)
+            {
+                a: ivy.array([0.85, 1.94, 2.97]),
+                b: ivy.array([2.88, 4.69, 1.47])
+            }
+
+        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([3.48, 5.72, 1.98]))
+        >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
+                                b=ivy.array([2., 3.42, 1.69]))
+        >>> lr = ivy.Container(a=ivy.array(0.3),\
+                                b=ivy.array(0.1))
+        >>> NewWeights = ivy.Container.static_gradient_descent_update(w,\
+                                                                      dcdw,\
+                                                                      lr,\
+                                                                      inplace=False)
+        >>> print(NewWeights)
+            {
+                a: ivy.array([0.85, 1.94, 2.97]),
+                b: ivy.array([3.28, 5.38, 1.81])
+            }
+        """
         return ContainerBase.multi_map_in_static_method(
             "gradient_descent_update",
             w,
@@ -478,16 +550,85 @@ class ContainerWithGradients(ContainerBase):
         )
 
     def gradient_descent_update(
-        self,
-        dcdw,
-        lr,
+        self: ivy.Container,
+        dcdw: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        lr: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
         inplace=None,
         stop_gradients=True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ):
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.gradient_descent_update.
+        This method simply wraps the function, and so the docstring for
+        ivy.gradient_descent_update also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Weights of the function to be updated.
+        dcdw
+            Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
+        lr
+            Learning rate(s), the rate(s) at which the weights should be
+            updated relative to the gradient.
+        inplace
+            Whether to perform the operation inplace, for backends which support inplace
+            variable updates, and handle gradients behind the scenes such as PyTorch.
+            If the update step should form part of a computation graph
+            (i.e. higher order optimization), then this should be set to False.
+            Default is True, provided the backend framework supports it.
+        stop_gradients
+            Whether to stop the gradients of the variables after each gradient step.
+            Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            The new weights , following the gradient descent updates.
+
+        Examples
+        --------
+        With :code: `ivy.container` inputs:
+
+        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([3.48, 5.72, 1.98]))
+        >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
+                                 b=ivy.array([2., 3.42, 1.69]))
+        >>> lr = ivy.array(0.3)
+        >>> NewWeights = w.gradient_descent_update(dcdw, lr, inplace=False)
+        >>> print(NewWeights)
+            {
+                a: ivy.array([0.85, 1.94, 2.97]),
+                b: ivy.array([2.88,4.69,1.47])
+            }
+
+        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([3.48, 5.72, 1.98]))
+        >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
+                                 b=ivy.array([2., 3.42, 1.69]))
+        >>> lr = ivy.Container(a=ivy.array(0.3),\
+                                b=ivy.array(0.1))
+        >>> NewWeights = w.gradient_descent_update(dcdw, lr, inplace=False)
+        >>> print(NewWeights)
+            {
+                a: ivy.array([0.85, 1.94, 2.97]),
+                b: ivy.array([3.28, 5.38, 1.81])
+            }
+        """
         return self.static_gradient_descent_update(
             self,
             dcdw,
@@ -702,4 +843,108 @@ class ContainerWithGradients(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
+        )
+
+    @staticmethod
+    def static_stop_gradient(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        preserve_type: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stop_gradient. This method simply
+        wraps the function, and so the docstring for ivy.stop_gradient also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Array or Container for which to stop the gradient.
+        preserve_type
+            Whether to preserve the input type (ivy.Variable or ivy.Array),
+            otherwise an array is always returned. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The same array x, but with no gradient information.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "stop_gradient",
+            x,
+            preserve_type,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def stop_gradient(
+        self: ivy.Container,
+        preserve_type: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stop_gradient. This method simply
+        wraps the function, and so the docstring for ivy.stop_gradient also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container for which to stop the gradient.
+        preserve_type
+            Whether to preserve the input type (ivy.Variable or ivy.Array),
+            otherwise an array is always returned. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The same array x, but with no gradient information.
+        """
+        return self.static_stop_gradient(
+            self,
+            preserve_type,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
         )

@@ -82,7 +82,7 @@ Some common important tasks are:
 #. add the correct :ref:`Docstrings` to every function **and** its *relevant methods*,
    including those you did not implement yourself.
 #. add thorough :ref:`Docstring Examples` for every function **and** its
-   *relevant methods*
+   *relevant methods* and ensure they pass the docstring tests.
 
 Frontend APIs
 -------------
@@ -101,6 +101,22 @@ The general workflow for this task is:
 #. implement the function by following the `Ivy Frontends`_ guide
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. verify that the tests for your function are passing
+
+There are a few points to take note of when working on your chosen frontend function:
+
+#. you should only implement **one** frontend function.
+#. the frontend function is framework-specific, thus it should be implemented in
+   its respective frontend framework only.
+#. each frontend function should be tested on all backends to ensure that conversions
+   are working correctly.
+#. type hints, docstrings and examples are not required for frontend functions.
+
+In the case where your chosen function exists in all frameworks by default, but
+is not implemented in Ivy's functional API, please convert your existing GitHub
+issue to request for the function to be added to Ivy. Meanwhile, you can select
+another frontend function to work on from the ToDo list! If you're stuck on a
+function which requires complex compositions, you're allowed to reselect a function
+too!
 
 **Round Up**
 

@@ -49,7 +49,7 @@ def arange(
             else:
                 return tf.range(start, stop, delta=step)
         else:
-            dtype = as_native_dtype(default_dtype(dtype))
+            dtype = as_native_dtype(default_dtype(dtype=dtype))
             if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
                 return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
             else:
@@ -73,14 +73,14 @@ def asarray(
                     dtype = default_dtype(item=object_in, as_native=True)
                     tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
-                    dtype = default_dtype(dtype, object_in, True)
+                    dtype = default_dtype(dtype=dtype, item=object_in, as_native=True)
                     tensor = tf.convert_to_tensor(
                         ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype, object_in))
+                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
                 try:
                     tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
@@ -96,13 +96,13 @@ def asarray(
                 try:
                     return tf.convert_to_tensor(object_in)
                 except (TypeError, ValueError):
-                    dtype = as_ivy_dtype(default_dtype(dtype, object_in))
+                    dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
                     return tf.convert_to_tensor(
                         ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype, object_in))
+                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
                 try:
                     tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
@@ -191,7 +191,8 @@ eye.unsupported_dtypes = ("uint16",)
 def from_dlpack(
     x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.dlpack.from_dlpack(x)
+    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
+    return tf.experimental.dlpack.from_dlpack(dlcapsule)
 
 
 def full(
@@ -202,7 +203,7 @@ def full(
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     with tf.device(device):
         return tf.fill(

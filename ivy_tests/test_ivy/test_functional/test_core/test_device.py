@@ -12,7 +12,7 @@ import numpy as np
 import nvidia_smi
 import psutil
 import pytest
-from hypothesis import strategies as st, given
+from hypothesis import strategies as st, given, assume
 
 # local
 import ivy
@@ -73,7 +73,7 @@ def _empty_dir(path, recreate=False):
 
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(2, 3),
+        arg=helpers.ints(min_value=2, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
@@ -83,9 +83,8 @@ def _empty_dir(path, recreate=False):
 )
 @handle_cmd_line_args
 def test_dev(*, array_shape, dtype, as_variable, fw):
-    if fw == "torch" and "int" in dtype:
-        return
 
+    assume(not (fw == "torch" and "int" in dtype))
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
     for device in _get_possible_devices():
@@ -110,7 +109,7 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
 # as_ivy_dev
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(2, 3),
+        arg=helpers.ints(min_value=2, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
@@ -120,8 +119,8 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
 )
 @handle_cmd_line_args
 def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
-    if fw == "torch" and "int" in dtype:
-        return
+
+    assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
@@ -142,18 +141,16 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
 # as_native_dev
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(1, 3),
+        arg=helpers.ints(min_value=1, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes[1:]),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
-    if fw == "torch" and "int" in dtype:
-        return
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
@@ -173,10 +170,6 @@ def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
             assert ret.type == device.type
         else:
             assert ret == device
-        # compilation test
-        if call is helpers.torch_call:
-            # pytorch scripting does not handle converting string to device
-            return
 
 
 # memory_on_dev
@@ -221,21 +214,20 @@ def test_default_device(device):
 # to_dev
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(1, 3),
+        arg=helpers.ints(min_value=1, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    stream=st.integers(0, 50),
+    stream=helpers.ints(min_value=0, max_value=50),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_to_device(
     *, array_shape, dtype, as_variable, with_out, fw, device, call, stream
 ):
-    if fw == "torch" and "int" in dtype:
-        return
+    assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
     x = ivy.asarray(x)
@@ -257,9 +249,8 @@ def test_to_device(
         assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
 
         # check if native arrays are the same
-        if ivy.current_backend_str() in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            return
+        # these backends do not support native inplace updates
+        assume(not (fw in ["tensorflow", "jax"]))
 
         assert x_on_dev.data is out.data
 
@@ -287,19 +278,19 @@ def test_to_device(
 
 @st.composite
 def _axis(draw):
-    max_val = draw(st.shared(st.integers(), key="num_dims"))
-    return draw(st.integers(0, max_val - 1))
+    max_val = draw(st.shared(helpers.ints(), key="num_dims"))
+    return draw(helpers.ints(min_value=0, max_value=max_val - 1))
 
 
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(1, 3),
+        arg=helpers.ints(min_value=1, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    chunk_size=st.integers(1, 3),
+    chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=_axis(),
     data=st.data(),
 )
@@ -307,8 +298,7 @@ def _axis(draw):
 def test_split_func_call(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
-    if fw == "torch" and "int" in dtype:
-        return
+    assume(not (fw == "torch" and "int" in dtype))
 
     # inputs
     shape = tuple(array_shape)
@@ -340,14 +330,14 @@ def test_split_func_call(
 
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(2, 3),
+        arg=helpers.ints(min_value=2, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[2, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    chunk_size=st.integers(1, 3),
-    axis=st.integers(0, 1),
+    chunk_size=helpers.ints(min_value=1, max_value=3),
+    axis=helpers.ints(min_value=0, max_value=1),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -355,12 +345,14 @@ def test_split_func_call_with_cont_input(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
     # Skipping some dtype for certain frameworks
-    if (
-        (fw == "torch" and "int" in dtype)
-        or (fw == "numpy" and "float16" in dtype)
-        or (fw == "tensorflow" and "u" in dtype)
-    ):
-        return
+    assume(
+        not (
+            (fw == "torch" and "int" in dtype)
+            or (fw == "numpy" and "float16" in dtype)
+            or (fw == "tensorflow" and "u" in dtype)
+        )
+    )
+
     shape = tuple(array_shape)
     x1 = np.random.uniform(size=shape).astype(dtype)
     x2 = np.random.uniform(size=shape).astype(dtype)
@@ -439,7 +431,7 @@ def test_profiler(device, fw):
     assert not os.path.exists(fw_log_dir), "Profiler recreated logging folder"
 
 
-@given(num=st.integers(0, 5))
+@given(num=helpers.ints(min_value=0, max_value=5))
 def test_num_arrays_on_dev(num, device):
     arrays = [
         ivy.array(np.random.uniform(size=2).tolist(), device=device) for _ in range(num)
@@ -449,7 +441,7 @@ def test_num_arrays_on_dev(num, device):
         del item
 
 
-@given(num=st.integers(0, 5))
+@given(num=helpers.ints(min_value=0, max_value=5))
 def test_get_all_arrays_on_dev(num, device):
     arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
     arr_ids_on_dev = [id(a) for a in ivy.get_all_ivy_arrays_on_dev(device).values()]
@@ -457,7 +449,7 @@ def test_get_all_arrays_on_dev(num, device):
         assert id(a) in arr_ids_on_dev
 
 
-@given(num=st.integers(0, 2), attr_only=st.booleans())
+@given(num=helpers.ints(min_value=0, max_value=2), attr_only=st.booleans())
 def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     arr = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
 

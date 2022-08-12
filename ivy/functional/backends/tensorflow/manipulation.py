@@ -5,6 +5,9 @@ import tensorflow as tf
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.manipulation import _calculate_out_shape
+
 
 # Array API Standard #
 # -------------------#
@@ -38,12 +41,11 @@ def concat(
 
 def expand_dims(
     x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
-        ret = tf.expand_dims(x, axis)
+        out_shape = _calculate_out_shape(axis, x.shape)
+        ret = tf.reshape(x, shape=out_shape)
         return ret
     except tf.errors.InvalidArgumentError as error:
         raise IndexError(error)
@@ -129,7 +131,7 @@ def squeeze(
             )
         ret = tf.squeeze(x, axis)
     elif axis is None:
-        ret = x
+        ret = tf.squeeze(x)
     else:
         if isinstance(axis, tuple):
             axis = list(axis)
@@ -209,6 +211,12 @@ def repeat(
     return ret
 
 
+repeat.supported_dtypes = (
+    "int32",
+    "int64",
+)
+
+
 def tile(x, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
@@ -218,6 +226,15 @@ def tile(x, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
         reps = tf.reshape(reps, (-1,))
     ret = tf.tile(x, reps)
     return ret
+
+
+tile.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "int8",
+    "int16",
+)
 
 
 def constant_pad(
