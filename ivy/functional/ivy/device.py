@@ -128,8 +128,10 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
 # Array Printing
 
 
-def get_all_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice],
-                              /) -> ivy.Container:
+def get_all_ivy_arrays_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice],
+    /,
+) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
     Parameters
@@ -296,10 +298,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
 @handle_nestable
 def print_all_ivy_arrays_on_dev(
-        device: Union[ivy.Device, ivy.NativeDevice],
-        /,
-        *,
-        attr_only: bool = True
+    device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -538,6 +537,7 @@ def used_mem_on_dev(
         )
 
 
+
 def percent_used_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice],
                             /,
                             *,
@@ -561,16 +561,16 @@ def percent_used_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice],
 
     Examples
     --------
-    >>> x = ivy.percent_used_mem_on_dev(device = "cpu", process_specific = False)
+    >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = False)
     >>> print(x)
     94.036902561555
 
-    >>> x = ivy.percent_used_mem_on_dev(device = "cpu", process_specific = True)
+    >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = True)
     >>> print(x)
     0.7024003467681645
 
     >>> x = ivy.as_native_dev("gpu:0")
-    >>> y = ivy.percent_used_mem_on_dev(device = x, process_specific = False)
+    >>> y = ivy.percent_used_mem_on_dev(x, process_specific = False)
     >>> print(y)
     0.7095597456708771
 
@@ -718,11 +718,11 @@ def tpu_is_available() -> bool:
 
 # noinspection PyShadowingNames
 def default_device(
-        device: Union[ivy.Device, ivy.NativeDevice] = None,
-        /,
-        *,
-        item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
-        as_native: bool = None,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    /,
+    *,
+    item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
+    as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """Returns the input device or the default device.
     If the as native flag is set, the device will be converted to a native device.
@@ -919,9 +919,11 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float
     return split_factors.setdefault(device, 0.0)
 
 
-def set_split_factor(factor: float,
-                     device: Union[ivy.Device, ivy.NativeDevice] = None,
-                     /) -> None:
+def set_split_factor(
+    factor: float,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    /,
+) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
 

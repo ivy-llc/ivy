@@ -20,6 +20,7 @@ from ivy.func_wrapper import (
 @handle_nestable
 def abs(
     x: Union[float, ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
