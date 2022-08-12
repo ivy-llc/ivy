@@ -512,6 +512,8 @@
     <span class="n">variables</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">inner_grad_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">inner_learning_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">inner_optimization_step</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">gradient_descent_update</span><span class="p">,</span>
     <span class="n">inner_batch_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">outer_batch_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -629,6 +631,8 @@
     <span class="n">variables</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">inner_grad_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">inner_learning_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">inner_optimization_step</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">gradient_descent_update</span><span class="p">,</span>
     <span class="n">batched</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">return_inner_v</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -719,6 +723,8 @@
     <span class="n">variables</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">inner_grad_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">inner_learning_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">inner_optimization_step</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">gradient_descent_update</span><span class="p">,</span>
     <span class="n">inner_batch_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">outer_batch_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

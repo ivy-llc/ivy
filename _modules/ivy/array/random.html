@@ -138,9 +138,10 @@
 <div class="viewcode-block" id="ArrayWithRandom"><a class="viewcode-back" href="../../../data_classes/array/random/ArrayWithRandom.html#ivy.array.random.ArrayWithRandom">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithRandom</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <div class="viewcode-block" id="ArrayWithRandom.random_uniform"><a class="viewcode-back" href="../../../data_classes/array/random/ArrayWithRandom.html#ivy.array.random.ArrayWithRandom.random_uniform">[docs]</a>    <span class="k">def</span> <span class="nf">random_uniform</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">high</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -181,24 +182,24 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([[9.8, 3.4], [5.8, 7.2]])</span>
-<span class="sd">        &gt;&gt;&gt; x.random_uniform(10.2)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_uniform(high=10.2)</span>
 <span class="sd">        ivy.array([[9.86, 4.89],</span>
 <span class="sd">                   [7.06, 7.47]])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_uniform(10.2, device=&#39;cpu&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_uniform(high=10.2, device=&#39;cpu&#39;)</span>
 <span class="sd">        ivy.array([[9.86, 4.89],</span>
 <span class="sd">                   [7.06, 7.47]])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_uniform(14.2, dtype=&#39;float16&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_uniform(high=14.2, dtype=&#39;float16&#39;)</span>
 <span class="sd">        ivy.array([[9.86, 4.89],</span>
 <span class="sd">                   [7.06, 7.47]])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_uniform(10.8, device=&#39;cpu&#39;, dtype=&#39;float64&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_uniform(high=10.8, device=&#39;cpu&#39;, dtype=&#39;float64&#39;)</span>
 <span class="sd">        ivy.array([[9.86, 4.89],</span>
 <span class="sd">                   [7.06, 7.47]])</span>
 
 <span class="sd">        &gt;&gt;&gt; z = ivy.ones((2,2))</span>
-<span class="sd">        &gt;&gt;&gt; x.random_uniform(11.2, device=&#39;cpu&#39;, dtype=&#39;float64&#39;, out=z)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_uniform(high=11.2, device=&#39;cpu&#39;, dtype=&#39;float64&#39;, out=z)</span>
 <span class="sd">        ivy.array([[10.1 ,  6.53],</span>
 <span class="sd">                   [ 7.94,  8.85]])</span>
 
@@ -207,23 +208,23 @@
 <span class="sd">        &gt;&gt;&gt; x.random_uniform(y)</span>
 <span class="sd">        ivy.array([12.1, 14. ])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_uniform(y, device=&#39;cpu&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_uniform(high=y, device=&#39;cpu&#39;)</span>
 <span class="sd">        ivy.array([12.1, 14. ])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_uniform(y, dtype=&#39;float16&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_uniform(high=y, dtype=&#39;float16&#39;)</span>
 <span class="sd">        ivy.array([12.1, 14. ])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_uniform(y, device=&#39;cpu&#39;, dtype=&#39;float64&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_uniform(high=y, device=&#39;cpu&#39;, dtype=&#39;float64&#39;)</span>
 <span class="sd">        ivy.array([12.1, 14. ])</span>
 
 <span class="sd">        &gt;&gt;&gt; z = ivy.ones((2,))</span>
-<span class="sd">        &gt;&gt;&gt; x.random_uniform(y, device=&#39;cpu&#39;, dtype=&#39;float64&#39;, out=z)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_uniform(high=y, device=&#39;cpu&#39;, dtype=&#39;float64&#39;, out=z)</span>
 <span class="sd">        ivy.array([12.1, 14. ])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
-            <span class="n">high</span><span class="p">,</span>
-            <span class="n">shape</span><span class="p">,</span>
+            <span class="n">low</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">high</span><span class="o">=</span><span class="n">high</span><span class="p">,</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
@@ -231,9 +232,10 @@
 
 <div class="viewcode-block" id="ArrayWithRandom.random_normal"><a class="viewcode-back" href="../../../data_classes/array/random/ArrayWithRandom.html#ivy.array.random.ArrayWithRandom.random_normal">[docs]</a>    <span class="k">def</span> <span class="nf">random_normal</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">std</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -272,49 +274,49 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([[9.8, 3.4], [5.8, 7.2]])</span>
-<span class="sd">        &gt;&gt;&gt; x.random_normal(10.2)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_normal(std=10.2)</span>
 <span class="sd">        ivy.array([[19.   , -6.44 ],</span>
 <span class="sd">                   [ 5.72 ,  0.235]])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_normal(10.2, device=&#39;cpu&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_normal(std=10.2, device=&#39;cpu&#39;)</span>
 <span class="sd">        ivy.array([[18.7 , 25.2 ],</span>
 <span class="sd">                   [27.5 , -3.22]])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_normal(14.2, dtype=&#39;float16&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_normal(std=14.2, dtype=&#39;float16&#39;)</span>
 <span class="sd">        ivy.array([[26.6 , 12.1 ],</span>
 <span class="sd">                   [ 4.56,  5.49]])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_normal(10.8, device=&#39;cpu&#39;, dtype=&#39;float64&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_normal(std=10.8, device=&#39;cpu&#39;, dtype=&#39;float64&#39;)</span>
 <span class="sd">        ivy.array([[ 1.02, -1.39],</span>
 <span class="sd">                   [14.2 , -1.  ]])</span>
 
 <span class="sd">        &gt;&gt;&gt; z = ivy.ones((2,2))</span>
-<span class="sd">        &gt;&gt;&gt; x.random_normal(11.2, device=&#39;cpu&#39;, dtype=&#39;float64&#39;, out=z)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_normal(std=11.2, device=&#39;cpu&#39;, dtype=&#39;float64&#39;, out=z)</span>
 <span class="sd">        ivy.array([[ 7.72, -8.32],</span>
 <span class="sd">                   [ 4.95, 15.8 ]])</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([8.7, 9.3])</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.array([12.8, 14.5])</span>
-<span class="sd">        &gt;&gt;&gt; x.random_normal(y)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_normal(std=y)</span>
 <span class="sd">        ivy.array([-10.8,  12.1])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_normal(y, device=&#39;cpu&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_normal(std=y, device=&#39;cpu&#39;)</span>
 <span class="sd">        ivy.array([ 13. , -26.9])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_normal(y, dtype=&#39;float16&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_normal(std=y, dtype=&#39;float16&#39;)</span>
 <span class="sd">        ivy.array([14.3  , -0.807])</span>
 
-<span class="sd">        &gt;&gt;&gt; x.random_normal(y, device=&#39;cpu&#39;, dtype=&#39;float64&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_normal(std=y, device=&#39;cpu&#39;, dtype=&#39;float64&#39;)</span>
 <span class="sd">        ivy.array([21.3 ,  3.85])</span>
 
 <span class="sd">        &gt;&gt;&gt; z = ivy.ones((2,))</span>
-<span class="sd">        &gt;&gt;&gt; x.random_normal(y, device=&#39;cpu&#39;, dtype=&#39;float64&#39;, out=z)</span>
+<span class="sd">        &gt;&gt;&gt; x.random_normal(std=y, device=&#39;cpu&#39;, dtype=&#39;float64&#39;, out=z)</span>
 <span class="sd">        ivy.array([ 4.32, 42.2 ])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
-            <span class="n">std</span><span class="p">,</span>
-            <span class="n">shape</span><span class="p">,</span>
+            <span class="n">mean</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">std</span><span class="o">=</span><span class="n">std</span><span class="p">,</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
@@ -324,9 +326,10 @@
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">population_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -362,9 +365,9 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span>
             <span class="n">population_size</span><span class="p">,</span>
             <span class="n">num_samples</span><span class="p">,</span>
-            <span class="n">batch_size</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
-            <span class="n">replace</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">probs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
@@ -372,8 +375,9 @@
 <div class="viewcode-block" id="ArrayWithRandom.randint"><a class="viewcode-back" href="../../../data_classes/array/random/ArrayWithRandom.html#ivy.array.random.ArrayWithRandom.randint">[docs]</a>    <span class="k">def</span> <span class="nf">randint</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">high</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-        <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -454,13 +458,13 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
             <span class="n">high</span><span class="p">,</span>
-            <span class="n">shape</span><span class="p">,</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithRandom.shuffle"><a class="viewcode-back" href="../../../data_classes/array/random/ArrayWithRandom.html#ivy.array.random.ArrayWithRandom.shuffle">[docs]</a>    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="ArrayWithRandom.shuffle"><a class="viewcode-back" href="../../../data_classes/array/random/ArrayWithRandom.html#ivy.array.random.ArrayWithRandom.shuffle">[docs]</a>    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.shuffle. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.shuffle also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
