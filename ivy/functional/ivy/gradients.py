@@ -157,6 +157,10 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     ret
         An ivy variable, supporting gradient computation.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :code:`ivy.Array` input:
@@ -211,6 +215,10 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
     -------
     ret
         Boolean, true if x is a trainable variable, false otherwise.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -291,6 +299,10 @@ def variable_data(x):
     ret
         The internal data stored by the variable
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     """
     return current_backend(x).variable_data(x)
 
@@ -322,7 +334,11 @@ def stop_gradient(
     -------
     ret
         The same array x, but with no gradient information.
-    
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Functional Examples
     -------------------
     With :code:`ivy.Array` inputs:
