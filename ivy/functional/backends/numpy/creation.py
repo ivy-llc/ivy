@@ -240,5 +240,5 @@ def logspace(
     if axis is None:
         axis = -1
     return _to_device(
-        np.logspace(start, stop, num, base=base, dtype=dtype, axis=axis), device=device
+        np.logspace(start, stop, num=num, base=base, dtype=dtype, axis=axis), device=device
     )
