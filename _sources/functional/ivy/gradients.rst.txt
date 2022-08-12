@@ -28,8 +28,6 @@ Gradients
    gradients/lars_update.rst
    gradients/adam_update.rst
    gradients/lamb_update.rst
-   gradients/jac.rst
-   gradients/grad.rst
    gradients/GradientTracking:
     """"""
 
