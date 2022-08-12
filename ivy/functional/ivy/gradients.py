@@ -531,7 +531,7 @@ def adam_step(
     >>> beta1 = 0.86
     >>> beta2 = 0.95
     >>> epsilon = 1e-6
-    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
+    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon)
     >>> print(adam_step_delta)
         (ivy.array([[1., 1., -1.],
                     [1., 1., 1.]]),
@@ -569,7 +569,7 @@ def adam_step(
     >>> beta1 = 0.76
     >>> beta2 = 0.992
     >>> epsilon = 1e-5
-    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
+    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon)
     >>> print(adam_step_delta)
         (ivy.array([0.209, -0.271, 0.0717, 0., 0.142, -0.209, 0.182]),
          ivy.array([ 0.72, -0.96, 0.24, 0., 0.48, -0.72, 0.624]),
@@ -599,7 +599,7 @@ def adam_step(
     >>> beta1 = 0.87
     >>> beta2 = 0.976
     >>> epsilon = 1e-5
-    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1, beta2, epsilon)
+    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon)
     >>> print(adam_step_delta)
     ({
         a: ivy.array([0., 0.626, 0.626]),
