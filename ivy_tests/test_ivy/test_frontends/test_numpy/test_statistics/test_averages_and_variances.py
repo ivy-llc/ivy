@@ -54,7 +54,7 @@ def test_numpy_mean(
         instance_method=instance_method,
         fw=fw,
         frontend="numpy",
-        fn_name="mean",
+        fn_tree="mean",
         x=np.asarray(x, dtype=input_dtype[0]),
         axis=None,
         dtype=dtype,
