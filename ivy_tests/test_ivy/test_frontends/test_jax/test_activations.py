@@ -64,7 +64,7 @@ def test_jax_nn_leaky_relu(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="nn.leaky_relu",
+        fn_tree="nn.leaky_relu",
         x=np.asarray(x, dtype=input_dtype),
         negative_slope=negative_slope,
     )
