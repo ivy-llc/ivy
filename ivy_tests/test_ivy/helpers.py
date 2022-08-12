@@ -2734,7 +2734,7 @@ def get_axis(
             axis = draw(
                 ints(min_value=-axes, max_value=axes - 1)
                 | st.lists(
-                    ints(-axes, axes - 1),
+                    ints(min_value=-axes, max_value=axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
