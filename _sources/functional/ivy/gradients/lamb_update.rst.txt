@@ -3,7 +3,7 @@ lamb_update
 
 .. autofunction:: ivy.functional.ivy.gradients.lamb_update
 
-.. autofunction:: ivy.array.array_methods.lamb_update
+.. autofunction:: ivy.container.container_methods.static_lamb_update
 
 .. autofunction:: ivy.container.container_methods.lamb_update
 |
@@ -33,6 +33,6 @@ lamb_update
    :caption: lamb_update
 
    lamb_update/lamb_update_functional.rst
-   lamb_update/lamb_update_array.rst
    lamb_update/lamb_update_container.rst
+   lamb_update/static_lamb_update_container.rst
 
