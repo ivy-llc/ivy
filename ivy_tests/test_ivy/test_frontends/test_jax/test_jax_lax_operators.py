@@ -41,7 +41,7 @@ def test_jax_lax_add(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.add",
+        fn_tree="lax.add",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -73,7 +73,7 @@ def test_jax_lax_tan(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.tan",
+        fn_tree="lax.tan",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -181,7 +181,7 @@ def test_jax_lax_concat(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.concatenate",
+        fn_tree="lax.concatenate",
         operands=xs,
         dimension=unique_idx,
     )
@@ -239,7 +239,7 @@ def test_jax_lax_full(
         native_array_flags=False,
         fw=fw,
         frontend="jax",
-        fn_name="lax.full",
+        fn_tree="lax.full",
         shape=shape,
         fill_value=fill_value,
         dtype=dtypes[0],
@@ -272,7 +272,7 @@ def test_jax_lax_abs(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.abs",
+        fn_tree="lax.abs",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -303,6 +303,6 @@ def test_jax_lax_sqrt(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.sqrt",
+        fn_tree="lax.sqrt",
         x=np.asarray(x, dtype=input_dtype),
     )
