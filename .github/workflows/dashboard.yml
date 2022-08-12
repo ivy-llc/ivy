@@ -25,6 +25,7 @@ jobs:
              requests
              emoji
              pandas
+             PyGithub
 
       - name: Run Dashboard file
         env:
