@@ -492,3 +492,4 @@ def test_torch_asin(
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
+    
