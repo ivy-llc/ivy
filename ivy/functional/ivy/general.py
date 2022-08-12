@@ -2658,8 +2658,8 @@ def gather(
     indices: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Gather slices from params at axis according to indices.
 
     Parameters
