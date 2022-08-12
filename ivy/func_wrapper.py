@@ -161,6 +161,41 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
+def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Calls the function, and then converts all 0 dimensional array instances in
+        the function to float numbers if out argument is not provided.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with 0 dimensional arrays as float numbers.
+        """
+        # call unmodified function
+        ret = fn(*args, **kwargs)
+        # get out arg index
+        out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
+        # check if out is None or out is not present in args and kwargs.
+        out_args = out_arg_pos < len(args) and args[out_arg_pos] is None
+        out_kwargs = "out" in kwargs and kwargs["out"] is None
+        if ret.shape == () and (out_args or out_kwargs):
+            return float(ret)
+        # convert to float from 0 dim
+        return ret
+
+    new_fn.zero_dim_arrays_to_float = True
+    return new_fn
+
+
 def to_native_arrays_and_back(fn: Callable) -> Callable:
     """
     Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
@@ -359,7 +394,11 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
     """
     if key == "linalg":
         for linalg_k, linalg_v in to_wrap.__dict__.items():
-            if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
+            if (
+                isinstance(linalg_v, FunctionType)
+                and linalg_k != "namedtuple"
+                and not linalg_k.startswith("_")
+            ):
                 to_wrap.__dict__[linalg_k] = _wrap_function(
                     linalg_k, linalg_v, ivy.__dict__[linalg_k]
                 )

@@ -8,32 +8,8 @@ from typing import List, Optional, Tuple, Union, Sequence
 import ivy
 
 
-def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
-
-    # Get the dilated kernel size
-    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
-
-    if padding == "VALID":
-        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == "SAME":
-        dim_size = dim_size * stride_size
-
-    return dim_size
-
-
 def _out_shape(x, strides, pad, dilations, filters):
     return (x - 1) * strides - 2 * pad + dilations * (filters - 1) + 1
-
-
-def _handle_padding(x, strides, filters, padding):
-    if padding == "SAME":
-        if x % strides == 0:
-            pad = max(filters - strides, 0)
-        else:
-            pad = max(filters - (x % strides), 0)
-    else:
-        pad = 0
-    return pad
 
 
 # noinspection PyUnresolvedReferences
@@ -57,7 +33,7 @@ def conv1d(
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     x_shape = x.shape[2]
-    pad_w = _handle_padding(x_shape, strides, f_w_after_dilation, padding)
+    pad_w = ivy.handle_padding(x_shape, strides, f_w_after_dilation, padding)
     x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], value=0)
     if padding != "VALID" and padding != "SAME":
         raise Exception(
@@ -91,11 +67,13 @@ def conv1d_transpose(
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     if output_shape is None:
-        new_w = _deconv_length(x.shape[2], strides, filter_shape[0], padding, dilations)
+        new_w = ivy.deconv_length(
+            x.shape[2], strides, filter_shape[0], padding, dilations
+        )
         output_shape = [new_w]
     not_valid_h = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-    pad_w = _handle_padding(output_shape[0], strides, filter_shape[0], padding)
+    pad_w = ivy.handle_padding(output_shape[0], strides, filter_shape[0], padding)
     if padding == "VALID":
         padding_list: List[int] = [0]
     elif padding == "SAME":
@@ -163,8 +141,8 @@ def conv2d(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
-    pad_h = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_w = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_w = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
     x = torch.nn.functional.pad(
         x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
     )
@@ -202,10 +180,10 @@ def conv2d_transpose(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     if output_shape is None:
-        new_h = _deconv_length(
+        new_h = ivy.deconv_length(
             x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
         )
-        new_w = _deconv_length(
+        new_w = ivy.deconv_length(
             x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
         )
         output_shape = [new_h, new_w]
@@ -213,8 +191,8 @@ def conv2d_transpose(
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
-    pad_w = _handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
-    pad_h = _handle_padding(output_shape[0], strides[0], filter_shape[0], padding)
+    pad_w = ivy.handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = ivy.handle_padding(output_shape[0], strides[0], filter_shape[0], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
@@ -289,8 +267,8 @@ def depthwise_conv2d(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
-    pad_h = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_w = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_w = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
     x = torch.nn.functional.pad(
         x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
     )
@@ -340,9 +318,9 @@ def conv3d(
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
     x_shape = list(x.shape[2:])
-    pad_d = _handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_h = _handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
-    pad_w = _handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
+    pad_d = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_h = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_w = ivy.handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
     x = torch.nn.functional.pad(
         x,
         [
@@ -389,13 +367,13 @@ def conv3d_transpose(
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
     if output_shape is None:
-        new_d = _deconv_length(
+        new_d = ivy.deconv_length(
             x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
         )
-        new_h = _deconv_length(
+        new_h = ivy.deconv_length(
             x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
         )
-        new_w = _deconv_length(
+        new_w = ivy.deconv_length(
             x.shape[4], strides[2], filter_shape[2], padding, dilations[2]
         )
         output_shape = [new_d, new_h, new_w]
@@ -405,9 +383,9 @@ def conv3d_transpose(
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
     filter_shape[2] = filter_shape[2] + (filter_shape[2] - 1) * (dilations[2] - 1)
-    pad_d = _handle_padding(output_shape[0], strides[0], filter_shape[0], padding)
-    pad_h = _handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
-    pad_w = _handle_padding(output_shape[2], strides[2], filter_shape[2], padding)
+    pad_d = ivy.handle_padding(output_shape[0], strides[0], filter_shape[0], padding)
+    pad_h = ivy.handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
+    pad_w = ivy.handle_padding(output_shape[2], strides[2], filter_shape[2], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0, 0]
     elif padding == "SAME":
