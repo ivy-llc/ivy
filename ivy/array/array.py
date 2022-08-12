@@ -600,7 +600,6 @@ class Array(
 
         Examples
         --------
-
         With :code:`ivy.Array` instances only:
 
         >>> a = ivy.array([2, 3, 4])
