@@ -1521,7 +1521,7 @@ def test_frontend_function(
     native_array_flags: Union[bool, List[bool]],
     fw: str,
     frontend: str,
-    fn_name: str,
+    fn_tree: str,
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
@@ -1549,8 +1549,8 @@ def test_frontend_function(
         current backend (framework).
     frontend
         current frontend (framework).
-    fn_name
-        name of the function to test.
+    fn_tree
+        Path to function in frontend framework namespace.
     rtol
         relative tolerance value.
     atol
@@ -1591,10 +1591,10 @@ def test_frontend_function(
     ]
 
     # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
-    *frontend_submods, fn_name = fn_name.split(".")
+    *frontend_submods, fn_tree = fn_tree.split(".")
 
     # check for unsupported dtypes in backend framework
-    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
+    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
     test_unsupported = check_unsupported_dtype(
         fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
@@ -1631,7 +1631,7 @@ def test_frontend_function(
         args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
 
     # frontend function
-    frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name]
+    frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
 
     # run from the Ivy API directly
     if test_unsupported:
@@ -1676,7 +1676,7 @@ def test_frontend_function(
     ivy.set_backend(frontend)
     try:
         # check for unsupported dtypes in frontend framework
-        function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
+        function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
         test_unsupported = check_unsupported_dtype(
             fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
         )
@@ -1703,12 +1703,12 @@ def test_frontend_function(
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
         if test_unsupported:
             test_unsupported_function(
-                fn=frontend_fw.__dict__[fn_name],
+                fn=frontend_fw.__dict__[fn_tree],
                 args=args_frontend,
                 kwargs=kwargs_frontend,
             )
             return
-        frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
+        frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
 
         # tuplify the frontend return
         if not isinstance(frontend_ret, tuple):
