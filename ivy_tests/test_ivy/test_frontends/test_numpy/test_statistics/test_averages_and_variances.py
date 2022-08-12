@@ -21,8 +21,6 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
         fn_name="ivy.functional.frontends.numpy.mean"
     ),
     native_array=helpers.array_bools(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_numpy_mean(
     *,
@@ -33,8 +31,6 @@ def test_numpy_mean(
     with_out,
     num_positional_args,
     native_array,
-    container,
-    instance_method,
     fw,
 ):
     input_dtype, x = dtype_and_x
@@ -50,8 +46,6 @@ def test_numpy_mean(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
         fw=fw,
         frontend="numpy",
         fn_tree="mean",
