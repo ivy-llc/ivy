@@ -1468,6 +1468,7 @@ def check_float(x):
 @handle_nestable
 def is_float_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
+    *,
     out: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number] = None,
 ) -> bool:
     """
@@ -1493,7 +1494,7 @@ def is_float_dtype(
 
     >>> x = ivy.is_float_dtype(ivy.int64)
     >>> print(x)
-    True
+    False
 
     >>> x = ivy.is_float_dtype(ivy.int32)
     >>> print(x)
@@ -1503,8 +1504,8 @@ def is_float_dtype(
     >>> print(x)
     False
 
-    >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x
-    >>> print(arr)
+    >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)
+    >>> print(arr.is_float_dtype())
     True
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
@@ -1519,7 +1520,11 @@ def is_float_dtype(
         return True if isinstance(dtype_in, (float, np.floating)) else False
     elif isinstance(dtype_in, (list, tuple, dict)):
         return (
-            True if ivy.nested_indices_where(dtype_in, check_float(dtype_in)) else False
+            True
+            if ivy.nested_indices_where(
+                dtype_in, lambda x: isinstance(x, (float, np.floating))
+            )
+            else False
         )
     return "float" in as_ivy_dtype(dtype_in)
 
