@@ -1756,6 +1756,7 @@ def dtype_values_axis(
     min_axis=None,
     max_axis=None,
     ret_shape=False,
+    ret_axis_tuple=False,
 ):
     results = draw(
         dtype_and_values(
@@ -1782,7 +1783,10 @@ def dtype_values_axis(
         return dtype, values, None
     if shape is not None:
         return dtype, values, draw(
-            (shape=shape))
+            get_axis(shape=shape))
+    if shape is not None and ret_axis_tuple:
+        return dtype, values, draw(
+            get_axis(shape=shape, just_tuple=True))
     axis = draw(integers(min_value=min_axis, max_value=max_axis))
     return dtype, values, axis
 
