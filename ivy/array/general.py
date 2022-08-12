@@ -54,10 +54,10 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
     def gather_nd(
-            self: ivy.Array,
-            indices: Union[ivy.Array, ivy.NativeArray],
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        indices: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
@@ -125,7 +125,6 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_numpy(self)
 
-
     def stable_pow(
         self: ivy.Array,
         exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -159,26 +158,25 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([ 4, 16, 25])
 
         >>> x = ivy.asarray([2, 4, 5])
-        >>> y = x.stable_pow(4, min_base=1)
+        >>> y = ivy.Array.stable_pow(x, 4, min_base=1)
         >>> print(y)
         ivy.array([  81,  625, 1300])
 
         >>> x = ivy.asarray([[4, 5, 6], [7, 8, 9]])
         >>> y = ivy.asarray([[1, 2,3], [2, 3, 4]])
-        >>> z = x.stable_pow(y)
+        >>> z = ivy.Array.stable_pow(x, y)
         >>> print(z)
         ivy.array([[   4,   25,  216],
                [  49,  512, 6560]])
         """
         return ivy.stable_pow(self, exponent, min_base=min_base)
 
-
     def clip_vector_norm(
-            self: ivy.Array,
-            max_norm: float,
-            p: float = 2.0,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        max_norm: float,
+        p: float = 2.0,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.clip_vector_norm. This method simply
@@ -196,7 +194,7 @@ class ArrayWithGeneral(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-        
+
         Returns
         -------
         ret
