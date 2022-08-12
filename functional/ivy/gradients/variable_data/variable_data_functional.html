@@ -169,7 +169,13 @@ dedicated variable class, the function returns the data passed in.</p>
 <dd class="field-odd"><p><strong>x</strong> – An ivy variable.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – The internal data stored by the variable</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ret</em> – The internal data stored by the variable</p></li>
+<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
+<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
+<li><p><em>instances in place of any of the arguments.</em></p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
