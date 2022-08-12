@@ -27,7 +27,6 @@ jobs:
       - name: Run Dashboard file
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WORKING_DIR: ${GITHUB_WORKSPACE}
         run: |
             cd ivy
-            python3 dashboard.py "$WORKING_DIR" "$GITHUB_TOKEN"
+            python3 dashboard.py "$GITHUB_TOKEN"
