@@ -36,7 +36,7 @@ def test_tensorflow_add(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="add",
+        fn_tree="add",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -63,7 +63,7 @@ def test_tensorflow_tan(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="tan",
+        fn_tree="tan",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -134,7 +134,7 @@ def test_tensorflow_concat(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="concat",
+        fn_tree="concat",
         values=xs,
         axis=unique_idx,
     )
@@ -192,7 +192,7 @@ def test_tensorflow_full(
         native_array_flags=False,
         fw=fw,
         frontend="tensorflow",
-        fn_name="fill",
+        fn_tree="fill",
         dims=shape,
         value=fill_value,
         rtol=1e-05,
@@ -226,7 +226,7 @@ def test_tensorflow_multiply(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="multiply",
+        fn_tree="multiply",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -261,7 +261,7 @@ def test_tensorflow_subtract(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="subtract",
+        fn_tree="subtract",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -292,7 +292,7 @@ def test_tensorflow_logical_xor(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="math.logical_xor",
+        fn_tree="math.logical_xor",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
