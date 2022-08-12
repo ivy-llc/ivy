@@ -190,11 +190,15 @@ def ones_like(
     return _to_device(np.ones_like(x, dtype=dtype), device=device)
 
 
-def tril(x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None) -> np.ndarray:
+def tril(
+    x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.tril(x, k)
 
 
-def triu(x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None) -> np.ndarray:
+def triu(
+    x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None
+    ) -> np.ndarray:
     return np.triu(x, k)
 
 
