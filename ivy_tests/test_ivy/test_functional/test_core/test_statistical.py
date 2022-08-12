@@ -26,15 +26,14 @@ def statistical_dtype_values(draw, *, function):
     elif function in ["var", "std"]:
         abs_value_limit = 0.99 * (max_value / size) ** 0.5
     else:
-        abs_value_limit = 0.99 * max_value / size
+        abs_value_limit = 0.95 * max_value
 
     values = draw(
         helpers.list_of_length(
-            x=st.floats(
-                -abs_value_limit,
-                abs_value_limit,
+            x=helpers.floats(
+                min_value=-abs_value_limit,
+                max_value=abs_value_limit,
                 allow_subnormal=False,
-                allow_infinity=False,
             ),
             length=size,
         )

@@ -536,6 +536,224 @@ def f_n_calls():
     ]
 
 
+def to_fixed_width(n, max_width, allow_overflow=True, do_round=True):
+    if do_round:
+        for i in range(max_width - 2, -1, -1):
+            str0 = "{:.{}f}".format(n, i)
+            if len(str0) <= max_width:
+                break
+    else:
+        str0 = "{:.42f}".format(n)
+        int_part_len = str0.index(".")
+        if int_part_len <= max_width - 2:
+            str0 = str0[:max_width]
+        else:
+            str0 = str0[:int_part_len]
+    if (not allow_overflow) and (len(str0) > max_width):
+        raise OverflowError(
+            "Impossible to represent in fixed-width non-scientific format"
+        )
+    return str0
+
+
+from hypothesis.internal.floats import float_of
+
+
+@st.composite
+def floats(
+    draw,
+    *,
+    min_value=None,
+    max_value=None,
+    allow_nan=False,
+    allow_inf=False,
+    allow_subnormal=False,
+    exclude_min=True,
+    exclude_max=True,
+    safety_factor=0.99,
+    large_value_safety_factor=0.95,
+    small_value_safety_factor=1.1,
+):
+    """Draws an arbitrarily sized list of integers with a safety factor
+        applied to values.
+
+    Parameters
+    ----------
+    min_value
+        minimum value of integers generated.
+
+    max_value
+        maximum value of integers generated.
+
+    safety_factor
+        default = 0.95. Only values which are 95% or less than the edge of
+        the limit for a given dtype are generated.
+
+    Returns
+    -------
+    ret
+        list of integers.
+    """
+    lim_float16 = 65504
+    lim_float32 = 3.4028235e38
+    # lim_float64 = 1.7976931348623157e308
+    # dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
+    if min_value is not None and max_value is not None:
+        if (
+            min_value > -lim_float16 * safety_factor
+            and max_value < lim_float16 * safety_factor
+        ):
+            dtype = "float16"
+        elif (
+            min_value > -lim_float32 * safety_factor
+            and max_value < lim_float32 * safety_factor
+        ):
+            dtype = "float32"
+        else:
+            dtype = "float64"
+
+    # dtype and min and max value mismatch?
+    if dtype == "float16":
+        if min_value is not None and max_value is not None:
+            min_value = float_of(min_value, 16)
+            max_value = float_of(max_value, 16)
+            print("min_val: {}, max_val: {}".format(min_value, max_value))
+            values = draw(
+                st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=16,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
+
+        else:
+            limit = math.log(small_value_safety_factor)
+            min_value_neg = min_value
+            max_value_neg = round(-1 * limit, -3)
+            min_value_pos = round(limit, -3)
+            max_value_pos = max_value
+
+            values = draw(
+                st.floats(
+                    min_value=min_value_neg,
+                    max_value=max_value_neg,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=16,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+                | st.floats(
+                    min_value=min_value_pos,
+                    max_value=max_value_pos,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=16,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
+    elif dtype in ["float32", "bfloat16"]:
+        if min_value is not None and max_value is not None:
+            print("min_val: {}, max_val: {}".format(min_value, max_value))
+            values = draw(
+                st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=32,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
+
+        else:
+            limit = math.log(small_value_safety_factor)
+            min_value_neg = min_value
+            max_value_neg = round(-1 * limit, -3)
+            min_value_pos = round(limit, -3)
+            max_value_pos = max_value
+
+            values = draw(
+                st.floats(
+                    min_value=min_value_neg,
+                    max_value=max_value_neg,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=32,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+                | st.floats(
+                    min_value=min_value_pos,
+                    max_value=max_value_pos,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=32,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
+
+    elif dtype == "float64":
+        if min_value is not None and max_value is not None:
+            print("min_val: {}, max_val: {}".format(min_value, max_value))
+            values = draw(
+                st.floats(
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=64,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
+
+        else:
+            limit = math.log(small_value_safety_factor)
+            min_value_neg = min_value
+            max_value_neg = round(-1 * limit, -3)
+            min_value_pos = round(limit, -3)
+            max_value_pos = max_value
+
+            values = draw(
+                st.floats(
+                    min_value=min_value_neg,
+                    max_value=max_value_neg,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=64,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+                | st.floats(
+                    min_value=min_value_pos,
+                    max_value=max_value_pos,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=64,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
+    return values
+
+
 @st.composite
 def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     """Draws an arbitrarily sized list of integers with a safety factor
@@ -2498,7 +2716,7 @@ def none_or_list_of_floats(
     if no_none:
         if dtype == "float16":
             values = list_of_length(
-                x=st.floats(
+                x=floats(
                     min_value=min_value,
                     max_value=max_value,
                     width=16,

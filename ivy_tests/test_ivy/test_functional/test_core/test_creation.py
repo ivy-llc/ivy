@@ -124,7 +124,7 @@ def test_linspace(
         large_value_safety_factor=0.5,
     ),
     num=helpers.ints(min_value=1, max_value=5),
-    base=st.floats(min_value=0.1, max_value=10.0),
+    base=helpers.floats(min_value=0.1, max_value=10.0),
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="logspace"),
     data=st.data(),
