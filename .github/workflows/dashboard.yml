@@ -25,6 +25,7 @@ jobs:
              requests
              emoji
              pandas
+             tabulate
              PyGithub
 
       - name: Run Dashboard file
