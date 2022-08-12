@@ -41,7 +41,7 @@ def test_matrix_rank(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="linalg.matrix_rank",
+        fn_tree="linalg.matrix_rank",
         atol=1.0,
         a=np.asarray(x, dtype=input_dtype),
         tol=tolr
