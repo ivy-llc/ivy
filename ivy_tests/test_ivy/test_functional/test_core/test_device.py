@@ -502,7 +502,8 @@ def test_used_mem_on_dev():
 
     # Testing if it's detects changes in RAM usage, cannot apply this to GPU, as we can
     # only get the total memory usage of a GPU, not the usage by the program.
-    _ram_array_and_clear_test(lambda: ivy.used_mem_on_dev(ivy.Device("cpu"), True))
+    _ram_array_and_clear_test(lambda: ivy.used_mem_on_dev(ivy.Device("cpu"),
+                                                          process_specific=True))
 
 
 def test_percent_used_mem_on_dev():
@@ -514,7 +515,7 @@ def test_percent_used_mem_on_dev():
 
     # Same as test_used_mem_on_dev, but using percent of total memory as metric function
     _ram_array_and_clear_test(
-        lambda: ivy.percent_used_mem_on_dev(ivy.Device("cpu"), True)
+        lambda: ivy.percent_used_mem_on_dev(ivy.Device("cpu"), process_specific=True)
     )
 
 
