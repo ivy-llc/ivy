@@ -1404,7 +1404,7 @@ def check_float(x):
 
     Returns
     -------
-    bool
+    ret : bool
         "True" if the input is a float or a float-like object, otherwise "False".
     """
     return isinstance(x, (int, np.float)) and not type(x) == bool
@@ -1426,7 +1426,7 @@ def is_float_dtype(
 
     Returns
     -------
-    bool
+    ret : bool
         Whether or not the array or data type is of a floating point dtype
 
     Examples
