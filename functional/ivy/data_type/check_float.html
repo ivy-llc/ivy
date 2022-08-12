@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dtype_bits &mdash; Ivy 1.0 documentation</title>
+  <title>check_float &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="as_ivy_dtype" href="as_ivy_dtype.html" />
-    <link rel="prev" title="ivy.Container.static_result_type" href="result_type/static_result_type_container.html" /> 
+    <link rel="next" title="is_float_dtype" href="is_float_dtype.html" />
+    <link rel="prev" title="ivy.Container.static_is_int_dtype" href="is_int_dtype/static_is_int_dtype_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -65,7 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="finfo.html">finfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="iinfo.html">iinfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="result_type.html">result_type</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dtype_bits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype_bits.html">dtype_bits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="as_ivy_dtype.html">as_ivy_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="as_native_dtype.html">as_native_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="closest_valid_dtype.html">closest_valid_dtype</a></li>
@@ -79,7 +79,7 @@
 <li class="toctree-l2"><a class="reference internal" href="invalid_dtype.html">invalid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_bool_dtype.html">is_bool_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_int_dtype.html">is_int_dtype</a></li>
-<li class="toctree-l2"><a class="reference internal" href="check_float.html">check_float</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">check_float</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_uint_dtype.html">is_uint_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="promote_types.html">promote_types</a></li>
@@ -158,9 +158,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../data_type.html">Data type</a> &raquo;</li>
-      <li>dtype_bits</li>
+      <li>check_float</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/data_type/dtype_bits.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/check_float.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -168,51 +168,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dtype-bits">
-<h1>dtype_bits<a class="headerlink" href="#dtype-bits" title="Permalink to this heading"></a></h1>
+  <section id="check-float">
+<h1>check_float<a class="headerlink" href="#check-float" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.dtype_bits">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">dtype_bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#dtype_bits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.dtype_bits" title="Permalink to this definition"></a></dt>
-<dd><p>Get the number of bits used for representing the input data type.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.check_float">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">check_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#check_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.check_float" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function to check if the input is a float or a float-like object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dtype_in</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The data type to determine the number of bits for.</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>any</em>) – Input to check.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – The number of bits used to represent the data type.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ret</strong> (<em>bool</em>) – “True” if the input is a float or a float-like object, otherwise “False”.</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> inputs:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_bits</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">32</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_bits</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">64</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_bits</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">16</span>
-</pre></div>
-</div>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> inputs:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_bits</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_int8</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">8</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_bits</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_bool</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">1</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <div class="line-block">
@@ -226,8 +195,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="result_type/static_result_type_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_result_type" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="as_ivy_dtype.html" class="btn btn-neutral float-right" title="as_ivy_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="is_int_dtype/static_is_int_dtype_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_is_int_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="is_float_dtype.html" class="btn btn-neutral float-right" title="is_float_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
