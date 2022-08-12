@@ -15,6 +15,7 @@ import ivy.functional.backends.torch as ivy_torch
                 set(ivy_np.valid_float_dtypes).intersection(
                     set(ivy_torch.valid_float_dtypes))),
         shape=helpers.get_shape(min_num_dims=1)
+        ret_axis_tuple=True
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
