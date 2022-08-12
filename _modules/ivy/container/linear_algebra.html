@@ -150,21 +150,6 @@
         <span class="n">map_nests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Examples</span>
-<span class="sd">        ------------------------</span>
-
-<span class="sd">        With :code:`ivy.Container` instance inputs:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5., 2.]), b=ivy.array([2., 1.]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 2.]))</span>
-<span class="sd">        &gt;&gt;&gt; z = x.matmul(y)</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array(39.),</span>
-<span class="sd">            b: ivy.array(8.)</span>
-<span class="sd">        }</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kw</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">conts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x2</span><span class="p">):</span>
@@ -356,10 +341,10 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container static method variant of ivy.cross.</span>
+<span class="sd">        ivy.Container static method variant of ivy.cross. </span>
 <span class="sd">        This method simply wraps the function, and so the docstring</span>
 <span class="sd">        for ivy.cross also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x1</span>
@@ -368,9 +353,9 @@
 <span class="sd">            second input array. Must be compatible with ``self``</span>
 <span class="sd">            (see :ref:`broadcasting`). Should have a numeric data type.</span>
 <span class="sd">        axis</span>
-<span class="sd">            the axis (dimension) of x1 and x2 containing the vectors for which to</span>
-<span class="sd">            compute the cross product.vIf set to -1, the function computes the</span>
-<span class="sd">            cross product for vectors defined by the last axis (dimension).</span>
+<span class="sd">            the axis (dimension) of x1 and x2 containing the vectors for which to </span>
+<span class="sd">            compute the cross product.vIf set to -1, the function computes the </span>
+<span class="sd">            cross product for vectors defined by the last axis (dimension). </span>
 <span class="sd">            Default: -1.</span>
 <span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
@@ -385,17 +370,17 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the element-wise products. The returned array must have</span>
 <span class="sd">            a data type determined by :ref:`type-promotion`.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With one :code:`ivy.Container` input:</span>
-
+<span class="sd">        </span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([9., 0., 3.])</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))</span>
 <span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_cross(x, y)</span>
@@ -404,9 +389,9 @@
 <span class="sd">            a: ivy.array([-3., 3., 9.]),</span>
 <span class="sd">            b: ivy.array([0., -6., 0.])</span>
 <span class="sd">        }</span>
-
+<span class="sd">        </span>
 <span class="sd">        With multiple :code:`ivy.Container` inputs:</span>
-
+<span class="sd">        </span>
 <span class="sd">        &gt;&gt;&gt; x = x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))</span>
 <span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_cross(x, y)</span>
@@ -440,10 +425,10 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.cross.</span>
-<span class="sd">        This method simply wraps the function, and so the docstring</span>
+<span class="sd">        ivy.Container instance method variant of ivy.cross. </span>
+<span class="sd">        This method simply wraps the function, and so the docstring </span>
 <span class="sd">        for ivy.cross also applies to this method with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -452,8 +437,8 @@
 <span class="sd">            second input array. Must be compatible with ``self``</span>
 <span class="sd">            (see :ref:`broadcasting`). Should have a numeric data type.</span>
 <span class="sd">        axis</span>
-<span class="sd">            the axis (dimension) of x1 and x2 containing the vectors for which to</span>
-<span class="sd">            compute (default: -1) the cross product.vIf set to -1, the function</span>
+<span class="sd">            the axis (dimension) of x1 and x2 containing the vectors for which to </span>
+<span class="sd">            compute (default: -1) the cross product.vIf set to -1, the function </span>
 <span class="sd">            computes the cross product for vectors defined by the last axis (dimension).</span>
 <span class="sd">            Default: -1.</span>
 <span class="sd">        key_chains</span>
@@ -469,13 +454,13 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
-
+<span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            an array containing the element-wise products. The returned array must have</span>
+<span class="sd">            an array containing the element-wise products. The returned array must have </span>
 <span class="sd">            a data type determined by :ref:`type-promotion`.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))</span>
@@ -654,40 +639,6 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container static method variant of ivy.matrix_norm.</span>
-<span class="sd">        This method simply wraps the function, and so the docstring for</span>
-<span class="sd">        ivy.matrix_norm also applies to this method with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x</span>
-<span class="sd">            Input array.</span>
-<span class="sd">        ord</span>
-<span class="sd">            Order of the norm. Default is 2.</span>
-<span class="sd">        keepdims</span>
-<span class="sd">            If this is set to True, the axes which are normed over are left in the</span>
-<span class="sd">            result as dimensions with size one. With this option the result will</span>
-<span class="sd">            broadcast correctly against the original x. Default is False.</span>
-<span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
-<span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
-<span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">            the inputs broadcast to.</span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            Matrix norm of the array at specified axes.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;matrix_norm&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
@@ -711,40 +662,6 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.matrix_norm.</span>
-<span class="sd">        This method simply wraps the function, and so the docstring for</span>
-<span class="sd">        ivy.matrix_norm also applies to this method with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            Input array.</span>
-<span class="sd">        ord</span>
-<span class="sd">            Order of the norm. Default is 2.</span>
-<span class="sd">        keepdims</span>
-<span class="sd">            If this is set to True, the axes which are normed over are left in the</span>
-<span class="sd">            result as dimensions with size one. With this option the result will</span>
-<span class="sd">            broadcast correctly against the original x. Default is False.</span>
-<span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
-<span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
-<span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
-<span class="sd">            the inputs broadcast to.</span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            Matrix norm of the array at specified axes.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_matrix_norm</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="nb">ord</span><span class="p">,</span>
@@ -937,8 +854,8 @@
 <span class="sd">        &gt;&gt;&gt; y = x.matrix_rank()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: ivy.array(2),</span>
-<span class="sd">            b: ivy.array(1)</span>
+<span class="sd">            a: ivy.array(2.),</span>
+<span class="sd">            b: ivy.array(1.)</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_matrix_rank</span><span class="p">(</span>
@@ -1380,7 +1297,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container static method variant of ivy.vector_norm.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring for</span>
 <span class="sd">        ivy.vector_norm also applies to this method with minimal changes.</span>
@@ -1429,11 +1346,11 @@
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -1               | 1./sum(1./abs(a))              |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
-<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | </span>
+<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | </span>
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -inf             | min(abs(a))                    |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
-<span class="sd">            | (int,float &lt; 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |</span>
+<span class="sd">            | (int,float &lt; 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
 
 <span class="sd">            Default: ``2``.</span>
@@ -1480,7 +1397,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container instance method variant of ivy.vector_norm.</span>
 <span class="sd">        This method simply wraps the function, and so the docstring for</span>
 <span class="sd">        ivy.vector_norm also applies to this method with minimal changes.</span>
@@ -1528,11 +1445,11 @@
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -1               | 1./sum(1./abs(a))              |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
-<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)/*/*2))   | </span>
+<span class="sd">            | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   | </span>
 <span class="sd">            +------------------+--------------------------------+</span>
 <span class="sd">            | -inf             | min(abs(a))                    |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
-<span class="sd">            | (int,float &lt; 1)  | sum(abs(a)/*/*ord)/*/*(1./ord) |</span>
+<span class="sd">            | (int,float &lt; 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |</span>
 <span class="sd">            +------------------+--------------------------------+</span>
 
 <span class="sd">            Default: ``2``.</span>

@@ -211,43 +211,14 @@
 <h1>try_else_none<a class="headerlink" href="#try-else-none" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.general.try_else_none">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">try_else_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#try_else_none"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.try_else_none" title="Permalink to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>Try and return the function, otherwise return None</dt><dd><p>if an exception was raised during function execution.</p>
-</dd>
-</dl>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">try_else_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#try_else_none"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.try_else_none" title="Permalink to this definition"></a></dt>
+<dd><p>Try and return the function, otherwise return None if an exception was raised
+during function execution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – Function to try and call and return.</p></li>
-<li><p><strong>args</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – list of arguments.</p></li>
-<li><p><strong>kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – dictionay of keyword arguments</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>Either the function itself or None if an exception was raised</em></p></li>
-<li><p><em>during function execution.</em></p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><strong>fn</strong> – Function to try and call and return.</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>with: if the function is executed without any exception
-&gt;&gt;&gt; x = ivy.array([1, 2, 3])
-&gt;&gt;&gt; y = ivy.array([4, 5, 6])
-&gt;&gt;&gt; z = ivy.try_else_none(ivy.add,x, y)
-&gt;&gt;&gt; print(z.__name__)
-add</p>
-<p>with: if the function is executed with an exception
-&gt;&gt;&gt; x = ivy.array([1, 2, 3])
-&gt;&gt;&gt; y = ‘hemant’
-&gt;&gt;&gt; z = ivy.try_else_none(ivy.add,x, y)
-&gt;&gt;&gt; print(z)
-None</p>
 </dd></dl>
 
 <div class="line-block">

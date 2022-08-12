@@ -217,14 +217,11 @@
 <h1>to_numpy<a class="headerlink" href="#to-numpy" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.general.to_numpy">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#to_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_numpy" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#to_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.to_numpy" title="Permalink to this definition"></a></dt>
 <dd><p>Converts an array into a numpy array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether to copy the array to a new address or not. Default is True. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
-</ul>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
@@ -236,11 +233,11 @@
 <li><p><em>————————–</em></p></li>
 <li><p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs</p></li>
 <li><p><em>&gt;&gt;&gt; x = ivy.array([-1, 0, 1])</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.to_numpy(x, copy=True)</em></p></li>
+<li><p><em>&gt;&gt;&gt; y = ivy.to_numpy(x)</em></p></li>
 <li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
 <li><p><em>[-1  0  1]</em></p></li>
 <li><p><em>&gt;&gt;&gt; x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.to_numpy(x, copy=True)</em></p></li>
+<li><p><em>&gt;&gt;&gt; y = ivy.to_numpy(x)</em></p></li>
 <li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
 <li><p><em>[[-1  0  1]</em></p></li>
 <li><p><em>[-1  0  1]</em></p></li>
