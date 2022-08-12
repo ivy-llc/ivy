@@ -2588,14 +2588,52 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x</span>
-<span class="sd">        The array to increment.</span>
+<span class="sd">        The input array to be incremented by the defined value.</span>
 <span class="sd">    val</span>
-<span class="sd">        The array to increment the variable with.</span>
+<span class="sd">        The value of increment.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The array following the in-place increment.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.3, 7., 0.],\</span>
+<span class="sd">                        [6.8, 8, 3.9],\</span>
+<span class="sd">                        [0., 10., 6.3]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.inplace_increment(x, 3.)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[ 8.3, 10.,  3.],</span>
+<span class="sd">       [ 9.8, 11.,  6.9],</span>
+<span class="sd">       [ 3., 13.,  9.3]])</span>
+
+<span class="sd">     With :code:`ivy.NativeArray` input:</span>
+<span class="sd">     &gt;&gt;&gt; x = ivy.native_array([10, 20, 30])</span>
+<span class="sd">     &gt;&gt;&gt; val = ivy.native_array([1, 2, 3])</span>
+<span class="sd">     &gt;&gt;&gt; y = ivy.inplace_increment(x, val)</span>
+<span class="sd">     &gt;&gt;&gt; print(y)</span>
+<span class="sd">     ivy.array([11, 22, 33])</span>
+
+<span class="sd">    With :code:`ivy.Container` input</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.inplace_increment(x, 2.5)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([2.5, 17.5, 32.5]),</span>
+<span class="sd">        b: ivy.array([2.5, 27.5, 52.5])</span>
+<span class="sd">    }</span>
+
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.inplace_increment(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0., 30., 60.]),</span>
+<span class="sd">        b: ivy.array([0., 50., 100.])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">inplace_increment</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
