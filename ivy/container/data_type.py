@@ -661,7 +661,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         >>> x = ivy.static_is_float_dtype(ivy.int64)
         >>> print(x)
-        True
+        False
 
         >>> x = ivy.static_is_float_dtype(ivy.int32)
         >>> print(x)
@@ -671,8 +671,8 @@ class ContainerWithDataTypes(ContainerBase):
         >>> print(x)
         False
 
-        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x
-        >>> print(arr)
+        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)
+        >>> print(arr.is_float_dtype())
         True
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
@@ -694,6 +694,7 @@ class ContainerWithDataTypes(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: ivy.Container = None,
     ) -> ivy.Container:
         """
@@ -736,7 +737,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         >>> x = ivy.is_float_dtype(ivy.int64)
         >>> print(x)
-        True
+        False
 
         >>> x = ivy.is_float_dtype(ivy.int32)
         >>> print(x)
@@ -746,15 +747,15 @@ class ContainerWithDataTypes(ContainerBase):
         >>> print(x)
         False
 
-        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x
-        >>> print(arr)
+        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)
+        >>> print(arr.is_float_dtype())
         True
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
         >>> print(x.a.dtype, x.b.dtype)
         float32 int32
         """
-        return self.static_is_int_dtype(
+        return self.static_is_float_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
