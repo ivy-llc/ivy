@@ -47,7 +47,7 @@ def test_torch_add(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="add",
+        fn_tree="add",
         rtol=1e-04,
         input=np.asarray(x[0], dtype=input_dtype[0]),
         other=np.asarray(x[1], dtype=input_dtype[1]),
@@ -89,7 +89,7 @@ def test_torch_tan(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="tan",
+        fn_tree="tan",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -128,7 +128,7 @@ def test_torch_abs(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="abs",
+        fn_tree="abs",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -167,7 +167,7 @@ def test_torch_cos(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="cos",
+        fn_tree="cos",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -206,7 +206,7 @@ def test_torch_sin(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="sin",
+        fn_tree="sin",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -245,7 +245,7 @@ def test_torch_acos(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="acos",
+        fn_tree="acos",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -362,7 +362,7 @@ def test_torch_arccos(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="arccos",
+        fn_tree="arccos",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -407,7 +407,7 @@ def test_torch_subtract(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="subtract",
+        fn_tree="subtract",
         input=np.asarray(x[0], dtype=input_dtype[0]),
         other=np.asarray(x[1], dtype=input_dtype[1]),
         alpha=alpha,
