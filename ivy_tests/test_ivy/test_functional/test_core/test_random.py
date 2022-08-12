@@ -61,8 +61,8 @@ def test_random_uniform(
         dtype=dtype,
         device=device,
     )
-    ret = helpers.flatten(ret=ret)
-    ret_gt = helpers.flatten(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
         assert ivy.all(u >= low) and ivy.all(u <= high)
         assert ivy.all(v >= low) and ivy.all(v <= high)
@@ -118,8 +118,8 @@ def test_random_normal(
         dtype=dtype,
         device=device,
     )
-    ret = helpers.flatten(ret=ret)
-    ret_gt = helpers.flatten(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
         assert u.dtype == v.dtype
 
@@ -188,8 +188,8 @@ def test_multinomial(
         replace=replace,
         device=device,
     )
-    ret = helpers.flatten(ret=ret)
-    ret_gt = helpers.flatten(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
         assert u.dtype == v.dtype
 
@@ -248,8 +248,8 @@ def test_randint(
         dtype=dtype,
         device=device,
     )
-    ret = helpers.flatten(ret=ret)
-    ret_gt = helpers.flatten(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
         assert ivy.all(u >= low) and ivy.all(u < high)
         assert ivy.all(v >= low) and ivy.all(v < high)
@@ -301,7 +301,7 @@ def test_shuffle(
         fn_name="shuffle",
         x=np.asarray(x, dtype=dtype),
     )
-    ret = helpers.flatten(ret=ret)
-    ret_gt = helpers.flatten(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
         assert ivy.all(ivy.sort(u, 0) == ivy.sort(v, 0))
