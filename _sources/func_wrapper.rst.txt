@@ -19,6 +19,7 @@ Func wrapper
    func_wrapper/from_zero_dim_arrays_to_float.rst
    func_wrapper/to_native_arrays_and_back.rst
    func_wrapper/infer_dtype.rst
+   func_wrapper/integer_array_to_float.rst
    func_wrapper/infer_device.rst
    func_wrapper/handle_out_argument.rst
    func_wrapper/handle_nestable.rst
