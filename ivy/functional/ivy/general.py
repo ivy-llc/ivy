@@ -1967,11 +1967,13 @@ def set_min_base(val: float) -> None:
     ivy._MIN_BASE = val
 
 
+@inputs_to_native_arrays
+@handle_nestable
 def stable_divide(
-    numerator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
-    denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
-    min_denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container] = None,
-) -> Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]:
+    numerator: Union[Number, ivy.Array, ivy.NativeArray],
+    denominator: Union[Number, ivy.Array, ivy.NativeArray],
+    min_denominator: Union[Number, ivy.Array, ivy.NativeArray] = None,
+) -> Union[Number, ivy.Array]:
     """Divide the numerator by the denominator, with min denominator added to the
     denominator for numerical stability.
 

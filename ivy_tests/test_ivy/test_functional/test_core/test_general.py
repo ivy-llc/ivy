@@ -1631,8 +1631,31 @@ def test_get_min_base():
 def test_set_min_base():
     return
 
-def test_stable_divide():
-    return
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="stable_divide"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_stable_divide(dtype_and_x, as_variable, num_positional_args, native_array, container, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name='stable_divide',
+        numerator=np.asarray(x[0], dtype=input_dtype[0]),
+        denominator=np.asarray(x[1], dtype=input_dtype[1]),
+        min_denominator=np.asarray(x[2], dtype=input_dtype[2])
+    )
 
 def test_stable_pow():
     return
@@ -1708,7 +1731,7 @@ def test_assert_supports_inplace(x_val_and_dtypes, as_variable, num_positional_a
         instance_method=True,
         fw=fw,
         fn_name='assert_supports_inplace',
-        x=ivy.array(x, dtype=dtype)
+        x=np.asarray(x, dtype=dtype)
     )
 
 def test_arg_info():
