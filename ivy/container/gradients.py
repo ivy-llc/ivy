@@ -44,7 +44,6 @@ class ContainerWithGradients(ContainerBase):
         --------
         With :code:`ivy.Container` input:
 
-        >>> ivy.set_backend('torch')
         >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([3., 4.]))
         >>> y = ivy.Container.static_variable(x)
         >>> y
@@ -52,7 +51,7 @@ class ContainerWithGradients(ContainerBase):
             a: ivy.array([1., 2.]),
             b: ivy.array([3., 4.])
         }
-        >>> ivy.unset_backend()
+
         """
         return ContainerBase.multi_map_in_static_method(
             "variable",
@@ -99,7 +98,6 @@ class ContainerWithGradients(ContainerBase):
         --------
         With :code:`ivy.Container` input:
 
-        >>> ivy.set_backend('jax')
         >>> x = ivy.Container(a=ivy.array([0.3, 1.]), b=ivy.array([-1., 2.2]))
         >>> y = x.variable()
         >>> y
@@ -107,7 +105,7 @@ class ContainerWithGradients(ContainerBase):
             a: ivy.array([0.3, 1.]),
             b: ivy.array([-1., 2.2])
         }
-        >>> ivy.unset_backend()
+
         """
         return self.static_variable(
             self,
@@ -162,8 +160,8 @@ class ContainerWithGradients(ContainerBase):
         --------
         With :code:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
-        >>> is_var = ivy.Container.static_is_variable(x)
+        >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
+        >>> is_var = ivy.Container.static_is_variable(x, exclusive=True)
         >>> print(is_var)
         {
             a: false,
@@ -172,14 +170,16 @@ class ContainerWithGradients(ContainerBase):
 
         With multiple :code:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),\
+                              b=ivy.array([0., -0.4, 8]))
         >>> exclusive = ivy.Container(a=False, b=True)
         >>> is_var = ivy.Container.static_is_variable(x, exclusive=exclusive)
         >>> print(is_var)
         {
-            a: false,
+            a: true,
             b: false
         }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "is_variable",
@@ -235,7 +235,7 @@ class ContainerWithGradients(ContainerBase):
         --------
         With :code:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
+        >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
         >>> is_var = x.is_variable(exclusive=True)
         >>> print(is_var)
         {
@@ -245,14 +245,16 @@ class ContainerWithGradients(ContainerBase):
 
         With multiple :code:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([2, -1, 0]), b=ivy.array([0., -0.4, 8]))
-        >>> exclusive = ivy.Container(a=True, b=True)
+        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),\
+                              b=ivy.array([0., -0.4, 8]))
+        >>> exclusive = ivy.Container(a=False, b=True)
         >>> is_var = x.is_variable(exclusive=exclusive)
         >>> print(is_var)
         {
-            a: false,
+            a: true,
             b: false
         }
+
         """
         return self.static_is_variable(
             self,
@@ -351,6 +353,162 @@ class ContainerWithGradients(ContainerBase):
             map_sequences=map_sequences,
         )
 
+    @staticmethod
+    def static_stop_gradient(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        preserve_type: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stop_gradient. This method simply
+        wraps the function, and so the docstring for ivy.stop_gradient also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Array or Container for which to stop the gradient.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        preserve_type
+            Whether to preserve the input type (ivy.Variable or ivy.Array),
+            otherwise an array is always returned. Default is True.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The same array x, but with no gradient information.
+        
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_stop_gradient(x, preserve_type=False)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                              b=ivy.array([3., 4., 5.]))
+        >>> ivy.Container.static_stop_gradient(x, preserve_type=True, out=x)
+        >>> print(x)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "stop_gradient",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            preserve_type=preserve_type,
+            out=out,
+        )
+
+    def stop_gradient(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        preserve_type: bool = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stop_gradient. This method simply
+        wraps the function, and so the docstring for ivy.stop_gradient also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container for which to stop the gradient.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        preserve_type
+            Whether to preserve the input type (ivy.Variable or ivy.Array),
+            otherwise an array is always returned. Default is True.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The same array x, but with no gradient information.
+        
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                              b=ivy.array([3., 4., 5.]))
+        >>> y = x.stop_gradient(preserve_type=False)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                              b=ivy.array([3., 4., 5.]))
+        >>> x.stop_gradient(preserve_type=True, out=x)
+        >>> print(x)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
+
+        """
+        return self.static_stop_gradient(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            preserve_type=preserve_type,
+            out=out,
+        )
+
     def adam_step(
         self: ivy.Container,
         mw: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -396,20 +554,56 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        with :code: `ivy.container` inputs:
+        With one :code:`ivy.Container` input:
 
         >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
-                         b=ivy.array([3., 4., 5.]))
+                                 b=ivy.array([3., 4., 5.]))
+        >>> mw = ivy.array([1., 4., 9.])
+        >>> vw = ivy.array([0.,])
+        >>> step = ivy.array([3.4])
+        >>> beta1 = 0.87
+        >>> beta2 = 0.976
+        >>> epsilon = 1e-5
+        >>> adam_step_delta = dcdw.adam_step(mw, vw, step, beta1=beta1, beta2=beta2,\
+                                             epsilon=epsilon)
+        >>> print(adam_step_delta)
+        ({
+            a: ivy.array([6.49e+04, 1.74e+01, 1.95e+01]),
+            b: ivy.array([2.02, 4.82, 8.17])
+        }, {
+            a: ivy.array([0.87, 3.61, 8.09]),
+            b: ivy.array([1.26, 4., 8.48])
+        }, {
+            a: ivy.array([0., 0.024, 0.096]),
+            b: ivy.array([0.216, 0.384, 0.6])
+        })
+        
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                                b=ivy.array([3., 4., 5.]))
         >>> mw = ivy.Container(a=ivy.array([0., 0., 0.]),\
-                               b=ivy.array([0., 0., 0.]))
+                            b=ivy.array([0., 0., 0.]))
         >>> vw = ivy.Container(a=ivy.array([0.,]),\
-                               b=ivy.array([0.,]))
-        >>> step = ivy.array(1)
-        >>> adam_step_delta = dcdw.adam_step(mw, vw, step, beta1, beta2, epsilon)
-        {
-            a: (list[3], <class ivy.array.Array> shape=[3]),
-            b: (list[3], <class ivy.array.Array> shape=[3])
-        }
+                            b=ivy.array([0.,]))
+        >>> step = ivy.array([3.4])
+        >>> beta1 = 0.87
+        >>> beta2 = 0.976
+        >>> epsilon = 1e-5
+        >>> adam_step_delta = dcdw.adam_step(mw, vw, step, beta1=beta1, beta2=beta2,\
+                                             epsilon=epsilon)
+        >>> print(adam_step_delta)
+        ({
+            a: ivy.array([0., 0.626, 0.626]),
+            b: ivy.array([0.626, 0.626, 0.626])
+        }, {
+            a: ivy.array([0., 0.13, 0.26]),
+            b: ivy.array([0.39, 0.52, 0.65])
+        }, {
+            a: ivy.array([0., 0.024, 0.096]),
+            b: ivy.array([0.216, 0.384, 0.6])
+        })
+
         """
         return ivy.adam_step(
             self, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon, out=out
@@ -448,6 +642,47 @@ class ContainerWithGradients(ContainerBase):
         -------
         ret
             The new function weights ws_new, following the optimizer updates.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+        
+        >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                            b=ivy.array([3., 4., 5.]))
+        >>> effective_grad = ivy.array([0., 0., 0.])
+        >>> lr = 3e-4
+        >>> ws_new = w.optimizer_update(effective_grad, lr)
+        >>> print(ws_new)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+        
+        >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                              b=ivy.array([3., 4., 5.]))
+        >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                                           b=ivy.array([0., 0., 0.]))
+        >>> lr = 3e-4
+        >>> ws_new = w.optimizer_update(effective_grad, lr, out=w)
+        >>> print(w)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
+        
+        >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                            b=ivy.array([3., 4., 5.]))
+        >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
+                                        b=ivy.array([0., 0., 0.]))
+        >>> lr = ivy.array([3e-4])
+        >>> ws_new = w.optimizer_update(effective_grad, lr, stop_gradients=False)
+        >>> print(ws_new)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
 
         """
         return ivy.optimizer_update(
@@ -502,32 +737,33 @@ class ContainerWithGradients(ContainerBase):
 
         Examples
         --------
-        With :code: `ivy.container` inputs:
+        With one :code:`ivy.Container` inputs:
+
+        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([3.48, 5.72, 1.98]))
+        >>> dcdw = ivy.array([0.5, 0.2, 0.1])
+        >>> lr = ivy.array(0.3)
+        >>> w_new = w.gradient_descent_update(dcdw, lr)
+        >>> print(w_new)
+        {
+            a: ivy.array([0.85, 1.94, 2.97]),
+            b: ivy.array([3.33, 5.66, 1.95])
+        }
+        
+        With multiple :code:`ivy.Container` inputs:
 
         >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
                               b=ivy.array([3.48, 5.72, 1.98]))
         >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
                                  b=ivy.array([2., 3.42, 1.69]))
         >>> lr = ivy.array(0.3)
-        >>> NewWeights = w.gradient_descent_update(dcdw, lr, inplace=False)
-        >>> print(NewWeights)
-            {
-                a: ivy.array([0.85, 1.94, 2.97]),
-                b: ivy.array([2.88,4.69,1.47])
-            }
+        >>> w_new = w.gradient_descent_update(dcdw, lr)
+        >>> print(w_new)
+        {
+            a: ivy.array([0.85, 1.94, 2.97]),
+            b: ivy.array([2.88, 4.69, 1.47])
+        }
 
-        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
-                              b=ivy.array([3.48, 5.72, 1.98]))
-        >>> dcdw = ivy.Container(a=ivy.array([0.5, 0.2, 0.1]),\
-                                 b=ivy.array([2., 3.42, 1.69]))
-        >>> lr = ivy.Container(a=ivy.array(0.3),\
-                                b=ivy.array(0.1))
-        >>> NewWeights = w.gradient_descent_update(dcdw, lr, inplace=False)
-        >>> print(NewWeights)
-            {
-                a: ivy.array([0.85, 1.94, 2.97]),
-                b: ivy.array([3.28, 5.38, 1.81])
-            }
         """
         return ivy.gradient_descent_update(
             self,
@@ -714,6 +950,59 @@ class ContainerWithGradients(ContainerBase):
         ret
             The new function weights ws_new, following the LAMB updates.
 
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+        >>> w = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))
+        >>> dcdw = ivy.array([3., 4., 5.])
+        >>> mw_tm1 = ivy.array([0., 0., 0.])
+        >>> vw_tm1 = ivy.array([0.])
+        >>> lr = ivy.array(1.)
+        >>> step = ivy.array([2])
+        >>> new_weights = w.lamb_update(dcdw, mw_tm1, vw_tm1, lr, step)
+        >>> print(new_weights)
+        ({
+            a: ivy.array([1., 2., 3.]),
+            b: ivy.array([4., 5., 6.])
+        }, ivy.array([0.3, 0.4, 0.5]), ivy.array([1.01, 1.01, 1.02]))
+
+        With multiple :code:`ivy.Container` inputs:
+        
+        >>> w = ivy.Container(a=ivy.array([1.,3.,5.]),\
+                              b=ivy.array([3.,4.,2.]))
+        >>> dcdw = ivy.Container(a=ivy.array([0.2,0.3,0.6]),\
+                                 b=ivy.array([0.6,0.4,0.7]))
+        >>> mw_tm1 = ivy.Container(a=ivy.array([0.,0.,0.]),\
+                                   b=ivy.array([0.,0.,0.]))
+
+        >>> vw_tm1 = ivy.Container(a=ivy.array([0.,]),\
+                                   b=ivy.array([0.,]))
+        >>> step = ivy.array([3.4])
+        >>> beta1 = 0.9
+        >>> beta2 = 0.999
+        >>> epsilon = 1e-7
+        >>> max_trust_ratio = 10
+        >>> decay_lambda = 0
+        >>> stop_gradients = True
+        >>> lr = ivy.array(0.5)
+        >>> new_weights = w.lamb_update(dcdw, lr, mw_tm1, vw_tm1, step, beta1=beta1,\
+                                        beta2=beta2, epsilon=epsilon,\
+                                        max_trust_ratio=max_trust_ratio,\
+                                        decay_lambda=decay_lambda,\
+                                        stop_gradients=stop_gradients)
+        >>> print(new_weights)
+        ({
+            a: ivy.array([-0.708, 1.29, 3.29]),
+            b: ivy.array([1.45, 2.45, 0.445])
+        }, {
+            a: ivy.array([0.02, 0.03, 0.06]),
+            b: ivy.array([0.06, 0.04, 0.07])
+        }, {
+            a: ivy.array([4.0e-05, 9.0e-05, 3.6e-04]),
+            b: ivy.array([0.00036, 0.00016, 0.00049])
+        })
+
         """
         return ivy.lamb_update(
             self,
@@ -728,111 +1017,5 @@ class ContainerWithGradients(ContainerBase):
             max_trust_ratio=max_trust_ratio,
             decay_lambda=decay_lambda,
             stop_gradients=stop_gradients,
-            out=out,
-        )
-
-    @staticmethod
-    def static_stop_gradient(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        preserve_type: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.stop_gradient. This method simply
-        wraps the function, and so the docstring for ivy.stop_gradient also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            Array or Container for which to stop the gradient.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            The same array x, but with no gradient information.
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "stop_gradient",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            preserve_type=preserve_type,
-            out=out,
-        )
-
-    def stop_gradient(
-        self: ivy.Container,
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        preserve_type: bool = True,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.stop_gradient. This method simply
-        wraps the function, and so the docstring for ivy.stop_gradient also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Container for which to stop the gradient.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            The same array x, but with no gradient information.
-        """
-        return self.static_stop_gradient(
-            self,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            preserve_type=preserve_type,
             out=out,
         )

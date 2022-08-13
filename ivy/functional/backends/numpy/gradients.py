@@ -39,25 +39,54 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, None, *rest)
 
 
+def value_and_grad(func):
+    logging.warning(
+        "NumPy does not support autograd, 'value_and_grad' "
+        "has no effect on the array, as gradients are not supported in the first place."
+    )
+
+    def grad_fn(xs):
+        grads = ivy.nested_map(xs, lambda x: ivy.zeros_like(x), include_derived=True)
+        y = func(xs)
+        y = ivy.to_ivy(y)
+        return y, grads
+
+    return grad_fn
+
+
+def jac(func):
+    logging.warning(
+        "NumPy does not support autograd, 'jac' "
+        "has no effect on the array, as gradients are not supported in the first place."
+    )
+
+    def grad_fn(xs):
+        jacobian = ivy.nested_map(xs, lambda x: ivy.zeros_like(x), include_derived=True)
+        y = func(xs)
+        y = ivy.to_ivy(y)
+        return jacobian
+
+    return grad_fn
+
+
+def grad(func):
+    logging.warning(
+        "NumPy does not support autograd, 'grad' "
+        "has no effect on the array, as gradients are not supported in the first place."
+    )
+
+    def grad_fn(xs):
+        grad = ivy.nested_map(xs, lambda x: ivy.zeros_like(x), include_derived=True)
+        y = func(xs)
+        y = ivy.to_ivy(y)
+        return grad
+
+    return grad_fn
+
+
 def stop_gradient(x, preserve_type=True, *, out=None):
     logging.warning(
         "NumPy does not support autograd, 'stop_gradient' "
         "has no effect on the array, as gradients are not supported in the first place."
     )
     return x
-
-
-def jac(func):
-    logging.warning(
-        "NumPy does not support autograd, 'jac'"
-        "returns None in place of function gradients."
-    )
-    return None
-
-
-def grad(func):
-    logging.warning(
-        "NumPy does not support autograd, 'grad'"
-        "returns None in place of function gradients."
-    )
-    return None
