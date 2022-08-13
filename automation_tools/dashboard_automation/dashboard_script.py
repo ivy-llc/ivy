@@ -6,7 +6,7 @@ import pandas as pd
 from github import Github
 from typing import Dict, Union
 
-url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master"
+url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&per_page=100"
 
 
 headers = {
