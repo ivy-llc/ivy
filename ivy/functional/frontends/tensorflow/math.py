@@ -30,7 +30,7 @@ def subtract(x, y, name=None):
 subtract.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
-def logical_xor(x, y, name='LogicalXor'):
+def logical_xor(x, y, name="LogicalXor"):
     return ivy.logical_xor(x, y)
 
 
@@ -42,3 +42,12 @@ def divide(x, y, name=None):
 
 
 divide.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def negative(x, name=None):
+    return ivy.negative(x)
+
+
+negative.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64")
+}

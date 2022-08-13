@@ -320,13 +320,6 @@ def mx_call(func, *args, **kwargs):
 _calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]
 
 
-def assert_compilable(fn):
-    try:
-        ivy.compile(fn)
-    except Exception as e:
-        raise e
-
-
 # function that trims white spaces from docstrings
 def trim(*, docstring):
     """Trim function from PEP-257"""
@@ -365,6 +358,23 @@ def trim(*, docstring):
 def docstring_examples_run(
     *, fn, from_container=False, from_array=False, num_sig_fig=3
 ):
+    """Performs docstring tests for a given function.
+
+    Parameters
+    ----------
+    fn
+        Callable function to be tested.
+    from_container
+        if True, check docstring of the function as a method of an Ivy Container.
+    from_array
+        if True, check docstring of the function as a method of an Ivy Array.
+    num_sig_fig
+        Number of significant figures to check in the example.
+
+    Returns
+    -------
+    None if the test passes, else marks the test as failed.
+    """
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
@@ -500,40 +510,8 @@ def docstring_examples_run(
 
 
 def var_fn(x, *, dtype=None, device=None):
+    """Returns x as an Ivy Variable wrapping an Ivy Array with given dtype and device"""
     return ivy.variable(ivy.array(x, dtype=dtype, device=device))
-
-
-def exclude(*, exclusion_list):
-    global _excluded
-    _excluded += list(set(exclusion_list) - set(_excluded))
-
-
-def frameworks():
-    return list(
-        set(
-            [
-                ivy_fw()
-                for fw_str, ivy_fw in _ivy_fws_dict.items()
-                if ivy_fw() is not None and fw_str not in _excluded
-            ]
-        )
-    )
-
-
-def calls():
-    return [
-        call
-        for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
-        if ivy_fw() is not None and fw_str not in _excluded
-    ]
-
-
-def f_n_calls():
-    return [
-        (ivy_fw(), call)
-        for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
-        if ivy_fw() is not None and fw_str not in _excluded
-    ]
 
 
 @st.composite
@@ -591,6 +569,26 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
 def assert_all_close(
     ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
+    """Matches the ret_np and ret_from_np inputs element-by-element to ensure that they
+    are the same.
+
+    Parameters
+    ----------
+    ret_np
+        Return from the framework to test. Ivy Container or Numpy Array.
+    ret_from_np
+        Return from the ground truth framework. Ivy Container or Numpy Array.
+    rtol
+        Relative Tolerance Value.
+    atol
+        Absolute Tolerance Value.
+    ground_truth_backend
+        Ground Truth Backend Framework.
+
+    Returns
+    -------
+    None if the test passes, else marks the test as failed.
+    """
     assert ret_np.dtype is ret_from_np.dtype, (
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
@@ -609,25 +607,31 @@ def assert_all_close(
 
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
+    """Splits the kwargs into args and kwargs, with the first num_positional_args ported
+    to args.
+    """
     args = [v for v in list(kwargs.values())[:num_positional_args]]
     kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_positional_args:]}
     return args, kwargs
 
 
 def list_of_length(*, x, length):
+    """Returns a random list of the given length from elements in x."""
     return st.lists(x, min_size=length, max_size=length)
 
 
 def as_cont(*, x):
+    """Returns x as an Ivy Container, containing x at all its leaves."""
     return ivy.Container({"a": x, "b": {"c": x, "d": x}})
 
 
 def as_lists(*args):
+    """Changes the elements in args to be of type list."""
     return (a if isinstance(a, list) else [a] for a in args)
 
 
 def flatten_fw(*, ret, fw):
-    # flatten the return
+    """Returns a flattened numpy version of the arrays in ret for a given framework."""
     if not isinstance(ret, tuple):
         ret = (ret,)
     if fw == "jax":
@@ -654,6 +658,7 @@ def flatten_fw(*, ret, fw):
 
 
 def flatten(*, ret):
+    """Returns a flattened numpy version of the arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
     ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
@@ -668,6 +673,8 @@ def flatten_and_to_np(*, ret):
 
 
 def get_ret_and_flattened_np_array(func, *args, **kwargs):
+    """Runs func with args and kwargs, and returns the result along with its flattened
+    version."""
     ret = func(*args, **kwargs)
     return ret, flatten_and_to_np(ret=ret)
 
@@ -680,6 +687,27 @@ def value_test(
     atol=1e-6,
     ground_truth_backend="TensorFlow",
 ):
+    """Performs a value test for matching the arrays in ret_np_flat and
+    ret_from_np_flat.
+
+    Parameters
+    ----------
+    ret_np_flat
+        A list (flattened) containing Numpy arrays. Return from the framework to test.
+    ret_from_np_flat
+        A list (flattened) containing Numpy arrays. Return from the ground truth
+        framework.
+    rtol
+        Relative Tolerance Value.
+    atol
+        Absolute Tolerance Value.
+    ground_truth_backend
+        Ground Truth Backend Framework.
+
+    Returns
+    -------
+    None if the value test passes, else marks the test as failed.
+    """
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_np_from_gt_flat) != list:
@@ -791,7 +819,23 @@ def gradient_test(
 
 
 def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
-    # check for unsupported dtypes
+    """Checks whether a function does not support the input data types or the output
+    data type.
+
+    Parameters
+    ----------
+    fn
+        The function to check.
+    input_dtypes
+        data-types of the input arguments and keyword-arguments.
+    all_as_kwargs_np
+        All arguments in Numpy Format, to check for the presence of dtype argument.
+
+    Returns
+    -------
+    True if the function does not support the given input or output data types, False
+    otherwise.
+    """
     test_unsupported = False
     unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
     supported_dtypes_fn = ivy.function_supported_dtypes(fn)
@@ -819,7 +863,21 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
 
 
 def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
-    # check for unsupported dtypes
+    """Checks whether a function does not support a given device.
+
+    Parameters
+    ----------
+    fn
+        The function to check.
+    input_device
+        The backend device.
+    all_as_kwargs_np
+        All arguments in Numpy Format, to check for the presence of dtype argument.
+
+    Returns
+    -------
+    True if the function does not support the given device, False otherwise.
+    """
     test_unsupported = False
     unsupported_devices_fn = ivy.function_unsupported_devices(fn)
     supported_devices_fn = ivy.function_supported_devices(fn)
@@ -843,7 +901,24 @@ def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
 
 
 def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwargs_np):
-    # check for unsupported dtypes
+    """Checks whether a function does not support a given device or data types.
+
+    Parameters
+    ----------
+    fn
+        The function to check.
+    device
+        The backend device to check.
+    input_dtypes
+        data-types of the input arguments and keyword-arguments.
+    all_as_kwargs_np
+        All arguments in Numpy Format, to check for the presence of dtype argument.
+
+    Returns
+    -------
+    True if the function does not support either the device or any data type, False
+    otherwise.
+    """
     test_unsupported = False
     unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
     supported_devices_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)
@@ -902,6 +977,29 @@ def create_args_kwargs(
     native_array_flags=None,
     container_flags=None,
 ):
+    """Creates arguments and keyword-arguments for the function to test.
+
+    Parameters
+    ----------
+    args_np
+        A dictionary of arguments in Numpy.
+    kwargs_np
+        A dictionary of keyword-arguments in Numpy.
+    input_dtypes
+        data-types of the input arguments and keyword-arguments.
+    as_variable_flags
+        A list of booleans. if True for a corresponding input argument, it is called as
+        an Ivy Variable.
+    native_array_flags
+        if not None, the corresponding argument is called as a Native Array.
+    container_flags
+        if not None, the corresponding argument is called as an Ivy Container.
+
+    Returns
+    -------
+    Arguments, Keyword-arguments, number of arguments, and indexes on arguments and
+    keyword-arguments.
+    """
     # extract all arrays from the arguments and keyword arguments
     args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
@@ -969,6 +1067,17 @@ def create_args_kwargs(
 
 
 def test_unsupported_function(*, fn, args, kwargs):
+    """Tests a function with an unsupported datatype to raise an exception.
+
+    Parameters
+    ----------
+    fn
+        callable function to test.
+    args
+        arguments to the function.
+    kwargs
+        keyword-arguments to the function.
+    """
     try:
         fn(*args, **kwargs)
         assert False
@@ -1445,7 +1554,7 @@ def test_frontend_function(
     native_array_flags: Union[bool, List[bool]],
     fw: str,
     frontend: str,
-    fn_name: str,
+    fn_tree: str,
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
@@ -1473,8 +1582,8 @@ def test_frontend_function(
         current backend (framework).
     frontend
         current frontend (framework).
-    fn_name
-        name of the function to test.
+    fn_tree
+        Path to function in frontend framework namespace.
     rtol
         relative tolerance value.
     atol
@@ -1515,10 +1624,10 @@ def test_frontend_function(
     ]
 
     # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
-    *frontend_submods, fn_name = fn_name.split(".")
+    *frontend_submods, fn_tree = fn_tree.split(".")
 
     # check for unsupported dtypes in backend framework
-    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
+    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
     test_unsupported = check_unsupported_dtype(
         fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
@@ -1555,7 +1664,7 @@ def test_frontend_function(
         args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
 
     # frontend function
-    frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_name]
+    frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
 
     # run from the Ivy API directly
     if test_unsupported:
@@ -1600,7 +1709,7 @@ def test_frontend_function(
     ivy.set_backend(frontend)
     try:
         # check for unsupported dtypes in frontend framework
-        function = getattr(ivy.functional.frontends.__dict__[frontend], fn_name)
+        function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
         test_unsupported = check_unsupported_dtype(
             fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
         )
@@ -1627,12 +1736,12 @@ def test_frontend_function(
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
         if test_unsupported:
             test_unsupported_function(
-                fn=frontend_fw.__dict__[fn_name],
+                fn=frontend_fw.__dict__[fn_tree],
                 args=args_frontend,
                 kwargs=kwargs_frontend,
             )
             return
-        frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
+        frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
 
         # tuplify the frontend return
         if not isinstance(frontend_ret, tuple):
@@ -1677,6 +1786,7 @@ def array_dtypes(
     shared_dtype=False,
 ):
     """Draws a list of data types.
+
     Parameters
     ----------
     draw
@@ -1688,6 +1798,7 @@ def array_dtypes(
         universe of available data types.
     shared_dtype
         if True, all data types in the list are same.
+
     Returns
     -------
     A strategy that draws a list.
@@ -1718,6 +1829,7 @@ def array_bools(
     num_arrays=st.shared(ints(min_value=1, max_value=4), key="num_arrays"),
 ):
     """Draws a boolean list of a given size.
+
     Parameters
     ----------
     draw
@@ -1725,6 +1837,7 @@ def array_bools(
         data-set (ex. list).
     num_arrays
         size of the list.
+
     Returns
     -------
     A strategy that draws a list.
