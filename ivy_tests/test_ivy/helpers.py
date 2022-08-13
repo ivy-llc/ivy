@@ -2784,6 +2784,7 @@ def get_axis(
     unique=True,
     min_size=1,
     max_size=None,
+    ret_tuple=False,
 ):
     """Draws one or more axis for the given shape.
 
@@ -2791,7 +2792,7 @@ def get_axis(
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
+        data-set (ex. list)
     shape
         shape of the array as a tuple, or a hypothesis strategy from which the shape
         will be drawn
@@ -2807,8 +2808,11 @@ def get_axis(
         axes drawn
     max_size
         int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
-        axes drawn.
-        If None and unique is True, then it is set to the number of axes in the shape
+        axes drawn; if None and unique is True, then it is set to the number of axes
+        in the shape
+    ret_tuple
+        boolean; if False, randomly draw both integers and List[int]; If True, draw
+        only List[int] as tuple[int]
 
     Returns
     -------
@@ -2870,6 +2874,8 @@ def get_axis(
                 return ele
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))
+        axis = tuple(axis)
+    if ret_tuple is True:
         axis = tuple(axis)
     return axis
 
