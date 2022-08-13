@@ -2818,14 +2818,6 @@ def get_axis(
             axis = draw(
                 st.just(0) | st.lists(st.just(0), min_size=min_size, max_size=max_size)
             )
-        elif just_tuple = True:
-            axis = draw(
-                st.lists(
-                    st.integers(-axes, axes - 1),
-                    min_size=min_size,
-                    max_size=max_size,
-                    unique_by=unique_by,
-                )
         else:
             axis = draw(
                 ints(min_value=-axes, max_value=axes - 1)
