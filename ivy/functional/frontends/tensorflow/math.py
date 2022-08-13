@@ -51,3 +51,13 @@ def negative(x, name=None):
 negative.unsupported_dtypes = {
     "torch": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64")
 }
+
+
+def log_sigmoid(x, name=None):
+    return -ivy.softplus(-x)
+
+
+log_sigmoid.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16", "float32", "float64"),
+}
