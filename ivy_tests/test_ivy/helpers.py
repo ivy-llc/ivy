@@ -2496,7 +2496,7 @@ def get_axis(
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
-    if ret_tuple = True:
+    if ret_tuple == True:
         axis = tuple(axis)
     return axis
 
