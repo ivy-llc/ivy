@@ -608,7 +608,8 @@ def assert_all_close(
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
     """Splits the kwargs into args and kwargs, with the first num_positional_args ported
-    to args."""
+    to args.
+    """
     args = [v for v in list(kwargs.values())[:num_positional_args]]
     kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_positional_args:]}
     return args, kwargs
