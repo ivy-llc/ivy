@@ -1,7 +1,7 @@
 name: test_dashboard
 on:
   schedule:
-    - cron: "*/20 * * * *"
+    - cron: "* */6 * * *"
 jobs:
   trigger-dashboard-script:
     name: Trigger Dashboard
@@ -25,6 +25,8 @@ jobs:
              requests
              emoji
              pandas
+             tabulate
+             PyGithub
 
       - name: Run Dashboard file
         env:
