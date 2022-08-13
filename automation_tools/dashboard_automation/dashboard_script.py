@@ -4,10 +4,9 @@ import json
 import emoji
 import pandas as pd
 from github import Github
-
 from typing import Dict, Union
 
-url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&status=completed&per_page=100&page=2"
+url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master"
 
 
 headers = {
@@ -107,7 +106,7 @@ def get_matrix_job_data(token):
                 if submodule not in stateful_dict:
                     stateful_dict[submodule] = []
                 stateful_dict[submodule].append(
-                    (backend, make_clickable(info["html_url"], conclusion))
+                    (backend, make_clickable(info["html_url"], conclusion)))
 
     return (functional_core_dict, functional_nn_dict, stateful_dict)
 
