@@ -37,7 +37,7 @@ class ArrayWithGradients(abc.ABC):
         """
         return ivy.variable(self)
 
-    def is_variable(self: ivy.Array, exclusive: bool = False) -> bool:
+    def is_variable(self: ivy.Array, /, *, exclusive: bool = False) -> bool:
         """
         ivy.Array instance method variant of ivy.is_variable. This method simply wraps
         the function, and so the docstring for ivy.is_variable also applies to this
@@ -63,12 +63,12 @@ class ArrayWithGradients(abc.ABC):
         With :code:`ivy.Array` input:
 
         >>> x = ivy.array([[2], [3], [5]])
-        >>> is_var = x.is_variable(True)
+        >>> is_var = x.is_variable(exclusive=True)
         >>> print(is_var)
         False
 
         """
-        return ivy.is_variable(self, exclusive)
+        return ivy.is_variable(self, exclusive=exclusive)
 
     def variable_data(self: ivy.Array) -> bool:
         """

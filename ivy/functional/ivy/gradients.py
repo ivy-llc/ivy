@@ -213,7 +213,9 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
 
 @inputs_to_native_arrays
 @handle_nestable
-def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
+def is_variable(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
+) -> bool:
     """Determines whether the input is a variable or not.
 
     Parameters
@@ -245,7 +247,7 @@ def is_variable(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -
     True
 
     >>> x = ivy.array([[2], [3], [5]])
-    >>> is_var = ivy.is_variable(x, True)
+    >>> is_var = ivy.is_variable(x, exclusive=True)
     >>> print(is_var)
     False
 
