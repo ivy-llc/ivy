@@ -1804,7 +1804,7 @@ def match_kwargs(
         kwargs: dict,
         *receivers: Iterable[Callable],
         allow_duplicates: bool = False
-) -> Union[list[dict], dict]:
+) -> Union[List[dict], dict]:
     """Match keyword arguments to either class or function receivers.
 
     Parameters
