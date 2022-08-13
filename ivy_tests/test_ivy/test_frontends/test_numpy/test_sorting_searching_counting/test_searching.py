@@ -80,6 +80,6 @@ def test_numpy_nonzero(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="nonzero",
+        fn_tree="nonzero",
         a=np.asarray(a, dtype=dtype),
     )
