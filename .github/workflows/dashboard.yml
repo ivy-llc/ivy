@@ -34,4 +34,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
             cd ivy/automation_tools/dashboard_automation
-            python3 dashboard_script.py "$GITHUB_TOKEN"
+            python3 tests_dashboard_script.py "$GITHUB_TOKEN"
