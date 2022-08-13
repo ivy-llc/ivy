@@ -301,3 +301,4 @@ def test_jax_lax_acos(
         fn_name="lax.acos",
         x=np.asarray(x, dtype=input_dtype),
     )
+
