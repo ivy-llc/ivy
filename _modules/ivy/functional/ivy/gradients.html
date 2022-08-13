@@ -342,7 +342,9 @@
 
 <div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../../functional/ivy/gradients/is_variable/is_variable_functional.html#ivy.functional.ivy.gradients.is_variable">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
 <span class="nd">@handle_nestable</span>
-<span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determines whether the input is a variable or not.</span>
 
 <span class="sd">    Parameters</span>
@@ -374,7 +376,7 @@
 <span class="sd">    True</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[2], [3], [5]])</span>
-<span class="sd">    &gt;&gt;&gt; is_var = ivy.is_variable(x, True)</span>
+<span class="sd">    &gt;&gt;&gt; is_var = ivy.is_variable(x, exclusive=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(is_var)</span>
 <span class="sd">    False</span>
 

@@ -421,7 +421,7 @@ inputs broadcast to.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.gradients.is_variable">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">is_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/gradients.html#is_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.is_variable" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">is_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/gradients.html#is_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.is_variable" title="Permalink to this definition"></a></dt>
 <dd><p>Determines whether the input is a variable or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -455,7 +455,7 @@ the same for general arrays. Default is False.</p></li>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">is_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">is_var</span><span class="p">)</span>
 <span class="go">False</span>
 </pre></div>
