@@ -11,6 +11,31 @@ from ivy.container.base import ContainerBase
 
 # noinspection PyMissingConstructor
 class ContainerWithManipulation(ContainerBase):
+    @staticmethod
+    def static_concat(
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        axis: Optional[int] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "concat",
+            xs,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def concat(
         self: ivy.Container,
         xs: Union[
@@ -21,31 +46,17 @@ class ContainerWithManipulation(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_nests: bool = False,
+        map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        conts = [self]
-        arrays = [None]
-        for x in xs:
-            if ivy.is_ivy_container(x):
-                conts.append(x)
-                arrays.append(None)
-            else:
-                arrays.append(x)
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs_, _: ivy.concat(
-                    xs=[a if ivy.exists(a) else xs_.pop(0) for a in arrays], axis=axis
-                )
-                if ivy.is_array(xs_[0])
-                else xs_,
-                conts,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_nests=map_nests,
-            ),
+    ):
+        return self.static_concat(
+            [self] + xs,
+            axis,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
             out=out,
         )
 

@@ -161,6 +161,41 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
+def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Calls the function, and then converts all 0 dimensional array instances in
+        the function to float numbers if out argument is not provided.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with 0 dimensional arrays as float numbers.
+        """
+        # call unmodified function
+        ret = fn(*args, **kwargs)
+        # get out arg index
+        out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
+        # check if out is None or out is not present in args and kwargs.
+        out_args = out_arg_pos < len(args) and args[out_arg_pos] is None
+        out_kwargs = "out" in kwargs and kwargs["out"] is None
+        if ret.shape == () and (out_args or out_kwargs):
+            return float(ret)
+        # convert to float from 0 dim
+        return ret
+
+    new_fn.zero_dim_arrays_to_float = True
+    return new_fn
+
+
 def to_native_arrays_and_back(fn: Callable) -> Callable:
     """
     Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
@@ -203,6 +238,55 @@ def infer_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=dtype, **kwargs)
 
     new_fn.infer_dtype = True
+    return new_fn
+
+
+def integer_array_to_float(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Promotes all the integer array inputs passed to the function both
+        as positional or keyword arguments to the default float dtype.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with integer array arguments
+            promoted to default float dtype.
+
+        """
+        if args:
+
+            args = list(args)
+            for i in range(len(args)):
+                if ivy.is_array(args[i]):
+                    if ivy.is_int_dtype(args[i].dtype):
+                        is_native = ivy.is_native_array(args[i])
+                        args[i] = ivy.asarray(args[i], dtype=ivy.default_float_dtype())
+                        if is_native:
+                            args[i] = ivy.to_native(args[i])
+
+            args = tuple(args)
+        if kwargs:
+            for i in kwargs:
+                if ivy.is_array(kwargs[i]):
+                    if ivy.is_int_dtype(kwargs[i].dtype):
+                        is_native = ivy.is_native_array(kwargs[i])
+                        kwargs[i] = ivy.asarray(
+                            kwargs[i], dtype=ivy.default_float_dtype()
+                        )
+                        if is_native:
+                            kwargs[i] = ivy.to_native(kwargs[i])
+        return fn(*args, **kwargs)
+
+    new_fn.integer_array_to_float = True
     return new_fn
 
 
@@ -359,7 +443,11 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
     """
     if key == "linalg":
         for linalg_k, linalg_v in to_wrap.__dict__.items():
-            if isinstance(linalg_v, FunctionType) and linalg_k != "namedtuple":
+            if (
+                isinstance(linalg_v, FunctionType)
+                and linalg_k != "namedtuple"
+                and not linalg_k.startswith("_")
+            ):
                 to_wrap.__dict__[linalg_k] = _wrap_function(
                     linalg_k, linalg_v, ivy.__dict__[linalg_k]
                 )
@@ -375,6 +463,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         for attr in [
             "infer_device",
             "infer_dtype",
+            "integer_array_to_float",
             "outputs_to_ivy_arrays",
             "inputs_to_native_arrays",
             "inputs_to_ivy_arrays",
