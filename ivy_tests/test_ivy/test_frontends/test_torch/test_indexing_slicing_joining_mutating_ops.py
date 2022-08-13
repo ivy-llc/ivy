@@ -4,6 +4,8 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
 
 
@@ -77,4 +79,47 @@ def test_torch_cat(
         tensors=xs,
         dim=unique_idx,
         out=None,
+    )
+
+
+# permute
+@given(
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)),
+        ),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"), 
+        ret_tuple=True,
+    ),
+    as_variable=helpers.array_bools(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.permute"
+    ),
+    native_array=helpers.array_bools(),
+)
+@handle_cmd_line_args
+def test_permute(
+    dtype_values_axis,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, value, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_name="permute",
+        input=np.asarray(value, dtype=dtype),
+        dims=axis,
     )
