@@ -20,3 +20,10 @@ def gelu(x, approximate=True):
 
 
 gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def sigmoid(x):
+    return ivy.sigmoid(x)
+
+
+sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
