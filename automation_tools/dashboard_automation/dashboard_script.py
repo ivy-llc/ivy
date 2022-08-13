@@ -4,10 +4,9 @@ import json
 import emoji
 import pandas as pd
 from github import Github
-
 from typing import Dict, Union
 
-url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&status=completed&per_page=100&page=2"
+url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master"
 
 
 headers = {
