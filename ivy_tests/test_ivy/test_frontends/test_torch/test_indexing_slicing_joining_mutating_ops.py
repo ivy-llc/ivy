@@ -88,7 +88,8 @@ def test_torch_cat(
     as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.permute"),
-    native_array=helpers.array_bools())
+    native_array=helpers.array_bools(),
+)
 @handle_cmd_line_args
 def test_permute(
     dtype_values_axis,
