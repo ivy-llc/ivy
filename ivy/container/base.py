@@ -124,7 +124,7 @@ class ContainerBase(dict, abc.ABC):
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
-            self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
+            self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)

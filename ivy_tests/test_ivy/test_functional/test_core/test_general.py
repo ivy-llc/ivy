@@ -1725,9 +1725,6 @@ def test_stable_pow():
     return
 
 def test_get_all_arrays_in_memory():
-    x = ivy.array([1,2,3])
-    y = ivy.array([1,2,3])
-    ivy.get_all_arrays_in_memory()
     return
 
 def test_num_arrays_in_memory():
@@ -1736,17 +1733,32 @@ def test_num_arrays_in_memory():
 def test_print_all_arrays_in_memory():
     return
 
-def test_set_queue_timeout():
-    return
 
-def test_queue_timeout():
-    return
+@given(
+    x=st.floats(allow_nan=False, allow_infinity=False),
+)
+def test_set_queue_timeout(x):
+    ivy.set_queue_timeout(x)
+    ret = ivy.get_queue_timeout()
+    assert ret == x
 
-def test_tmp_dir():
-    return
+
+def test_get_queue_timeout():
+    ret = ivy.get_queue_timeout()
+    assert ret == 15.0
+
+
+def test_get_tmp_dir():
+    ret = ivy.get_tmp_dir()
+    assert ret == '/tmp'
+
 
 def test_set_tmp_dir():
-    return
+    ivy.set_tmp_dir('/new_dir')
+    ret = ivy.get_tmp_dir()
+    assert ret == '/new_dir'
+
+
 
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(

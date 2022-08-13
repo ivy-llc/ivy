@@ -2122,7 +2122,7 @@ def set_queue_timeout(timeout):
     TIMEOUT = timeout
 
 
-def queue_timeout():
+def get_queue_timeout():
     """Get the global queue timeout values (in seconds).
 
     Default value without this function being called is 10 seconds.
@@ -2132,7 +2132,7 @@ def queue_timeout():
     return TIMEOUT
 
 
-def tmp_dir():
+def get_tmp_dir():
     """Get the path for directory that saves temporary files.
     
     Returns
