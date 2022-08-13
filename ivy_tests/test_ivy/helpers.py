@@ -2321,7 +2321,7 @@ def get_axis(
     unique=True,
     min_size=1,
     max_size=None,
-    just_tuple=False,
+    ret_tuple=False,
 ):
     """Draws one or more axis for the given shape.
 
@@ -2347,7 +2347,7 @@ def get_axis(
         int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
         axes drawn.
         If None and unique is True, then it is set to the number of axes in the shape
-    just_tuple
+    ret_tuple
         boolean; if True, instead of randomly draw both integers and List[int], draw only List[int];
         useful for functions that only takes a tuple[int] as axis input
 
@@ -2376,15 +2376,6 @@ def get_axis(
                 | st.just(0)
                 | st.lists(st.just(0), min_size=min_size, max_size=max_size)
             )
-        elif just_tuple = True:
-            axis = draw(
-                st.none()
-                | st.lists(
-                    st.integers(-axes, axes - 1),
-                    min_size=min_size,
-                    max_size=max_size,
-                    unique_by=unique_by,
-                )
         else:
             axis = draw(
                 st.none()
@@ -2428,6 +2419,8 @@ def get_axis(
                 return ele
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))
+        axis = tuple(axis)
+    if ret_tuple = True:
         axis = tuple(axis)
     return axis
 
