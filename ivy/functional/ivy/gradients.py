@@ -132,7 +132,35 @@ def set_with_grads(with_grads: bool):
 
 
 def unset_with_grads():
+    """
+    Enter a nested code space where gradients are computed. This method
+    deletes the with_grads component from the global list with_grads_stack
 
+    Parameters
+    ----------
+        No Paramters(Void function)
+
+    Returns
+    -------
+    ret
+        Remove and return item at index (default last).
+
+    Examples
+    --------
+    >>> ivy.set_with_grads(True)
+    >>> ivy.unset_with_grads()
+    >>> print(ivy.with_grads(with_grads=None))
+    False
+
+    >>> ivy.set_with_grads(True)
+    >>> ivy.unset_with_grads()
+    Returns last deleted value
+
+    >>> ivy.set_with_grads(False)
+    >>> ivy.unset_with_grads()
+    Raises IndexError if list is empty or index is out of range.
+
+    """
     global with_grads_stack
     if with_grads_stack:
         with_grads_stack.pop(-1)
