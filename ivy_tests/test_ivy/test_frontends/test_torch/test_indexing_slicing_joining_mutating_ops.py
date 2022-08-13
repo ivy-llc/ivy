@@ -90,12 +90,12 @@ def test_torch_cat(
 )
 @handle_cmd_line_args
 def test_permute(
-        dtype_values_axis,
-        axis,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_values_axis,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     dtype, value, axis = dtype_values_axis
     helpers.test_frontend_function(
