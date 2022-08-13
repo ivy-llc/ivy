@@ -137,6 +137,7 @@
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
+    <span class="n">integer_array_to_float</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -149,6 +150,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">abs</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -305,7 +307,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="acosh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/acosh/acosh_functional.html#ivy.functional.ivy.elementwise.acosh">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="acosh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/acosh/acosh_functional.html#ivy.functional.ivy.elementwise.acosh">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">acosh</span><span class="p">(</span>
@@ -619,7 +622,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="asinh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/asinh/asinh_functional.html#ivy.functional.ivy.elementwise.asinh">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="asinh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/asinh/asinh_functional.html#ivy.functional.ivy.elementwise.asinh">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">asinh</span><span class="p">(</span>
@@ -785,7 +789,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="atan2"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/atan2/atan2_functional.html#ivy.functional.ivy.elementwise.atan2">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="atan2"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/atan2/atan2_functional.html#ivy.functional.ivy.elementwise.atan2">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">atan2</span><span class="p">(</span>
@@ -960,7 +965,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="atanh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/atanh/atanh_functional.html#ivy.functional.ivy.elementwise.atanh">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="atanh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/atanh/atanh_functional.html#ivy.functional.ivy.elementwise.atanh">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">atanh</span><span class="p">(</span>
@@ -1625,6 +1631,7 @@
 
 
 <div class="viewcode-block" id="cos"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/cos/cos_functional.html#ivy.functional.ivy.elementwise.cos">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@integer_array_to_float</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">cos</span><span class="p">(</span>
@@ -1696,7 +1703,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="cosh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/cosh/cosh_functional.html#ivy.functional.ivy.elementwise.cosh">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="cosh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/cosh/cosh_functional.html#ivy.functional.ivy.elementwise.cosh">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">cosh</span><span class="p">(</span>
@@ -1946,7 +1954,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="exp"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/exp/exp_functional.html#ivy.functional.ivy.elementwise.exp">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="exp"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/exp/exp_functional.html#ivy.functional.ivy.elementwise.exp">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span>
@@ -1995,7 +2004,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="expm1"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/expm1/expm1_functional.html#ivy.functional.ivy.elementwise.expm1">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="expm1"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/expm1/expm1_functional.html#ivy.functional.ivy.elementwise.expm1">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">expm1</span><span class="p">(</span>
@@ -2653,7 +2663,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="isfinite"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/isfinite/isfinite_functional.html#ivy.functional.ivy.elementwise.isfinite">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="isfinite"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/isfinite/isfinite_functional.html#ivy.functional.ivy.elementwise.isfinite">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">isfinite</span><span class="p">(</span>
@@ -2751,7 +2762,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="isinf"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/isinf/isinf_functional.html#ivy.functional.ivy.elementwise.isinf">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="isinf"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/isinf/isinf_functional.html#ivy.functional.ivy.elementwise.isinf">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">isinf</span><span class="p">(</span>
@@ -2902,7 +2914,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="isnan"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/isnan/isnan_functional.html#ivy.functional.ivy.elementwise.isnan">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="isnan"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/isnan/isnan_functional.html#ivy.functional.ivy.elementwise.isnan">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">isnan</span><span class="p">(</span>
@@ -3152,7 +3165,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="log"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/log/log_functional.html#ivy.functional.ivy.elementwise.log">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="log"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/log/log_functional.html#ivy.functional.ivy.elementwise.log">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">log</span><span class="p">(</span>
@@ -3193,7 +3207,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="log10"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/log10/log10_functional.html#ivy.functional.ivy.elementwise.log10">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="log10"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/log10/log10_functional.html#ivy.functional.ivy.elementwise.log10">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">log10</span><span class="p">(</span>
@@ -3278,7 +3293,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="log1p"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/log1p/log1p_functional.html#ivy.functional.ivy.elementwise.log1p">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="log1p"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/log1p/log1p_functional.html#ivy.functional.ivy.elementwise.log1p">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">log1p</span><span class="p">(</span>
@@ -3375,7 +3391,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="log2"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/log2/log2_functional.html#ivy.functional.ivy.elementwise.log2">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="log2"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/log2/log2_functional.html#ivy.functional.ivy.elementwise.log2">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">log2</span><span class="p">(</span>
@@ -4553,7 +4570,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sin"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/sin/sin_functional.html#ivy.functional.ivy.elementwise.sin">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="sin"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/sin/sin_functional.html#ivy.functional.ivy.elementwise.sin">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">sin</span><span class="p">(</span>
@@ -4641,7 +4659,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sinh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/sinh/sinh_functional.html#ivy.functional.ivy.elementwise.sinh">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="sinh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/sinh/sinh_functional.html#ivy.functional.ivy.elementwise.sinh">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">sinh</span><span class="p">(</span>
@@ -4712,7 +4731,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sqrt"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/sqrt/sqrt_functional.html#ivy.functional.ivy.elementwise.sqrt">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="sqrt"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/sqrt/sqrt_functional.html#ivy.functional.ivy.elementwise.sqrt">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">sqrt</span><span class="p">(</span>
@@ -5040,7 +5060,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="tanh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/tanh.html#ivy.functional.ivy.elementwise.tanh">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="tanh"><a class="viewcode-back" href="../../../../functional/ivy/elementwise/tanh.html#ivy.functional.ivy.elementwise.tanh">[docs]</a><span class="nd">@integer_array_to_float</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">tanh</span><span class="p">(</span>

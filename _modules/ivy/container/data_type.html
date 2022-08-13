@@ -295,6 +295,7 @@
 <span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With :code:`ivy.Container` inputs:</span>
@@ -753,6 +754,60 @@
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        `ivy.Container` static method variant of `is_float_dtype`. This method</span>
+<span class="sd">        simply wraps this function, so the docstring of `is_float_dtype`</span>
+<span class="sd">        roughly applies to this method.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dtype_in : ivy.Container</span>
+<span class="sd">            The input to check for float dtype.</span>
+
+<span class="sd">        key_chains : Optional[Union[List[str], Dict[str, str]]]</span>
+<span class="sd">            The key chains to use when mapping over the input.</span>
+
+<span class="sd">        to_apply : bool</span>
+<span class="sd">            Whether to apply the mapping over the input.</span>
+
+<span class="sd">        prune_unapplied : bool</span>
+<span class="sd">            Whether to prune the keys that were not applied.</span>
+
+<span class="sd">        map_sequences : bool</span>
+<span class="sd">            Boolean indicating whether to map method</span>
+<span class="sd">            to sequences (list, tuple). Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret : bool</span>
+<span class="sd">            Boolean indicating whether the input has float dtype.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.static_is_float_dtype(ivy.float32)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.static_is_float_dtype(ivy.int64)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.static_is_float_dtype(ivy.int32)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.static_is_float_dtype(ivy.bool)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)</span>
+<span class="sd">        &gt;&gt;&gt; print(arr.is_float_dtype())</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; print(x.a.dtype, x.b.dtype)</span>
+<span class="sd">        float32 int32</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;is_float_dtype&quot;</span><span class="p">,</span>
             <span class="n">dtype_in</span><span class="p">,</span>
@@ -768,8 +823,68 @@
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_is_int_dtype</span><span class="p">(</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        `ivy.Container` instance method variant of `ivy.is_float_dtype`.</span>
+<span class="sd">        This method simply wraps the function,</span>
+<span class="sd">        and so the docstring for `ivy.is_float_dtype`</span>
+<span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self : ivy.Container</span>
+<span class="sd">            The `ivy.Container` instance to call `ivy.is_float_dtype` on.</span>
+
+<span class="sd">        key_chains : Union[List[str], Dict[str, str]]</span>
+<span class="sd">            The key-chains to apply or not apply the method to.</span>
+<span class="sd">            Default is None.</span>
+
+<span class="sd">        to_apply : bool</span>
+<span class="sd">            Boolean indicating whether to apply the</span>
+<span class="sd">            method to the key-chains. Default is False.</span>
+
+<span class="sd">        prune_unapplied : bool</span>
+<span class="sd">            Boolean indicating whether to prune the</span>
+<span class="sd">            key-chains that were not applied. Default is False.</span>
+
+<span class="sd">        map_sequences : bool</span>
+<span class="sd">            Boolean indicating whether to map method</span>
+<span class="sd">            to sequences (list, tuple). Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret : bool</span>
+<span class="sd">            Boolean of whether the input is of a float dtype.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.float32)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.int64)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.int32)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.bool)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)</span>
+<span class="sd">        &gt;&gt;&gt; print(arr.is_float_dtype())</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; print(x.a.dtype, x.b.dtype)</span>
+<span class="sd">        float32 int32</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_is_float_dtype</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
