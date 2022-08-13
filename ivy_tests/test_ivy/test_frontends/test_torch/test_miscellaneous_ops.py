@@ -10,13 +10,13 @@ import ivy.functional.backends.torch as ivy_torch
 
 # flip
 @given(
-    dtype_values_axis = helpers.dtype_values_axis(
+    dtype_values = helpers.dtype_and_values(
         available_dtypes=tuple(
                 set(ivy_np.valid_float_dtypes).intersection(
                     set(ivy_torch.valid_float_dtypes))),
-        shape=helpers.get_shape(min_num_dims=1)
-        ret_axis_tuple=True
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
+    axis = helpers.get_axis(shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"), ret_tuple=True),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.flip"),
@@ -24,13 +24,14 @@ import ivy.functional.backends.torch as ivy_torch
 )
 def test_torch_flip(
     *,
-    dtype_values_axis,
+    dtype_values,
+    axis,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, value, axis = dtype_values_axis
+    input_dtype, value= dtype_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
