@@ -14,20 +14,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
-# Helper #
-##########
-
-# Calculate tolerance for linear interpolation.
-def _linear_tolerance(x, atol, rtol):
-    forward_diff = x[0] - np.nextafter(x[0], x[-1])
-    backward_diff = x[-1] - np.nextafter(x[-1], x[0])
-    return (
-        max(abs(forward_diff), abs(backward_diff))
-        + atol
-        + rtol * max(abs(x[0]), abs(x[-1]))
-    )
-
-
 # native_array
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -82,10 +68,12 @@ def test_native_array(
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        allow_inf=False,
         shared_dtype=True,
-        large_value_safety_factor=2,
+        small_value_safety_factor=0.5,
+        large_value_safety_factor=0.5,
     ),
-    num=st.integers(1, 5),
+    num=helpers.ints(min_value=1, max_value=5),
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="linspace"),
     data=st.data(),
@@ -101,8 +89,7 @@ def test_linspace(
     fw,
 ):
     dtype, start_stop = dtype_and_start_stop
-    ret = helpers.test_function(
-        test_values=False,
+    helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
         with_out=False,
@@ -120,22 +107,6 @@ def test_linspace(
         dtype=dtype[0],
     )
 
-    # Make sure something is returned
-    if not ret:
-        return
-
-    ret_base, ret_gt = ret
-
-    axis = -1 if axis is None else axis
-    ret_base, ret_gt = np.asarray(ret_base)[0], np.asarray(ret_gt)[0]
-
-    # Custom dynamic tolerance just for linspace
-    tol = np.apply_along_axis(
-        lambda x: _linear_tolerance(x, atol=1e-3, rtol=1e-3), axis, ret_base
-    )
-    tol = np.expand_dims(tol, axis)
-    assert np.all(np.abs(ret_base - ret_gt) <= tol)
-
 
 # logspace
 @given(
@@ -149,9 +120,10 @@ def test_linspace(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        large_value_safety_factor=2,
+        small_value_safety_factor=0.5,
+        large_value_safety_factor=0.5,
     ),
-    num=st.integers(1, 5),
+    num=helpers.ints(min_value=1, max_value=5),
     base=st.floats(min_value=0.1, max_value=10.0),
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="logspace"),
@@ -193,9 +165,11 @@ def test_logspace(
 
 # arange
 @given(
-    start=st.integers(0, 50),
-    stop=st.integers(0, 50) | st.none(),
-    step=st.integers(-50, 50).filter(lambda x: True if x != 0 else False),
+    start=helpers.ints(min_value=0, max_value=50),
+    stop=helpers.ints(min_value=0, max_value=50) | st.none(),
+    step=helpers.ints(min_value=-50, max_value=50).filter(
+        lambda x: True if x != 0 else False
+    ),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="arange"),
     data=st.data(),
@@ -369,11 +343,11 @@ def test_empty_like(
 
 # eye
 @given(
-    n_rows=st.integers(min_value=0, max_value=10),
-    n_cols=st.none() | st.integers(min_value=0, max_value=10),
-    k=st.integers(min_value=-10, max_value=10),
+    n_rows=helpers.ints(min_value=0, max_value=10),
+    n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
+    k=helpers.ints(min_value=-10, max_value=10),
     batch_shape=st.lists(
-        st.integers(min_value=1, max_value=10), min_size=1, max_size=2
+        helpers.ints(min_value=1, max_value=10), min_size=1, max_size=2
     ),
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="eye"),
@@ -467,9 +441,9 @@ def _dtypes(draw):
 def _fill_value(draw):
     dtype = draw(_dtypes())[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(st.integers(0, 5))
+        return draw(helpers.ints(min_value=0, max_value=5))
     if ivy.is_int_dtype(dtype):
-        return draw(st.integers(-5, 5))
+        return draw(helpers.ints(min_value=-5, max_value=5))
     return draw(st.floats(-5, 5))
 
 
@@ -573,7 +547,7 @@ def test_full_like(
 
 # ToDo: create arrays which are not only 1-d
 array_shape = st.shared(
-    st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=1),
+    st.lists(helpers.ints(min_value=1, max_value=10), min_size=1, max_size=1),
     key="array_shape",
 )
 dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="dtype")
@@ -667,7 +641,7 @@ def test_ones(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    num_positional_args=st.integers(0, 1),
+    num_positional_args=helpers.ints(min_value=0, max_value=1),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -709,7 +683,7 @@ def test_ones_like(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    k=st.integers(-10, 10),
+    k=helpers.ints(min_value=-10, max_value=10),
     num_positional_args=helpers.num_positional_args(fn_name="tril"),
     data=st.data(),
 )
@@ -752,7 +726,7 @@ def test_tril(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    k=st.integers(-10, 10),
+    k=helpers.ints(min_value=-10, max_value=10),
     num_positional_args=helpers.num_positional_args(fn_name="triu"),
     data=st.data(),
 )

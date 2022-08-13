@@ -18,20 +18,20 @@ def x_and_linear(draw, dtypes):
     dtype = draw(dtypes)
     outer_batch_shape = draw(
         st.tuples(
-            st.integers(3, 5),
-            st.integers(1, 3),
-            st.integers(1, 3),
+            helpers.ints(min_value=3, max_value=5),
+            helpers.ints(min_value=1, max_value=3),
+            helpers.ints(min_value=1, max_value=3),
         )
     )
     inner_batch_shape = draw(
         st.tuples(
-            st.integers(3, 5),
-            st.integers(1, 3),
-            st.integers(1, 3),
+            helpers.ints(min_value=3, max_value=5),
+            helpers.ints(min_value=1, max_value=3),
+            helpers.ints(min_value=1, max_value=3),
         )
     )
-    in_features = draw(st.integers(min_value=1, max_value=3))
-    out_features = draw(st.integers(min_value=1, max_value=3))
+    in_features = draw(helpers.ints(min_value=1, max_value=3))
+    out_features = draw(helpers.ints(min_value=1, max_value=3))
 
     x_shape = outer_batch_shape + inner_batch_shape + (in_features,)
     weight_shape = outer_batch_shape + (out_features,) + (in_features,)
@@ -151,7 +151,7 @@ def test_dropout(
         scale=scale,
         dtype=dtype,
     )
-    ret = helpers.flatten(ret=ret)
+    ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:
         # cardinality test
         assert u.shape == x.shape
@@ -166,14 +166,14 @@ def x_and_scaled_attention(draw, dtypes):
     dtype = draw(dtypes)
     batch_shape = draw(
         st.tuples(
-            st.integers(3, 5),
-            st.integers(1, 3),
-            st.integers(1, 3),
+            helpers.ints(min_value=3, max_value=5),
+            helpers.ints(min_value=1, max_value=3),
+            helpers.ints(min_value=1, max_value=3),
         )
     )
-    num_queries = draw(st.integers(min_value=1, max_value=3))
-    num_keys = draw(st.integers(min_value=1, max_value=3))
-    feat_dim = draw(st.integers(min_value=1, max_value=3))
+    num_queries = draw(helpers.ints(min_value=1, max_value=3))
+    num_keys = draw(helpers.ints(min_value=1, max_value=3))
+    feat_dim = draw(helpers.ints(min_value=1, max_value=3))
     scale = draw(st.floats(min_value=0.1, max_value=1, width=64))
 
     q_shape = batch_shape + (num_queries,) + (feat_dim,)
@@ -248,10 +248,10 @@ def test_scaled_dot_product_attention(
 @st.composite
 def x_and_mha(draw, dtypes):
     dtype = draw(dtypes)
-    num_queries = draw(st.integers(min_value=1, max_value=3))
-    feat_dim = draw(st.integers(min_value=1, max_value=3))
-    num_heads = draw(st.integers(min_value=1, max_value=3))
-    num_keys = draw(st.integers(min_value=1, max_value=3))
+    num_queries = draw(helpers.ints(min_value=1, max_value=3))
+    feat_dim = draw(helpers.ints(min_value=1, max_value=3))
+    num_heads = draw(helpers.ints(min_value=1, max_value=3))
+    num_keys = draw(helpers.ints(min_value=1, max_value=3))
 
     x_mha_shape = (num_queries,) + (feat_dim * num_heads,)
     context_shape = (num_keys,) + (2 * feat_dim * num_heads,)
@@ -367,24 +367,24 @@ def _x_and_filters(
     data_format = draw(data_format)
     dtype = draw(dtypes)
     padding = draw(padding)
-    stride = draw(st.integers(min_value=stride_min, max_value=stride_max))
-    dilations = draw(st.integers(min_value=1, max_value=3))
+    stride = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
+    dilations = draw(helpers.ints(min_value=1, max_value=3))
     if type == "1d":
         if not transpose:
             filter_shape = draw(
                 st.tuples(
-                    st.integers(3, 5),
-                    st.integers(1, 3),
-                    st.integers(1, 3),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=3),
                 )
             )
             min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         else:
             filter_shape = draw(
                 st.tuples(
-                    st.integers(3, 5),
-                    st.shared(st.integers(1, 3), key="d_in"),
-                    st.shared(st.integers(1, 3), key="d_in"),
+                    st.integers(min_value=3, max_value=5),
+                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
+                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
                 )
             )
             min_x_width = 1
@@ -392,18 +392,18 @@ def _x_and_filters(
         if data_format == "NWC":
             x_shape = draw(
                 st.tuples(
-                    st.integers(1, 5),
-                    st.integers(min_value=min_x_width, max_value=100),
-                    st.integers(d_in, d_in),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
             x_w = x_shape[1]
         else:
             x_shape = draw(
                 st.tuples(
-                    st.integers(1, 5),
-                    st.integers(d_in, d_in),
-                    st.integers(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=d_in, max_value=d_in),
+                    helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
             x_w = x_shape[2]
@@ -417,27 +417,27 @@ def _x_and_filters(
         if type == "depthwise":
             filter_shape = draw(
                 st.tuples(
-                    st.integers(3, 5),
-                    st.integers(3, 5),
-                    st.integers(1, 3),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=3),
                 )
             )
         elif not transpose:
             filter_shape = draw(
                 st.tuples(
-                    st.integers(3, 5),
-                    st.integers(3, 5),
-                    st.integers(1, 3),
-                    st.integers(1, 3),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=3),
                 )
             )
         else:
             filter_shape = draw(
                 st.tuples(
-                    st.integers(3, 5),
-                    st.integers(3, 5),
-                    st.shared(st.integers(1, 3), key="d_in"),
-                    st.shared(st.integers(1, 3), key="d_in"),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
+                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
+                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
                 )
             )
         if not transpose:
@@ -447,10 +447,10 @@ def _x_and_filters(
         if data_format == "NHWC":
             x_shape = draw(
                 st.tuples(
-                    st.integers(1, 5),
-                    st.integers(min_value=min_x_height, max_value=100),
-                    st.integers(min_value=min_x_width, max_value=100),
-                    st.integers(d_in, d_in),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=min_x_height, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
             x_h = x_shape[1]
@@ -458,10 +458,10 @@ def _x_and_filters(
         else:
             x_shape = draw(
                 st.tuples(
-                    st.integers(1, 5),
-                    st.integers(d_in, d_in),
-                    st.integers(min_value=min_x_height, max_value=100),
-                    st.integers(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=d_in, max_value=d_in),
+                    helpers.ints(min_value=min_x_height, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
             x_h = x_shape[2]
@@ -478,11 +478,11 @@ def _x_and_filters(
         if not transpose:
             filter_shape = draw(
                 st.tuples(
-                    st.integers(3, 5),
-                    st.integers(3, 5),
-                    st.integers(3, 5),
-                    st.integers(1, 3),
-                    st.integers(1, 3),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=3),
                 )
             )
             min_x_depth = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
@@ -491,11 +491,11 @@ def _x_and_filters(
         else:
             filter_shape = draw(
                 st.tuples(
-                    st.integers(3, 5),
-                    st.integers(3, 5),
-                    st.integers(3, 5),
-                    st.shared(st.integers(1, 3), key="d_in"),
-                    st.shared(st.integers(1, 3), key="d_in"),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
+                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
+                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
                 )
             )
             min_x_depth = 1
@@ -505,11 +505,11 @@ def _x_and_filters(
         if data_format == "NDHWC":
             x_shape = draw(
                 st.tuples(
-                    st.integers(1, 5),
-                    st.integers(min_value=min_x_depth, max_value=100),
-                    st.integers(min_value=min_x_height, max_value=100),
-                    st.integers(min_value=min_x_width, max_value=100),
-                    st.integers(d_in, d_in),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=min_x_depth, max_value=100),
+                    helpers.ints(min_value=min_x_height, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
             x_d = x_shape[1]
@@ -518,11 +518,11 @@ def _x_and_filters(
         else:
             x_shape = draw(
                 st.tuples(
-                    st.integers(1, 5),
-                    st.integers(d_in, d_in),
-                    st.integers(min_value=min_x_depth, max_value=100),
-                    st.integers(min_value=min_x_width, max_value=100),
-                    st.integers(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=d_in, max_value=d_in),
+                    helpers.ints(min_value=min_x_depth, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
             x_d = x_shape[2]
@@ -921,15 +921,15 @@ def x_and_lstm(draw, dtypes):
     dtype = draw(dtypes)
     batch_shape = draw(
         st.tuples(
-            st.integers(3, 5),
-            st.integers(1, 3),
-            st.integers(1, 3),
+            helpers.ints(min_value=3, max_value=5),
+            helpers.ints(min_value=1, max_value=3),
+            helpers.ints(min_value=1, max_value=3),
         )
     )
 
-    t = draw(st.integers(min_value=1, max_value=3))
-    _in_ = draw(st.integers(min_value=1, max_value=3))
-    _out_ = draw(st.integers(min_value=1, max_value=3))
+    t = draw(helpers.ints(min_value=1, max_value=3))
+    _in_ = draw(helpers.ints(min_value=1, max_value=3))
+    _out_ = draw(helpers.ints(min_value=1, max_value=3))
 
     x_lstm_shape = batch_shape + (t,) + (_in_,)
     init_h_shape = batch_shape + (_out_,)

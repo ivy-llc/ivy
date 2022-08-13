@@ -132,7 +132,35 @@ def set_with_grads(with_grads: bool):
 
 
 def unset_with_grads():
+    """
+    Enter a nested code space where gradients are computed. This method
+    deletes the with_grads component from the global list with_grads_stack
 
+    Parameters
+    ----------
+        No Paramters(Void function)
+
+    Returns
+    -------
+    ret
+        Remove and return item at index (default last).
+
+    Examples
+    --------
+    >>> ivy.set_with_grads(True)
+    >>> ivy.unset_with_grads()
+    >>> print(ivy.with_grads(with_grads=None))
+    False
+
+    >>> ivy.set_with_grads(True)
+    >>> ivy.unset_with_grads()
+    Returns last deleted value
+
+    >>> ivy.set_with_grads(False)
+    >>> ivy.unset_with_grads()
+    Raises IndexError if list is empty or index is out of range.
+
+    """
     global with_grads_stack
     if with_grads_stack:
         with_grads_stack.pop(-1)
@@ -1072,3 +1100,41 @@ def lamb_update(
     r = ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
     lr = r * lr
     return ivy.optimizer_update(w, eff_grads, lr, inplace, stop_gradients), mw, vw
+
+
+@to_native_arrays_and_back
+def jac(func):
+    """Call function func, and return func's Jacobian partial derivatives.
+
+    Parameters
+    ----------
+    func
+        Function for which we compute the gradients of the output with respect to xs
+        input.
+
+    Returns
+    -------
+    ret
+        the Jacobian function
+
+    """
+    return current_backend(None).jac(func)
+
+
+@to_native_arrays_and_back
+def grad(func):
+    """Call function func, and return func's gradients.
+
+    Parameters
+    ----------
+    func
+        Function for which we compute the gradients of the output with respect to xs
+        input.
+
+    Returns
+    -------
+    ret
+        the grad function
+
+    """
+    return current_backend(None).grad(func)
