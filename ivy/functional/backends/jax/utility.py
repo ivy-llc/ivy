@@ -1,6 +1,6 @@
 # global
 import jax.numpy as jnp
-from typing import Union, Optional, Sequence
+from typing import Union, Optional, Sequence, Any
 
 # local
 from ivy.functional.backends.jax import JaxArray
@@ -26,3 +26,6 @@ def any(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.any(x, axis, keepdims=keepdims)
+
+def is_tensor(x: Any) -> bool:
+    return False

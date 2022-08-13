@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Sequence
+from typing import Union, Optional, Sequence, Any
 
 # local
 import ivy
@@ -304,3 +304,53 @@ def any(
 
 # Extra #
 # ------#
+@to_native_arrays_and_back
+@handle_nestable
+def is_tensor(x: Any)  -> bool:
+    """Tests whether the object x is a tensor
+
+    Parameters
+    ----------
+    x
+        Any input object. It can be String, Array etc
+
+    Returns
+    -------
+    ret
+        Returns ``bool`` datatype with True or False value
+
+        Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([2, 3, 4])
+    >>> y = ivy.is_tensor(x)
+    >>> print(y)
+    False
+    
+    ivy.set_backend('torch')
+    >>> x = ivy.array([[0],[1]])
+    >>> y = ivy.is_tensor(x)
+    >>> print(y)
+    True
+
+    ivy.set_backend('tensorflow')
+    >>> x = ivy.array([[0],[1]])
+    >>> y = ivy.is_tensor(x)
+    >>> print(y)
+    True
+
+    ivy.set_backend('jax')
+    >>> x = ivy.array([[0],[1]])
+    >>> y = ivy.is_tensor(x)
+    >>> print(y)
+    False
+
+    ivy.set_backend('mxnet')
+    >>> x = ivy.array([[0],[1]])
+    >>> y = ivy.is_tensor(x)
+    >>> print(y)
+    False
+    """
+    return ivy.current_backend(x).is_tensor(x)
