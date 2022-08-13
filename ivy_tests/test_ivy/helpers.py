@@ -2432,8 +2432,8 @@ def get_axis(
         axes drawn.
         If None and unique is True, then it is set to the number of axes in the shape
     ret_tuple
-        boolean; if True, instead of randomly draw both integers and List[int], draw only List[int];
-        useful for functions that only takes a tuple[int] as axis input
+        boolean; if False, randomly draw both integers and List[int].
+        If True, draw only List[int] as tuple[int]
 
     Returns
     -------
@@ -2496,7 +2496,7 @@ def get_axis(
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
-    if ret_tuple == True:
+    if ret_tuple is True:
         axis = tuple(axis)
     return axis
 
