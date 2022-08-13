@@ -1576,70 +1576,24 @@
     <span class="k">return</span> <span class="s2">&quot;int&quot;</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="check_float"><a class="viewcode-back" href="../../../../functional/ivy/data_type/check_float.html#ivy.functional.ivy.data_type.check_float">[docs]</a><span class="k">def</span> <span class="nf">check_float</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Helper function to check if the input is a float or a float-like object.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x : any</span>
-<span class="sd">        Input to check.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret : bool</span>
-<span class="sd">        &quot;True&quot; if the input is a float or a float-like object, otherwise &quot;False&quot;.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span></div>
-
-
 <div class="viewcode-block" id="is_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/is_float_dtype/is_float_dtype_functional.html#ivy.functional.ivy.data_type.is_float_dtype">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span>
     <span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determine whether the input data type is a float dtype.</span>
+    <span class="sd">&quot;&quot;&quot;Determine whether the input data type is a float dtype.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dtype_in : Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]</span>
+<span class="sd">    dtype_in</span>
 <span class="sd">        The array or data type to check</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret : bool</span>
+<span class="sd">    ret</span>
 <span class="sd">        Whether or not the array or data type is of a floating point dtype</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Dtype` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.float32)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    True</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.int64)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    False</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.int32)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    False</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.bool)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    False</span>
-
-<span class="sd">    &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)</span>
-<span class="sd">    &gt;&gt;&gt; print(arr.is_float_dtype())</span>
-<span class="sd">    True</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; print(x.a.dtype, x.b.dtype)</span>
-<span class="sd">    float32 int32</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
         <span class="n">dtype_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>

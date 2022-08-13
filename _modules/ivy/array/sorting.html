@@ -180,12 +180,12 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 5, 2])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.argsort(axis=-1, descending=True, stable=False)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.argsort(-1, True, False)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([1, 2, 0])</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([9.6, 2.7, 5.2])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.argsort(axis=-1, descending=True, stable=False)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.argsort(-1, True, False)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([0, 2, 1])</span>
 
@@ -211,12 +211,12 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([7, 8, 6])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.sort(axis=-1, descending=True, stable=False)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.sort(-1, True, False)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([8, 7, 6])</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([8.5, 8.2, 7.6])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.sort(axis=-1, descending=True, stable=False)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.sort(-1, True, False)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([8.5, 8.2, 7.6])</span>
 
