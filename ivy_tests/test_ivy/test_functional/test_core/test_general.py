@@ -1617,8 +1617,16 @@ def test_clip_matrix_norm(
         p=p,
     )
 
-def test_value_is_nan():
-    return
+@given(x_n_include_inf_n_value=st.sampled_from([
+    [ivy.array([1]),True,False],
+    [ivy.array(ivy.nan),False,True],
+    [ivy.native_array(ivy.inf),True,True],
+    [ivy.array(ivy.inf),False,False]
+    ]))
+def test_value_is_nan(x_n_include_inf_n_value):
+    x, include_inf, value = x_n_include_inf_n_value
+    ret = ivy.value_is_nan(x, include_inf)
+    assert ret == value
 
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(
@@ -1646,31 +1654,45 @@ def test_has_nans(x_val_and_dtypes, include_infs, as_variable, num_positional_ar
         x=np.asarray(x, dtype=dtype),
         include_infs=include_infs
     )
+@given(
+    x=st.booleans(),
+)
+def test_try_else_none(x):
+    if x:
+        ret = ivy.try_else_none(lambda : True)
+        assert ret is True
+    else:
+        ret = ivy.try_else_none(lambda x: x)
+        assert ret is None
 
-def test_shape_to_tuple():
-    return
+@given(
+    x_n_value=st.sampled_from([
+        [ivy.value_is_nan, ['x', 'include_infs']],
+        [ivy.clip_matrix_norm, ['x', 'max_norm', 'p', 'out']],
+    ]))
+def test_arg_names(x_n_value):
+    x, value = x_n_value 
+    ret = ivy.arg_names(x)
+    assert ret == value
 
-def test_try_else_none():
-    return
-
-def test_arg_names():
-    return
-
-def test_current_framework_str():
-    return
+def test_current_backend_str(fw):
+    assert ivy.current_backend_str() == fw
 
 def test_get_min_denominator():
-    return
+    assert ivy.get_min_denominator() == 1e-12
 
-# Ankit is working on this
-def test_set_min_denominator():
-    return
+@given(x=st.floats(allow_nan=False, allow_infinity=False))
+def test_set_min_denominator(x):
+    ivy.set_min_denominator(x)
+    assert ivy.get_min_denominator() == x
 
 def test_get_min_base():
-    return
+    assert ivy.get_min_base() == 1e-5 
 
-def test_set_min_base():
-    return
+@given(x=st.floats(allow_nan=False, allow_infinity=False))
+def test_set_min_base(x):
+    ivy.set_min_base(x)
+    assert ivy.get_min_base() == x
 
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1703,6 +1725,9 @@ def test_stable_pow():
     return
 
 def test_get_all_arrays_in_memory():
+    x = ivy.array([1,2,3])
+    y = ivy.array([1,2,3])
+    ivy.get_all_arrays_in_memory()
     return
 
 def test_num_arrays_in_memory():
