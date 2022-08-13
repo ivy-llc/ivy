@@ -51,3 +51,10 @@ def negative(x, name=None):
 negative.unsupported_dtypes = {
     "torch": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64")
 }
+
+
+def reduce_all(x, axis=None, keepdims=False, name=None):
+    return ivy.reduce_all(x)
+
+
+reduce_all.supported_dtypes = {"torch": "bool"}
