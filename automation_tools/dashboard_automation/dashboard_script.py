@@ -106,7 +106,7 @@ def get_matrix_job_data(token):
                 if submodule not in stateful_dict:
                     stateful_dict[submodule] = []
                 stateful_dict[submodule].append(
-                    (backend, make_clickable(info["html_url"], conclusion))
+                    (backend, make_clickable(info["html_url"], conclusion)))
 
     return (functional_core_dict, functional_nn_dict, stateful_dict)
 
