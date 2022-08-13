@@ -86,7 +86,7 @@ def get_matrix_job_data(token):
             submodule = info["name"].strip("run-nightly-tests")[2:-1].split(",")[1]
 
             if info["status"] in ("in_progress, queued"):
-                conclusion = config["queued"]
+                conclusion = config["in_progress"]
             else:
                 conclusion = config[info["conclusion"]]
 
