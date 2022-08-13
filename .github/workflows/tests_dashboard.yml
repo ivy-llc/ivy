@@ -1,7 +1,7 @@
 name: test_dashboard
 on:
   schedule:
-    - cron: "*/20 * * * *"
+    - cron: "*/2 * * * *"
 jobs:
   trigger-dashboard-script:
     name: Trigger Dashboard
