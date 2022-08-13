@@ -297,7 +297,6 @@ def test_jax_lax_acos(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.acos",
+        fn_tree="lax.acos",
         x=np.asarray(x, dtype=input_dtype),
     )
-
