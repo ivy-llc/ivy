@@ -129,7 +129,7 @@ def test_jax_nn_one_hot(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="nn.one_hot",
+        fn_tree="nn.one_hot",
         test_values=False,
         x=np.asarray(x, dtype=input_dtype),
         num_classes=num_classes

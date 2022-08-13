@@ -378,7 +378,7 @@ def test_tensorflow_one_hot(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="one_hot",
+        fn_tree="one_hot",
         test_values=False,
         indices=x,
         depth=depth

@@ -28,7 +28,7 @@ def test_torch_one_hot(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="one_hot",
+        fn_tree="one_hot",
         test_values=False,
         indices=np.asarray([1, 2, 0], dtype=input_dtype),
         depth=depth,
