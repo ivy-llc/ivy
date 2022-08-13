@@ -81,7 +81,9 @@ def test_torch_cat(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes))),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-    axis = helpers.get_axis(shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"), ret_tuple=True),
+    axis = helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"), 
+        ret_tuple=True),
     ),
     as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
