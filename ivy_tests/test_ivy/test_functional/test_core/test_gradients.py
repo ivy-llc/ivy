@@ -174,7 +174,6 @@ def test_stop_gradient(
         max_value=100,
     ),
     retain_grads=st.booleans(),
-    container_flag=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -314,6 +313,7 @@ def test_adam_step(
     dtype_n_dcdw_n_mw_n_vw,
     step,
     beta1_n_beta2_n_epsilon,
+    with_out,
     as_variable,
     native_array,
     container,
@@ -328,7 +328,7 @@ def test_adam_step(
     ) = beta1_n_beta2_n_epsilon
     helpers.test_function(
         input_dtypes=input_dtypes,
-        with_out=False,
+        with_out=with_out,
         as_variable_flags=as_variable,
         num_positional_args=4,
         native_array_flags=native_array,
@@ -392,6 +392,7 @@ def test_gradient_descent_update(
     *,
     dtype_n_ws_n_dcdw_n_lr,
     stop_gradients,
+    with_out,
     as_variable,
     native_array,
     container,
@@ -401,7 +402,7 @@ def test_gradient_descent_update(
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     helpers.test_function(
         input_dtypes=input_dtypes,
-        with_out=False,
+        with_out=with_out,
         as_variable_flags=as_variable,
         num_positional_args=3,
         native_array_flags=native_array,
@@ -429,6 +430,7 @@ def test_lars_update(
     dtype_n_ws_n_dcdw_n_lr,
     decay_lambda,
     stop_gradients,
+    with_out,
     as_variable,
     native_array,
     container,
@@ -438,7 +440,7 @@ def test_lars_update(
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     helpers.test_function(
         input_dtypes=input_dtypes,
-        with_out=False,
+        with_out=with_out,
         as_variable_flags=as_variable,
         num_positional_args=3,
         native_array_flags=native_array,
@@ -473,6 +475,7 @@ def test_adam_update(
     step,
     beta1_n_beta2_n_epsilon,
     stopgrad,
+    with_out,
     as_variable,
     native_array,
     container,
@@ -488,7 +491,7 @@ def test_adam_update(
     stop_gradients = stopgrad
     helpers.test_function(
         input_dtypes=input_dtypes,
-        with_out=False,
+        with_out=with_out,
         as_variable_flags=as_variable,
         num_positional_args=6,
         native_array_flags=native_array,
@@ -532,6 +535,7 @@ def test_lamb_update(
     beta1_n_beta2_n_epsilon_n_lambda,
     mtr,
     stopgrad,
+    with_out,
     as_variable,
     native_array,
     container,
@@ -548,7 +552,7 @@ def test_lamb_update(
     max_trust_ratio, stop_gradients = mtr, stopgrad
     helpers.test_function(
         input_dtypes=input_dtypes,
-        with_out=False,
+        with_out=with_out,
         as_variable_flags=as_variable,
         num_positional_args=6,
         native_array_flags=native_array,

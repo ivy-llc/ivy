@@ -482,6 +482,7 @@ def adam_step(
     beta1: float = 0.9,
     beta2: float = 0.999,
     epsilon: float = 1e-7,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute adam step delta, given the derivatives of some cost c with respect
     to weights ws, using ADAM update. `[reference]
@@ -504,6 +505,9 @@ def adam_step(
         second moment of gradient forgetting factor (Default value = 0.999)
     epsilon
         divisor during adam update, preventing division by zero (Default value = 1e-7)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -531,7 +535,8 @@ def adam_step(
     >>> beta1 = 0.86
     >>> beta2 = 0.95
     >>> epsilon = 1e-6
-    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon)
+    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2,\
+                                        epsilon=epsilon)
     >>> print(adam_step_delta)
         (ivy.array([[1., 1., -1.],
                     [1., 1., 1.]]),
@@ -569,13 +574,14 @@ def adam_step(
     >>> beta1 = 0.76
     >>> beta2 = 0.992
     >>> epsilon = 1e-5
-    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon)
+    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2,\
+                                        epsilon=epsilon)
     >>> print(adam_step_delta)
         (ivy.array([0.209, -0.271, 0.0717, 0., 0.142, -0.209, 0.182]),
          ivy.array([ 0.72, -0.96, 0.24, 0., 0.48, -0.72, 0.624]),
          ivy.array([1.06, 1.12, 1., 0.992, 1.02, 1.06, 1.05]))
 
-    with mixture of both :code:`ivy.NativeArray`  and :code:'ivy.Array' inputs:
+    With a mixture of both :code:`ivy.NativeArray` and :code:'ivy.Array' inputs:
 
     >>> dcdw = ivy.array([1, 2, 3])
     >>> mw = ivy.native_array([0, 0, 0])
@@ -599,7 +605,8 @@ def adam_step(
     >>> beta1 = 0.87
     >>> beta2 = 0.976
     >>> epsilon = 1e-5
-    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon)
+    >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, beta1=beta1, beta2=beta2,\
+                                        epsilon=epsilon)
     >>> print(adam_step_delta)
     ({
         a: ivy.array([0., 0.626, 0.626]),
@@ -619,7 +626,10 @@ def adam_step(
     beta1_pow = beta1**step
     beta2_pow = beta2**step
     alpha = (1 - beta2_pow) ** 0.5 / (1 - beta1_pow + epsilon)
-    return ((alpha * mw) / (vw**0.5 + epsilon)), mw, vw
+    return ivy.divide(alpha * mw, vw**0.5 + epsilon, out=out), mw, vw
+
+
+adam_step.out_index = 0
 
 
 # Optimizer Updates #
@@ -746,11 +756,9 @@ def optimizer_update(
 
     """
     deltas = effective_grad * lr
-    w = w - deltas
+    w = ivy.subtract(w, deltas, out=out)
     if stop_gradients:
         return ivy.stop_gradient(w, preserve_type=True, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, w)
     return w
 
 
@@ -948,6 +956,9 @@ def adam_update(
     )
 
 
+adam_update.out_index = 0
+
+
 @inputs_to_ivy_arrays
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
@@ -1035,8 +1046,11 @@ def lamb_update(
     >>> decay_lambda = 0
     >>> out = None
     >>> stop_gradients = True
-    >>> new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1=beta1,beta2=beta2,\
-                      epsilon=epsilon,max_trust_ratio=max_trust_ratio,decay_lamdba=decay_lambda,out=out,stop_gradients=stop_gradients)  
+    >>> new_weights = ivy.lamb_update(w, dcdw, lr, mw_tm1, vw_tm1, step, beta1=beta1,\
+                                      beta2=beta2, epsilon=epsilon,\
+                                      max_trust_ratio=max_trust_ratio,\
+                                      decay_lamdba=decay_lambda, out=out,\
+                                      stop_gradients=stop_gradients)  
     >>> print(new_weights)
     (ivy.array([[ 0.639,  1.64 ,  2.64 ],
         [ 3.64 ,  5.64 ,  0.639],
@@ -1045,7 +1059,6 @@ def lamb_update(
         [0.04, 0.07, 0.02]]), ivy.array([[2.5e-04, 4.0e-05, 1.0e-05],
         [9.0e-05, 3.6e-04, 1.6e-04],
         [1.6e-04, 4.9e-04, 4.0e-05]]))
-
 
     >>> w = ivy.array([[1.,2,3],[4,6,2],[1,0,4]])
     >>> dcdw = ivy.array([[0.5,0.3,0.2],[0.1,0.8,0.3],[0.6,0.7,0.1]])
@@ -1060,8 +1073,11 @@ def lamb_update(
     >>> decay_lambda = 1
     >>> out = w
     >>> stop_gradients = False
-    >>> new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1=beta1,beta2=beta2,\
-                        epsilon=epsilon,max_trust_ratio=max_trust_ratio,decay_lambda=decay_lambda,out=out,stop_gradients=stop_gradients)
+    >>> new_weights = ivy.lamb_update(w, dcdw, lr, mw_tm1, vw_tm1, step, beta1=beta1,\
+                                      beta2=beta2, epsilon=epsilon,\
+                                      max_trust_ratio=max_trust_ratio,\
+                                      decay_lamdba=decay_lambda, out=out,\
+                                      stop_gradients=stop_gradients)  
     >>> print(new_weights)
     (ivy.array([[ 0.922 ,  1.92  ,  2.92  ],
         [ 3.92  ,  5.92  ,  1.92  ],
@@ -1111,8 +1127,11 @@ def lamb_update(
     >>> decay_lambda = 0
     >>> stop_gradients = True
     >>> lr =ivy.array(0.5)
-    >>> new_weights = ivy.lamb_update(w,dcdw,lr,mw_tm1,vw_tm1,step,beta1=beta1,beta2=beta2,\
-                        epsilon=epsilon,max_trust_ratio=max_trust_ratio,decay_lambda=decay_lambda,stop_gradients=stop_gradients)
+    >>> new_weights = ivy.lamb_update(w, dcdw, lr, mw_tm1, vw_tm1, step, beta1=beta1,\
+                                      beta2=beta2, epsilon=epsilon,\
+                                      max_trust_ratio=max_trust_ratio,\
+                                      decay_lamdba=decay_lambda, out=out,\
+                                      stop_gradients=stop_gradients)  
     
     >>> print(new_weights)
     ({
@@ -1142,3 +1161,6 @@ def lamb_update(
         mw,
         vw,
     )
+
+
+lamb_update.out_index = 0

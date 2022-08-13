@@ -361,6 +361,7 @@ class ContainerWithGradients(ContainerBase):
         beta1: float = 0.9,
         beta2: float = 0.999,
         epsilon: float = 1e-7,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.adam_step. This method simply wraps
@@ -384,6 +385,9 @@ class ContainerWithGradients(ContainerBase):
         epsilon
             divisor during adam update, preventing division by zero
             (Default value = 1e-7).
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -408,13 +412,7 @@ class ContainerWithGradients(ContainerBase):
         }
         """
         return ivy.adam_step(
-            self,
-            mw,
-            vw,
-            step,
-            beta1=beta1,
-            beta2=beta2,
-            epsilon=epsilon,
+            self, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon, out=out
         )
 
     def optimizer_update(
