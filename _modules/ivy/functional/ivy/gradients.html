@@ -262,7 +262,35 @@
 
 
 <div class="viewcode-block" id="unset_with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/unset_with_grads.html#ivy.functional.ivy.gradients.unset_with_grads">[docs]</a><span class="k">def</span> <span class="nf">unset_with_grads</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enter a nested code space where gradients are computed. This method</span>
+<span class="sd">    deletes the with_grads component from the global list with_grads_stack</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        No Paramters(Void function)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Remove and return item at index (default last).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_with_grads(True)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.unset_with_grads()</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.with_grads(with_grads=None))</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_with_grads(True)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.unset_with_grads()</span>
+<span class="sd">    Returns last deleted value</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_with_grads(False)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.unset_with_grads()</span>
+<span class="sd">    Raises IndexError if list is empty or index is out of range.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">with_grads_stack</span>
     <span class="k">if</span> <span class="n">with_grads_stack</span><span class="p">:</span>
         <span class="n">with_grads_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
