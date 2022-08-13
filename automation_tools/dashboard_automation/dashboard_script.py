@@ -36,8 +36,7 @@ def get_api_results(url, token, headers):
 
 def get_DataFrame(result_dict: dict) -> pd.DataFrame:
     data = pd.DataFrame.from_dict(
-        result_dict, orient="index",
-        columns=["Numpy", "Torch", "Jax", "Tensorflow"]
+        result_dict, orient="index", columns=["Numpy", "Torch", "Jax", "Tensorflow"]
     )
     data.index.names = ["Submodules"]
     for (index_label, row_series) in data.iterrows():
