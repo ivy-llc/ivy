@@ -14,8 +14,10 @@ def variable(x):
 
 
 def is_variable(x, exclusive=False):
-    # NumPy does not support autograd, checking if x is a variable
-    # does have any meaning for NumPy. Return False.
+    logging.warning(
+        "NumPy does not support autograd, "
+        "'is_variable' returns None in place of function gradients."
+    )
     return False
 
 
