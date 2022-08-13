@@ -138,15 +138,15 @@ class ArrayWithLayers(abc.ABC):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-            paddings.
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
@@ -155,7 +155,7 @@ class ArrayWithLayers(abc.ABC):
 
         Examples
         --------
-        
+
 
         """
         return ivy.conv2d(

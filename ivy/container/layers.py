@@ -127,17 +127,17 @@ class ContainerWithLayers(ContainerBase):
         return self.static_depthwise_conv2d(
             self, filters, strides, padding, data_format, dilations, out=out
         )
-    
+
     @staticmethod
     def static_conv1d(
-            x: ivy.Container,
-            filters: Union[ivy.Array, ivy.NativeArray],
-            strides: int,
-            padding: str,
-            data_format: str = "NWC",
-            dilations: int = 1,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: ivy.Container,
+        filters: Union[ivy.Array, ivy.NativeArray],
+        strides: int,
+        padding: str,
+        data_format: str = "NWC",
+        dilations: int = 1,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.conv1d. This method simply
@@ -192,16 +192,16 @@ class ContainerWithLayers(ContainerBase):
             dilations=dilations,
             out=out,
         )
- 
+
     def conv1d(
-            self: ivy.Container,
-            filters: Union[ivy.Array, ivy.NativeArray],
-            strides: int,
-            padding: str,
-            data_format: str = "NWC",
-            dilations: int = 1,
-            *,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        filters: Union[ivy.Array, ivy.NativeArray],
+        strides: int,
+        padding: str,
+        data_format: str = "NWC",
+        dilations: int = 1,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.conv1d. This method simply
@@ -265,7 +265,7 @@ class ContainerWithLayers(ContainerBase):
         ivy.Container static method variant of ivy.conv2d. This method simply
         wraps the function, and so the docstring for ivy.conv2d also applies
         to this method with minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -275,25 +275,25 @@ class ContainerWithLayers(ContainerBase):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-            paddings.
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
         ret
             The result of the convolution operation.
-        
+
         Examples
         --------
-        
-        
+
+
         """
         return ContainerBase.multi_map_in_static_method(
             "conv2d",
@@ -305,7 +305,7 @@ class ContainerWithLayers(ContainerBase):
             dilations=dilations,
             out=out,
         )
-    
+
     def conv2d(
         self: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray],
@@ -320,7 +320,7 @@ class ContainerWithLayers(ContainerBase):
         ivy.Container instance method variant of `ivy.conv2d`. This method simply
         wraps the function, and so the docstring for `ivy.conv2d` also applies
         to this method with minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -330,24 +330,24 @@ class ContainerWithLayers(ContainerBase):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-            paddings.
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
         ret
             The result of the convolution operation.
-        
+
         Examples
         --------
-        
+
 
         """
         return self.static_conv2d(
