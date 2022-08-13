@@ -147,7 +147,6 @@ def unset_with_grads():
 
     Examples
     --------
-
     >>> ivy.set_with_grads(True)
     >>> ivy.unset_with_grads()
     >>> print(ivy.with_grads(with_grads=None))
