@@ -2432,8 +2432,8 @@ def get_axis(
         axes drawn.
         If None and unique is True, then it is set to the number of axes in the shape
     ret_tuple
-        boolean; if False, randomly draw both integers and List[int].
-        If True, draw only List[int] as tuple[int]
+        boolean; if False, randomly draw both integers and List[int]; If True, draw 
+        only List[int] as tuple[int]
 
     Returns
     -------
