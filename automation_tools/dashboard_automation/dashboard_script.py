@@ -6,8 +6,8 @@ import pandas as pd
 from github import Github
 from typing import Dict, Union
 
+url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master"
 
-url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&status=completed&per_page=100&page=2"  # noqa
 
 headers = {
     "Accept": "application/vnd.github+json",
@@ -23,6 +23,7 @@ config: Dict[Union[str, int], Union[str, type(emoji)]] = {
     2: "stateful_dashboard",
     "success": emoji.emojize(":white_check_mark:", language="alias"),
     "failure": emoji.emojize(":x:", language="alias"),
+    "in_progress": emoji.emojize(":hourglass:", language="alias"),
 }
 results = []
 
@@ -84,32 +85,28 @@ def get_matrix_job_data(token):
             backend = info["name"].strip("run-nightly-tests")[2:-1].split(",")[0]
             submodule = info["name"].strip("run-nightly-tests")[2:-1].split(",")[1]
 
+            if info["status"] in ("in_progress, queued"):
+                conclusion = config["queued"]
+            else:
+                conclusion = config[info["conclusion"]]
+
             if name == "test-core-ivy":
                 if submodule not in functional_core_dict:
                     functional_core_dict[submodule] = []
                 functional_core_dict[submodule].append(
-                    (
-                        backend,
-                        make_clickable(info["html_url"], config[info["conclusion"]]),
-                    )
+                    (backend, make_clickable(info["html_url"], conclusion))
                 )
             elif name == "test-nn-ivy":
                 if submodule not in functional_nn_dict:
                     functional_nn_dict[submodule] = []
                 functional_nn_dict[submodule].append(
-                    (
-                        backend,
-                        make_clickable(info["html_url"], config[info["conclusion"]]),
-                    )
+                    (backend, make_clickable(info["html_url"], conclusion))
                 )
             elif name == "test-stateful-ivy":
                 if submodule not in stateful_dict:
                     stateful_dict[submodule] = []
                 stateful_dict[submodule].append(
-                    (
-                        backend,
-                        make_clickable(info["html_url"], config[info["conclusion"]]),
-                    )
+                    (backend, make_clickable(info["html_url"], conclusion))
                 )
 
     return (functional_core_dict, functional_nn_dict, stateful_dict)
@@ -122,13 +119,13 @@ def main():
     ivy_modules = get_matrix_job_data(token)
     for i, module in enumerate(ivy_modules):
         module_df = get_DataFrame(module)
-        file = repo.get_contents(f"test_dashboards/{config[i]}.md", ref="master")
+        file = repo.get_contents(f"test_dashboards/{config[i]}.md", ref="dashboard")
         repo.update_file(
             file.path,
             f"update {config[i]}",
             module_df.to_markdown(),
             file.sha,
-            branch="master",
+            branch="dashboard",
         )
 
 
