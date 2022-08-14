@@ -320,20 +320,30 @@ class ArrayWithGradients(abc.ABC):
             (Default value = False)
             the function first output y, the gradients [dy/dx for x in xs],
             and any other extra function outputs.
+        
+        Returns
+        -------
+        ret
+            The function output, following the gradients.
+
         Examples
         --------
+
         With :code:`ivy.Array` input:
+
         >>> ivy.set_backend('tensorflow')
         >>> func = lambda x :x**2
         >>> xs =ivy.array([1.,0.,10.])
         >>> results = xs.execute_with_gradients(func)
         >>> print(results)
         (ivy.array([  1.,   0., 100.]), ivy.array([ 2.,  0., 20.]))
+
         >>> func = lambda x :2*x**2
         >>> xs = ivy.array([1.,1.,1.])
         >>> results  = xs.execute_with_gradients(func)
         >>> print(results)
         (ivy.array([2., 2., 2.]), ivy.array([4., 4., 4.]))
+        
         """
         return ivy.execute_with_gradients(
             func,
