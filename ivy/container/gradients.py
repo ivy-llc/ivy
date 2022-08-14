@@ -1,4 +1,4 @@
-from typing import Optional, Union, List, Dict
+from typing import Optional, Union, List, Dict, Callable
 
 # local
 import ivy
