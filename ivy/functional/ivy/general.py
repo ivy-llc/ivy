@@ -697,6 +697,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndar
         input array
     copy
         whether to copy the array to a new address or not. Default is True.
+    
     Returns
     -------
     ret
@@ -708,7 +709,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndar
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([-1, 0, 1])
-    >>> y = ivy.to_numpy(x, copy=False)
+    >>> y = ivy.to_numpy(x, copy=True)
     >>> print(y)
     [-1  0  1]
 

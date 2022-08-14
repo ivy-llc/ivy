@@ -120,7 +120,7 @@ def inplace_decrement(
             x = ivy.Array(x_native)
     else:
         if ivy.is_ivy_array(x):
-            x.data = val_native
+            x.data -= val_native
         else:
             x = ivy.Array(val_native)
     return x
