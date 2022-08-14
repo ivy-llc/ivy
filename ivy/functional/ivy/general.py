@@ -2261,9 +2261,27 @@ def set_queue_timeout(timeout):
 
 
 def queue_timeout():
-    """Get the global queue timeout values (in seconds).
-
+    """
+    Get the global queue timeout value (in seconds).
     Default value without this function being called is 10 seconds.
+
+    Returns
+    -------
+    ret
+       The global queue timeout value (in seconds).
+
+    Examples
+    --------
+    To get the default timeout value
+    >>> x = ivy.queue_timeout()
+    >>> print(x)
+    15.0
+
+    To set and get the default timeout value
+    >>> ivy.set_queue_timeout(10.0)
+    >>> y = ivy.queue_timeout()
+    >>> print(y)
+    10.0
 
     """
     global TIMEOUT
