@@ -15,12 +15,12 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
+    as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.mean"
     ),
-    native_array=helpers.array_bools(),
+    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_mean(
     dtype_and_x,
