@@ -15,3 +15,7 @@ permute.unsupported_dtypes = (
     "uint32",
     "uint64",
 )
+
+
+def stack(tensors, dim=0, *, out=None):
+    return ivy.stack(tensors, dim, out=out)
