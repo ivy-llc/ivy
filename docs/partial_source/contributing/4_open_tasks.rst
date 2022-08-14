@@ -89,7 +89,7 @@ for the formatting task as follows:
 
 1. Add a comment with the following format: 
 :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* 
-is the name of the category that the function belongs to. 
+is the name of the category that the function belongs to. An example of this is shown below.
 
 .. image:: content/checklist_generator.png
    :width: 420
