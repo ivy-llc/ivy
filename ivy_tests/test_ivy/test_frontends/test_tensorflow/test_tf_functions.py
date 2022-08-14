@@ -383,4 +383,3 @@ def test_tensorflow_one_hot(
         indices=x,
         depth=depth
     )
-
