@@ -56,8 +56,8 @@ def test_numpy_cos(
         subok=True,
         test_values=False,
     )
-    
-    
+
+
 # tan
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
@@ -146,7 +146,7 @@ def test_numpy_arcsin(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="arcsin",
+        fn_tree="arcsin",
         x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
@@ -196,7 +196,7 @@ def test_numpy_arccos(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="arccos",
+        fn_tree="arccos",
         x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,

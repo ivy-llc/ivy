@@ -56,7 +56,9 @@ def test_numpy_where(
 
 
 @given(
-    dtype_and_a=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes,),
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes,
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.nonzero"
     ),
@@ -80,6 +82,6 @@ def test_numpy_nonzero(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="nonzero",
+        fn_tree="nonzero",
         a=np.asarray(a, dtype=dtype),
     )
