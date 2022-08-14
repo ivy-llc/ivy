@@ -2957,8 +2957,9 @@ TEST_CALL_METHODS: Dict[str, callable] = {
 def handle_cmd_line_args(test_fn):
     # first four arguments are all fixtures
     def new_fn(data, get_command_line_flags, fw, device, call, *args, **kwargs):
-        # inspecting for keyword arguqments in test function
+        # inspecting for keyword arguments in test function
         fw_string = data.draw(st.sampled_from(FW_STRS))
+        #random sampling of the backend
         f = TEST_BACKENDS[fw_string]()
         with f.use:
             for param in inspect.signature(test_fn).parameters.values():
