@@ -6,28 +6,9 @@ from hypothesis import settings
 
 # local
 from ivy_tests.test_ivy import helpers
+from ivy_tests.test_ivy.helpers import FW_STRS, TEST_BACKENDS, TEST_CALL_METHODS
 from ivy import clear_backend_stack, DefaultDevice
 
-
-FW_STRS = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
-
-
-TEST_BACKENDS: Dict[str, callable] = {
-    "numpy": lambda: helpers.get_ivy_numpy(),
-    "jax": lambda: helpers.get_ivy_jax(),
-    "tensorflow": lambda: helpers.get_ivy_tensorflow(),
-    "torch": lambda: helpers.get_ivy_torch(),
-    "mxnet": lambda: helpers.get_ivy_mxnet(),
-    "": lambda: None,
-}
-TEST_CALL_METHODS: Dict[str, callable] = {
-    "numpy": helpers.np_call,
-    "jax": helpers.jnp_call,
-    "tensorflow": helpers.tf_call,
-    "torch": helpers.torch_call,
-    "mxnet": helpers.mx_call,
-    "": None,
-}
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
     "as_variable": None,
     "native_array": None,
@@ -87,7 +68,7 @@ def pytest_generate_tests(metafunc):
     # framework
     raw_value = metafunc.config.getoption("--backend")
     if raw_value == "all":
-        backend_strs = TEST_BACKENDS.keys()[-1]
+        backend_strs = TEST_BACKENDS.keys()
     else:
         backend_strs = raw_value.split(",")
 
@@ -123,7 +104,6 @@ def pytest_generate_tests(metafunc):
                             backend_str,
                         )
                     )
-
     metafunc.parametrize("device,f,compile_graph,implicit,call,fw", configs)
 
 

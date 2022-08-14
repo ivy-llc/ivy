@@ -27,6 +27,7 @@ from ivy.functional.backends.torch.general import (
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+FW_STRS = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
 cmd_line_args = (
     "as_variable",
     "native_array",
@@ -319,6 +320,21 @@ def mx_call(func, *args, **kwargs):
 
 _calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]
 
+#config for running tests
+TEST_BACKENDS: Dict[str, callable] = {
+    "numpy": lambda: get_ivy_numpy(),
+    "jax": lambda: get_ivy_jax(),
+    "tensorflow": lambda: get_ivy_tensorflow(),
+    "torch": lambda: get_ivy_torch(),
+    "mxnet": lambda: get_ivy_mxnet(),
+}
+TEST_CALL_METHODS: Dict[str, callable] = {
+    "numpy": np_call,
+    "jax": jnp_call,
+    "tensorflow": tf_call,
+    "torch": torch_call,
+    "mxnet": mx_call,
+}
 
 # function that trims white spaces from docstrings
 def trim(*, docstring):
@@ -2933,25 +2949,6 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
     if cl_arg is not None:
         return draw(st.booleans().filter(lambda x: x == cl_arg))
     return draw(st.booleans())
-
-
-FW_STRS = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
-
-
-TEST_BACKENDS: Dict[str, callable] = {
-    "numpy": lambda: get_ivy_numpy(),
-    "jax": lambda: get_ivy_jax(),
-    "tensorflow": lambda: get_ivy_tensorflow(),
-    "torch": lambda: get_ivy_torch(),
-    "mxnet": lambda: get_ivy_mxnet(),
-}
-TEST_CALL_METHODS: Dict[str, callable] = {
-    "numpy": np_call,
-    "jax": jnp_call,
-    "tensorflow": tf_call,
-    "torch": torch_call,
-    "mxnet": mx_call,
-}
 
 
 def handle_cmd_line_args(test_fn):
