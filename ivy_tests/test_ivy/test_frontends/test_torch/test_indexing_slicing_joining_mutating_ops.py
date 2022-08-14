@@ -143,7 +143,7 @@ def test_torch_stack(
     with_out,
     fw,
 ):
-    xs, input_dtypes, unique_idx=xs_n_input_dtypes_n_unique_idx
+    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     xs=[np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
