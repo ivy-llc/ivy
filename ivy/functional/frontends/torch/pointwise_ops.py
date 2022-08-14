@@ -88,3 +88,10 @@ def arcsin(input, *, out=None):
 
 
 arcsin.unsupported_dtypes = ("float16",)
+
+
+def asinh(input, *, out=None):
+    return ivy.asinh(input, out=out)
+
+
+asinh.unsupported_dtypes = ("float16",)
