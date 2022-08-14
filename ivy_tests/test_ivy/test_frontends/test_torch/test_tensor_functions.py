@@ -17,8 +17,7 @@ import ivy.functional.backends.torch as ivy_torch
     native_array=st.booleans(),
 )
 def test_torch_one_hot(
-    dtype_and_x, depth, as_variable, num_positional_args, native_array, fw
-):
+    dtype_and_x, depth, as_variable, num_positional_args, native_array, fw):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
