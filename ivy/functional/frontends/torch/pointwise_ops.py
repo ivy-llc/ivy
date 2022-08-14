@@ -95,3 +95,7 @@ def asinh(input, *, out=None):
 
 
 asinh.unsupported_dtypes = ("float16",)
+
+
+def neg(input, *, out=None):
+    return ivy.negative(input, out=out)
