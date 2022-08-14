@@ -28,7 +28,7 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         return dtypes, arrays
     lr = draw(
         st.one_of(
-            st.floats(min_value=0.0, max_value=1.0, exclude_min=True, width=32),
+            st.floats(min_value=0.0, max_value=1.0, exclude_min=True, width=16),
             helpers.array_values(
                 dtype=dtype, shape=shape, min_value=0.0, max_value=1.0, exclude_min=True
             ),
@@ -301,7 +301,7 @@ def test_grad(x, dtype, func, fw):
     dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(num_arrays=3, no_lr=True),
     step=st.integers(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon=helpers.lists(
-        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=32),
+        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=16),
         min_size=3,
         max_size=3,
     ),
@@ -461,7 +461,7 @@ def test_lars_update(
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
     step=st.integers(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon=helpers.lists(
-        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=32),
+        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=16),
         min_size=3,
         max_size=3,
     ),
@@ -483,11 +483,7 @@ def test_adam_update(
     fw,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
-    (
-        beta1,
-        beta2,
-        epsilon,
-    ) = beta1_n_beta2_n_epsilon
+    beta1, beta2, epsilon = beta1_n_beta2_n_epsilon
     stop_gradients = stopgrad
     helpers.test_function(
         input_dtypes=input_dtypes,
@@ -517,12 +513,12 @@ def test_adam_update(
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
     step=st.integers(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon_n_lambda=helpers.lists(
-        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=32),
+        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=16),
         min_size=4,
         max_size=4,
     ),
     mtr=st.one_of(
-        st.integers(min_value=1), st.floats(min_value=0, exclude_min=True, width=32)
+        st.integers(min_value=1), st.floats(min_value=0, exclude_min=True, width=16)
     ),
     stopgrad=st.booleans(),
     data=st.data(),
