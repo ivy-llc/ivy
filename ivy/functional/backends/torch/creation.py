@@ -62,7 +62,7 @@ def arange(
         else:
             return torch.arange(start, stop, step=step, device=device, out=out)
     else:
-        dtype = as_native_dtype(default_dtype(dtype))
+        dtype = as_native_dtype(default_dtype(dtype=dtype))
         return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
 
 
@@ -93,7 +93,7 @@ def asarray(
     elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = as_native_dtype(as_ivy_dtype(object_in.dtype))
     else:
-        dtype = as_native_dtype((default_dtype(dtype, object_in)))
+        dtype = as_native_dtype((default_dtype(dtype=dtype, item=object_in)))
 
     if copy is True:
         return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
@@ -142,7 +142,7 @@ def eye(
     if n_cols is None:
         n_cols = n_rows
     if batch_shape is None:
-        return torch.eye(n_rows, n_cols, dtype=dtype, device=device, out=out)
+        batch_shape = []
     i = torch.eye(n_rows, n_cols, dtype=dtype, device=device)
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
@@ -202,7 +202,7 @@ def full(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     if isinstance(shape, int):
         shape = (shape,)
@@ -265,7 +265,7 @@ def linspace(
 
 
 linspace.support_native_out = True
-linspace.unsupported_device_and_dtype = {'devices': ('cpu', ), 'dtypes': ('float16', )}
+linspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}
 
 
 def linspace_helper(start, stop, num, axis=None, *, device, dtype):
@@ -281,7 +281,7 @@ def linspace_helper(start, stop, num, axis=None, *, device, dtype):
             if axis is not None:
                 return start.unsqueeze(axis).to(device)
             else:
-                return start.to(device)
+                return start.unsqueeze(-1).to(device)
         start = start.reshape((-1,))
         linspace_method = (
             _differentiable_linspace if start.requires_grad else torch.linspace
@@ -442,3 +442,4 @@ def logspace(
 
 
 logspace.support_native_out = True
+logspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}

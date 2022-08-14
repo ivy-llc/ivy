@@ -19,7 +19,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 def test_relu(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -54,7 +53,6 @@ def test_relu(
 @handle_cmd_line_args
 def test_leaky_relu(
     *,
-    data,
     dtype_and_x,
     alpha,
     as_variable,
@@ -92,7 +90,6 @@ def test_leaky_relu(
 @handle_cmd_line_args
 def test_gelu(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -130,7 +127,6 @@ def test_gelu(
 @handle_cmd_line_args
 def test_tanh(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -164,7 +160,6 @@ def test_tanh(
 @handle_cmd_line_args
 def test_sigmoid(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -194,14 +189,13 @@ def test_sigmoid(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
     ),
-    axis=st.integers(-1, 0),
+    axis=helpers.ints(min_value=-1, max_value=0),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_softmax(
     *,
-    data,
     dtype_and_x,
     as_variable,
     axis,
@@ -239,7 +233,6 @@ def test_softmax(
 @handle_cmd_line_args
 def test_softplus(
     *,
-    data,
     dtype_and_x,
     as_variable,
     with_out,

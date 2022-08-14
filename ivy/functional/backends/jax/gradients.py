@@ -6,7 +6,7 @@ import jax.lax as jlax
 import jaxlib
 from jaxlib.xla_extension import Buffer
 from ivy.functional.backends.jax import JaxArray
-from typing import Optional
+from typing import Optional, Callable
 
 
 # local
@@ -32,15 +32,15 @@ def variable_data(x):
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
-    func_ret = func(xs)
+    func_ret = func(ivy.to_ivy(xs))
     if isinstance(func_ret, tuple):
         y = func_ret[0]
         rest = func_ret[1:]
-        grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(x_in)[0], []))
+        grad_fn = lambda x_in: ivy.to_native(func(ivy.to_ivy(x_in))[0])
     else:
         y = func_ret
         rest = tuple()
-        grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(x_in), []))
+        grad_fn = lambda x_in: ivy.to_native(func(ivy.to_ivy(x_in)))
     grad_func = jax.grad(grad_fn)
     if isinstance(xs, ivy.Container):
         grads = grad_func(xs)
@@ -54,7 +54,31 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, grads, *rest)
 
 
+def value_and_grad(func):
+    grad_fn = lambda xs: ivy.to_native(func(xs))
+
+    def callback_fn(xs):
+        xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
+        ret = jax.value_and_grad(grad_fn)(xs)
+        ret = ivy.nested_map(ret, lambda x: ivy.to_ivy(x), include_derived=True)
+        return ret
+
+    return callback_fn
+
+
 def stop_gradient(
     x: JaxArray, preserve_type: bool = True, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jlax.stop_gradient(x)
+
+
+def jac(func: Callable):
+    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    callback_fn = lambda x_in: ivy.to_ivy(jax.jacfwd(grad_fn)((ivy.to_native(x_in))))
+    return callback_fn
+
+
+def grad(func: Callable):
+    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    callback_fn = lambda x_in: ivy.to_ivy(jax.grad(grad_fn)(ivy.to_native(x_in)))
+    return callback_fn

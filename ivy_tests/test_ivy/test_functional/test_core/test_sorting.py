@@ -29,7 +29,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 def test_argsort(
     *,
-    data,
     dtype_x_axis,
     descending,
     stable,
@@ -79,7 +78,6 @@ def test_argsort(
 @handle_cmd_line_args
 def test_sort(
     *,
-    data,
     dtype_x_axis,
     num_positional_args,
     descending,
