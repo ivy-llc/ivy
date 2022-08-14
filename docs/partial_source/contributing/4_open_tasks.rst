@@ -88,7 +88,7 @@ After creating your Pull Request on github, you should then produce the checklis
 for the formatting task as follows: 
 
 1. Add a comment with the following format: 
-:code:`add_formatting_checklist_<category_name>` on your PR, where *<category_name>* 
+:code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* 
 is the name of the category that the function belongs to. 
 
 .. image:: content/checklist_generator.png
