@@ -9,7 +9,7 @@ import re
 import inspect
 import numpy as np
 import math
-from typing import Union, List
+from typing import Union, List, Dict
 from hypothesis import assume
 import hypothesis.extra.numpy as nph  # noqa
 
@@ -2935,23 +2935,47 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
     return draw(st.booleans())
 
 
+FW_STRS = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
+
+
+TEST_BACKENDS: Dict[str, callable] = {
+    "numpy": lambda: get_ivy_numpy(),
+    "jax": lambda: get_ivy_jax(),
+    "tensorflow": lambda: get_ivy_tensorflow(),
+    "torch": lambda: get_ivy_torch(),
+    "mxnet": lambda: get_ivy_mxnet(),
+}
+TEST_CALL_METHODS: Dict[str, callable] = {
+    "numpy": np_call,
+    "jax": jnp_call,
+    "tensorflow": tf_call,
+    "torch": torch_call,
+    "mxnet": mx_call,
+}
+
+
 def handle_cmd_line_args(test_fn):
     # first four arguments are all fixtures
     def new_fn(data, get_command_line_flags, fw, device, call, *args, **kwargs):
-        # inspecting for keyword arguments in test function
-        for param in inspect.signature(test_fn).parameters.values():
-            if param.name in cmd_line_args:
-                kwargs[param.name] = data.draw(
-                    bool_val_flags(get_command_line_flags[param.name])
-                )
-            elif param.name == "data":
-                kwargs["data"] = data
-            elif param.name == "fw":
-                kwargs["fw"] = fw
-            elif param.name == "device":
-                kwargs["device"] = device
-            elif param.name == "call":
-                kwargs["call"] = call
+        # inspecting for keyword arguqments in test function
+        fw_string = data.draw(st.sampled_from(FW_STRS))
+        f = TEST_BACKENDS[fw_string]()
+        with f.use:
+            for param in inspect.signature(test_fn).parameters.values():
+                if param.name in cmd_line_args:
+                    kwargs[param.name] = data.draw(
+                        bool_val_flags(get_command_line_flags[param.name])
+                    )
+                elif param.name == "data":
+                    kwargs["data"] = data
+                elif param.name == "fw":
+                    kwargs["fw"] = fw if fw is not "" else fw_string
+                elif param.name == "device":
+                    kwargs["device"] = device
+                elif param.name == "call":
+                    kwargs["call"] = (
+                        call if call is not None else TEST_CALL_METHODS[fw_string]
+                    )
         return test_fn(*args, **kwargs)
 
     return new_fn

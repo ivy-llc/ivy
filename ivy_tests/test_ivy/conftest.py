@@ -18,6 +18,7 @@ TEST_BACKENDS: Dict[str, callable] = {
     "tensorflow": lambda: helpers.get_ivy_tensorflow(),
     "torch": lambda: helpers.get_ivy_torch(),
     "mxnet": lambda: helpers.get_ivy_mxnet(),
+    "": lambda: None,
 }
 TEST_CALL_METHODS: Dict[str, callable] = {
     "numpy": helpers.np_call,
@@ -25,6 +26,7 @@ TEST_CALL_METHODS: Dict[str, callable] = {
     "tensorflow": helpers.tf_call,
     "torch": helpers.torch_call,
     "mxnet": helpers.mx_call,
+    "": None,
 }
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
     "as_variable": None,
@@ -64,7 +66,11 @@ def run_around_tests(device, f, compile_graph, implicit, call, fw):
         # Numpy does not support GPU
         pytest.skip()
     clear_backend_stack()
-    with f.use:
+    if f is not None:
+        with f.use:
+            with DefaultDevice(device):
+                yield
+    else:
         with DefaultDevice(device):
             yield
 
@@ -81,7 +87,7 @@ def pytest_generate_tests(metafunc):
     # framework
     raw_value = metafunc.config.getoption("--backend")
     if raw_value == "all":
-        backend_strs = TEST_BACKENDS.keys()
+        backend_strs = TEST_BACKENDS.keys()[-1]
     else:
         backend_strs = raw_value.split(",")
 
@@ -177,7 +183,7 @@ def get_command_line_flags(request) -> Dict[str, bool]:
 
 def pytest_addoption(parser):
     parser.addoption("--device", action="store", default="cpu")
-    parser.addoption("--backend", action="store", default="jax,numpy,tensorflow,torch")
+    parser.addoption("--backend", action="store", default="")
     parser.addoption("--compile_graph", action="store", default="true")
     parser.addoption("--with_implicit", action="store", default="false")
 
