@@ -191,6 +191,8 @@ class ContainerWithGradients(ContainerBase):
             exclusive=exclusive,
         )
 
+    static_is_variable.computes_gradients = True
+
     def is_variable(
         self: ivy.Container,
         /,
@@ -264,6 +266,8 @@ class ContainerWithGradients(ContainerBase):
             map_sequences=map_sequences,
             exclusive=exclusive,
         )
+
+    is_variable.computes_gradients = True
 
     @staticmethod
     def static_variable_data(
