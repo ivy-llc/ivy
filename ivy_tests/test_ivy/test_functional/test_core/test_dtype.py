@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 
 # local
@@ -526,6 +526,8 @@ def test_default_dtype(
     input_dtype,
     as_native,
 ):
+    assume(input_dtype in ivy.valid_dtypes)
+
     res = ivy.default_dtype(dtype=input_dtype, as_native=as_native)
     assert (
         isinstance(input_dtype, ivy.Dtype)

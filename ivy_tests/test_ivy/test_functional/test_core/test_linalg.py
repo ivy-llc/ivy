@@ -121,11 +121,33 @@ def _get_dtype_value1_value2_axis_for_tensordot(
 
 
 @st.composite
-def _get_dtype_and_matrix(draw):
+def _get_dtype_and_matrix(draw, *, symmetric=False):
     # batch_shape, shared, random_size
     input_dtype = draw(st.shared(st.sampled_from(ivy_np.valid_float_dtypes)))
     random_size = draw(helpers.ints(min_value=2, max_value=4))
     batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
+    if symmetric:
+        num_independnt_vals = int((random_size**2) / 2 + random_size / 2)
+        array_vals_flat = np.array(
+            draw(
+                helpers.array_values(
+                    dtype=input_dtype,
+                    shape=tuple(list(batch_shape) + [num_independnt_vals]),
+                    min_value=2,
+                    max_value=5,
+                )
+            )
+        )
+        array_vals = np.zeros(batch_shape + (random_size, random_size))
+        c = 0
+        for i in range(random_size):
+            for j in range(random_size):
+                if j < i:
+                    continue
+                array_vals[..., i, j] = array_vals_flat[..., c]
+                array_vals[..., j, i] = array_vals_flat[..., c]
+                c += 1
+        return input_dtype, array_vals.tolist()
     return input_dtype, draw(
         helpers.array_values(
             dtype=input_dtype,
@@ -354,7 +376,7 @@ def test_det(
 
 # eigh
 @given(
-    dtype_x=_get_dtype_and_matrix(),
+    dtype_x=_get_dtype_and_matrix(symmetric=True),
     num_positional_args=helpers.num_positional_args(fn_name="eigh"),
     data=st.data(),
 )
@@ -385,15 +407,12 @@ def test_eigh(
         fn_name="eigh",
         x=x,
         test_values=False,
+        return_flat_np_arrays=True,
     )
     if results is None:
         return
 
-    ret, ret_from_np = results
-    # flattened array returns
-    ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
-        ret=ret, ret_from_gt=ret_from_np
-    )
+    ret_np_flat, ret_from_np_flat = results
 
     # value test
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
@@ -404,7 +423,7 @@ def test_eigh(
 
 # eigvalsh
 @given(
-    dtype_x=_get_dtype_and_matrix(),
+    dtype_x=_get_dtype_and_matrix(symmetric=True),
     num_positional_args=helpers.num_positional_args(fn_name="eigvalsh"),
     data=st.data(),
 )
@@ -685,8 +704,6 @@ def test_solve(
         min_num_dims=2,
     ),
     num_positional_args=helpers.ints(min_value=0, max_value=1),
-    a=helpers.ints(min_value=1, max_value=50),
-    b=helpers.ints(min_value=1, max_value=50),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -976,7 +993,7 @@ def test_qr(
     mode,
 ):
     dtype, x = dtype_x
-    helpers.test_function(
+    results = helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -988,7 +1005,19 @@ def test_qr(
         fn_name="qr",
         x=np.asarray(x, dtype=dtype),
         mode=mode,
+        test_values=False,
+        return_flat_np_arrays=True,
     )
+    if results is None:
+        return
+
+    ret_np_flat, ret_from_np_flat = results
+
+    # value test
+    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
+        helpers.assert_all_close(
+            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2
+        )
 
 
 # svd
@@ -1032,27 +1061,22 @@ def test_svd(
         x=np.asarray(x, dtype=dtype),
         full_matrices=fm,
         test_values=False,
+        return_flat_np_arrays=True,
     )
     if results is None:
         return
 
-    ret, ret_from_np = results
-    # flattened array returns
-    ret_np_flat, ret_from_np_flat = helpers.get_flattened_array_returns(
-        ret=ret, ret_from_gt=ret_from_np
-    )
+    ret_np_flat, ret_from_np_flat = results
 
     # value test
     for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
         num_cols = ret_np.shape[-2]
         for col_idx in range(num_cols):
             ret_np_col = ret_np[..., col_idx, :]
-            ret_np_col = np.where(ret_np_col[..., 0:1] < 0, ret_np_col * -1, ret_np_col)
             ret_from_np_col = ret_from_np[..., col_idx, :]
-            ret_from_np_col = np.where(
-                ret_from_np_col[..., 0:1] < 0, ret_from_np_col * -1, ret_from_np_col
+            helpers.assert_all_close(
+                np.abs(ret_np_col), np.abs(ret_from_np_col), rtol=1e-1, atol=1e-1
             )
-            helpers.assert_all_close(ret_np_col, ret_from_np_col, rtol=1e-1, atol=1e-1)
 
 
 # matrix_norm
