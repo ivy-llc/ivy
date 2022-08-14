@@ -121,10 +121,16 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with ivy arrays passed in the arguments.
         """
+        has_out = False
+        if "out" in kwargs:
+            out = kwargs["out"]
+            has_out = True
         # convert all arrays in the inputs to ivy.Array instances
         ivy_args, ivy_kwargs = ivy.args_to_ivy(
             *args, **kwargs, include_derived={tuple: True}
         )
+        if has_out:
+            ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
     new_fn.inputs_to_ivy_arrays = True
