@@ -36,7 +36,7 @@ def test_tensorflow_add(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="add",
+        fn_tree="add",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -63,7 +63,7 @@ def test_tensorflow_tan(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="tan",
+        fn_tree="tan",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -134,7 +134,7 @@ def test_tensorflow_concat(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="concat",
+        fn_tree="concat",
         values=xs,
         axis=unique_idx,
     )
@@ -192,7 +192,7 @@ def test_tensorflow_full(
         native_array_flags=False,
         fw=fw,
         frontend="tensorflow",
-        fn_name="fill",
+        fn_tree="fill",
         dims=shape,
         value=fill_value,
         rtol=1e-05,
@@ -226,7 +226,7 @@ def test_tensorflow_multiply(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="multiply",
+        fn_tree="multiply",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -261,7 +261,7 @@ def test_tensorflow_subtract(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="subtract",
+        fn_tree="subtract",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -292,7 +292,7 @@ def test_tensorflow_logical_xor(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="math.logical_xor",
+        fn_tree="math.logical_xor",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -325,7 +325,39 @@ def test_tensorflow_divide(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="divide",
+        fn_tree="divide",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+
+# negative
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_tf.valid_numeric_dtypes)
+            )
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.negative"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_negative(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="negative",
+        x=np.asarray(x, dtype=input_dtype),
     )
