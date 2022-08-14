@@ -114,7 +114,7 @@ def test_torch_softmax(
             )
         )
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="functional.frontends.torch.non_linear_activation_functions.gelu"),
+    num_positional_args=helpers.num_positional_args(fn_name="ivy.functional.frontends.torch.non_linear_activation_functions.gelu"),
     native_array=st.booleans(),
     approximate=st.sampled_from(["none", "tanh"])
 )
