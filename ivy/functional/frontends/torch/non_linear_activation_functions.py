@@ -16,3 +16,8 @@ def softmax(input, dim=None, dtype=None):
 
 
 softmax.unsupported_dtypes = ("float16",)
+
+def gelu(input):
+    return ivy.gelu(input)
+
+gelu.unsupported_dtypes = ("float16",)
