@@ -123,3 +123,38 @@ def test_permute(
         input=np.asarray(value, dtype=dtype),
         dims=axis,
     )
+
+    
+# stack
+@given(
+    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    as_variable=helpers.array_bools(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.stack"
+    ),
+    native_array=helpers.array_bools(),
+    with_out=st.booleans(),
+)
+def test_torch_stack(
+    xs_n_input_dtypes_n_unique_idx,
+    as_variable,
+    num_positional_args,
+    native_array,
+    with_out,
+    fw,
+):
+    xs, input_dtypes, unique_idx=xs_n_input_dtypes_n_unique_idx
+    xs=[np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_name="stack",
+        tensors=xs,
+        dim=unique_idx,
+        out=None,
+    )
