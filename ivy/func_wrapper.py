@@ -121,10 +121,16 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with ivy arrays passed in the arguments.
         """
+        has_out = False
+        if "out" in kwargs:
+            out = kwargs["out"]
+            has_out = True
         # convert all arrays in the inputs to ivy.Array instances
         ivy_args, ivy_kwargs = ivy.args_to_ivy(
             *args, **kwargs, include_derived={tuple: True}
         )
+        if has_out:
+            ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
     new_fn.inputs_to_ivy_arrays = True
@@ -245,8 +251,8 @@ def integer_array_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
-         Promotes all the integer array inputs passed to the function both
-         as positional or keyword arguments to the default float dtype.
+        Promotes all the integer array inputs passed to the function both
+        as positional or keyword arguments to the default float dtype.
 
         Parameters
         ----------
@@ -262,7 +268,6 @@ def integer_array_to_float(fn: Callable) -> Callable:
             promoted to default float dtype.
 
         """
-
         if args:
 
             args = list(args)
