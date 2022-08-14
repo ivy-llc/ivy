@@ -46,6 +46,7 @@ def tan(
 tan.unsupported_dtypes = {"torch": ("float16",)}
 
 
+@from_zero_dim_arrays_to_float
 def tanh(
     x,
     /,
