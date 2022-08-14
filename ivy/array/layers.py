@@ -155,7 +155,19 @@ class ArrayWithLayers(abc.ABC):
 
         Examples
         --------
-
+        >>> x = ivy.array([[[[1.], [2.0],[3.]], \
+                      [[1.], [2.0],[3.]], \
+                      [[1.], [2.0],[3.]]]]) #NHWC
+        >>> filters = ivy.array([[[[0.]],[[1.]],[[0.]]], \
+                             [[[0.]],[[1.]], [[0.]]], \
+                             [[[0.]],[[1.]], [[0.]]]]) #HWIO
+        >>> result = x.conv2d(filters, strides=(1,), padding='SAME', 'NHWC', (1,))
+        >>> print(result)
+        ivy.array([[
+              [[2.],[4.],[6.]],
+              [[3.],[6.],[9.]],
+              [[2.],[4.],[6.]]
+              ]])
 
         """
         return ivy.conv2d(

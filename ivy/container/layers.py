@@ -292,7 +292,17 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-
+        >>> x = ivy.Container(a = ivy.eye(3, 3).view(1, 3, 3, 1), \
+                              b = ivy.eye(5, 5).view(1, 5, 5, 1))
+        >>> filters = ivy.array([[2, 0, 1], \
+                                [1, 3, 1], \
+                                [0, 1, 1]]).unsqueeze(-1).unsqueeze(-1).float()
+        >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
+        >>> print(result)
+        {
+            a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
+            b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
