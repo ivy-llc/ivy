@@ -67,6 +67,7 @@ class ArrayWithLayers(abc.ABC):
         padding: str,
         data_format: str = "NWC",
         dilations: int = 1,
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -119,6 +120,7 @@ class ArrayWithLayers(abc.ABC):
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: str,
+        /,
         *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,

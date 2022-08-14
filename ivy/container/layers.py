@@ -18,6 +18,7 @@ class ContainerWithLayers(ContainerBase):
         padding: Union[str, List[int]],
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        /,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -82,6 +83,7 @@ class ContainerWithLayers(ContainerBase):
         padding: Union[str, List[int]],
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        /,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -136,6 +138,7 @@ class ContainerWithLayers(ContainerBase):
         padding: str,
         data_format: str = "NWC",
         dilations: int = 1,
+        /,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -200,6 +203,7 @@ class ContainerWithLayers(ContainerBase):
         padding: str,
         data_format: str = "NWC",
         dilations: int = 1,
+        /,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -256,6 +260,7 @@ class ContainerWithLayers(ContainerBase):
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: str,
+        /,
         *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
@@ -321,6 +326,7 @@ class ContainerWithLayers(ContainerBase):
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: str,
+        /,
         *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
