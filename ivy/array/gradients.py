@@ -343,7 +343,7 @@ class ArrayWithGradients(abc.ABC):
         >>> results  = xs.execute_with_gradients(func)
         >>> print(results)
         (ivy.array([2., 2., 2.]), ivy.array([4., 4., 4.]))
-        
+
         """
         return ivy.execute_with_gradients(
             func,
@@ -359,8 +359,8 @@ class ArrayWithGradients(abc.ABC):
         *,
         decay_lambda: float = 0,
         stop_gradients: bool = True,
-        out: Optional[ivy.Array] = None,
-        ) -> ivy.Array:
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.lars_update. This method simply
         wraps the function, and so the docstring for ivy.lars_update also applies to
         this method with minimal changes.

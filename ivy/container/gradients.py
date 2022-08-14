@@ -193,7 +193,6 @@ class ContainerWithGradients(ContainerBase):
 
     static_is_variable.computes_gradients = True
 
-
     @staticmethod
     def static_is_variable(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
