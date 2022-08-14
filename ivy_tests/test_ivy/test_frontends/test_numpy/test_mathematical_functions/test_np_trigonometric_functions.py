@@ -118,7 +118,7 @@ def test_numpy_tan(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.tanh"
     ),
-    native_array=helpers.array_bools(),
+    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_tanh(
     dtype_and_x,
