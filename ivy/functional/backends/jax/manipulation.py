@@ -172,7 +172,7 @@ def repeat(
 
 def tile(
     x: JaxArray,
-    /.
+    /,
     reps: Iterable[int],
     *,
     out: Optional[JaxArray] = None

@@ -183,7 +183,7 @@ def repeat(
 
 def tile(
     x: np.ndarray,
-    /.
+    /,
     reps: Sequence[int],
     *,
     out: Optional[np.ndarray] = None
