@@ -367,9 +367,15 @@ def test_tensorflow_negative(
     native_array=st.booleans(),
 )
 def test_tensorflow_one_hot(
-    dtype_and_x, depth, as_variable, num_positional_args, native_array, fw
+    dtype_and_x,
+    depth,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -381,5 +387,5 @@ def test_tensorflow_one_hot(
         fn_tree="one_hot",
         test_values=False,
         indices=x,
-        depth=depth
+        depth=depth,
     )
