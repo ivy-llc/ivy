@@ -146,7 +146,7 @@ def test_numpy_tanh(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="tanh",
+        fn_tree="tanh",
         x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
