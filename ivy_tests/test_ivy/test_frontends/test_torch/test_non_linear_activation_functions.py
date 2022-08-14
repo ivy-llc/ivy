@@ -105,6 +105,7 @@ def test_torch_softmax(
         dtype=dtypes[0],
     )
 
+
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -139,4 +140,3 @@ def test_torch_gelu(
         fn_tree="nn.functional.gelu",
         input=np.asarray(x, dtype=input_dtype),
     )
-    
