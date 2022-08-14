@@ -84,6 +84,9 @@ Some common important tasks are:
 #. add thorough :ref:`Docstring Examples` for every function **and** its
    *relevant methods* and ensure they pass the docstring tests.
 
+Formatting checklist
+--------------------
+
 After creating your Pull Request on github, you should then produce the checklist
 for the formatting task as follows: 
 
