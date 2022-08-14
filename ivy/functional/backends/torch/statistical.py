@@ -20,7 +20,7 @@ def _new_var_fun(x, *, axis, correction, dtype):
 
 def _new_std_fun(x, *, axis, correction, dtype):
     output = torch.sqrt(_new_var_fun(x, axis=axis, correction=correction, dtype=dtype))
-    output = torch.tensor(output, dtype=dtype)
+    output = output.to(dtype=dtype)
     return output
 
 
@@ -124,12 +124,11 @@ def prod(
                     ]
                 ),
                 dtype=dtype,
-                out=out,
             )
-    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
+    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
-prod.support_native_out = True
+prod.unsupported_dtypes = ("float16",)
 
 
 def std(
@@ -164,7 +163,7 @@ def std(
     return ret
 
 
-std.support_native_out = True
+std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
 
 
 def sum(
@@ -234,9 +233,6 @@ def var(
         )
         ret = torch.reshape(ret, shape)
     return ret
-
-
-var.support_native_out = True
 
 
 # Extra #
