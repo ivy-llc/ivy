@@ -23,7 +23,6 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
     native_array=helpers.array_bools(),
 )
 def test_numpy_mean(
-    *,
     dtype_and_x,
     dtype,
     where,
