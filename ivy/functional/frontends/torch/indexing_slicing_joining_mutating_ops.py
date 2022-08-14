@@ -15,3 +15,14 @@ permute.unsupported_dtypes = (
     "uint32",
     "uint64",
 )
+
+
+def swapaxes(input, axis0, axis1):
+    return ivy.swapaxes(input, axis0, axis1)
+
+
+swapaxes.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
