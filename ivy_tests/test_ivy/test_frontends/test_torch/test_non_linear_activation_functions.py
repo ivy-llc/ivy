@@ -157,7 +157,7 @@ def test_torch_softmax(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="gelu"),
     native_array=st.booleans(),
-    approximate = st.sampled_from(["none", "tanh"])
+    approximate=st.sampled_from(["none", "tanh"])
 )
 def test_torch_gelu(
     dtype_and_x,

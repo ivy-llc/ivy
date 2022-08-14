@@ -17,11 +17,13 @@ def softmax(input, dim=None, dtype=None):
 
 softmax.unsupported_dtypes = ("float16",)
 
+
 def gelu(input, approximate="none"):
     if approximate == "none":
         approximate = False
     else:
         approximate = True
     return ivy.gelu(input, approximate)
+
 
 gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
