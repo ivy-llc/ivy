@@ -120,8 +120,8 @@ and address your issues.
    :width: 420
 
 **Notes**: 
-1. It is important that the PR author is the one to add the checklist comment in
-order to ensure they will have access to edit and update it later.
+
+1. It is important that the PR author is the one to add the checklist comment in order to ensure they will have access to edit and update it later.
 2. Please pay attention to the formatting of the checklist generating comment, as it is important.
 3. Do not edit the checklist, if you are facing issues, please add them in a different comment.
 4. Please refrain from using the checkboxes next to checklist items.
