@@ -284,7 +284,7 @@ def test_torch_sinh(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="sinh",
+        fn_tree="sinh",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -323,7 +323,7 @@ def test_torch_acosh(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="acosh",
+        fn_tree="acosh",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -449,7 +449,7 @@ def test_torch_asin(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="asin",
+        fn_tree="asin",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )

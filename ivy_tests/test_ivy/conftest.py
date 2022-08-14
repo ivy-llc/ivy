@@ -45,7 +45,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 def pytest_configure(config):
     num_examples = config.getoption("--num-examples")
     deadline = config.getoption("--deadline")
-    deadline = deadline if deadline else 2000
+    deadline = deadline if deadline else 4000
     if num_examples is not None:
         settings.register_profile(
             "custom max_examples",
