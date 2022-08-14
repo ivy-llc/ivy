@@ -67,7 +67,8 @@ def test_tensorflow_tan(
         x=np.asarray(x, dtype=input_dtype),
     )
 
-# mutiply
+
+# multiply
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
