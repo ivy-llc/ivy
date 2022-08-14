@@ -99,7 +99,7 @@ def test_torch_softmax(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="softmax",
+        fn_tree="softmax",
         input=np.asarray(x, dtype=input_dtype),
         dim=axis,
         dtype=dtypes[0],
