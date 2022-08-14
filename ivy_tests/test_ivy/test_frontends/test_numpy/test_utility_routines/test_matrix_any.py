@@ -16,8 +16,8 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     )
     shape = draw(
         helpers.get_shape(
-           min_num_dims=1,
-           max_num_dims=5
+            min_num_dims=1,
+            max_num_dims=5
         )
     )
     axis = draw(
@@ -53,7 +53,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
             helpers.array_values(
                 shape=where_dims_list,
                 dtype="bool"
-           )
+            )
         )
     else:
         where = draw(
