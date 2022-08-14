@@ -673,8 +673,10 @@ def flatten_and_to_np(*, ret):
 
 
 def get_ret_and_flattened_np_array(func, *args, **kwargs):
-    """Runs func with args and kwargs, and returns the result along with its flattened
-    version."""
+    """
+    Runs func with args and kwargs, and returns the result along with its flattened
+    version.
+    """
     ret = func(*args, **kwargs)
     return ret, flatten_and_to_np(ret=ret)
 
@@ -1358,6 +1360,8 @@ def test_function(
     )
 
     fn = getattr(ivy, fn_name)
+    if gradient_incompatible_function(fn=fn):
+        return
     test_unsupported = check_unsupported_dtype(
         fn=fn, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
@@ -1440,12 +1444,15 @@ def test_function(
         )
     # assert idx of return if the idx of the out array provided
     if with_out:
-        out = ivy.zeros_like(ret)
-        assert not isinstance(ret, tuple)
+        test_ret = ret
+        if isinstance(ret, tuple):
+            assert hasattr(ivy.__dict__[fn_name], "out_index")
+            test_ret = ret[getattr(ivy.__dict__[fn_name], "out_index")]
+        out = ivy.zeros_like(test_ret)
         if max(container_flags):
-            assert ivy.is_ivy_container(ret)
+            assert ivy.is_ivy_container(test_ret)
         else:
-            assert ivy.is_array(ret)
+            assert ivy.is_array(test_ret)
         if instance_method:
             ret, ret_np_flat = get_ret_and_flattened_np_array(
                 instance.__getattribute__(fn_name), *args, **kwargs, out=out
@@ -1454,10 +1461,13 @@ def test_function(
             ret, ret_np_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name], *args, **kwargs, out=out
             )
-        assert ret is out
+        test_ret = ret
+        if isinstance(ret, tuple):
+            test_ret = ret[getattr(ivy.__dict__[fn_name], "out_index")]
+        assert test_ret is out
         if not max(container_flags) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
-            assert ret.data is out.data
+            assert test_ret.data is out.data
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     try:
@@ -2803,7 +2813,7 @@ def get_axis(
         axes drawn; if None and unique is True, then it is set to the number of axes
         in the shape
     ret_tuple
-        boolean; if False, randomly draw both integers and List[int]; If True, draw 
+        boolean; if False, randomly draw both integers and List[int]; If True, draw
         only List[int] as tuple[int]
 
     Returns
