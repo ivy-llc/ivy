@@ -1274,16 +1274,16 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> 
     --------
     with :code:`ivy.Dtype` inputs:
 
-    >>> print(ivy.invalid_dtype(dtype_in = None))
+    >>> print(ivy.invalid_dtype(None))
     False
 
-    >>> print(ivy.invalid_dtype(dtype_in = 'uint64'))
+    >>> print(ivy.invalid_dtype('uint64'))
     False
 
-    >>> print(ivy.invalid_dtype(dtype_in = ivy.float64))
+    >>> print(ivy.invalid_dtype(ivy.float64))
     False
 
-    >>> print(ivy.invalid_dtype(dtype_in = 'float32'))
+    >>> print(ivy.invalid_dtype('float32'))
     False
 
 
