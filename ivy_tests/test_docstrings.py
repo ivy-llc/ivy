@@ -31,6 +31,7 @@ def test_docstrings(backend):
         "current_backend",
         "get_backend",
         "namedtuple",
+        "invalid_dtype",
         "DType",
         "Dtype",
         "multinomial",

@@ -232,10 +232,6 @@ def test_prod(
     keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
-
-    # torch implementation exhibits strange behaviour
-    assume(not (fw == "torch" and (input_dtype == "float16")))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -315,13 +311,6 @@ def test_std(
     keep_dims,
 ):
     input_dtype, x, axis, correction = dtype_and_x
-    # torch implementation exhibits strange behaviour
-    assume(
-        not (
-            fw == "torch"
-            and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype))
-        )
-    )
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
