@@ -795,7 +795,6 @@ def nested_any(
 def copy_nest(
     nest: Union[ivy.Array, ivy.NativeArray, Iterable],
     /,
-    *,
     include_derived: bool = False,
     to_mutable: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:

@@ -13,3 +13,14 @@ def leaky_relu(x, negative_slope=0.01):
 
 
 leaky_relu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def gelu(x, approximate=True):
+    return ivy.gelu(x, approximate)
+
+
+gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def one_hot(x, num_classes, *, device=None, out=None):
+    return ivy.one_hot(x, num_classes, device=device, out=out)
