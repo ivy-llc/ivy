@@ -236,8 +236,8 @@ bitwise_xor.support_native_out = True
 @_handle_0_dim_output
 def ceil(
     x: np.ndarray,
-    *,
     /,
+    *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if "int" in str(x.dtype):
