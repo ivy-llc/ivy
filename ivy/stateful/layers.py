@@ -110,7 +110,7 @@ class Linear(Module):
             The outputs following the linear operation and bias addition
             *[batch_shape, out]*
         """
-        return ivy.linear(inputs, self.v.w, self.v.b if self._with_bias else None)
+        return ivy.linear(inputs, self.v.w, bias=self.v.b if self._with_bias else None)
 
 
 # Dropout #
@@ -175,7 +175,7 @@ class Dropout(Module):
             The outputs following the linear operation and bias addition
             *[batch_shape, out]*
         """
-        return ivy.dropout(inputs, self._prob, self._scale, dtype=dtype)
+        return ivy.dropout(inputs, self._prob, scale=self._scale, dtype=dtype)
 
 
 # Attention #
@@ -347,14 +347,14 @@ class MultiHeadAttention(Module):
             inputs,
             self._scale,
             self._num_heads,
-            context,
-            mask,
-            self._to_q,
-            self._to_kv,
-            self._to_out,
-            self.v.to_q,
-            self.v.to_kv,
-            self.v.to_out,
+            context=context,
+            mask=mask,
+            to_q_fn=self._to_q,
+            to_kv_fn=self._to_kv,
+            to_out_fn=self._to_out,
+            to_q_v=self.v.to_q,
+            to_kv_v=self.v.to_kv,
+            to_out_v=self.v.to_out,
         )
 
 
@@ -477,8 +477,8 @@ class Conv1D(Module):
                 self.v.w,
                 self._strides,
                 self._padding,
-                self._data_format,
-                self._dilations,
+                data_format=self._data_format,
+                dilations=self._dilations,
             )
             + self.v.b
         )
@@ -600,9 +600,9 @@ class Conv1DTranspose(Module):
                 self.v.w,
                 self._strides,
                 self._padding,
-                self._output_shape,
-                self._data_format,
-                self._dilations,
+                output_shape=self._output_shape,
+                data_format=self._data_format,
+                dilations=self._dilations,
             )
             + self.v.b
         )
@@ -720,8 +720,8 @@ class Conv2D(Module):
                 self.v.w,
                 self._strides,
                 self._padding,
-                self._data_format,
-                self._dilations,
+                data_format=self._data_format,
+                dilations=self._dilations,
             )
             + self.v.b
         )
@@ -843,9 +843,9 @@ class Conv2DTranspose(Module):
                 self.v.w,
                 self._strides,
                 self._padding,
-                self._output_shape,
-                self._data_format,
-                self._dilations,
+                output_shape=self._output_shape,
+                data_format=self._data_format,
+                dilations=self._dilations,
             )
             + self.v.b
         )
@@ -960,8 +960,8 @@ class DepthwiseConv2D(Module):
                 self.v.w,
                 self._strides,
                 self._padding,
-                self._data_format,
-                self._dilations,
+                data_format=self._data_format,
+                dilations=self._dilations,
             )
             + self.v.b
         )
@@ -1079,8 +1079,8 @@ class Conv3D(Module):
                 self.v.w,
                 self._strides,
                 self._padding,
-                self._data_format,
-                self._dilations,
+                data_format=self._data_format,
+                dilations=self._dilations,
             )
             + self.v.b
         )
@@ -1203,9 +1203,9 @@ class Conv3DTranspose(Module):
                 self.v.w,
                 self._strides,
                 self._padding,
-                self._output_shape,
-                self._data_format,
-                self._dilations,
+                output_shape=self._output_shape,
+                data_format=self._data_format,
+                dilations=self._dilations,
             )
             + self.v.b
         )

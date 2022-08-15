@@ -31,7 +31,7 @@ def abs(x):
     return ivy.abs(x)
 
 
-abs.ubsupported_dtypes = {"torch": ("float16", "bfloat16")}
+abs.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def sqrt(x):
@@ -39,3 +39,10 @@ def sqrt(x):
 
 
 sqrt.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def acos(x):
+    return ivy.acos(x)
+
+
+acos.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
