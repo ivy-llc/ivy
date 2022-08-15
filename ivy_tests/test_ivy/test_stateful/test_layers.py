@@ -97,7 +97,7 @@ def test_linear_layer(
         call(linear_layer, x), np.array(target, dtype=dtype), rtol=tolerance_dict[dtype]
     )
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
         return
 
@@ -124,10 +124,10 @@ def test_dropout_layer(x_shape, dtype, as_variable, device, compile_graph, call)
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    ivy.seed(0)
+    ivy.seed(seed_value=0)
     assert np.min(call(dropout_layer, x)) == 0.0
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
         return
 
@@ -236,7 +236,7 @@ def test_multi_head_attention_layer(
         rtol=tolerance_dict[dtype],
     )
     # compilation test
-    if call in [helpers.torch_call]:
+    if ivy.current_backend_str() == "torch":
         # torch.jit compiled functions can't take variable number of arguments,
         # which torch.einsum takes
         return

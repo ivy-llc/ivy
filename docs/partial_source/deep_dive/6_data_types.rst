@@ -246,7 +246,7 @@ The PyTorch-specific implementation is as follows:
         return torch.full(
             shape_to_tuple(shape),
             fill_value,
-            dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
+            dtype=ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True),
             device=device,
         )
 
@@ -264,6 +264,17 @@ which consists of all the :code:`dtypes` that every function of that particular 
 and so if a certain :code:`dtype` is already present in the :code:`ivy.invalid_dtypes` then we should
 not repeat flag it by adding it into the :code:`unsupported_dtypes`.
 
+Support for Integer Arrays
+--------------------------
+
+Some backends like :code:`tensorflow` donot support integer array inputs for certain functions. For example
+:code:`ivy.cos` wouldn't work for an input like :code:`ivy.array([1,2,3])` when the backend is set to :code:`tensorflow`
+the reason being that :code:`tensorflow` only supports non-integer values for this function. However, backends like
+:code:`torch` and :code:`jax` support integer arrays as inputs. So to provide this same functionality in
+:code:`tensorflow` we simply promote any integer array passed to such functions to the default float dtype.
+This behavior in Ivy makes it much easier to support such frameworks in our frontends, without the need for
+lots of extra logic for handling integer array inputs. This approach is also in keeping with our general approach in Ivy
+of implementing the superset of all behavior, rather than the lowest common denominator
 
 **Round Up**
 
@@ -272,3 +283,12 @@ This should have hopefully given you a good feel for data types, and how these a
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `data types discussion`_,
 or reach out on `discord`_ in the `data types channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/2qOBzQdLXn4" class="video">
+    </iframe>
