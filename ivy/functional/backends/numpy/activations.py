@@ -16,6 +16,9 @@ def relu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.asarray(np.maximum(x, 0, out=out, dtype=x.dtype))
 
 
+relu.support_native_out = True
+
+
 def leaky_relu(
     x: np.ndarray,
     /,
@@ -39,10 +42,6 @@ def gelu(x, /, *, approximate: Optional[bool] = True) -> np.ndarray:
 
 def sigmoid(x: np.ndarray, /) -> np.ndarray:
     return np.asarray(1 / (1 + np.exp(-x))).astype(x.dtype)
-
-
-def tanh(x: np.ndarray) -> np.ndarray:
-    return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
 
 
 def softmax(

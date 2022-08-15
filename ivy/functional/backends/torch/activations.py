@@ -46,15 +46,12 @@ def gelu(
 gelu.unsupported_dtypes = ("float16",)
 
 
-def tanh(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.tanh(x, out=out)
-
-
 def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.sigmoid(x, out=out)
 
 
 sigmoid.unsupported_dtypes = ("float16",)
+sigmoid.support_native_out = True
 
 
 def softmax(x: torch.Tensor, /, *, axis: Optional[int] = None) -> torch.Tensor:
