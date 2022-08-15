@@ -111,14 +111,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -400,7 +400,7 @@ This function requires us to create extra methods for generating <code class="co
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
     <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
 
 <span class="nd">@given</span><span class="p">(</span>
@@ -468,7 +468,7 @@ This function requires us to create extra methods for generating <code class="co
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
 
 <span class="nd">@given</span><span class="p">(</span>
@@ -533,7 +533,7 @@ This function requires us to create extra methods for generating <code class="co
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
 
 <span class="nd">@given</span><span class="p">(</span>
@@ -599,7 +599,7 @@ This function requires us to create extra methods for generating <code class="co
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
 
 <span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>

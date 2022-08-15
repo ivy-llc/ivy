@@ -5,9 +5,9 @@ layer_norm
 
 .. autofunction:: ivy.array.array_methods.layer_norm
 
-.. autofunction:: ivy.container.container_methods.layer_norm
-
 .. autofunction:: ivy.container.container_methods.static_layer_norm
+
+.. autofunction:: ivy.container.container_methods.layer_norm
 |
 | **Supported Frameworks:**
 
