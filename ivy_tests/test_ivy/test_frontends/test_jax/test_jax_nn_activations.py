@@ -11,6 +11,7 @@ import ivy.functional.backends.jax as ivy_jax
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_jax.valid_numeric_dtypes, min_value=-2
     ),
+    axis=helpers.ints(min_value=-1, max_value=0),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.softmax"
@@ -19,6 +20,7 @@ import ivy.functional.backends.jax as ivy_jax
 )
 def test_jax_nn_softmax(
     dtype_and_x,
+    axis,
     as_variable,
     num_positional_args,
     native_array,
@@ -39,4 +41,5 @@ def test_jax_nn_softmax(
         frontend="jax",
         fn_tree="nn.softmax",
         x=data,
+        axis=axis,
     )
