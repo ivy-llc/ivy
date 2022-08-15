@@ -77,14 +77,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../stop_gradient.html">stop_gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../value_and_grad.html">value_and_grad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jac.html">jac</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../grad.html">grad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../adam_step.html">adam_step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optimizer_update.html">optimizer_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gradient_descent_update.html">gradient_descent_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lars_update.html">lars_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../adam_update.html">adam_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lamb_update.html">lamb_update</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../jac.html">jac</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../grad.html">grad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
@@ -158,6 +158,59 @@
              
   <section id="ivy-container-static-is-variable">
 <h1>ivy.Container.static_is_variable<a class="headerlink" href="#ivy-container-static-is-variable" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_is_variable">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_is_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/gradients.html#ContainerWithGradients.static_is_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_is_variable" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of <a href="../is_variable/is_variable_functional.html">ivy.is_variable</a>. This method simply wraps
+the function, and so the docstring for <a href="../is_variable/is_variable_functional.html">ivy.is_variable</a> also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – An ivy container.</p></li>
+<li><p><strong>exclusive</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – Whether to check if the data type is exclusively a variable, rather than an (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+array. For frameworks like JAX that do not have exclusive variable types,
+the function will always return False if this flag is set, otherwise the
+check is the same for general arrays. Default is False.</p></li>
+<li><p><strong>key_chains</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]) – The key-chains to apply or not apply the method to. Default is None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>to_apply</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the method will be applied to key_chains, otherwise key_chains (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+will be skipped. Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to prune key_chains for which the function was not applied. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to also map method to sequences (lists, tuples). Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Boolean, true if x is a trainable variable, false otherwise.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">3.2</span><span class="p">),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">is_var</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: false,</span>
+<span class="go">    b: false</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>With multiple <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">,</span> <span class="mi">8</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exclusive</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">is_var</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: true,</span>
+<span class="go">    b: false</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
