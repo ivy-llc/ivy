@@ -26,8 +26,6 @@ def test_jax_nn_softmax(
 ):
     input_dtype, x = dtype_and_x
     data = np.asarray(x, dtype=input_dtype)
-    # print("shape:", x.shape, ", x:", x)
-    print("shape:", data.shape, ", data:", data)
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
