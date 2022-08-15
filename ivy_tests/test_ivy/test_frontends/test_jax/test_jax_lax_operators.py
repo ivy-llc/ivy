@@ -170,7 +170,7 @@ def _fill_value(draw):
         return draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
         return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(st.floats(-5, 5))
+    return draw(helpers.floats(min_value=-5, max_value=5))
 
 
 @given(
@@ -270,7 +270,7 @@ def test_jax_lax_sqrt(
         x=np.asarray(x, dtype=input_dtype),
     )
 
-        
+
 # acos
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
