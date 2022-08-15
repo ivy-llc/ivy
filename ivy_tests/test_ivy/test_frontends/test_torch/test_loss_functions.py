@@ -79,7 +79,7 @@ def test_binary_cross_entropy(
         native_array_flags=False, 
         fw=fw, 
         frontend="torch", 
-        fn_name="nn.functional.binary_cross_entropy", 
+        fn_tree="nn.functional.binary_cross_entropy", 
         input=np.asarray(pred, dtype=pred_dtype), 
         target=np.asarray(true, dtype=true_dtype), 
         weight=np.asarray(weight, dtype=weight_dtype), 
