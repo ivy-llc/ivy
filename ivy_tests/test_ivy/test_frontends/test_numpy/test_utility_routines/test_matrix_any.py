@@ -21,7 +21,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
         )
     )
     axis = draw(
-        helpers.integers(min_value=-1, max_value=len(shape) - 1)
+        helpers.ints(min_value=-1, max_value=len(shape) - 1)
     )
     if axis == -1:
         axis = None
@@ -31,16 +31,16 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
             dtype=dtypes[0]
         )
     )
-    where_shape_length = draw(helpers.integers(min_value=0, max_value=len(shape)))
+    where_shape_length = draw(helpers.ints(min_value=0, max_value=len(shape)))
     if where_shape_length != 0:
         where_nb_dims_to_change = draw(
-            helpers.integers(
+            helpers.ints(
                 min_value=0,
                 max_value=where_shape_length - 1
             )
         )
         where_dims_to_change = [draw(
-            helpers.integers(
+            helpers.ints(
                 min_value=0,
                 max_value=where_shape_length - 1
             )) for i in range(where_nb_dims_to_change)
@@ -102,7 +102,7 @@ def test_numpy_any(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="any",
+        fn_tree="any",
         x=x,
         axis=axis,
         out=None,

@@ -1,6 +1,8 @@
 import ivy
+from ivy.func_wrapper import handle_out_argument
 
 
+@handle_out_argument
 def any(
     x,
     /,
