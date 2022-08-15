@@ -47,3 +47,10 @@ def sqrt(x):
 
 
 sqrt.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def acos(x):
+    return ivy.acos(x)
+
+
+acos.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
