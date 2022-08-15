@@ -17,6 +17,17 @@ permute.unsupported_dtypes = (
 )
 
 
+def swapdims(input, dim0, dim1):
+    return ivy.swapaxes(input, dim0, dim1)
+
+
+swapdims.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
+
+
 def movedim(input, source, destination):
     """
     If either dimension input is a tuple, 
