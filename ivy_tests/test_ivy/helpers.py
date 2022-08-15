@@ -2981,8 +2981,6 @@ def handle_cmd_line_args(test_fn):
                     kwargs[param.name] = data.draw(
                         bool_val_flags(get_command_line_flags[param.name])
                     )
-                elif param.name == "data":
-                    kwargs["data"] = data
                 elif param.name == "fw":
                     kwargs["fw"] = fw if flag else fw_string
                 elif param.name == "device":
