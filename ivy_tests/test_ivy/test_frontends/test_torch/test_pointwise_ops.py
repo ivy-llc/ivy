@@ -21,7 +21,7 @@ import ivy.functional.backends.torch as ivy_torch
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
+    alpha=helpers.floats(min_value=-1e06, max_value=1e06),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -459,7 +459,7 @@ def test_torch_arccos(
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
+    alpha=helpers.floats(min_value=-1e06, max_value=1e06),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
