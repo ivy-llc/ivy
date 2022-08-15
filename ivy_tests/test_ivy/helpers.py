@@ -557,7 +557,7 @@ def floats(
     exclude_max
         if True, exclude the maximum limit.
     safety_factor
-        default = 0.99. Only values which are 95% or less than the edge of
+        default = 0.99. Only values which are 99% or less than the edge of
         the limit for a given dtype are generated.
     small_value_safety_factor
         default = 1.1.
