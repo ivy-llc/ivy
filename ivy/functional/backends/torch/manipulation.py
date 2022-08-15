@@ -348,20 +348,3 @@ def clip(
 clip.support_native_out = True
 
 clip.unsupported_dtypes = ("float16",)
-
-
-def movedim(
-    x: torch.Tensor,
-    source: int,
-    destination: int,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.movedim(x, source, destination)
-
-
-movedim.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
