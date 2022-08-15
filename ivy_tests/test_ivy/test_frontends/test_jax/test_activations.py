@@ -44,7 +44,7 @@ def test_jax_nn_relu(
         fn_name="ivy.functional.frontends.jax.nn.leaky_relu"
     ),
     native_array=st.booleans(),
-    negative_slope=st.floats(min_value=0.0, max_value=1.0),
+    negative_slope=helpers.floats(min_value=0.0, max_value=1.0),
 )
 def test_jax_nn_leaky_relu(
     dtype_and_x,
