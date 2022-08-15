@@ -10,7 +10,7 @@ class ArrayWithDataTypes(abc.ABC):
     def astype(
         self: ivy.Array, dtype: ivy.Dtype, copy: bool = True, out: ivy.Array = None
     ) -> ivy.Array:
-        return ivy.astype(self._data, dtype=dtype, copy=copy, out=out)
+        return ivy.astype(self._data, dtype, copy=copy, out=out)
 
     def broadcast_arrays(
         self: ivy.Array, *arrays: Union[ivy.Array, ivy.NativeArray]
@@ -134,7 +134,7 @@ class ArrayWithDataTypes(abc.ABC):
     def is_bool_dtype(self: ivy.Array) -> bool:
         return ivy.is_bool_dtype(self._data)
 
-    def is_float_dtype(self: ivy.Array, out: ivy.Array = None) -> bool:
+    def is_float_dtype(self: ivy.Array, *, out: ivy.Array = None) -> bool:
         """
         `ivy.Array` instance method variant of `ivy.is_float_dtype`. This method simply
         checks to see if the array is of type `float`.
@@ -157,7 +157,7 @@ class ArrayWithDataTypes(abc.ABC):
 
         >>> x = ivy.is_float_dtype(ivy.int64)
         >>> print(ivy.is_float_dtype(x))
-        True
+        False
 
         >>> x = ivy.is_float_dtype(ivy.int32)
         >>> print(ivy.is_float_dtype(x))
@@ -167,7 +167,7 @@ class ArrayWithDataTypes(abc.ABC):
         >>> print(ivy.is_float_dtype(x))
         False
 
-        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x
+        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)
         >>> print(ivy.is_float_dtype(arr))
         True
 
