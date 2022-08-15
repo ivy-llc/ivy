@@ -37,7 +37,7 @@ def test_numpy_mean(
         where=where,
         input_dtype=[input_dtype],
         as_variable=as_variable,
-        native_array=[native_array],
+        native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
