@@ -71,14 +71,14 @@
 <li class="toctree-l2"><a class="reference internal" href="stop_gradient.html">stop_gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l2"><a class="reference internal" href="value_and_grad.html">value_and_grad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jac.html">jac</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grad.html">grad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adam_step.html">adam_step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optimizer_update.html">optimizer_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient_descent_update.html">gradient_descent_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lars_update.html">lars_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adam_update.html">adam_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lamb_update.html">lamb_update</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jac.html">jac</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grad.html">grad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
@@ -102,14 +102,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -153,7 +153,7 @@
 <h1>with_grads<a class="headerlink" href="#with-grads" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.gradients.with_grads">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">with_grads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">with_grads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/gradients.html#with_grads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.with_grads" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">with_grads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/gradients.html#with_grads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.with_grads" title="Permalink to this definition"></a></dt>
 <dd><p>Enter a nested code space where gradients are computed. This method
 adds the with_grads component to the global list with_grads_stack</p>
 <dl class="field-list simple">

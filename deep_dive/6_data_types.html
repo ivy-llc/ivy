@@ -58,6 +58,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#data-type-module">Data Type Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arguments-in-other-functions">Arguments in other Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#unsupported-data-types">Unsupported data types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#support-for-integer-arrays">Support for Integer Arrays</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
@@ -108,14 +109,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -346,6 +347,17 @@ do. It should be noted that the <code class="code docutils literal notranslate">
 which consists of all the <code class="code docutils literal notranslate"><span class="pre">dtypes</span></code> that every function of that particular backend doesn’t support
 and so if a certain <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is already present in the <code class="code docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code> then we should
 not repeat flag it by adding it into the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code>.</p>
+</section>
+<section id="support-for-integer-arrays">
+<h2>Support for Integer Arrays<a class="headerlink" href="#support-for-integer-arrays" title="Permalink to this heading"></a></h2>
+<p>Some backends like <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> donot support integer array inputs for certain functions. For example
+<code class="code docutils literal notranslate"><span class="pre">ivy.cos</span></code> wouldn’t work for an input like <code class="code docutils literal notranslate"><span class="pre">ivy.array([1,2,3])</span></code> when the backend is set to <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code>
+the reason being that <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> only supports non-integer values for this function. However, backends like
+<code class="code docutils literal notranslate"><span class="pre">torch</span></code> and <code class="code docutils literal notranslate"><span class="pre">jax</span></code> support integer arrays as inputs. So to provide this same functionality in
+<code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> we simply promote any integer array passed to such functions to the default float dtype.
+This behavior in Ivy makes it much easier to support such frameworks in our frontends, without the need for
+lots of extra logic for handling integer array inputs. This approach is also in keeping with our general approach in Ivy
+of implementing the superset of all behavior, rather than the lowest common denominator</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for data types, and how these are handled in Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,

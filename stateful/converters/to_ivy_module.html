@@ -21,7 +21,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Optimizers" href="../optimizers.html" />
+    <link rel="next" title="Sequential" href="../sequential.html" />
     <link rel="prev" title="Converters" href="../converters.html" /> 
 </head>
 
@@ -83,17 +83,17 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../initializers.html">Initializers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../converters.html">Converters</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">to_ivy_module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -135,6 +135,33 @@
              
   <section id="to-ivy-module">
 <h1>to_ivy_module<a class="headerlink" href="#to-ivy-module" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.stateful.converters.to_ivy_module">
+<span class="sig-prename descclassname"><span class="pre">ivy.stateful.converters.</span></span><span class="sig-name descname"><span class="pre">to_ivy_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">native_module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_module_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace_update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/converters.html#to_ivy_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.to_ivy_module" title="Permalink to this definition"></a></dt>
+<dd><p>Convert an instance of a trainable module from a native framework into a
+trainable ivy.Module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>native_module</strong> – The module in the native framework to convert, required if native_module_class
+is not given.
+Default is None.</p></li>
+<li><p><strong>native_module_class</strong> – The class of the native module, required if native_module is not given.
+Default is None.</p></li>
+<li><p><strong>args</strong> – Positional arguments to pass to the native module class. Default is None.</p></li>
+<li><p><strong>kwargs</strong> – Key-word arguments to pass to the native module class. Default is None.</p></li>
+<li><p><strong>device</strong> – The device on which to create module variables. Default is None.</p></li>
+<li><p><strong>devices</strong> – The devices on which to create module variables. Default is None.</p></li>
+<li><p><strong>inplace_update</strong> – For backends with dedicated variable classes, whether to update these inplace.
+Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable ivy.Module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
@@ -147,7 +174,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../converters.html" class="btn btn-neutral float-left" title="Converters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../optimizers.html" class="btn btn-neutral float-right" title="Optimizers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../sequential.html" class="btn btn-neutral float-right" title="Sequential" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

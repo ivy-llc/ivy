@@ -5,9 +5,9 @@ reshape
 
 .. autofunction:: ivy.array.array_methods.reshape
 
-.. autofunction:: ivy.container.container_methods.static_reshape
-
 .. autofunction:: ivy.container.container_methods.reshape
+
+.. autofunction:: ivy.container.container_methods.static_reshape
 |
 | **Supported Frameworks:**
 

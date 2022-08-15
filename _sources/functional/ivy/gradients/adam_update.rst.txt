@@ -3,9 +3,9 @@ adam_update
 
 .. autofunction:: ivy.functional.ivy.gradients.adam_update
 
-.. autofunction:: ivy.container.container_methods.adam_update
+.. autofunction:: ivy.array.array_methods.adam_update
 
-.. autofunction:: ivy.container.container_methods.static_adam_update
+.. autofunction:: ivy.container.container_methods.adam_update
 |
 | **Supported Frameworks:**
 
@@ -33,6 +33,6 @@ adam_update
    :caption: adam_update
 
    adam_update/adam_update_functional.rst
+   adam_update/adam_update_array.rst
    adam_update/adam_update_container.rst
-   adam_update/static_adam_update_container.rst
 
