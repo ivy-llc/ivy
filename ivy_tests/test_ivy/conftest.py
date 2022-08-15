@@ -82,6 +82,8 @@ def pytest_generate_tests(metafunc):
     # create test configs
     configs = list()
     for backend_str in backend_strs:
+        if not backend_str:
+            continue
         for device in devices:
             for compile_graph in compile_modes:
                 for implicit in implicit_modes:

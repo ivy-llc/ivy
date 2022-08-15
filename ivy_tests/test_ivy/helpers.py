@@ -327,7 +327,6 @@ TEST_BACKENDS: Dict[str, callable] = {
     "jax": lambda: get_ivy_jax(),
     "tensorflow": lambda: get_ivy_tensorflow(),
     "torch": lambda: get_ivy_torch(),
-    "mxnet": lambda: get_ivy_mxnet(),
     "": lambda: None,
 }
 TEST_CALL_METHODS: Dict[str, callable] = {
@@ -335,7 +334,6 @@ TEST_CALL_METHODS: Dict[str, callable] = {
     "jax": jnp_call,
     "tensorflow": tf_call,
     "torch": torch_call,
-    "mxnet": mx_call,
     "": None,
 }
 
