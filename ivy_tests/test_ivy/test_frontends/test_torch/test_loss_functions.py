@@ -16,6 +16,12 @@ import ivy.functional.backends.torch as ivy_torch
                 set(ivy_torch.valid_float_dtypes)
             )
         ),
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size= 1,
     ),
     dtype_and_target=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -23,6 +29,14 @@ import ivy.functional.backends.torch as ivy_torch
                 set(ivy_torch.valid_float_dtypes)
             )
         ),
+        min_value=1.0013580322265625e-05,
+        max_value=1,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(

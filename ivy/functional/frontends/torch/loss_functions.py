@@ -13,6 +13,6 @@ def cross_entropy(
     label_smoothing=0.0,
 ):
     return ivy.cross_entropy(input, target)
+ 
 
-
-cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
+cross_entropy.unsupported_dtypes = ('uint16', 'float16', 'uint64', 'uint32')
