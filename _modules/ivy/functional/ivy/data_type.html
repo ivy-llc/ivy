@@ -1384,7 +1384,7 @@
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">unsupported_dtypes</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="invalid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/invalid_dtype.html#ivy.functional.ivy.data_type.invalid_dtype">[docs]</a><span class="k">def</span> <span class="nf">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="invalid_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/invalid_dtype.html#ivy.functional.ivy.data_type.invalid_dtype">[docs]</a><span class="k">def</span> <span class="nf">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines whether the provided data type is not support by</span>
 <span class="sd">    the current framework.</span>
@@ -1401,23 +1401,55 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.invalid_dtype(dtype_in = None)</span>
+<span class="sd">    with :code:`ivy.Dtype` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(None))</span>
 <span class="sd">    False</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.invalid_dtype(dtype_in = &#39;uint64&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(&#39;uint64&#39;))</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(ivy.float64))</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(&#39;float32&#39;))</span>
+<span class="sd">    False</span>
+
+
+
+<span class="sd">    with :code:`ivy.NativeDtype` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(ivy.native_uint8))</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(ivy.native_float32))</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(&#39;native_bool&#39;))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.invalid_dtype(dtype_in = ivy.float64)</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(&#39;native_float64&#39;))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.invalid_dtype(dtype_in = &#39;float32&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(ivy.native_int16))</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(&#39;native_int32&#39;))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.invalid_dtype(dtype_in = ivy.native_int16)</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(ivy.native_float16))</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(ivy.native_int64))</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(ivy.native_int8))</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; print(ivy.invalid_dtype(&#39;native_uint64&#39;))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.invalid_dtype(dtype_in = &#39;native_int16&#39;)</span>
-<span class="sd">    True</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dtype_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>

@@ -1047,7 +1047,7 @@ number larger than 1.0 according to the IEEE-754 standard.</p>
 the current framework.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dtype_in</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The data type for which to check for backend non-support</p>
+<dd class="field-odd"><p><strong>dtype_in</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The data type for which to check for backend non-support</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
@@ -1057,27 +1057,61 @@ the current framework.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+<p>with <code class="code docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
 <span class="go">False</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span> <span class="o">=</span> <span class="s1">&#39;uint64&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="s1">&#39;uint64&#39;</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>with <code class="code docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_uint8</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_float32</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="s1">&#39;native_bool&#39;</span><span class="p">))</span>
 <span class="go">True</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="s1">&#39;native_float64&#39;</span><span class="p">))</span>
 <span class="go">True</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span> <span class="o">=</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_int16</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="s1">&#39;native_int32&#39;</span><span class="p">))</span>
 <span class="go">True</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_int16</span><span class="p">)</span>
-<span class="go">True</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_float16</span><span class="p">))</span>
+<span class="go">False</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span> <span class="o">=</span> <span class="s1">&#39;native_int16&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_int64</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_int8</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype</span><span class="p">(</span><span class="s1">&#39;native_uint64&#39;</span><span class="p">))</span>
 <span class="go">True</span>
 </pre></div>
 </div>
