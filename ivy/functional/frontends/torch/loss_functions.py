@@ -55,4 +55,4 @@ def binary_cross_entropy(
     return result
 
 
-binary_cross_entropy.unsupported_dtypes = ("float16",)
+binary_cross_entropy.unsupported_dtypes = ('uint16', 'float16', 'uint64', 'float64', 'uint32')
