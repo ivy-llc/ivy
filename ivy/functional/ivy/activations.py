@@ -20,7 +20,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @handle_nestable
 def relu(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the rectified linear unit function element-wise.
 
@@ -87,8 +87,9 @@ def relu(
 @handle_nestable
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
-    alpha: Optional[float] = 0.2,
+    /,
     *,
+    alpha: Optional[float] = 0.2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the leaky rectified linear unit function element-wise.
@@ -159,8 +160,9 @@ def leaky_relu(
 @handle_nestable
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
-    approximate=True,
+    /,
     *,
+    approximate=True,
     out: Optional[ivy.Array] = None,
 ):
     """Applies the Gaussian error linear unit (GELU) activation function.
@@ -275,7 +277,7 @@ def tanh(
 @handle_out_argument
 @handle_nestable
 def sigmoid(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the sigmoid function element-wise.
 
@@ -328,8 +330,9 @@ def sigmoid(
 @handle_nestable
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the softmax function element-wise.
@@ -393,7 +396,7 @@ def softmax(
 @handle_out_argument
 @handle_nestable
 def softplus(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the softplus function element-wise.
 
