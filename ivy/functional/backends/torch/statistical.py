@@ -73,8 +73,8 @@ mean.support_native_out = True
 
 def min(
     x: torch.Tensor,
-    /,
     *,
+    /,
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
