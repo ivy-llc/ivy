@@ -641,7 +641,7 @@ def test_ones(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    num_positional_args=helpers.ints(min_value=0, max_value=1),
+    num_positional_args=helpers.num_positional_args(fn_name="ones_like"),
     data=st.data(),
 )
 @handle_cmd_line_args
