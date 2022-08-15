@@ -116,7 +116,6 @@ def _train_task(
                     else variables.prune_key_chains(inner_v),
                     inner_update_grads,
                     inner_learning_rate,
-                    inplace=False,
                     stop_gradients=stop_gradients,
                 )
             )
@@ -125,7 +124,6 @@ def _train_task(
                 variables,
                 inner_update_grads,
                 inner_learning_rate,
-                inplace=False,
                 stop_gradients=stop_gradients,
             )
 
