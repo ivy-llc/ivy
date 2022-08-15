@@ -26,7 +26,7 @@ def arange(
     *,
     dtype: Optional[np.dtype] = None,
     device: str,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype:
         dtype = as_native_dtype(dtype)
@@ -46,7 +46,7 @@ def asarray(
     copy: Optional[bool] = None,
     dtype: Optional[np.dtype] = None,
     device: str,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     # If copy=none then try using existing memory buffer
     if isinstance(object_in, np.ndarray) and dtype is None:
@@ -76,7 +76,7 @@ def empty(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.empty(shape, dtype), device=device)
 
@@ -96,7 +96,7 @@ def eye(
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if n_cols is None:
         n_cols = n_rows
@@ -122,7 +122,7 @@ def full(
     *,
     dtype: Optional[Union[ivy.Dtype, np.dtype]] = None,
     device: str,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
@@ -139,7 +139,7 @@ def full_like(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
@@ -155,7 +155,7 @@ def linspace(
     endpoint: bool = True,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
         axis = -1
@@ -179,7 +179,7 @@ def ones(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.ones(shape, dtype), device=device)
 
@@ -198,7 +198,7 @@ def tril(
 
 def triu(
     x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None
-    ) -> np.ndarray:
+) -> np.ndarray:
     return np.triu(x, k)
 
 
@@ -207,7 +207,7 @@ def zeros(
     *,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.zeros(shape, dtype), device=device)
 
@@ -235,10 +235,11 @@ def logspace(
     axis: Optional[int] = None,
     dtype: np.dtype,
     device: str,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
         axis = -1
     return _to_device(
-        np.logspace(start, stop, num=num, base=base, dtype=dtype, axis=axis), device=device
+        np.logspace(start, stop, num=num, base=base, dtype=dtype, axis=axis),
+        device=device,
     )
