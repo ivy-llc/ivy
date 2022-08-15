@@ -525,6 +525,7 @@ def floats(
     allow_nan=False,
     allow_inf=False,
     allow_subnormal=False,
+    width=None,
     exclude_min=True,
     exclude_max=True,
     safety_factor=0.99,
@@ -548,6 +549,9 @@ def floats(
         if True, allow inf in the list.
     allow_subnormal
         if True, allow subnormals in the list.
+    width
+        The width argument specifies the maximum number of bits of precision
+        required to represent the generated float. Valid values are 16, 32, or 64.
     exclude_min
         if True, exclude the minimum limit.
     exclude_max
@@ -565,17 +569,20 @@ def floats(
     """
     lim_float16 = 65504
     lim_float32 = 3.4028235e38
+    lim_float64 = 1.7976931348623157e308
 
     if min_value is not None and max_value is not None:
         if (
             min_value > -lim_float16 * safety_factor
             and max_value < lim_float16 * safety_factor
+            and (width == 16 or not ivy.exists(width))
         ):
             # dtype float16
             width = 16
         elif (
             min_value > -lim_float32 * safety_factor
             and max_value < lim_float32 * safety_factor
+            and (width == 32 or not ivy.exists(width))
         ):
             # dtype float32
             width = 32
@@ -583,7 +590,6 @@ def floats(
             # dtype float64
             width = 64
 
-    if min_value is not None and max_value is not None:
         min_value = float_of(min_value, width)
         max_value = float_of(max_value, width)
 
@@ -601,26 +607,53 @@ def floats(
         )
 
     else:
-        limit = math.log(small_value_safety_factor)
-        min_value_neg = min_value
-        max_value_neg = round(-1 * limit, -3)
-        min_value_pos = round(limit, -3)
-        max_value_pos = max_value
+        if ivy.exists(min_value):
+            if min_value > -lim_float16 * safety_factor and (
+                width == 16 or not ivy.exists(width)
+            ):
+                dtype_min = "float16"
+            elif min_value > -lim_float32 * safety_factor and (
+                width == 32 or not ivy.exists(width)
+            ):
+                dtype_min = "float32"
+            else:
+                dtype_min = "float64"
+        else:
+            dtype_min = draw(st.sampled_from(ivy_np.valid_float_dtypes))
+
+        if ivy.exists(max_value):
+            if max_value < lim_float16 * safety_factor and (
+                width == 16 or not ivy.exists(width)
+            ):
+                dtype_max = "float16"
+            elif max_value < lim_float32 * safety_factor and (
+                width == 32 or not ivy.exists(width)
+            ):
+                dtype_max = "float32"
+            else:
+                dtype_max = "float64"
+        else:
+            dtype_max = draw(st.sampled_from(ivy_np.valid_float_dtypes))
+
+        dtype = ivy.promote_types(dtype_min, dtype_max)
+
+        if dtype == "float16" or 16 == ivy.default(width, 0):
+            width = 16
+            min_value = float_of(-lim_float16 * safety_factor, width)
+            max_value = float_of(lim_float16 * safety_factor, width)
+        elif dtype in ["float32", "bfloat16"] or 32 == ivy.default(width, 0):
+            width = 32
+            min_value = float_of(-lim_float32 * safety_factor, width)
+            max_value = float_of(lim_float32 * safety_factor, width)
+        else:
+            width = 64
+            min_value = float_of(-lim_float64 * safety_factor, width)
+            max_value = float_of(lim_float64 * safety_factor, width)
 
         values = draw(
             st.floats(
-                min_value=min_value_neg,
-                max_value=max_value_neg,
-                allow_nan=allow_nan,
-                allow_subnormal=allow_subnormal,
-                allow_infinity=allow_inf,
-                width=width,
-                exclude_min=exclude_min,
-                exclude_max=exclude_max,
-            )
-            | st.floats(
-                min_value=min_value_pos,
-                max_value=max_value_pos,
+                min_value=min_value,
+                max_value=max_value,
                 allow_nan=allow_nan,
                 allow_subnormal=allow_subnormal,
                 allow_infinity=allow_inf,
@@ -629,7 +662,6 @@ def floats(
                 exclude_max=exclude_max,
             )
         )
-
     return values
 
 
