@@ -37,6 +37,6 @@ def test_torch_flipud(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="flipud",
+        fn_tree="flipud",
         input=np.asarray(value, dtype=input_dtype),
     )
