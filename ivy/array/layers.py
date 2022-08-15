@@ -127,3 +127,60 @@ class ArrayWithLayers(abc.ABC):
             dilations=dilations,
             out=out,
         )
+
+    def conv2d(
+        self: ivy.Array,
+        filters: Union[ivy.Array, ivy.NativeArray],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NHWC",
+        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of `ivy.conv2d`. This method simply
+        wraps the function, and so the docstring for `ivy.conv2d` also applies
+        to this method with minimal changes.
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        filters
+            Convolution filters *[fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
+        Examples
+        --------
+        >>> x = ivy.array([[[[1.], [2.0],[3.]], \
+                      [[1.], [2.0],[3.]], \
+                      [[1.], [2.0],[3.]]]]) #NHWC
+        >>> filters = ivy.array([[[[0.]],[[1.]],[[0.]]], \
+                             [[[0.]],[[1.]], [[0.]]], \
+                             [[[0.]],[[1.]], [[0.]]]]) #HWIO
+        >>> result = x.conv2d(filters, strides=(1,), padding='SAME', 'NHWC', (1,))
+        >>> print(result)
+        ivy.array([[
+              [[2.],[4.],[6.]],
+              [[3.],[6.],[9.]],
+              [[2.],[4.],[6.]]
+              ]])
+        """
+        return ivy.conv2d(
+            self._data, filters, strides, padding, data_format, dilations, out=out
+        )
