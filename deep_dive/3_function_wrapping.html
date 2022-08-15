@@ -195,9 +195,6 @@ directly calling them through the <code class="code docutils literal notranslate
 instead. Whenever there’s a <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> argument, this wrapping function defers to the corresponding
 <a class="reference internal" href="5_containers.html#containers"><span class="std std-ref">Containers</span></a> static method to facilitate the same. As a result, the function can be called by passing
 an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> to any or all of its arguments.</p></li>
-<li><p><a href="#id1"><span class="problematic" id="id2">`integer_array_to_float`_</span></a>: This wrapping function enables conversion of integer array inputs in the positional and keyword
-arguments to a function to the default float dtype. This is currently used to support integer array arguments to functions
-for which one or more backend frameworks only non-integer numeric dtypes.</p></li>
 </ol>
 <p>When calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L340">_wrap_function</a> during <a class="reference internal" href="2_backend_setting.html#backend-setting"><span class="std std-ref">Backend Setting</span></a>, firstly the attributes of the functions are checked
 to get all the wrapping functions for a particular functions. Then all the wrapping functions applicable to a
@@ -209,10 +206,7 @@ detail in the next sections. For now, suffice it to say that they do quite a lot
 <p>If you’re ever unsure of how best to proceed,
 please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1314">function wrapping discussion</a>,
 or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982737993028755496">function wrapping channel</a>!</p>
-<p><strong>Video</strong></p>
-<iframe width="420" height="315"
-src="https://www.youtube.com/embed/-RGXxrP849k" class="video">
-</iframe></section>
+</section>
 
 
            </div>

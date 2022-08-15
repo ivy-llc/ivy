@@ -239,7 +239,7 @@
 <span class="sd">            The outputs following the linear operation and bias addition</span>
 <span class="sd">            *[batch_shape, out]*</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span></div>
 
 
 <span class="c1"># Dropout #</span>
@@ -304,7 +304,7 @@
 <span class="sd">            The outputs following the linear operation and bias addition</span>
 <span class="sd">            *[batch_shape, out]*</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prob</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_scale</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prob</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
 
 
 <span class="c1"># Attention #</span>
@@ -476,14 +476,14 @@
             <span class="n">inputs</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_num_heads</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
-            <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
-            <span class="n">to_q_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_q</span><span class="p">,</span>
-            <span class="n">to_kv_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_kv</span><span class="p">,</span>
-            <span class="n">to_out_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_out</span><span class="p">,</span>
-            <span class="n">to_q_v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_q</span><span class="p">,</span>
-            <span class="n">to_kv_v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_kv</span><span class="p">,</span>
-            <span class="n">to_out_v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_out</span><span class="p">,</span>
+            <span class="n">context</span><span class="p">,</span>
+            <span class="n">mask</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_to_q</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_to_kv</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_to_out</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_q</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_kv</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -606,8 +606,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_strides</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="p">,</span>
-                <span class="n">data_format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
-                <span class="n">dilations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span>
         <span class="p">)</span></div>
@@ -729,9 +729,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_strides</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="p">,</span>
-                <span class="n">output_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span><span class="p">,</span>
-                <span class="n">data_format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
-                <span class="n">dilations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span>
         <span class="p">)</span></div>
@@ -849,8 +849,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_strides</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="p">,</span>
-                <span class="n">data_format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
-                <span class="n">dilations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span>
         <span class="p">)</span></div>
@@ -972,9 +972,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_strides</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="p">,</span>
-                <span class="n">output_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span><span class="p">,</span>
-                <span class="n">data_format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
-                <span class="n">dilations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span>
         <span class="p">)</span></div>
@@ -1089,8 +1089,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_strides</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="p">,</span>
-                <span class="n">data_format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
-                <span class="n">dilations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span>
         <span class="p">)</span></div>
@@ -1208,8 +1208,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_strides</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="p">,</span>
-                <span class="n">data_format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
-                <span class="n">dilations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span>
         <span class="p">)</span></div>
@@ -1332,9 +1332,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_strides</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="p">,</span>
-                <span class="n">output_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span><span class="p">,</span>
-                <span class="n">data_format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
-                <span class="n">dilations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span>
         <span class="p">)</span></div>

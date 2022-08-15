@@ -144,7 +144,6 @@
 <div class="viewcode-block" id="index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/index_nest.html#ivy.functional.ivy.nest.index_nest">[docs]</a><span class="k">def</span> <span class="nf">index_nest</span><span class="p">(</span>
     <span class="n">nest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-    <span class="o">/</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Index a nested object, using a tuple of indices or keys in the case of dicts.</span>
 
@@ -203,7 +202,7 @@
     <span class="k">return</span> <span class="n">ret</span></div>
 
 
-<div class="viewcode-block" id="prune_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/prune_nest_at_index.html#ivy.functional.ivy.nest.prune_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">prune_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<div class="viewcode-block" id="prune_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/prune_nest_at_index.html#ivy.functional.ivy.nest.prune_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">prune_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prune a nested object at a specified index.</span>
 
 <span class="sd">    Parameters</span>
@@ -224,7 +223,6 @@
     <span class="n">nest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">],</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
     <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the value of a nested item at a specified index.</span>
 
@@ -289,7 +287,7 @@
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">value</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="insert_into_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/insert_into_nest_at_index.html#ivy.functional.ivy.nest.insert_into_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">insert_into_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<div class="viewcode-block" id="insert_into_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/insert_into_nest_at_index.html#ivy.functional.ivy.nest.insert_into_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">insert_into_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -300,7 +298,7 @@
         <span class="n">insert_into_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">value</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="map_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/map_nest_at_index.html#ivy.functional.ivy.nest.map_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">map_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<div class="viewcode-block" id="map_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/map_nest_at_index.html#ivy.functional.ivy.nest.map_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">map_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Map a function to the value of a nested item at a specified index.</span>
 
 <span class="sd">    Parameters</span>
@@ -319,7 +317,7 @@
         <span class="n">map_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">fn</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="multi_index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/multi_index_nest.html#ivy.functional.ivy.nest.multi_index_nest">[docs]</a><span class="k">def</span> <span class="nf">multi_index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<div class="viewcode-block" id="multi_index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/multi_index_nest.html#ivy.functional.ivy.nest.multi_index_nest">[docs]</a><span class="k">def</span> <span class="nf">multi_index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Repeatedly index a nested object, using a tuple of tuples of indices or keys in</span>
 <span class="sd">    the case of dicts.</span>
 
@@ -334,7 +332,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="prune_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/prune_nest_at_indices.html#ivy.functional.ivy.nest.prune_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">prune_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<div class="viewcode-block" id="prune_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/prune_nest_at_indices.html#ivy.functional.ivy.nest.prune_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">prune_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prune a nested object at specified indices.</span>
 
 <span class="sd">    Parameters</span>
@@ -352,7 +350,6 @@
     <span class="n">nest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="n">values</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-    <span class="o">/</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Set the value of a nested item at specified indices with specified values.</span>
 
@@ -408,7 +405,7 @@
     <span class="p">[</span><span class="n">set_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="insert_into_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/insert_into_nest_at_indices.html#ivy.functional.ivy.nest.insert_into_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">insert_into_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<div class="viewcode-block" id="insert_into_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/insert_into_nest_at_indices.html#ivy.functional.ivy.nest.insert_into_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">insert_into_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Insert a value into the nested item at specified indices with specified values.</span>
 
 <span class="sd">    Parameters</span>
@@ -430,7 +427,7 @@
     <span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="map_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/map_nest_at_indices.html#ivy.functional.ivy.nest.map_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">map_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<div class="viewcode-block" id="map_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/map_nest_at_indices.html#ivy.functional.ivy.nest.map_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">map_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Map a function to the values of a nested item at the specified indices.</span>
 
 <span class="sd">    Parameters</span>
@@ -665,70 +662,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        x following the application of fn to each of its iterated items.</span>
-<span class="sd">    </span>
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`int` inputs:</span>
+<span class="sd">        x following the applicable of fn to each of it&#39;s iterated items.</span>
 
-<span class="sd">    &gt;&gt;&gt; def special_square(x : float) -&gt; float : return np.square(x)</span>
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = special_square, \</span>
-<span class="sd">                          constant = None, \</span>
-<span class="sd">                          unique = {&#39;x&#39; : [1,2,3]}, \</span>
-<span class="sd">                          mean = False)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    [1, 4, 9]</span>
-
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = special_square, \</span>
-<span class="sd">                          constant = None, \</span>
-<span class="sd">                          unique = {&#39;x&#39;:[0,1,2]},\</span>
-<span class="sd">                          mean = True)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    1.6666666666666667</span>
-
-<span class="sd">    &gt;&gt;&gt; def special_pow(x:float,y:float) -&gt;float : return np.power(x,y)</span>
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = special_pow, \</span>
-<span class="sd">                          constant = {&#39;y&#39;:[0,1]}, \</span>
-<span class="sd">                          unique = {&#39;x&#39;:[1,2,3]}, \</span>
-<span class="sd">                          mean = False)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    [array([1,1]),</span>
-<span class="sd">    array([1,2]),</span>
-<span class="sd">    array([1,3])]</span>
-
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = special_pow, \</span>
-<span class="sd">                          constant = {&#39;y&#39;:[0,1]}, \</span>
-<span class="sd">                          unique = {&#39;x&#39;:[1,2,3]}, \</span>
-<span class="sd">                          mean = True)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    [1. 2.]</span>
-
-<span class="sd">    With :code:`float` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; def linear_model(w:float, x:float, b:float) -&gt; float: return w*x + b</span>
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = linear_model, \</span>
-<span class="sd">                          constant = {&#39;w&#39;:10., &#39;b&#39;:1.}, \</span>
-<span class="sd">                          unique = {&#39;x&#39;:[0.,1.,2.]}, \</span>
-<span class="sd">                          mean = False)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    [1.0, 11.0, 21.0]</span>
-
-<span class="sd">    With :code:`ivy.Array` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = linear_model, \</span>
-<span class="sd">        constant = {&#39;w&#39;:ivy.array([1.,0.,1.]), &#39;b&#39;:ivy.array([0.,10.,100.])}, \</span>
-<span class="sd">        unique = {&#39;x&#39;:[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \</span>
-<span class="sd">        mean = False)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    [ivy.array([0., 10., 100.]),</span>
-<span class="sd">    ivy.array([1., 10., 101.])]</span>
-
-<span class="sd">    &gt;&gt;&gt; results = ivy.map(fn = linear_model, \</span>
-<span class="sd">        constant = {&#39;w&#39;:ivy.array([1.,0.,1.]), &#39;b&#39;:ivy.array([0.,10.,100.])}, \</span>
-<span class="sd">        unique = {&#39;x&#39;:[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \</span>
-<span class="sd">        mean = True)</span>
-<span class="sd">    &gt;&gt;&gt; print(results)</span>
-<span class="sd">    ivy.array([  0.5,  10. , 100. ])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="p">{})</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">unique</span><span class="p">,</span> <span class="p">{})</span>
@@ -739,14 +674,12 @@
         <span class="p">)</span>
     <span class="p">]</span>
     <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
-        <span class="n">rets</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span>
-
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">rets</span></div>
 
 
 <div class="viewcode-block" id="nested_map"><a class="viewcode-back" href="../../../../functional/ivy/nest/nested_map.html#ivy.functional.ivy.nest.nested_map">[docs]</a><span class="k">def</span> <span class="nf">nested_map</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">include_derived</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">to_mutable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -923,10 +856,9 @@
 
 <div class="viewcode-block" id="copy_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/copy_nest.html#ivy.functional.ivy.nest.copy_nest">[docs]</a><span class="k">def</span> <span class="nf">copy_nest</span><span class="p">(</span>
     <span class="n">nest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="n">include_derived</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">to_mutable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Copies a nest deeply, but without copying leaves of the nest, only the nest</span>
 <span class="sd">    lists, tuples and dicts are copied.</span>
 
@@ -946,33 +878,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        The copied nest.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; nest = ivy.array([[1.,2.,3.],[7.,8.,9.]])</span>
-<span class="sd">    &gt;&gt;&gt; copied_nest = ivy.copy_nest(nest)</span>
-<span class="sd">    &gt;&gt;&gt; print(copied_nest)</span>
-<span class="sd">    ivy.array([[1., 2., 3.],</span>
-<span class="sd">            [7., 8., 9.]])</span>
-
-<span class="sd">    With :code:`Iterable` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; nest = [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]</span>
-<span class="sd">    &gt;&gt;&gt; copied_nest = ivy.copy_nest(nest, include_derived = True)</span>
-<span class="sd">    &gt;&gt;&gt; print(copied_nest)</span>
-<span class="sd">    [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]</span>
-
-<span class="sd">    &gt;&gt;&gt; nest = ([23, 25, 1337], [63, 98, 6])</span>
-<span class="sd">    &gt;&gt;&gt; copied_nest = ivy.copy_nest(nest, to_mutable = True)</span>
-<span class="sd">    &gt;&gt;&gt; print(copied_nest)</span>
-<span class="sd">    [[23, 25, 1337], [63, 98, 6]]</span>
-
-<span class="sd">    &gt;&gt;&gt; nest = {&#39;first&#39;: [23., 24., 25], &#39;second&#39;: [46., 48., 50]}</span>
-<span class="sd">    &gt;&gt;&gt; copied_nest = ivy.copy_nest(nest)</span>
-<span class="sd">    &gt;&gt;&gt; print(copied_nest)</span>
-<span class="sd">    {&#39;first&#39;: [23.0, 24.0, 25], &#39;second&#39;: [46.0, 48.0, 50]}</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">class_instance</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">nest</span><span class="p">)</span>
     <span class="n">check_fn</span> <span class="o">=</span> <span class="p">(</span>
@@ -981,27 +886,16 @@
         <span class="k">else</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">nest</span><span class="p">)</span> <span class="ow">is</span> <span class="n">t</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">check_fn</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-        <span class="n">ret_list</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">copy_nest</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="n">include_derived</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="n">to_mutable</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nest</span>
-        <span class="p">]</span>
+        <span class="n">ret_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">include_derived</span><span class="p">,</span> <span class="n">to_mutable</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nest</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">to_mutable</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ret_list</span>
         <span class="k">return</span> <span class="n">class_instance</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ret_list</span><span class="p">))</span>
     <span class="k">elif</span> <span class="n">check_fn</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">class_instance</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="n">copy_nest</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="n">include_derived</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="n">to_mutable</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nest</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">class_instance</span><span class="p">([</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">include_derived</span><span class="p">,</span> <span class="n">to_mutable</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nest</span><span class="p">])</span>
     <span class="k">elif</span> <span class="n">check_fn</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">class_instance</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">nest</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">class_instance</span><span class="p">(</span>
-            <span class="p">{</span>
-                <span class="n">k</span><span class="p">:</span> <span class="n">copy_nest</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="n">include_derived</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="n">to_mutable</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">nest</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="p">}</span>
+            <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">copy_nest</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">include_derived</span><span class="p">,</span> <span class="n">to_mutable</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">nest</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">nest</span></div>
 
