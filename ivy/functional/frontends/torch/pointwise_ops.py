@@ -37,11 +37,25 @@ def acos(input, *, out=None):
 acos.unsupported_dtypes = ("float16",)
 
 
+def sinh(input, *, out=None):
+    return ivy.sinh(input, out=out)
+
+
+sinh.unsupported_dtypes = ("float16",)
+
+
 def acosh(input, *, out=None):
     return ivy.acosh(input, out=out)
 
 
 acosh.unsupported_dtypes = ("float16",)
+
+
+def arccosh(input, *, out=None):
+    return ivy.acosh(input, out=out)
+
+
+arccosh.unsupported_dtypes = ("float16",)
 
 
 def arccos(input, *, out=None):
@@ -60,3 +74,17 @@ def subtract(input, other, *, alpha=1, out=None):
 
 
 subtract.unsupported_dtypes = ("float16",)
+
+
+def asin(input, *, out=None):
+    return ivy.asin(input, out=out)
+
+
+asin.unsupported_dtypes = ("float16",)
+
+
+def asinh(input, *, out=None):
+    return ivy.asinh(input, out=out)
+
+
+asinh.unsupported_dtypes = ("float16",)
