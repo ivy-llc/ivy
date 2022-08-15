@@ -128,11 +128,11 @@ def test_permute(
 # stack
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    as_variable=helpers.array_bools(),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.stack"
     ),
-    native_array=helpers.array_bools(),
+    native_array=st.booleans(),
     with_out=st.booleans(),
 )
 def test_torch_stack(
@@ -153,7 +153,7 @@ def test_torch_stack(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="stack",
+        fn_tree="stack",
         tensors=xs,
         dim=unique_idx,
         out=None,
