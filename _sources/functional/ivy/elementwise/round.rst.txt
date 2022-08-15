@@ -5,9 +5,9 @@ round
 
 .. autofunction:: ivy.array.array_methods.round
 
-.. autofunction:: ivy.container.container_methods.static_round
-
 .. autofunction:: ivy.container.container_methods.round
+
+.. autofunction:: ivy.container.container_methods.static_round
 |
 | **Supported Frameworks:**
 

@@ -77,7 +77,6 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.stack</a></li>
 <li class="toctree-l3"><a class="reference internal" href="stack_array.html">ivy.Array.stack</a></li>
 <li class="toctree-l3"><a class="reference internal" href="stack_container.html">ivy.Container.stack</a></li>
-<li class="toctree-l3"><a class="reference internal" href="static_stack_container.html">ivy.Container.static_stack</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../clip.html">clip</a></li>
@@ -106,14 +105,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -158,22 +157,22 @@
 <h1>ivy.stack<a class="headerlink" href="#ivy-stack" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.manipulation.stack">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrays</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/manipulation.html#stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.stack" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/manipulation.html#stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.manipulation.stack" title="Permalink to this definition"></a></dt>
 <dd><p>Joins a sequence of arrays along a new axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>arrays</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – input arrays to join. Each array must have the same shape.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – axis along which the arrays will be joined. Providing an axis specifies the (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
-index of the new axis in the dimensions of the result. For example, if axis
-is 0, the new axis will be the first dimension and the output array will
-have shape (N, A, B, C); if axis is 1, the new axis will be the
-second dimension and the output array will have shape (A, N, B, C); and, if
-axis is -1, the new axis will be the last dimension and the output array
-will have shape (A, B, C, N). A valid axis must be on the interval
-[-N, N), where N is the rank (number of dimensions) of x. If
-provided an axis outside of the required interval, the function must raise
-an exception. Default: 0.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – axis along which the arrays will be joined. Providing an <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
+index of the new axis in the dimensions of the result. For example, if <code class="docutils literal notranslate"><span class="pre">axis</span></code>
+is <code class="docutils literal notranslate"><span class="pre">0</span></code>, the new axis will be the first dimension and the output array will
+have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">A,</span> <span class="pre">B,</span> <span class="pre">C)</span></code>; if <code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code>, the new axis will be the
+second dimension and the output array will have shape <code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">N,</span> <span class="pre">B,</span> <span class="pre">C)</span></code>; and, if
+<code class="docutils literal notranslate"><span class="pre">axis</span></code> is <code class="docutils literal notranslate"><span class="pre">-1</span></code>, the new axis will be the last dimension and the output array
+will have shape <code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">B,</span> <span class="pre">C,</span> <span class="pre">N)</span></code>. A valid <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be on the interval
+<code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of dimensions) of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If
+provided an <code class="docutils literal notranslate"><span class="pre">axis</span></code> outside of the required interval, the function must raise
+an exception. Default: <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 inputs broadcast to.</p></li>
 </ul>
@@ -182,25 +181,15 @@ inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul>
-<li><p><em>ret</em> – an output array having rank N+1, where N is the rank (number of
-dimensions) of x. If the input arrays have different data types, normal
+<dd class="field-odd"><p><p><em>ret</em> – an output array having rank <code class="docutils literal notranslate"><span class="pre">N+1</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the rank (number of
+dimensions) of <code class="docutils literal notranslate"><span class="pre">x</span></code>. If the input arrays have different data types, normal
 ref:<cite>type-promotion</cite> must apply. If the input arrays have the same data type,
 the output array must have the same data type as the input arrays.
 .. note:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">This</span> <span class="n">specification</span> <span class="n">leaves</span> <span class="nb">type</span> <span class="n">promotion</span> <span class="n">between</span> <span class="n">data</span> <span class="nb">type</span> <span class="n">families</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="p">,</span>
-<span class="n">intxx</span> <span class="ow">and</span> <span class="n">floatxx</span><span class="p">)</span> <span class="n">unspecified</span><span class="o">.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>This specification leaves type promotion between data type families (i.e.,
+``intxx`` and ``floatxx``) unspecified.
 </pre></div>
 </div>
-</li>
-<li><p>This function conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
-<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
-<li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.stack.html#signatures.manipulation_functions.stack&gt;`_ : E501)</p></li>
-<li><p><em>in the standard.</em></p></li>
-<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
-<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
-<li><p><em>instances in place of any of the arguments.</em></p></li>
-</ul>
 </p>
 </dd>
 </dl>

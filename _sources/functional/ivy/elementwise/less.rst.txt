@@ -5,9 +5,9 @@ less
 
 .. autofunction:: ivy.array.array_methods.less
 
-.. autofunction:: ivy.container.container_methods.static_less
-
 .. autofunction:: ivy.container.container_methods.less
+
+.. autofunction:: ivy.container.container_methods.static_less
 |
 | **Supported Frameworks:**
 
