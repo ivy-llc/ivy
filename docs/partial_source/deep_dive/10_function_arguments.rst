@@ -7,6 +7,7 @@ Function Arguments
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`function arguments channel`: https://discord.com/channels/799879767196958751/982738240354254898
+.. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 
 Here, we explain how the function arguments differ between the placeholder implementation at
 :code:`ivy/functional/ivy/category_name.py`, and the backend-specific implementation at
@@ -39,6 +40,7 @@ We present both the Ivy API signature and also a backend-specific signature for 
     @handle_out_argument
     def tan(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
@@ -46,6 +48,7 @@ We present both the Ivy API signature and also a backend-specific signature for 
     # PyTorch
     def tan(
         x: torch.Tensor,
+        /,
         *,
         out: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
@@ -57,16 +60,19 @@ We present both the Ivy API signature and also a backend-specific signature for 
     @handle_out_argument
     def roll(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         shift: Union[int, Sequence[int]],
-        axis: Optional[Union[int, Sequence[int]]] = None,
         *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
 
     # NumPy
     def roll(
         x: np.ndarray,
+        /,
         shift: Union[int, Sequence[int]],
+        *,
         axis: Optional[Union[int, Sequence[int]]] = None,
     ) -> np.ndarray:
 
@@ -78,6 +84,7 @@ We present both the Ivy API signature and also a backend-specific signature for 
     def add(
         x1: Union[ivy.Array, ivy.NativeArray, float],
         x2: Union[ivy.Array, ivy.NativeArray, float],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, float]:
@@ -85,7 +92,8 @@ We present both the Ivy API signature and also a backend-specific signature for 
     # TensorFlow
     def add(
         x1: Union[tf.Tensor, tf.Variable, float],
-        x2: Union[tf.Tensor, tf.Variable, float]
+        x2: Union[tf.Tensor, tf.Variable, float],
+        /,
     ) -> Union[tf.Tensor, tf.Variable, float]:
 
 .. code-block:: python
@@ -111,7 +119,13 @@ We present both the Ivy API signature and also a backend-specific signature for 
         device: jaxlib.xla_extension.Device,
     ) -> JaxArray:
 
+
 Positional and Keyword Arguments
+------
+In both signatures, we follow the `Array API Standard convention`_ about positional and keyword arguments.
+
+* Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name. When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based solely on their order. This is indicated with an :code:`/` after all the position-only arguments.
+* Optional parameters must be keyword-only arguments. A :code:`*` must be added before any of the keyword-only arguments.
 
 Arrays
 ------
