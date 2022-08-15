@@ -78,6 +78,8 @@ def test_torch_cross_entropy(
         min_value=0, 
         max_value=1, 
         allow_inf=False, 
+        exclude_min=True, 
+        exclude_max=True, 
         min_num_dims=1, 
         max_num_dims=1, 
         min_dim_size=2,
