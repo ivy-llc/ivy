@@ -1,6 +1,5 @@
 # global
 import numpy as np
-import ivy
 from hypothesis import given, strategies as st
 
 # local
@@ -9,16 +8,18 @@ import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
 
 
-# composite the generation of ints of valid dtypes and tuple(int) that shares the same size as input shape
+# composite the generation of ints of valid dtypes and tuple(int)
+# that shares the same size as input shape
 @st.composite
 def _roll_helper(draw):
     return draw(
-        helpers.ints() | 
-        helpers.get_axis(
+        helpers.ints()
+        | helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         ret_tuple=True,
-        ),
+          ),
     )
+
 
 # roll
 @given(
