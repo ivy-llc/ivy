@@ -327,6 +327,42 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_list(self)
 
+    def inplace_decrement(
+        self: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.inplace_decrement. This method simply
+        wraps the function, and so the docstring for ivy.inplace_decrement also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array to be decremented by the defined value.
+        val
+            The value of decrement.
+
+        Returns
+        -------
+        ret
+            The array following an in-place decrement.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance methods:
+
+        >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
+        >>> y = x.inplace_decrement(1)
+        >>> print(y)
+        ivy.array([4.7, 3.3, 1.5, 0.9])
+
+        >>> x = ivy.asarray([4., 5., 6.])
+        >>> y = x.inplace_decrement(2.5)
+        >>> print(y)
+        ivy.array([1.5, 2.5, 3.5])
+
+        """
+        return ivy.inplace_decrement(self, val)
+
     def stable_divide(
         self,
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],

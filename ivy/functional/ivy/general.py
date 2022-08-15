@@ -2446,6 +2446,15 @@ def inplace_decrement(
     ret
         The array following the in-place decrement.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :code:`ivy.Array` input:
@@ -2473,7 +2482,6 @@ def inplace_decrement(
         a: ivy.array([-1., -6.5, 28.5]),
         b: ivy.array([-1.5, -26.5, 48.5])
     }
-
 
     >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
     >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
