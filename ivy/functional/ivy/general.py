@@ -1794,10 +1794,10 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
     None
 
     """
-    try: 
+    try:
         _ = fn(*args, **kwargs)
-        return fn 
-    except Exception: 
+        return fn
+    except Exception:
         return None
 
 
@@ -2550,9 +2550,9 @@ def cumprod(
     >>> y = ivy.zeros((3, 2))
     >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
     >>> print(y)
-    ivy.array([[ 1,  2],
-               [ 1,  5],
-               [ 1, 11]])
+    ivy.array([[ 1.,  2.],
+               [ 1.,  5.],
+               [ 1., 11.]])
 
     >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> ivy.cumprod(x, axis=0, exclusive=True, out=x)
@@ -2562,11 +2562,12 @@ def cumprod(
                [10, 21]])
 
     >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
-    >>> x.cumprod(axis=0, exclusive=True, out=x)
+    >>> y = ivy.zeros((3, 2))
+    >>> x.cumprod(axis=0, exclusive=True, out=y)
     >>> print(x)
-    ivy.array([[1,  1],
-                [2,  3],
-                [10, 21]])
+    ivy.array([[1.,  1.],
+                [2.,  3.],
+                [10., 21.]])
 
     With :code:`ivy.Container` input:
 
@@ -2590,7 +2591,7 @@ def cumprod(
                                        [5, 7],
                                        [11, 13]]),
                           b=ivy.array([[3, 4],
-                                       [4, 5], 
+                                       [4, 5],
                                        [5, 6]]))
     >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
     >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
@@ -2606,10 +2607,10 @@ def cumprod(
 
     >>> x = ivy.Container(a=ivy.array([[2, 3],
                                         [5, 7],
-                                        [11, 13]]), 
-                            b=ivy.array([[3, 4], 
-                                        [4, 5], 
-                                        [5, 6]]))   
+                                        [11, 13]]),
+                            b=ivy.array([[3, 4],
+                                        [4, 5],
+                                        [5, 6]]))
     >>> x.cumprod(axis=0, exclusive=True, out=x)
     >>> print(x)
     {
@@ -2619,7 +2620,7 @@ def cumprod(
         b: ivy.array([[1, 1],
                       [3, 4],
                       [15, 42]])
-    }                                   
+    }
     """
     return current_backend(x).cumprod(x, axis, exclusive, out=out)
 

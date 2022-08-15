@@ -102,13 +102,13 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.unstack(self._data, axis, keepdims)
-    
+
     def cumprod(
         self: ivy.Array,
         axis: int = 0,
         exclusive: Optional[bool] = False,
-        *, 
-        out: Optional[ivy.Array] = None
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.cumprod. This method simply wraps the
@@ -122,7 +122,8 @@ class ArrayWithGeneral(abc.ABC):
         axis
             int, axis along which to take the cumulative product. Default is 0.
         exclusive
-            optional bool, whether to exclude the first value of the input array. Default is False.
+            optional bool, whether to exclude the first value of the input array.
+            Default is False.
         out
             optional output array, for writing the result to.
 
@@ -142,11 +143,11 @@ class ArrayWithGeneral(abc.ABC):
                            [5, 7],
                            [11, 13]])
         >>> y = ivy.zeros((3, 2))
-        >>> x.cumprod(x, axis=1, exclusive=True, out=y)
+        >>> x.cumprod(axis=1, exclusive=True, out=y)
         >>> print(y)
-        ivy.array([[ 1,  2],
-                   [ 1,  5],
-                   [ 1, 11]])
+        ivy.array([[ 1.,  2.],
+                   [ 1.,  5.],
+                   [ 1., 11.]])
         """
         return ivy.cumprod(self._data, axis, exclusive, out=out)
 

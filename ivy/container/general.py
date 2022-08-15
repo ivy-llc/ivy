@@ -480,11 +480,11 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                        [5, 7],
-                                        [11, 13]]),
-                            b=ivy.array([[3, 4],
-                                        [4, 5], 
-                                        [5, 6]]))
+                                          [5, 7],
+                                          [11, 13]]),
+                              b=ivy.array([[3, 4],
+                                          [4, 5],
+                                          [5, 6]]))
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
         >>> ivy.Container.static_cumprod(x, axis=1, exclusive=True, out=y)
         >>> print(y)
@@ -550,7 +550,7 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Containers with arrays cumprod at leaves along specified axis.
-        
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
@@ -562,7 +562,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                          [5, 7], 
+                                          [5, 7],
                                           [11, 13]]),
                               b=ivy.array([[3, 4],
                                            [4, 5],
@@ -572,8 +572,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([[1, 2],
-                         [1, 5],
-                         [1, 11]]),
+                          [1, 5],
+                          [1, 11]]),
             b: ivy.array([[1, 3],
                           [1, 4],
                           [1, 5]])
@@ -589,7 +589,7 @@ class ContainerWithGeneral(ContainerBase):
             map_sequences,
             out=out,
         )
-        
+
     @staticmethod
     def static_gather(
         params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
