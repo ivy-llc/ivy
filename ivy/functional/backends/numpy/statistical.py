@@ -103,9 +103,9 @@ std.support_native_out = True
 def sum(
     x: np.ndarray,
     *,
-    axis: Union[int, Tuple[int]] = None,
-    dtype: np.dtype = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None and np.issubdtype(x.dtype, np.integer):
