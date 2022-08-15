@@ -14,11 +14,11 @@ import ivy.functional.backends.torch as ivy_torch
     dtype_values = helpers.dtype_and_values(
         available_dtypes=tuple(
                 set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_torch.valid_float_dtypes))),
+                    set(ivy_torch.valid_float_dtypes))
+        ),
         shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1),
-            key='value_shape'
+            helpers.get_shape(min_num_dims=1),
+            key='value_shape',
         ),
     ),
     shift=helpers.dtype_and_values(
@@ -29,9 +29,8 @@ import ivy.functional.backends.torch as ivy_torch
     ),
     axis=helpers.get_axis(
         shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1),
-            key='value_shape'
+            helpers.get_shape(min_num_dims=1),
+            key='value_shape',
         ),
         unique=False,
         min_size=st.shared(st.integers(1, 2147483647), key='shift_length'),
@@ -39,11 +38,11 @@ import ivy.functional.backends.torch as ivy_torch
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.roll"),
+        fn_name="ivy.functional.frontends.torch.roll"
+    ),
     native_array=st.booleans(),
 )
 def test_torch_roll(
-    *,
     dtype_values,
     shifts,
     axis,
@@ -56,11 +55,12 @@ def test_torch_roll(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="roll",
+        fn_tree="roll",
         input=np.asarray(value, dtype=input_dtype),
         shifts=shifts,
         dims=axis,
