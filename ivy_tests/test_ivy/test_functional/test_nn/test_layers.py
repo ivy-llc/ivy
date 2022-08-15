@@ -132,7 +132,6 @@ def test_dropout(
     fw,
     device,
 ):
-    print("prob: {}".format(prob))
     dtype, x = dtype_and_x
     x = np.asarray(x, dtype=dtype)
     ret = helpers.test_function(
