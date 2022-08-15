@@ -185,7 +185,7 @@ def test_execute_with_gradients(
     fw,
 ):
     def func(xs):
-        array_idxs = ivy.nested_indices_where(xs, ivy.is_ivy_array)
+        array_idxs = ivy.nested_indices_where(xs, ivy.is_native_array)
         array_vals = ivy.multi_index_nest(xs, array_idxs)
         final_array = ivy.stack(array_vals)
         ret = ivy.sum(final_array)
