@@ -4,7 +4,7 @@
 # global
 
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, HealthCheck
 from hypothesis import settings
 
 # local
@@ -278,7 +278,8 @@ def test_reshape(
 
 # roll
 @settings(
-    deadline=750,
+    deadline=1250,
+    suppress_health_check=(HealthCheck.data_too_large,),  # jax.roll is very slow
 )
 @given(
     dtype_value=helpers.dtype_and_values(
@@ -286,17 +287,37 @@ def test_reshape(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     shift=helpers.dtype_and_values(
-        available_dtypes=[ivy.int32, ivy.int64],
+        available_dtypes=[ivy.int32],
         max_num_dims=1,
-        min_dim_size=st.shared(st.integers(1, 2147483647), key="shift_length"),
-        max_dim_size=st.shared(st.integers(1, 2147483647), key="shift_length"),
+        min_dim_size=st.shared(
+            helpers.array_values(dtype="int32", shape=(1,))
+            .map(lambda x: abs(x[0]))
+            .filter(lambda x: x > 0),
+            key="shift_len",
+        ),
+        max_dim_size=st.shared(
+            helpers.array_values(dtype="int32", shape=(1,))
+            .map(lambda x: abs(x[0]))
+            .filter(lambda x: x > 0),
+            key="shift_len",
+        ),
     ),
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
-        unique=False,
-        min_size=st.shared(st.integers(1, 2147483647), key="shift_length"),
-        max_size=st.shared(st.integers(1, 2147483647), key="shift_length"),
         force_tuple=True,
+        unique=False,
+        min_size=st.shared(
+            helpers.array_values(dtype="int32", shape=(1,))
+            .map(lambda x: abs(x[0]))
+            .filter(lambda x: x > 0),
+            key="shift_len",
+        ),
+        max_size=st.shared(
+            helpers.array_values(dtype="int32", shape=(1,))
+            .map(lambda x: abs(x[0]))
+            .filter(lambda x: x > 0),
+            key="shift_len",
+        ),
     ),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -539,12 +560,12 @@ def _pad_helper(draw):
             )
         )
     )
-    _, constant = draw(helpers.dtype_and_values(available_dtypes=[dtype], shape=(1,)))
-    return dtype, value, pad_width, constant[0]
+    constant = draw(helpers.array_values(dtype=dtype, shape=()))
+    return dtype, value, pad_width, constant
 
 
 # constant_pad
-@settings(deadline=500)
+@settings(deadline=1000)
 @given(
     dtype_value_pad_width_constant=_pad_helper(),
     as_variable=st.booleans(),
@@ -565,7 +586,6 @@ def test_constant_pad(
     instance_method,
     fw,
 ):
-    return
     dtype, value, pad_width, constant = dtype_value_pad_width_constant
 
     helpers.test_function(
@@ -904,7 +924,7 @@ def test_tile(
 
 
 # zero_pad
-@settings(deadline=750)
+@settings(deadline=1000)
 @given(
     dtype_value_pad_width=_pad_helper(),
     as_variable=st.booleans(),
@@ -928,7 +948,6 @@ def test_zero_pad(
     instance_method,
     fw,
 ):
-    return
     # Drop the generated constant as only 0 is used
     dtype, value, pad_width, _ = dtype_value_pad_width
 
