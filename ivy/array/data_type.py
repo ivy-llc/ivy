@@ -10,7 +10,7 @@ class ArrayWithDataTypes(abc.ABC):
     def astype(
         self: ivy.Array, dtype: ivy.Dtype, copy: bool = True, out: ivy.Array = None
     ) -> ivy.Array:
-        return ivy.astype(self._data, dtype=dtype, copy=copy, out=out)
+        return ivy.astype(self._data, dtype, copy=copy, out=out)
 
     def broadcast_arrays(
         self: ivy.Array, *arrays: Union[ivy.Array, ivy.NativeArray]

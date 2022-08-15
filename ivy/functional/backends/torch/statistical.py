@@ -187,19 +187,6 @@ def sum(
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
         return torch.sum(input=x, dtype=dtype)
-    elif type(axis) == tuple:
-        if len(axis) == 0:
-            axis = 0
-        else:
-            return torch.sum(
-                torch.Tensor(
-                    [
-                        torch.sum(input=x, dim=i, dtype=dtype, keepdim=keepdims)
-                        for i in axis
-                    ]
-                ),
-                dtype=dtype,
-            )
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
