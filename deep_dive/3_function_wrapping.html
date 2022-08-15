@@ -103,14 +103,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -195,9 +195,6 @@ directly calling them through the <code class="code docutils literal notranslate
 instead. Whenever there’s a <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> argument, this wrapping function defers to the corresponding
 <a class="reference internal" href="5_containers.html#containers"><span class="std std-ref">Containers</span></a> static method to facilitate the same. As a result, the function can be called by passing
 an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> to any or all of its arguments.</p></li>
-<li><p><a href="#id1"><span class="problematic" id="id2">`integer_array_to_float`_</span></a>: This wrapping function enables conversion of integer array inputs in the positional and keyword
-arguments to a function to the default float dtype. This is currently used to support integer array arguments to functions
-for which one or more backend frameworks only non-integer numeric dtypes.</p></li>
 </ol>
 <p>When calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L340">_wrap_function</a> during <a class="reference internal" href="2_backend_setting.html#backend-setting"><span class="std std-ref">Backend Setting</span></a>, firstly the attributes of the functions are checked
 to get all the wrapping functions for a particular functions. Then all the wrapping functions applicable to a

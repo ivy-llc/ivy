@@ -80,14 +80,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -139,68 +139,64 @@
 <div class="viewcode-block" id="ArrayWithSorting"><a class="viewcode-back" href="../../../data_classes/array/sorting/ArrayWithSorting.html#ivy.array.sorting.ArrayWithSorting">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithSorting</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <div class="viewcode-block" id="ArrayWithSorting.argsort"><a class="viewcode-back" href="../../../data_classes/array/sorting/ArrayWithSorting.html#ivy.array.sorting.ArrayWithSorting.argsort">[docs]</a>    <span class="k">def</span> <span class="nf">argsort</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-        <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">stable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.argsort. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.argsort also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        self</span>
+<span class="sd">        self </span>
 <span class="sd">            input array.</span>
 <span class="sd">        axis</span>
 <span class="sd">            axis along which to sort. If set to ``-1``, the function</span>
 <span class="sd">            must sort along the last axis. Default: ``-1``.</span>
 <span class="sd">        descending</span>
-<span class="sd">            sort order. If ``True``, the returned indices sort ``x`` in descending order</span>
-<span class="sd">            (by value). If ``False``, the returned indices sort ``x`` in ascending order</span>
+<span class="sd">            sort order. If ``True``, the returned indices sort ``x`` in descending order </span>
+<span class="sd">            (by value). If ``False``, the returned indices sort ``x`` in ascending order </span>
 <span class="sd">            (by value). Default: ``False``.</span>
 <span class="sd">        stable</span>
 <span class="sd">            sort stability. If ``True``, the returned indices</span>
-<span class="sd">            must maintain the relative order of ``x`` values</span>
+<span class="sd">            must maintain the relative order of ``x`` values </span>
 <span class="sd">            which compare as equal. If ``False``, the returned</span>
 <span class="sd">            indices may or may not maintain the relative order</span>
 <span class="sd">            of ``x`` values which compare as equal (i.e., the</span>
-<span class="sd">            relative order of ``x`` values which compare as</span>
+<span class="sd">            relative order of ``x`` values which compare as </span>
 <span class="sd">            equal is implementation-dependent). Default: ``True``.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        out</span>
+<span class="sd">        out </span>
 <span class="sd">            an array of indices. The returned array must have the same shape as ``x``.</span>
 <span class="sd">            The returned array must have the default array index data type.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 5, 2])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.argsort(axis=-1, descending=True, stable=False)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.argsort(-1, True, False)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([1, 2, 0])</span>
-
+<span class="sd">        </span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([9.6, 2.7, 5.2])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.argsort(axis=-1, descending=True, stable=False)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.argsort(-1, True, False)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([0, 2, 1])</span>
-
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="n">descending</span><span class="p">,</span> <span class="n">stable</span><span class="o">=</span><span class="n">stable</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-        <span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">descending</span><span class="p">,</span> <span class="n">stable</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+       
 <div class="viewcode-block" id="ArrayWithSorting.sort"><a class="viewcode-back" href="../../../data_classes/array/sorting/ArrayWithSorting.html#ivy.array.sorting.ArrayWithSorting.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-        <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">stable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -211,27 +207,24 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([7, 8, 6])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.sort(axis=-1, descending=True, stable=False)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.sort(-1, True, False)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([8, 7, 6])</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([8.5, 8.2, 7.6])</span>
-<span class="sd">        &gt;&gt;&gt; y = x.sort(axis=-1, descending=True, stable=False)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.sort(-1, True, False)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([8.5, 8.2, 7.6])</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="n">descending</span><span class="p">,</span> <span class="n">stable</span><span class="o">=</span><span class="n">stable</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayWithSorting.searchsorted"><a class="viewcode-back" href="../../../data_classes/array/sorting/ArrayWithSorting.html#ivy.array.sorting.ArrayWithSorting.searchsorted">[docs]</a>    <span class="k">def</span> <span class="nf">searchsorted</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">descending</span><span class="p">,</span> <span class="n">stable</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ArrayWithSorting.searchsorted"><a class="viewcode-back" href="../../../data_classes/array/sorting/ArrayWithSorting.html#ivy.array.sorting.ArrayWithSorting.searchsorted">[docs]</a>    <span class="k">def</span> <span class="nf">searchsorted</span><span class="p">(</span>  
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-        <span class="n">v</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-        <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
+        <span class="n">v</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> 
         <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
         <span class="n">sorter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="n">side</span><span class="p">,</span> <span class="n">sorter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>

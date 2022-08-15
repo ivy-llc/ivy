@@ -84,52 +84,6 @@ Some common important tasks are:
 #. add thorough :ref:`Docstring Examples` for every function **and** its
    *relevant methods* and ensure they pass the docstring tests.
 
-Formatting checklist
-~~~~~~~~~~~~~~~~~~~~
-
-After creating your Pull Request on github, you should then produce the checklist
-for the formatting task as follows: 
-
-1. Add a comment with the following format: 
-:code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* 
-is the name of the category that the function belongs to. An example of this is shown below.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_generator.png?raw=true
-   :width: 420
-
-Using this formatting will then trigger our github automation bots to update your 
-comment with the proper markdown text for the checklist. These updates might take a
-few moments to take effect, so please be patient. 🙂
-
-2. After adding the checklist to your PR, you should then modify this checklist with 
-the status of each item according to the symbols(emojis) within the LEGEND section.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true
-   :width: 420
-
-3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
-your PR and we will start checking your implementation and marking the items as complete 
-using the checkboxes next to them.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_checked.png?raw=true
-   :width: 420
-
-4. In case you are stuck or need help with one of the checklist items, please add the
-🆘 symbol next to the item on the checklist, and proceed to add a comment elaborating
-on your point of struggle with this item. The PR assignee will then see this comment
-and address your issues.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_SOS.png?raw=true
-   :width: 420
-
-**Notes**: 
-
-1. It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.
-2. Please pay attention to the formatting of the checklist generating comment, as it is important.
-3. Do not edit the checklist, if you are facing issues, please add them in a different comment.
-4. Please refrain from using the checkboxes next to checklist items.
-
-
 Frontend APIs
 -------------
 
