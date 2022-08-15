@@ -1,23 +1,51 @@
 import ivy
+import numpy as np
 
 
-def median(
-    a,
-    /,
-    out=None,
-    *,
-    where=True,
-    casting="same_kind",
-    order="k",
-    dtype=None,
-    subok=True,
-):
-    if dtype:
-        a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-    ret = ivy.median(a, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+def median_overwrite(a, axis=None, keepdims=False):
+    a = ivy.array(a)
+    if keepdims:
+        dims = a.shape()
+
+    if axis is not None:
+        a[axis] = ivy.sort(a[axis])
+    else:
+        a = ivy.sort(np.array(a).flatten())
+
+    if len(a) % 2 == 0:
+        med = a[len(a) / 2]
+    else:
+        med = (a[(len(a) - 1) / 2] + a[(len(a) + 1) / 2]) / 2
+
+    if keepdims:
+        ivy.reshape(a, dims)
+
+    return med
 
 
-medain.unsupported_dtypes = {"torch": ("float16",)}
+def _median(a, axis=None):
+    if axis is not None:
+        b = ivy.sort(ivy.array(a[axis]))
+    else:
+        b = ivy.sort(ivy.array(np.array(a).flatten()))
+
+    if len(b) % 2 == 0:
+        med = b[len(b) / 2]
+    else:
+        med = (b[(len(b) - 1) / 2] + b[(len(b) + 1) / 2]) / 2
+
+    return med
+
+
+def median(a, axis=None, out=None, overwrite_input=False, keepdims=False):
+
+    if overwrite_input:
+        med = median_overwrite(a, axis, keepdims)
+    else:
+        med = _median(a, axis)
+
+    if out is not None:
+        out = med
+        return
+
+    return med
