@@ -127,33 +127,37 @@ def test_permute(
     
 # swapaxes
 @given(
-    dtype_value=helpers.dtype_and_values(
+    dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes))),
+                set(ivy_torch.valid_float_dtypes))
+        ),
         shape=st.shared(
             helpers.get_shape(min_num_dims=2),
-            key='shape'),
+            key='shape'
+        ),
     ),
     axis0=helpers.get_axis(
         shape=st.shared(
             helpers.get_shape(min_num_dims=2), 
-            key='shape')
+            key='shape'
+        ),
     ).filter(lambda axis: isinstance(axis, int)),
     axis1=helpers.get_axis(
         shape=st.shared(
             helpers.get_shape(min_num_dims=2), 
-            key='shape')
+            key='shape'
+        ),
     ).filter(lambda axis: isinstance(axis, int)),
-    as_variable=helpers.array_bools(),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.swapaxes"
     ),
-    native_array=helpers.array_bools(),
+    native_array=st.booleans(),
 )
 @handle_cmd_line_args
 def test_torch_swapaxes(
-    dtype_value,
+    dtype_and_values,
     axis0,
     axis1,
     as_variable,
@@ -161,7 +165,7 @@ def test_torch_swapaxes(
     native_array,
     fw,
 ):
-    input_dtype, value = dtype_value
+    input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -170,7 +174,7 @@ def test_torch_swapaxes(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="swapaxes",
+        fn_tree="swapaxes",
         input=np.asarray(value, dtype=input_dtype),
         axis0=axis0,
         axis1=axis1,
