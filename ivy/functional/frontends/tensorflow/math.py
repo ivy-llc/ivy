@@ -52,3 +52,15 @@ negative.unsupported_dtypes = {
     "torch": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
     "tensorflow": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
 }
+
+
+def multiply_no_nan(x, y, name=None):
+    return ivy.multiply(x, y)
+
+
+multiply_no_nan.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
+    "tensorflow": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
+    "jax": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
+    "numpy": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
+}
