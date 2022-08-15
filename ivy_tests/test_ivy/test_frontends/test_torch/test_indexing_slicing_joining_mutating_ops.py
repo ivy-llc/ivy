@@ -122,3 +122,59 @@ def test_torch_permute(
         input=np.asarray(value, dtype=dtype),
         dims=axis,
     )
+
+    
+# movedim
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes))
+        ),
+        shape=st.shared(
+            helpers.get_shape(min_num_dims=1),
+            key='shape'
+        ),
+    ),
+    source=helpers.get_axis(
+        shape=st.shared(
+            helpers.get_shape(min_num_dims=1), 
+            key='shape'
+        ),
+    ),
+    destination=helpers.get_axis(
+        shape=st.shared(
+            helpers.get_shape(min_num_dims=1), 
+            key='shape'
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.movedim"
+    ),
+    native_array=st.booleans(),
+)
+@handle_cmd_line_args
+def test_torch_movedim(
+    dtype_and_values,
+    source,
+    destination,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="movedim",
+        input=np.asarray(value, dtype=input_dtype),
+        source=source,
+        destination=destination,
+    )
