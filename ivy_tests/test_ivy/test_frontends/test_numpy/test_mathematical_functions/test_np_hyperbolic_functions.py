@@ -46,7 +46,7 @@ def test_numpy_sinh(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="sinh",
+        fn_tree="sinh",
         x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,

@@ -95,6 +95,45 @@ def test_torch_tan(
     )
 
 
+# tanh
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        )
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.tanh"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_tanh(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="tanh",
+        input=np.asarray(x, dtype=input_dtype),
+        out=None,
+    )
+
+
 # abs
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -284,7 +323,7 @@ def test_torch_sinh(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="sinh",
+        fn_tree="sinh",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -323,7 +362,7 @@ def test_torch_acosh(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="acosh",
+        fn_tree="acosh",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -414,7 +453,46 @@ def test_torch_subtract(
         out=None,
         rtol=1e-04,
     )
+    
 
+# exp
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        )
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.exp"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_exp(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="exp",
+        input=np.asarray(x, dtype=input_dtype),
+        out=None,
+    )
+    
 
 # asin
 @given(
@@ -449,7 +527,7 @@ def test_torch_asin(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="asin",
+        fn_tree="asin",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
@@ -492,3 +570,82 @@ def test_torch_arccosh(
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
+
+
+# arcsin
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        )
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.arcsin"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_arcsin(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="arcsin",
+        input=np.asarray(x, dtype=input_dtype),
+        out=None,
+    )
+
+
+# asinh
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        )
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.asinh"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_asinh(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="asinh",
+        input=np.asarray(x, dtype=input_dtype),
+        out=None,
+    )
+    
