@@ -43,8 +43,8 @@ abs.support_native_out = True
 @_handle_0_dim_output
 def acos(
     x: np.ndarray,
-    *,
     /,
+    *,
     out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.arccos(x, out=out)
 
