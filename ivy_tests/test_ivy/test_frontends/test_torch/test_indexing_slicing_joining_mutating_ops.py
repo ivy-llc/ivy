@@ -154,7 +154,6 @@ def test_torch_permute(
     ),
     native_array=st.booleans(),
 )
-@handle_cmd_line_args
 def test_torch_movedim(
     dtype_and_values,
     source,
