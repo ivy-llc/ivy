@@ -6,7 +6,6 @@ import numpy as np
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers as helpers
 
 
 # GELU
