@@ -137,8 +137,9 @@ We follow the `Array API Standard convention`_ about positional and keyword argu
 * Optional parameters must be keyword-only arguments
 
 This convention makes it easier for us to modify functions in the future. Keyword-only parameters will mandate the use
-of argument names when calling functions, and this will allow us the flexibility to extend the function behaviour in
-future releases without breaking forward compatibility.
+of argument names when calling functions, and this will increase our flexibility for extending function behaviour in
+future releases without breaking forward compatibility. Similar arguments can be kept together in the argument list,
+rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
 Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
