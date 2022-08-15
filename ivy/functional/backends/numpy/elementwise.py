@@ -45,7 +45,8 @@ def acos(
     x: np.ndarray,
     /,
     *,
-    out: Optional[np.ndarray] = None) -> np.ndarray:
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.arccos(x, out=out)
 
 
