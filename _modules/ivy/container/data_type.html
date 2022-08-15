@@ -790,7 +790,7 @@
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.static_is_float_dtype(ivy.int64)</span>
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
-<span class="sd">        False</span>
+<span class="sd">        True</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.static_is_float_dtype(ivy.int32)</span>
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
@@ -800,8 +800,8 @@
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        False</span>
 
-<span class="sd">        &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)</span>
-<span class="sd">        &gt;&gt;&gt; print(arr.is_float_dtype())</span>
+<span class="sd">        &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x</span>
+<span class="sd">        &gt;&gt;&gt; print(arr)</span>
 <span class="sd">        True</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))</span>
@@ -823,7 +823,6 @@
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -866,7 +865,7 @@
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.int64)</span>
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
-<span class="sd">        False</span>
+<span class="sd">        True</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.int32)</span>
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
@@ -876,15 +875,15 @@
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        False</span>
 
-<span class="sd">        &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)</span>
-<span class="sd">        &gt;&gt;&gt; print(arr.is_float_dtype())</span>
+<span class="sd">        &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x</span>
+<span class="sd">        &gt;&gt;&gt; print(arr)</span>
 <span class="sd">        True</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))</span>
 <span class="sd">        &gt;&gt;&gt; print(x.a.dtype, x.b.dtype)</span>
 <span class="sd">        float32 int32</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_is_float_dtype</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_is_int_dtype</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
