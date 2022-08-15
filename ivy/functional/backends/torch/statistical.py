@@ -12,11 +12,8 @@ def _new_var_fun(x, *, axis, correction, dtype):
     length = output.shape[axis]
     divisor = length - correction
     mean = torch.sum(output, dim=axis) / length
-    output = torch.abs(
-        output.to(dtype=dtype)
-        - torch.unsqueeze(mean, dim=axis)
-    )
-    output = output ** 2
+    output = torch.abs(output.to(dtype=dtype) - torch.unsqueeze(mean, dim=axis))
+    output = output**2
     output = torch.sum(output, axis=axis) / divisor
     return output
 
@@ -127,7 +124,7 @@ def prod(
                     ]
                 ),
                 dtype=dtype,
-                out=out
+                out=out,
             )
     return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
 
@@ -148,27 +145,21 @@ def std(
     if isinstance(axis, tuple):
         ret = []
         for i in axis:
-            ret.append(_new_std_fun(
-                x,
-                axis=i,
-                correction=correction,
-                dtype=dtype)
-            )
+            ret.append(_new_std_fun(x, axis=i, correction=correction, dtype=dtype))
         ret = torch.tensor(ret, dtype=dtype)
     elif isinstance(axis, int):
         ret = _new_std_fun(x, axis=axis, correction=correction, dtype=dtype)
     else:
         num = torch.numel(x)
         ret = _new_std_fun(
-            torch.reshape(x, (num,)),
-            axis=0,
-            correction=correction,
-            dtype=dtype
+            torch.reshape(x, (num,)), axis=0, correction=correction, dtype=dtype
         )
 
     if keepdims:
-        shape = tuple([1 if ret.shape.numel()<=1 else ret.shape[0]] \
-            + [1 for i in range(len(x.shape) - 1)])
+        shape = tuple(
+            [1 if ret.shape.numel() <= 1 else ret.shape[0]]
+            + [1 for i in range(len(x.shape) - 1)]
+        )
         ret = torch.reshape(ret, shape)
     return ret
 
@@ -226,27 +217,21 @@ def var(
     if isinstance(axis, tuple):
         ret = []
         for i in axis:
-            ret.append(_new_var_fun(
-                x,
-                axis=i,
-                correction=correction,
-                dtype=dtype)
-            )
+            ret.append(_new_var_fun(x, axis=i, correction=correction, dtype=dtype))
         ret = torch.tensor(ret, dtype=dtype)
     elif isinstance(axis, int):
         ret = _new_var_fun(x, axis=axis, correction=correction, dtype=dtype)
     else:
         num = torch.numel(x)
         ret = _new_var_fun(
-            torch.reshape(x, (num,)),
-            axis=0,
-            correction=correction,
-            dtype=dtype
+            torch.reshape(x, (num,)), axis=0, correction=correction, dtype=dtype
         )
 
     if keepdims:
-        shape = tuple([1 if ret.shape.numel()<=1 else ret.shape[0]] \
-            + [1 for i in range(len(x.shape) - 1)])
+        shape = tuple(
+            [1 if ret.shape.numel() <= 1 else ret.shape[0]]
+            + [1 for i in range(len(x.shape) - 1)]
+        )
         ret = torch.reshape(ret, shape)
     return ret
 
