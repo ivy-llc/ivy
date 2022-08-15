@@ -30,11 +30,10 @@ def statistical_dtype_values(draw, *, function):
 
     values = draw(
         helpers.list_of_length(
-            x=st.floats(
-                -abs_value_limit,
-                abs_value_limit,
+            x=helpers.floats(
+                min_value=-abs_value_limit,
+                max_value=abs_value_limit,
                 allow_subnormal=False,
-                allow_infinity=False,
             ),
             length=size,
         )
@@ -45,11 +44,14 @@ def statistical_dtype_values(draw, *, function):
     if function == "var" or function == "std":
         if isinstance(axis, int):
             correction = draw(
-                st.integers(-shape[axis], shape[axis] - 1)
-                | st.floats(-shape[axis], shape[axis] - 1)
+                helpers.ints(min_value=-shape[axis], max_value=shape[axis] - 1)
+                | helpers.floats(min_value=-shape[axis], max_value=shape[axis] - 1)
             )
             return dtype, values, axis, correction
-        correction = draw(st.integers(-size, size - 1) | st.floats(-size, size - 1))
+        correction = draw(
+            helpers.ints(min_value=-size, max_value=size - 1)
+            | helpers.floats(min_value=-size, max_value=size - 1)
+        )
         return dtype, values, axis, correction
     return dtype, values, axis
 
