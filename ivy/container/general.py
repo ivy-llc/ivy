@@ -475,16 +475,12 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_cumprod(x, axis=0)
         >>> print(y)
         {
-            a: [1, 2, 6],
-            b: [4, 20, 120]
+            a: ivy.array([1, 2, 6]),
+            b: ivy.array([4, 20, 120])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                          [5, 7],
-                                          [11, 13]]),
-                              b=ivy.array([[3, 4],
-                                          [4, 5],
-                                          [5, 6]]))
+        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
+                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
         >>> ivy.Container.static_cumprod(x, axis=1, exclusive=True, out=y)
         >>> print(y)
@@ -557,17 +553,13 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x.cumprod(axis=0)
         >>> print(y)
         {
-            a: [1, 2, 6],
-            b: [4, 20, 120]
+            a: ivy.array([1, 2, 6]),
+            b: ivy.array([4, 20, 120])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                          [5, 7],
-                                          [11, 13]]),
-                              b=ivy.array([[3, 4],
-                                           [4, 5],
-                                           [5, 6]]))
-        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
+                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+        >>> y = ivy.Container(a=ivy.zeros((3, 2)), b=ivy.zeros((3, 2)))
         >>> x.cumprod(axis=1, exclusive=True, out=y)
         >>> print(y)
         {

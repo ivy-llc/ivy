@@ -137,11 +137,9 @@ class ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([1, 2, 3, 4, 5])
         >>> y = x.cumprod()
         >>> print(y)
-        ivy.array([1, 2, 6, 24, 120])
+        ivy.array([  1,   2,   6,  24, 120])
 
-        >>> x = ivy.array([[2, 3],
-                           [5, 7],
-                           [11, 13]])
+        >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
         >>> y = ivy.zeros((3, 2))
         >>> x.cumprod(axis=1, exclusive=True, out=y)
         >>> print(y)
