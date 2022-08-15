@@ -95,7 +95,6 @@ def prod(
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
         if x.dtype in [torch.int8, torch.int16]:
@@ -227,6 +226,8 @@ def var(
 
 
 def einsum(
-    equation: str, *operands: torch.Tensor, out: Optional[torch.Tensor] = None
+    equation: str,
+    *operands: torch.Tensor,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.einsum(equation, *operands)
