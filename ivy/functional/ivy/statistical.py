@@ -372,9 +372,9 @@ def std(
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the sum of the input array ``x``.
@@ -435,11 +435,53 @@ def sum(
 
     Examples
     --------
+
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([0.41, 0.89])
     >>> y = ivy.sum(x)
     >>> print(y)
     ivy.array(1.3)
 
+    >>> x = ivy.array([0.5, -0.7, 2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.sum(x, out=y)
+    >>> print(y)
+    ivy.array(2.2)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.sum(x, axis = 1, keepdims = False)
+    >>> print(y)
+    ivy.array([3, 20])
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.array([0,0,0])
+    >>> ivy.sum(x, axis = 0, keepdims = False, out = y)
+    >>> print(y)
+    ivy.array([4, 7, 12])
+
+    With :code:`ivy.native_array` input:
+
+    >>> x = ivy.native_array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
+    >>> y = ivy.sum(x)
+    >>> print(y)
+    ivy.array(1.9)
+
+    >>> x = ivy.native_array([1.0, 2.0, 2.0, 3.0])
+    >>> y = ivy.array(0.0)
+    >>> ivy.sum(x, out=y)
+    >>> print(y)
+    ivy.array(8.)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.sum(x)
+    >>> print(y)
+    {
+        a: ivy.array(3.),
+        b: ivy.array(12.)
+    }
     """
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 

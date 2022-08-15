@@ -13,10 +13,9 @@ def _new_var_fun(x, *, axis, correction, dtype):
     divisor = tf.cast(length - correction, dtype)
     mean = tf.math.reduce_sum(output, axis=axis) / length
     output = tf.math.abs(
-        tf.cast(output, dtype=dtype)
-        - tf.cast(tf.expand_dims(mean, axis), dtype=dtype)
+        tf.cast(output, dtype=dtype) - tf.cast(tf.expand_dims(mean, axis), dtype=dtype)
     )
-    output = output ** 2
+    output = output**2
     output = tf.math.reduce_sum(output, axis=axis) / divisor
     return output
 
@@ -97,11 +96,8 @@ def std(
     if isinstance(axis, tuple):
         ret = []
         for i in axis:
-            ret.append(_new_std_fun(
-                x,
-                axis=i,
-                correction=correction,
-                dtype=dtype).numpy()
+            ret.append(
+                _new_std_fun(x, axis=i, correction=correction, dtype=dtype).numpy()
             )
         ret = tf.constant(ret, dtype=dtype)
     elif isinstance(axis, int):
@@ -109,15 +105,13 @@ def std(
     else:
         size = tf.size(x).numpy()
         ret = _new_std_fun(
-            tf.reshape(x, size),
-            axis=0,
-            correction=correction,
-            dtype=dtype
+            tf.reshape(x, size), axis=0, correction=correction, dtype=dtype
         )
 
     if keepdims:
-        shape = [1 if tf.rank(ret) == 0 else ret.shape[0]] \
-            + [1 for i in range(len(x.shape) - 1)]
+        shape = [1 if tf.rank(ret) == 0 else ret.shape[0]] + [
+            1 for i in range(len(x.shape) - 1)
+        ]
         ret = tf.constant(ret, shape=shape)
     return ret
 
@@ -125,9 +119,9 @@ def std(
 def sum(
     x: Union[tf.Tensor, tf.Variable],
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: tf.DType = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[tf.DType] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is None:
@@ -157,32 +151,22 @@ def var(
     if isinstance(axis, tuple):
         ret = []
         for i in axis:
-            ret.append(_new_var_fun(
-                x,
-                axis=i,
-                correction=correction,
-                dtype=dtype).numpy()
+            ret.append(
+                _new_var_fun(x, axis=i, correction=correction, dtype=dtype).numpy()
             )
         ret = tf.constant(ret, dtype=dtype)
     elif isinstance(axis, int):
-        ret = _new_var_fun(
-            x,
-            axis=axis,
-            correction=correction,
-            dtype=dtype
-        )
+        ret = _new_var_fun(x, axis=axis, correction=correction, dtype=dtype)
     else:
         size = tf.size(x).numpy()
         ret = _new_var_fun(
-            tf.reshape(x, size),
-            axis=0,
-            correction=correction,
-            dtype=dtype
+            tf.reshape(x, size), axis=0, correction=correction, dtype=dtype
         )
 
     if keepdims:
-        shape = [1 if tf.rank(ret) == 0 else ret.shape[0]] \
-            + [1 for i in range(len(x.shape) - 1)]
+        shape = [1 if tf.rank(ret) == 0 else ret.shape[0]] + [
+            1 for i in range(len(x.shape) - 1)
+        ]
         ret = tf.constant(ret, shape=shape)
     return ret
 
