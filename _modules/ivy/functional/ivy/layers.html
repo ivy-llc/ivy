@@ -520,7 +520,7 @@
         <span class="p">)</span>
 
     <span class="c1"># BS x Q x K</span>
-    <span class="n">attn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">attn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># BS x Q x F</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;... q k, ... k f -&gt; ... q f&quot;</span><span class="p">,</span> <span class="n">attn</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>

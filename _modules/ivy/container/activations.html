@@ -141,11 +141,12 @@
 <div class="viewcode-block" id="ContainerWithActivations.static_relu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_relu">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_relu</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -199,11 +200,12 @@
 
 <div class="viewcode-block" id="ContainerWithActivations.relu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.relu">[docs]</a>    <span class="k">def</span> <span class="nf">relu</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -246,18 +248,24 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_relu</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithActivations.static_leaky_relu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_leaky_relu">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_leaky_relu</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">alpha</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -303,7 +311,7 @@
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;leaky_relu&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
-            <span class="n">alpha</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
@@ -313,12 +321,13 @@
 
 <div class="viewcode-block" id="ContainerWithActivations.leaky_relu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.leaky_relu">[docs]</a>    <span class="k">def</span> <span class="nf">leaky_relu</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">alpha</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -362,18 +371,25 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_leaky_relu</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithActivations.static_gelu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_gelu">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_gelu</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">approximate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -419,7 +435,7 @@
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;gelu&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
-            <span class="n">approximate</span><span class="p">,</span>
+            <span class="n">approximate</span><span class="o">=</span><span class="n">approximate</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
@@ -429,12 +445,13 @@
 
 <div class="viewcode-block" id="ContainerWithActivations.gelu"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.gelu">[docs]</a>    <span class="k">def</span> <span class="nf">gelu</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">approximate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -479,11 +496,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_gelu</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">approximate</span><span class="p">,</span>
-            <span class="n">key_chains</span><span class="p">,</span>
-            <span class="n">to_apply</span><span class="p">,</span>
-            <span class="n">prune_unapplied</span><span class="p">,</span>
-            <span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">approximate</span><span class="o">=</span><span class="n">approximate</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -606,11 +623,12 @@
 <div class="viewcode-block" id="ContainerWithActivations.static_sigmoid"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_sigmoid">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_sigmoid</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -663,11 +681,12 @@
 
 <div class="viewcode-block" id="ContainerWithActivations.sigmoid"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.sigmoid">[docs]</a>    <span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -709,18 +728,24 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_sigmoid</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithActivations.static_softmax"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_softmax">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_softmax</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -766,7 +791,7 @@
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;softmax&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
-            <span class="n">axis</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
@@ -776,12 +801,13 @@
 
 <div class="viewcode-block" id="ContainerWithActivations.softmax"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.softmax">[docs]</a>    <span class="k">def</span> <span class="nf">softmax</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -825,17 +851,24 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_softmax</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithActivations.static_softplus"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.static_softplus">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_softplus</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -888,11 +921,12 @@
 
 <div class="viewcode-block" id="ContainerWithActivations.softplus"><a class="viewcode-back" href="../../../data_classes/container/activations/ContainerWithActivations.html#ivy.container.activations.ContainerWithActivations.softplus">[docs]</a>    <span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -934,7 +968,12 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_softplus</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 </pre></div>
 
