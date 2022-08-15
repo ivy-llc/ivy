@@ -515,39 +515,6 @@ def var_fn(x, *, dtype=None, device=None):
     return ivy.variable(ivy.array(x, dtype=dtype, device=device))
 
 
-def exclude(*, exclusion_list):
-    global _excluded
-    _excluded += list(set(exclusion_list) - set(_excluded))
-
-
-def frameworks():
-    return list(
-        set(
-            [
-                ivy_fw()
-                for fw_str, ivy_fw in _ivy_fws_dict.items()
-                if ivy_fw() is not None and fw_str not in _excluded
-            ]
-        )
-    )
-
-
-def calls():
-    return [
-        call
-        for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
-        if ivy_fw() is not None and fw_str not in _excluded
-    ]
-
-
-def f_n_calls():
-    return [
-        (ivy_fw(), call)
-        for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
-        if ivy_fw() is not None and fw_str not in _excluded
-    ]
-
-
 @st.composite
 def floats(
     draw,
@@ -562,7 +529,7 @@ def floats(
     safety_factor=0.99,
     small_value_safety_factor=1.1,
 ):
-    """Draws an arbitrarily sized list of integers with a safety factor applied
+    """Draws an arbitrarily sized list of floats with a safety factor applied
         to avoid values being generated at the edge of a dtype limit.
 
     Parameters
@@ -571,12 +538,12 @@ def floats(
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
     min_value
-        minimum value of integers generated.
+        minimum value of floats generated.
     max_value
-        maximum value of integers generated.
+        maximum value of floats generated.
     allow_nan
         if True, allow Nans in the list.
-     allow_inf
+    allow_inf
         if True, allow inf in the list.
     allow_subnormal
         if True, allow subnormals in the list.
@@ -593,7 +560,7 @@ def floats(
     Returns
     -------
     ret
-        list of integers.
+        list of floats.
     """
     lim_float16 = 65504
     lim_float32 = 3.4028235e38
@@ -672,12 +639,13 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
 
     Parameters
     ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
     min_value
         minimum value of integers generated.
-
     max_value
         maximum value of integers generated.
-
     safety_factor
         default = 0.95. Only values which are 95% or less than the edge of
         the limit for a given dtype are generated.
