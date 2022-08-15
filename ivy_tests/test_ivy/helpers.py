@@ -11,7 +11,7 @@ import pytest
 import numpy as np
 import math
 from typing import Union, List, Dict
-from hypothesis import assume
+from hypothesis import assume, given
 import hypothesis.extra.numpy as nph  # noqa
 
 # local
@@ -28,7 +28,7 @@ from ivy.functional.backends.torch.general import (
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-FW_STRS = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
+FW_STRS = ["numpy", "jax", "tensorflow", "torch"]
 cmd_line_args = (
     "as_variable",
     "native_array",
@@ -2954,9 +2954,11 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
 
 
 def handle_cmd_line_args(test_fn):
-    # first four arguments are all fixtures
+    # first[1:-2] 5 arguments are all fixtures
+    @given(data=st.data())
     def new_fn(data, get_command_line_flags, device, f, call, fw, *args, **kwargs):
         flag, fw_string = (False, "")
+
         # skip test if device is gpu and backend is numpy
         if "gpu" in device and call is np_call:
             # Numpy does not support GPU
@@ -2970,6 +2972,7 @@ def handle_cmd_line_args(test_fn):
         # use the one which is parametrized
         else:
             flag = True
+
         # set backend using the context manager
         with f.use:
             # inspecting for keyword arguments in test function
