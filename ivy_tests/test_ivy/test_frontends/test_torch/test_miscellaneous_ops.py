@@ -21,11 +21,11 @@ import ivy.functional.backends.torch as ivy_torch
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"), 
         ret_tuple=True,
     ),
-    as_variable=helpers.array_bools(),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.flip"
     ),
-    native_array=helpers.array_bools(),
+    native_array=st.booleans(),
 )
 def test_torch_flip(
     dtype_and_values,
@@ -44,7 +44,7 @@ def test_torch_flip(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="flip",
+        fn_tree="flip",
         input=np.asarray(value, dtype=input_dtype),
         dims=axis,
     )
