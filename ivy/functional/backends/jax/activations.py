@@ -31,12 +31,6 @@ def sigmoid(x: JaxArray, /) -> JaxArray:
     return 1 / (1 + jnp.exp(-x))
 
 
-def tanh(
-    x: JaxArray,
-) -> JaxArray:
-    return jnp.tanh(x)
-
-
 def softmax(
     x: JaxArray,
     /,
