@@ -1255,7 +1255,7 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
     return tuple(set(unsupported_dtypes))
 
 
-def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None], /) -> bool:
+def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
     """
     Determines whether the provided data type is not support by
     the current framework.
@@ -1272,23 +1272,55 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None], /) -> bool:
 
     Examples
     --------
-    >>> ivy.invalid_dtype(dtype_in = None)
+    with :code:`ivy.Dtype` inputs:
+
+    >>> print(ivy.invalid_dtype(None))
     False
 
-    >>> ivy.invalid_dtype(dtype_in = 'uint64')
+    >>> print(ivy.invalid_dtype('uint64'))
+    False
+
+    >>> print(ivy.invalid_dtype(ivy.float64))
+    False
+
+    >>> print(ivy.invalid_dtype('float32'))
+    False
+
+
+
+    with :code:`ivy.NativeDtype` inputs:
+
+    >>> print(ivy.invalid_dtype(ivy.native_uint8))
+    False
+
+    >>> print(ivy.invalid_dtype(ivy.native_float32))
+    False
+
+    >>> print(ivy.invalid_dtype('native_bool'))
     True
 
-    >>> ivy.invalid_dtype(dtype_in = ivy.float64)
+    >>> print(ivy.invalid_dtype('native_float64'))
     True
 
-    >>> ivy.invalid_dtype(dtype_in = 'float32')
+    >>> print(ivy.invalid_dtype(ivy.native_int16))
+    False
+
+    >>> print(ivy.invalid_dtype('native_int32'))
     True
 
-    >>> ivy.invalid_dtype(dtype_in = ivy.native_int16)
+    >>> print(ivy.invalid_dtype(ivy.native_float16))
+    False
+
+    >>> print(ivy.invalid_dtype(ivy.native_int64))
+    False
+
+    >>> print(ivy.invalid_dtype(ivy.native_int8))
+    False
+
+    >>> print(ivy.invalid_dtype('native_uint64'))
     True
 
-    >>> ivy.invalid_dtype(dtype_in = 'native_int16')
-    True
+
     """
     if dtype_in is None:
         return False
