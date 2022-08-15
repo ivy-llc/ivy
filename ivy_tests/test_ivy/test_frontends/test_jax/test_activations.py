@@ -104,7 +104,9 @@ def test_jax_nn_gelu(
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_int_dtypes, min_value=-1, max_value=3),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_int_dtypes, min_value=-1, max_value=3
+    ),
     num_classes=st.integers(min_value=4, max_value=6),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
