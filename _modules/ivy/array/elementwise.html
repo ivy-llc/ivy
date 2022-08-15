@@ -1483,6 +1483,25 @@
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the element-wise results. The returned array</span>
 <span class="sd">            must have a data type of ``bool``.</span>
+
+<span class="sd">        This function conforms to the `Array API Standard</span>
+<span class="sd">        &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">        `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html&gt;`_ </span>
+<span class="sd">        in the standard.</span>
+
+<span class="sd">        Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">        instances in place of any of the arguments.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using :code:`ivy.Array` instance method:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([False, 3, 0])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([2, True, False])</span>
+<span class="sd">        &gt;&gt;&gt; z = x.logical_or(y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        ivy.array([ True,  True, False])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 

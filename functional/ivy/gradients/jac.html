@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="grad" href="grad.html" />
-    <link rel="prev" title="ivy.Container.static_lamb_update" href="lamb_update/static_lamb_update_container.html" /> 
+    <link rel="prev" title="value_and_grad" href="value_and_grad.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -71,14 +71,14 @@
 <li class="toctree-l2"><a class="reference internal" href="stop_gradient.html">stop_gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l2"><a class="reference internal" href="value_and_grad.html">value_and_grad</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">jac</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grad.html">grad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adam_step.html">adam_step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optimizer_update.html">optimizer_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient_descent_update.html">gradient_descent_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lars_update.html">lars_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adam_update.html">adam_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lamb_update.html">lamb_update</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">jac</a></li>
-<li class="toctree-l2"><a class="reference internal" href="grad.html">grad</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
@@ -164,6 +164,16 @@ input.</p>
 <dd class="field-even"><p><em>ret</em> – the Jacobian function</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.6</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.8</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mf">6.2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jac_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">jac</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jacobian</span> <span class="o">=</span> <span class="n">jac_fn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">jacobian</span><span class="p">)</span>
+<span class="go">ivy.array([[1.53 , 0.7  , 1.67 ],               [0.933, 0.433, 2.07 ]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">
@@ -177,7 +187,7 @@ input.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="lamb_update/static_lamb_update_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_lamb_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="value_and_grad.html" class="btn btn-neutral float-left" title="value_and_grad" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="grad.html" class="btn btn-neutral float-right" title="grad" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
