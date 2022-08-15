@@ -2786,7 +2786,8 @@ def get_axis(
     unique=True,
     min_size=1,
     max_size=None,
-    ret_tuple=False,
+    force_tuple=False,
+    force_int=False,
 ):
     """Draws one or more axis for the given shape.
 
@@ -2794,7 +2795,7 @@ def get_axis(
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list)
+        data-set (ex. list).
     shape
         shape of the array as a tuple, or a hypothesis strategy from which the shape
         will be drawn
@@ -2810,16 +2811,25 @@ def get_axis(
         axes drawn
     max_size
         int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
-        axes drawn; if None and unique is True, then it is set to the number of axes
-        in the shape
-    ret_tuple
-        boolean; if False, randomly draw both integers and List[int]; If True, draw
-        only List[int] as tuple[int]
+        axes drawn.
+        If None and unique is True, then it is set to the number of axes in the shape
+    force_tuple
+        boolean, if true, all axis will be returned as a tuple. If force_tuple and
+        force_int are true, then an AssertionError is raised
+    force_int
+        boolean, if true, all axis will be returned as an int. If force_tuple and
+        force_int are true, then an AssertionError is raised
 
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
+    assert not (force_int and force_tuple), (
+        "Cannot return an int and a tuple. If "
+        "both are valid then set 'force_int' "
+        "and 'force_tuple' to False."
+    )
+
     # Draw values from any strategies given
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
@@ -2834,39 +2844,33 @@ def get_axis(
     if max_size is None and unique:
         max_size = max(axes, min_size)
 
+    valid_strategies = []
+
     if allow_none:
+        valid_strategies.append(st.none())
+
+    if not force_tuple:
         if axes == 0:
-            axis = draw(
-                st.none()
-                | st.just(0)
-                | st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            valid_strategies.append(st.just(0))
+        else:
+            valid_strategies.append(st.integers(-axes, axes - 1))
+    if not force_int:
+        if axes == 0:
+            valid_strategies.append(
+                st.lists(st.just(0), min_size=min_size, max_size=max_size)
             )
         else:
-            axis = draw(
-                st.none()
-                | ints(min_value=-axes, max_value=axes - 1)
-                | st.lists(
-                    ints(min_value=-axes, max_value=axes - 1),
+            valid_strategies.append(
+                st.lists(
+                    st.integers(-axes, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
                 )
             )
-    else:
-        if axes == 0:
-            axis = draw(
-                st.just(0) | st.lists(st.just(0), min_size=min_size, max_size=max_size)
-            )
-        else:
-            axis = draw(
-                ints(min_value=-axes, max_value=axes - 1)
-                | st.lists(
-                    ints(min_value=-axes, max_value=axes - 1),
-                    min_size=min_size,
-                    max_size=max_size,
-                    unique_by=unique_by,
-                )
-            )
+
+    axis = draw(st.one_of(*valid_strategies))
+
     if type(axis) == list:
         if sorted:
 
@@ -2877,8 +2881,6 @@ def get_axis(
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
-    elif ret_tuple:
-        axis = tuple([axis])
     return axis
 
 

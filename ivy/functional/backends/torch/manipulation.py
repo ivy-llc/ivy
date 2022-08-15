@@ -1,3 +1,4 @@
+# For Review
 # global
 import ivy
 import torch
@@ -14,7 +15,7 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 
 def concat(
-    xs: List[torch.Tensor], axis: int = 0, *, out: Optional[torch.Tensor] = None
+    xs: List[torch.Tensor], /, *, axis: int = 0, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if axis is None:
         is_tuple = type(xs) is tuple
@@ -33,6 +34,8 @@ concat.support_native_out = True
 
 def expand_dims(
     x: torch.Tensor,
+    /,
+    *,
     axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> torch.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
@@ -50,8 +53,9 @@ expand_dims.unsupported_dtypes = (
 
 def flip(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    /,
     *,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     num_dims: int = len(x.shape)
@@ -78,7 +82,7 @@ flip.unsupported_dtypes = (
 
 
 def permute_dims(
-    x: torch.Tensor, axes: Tuple[int, ...], *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, axes: Tuple[int, ...], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     ret = torch.permute(x, axes)
     return ret
@@ -93,6 +97,7 @@ permute_dims.unsupported_dtypes = (
 
 def reshape(
     x: torch.Tensor,
+    /,
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
@@ -112,9 +117,10 @@ reshape.unsupported_dtypes = (
 
 def roll(
     x: torch.Tensor,
+    /,
     shift: Union[int, Sequence[int]],
-    axis: Optional[Union[int, Sequence[int]]] = None,
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # manually cover the case when shift is int, and axis is a tuple/list
@@ -133,6 +139,7 @@ roll.unsupported_dtypes = (
 
 def squeeze(
     x: torch.Tensor,
+    /,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
     out: Optional[torch.Tensor] = None,
@@ -176,12 +183,13 @@ squeeze.unsupported_dtypes = (
 
 
 def stack(
-    x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
-    axis: Optional[int] = 0,
+    arrays: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+    /,
     *,
+    axis: Optional[int] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.stack(x, axis, out=out)
+    ret = torch.stack(arrays, axis, out=out)
     return ret
 
 
@@ -194,10 +202,11 @@ stack.support_native_out = True
 
 def split(
     x,
+    /,
+    *,
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
     axis: int = 0,
     with_remainder: bool = False,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> List[torch.Tensor]:
     if x.shape == ():
@@ -240,9 +249,10 @@ split.support_native_out = True
 
 def repeat(
     x: torch.Tensor,
+    /,
     repeats: Union[int, Iterable[int]],
-    axis: int = None,
     *,
+    axis: int = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if len(x.shape) == 0 and axis in [0, -1]:
@@ -263,7 +273,9 @@ repeat.unsupported_dtypes = (
 )
 
 
-def tile(x: torch.Tensor, reps, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def tile(
+    x: torch.Tensor, /, reps, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if isinstance(reps, torch.Tensor):
         reps = reps.detach().cpu().numpy().tolist()
     ret = x.repeat(reps)
@@ -280,9 +292,10 @@ tile.unsupported_dtypes = (
 # noinspection PyUnresolvedReferences
 def constant_pad(
     x: torch.Tensor,
+    /,
     pad_width: List[List[int]],
-    value: Number = 0.0,
     *,
+    value: Number = 0.0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if x.shape == ():
@@ -302,9 +315,13 @@ constant_pad.unsupported_dtypes = ("uint16", "uint32", "uint64")
 
 
 def zero_pad(
-    x: torch.Tensor, pad_width: List[List[int]], *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    pad_width: List[List[int]],
+    *,
+    out: Optional[torch.Tensor] = None,
 ):
-    return constant_pad(x, pad_width, 0.0)
+    return constant_pad(x, pad_width, value=0.0)
 
 
 zero_pad.unsupported_dtypes = (
@@ -315,7 +332,7 @@ zero_pad.unsupported_dtypes = (
 
 
 def swapaxes(
-    x: torch.Tensor, axis0: int, axis1: int, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, axis0: int, axis1: int, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     ret = torch.transpose(x, axis0, axis1)
     return ret
@@ -332,6 +349,7 @@ def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],
     x_max: Union[Number, torch.Tensor],
+    /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -346,5 +364,6 @@ def clip(
 
 
 clip.support_native_out = True
+
 
 clip.unsupported_dtypes = ("float16",)
