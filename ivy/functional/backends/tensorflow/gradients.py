@@ -28,7 +28,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         persistent=retain_grads, watch_accessed_variables=False
     ) as tape:
         tape.watch(xs)
-        func_ret = func(ivy.to_ivy(xs))
+        func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
         rest = func_ret[1:]
