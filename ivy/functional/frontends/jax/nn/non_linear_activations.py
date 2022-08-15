@@ -26,5 +26,10 @@ def one_hot(x, num_classes, *, device=None, out=None):
     return ivy.one_hot(x, num_classes, device=device, out=out)
 
 
+<<<<<<< HEAD
 def softmax(x, /, *, axis=None):
     return ivy.softmax(x, axis=axis)
+=======
+def softplus(x):
+    return ivy.softplus(x)
+>>>>>>> add softplus to jax
