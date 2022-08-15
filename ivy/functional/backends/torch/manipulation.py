@@ -360,7 +360,7 @@ def movedim(
     return torch.movedim(x, source, destination)
 
 
-swapaxes.unsupported_dtypes = (
+movedim.unsupported_dtypes = (
     "uint16",
     "uint32",
     "uint64",
