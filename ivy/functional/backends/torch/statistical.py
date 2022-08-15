@@ -20,7 +20,7 @@ def _new_var_fun(x, *, axis, correction, dtype):
 
 def _new_std_fun(x, *, axis, correction, dtype):
     output = torch.sqrt(_new_var_fun(x, axis=axis, correction=correction, dtype=dtype))
-    output = torch.tensor(output, dtype=dtype)
+    output = output.to(dtype=dtype)
     return output
 
 
@@ -95,7 +95,6 @@ def prod(
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
         if x.dtype in [torch.int8, torch.int16]:
@@ -126,6 +125,9 @@ def prod(
                 dtype=dtype,
             )
     return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
+
+
+prod.unsupported_dtypes = ("float16",)
 
 
 def std(
@@ -160,7 +162,7 @@ def std(
     return ret
 
 
-std.support_native_out = True
+std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
 
 
 def sum(
@@ -219,14 +221,13 @@ def var(
     return ret
 
 
-var.support_native_out = True
-
-
 # Extra #
 # ------#
 
 
 def einsum(
-    equation: str, *operands: torch.Tensor, out: Optional[torch.Tensor] = None
+    equation: str,
+    *operands: torch.Tensor,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.einsum(equation, *operands)
