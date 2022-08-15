@@ -37,12 +37,6 @@ def sigmoid(x: Tensor, /) -> Tensor:
     return tf.nn.sigmoid(x)
 
 
-def tanh(
-    x: Tensor,
-) -> Tensor:
-    return tf.nn.tanh(x)
-
-
 def softmax(
     x: Tensor,
     /,
