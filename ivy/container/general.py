@@ -369,9 +369,9 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With one :code:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]), 
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
                             b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-        >>> >>> y = ivy.Container.static_unstack(x, axis=0)
+        >>> y = ivy.Container.static_unstack(x, axis=0)
         >>> print(y)
         [{
             a: ivy.array([[1, 2],
@@ -400,7 +400,6 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([[[11, 12]],
                          [[15, 16]]])
         }]
-
         """
         return ContainerBase.multi_map_in_static_method(
             "unstack",
@@ -453,11 +452,12 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+        With one :code:`ivy.Container` instances:
+
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
                             b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-        >>> y = ivy.Container.unstack(x, axis=0)
-        >>> print(y)
-        [[{
+        >>> x.unstack(axis=0)
+        [{
             a: ivy.array([[1, 2],
                          [3, 4]]),
             b: ivy.array([[9, 10],

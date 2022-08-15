@@ -81,11 +81,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.has_nans(self, include_infs)
 
-    def unstack(
-        self: ivy.Array,
-        axis: int,
-        keepdims: bool = False
-    ) -> ivy.Array:
+    def unstack(self: ivy.Array, axis: int, keepdims: bool = False) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unstack. This method simply
         wraps the function, and so the docstring for ivy.unstack also applies to
         this method with minimal changes.
@@ -103,20 +99,20 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             List of arrays, unpacked along specified dimensions.
-        
+
         Examples
         --------
         >>> x = ivy.array([[1, 2], [3, 4]])
         >>> y = x.unstack(axis=0)
         >>> print(y)
-        [ivy.array([1, 3]), ivy.array([2, 4])]
+        [ivy.array([1, 2]), ivy.array([3, 4])]
 
         >>> x = ivy.array([[1, 2], [3, 4]])
         >>> y = x.unstack(axis=1, keepdims=True)
         >>> print(y)
-        [ivy.array([[1], 
-                    [3]]), ivy.array([[2], 
-                    [4]])]
+        [ivy.array([[1],
+                [3]]), ivy.array([[2],
+                [4]])]
         """
         return ivy.unstack(self._data, axis, keepdims)
 
