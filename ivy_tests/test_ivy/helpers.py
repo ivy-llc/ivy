@@ -2,7 +2,6 @@
 
 # global
 import importlib
-import warnings
 from contextlib import redirect_stdout
 from io import StringIO
 import sys
@@ -2884,7 +2883,7 @@ def get_axis(
 
 
 @st.composite
-def num_positional_args(draw, *, fn_name: str = None, fn_tree: str = None):
+def num_positional_args(draw, *, fn_name: str = None):
     """Draws an integers randomly from the minimum and maximum number of positional
     arguments a given function can take.
 
@@ -2895,8 +2894,6 @@ def num_positional_args(draw, *, fn_name: str = None, fn_tree: str = None):
         data-set (ex. list).
     fn_name
         name of the function.
-    fn_tree
-        name of the function separated by dots.
 
     Returns
     -------
@@ -2916,11 +2913,7 @@ def num_positional_args(draw, *, fn_name: str = None, fn_tree: str = None):
     total = 0
     fn = None
 
-    if not fn_tree:
-        warnings.warn("Argument fn_name has been changed to fn_tree.")
-        fn_tree = fn_name
-
-    for i, fn_name_key in enumerate(fn_tree.split(".")):
+    for i, fn_name_key in enumerate(fn_name.split(".")):
         if i == 0:
             fn = ivy.__dict__[fn_name_key]
         else:

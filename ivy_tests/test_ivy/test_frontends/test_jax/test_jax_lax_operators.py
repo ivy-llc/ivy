@@ -89,7 +89,7 @@ def test_jax_lax_tan(
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
-        fn_tree="ivy.functional.frontends.jax.lax.max"
+        fn_name="ivy.functional.frontends.jax.lax.max"
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
