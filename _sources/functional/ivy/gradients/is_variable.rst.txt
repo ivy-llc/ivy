@@ -5,9 +5,9 @@ is_variable
 
 .. autofunction:: ivy.array.array_methods.is_variable
 
-.. autofunction:: ivy.container.container_methods.static_is_variable
-
 .. autofunction:: ivy.container.container_methods.is_variable
+
+.. autofunction:: ivy.container.container_methods.static_is_variable
 |
 | **Supported Frameworks:**
 

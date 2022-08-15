@@ -5,9 +5,9 @@ inv
 
 .. autofunction:: ivy.array.array_methods.inv
 
-.. autofunction:: ivy.container.container_methods.static_inv
-
 .. autofunction:: ivy.container.container_methods.inv
+
+.. autofunction:: ivy.container.container_methods.static_inv
 |
 | **Supported Frameworks:**
 

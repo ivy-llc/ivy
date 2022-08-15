@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="ivy.Container.tile" href="tile_container.html" />
-    <link rel="prev" title="ivy.tile" href="tile_functional.html" /> 
+    <link rel="prev" title="ivy.Container.static_tile" href="static_tile_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -81,6 +81,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../swapaxes.html">swapaxes</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../tile.html">tile</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tile_functional.html">ivy.tile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_tile_container.html">ivy.Container.static_tile</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Array.tile</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tile_container.html">ivy.Container.tile</a></li>
 </ul>
@@ -105,14 +106,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -157,8 +158,11 @@
 <h1>ivy.Array.tile<a class="headerlink" href="#ivy-array-tile" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.array.array_methods.tile">
-<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.tile" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.tile" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of <a href="../tile/tile_functional.html">ivy.tile</a>. This method simply
+wraps the function, and so the docstring for <a href="../tile/tile_functional.html">ivy.tile</a> also applies
+to this method with minimal changes.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
@@ -176,7 +180,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tile_functional.html" class="btn btn-neutral float-left" title="ivy.tile" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="static_tile_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_tile" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="tile_container.html" class="btn btn-neutral float-right" title="ivy.Container.tile" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
