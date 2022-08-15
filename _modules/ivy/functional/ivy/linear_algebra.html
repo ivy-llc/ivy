@@ -749,11 +749,11 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x1</span>
-<span class="sd">         first input array. Should have a numeric data type. Must have at least one</span>
-<span class="sd">         dimension.</span>
+<span class="sd">        first input array. Should have a numeric data type. Must have at least one</span>
+<span class="sd">        dimension.</span>
 <span class="sd">    x2</span>
-<span class="sd">         second input array. Should have a numeric data type. Must have at least one</span>
-<span class="sd">         dimension.</span>
+<span class="sd">        second input array. Should have a numeric data type. Must have at least one</span>
+<span class="sd">        dimension.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -795,6 +795,71 @@
 <span class="sd">        shape (L,), and K != L.</span>
 <span class="sd">    -   if x1 is an array having shape (..., M, K), x2 is an array having shape</span>
 <span class="sd">        (..., L, N), and K != L.</span>
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.__matmul__.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([2., 0., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([4., 1., 8.])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array(32.)</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.],  \</span>
+<span class="sd">                            [0., 1.]]) </span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([[2., 0.],  \</span>
+<span class="sd">                            [0., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([[2., 6.],</span>
+<span class="sd">                [0., 3.]])</span>
+<span class="sd">    </span>
+<span class="sd">    With :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5., 1.]), b=ivy.array([1., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4., 7.]), b=ivy.array([3., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x,y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(27.),</span>
+<span class="sd">        b: ivy.array(3.)</span>
+<span class="sd">    }</span>
+<span class="sd">    </span>
+<span class="sd">    With a combination of :code:`ivy.Array`</span>
+<span class="sd">    and :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([9., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([2., 1.]), b=ivy.array([1., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(18.),</span>
+<span class="sd">        b: ivy.array(9.)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a combination of :code:`ivy.NativeArray`</span>
+<span class="sd">    and :code:`ivy.Array` inputs:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.], \</span>
+<span class="sd">                            [0., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[1.], \</span>
+<span class="sd">                        [3.]])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([[7.],</span>
+<span class="sd">               [9.]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -1312,7 +1377,7 @@
 
 <span class="sd">    &gt;&gt;&gt; error = (SS - S).abs()</span>
 <span class="sd">    &gt;&gt;&gt; print(error)</span>
-<span class="sd">    ivy.array([0., 0.])</span>
+<span class="sd">    ivy.array([0.,0.])</span>
 
 <span class="sd">    With :code:`ivy.NativeArray` input:</span>
 

@@ -79,6 +79,7 @@
 <li class="toctree-l2"><a class="reference internal" href="invalid_dtype.html">invalid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_bool_dtype.html">is_bool_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_int_dtype.html">is_int_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="check_float.html">check_float</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_float_dtype.html">is_float_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_uint_dtype.html">is_uint_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="promote_types.html">promote_types</a></li>
@@ -171,7 +172,7 @@
 <h1>promote_types_of_inputs<a class="headerlink" href="#promote-types-of-inputs" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.data_type.promote_types_of_inputs">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">promote_types_of_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#promote_types_of_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.promote_types_of_inputs" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">promote_types_of_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#promote_types_of_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.promote_types_of_inputs" title="Permalink to this definition"></a></dt>
 <dd><p>Promotes the dtype of the given native array inputs to a common dtype
 based on type promotion rules. While passing float or integer values or any
 other non-array input to this function, it should be noted that the return will

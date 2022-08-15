@@ -669,7 +669,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container containing the inverse sine of each element in ``x``. </span>
+<span class="sd">            a container containing the inverse sine of each element in ``x``.</span>
 <span class="sd">            The returned container must have a floating-point data</span>
 <span class="sd">            type determined by :ref:`type-promotion`.</span>
 
@@ -683,7 +683,7 @@
 <span class="sd">            a: ivy.array([0., -0.524, -1.57]),</span>
 <span class="sd">            b: ivy.array([0.1, 0.927, nan])</span>
 <span class="sd">        }</span>
-<span class="sd">        </span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.4, 0.9, -0.9]),\</span>
 <span class="sd">                              b=ivy.array([[4, -3, -0.2]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))</span>
@@ -715,7 +715,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container instance method variant of ivy.asin.</span>
-<span class="sd">        This method simply wraps the function, and so the docstring for </span>
+<span class="sd">        This method simply wraps the function, and so the docstring for</span>
 <span class="sd">        ivy.asin also applies to this method with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
@@ -753,7 +753,7 @@
 <span class="sd">            a: ivy.array([0., 0.524, 1.57]),</span>
 <span class="sd">            b: ivy.array([nan, 0.927, nan])</span>
 <span class="sd">        }</span>
-<span class="sd">        </span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([12., 1.5, 0.]),\</span>
 <span class="sd">                              b=ivy.array([-0.85, 0.6, 0.3]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))</span>
@@ -4390,18 +4390,18 @@
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_logical_and(m, n)</span>
 <span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_logical_and(k, l)</span>
 
-<span class="sd">        &gt;&gt;&gt; print(w)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([True, False, False, False])</span>
 <span class="sd">        }</span>
+
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([False, True, False, False])</span>
 <span class="sd">        }</span>
+
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, False, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">            ivy.array([False, False, False, False])</span>
+
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([True, False, True]),</span>
@@ -4481,22 +4481,16 @@
 <span class="sd">        &gt;&gt;&gt; z = k.logical_and(l)</span>
 
 <span class="sd">        &gt;&gt;&gt; print(w)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">        {a:ivy.array([True,False,False,False])}</span>
+
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, True, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">        {a:ivy.array([False,True,False,False])}</span>
+
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, False, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">            ivy.array([False, False, False, False])</span>
+
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([True, False, True]),</span>
-<span class="sd">            b: ivy.array([False, False, False])</span>
-<span class="sd">        }</span>
+<span class="sd">        {a:ivy.array([True,False,True]),b:ivy.array([False,False,False])}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_logical_and</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -4638,6 +4632,19 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results. The returned container</span>
 <span class="sd">            must have a data type of ``bool``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, False, True]), \</span>
+<span class="sd">                            b=ivy.array([True, False, True]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([False, True, False]), \</span>
+<span class="sd">                                b=ivy.array([True, True, False]))</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_logical_or(x, y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([False, True, True]),</span>
+<span class="sd">            b: ivy.array([True, True, True])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;logical_or&quot;</span><span class="p">,</span>
@@ -4692,6 +4699,28 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results. The returned container</span>
 <span class="sd">            must have a data type of ``bool``.</span>
+
+<span class="sd">        This function conforms to the `Array API Standard</span>
+<span class="sd">        &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">        `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html&gt;`_ </span>
+<span class="sd">        in the standard.</span>
+
+<span class="sd">        Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">        instances in place of any of the arguments.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using :code:`ivy.Container` instance method:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))</span>
+<span class="sd">        &gt;&gt;&gt; z = x.logical_or(y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([False, True, True]),</span>
+<span class="sd">            b: ivy.array([True, True, True])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_logical_or</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
