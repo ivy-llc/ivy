@@ -41,7 +41,7 @@ def test_jax_lax_add(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.add",
+        fn_tree="lax.add",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
@@ -73,7 +73,7 @@ def test_jax_lax_tan(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.tan",
+        fn_tree="lax.tan",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -144,7 +144,7 @@ def test_jax_lax_concat(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.concatenate",
+        fn_tree="lax.concatenate",
         operands=xs,
         dimension=unique_idx,
     )
@@ -170,7 +170,7 @@ def _fill_value(draw):
         return draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
         return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(st.floats(-5, 5))
+    return draw(helpers.floats(min_value=-5, max_value=5))
 
 
 @given(
@@ -202,7 +202,7 @@ def test_jax_lax_full(
         native_array_flags=False,
         fw=fw,
         frontend="jax",
-        fn_name="lax.full",
+        fn_tree="lax.full",
         shape=shape,
         fill_value=fill_value,
         dtype=dtypes[0],
@@ -235,7 +235,7 @@ def test_jax_lax_abs(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.abs",
+        fn_tree="lax.abs",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -266,6 +266,37 @@ def test_jax_lax_sqrt(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.sqrt",
+        fn_tree="lax.sqrt",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# acos
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.acos"
+    ),
+    native_array=st.booleans(),
+)
+def test_jax_lax_acos(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.acos",
         x=np.asarray(x, dtype=input_dtype),
     )

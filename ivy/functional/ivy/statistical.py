@@ -119,7 +119,7 @@ def max(
         b: ivy.array(4)
     }
     """
-    return current_backend.max(x, axis, keepdims, out=out)
+    return current_backend(x).max(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back

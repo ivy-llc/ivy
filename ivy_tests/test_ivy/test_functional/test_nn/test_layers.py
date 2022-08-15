@@ -109,7 +109,7 @@ def test_linear(
         min_dim_size=2,
     ),
     data=st.data(),
-    prob=st.floats(min_value=0, max_value=0.9, width=64),
+    prob=helpers.floats(min_value=0, max_value=0.9, width=64),
     scale=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="dropout"),
     native_array=st.booleans(),
@@ -132,7 +132,6 @@ def test_dropout(
     fw,
     device,
 ):
-
     dtype, x = dtype_and_x
     x = np.asarray(x, dtype=dtype)
     ret = helpers.test_function(
@@ -151,7 +150,7 @@ def test_dropout(
         scale=scale,
         dtype=dtype,
     )
-    ret = helpers.flatten(ret=ret)
+    ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:
         # cardinality test
         assert u.shape == x.shape
@@ -174,7 +173,7 @@ def x_and_scaled_attention(draw, dtypes):
     num_queries = draw(helpers.ints(min_value=1, max_value=3))
     num_keys = draw(helpers.ints(min_value=1, max_value=3))
     feat_dim = draw(helpers.ints(min_value=1, max_value=3))
-    scale = draw(st.floats(min_value=0.1, max_value=1, width=64))
+    scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
 
     q_shape = batch_shape + (num_queries,) + (feat_dim,)
     k_shape = batch_shape + (num_keys,) + (feat_dim,)
@@ -256,7 +255,7 @@ def x_and_mha(draw, dtypes):
     x_mha_shape = (num_queries,) + (feat_dim * num_heads,)
     context_shape = (num_keys,) + (2 * feat_dim * num_heads,)
     mask_shape = (num_queries,) + (num_keys,)
-    scale = draw(st.floats(min_value=0.1, max_value=1, width=64))
+    scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
     x_mha = draw(
         helpers.array_values(
             dtype=dtype,
@@ -382,7 +381,7 @@ def _x_and_filters(
         else:
             filter_shape = draw(
                 st.tuples(
-                    st.ints(min_value=3, max_value=5),
+                    st.integers(min_value=3, max_value=5),
                     st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
                     st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
                 )
