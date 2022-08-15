@@ -89,7 +89,7 @@ def test_jax_lax_tan(
     ),
     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.lax.max"
+        fn_tree="ivy.functional.frontends.jax.lax.max"
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
@@ -110,7 +110,7 @@ def test_jax_lax_max(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_name="lax.max",
+        fn_tree="lax.max",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
