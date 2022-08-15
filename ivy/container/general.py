@@ -271,7 +271,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x.inplace_decrement(2)
         >>> print(y)
         {
-            a: ivy.array([-4.7, 0.4, -10.5]),
+            a: ivy.array([-8.7, 0.4, -10.5]),
             b: ivy.array([-0.5, -2.3, -2]),
             c: ivy.array([-6.7, -7.4, 5.5])
         }

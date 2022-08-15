@@ -330,9 +330,10 @@ class ArrayWithGeneral(abc.ABC):
     def inplace_decrement(
         self: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.inplace_decrement. This method simply
-        wraps the function, and so the docstring for ivy.inplace_decrement also applies
-        to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.inplace_decrement. This method simply
+        wraps the function, and so the docstring for ivy.inplace_decrement also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
