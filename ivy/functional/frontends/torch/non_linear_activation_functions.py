@@ -27,3 +27,12 @@ def gelu(input, approximate="none"):
 
 
 gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def softplus(input, beta=1, threshold=20):
+    arg = ivy.multiply(input, beta)
+    ivy_out = ivy.divide(ivy.softplus(arg), beta)
+    return ivy.where(ivy.greater(threshold, arg), input, ivy_out)
+
+
+softplus.unsupported_dtypes = ("float16",)
