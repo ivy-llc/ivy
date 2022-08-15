@@ -18,9 +18,10 @@ def _train(module, loss_fn):
     for i in range(5):
         loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
         module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
+        assert loss <= loss_tm1
         loss_tm1 = loss
 
-    assert loss <= loss_tm1
+    return loss
 
 
 @given(
