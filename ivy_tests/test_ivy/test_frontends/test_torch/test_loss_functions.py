@@ -21,7 +21,7 @@ import ivy.functional.backends.torch as ivy_torch
         allow_inf=False,
         min_num_dims=2,
         max_num_dims=2,
-        min_dim_size= 1,
+        min_dim_size=1,
     ),
     dtype_and_target=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -45,7 +45,11 @@ import ivy.functional.backends.torch as ivy_torch
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_torch_cross_entropy(
-    dtype_and_input, dtype_and_target, as_variable, num_positional_args, native_array, fw
+    dtype_and_input, 
+    dtype_and_target, 
+    as_variable, 
+    num_positional_args, 
+    native_array, fw
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
