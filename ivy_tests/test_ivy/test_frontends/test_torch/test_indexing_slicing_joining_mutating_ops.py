@@ -123,30 +123,22 @@ def test_torch_permute(
         dims=axis,
     )
 
-    
+
 # swapdims
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes))
+                set(ivy_torch.valid_float_dtypes)
+            )
         ),
-        shape=st.shared(
-            helpers.get_shape(min_num_dims=2),
-            key='shape'
-        ),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     dim0=helpers.get_axis(
-        shape=st.shared(
-            helpers.get_shape(min_num_dims=2), 
-            key='shape'
-        ),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
     dim1=helpers.get_axis(
-        shape=st.shared(
-            helpers.get_shape(min_num_dims=2), 
-            key='shape'
-        ),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -154,7 +146,6 @@ def test_torch_permute(
     ),
     native_array=st.booleans(),
 )
-@handle_cmd_line_args
 def test_torch_swapdims(
     dtype_and_values,
     dim0,
