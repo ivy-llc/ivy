@@ -510,6 +510,41 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.matrix_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.matrix_norm also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array.
+        ord
+            Order of the norm. Default is 2.
+        keepdims
+            If this is set to True, the axes which are normed over are left in the
+            result as dimensions with size one. With this option the result will
+            broadcast correctly against the original x. Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Matrix norm of the array at specified axes.
+
+        """
         return ContainerBase.multi_map_in_static_method(
             "matrix_norm",
             x,
@@ -533,6 +568,41 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.matrix_norm.
+        This method simply wraps the function, and so the docstring for
+        ivy.matrix_norm also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        ord
+            Order of the norm. Default is 2.
+        keepdims
+            If this is set to True, the axes which are normed over are left in the
+            result as dimensions with size one. With this option the result will
+            broadcast correctly against the original x. Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Matrix norm of the array at specified axes.
+
+        """
         return self.static_matrix_norm(
             self,
             ord,

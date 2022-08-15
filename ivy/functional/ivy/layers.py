@@ -388,7 +388,7 @@ def scaled_dot_product_attention(
         )
 
     # BS x Q x K
-    attn = ivy.softmax(sim, -1)
+    attn = ivy.softmax(sim, axis=-1)
 
     # BS x Q x F
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)

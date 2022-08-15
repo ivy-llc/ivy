@@ -41,6 +41,7 @@ class DefaultDevice:
     def __init__(
         self,
         device: Union[ivy.Device, ivy.NativeDevice],
+        /,
     ) -> None:
         """Initialises the DefaultDevice class
 
@@ -318,7 +319,7 @@ def print_all_ivy_arrays_on_dev(
 
 
 def dev(
-    x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """
     Get the native device handle for input array x.
@@ -343,7 +344,7 @@ def dev(
     >>> print(y)
     cpu
     """
-    return ivy.current_backend(x).dev(x, as_native)
+    return ivy.current_backend(x).dev(x, as_native=as_native)
 
 
 # Conversions
@@ -437,7 +438,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
 
 
 def used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], process_specific: bool = False
+    device: Union[ivy.Device, ivy.NativeDevice], /, *, process_specific: bool = False
 ) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
@@ -477,6 +478,8 @@ def used_mem_on_dev(
 
 def percent_used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice],
+    /,
+    *,
     process_specific: bool = False,
 ) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
@@ -778,9 +781,10 @@ def unset_default_device() -> None:
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
+    /,
     *,
     stream: Optional[Union[int, Any]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
@@ -902,6 +906,8 @@ def split_func_call(
     func: Callable,
     inputs: Union[ivy.Array, ivy.NativeArray],
     mode: str,
+    /,
+    *,
     max_chunk_size: int = None,
     chunk_size: int = None,
     input_axes: Union[int, Iterable[int]] = 0,

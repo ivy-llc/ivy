@@ -121,10 +121,16 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with ivy arrays passed in the arguments.
         """
+        has_out = False
+        if "out" in kwargs:
+            out = kwargs["out"]
+            has_out = True
         # convert all arrays in the inputs to ivy.Array instances
         ivy_args, ivy_kwargs = ivy.args_to_ivy(
             *args, **kwargs, include_derived={tuple: True}
         )
+        if has_out:
+            ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
     new_fn.inputs_to_ivy_arrays = True
@@ -203,6 +209,55 @@ def infer_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=dtype, **kwargs)
 
     new_fn.infer_dtype = True
+    return new_fn
+
+
+def integer_array_to_float(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Promotes all the integer array inputs passed to the function both
+        as positional or keyword arguments to the default float dtype.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with integer array arguments
+            promoted to default float dtype.
+
+        """
+        if args:
+
+            args = list(args)
+            for i in range(len(args)):
+                if ivy.is_array(args[i]):
+                    if ivy.is_int_dtype(args[i].dtype):
+                        is_native = ivy.is_native_array(args[i])
+                        args[i] = ivy.asarray(args[i], dtype=ivy.default_float_dtype())
+                        if is_native:
+                            args[i] = ivy.to_native(args[i])
+
+            args = tuple(args)
+        if kwargs:
+            for i in kwargs:
+                if ivy.is_array(kwargs[i]):
+                    if ivy.is_int_dtype(kwargs[i].dtype):
+                        is_native = ivy.is_native_array(kwargs[i])
+                        kwargs[i] = ivy.asarray(
+                            kwargs[i], dtype=ivy.default_float_dtype()
+                        )
+                        if is_native:
+                            kwargs[i] = ivy.to_native(kwargs[i])
+        return fn(*args, **kwargs)
+
+    new_fn.integer_array_to_float = True
     return new_fn
 
 
@@ -365,30 +420,23 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
-        if hasattr(original, "array_spec"):
-            to_wrap.array_spec = original.array_spec
-        if hasattr(original, "infer_device") and not hasattr(to_wrap, "infer_device"):
-            to_wrap = infer_device(to_wrap)
-        if hasattr(original, "infer_dtype") and not hasattr(to_wrap, "infer_dtype"):
-            to_wrap = infer_dtype(to_wrap)
-        if hasattr(original, "outputs_to_ivy_arrays") and not hasattr(
-            to_wrap, "outputs_to_ivy_arrays"
-        ):
-            to_wrap = outputs_to_ivy_arrays(to_wrap)
-        if hasattr(original, "inputs_to_native_arrays") and not hasattr(
-            to_wrap, "inputs_to_native_arrays"
-        ):
-            to_wrap = inputs_to_native_arrays(to_wrap)
-        if hasattr(original, "inputs_to_ivy_arrays") and not hasattr(
-            to_wrap, "inputs_to_ivy_arrays"
-        ):
-            to_wrap = inputs_to_ivy_arrays(to_wrap)
-        if hasattr(original, "handle_out_argument") and not hasattr(
-            to_wrap, "handle_out_argument"
-        ):
-            to_wrap = handle_out_argument(to_wrap)
-        if hasattr(original, "handle_nestable") and not hasattr(
-            to_wrap, "handle_nestable"
-        ):
-            to_wrap = handle_nestable(to_wrap)
+        # set attributes
+        for attr in original.__dict__.keys():
+            # private attribute or decorator
+            if attr.startswith("_") or hasattr(ivy, attr) or attr == "handles_out_arg":
+                continue
+            setattr(to_wrap, attr, getattr(original, attr))
+        # wrap decorators (sequence matters)
+        for attr in [
+            "infer_device",
+            "infer_dtype",
+            "integer_array_to_float",
+            "outputs_to_ivy_arrays",
+            "inputs_to_native_arrays",
+            "inputs_to_ivy_arrays",
+            "handle_out_argument",
+            "handle_nestable",
+        ]:
+            if hasattr(original, attr) and not hasattr(to_wrap, attr):
+                to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap

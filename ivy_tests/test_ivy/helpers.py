@@ -359,6 +359,7 @@ def docstring_examples_run(
     *, fn, from_container=False, from_array=False, num_sig_fig=3
 ):
     """Performs docstring tests for a given function.
+
     Parameters
     ----------
     fn
@@ -369,11 +370,11 @@ def docstring_examples_run(
         if True, check docstring of the function as a method of an Ivy Array.
     num_sig_fig
         Number of significant figures to check in the example.
+
     Returns
     -------
     None if the test passes, else marks the test as failed.
     """
-
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
@@ -582,11 +583,11 @@ def assert_all_close(
         Absolute Tolerance Value.
     ground_truth_backend
         Ground Truth Backend Framework.
+
     Returns
     -------
     None if the test passes, else marks the test as failed.
     """
-
     assert ret_np.dtype is ret_from_np.dtype, (
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
@@ -606,7 +607,8 @@ def assert_all_close(
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
     """Splits the kwargs into args and kwargs, with the first num_positional_args ported
-    to args."""
+    to args.
+    """
     args = [v for v in list(kwargs.values())[:num_positional_args]]
     kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_positional_args:]}
     return args, kwargs
@@ -670,8 +672,10 @@ def flatten_and_to_np(*, ret):
 
 
 def get_ret_and_flattened_np_array(func, *args, **kwargs):
-    """Runs func with args and kwargs, and returns the result along with its flattened
-    version."""
+    """
+    Runs func with args and kwargs, and returns the result along with its flattened
+    version.
+    """
     ret = func(*args, **kwargs)
     return ret, flatten_and_to_np(ret=ret)
 
@@ -699,6 +703,7 @@ def value_test(
         Absolute Tolerance Value.
     ground_truth_backend
         Ground Truth Backend Framework.
+
     Returns
     -------
     None if the value test passes, else marks the test as failed.
@@ -824,6 +829,7 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
         data-types of the input arguments and keyword-arguments.
     all_as_kwargs_np
         All arguments in Numpy Format, to check for the presence of dtype argument.
+
     Returns
     -------
     True if the function does not support the given input or output data types, False
@@ -857,6 +863,7 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
 
 def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
     """Checks whether a function does not support a given device.
+
     Parameters
     ----------
     fn
@@ -865,6 +872,7 @@ def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
         The backend device.
     all_as_kwargs_np
         All arguments in Numpy Format, to check for the presence of dtype argument.
+
     Returns
     -------
     True if the function does not support the given device, False otherwise.
@@ -893,6 +901,7 @@ def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
 
 def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwargs_np):
     """Checks whether a function does not support a given device or data types.
+
     Parameters
     ----------
     fn
@@ -903,6 +912,7 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
         data-types of the input arguments and keyword-arguments.
     all_as_kwargs_np
         All arguments in Numpy Format, to check for the presence of dtype argument.
+
     Returns
     -------
     True if the function does not support either the device or any data type, False
@@ -967,6 +977,7 @@ def create_args_kwargs(
     container_flags=None,
 ):
     """Creates arguments and keyword-arguments for the function to test.
+
     Parameters
     ----------
     args_np
@@ -982,6 +993,7 @@ def create_args_kwargs(
         if not None, the corresponding argument is called as a Native Array.
     container_flags
         if not None, the corresponding argument is called as an Ivy Container.
+
     Returns
     -------
     Arguments, Keyword-arguments, number of arguments, and indexes on arguments and
@@ -1055,6 +1067,7 @@ def create_args_kwargs(
 
 def test_unsupported_function(*, fn, args, kwargs):
     """Tests a function with an unsupported datatype to raise an exception.
+
     Parameters
     ----------
     fn
@@ -1344,6 +1357,8 @@ def test_function(
     )
 
     fn = getattr(ivy, fn_name)
+    if gradient_incompatible_function(fn=fn):
+        return
     test_unsupported = check_unsupported_dtype(
         fn=fn, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
@@ -1426,12 +1441,15 @@ def test_function(
         )
     # assert idx of return if the idx of the out array provided
     if with_out:
-        out = ivy.zeros_like(ret)
-        assert not isinstance(ret, tuple)
+        test_ret = ret
+        if isinstance(ret, tuple):
+            assert hasattr(ivy.__dict__[fn_name], "out_index")
+            test_ret = ret[getattr(ivy.__dict__[fn_name], "out_index")]
+        out = ivy.zeros_like(test_ret)
         if max(container_flags):
-            assert ivy.is_ivy_container(ret)
+            assert ivy.is_ivy_container(test_ret)
         else:
-            assert ivy.is_array(ret)
+            assert ivy.is_array(test_ret)
         if instance_method:
             ret, ret_np_flat = get_ret_and_flattened_np_array(
                 instance.__getattribute__(fn_name), *args, **kwargs, out=out
@@ -1440,10 +1458,13 @@ def test_function(
             ret, ret_np_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name], *args, **kwargs, out=out
             )
-        assert ret is out
+        test_ret = ret
+        if isinstance(ret, tuple):
+            test_ret = ret[getattr(ivy.__dict__[fn_name], "out_index")]
+        assert test_ret is out
         if not max(container_flags) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
-            assert ret.data is out.data
+            assert test_ret.data is out.data
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     try:
@@ -1764,6 +1785,7 @@ def array_dtypes(
     shared_dtype=False,
 ):
     """Draws a list of data types.
+
     Parameters
     ----------
     draw
@@ -1775,6 +1797,7 @@ def array_dtypes(
         universe of available data types.
     shared_dtype
         if True, all data types in the list are same.
+
     Returns
     -------
     A strategy that draws a list.
@@ -1805,6 +1828,7 @@ def array_bools(
     num_arrays=st.shared(ints(min_value=1, max_value=4), key="num_arrays"),
 ):
     """Draws a boolean list of a given size.
+
     Parameters
     ----------
     draw
@@ -1812,6 +1836,7 @@ def array_bools(
         data-set (ex. list).
     num_arrays
         size of the list.
+
     Returns
     -------
     A strategy that draws a list.
@@ -2758,8 +2783,7 @@ def get_axis(
     unique=True,
     min_size=1,
     max_size=None,
-    force_tuple=False,
-    force_int=False,
+    ret_tuple=False,
 ):
     """Draws one or more axis for the given shape.
 
@@ -2767,7 +2791,7 @@ def get_axis(
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
+        data-set (ex. list)
     shape
         shape of the array as a tuple, or a hypothesis strategy from which the shape
         will be drawn
@@ -2783,14 +2807,11 @@ def get_axis(
         axes drawn
     max_size
         int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
-        axes drawn.
-        If None and unique is True, then it is set to the number of axes in the shape
-    force_tuple
-        boolean, if true, all axis will be returned as a tuple. If force_tuple and
-        force_int are true, then an AssertionError is raised
-    force_int
-        boolean, if true, all axis will be returned as an int. If force_tuple and
-        force_int are true, then an AssertionError is raised
+        axes drawn; if None and unique is True, then it is set to the number of axes
+        in the shape
+    ret_tuple
+        boolean; if False, randomly draw both integers and List[int]; If True, draw
+        only List[int] as tuple[int]
 
     Returns
     -------
@@ -2853,6 +2874,8 @@ def get_axis(
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
+    elif ret_tuple:
+        axis = tuple([axis])
     return axis
 
 
