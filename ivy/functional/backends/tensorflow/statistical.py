@@ -39,7 +39,7 @@ def min(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
