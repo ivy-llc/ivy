@@ -1,5 +1,6 @@
 import hypothesis.extra.numpy as hnp
 from hypothesis import given, strategies as st
+import numpy as np
 
 # local
 import ivy.functional.backends.numpy as ivy_np
@@ -47,8 +48,40 @@ def test_numpy_where(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="where",
+        fn_tree="where",
         cond=cond,
         x1=x1,
         x2=x2,
+    )
+
+
+@given(
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.nonzero"
+    ),
+    data=st.data(),
+)
+@handle_cmd_line_args
+def test_numpy_nonzero(
+    *,
+    data,
+    dtype_and_a,
+    native_array,
+    num_positional_args,
+    fw,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="nonzero",
+        a=np.asarray(a, dtype=dtype),
     )

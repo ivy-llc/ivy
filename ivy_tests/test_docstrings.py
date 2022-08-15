@@ -31,6 +31,7 @@ def test_docstrings(backend):
         "current_backend",
         "get_backend",
         "namedtuple",
+        "invalid_dtype",
         "DType",
         "Dtype",
         "multinomial",
@@ -46,7 +47,7 @@ def test_docstrings(backend):
         "unique_all",
         "total_mem_on_dev",
     ]
-    # the temp skip list consists of function which have an issue with their
+    # the temp skip list consists of functions which have an issue with their
     # implementation
     skip_list_temp = [
         "outer",
@@ -55,23 +56,11 @@ def test_docstrings(backend):
         "det",
         "cumprod",
         "where",
-        "conv3d_transpose",
     ]
 
     # skip list for array and container docstrings
-    skip_arr_cont = [
-        "logical_and",
-        "depthwise_conv2d",
-        "log1p",
-    ]
-    currently_being_worked_on = [
-        "logical_and",
-        "stable_divide",
-        "conv2d",
-        "depthwise_conv2d",
-        "svd",
-        "squeeze",
-    ]
+    skip_arr_cont = ["layer_norm"]
+    currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp + currently_being_worked_on

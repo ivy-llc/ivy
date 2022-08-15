@@ -540,7 +540,7 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the inverse sine of each element in ``x``. 
+            a container containing the inverse sine of each element in ``x``.
             The returned container must have a floating-point data
             type determined by :ref:`type-promotion`.
 
@@ -554,7 +554,7 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([0., -0.524, -1.57]),
             b: ivy.array([0.1, 0.927, nan])
         }
-        
+
         >>> x = ivy.Container(a=ivy.array([0.4, 0.9, -0.9]),\
                               b=ivy.array([[4, -3, -0.2]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
@@ -586,7 +586,7 @@ class ContainerWithElementwise(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.asin.
-        This method simply wraps the function, and so the docstring for 
+        This method simply wraps the function, and so the docstring for
         ivy.asin also applies to this method with minimal changes.
 
         Parameters
@@ -624,7 +624,7 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([0., 0.524, 1.57]),
             b: ivy.array([nan, 0.927, nan])
         }
-        
+
         >>> x = ivy.Container(a=ivy.array([12., 1.5, 0.]),\
                               b=ivy.array([-0.85, 0.6, 0.3]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
@@ -4261,18 +4261,18 @@ class ContainerWithElementwise(ContainerBase):
         >>> y = ivy.Container.static_logical_and(m, n)
         >>> z = ivy.Container.static_logical_and(k, l)
 
-        >>> print(w)
         {
             a: ivy.array([True, False, False, False])
         }
+
         >>> print(x)
         {
             a: ivy.array([False, True, False, False])
         }
+
         >>> print(y)
-        {
-            a: ivy.array([False, False, False, False])
-        }
+            ivy.array([False, False, False, False])
+
         >>> print(z)
         {
             a: ivy.array([True, False, True]),
@@ -4352,22 +4352,16 @@ class ContainerWithElementwise(ContainerBase):
         >>> z = k.logical_and(l)
 
         >>> print(w)
-        {
-            a: ivy.array([True, False, False, False])
-        }
+        {a:ivy.array([True,False,False,False])}
+
         >>> print(x)
-        {
-            a: ivy.array([False, True, False, False])
-        }
+        {a:ivy.array([False,True,False,False])}
+
         >>> print(y)
-        {
-            a: ivy.array([False, False, False, False])
-        }
+            ivy.array([False, False, False, False])
+
         >>> print(z)
-        {
-            a: ivy.array([True, False, True]),
-            b: ivy.array([False, False, False])
-        }
+        {a:ivy.array([True,False,True]),b:ivy.array([False,False,False])}
         """
         return self.static_logical_and(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
@@ -4509,6 +4503,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([False, False, True]), \
+                            b=ivy.array([True, False, True]))
+        >>> y = ivy.Container(a=ivy.array([False, True, False]), \
+                                b=ivy.array([True, True, False]))
+        >>> z = ivy.Container.static_logical_or(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([False, True, True]),
+            b: ivy.array([True, True, True])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "logical_or",
@@ -4563,6 +4570,28 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        This function conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+        `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
+        in the standard.
+
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+        instances in place of any of the arguments.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
+        >>> y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))
+        >>> z = x.logical_or(y)
+        >>> print(z)
+        {
+            a: ivy.array([False, True, True]),
+            b: ivy.array([True, True, True])
+        }
         """
         return self.static_logical_or(
             self, x2, key_chains, to_apply, prune_unapplied, map_sequences, out=out
