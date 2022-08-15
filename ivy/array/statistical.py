@@ -96,26 +96,31 @@ class ArrayWithStatistical(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[0.0, 1.0, 2.0], \
-        [3.0, 4.0, 5.0], [6.0, 7.0, 8.0]])
+                           [3.0, 4.0, 5.0], \
+                           [6.0, 7.0, 8.0]])
         >>> y = x.var()
         >>> print(y)
         ivy.array(6.6666665)
 
-        >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], \
-        [6.0, 7.0, .08]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0], \
+                           [3.0, 4.0, 5.0], \
+                           [6.0, 7.0, .08]])
         >>> y = x.var(axis=0)
         >>> print(y)
-        ivy.array([6. , 6. , 4.1])
+        ivy.array([6., 6., 4.1])
 
-        >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], \
-        [6.0, 7.0, .08]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0], \
+                           [3.0, 4.0, 5.0], \
+                           [6.0, 7.0, .08]])
         >>> y = ivy.array([0., 0., 0.])
         >>> x.var(axis=1, out=y)
         >>> print(y)
         ivy.array([0.667, 0.667, 9.33 ])
 
         """
-        return ivy.var(self._data, axis, correction, keepdims, out=out)
+        return ivy.var(
+            self._data, axis=axis, correction=correction, keepdims=keepdims, out=out
+        )
 
     def prod(
         self: ivy.Array,

@@ -119,7 +119,7 @@ def max(
         b: ivy.array(4)
     }
     """
-    return current_backend.max(x, axis, keepdims, out=out)
+    return current_backend(x).max(x, axis, keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -553,7 +553,7 @@ def var(
     >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
     >>> ivy.var(x, out=x)
     >>> print(x)
-    ivy.array(0.)
+    ivy.array(0.07472222)
 
     With :code:`ivy.native_array` input:
 
