@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import strategies as st, given, assume
+from hypothesis import strategies as st, given, assume, settings
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -20,6 +20,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     num_positional_args=helpers.num_positional_args(fn_name="unique_values"),
     data=st.data(),
 )
+@settings(deadline=None)
 @handle_cmd_line_args
 def test_unique_values(
     *,

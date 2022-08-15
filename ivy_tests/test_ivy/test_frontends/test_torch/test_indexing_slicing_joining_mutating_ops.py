@@ -4,7 +4,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
 
@@ -87,12 +86,13 @@ def test_torch_cat(
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)),
+                set(ivy_torch.valid_float_dtypes)
+            ),
         ),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"), 
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         ret_tuple=True,
     ),
     as_variable=helpers.array_bools(),
@@ -101,8 +101,7 @@ def test_torch_cat(
     ),
     native_array=helpers.array_bools(),
 )
-@handle_cmd_line_args
-def test_permute(
+def test_torch_permute(
     dtype_values_axis,
     axis,
     as_variable,
@@ -119,35 +118,74 @@ def test_permute(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="permute",
+        fn_tree="permute",
         input=np.asarray(value, dtype=dtype),
         dims=axis,
     )
 
-    
+
+# swapdims
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        ),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    dim0=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ).filter(lambda axis: isinstance(axis, int)),
+    dim1=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ).filter(lambda axis: isinstance(axis, int)),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.swapdims"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_swapdims(
+    dtype_and_values,
+    dim0,
+    dim1,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="swapdims",
+        input=np.asarray(value, dtype=input_dtype),
+        dim0=dim0,
+        dim1=dim1,
+    )
+
+
 # swapaxes
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes))
+                set(ivy_torch.valid_float_dtypes)
+            )
         ),
-        shape=st.shared(
-            helpers.get_shape(min_num_dims=2),
-            key='shape'
-        ),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     axis0=helpers.get_axis(
-        shape=st.shared(
-            helpers.get_shape(min_num_dims=2), 
-            key='shape'
-        ),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
     axis1=helpers.get_axis(
-        shape=st.shared(
-            helpers.get_shape(min_num_dims=2), 
-            key='shape'
-        ),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -155,7 +193,6 @@ def test_permute(
     ),
     native_array=st.booleans(),
 )
-@handle_cmd_line_args
 def test_torch_swapaxes(
     dtype_and_values,
     axis0,
