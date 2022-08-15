@@ -18,7 +18,7 @@ class ArrayWithDevice(abc.ABC):
         method with minimal changes.
 
         """
-        return ivy.dev(self, as_native)
+        return ivy.dev(self, as_native=as_native)
 
     def to_device(
         self: ivy.Array,

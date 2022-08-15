@@ -1303,7 +1303,7 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
     return tuple(set(unsupported_dtypes))
 
 
-def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None], /) -> bool:
+def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
     """
     Determines whether the provided data type is not support by
     the current framework.
@@ -1320,23 +1320,55 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None], /) -> bool:
 
     Examples
     --------
-    >>> ivy.invalid_dtype(dtype_in = None)
+    with :code:`ivy.Dtype` inputs:
+
+    >>> print(ivy.invalid_dtype(None))
     False
 
-    >>> ivy.invalid_dtype(dtype_in = 'uint64')
+    >>> print(ivy.invalid_dtype('uint64'))
+    False
+
+    >>> print(ivy.invalid_dtype(ivy.float64))
+    False
+
+    >>> print(ivy.invalid_dtype('float32'))
+    False
+
+
+
+    with :code:`ivy.NativeDtype` inputs:
+
+    >>> print(ivy.invalid_dtype(ivy.native_uint8))
+    False
+
+    >>> print(ivy.invalid_dtype(ivy.native_float32))
+    False
+
+    >>> print(ivy.invalid_dtype('native_bool'))
     True
 
-    >>> ivy.invalid_dtype(dtype_in = ivy.float64)
+    >>> print(ivy.invalid_dtype('native_float64'))
     True
 
-    >>> ivy.invalid_dtype(dtype_in = 'float32')
+    >>> print(ivy.invalid_dtype(ivy.native_int16))
+    False
+
+    >>> print(ivy.invalid_dtype('native_int32'))
     True
 
-    >>> ivy.invalid_dtype(dtype_in = ivy.native_int16)
+    >>> print(ivy.invalid_dtype(ivy.native_float16))
+    False
+
+    >>> print(ivy.invalid_dtype(ivy.native_int64))
+    False
+
+    >>> print(ivy.invalid_dtype(ivy.native_int8))
+    False
+
+    >>> print(ivy.invalid_dtype('native_uint64'))
     True
 
-    >>> ivy.invalid_dtype(dtype_in = 'native_int16')
-    True
+
     """
     if dtype_in is None:
         return False
@@ -1495,24 +1527,70 @@ def is_int_dtype(
     return "int" in ivy.as_ivy_dtype(dtype_in)
 
 
+def check_float(x):
+    """
+    Helper function to check if the input is a float or a float-like object.
+
+    Parameters
+    ----------
+    x : any
+        Input to check.
+
+    Returns
+    -------
+    ret : bool
+        "True" if the input is a float or a float-like object, otherwise "False".
+    """
+    return isinstance(x, (int, np.float)) and not type(x) == bool
+
+
 @inputs_to_native_arrays
 @handle_nestable
 def is_float_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
-    /,
+    *,
+    out: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number] = None,
 ) -> bool:
-    """Determine whether the input data type is a float dtype.
+    """
+    Determine whether the input data type is a float dtype.
 
     Parameters
     ----------
-    dtype_in
+    dtype_in : Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
         The array or data type to check
 
     Returns
     -------
-    ret
+    ret : bool
         Whether or not the array or data type is of a floating point dtype
 
+    Examples
+    --------
+    With :code:`ivy.Dtype` input:
+
+    >>> x = ivy.is_float_dtype(ivy.float32)
+    >>> print(x)
+    True
+
+    >>> x = ivy.is_float_dtype(ivy.int64)
+    >>> print(x)
+    False
+
+    >>> x = ivy.is_float_dtype(ivy.int32)
+    >>> print(x)
+    False
+
+    >>> x = ivy.is_float_dtype(ivy.bool)
+    >>> print(x)
+    False
+
+    >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)
+    >>> print(arr.is_float_dtype())
+    True
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
+    >>> print(x.a.dtype, x.b.dtype)
+    float32 int32
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
