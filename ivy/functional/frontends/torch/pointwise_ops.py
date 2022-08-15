@@ -16,6 +16,13 @@ def tan(input, *, out=None):
 tan.unsupported_dtypes = ("float16",)
 
 
+def tanh(input, *, out=None):
+    return ivy.tanh(input, out=out)
+
+
+tanh.unsupported_dtypes = ('float16',)
+
+
 def cos(input, *, out=None):
     return ivy.cos(input, out=out)
 
@@ -81,3 +88,17 @@ def asin(input, *, out=None):
 
 
 asin.unsupported_dtypes = ("float16",)
+
+
+def arcsin(input, *, out=None):
+    return ivy.asin(input, out=out)
+
+
+arcsin.unsupported_dtypes = ("float16",)
+
+
+def asinh(input, *, out=None):
+    return ivy.asinh(input, out=out)
+
+
+asinh.unsupported_dtypes = ("float16",)
