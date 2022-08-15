@@ -549,6 +549,8 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+        With one :code:`ivy.Container` instances:
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> y = x.cumprod(axis=0)
         >>> print(y)
@@ -559,9 +561,8 @@ class ContainerWithGeneral(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
                               b=ivy.array([[3, 4], [4, 5], [5, 6]]))
-        >>> y = ivy.Container(a=ivy.zeros((3, 2)), b=ivy.zeros((3, 2)))
+        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
         >>> x.cumprod(axis=1, exclusive=True, out=y)
-        >>> print(y)
         {
             a: ivy.array([[1, 2],
                           [1, 5],
