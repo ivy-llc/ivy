@@ -16,6 +16,13 @@ def tan(input, *, out=None):
 tan.unsupported_dtypes = ("float16",)
 
 
+def atan(input, *, out=None):
+    return ivy.atan(input, out=out)
+
+
+atan.unsupported_dtypes = ("float16",)
+
+
 def tanh(input, *, out=None):
     return ivy.tanh(input, out=out)
 
