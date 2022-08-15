@@ -9,7 +9,7 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def _cast_for_bitwise_op(x1, x2, /, *, clamp=False):
+def _cast_for_bitwise_op(x1, x2, clamp=False):
     if not isinstance(x1, int):
         if isinstance(x2, int):
             x2 = jnp.asarray(x2, dtype=x1.dtype)
@@ -22,7 +22,7 @@ def _cast_for_bitwise_op(x1, x2, /, *, clamp=False):
     return x1, x2
 
 
-def _cast_for_binary_op(x1, x2, /):
+def _cast_for_binary_op(x1, x2):
     return ivy.promote_types_of_inputs(x1, x2)
 
 
