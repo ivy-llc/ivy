@@ -5,8 +5,7 @@ from typing import Dict, Union, Tuple
 from hypothesis import settings
 
 # local
-from ivy_tests.test_ivy import helpers
-from ivy_tests.test_ivy.helpers import FW_STRS, TEST_BACKENDS, TEST_CALL_METHODS
+from ivy_tests.test_ivy.helpers import TEST_BACKENDS, TEST_CALL_METHODS
 from ivy import clear_backend_stack, DefaultDevice
 
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
@@ -42,18 +41,10 @@ def pytest_configure(config):
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(device, f, compile_graph, implicit, call, fw):
-    if "gpu" in device and call is helpers.np_call:
-        # Numpy does not support GPU
-        pytest.skip()
+def run_around_tests(device, f, compile_graph, call, fw, implicit):
     clear_backend_stack()
-    if f is not None:
-        with f.use:
-            with DefaultDevice(device):
-                yield
-    else:
-        with DefaultDevice(device):
-            yield
+    with DefaultDevice(device):
+        yield
 
 
 def pytest_generate_tests(metafunc):

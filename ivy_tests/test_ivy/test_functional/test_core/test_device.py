@@ -173,7 +173,9 @@ def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
 
 
 # memory_on_dev
-def test_memory_on_dev(call):
+@given(data=st.data())
+@handle_cmd_line_args
+def test_memory_on_dev(call, data):
     for device in _get_possible_devices():
         ret = ivy.total_mem_on_dev(device)
         # type test
@@ -189,6 +191,8 @@ def test_memory_on_dev(call):
 # Device Allocation #
 
 # default_device
+@given(data=st.data())
+@handle_cmd_line_args
 def test_default_device(device):
     # setting and unsetting
     orig_len = len(ivy.default_device_stack)
@@ -386,6 +390,8 @@ def test_split_func_call_with_cont_input(
 
 
 # profiler
+@given(data=st.data())
+@handle_cmd_line_args
 def test_profiler(device, fw):
     # ToDo: find way to prevent this test from hanging when run
     #  alongside other tests in parallel
@@ -431,7 +437,8 @@ def test_profiler(device, fw):
     assert not os.path.exists(fw_log_dir), "Profiler recreated logging folder"
 
 
-@given(num=helpers.ints(min_value=0, max_value=5))
+@given(num=helpers.ints(min_value=0, max_value=5), data=st.data())
+@handle_cmd_line_args
 def test_num_arrays_on_dev(num, device):
     arrays = [
         ivy.array(np.random.uniform(size=2).tolist(), device=device) for _ in range(num)
@@ -441,7 +448,8 @@ def test_num_arrays_on_dev(num, device):
         del item
 
 
-@given(num=helpers.ints(min_value=0, max_value=5))
+@given(num=helpers.ints(min_value=0, max_value=5), data=st.data())
+@handle_cmd_line_args
 def test_get_all_arrays_on_dev(num, device):
     arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
     arr_ids_on_dev = [id(a) for a in ivy.get_all_ivy_arrays_on_dev(device).values()]
@@ -449,7 +457,10 @@ def test_get_all_arrays_on_dev(num, device):
         assert id(a) in arr_ids_on_dev
 
 
-@given(num=helpers.ints(min_value=0, max_value=2), attr_only=st.booleans())
+@given(
+    num=helpers.ints(min_value=0, max_value=2), attr_only=st.booleans(), data=st.data()
+)
+@handle_cmd_line_args
 def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     arr = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
 
@@ -484,6 +495,8 @@ def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     assert all([re.match(regex, line) for line in written])
 
 
+@given(data=st.data())
+@handle_cmd_line_args
 def test_total_mem_on_dev(device):
     if "cpu" in device:
         assert ivy.total_mem_on_dev(device) == psutil.virtual_memory().total / 1e9
@@ -492,6 +505,8 @@ def test_total_mem_on_dev(device):
         assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
 
 
+@given(data=st.data())
+@handle_cmd_line_args
 def test_used_mem_on_dev():
     devices = _get_possible_devices()
 
@@ -502,10 +517,13 @@ def test_used_mem_on_dev():
 
     # Testing if it's detects changes in RAM usage, cannot apply this to GPU, as we can
     # only get the total memory usage of a GPU, not the usage by the program.
-    _ram_array_and_clear_test(lambda: ivy.used_mem_on_dev(ivy.Device("cpu"),
-                                                          process_specific=True))
+    _ram_array_and_clear_test(
+        lambda: ivy.used_mem_on_dev(ivy.Device("cpu"), process_specific=True)
+    )
 
 
+@given(data=st.data())
+@handle_cmd_line_args
 def test_percent_used_mem_on_dev():
     devices = _get_possible_devices()
 
@@ -519,6 +537,8 @@ def test_percent_used_mem_on_dev():
     )
 
 
+@given(data=st.data())
+@handle_cmd_line_args
 def test_gpu_is_available(fw):
     # If gpu is available but cannot be initialised it will fail the test
     if ivy.gpu_is_available():
@@ -531,6 +551,8 @@ def test_gpu_is_available(fw):
             assert False
 
 
+@given(data=st.data())
+@handle_cmd_line_args
 def test_num_cpu_cores():
     # using multiprocessing module too because ivy uses psutil as basis.
     p_cpu_cores = psutil.cpu_count()

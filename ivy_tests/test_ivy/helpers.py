@@ -7,6 +7,7 @@ from io import StringIO
 import sys
 import re
 import inspect
+import pytest
 import numpy as np
 import math
 from typing import Union, List, Dict
@@ -320,13 +321,14 @@ def mx_call(func, *args, **kwargs):
 
 _calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]
 
-#config for running tests
+# config for running tests
 TEST_BACKENDS: Dict[str, callable] = {
     "numpy": lambda: get_ivy_numpy(),
     "jax": lambda: get_ivy_jax(),
     "tensorflow": lambda: get_ivy_tensorflow(),
     "torch": lambda: get_ivy_torch(),
     "mxnet": lambda: get_ivy_mxnet(),
+    "": lambda: None,
 }
 TEST_CALL_METHODS: Dict[str, callable] = {
     "numpy": np_call,
@@ -334,7 +336,9 @@ TEST_CALL_METHODS: Dict[str, callable] = {
     "tensorflow": tf_call,
     "torch": torch_call,
     "mxnet": mx_call,
+    "": None,
 }
+
 
 # function that trims white spaces from docstrings
 def trim(*, docstring):
@@ -2953,12 +2957,24 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
 
 def handle_cmd_line_args(test_fn):
     # first four arguments are all fixtures
-    def new_fn(data, get_command_line_flags, fw, device, call, *args, **kwargs):
-        # inspecting for keyword arguments in test function
-        fw_string = data.draw(st.sampled_from(FW_STRS))
-        #random sampling of the backend
-        f = TEST_BACKENDS[fw_string]()
+    def new_fn(data, get_command_line_flags, device, f, call, fw, *args, **kwargs):
+        flag, fw_string = (False, "")
+        # skip test if device is gpu and backend is numpy
+        if "gpu" in device and call is np_call:
+            # Numpy does not support GPU
+            pytest.skip()
+
+        # randomly draw a backend if not set
+        if not f:
+            fw_string = data.draw(st.sampled_from(FW_STRS))
+            # random sampling of the backend
+            f = TEST_BACKENDS[fw_string]()
+        # use the one which is parametrized
+        else:
+            flag = True
+        # set backend using the context manager
         with f.use:
+            # inspecting for keyword arguments in test function
             for param in inspect.signature(test_fn).parameters.values():
                 if param.name in cmd_line_args:
                     kwargs[param.name] = data.draw(
@@ -2967,14 +2983,12 @@ def handle_cmd_line_args(test_fn):
                 elif param.name == "data":
                     kwargs["data"] = data
                 elif param.name == "fw":
-                    kwargs["fw"] = fw if fw is not "" else fw_string
+                    kwargs["fw"] = fw if flag else fw_string
                 elif param.name == "device":
                     kwargs["device"] = device
                 elif param.name == "call":
-                    kwargs["call"] = (
-                        call if call is not None else TEST_CALL_METHODS[fw_string]
-                    )
-        return test_fn(*args, **kwargs)
+                    kwargs["call"] = call if flag else TEST_CALL_METHODS[fw_string]
+            return test_fn(*args, **kwargs)
 
     return new_fn
 
