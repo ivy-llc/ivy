@@ -18,7 +18,21 @@ permute.unsupported_dtypes = (
 
 
 def movedim(input, source, destination):
-    return ivy.movedim(input, source, destination)
+    """
+    If either dimension input is a tuple, 
+    loop over both tuples and swap input tensor's axes individually in the correct order
+    """
+    if isinstance(source, tuple) or isinstance(destination, tuple):
+        assert len(source) == len(destination), "if either dimension input is a tuple, their size must match"
+        map = {}
+        for i, j in zip(source, destination):
+            if i in map: i = map[i]
+            if j in map: j = map[j]
+            input = ivy.swapaxes(input, i, j)
+            map[i] = j; map[j] = i
+        return input
+
+    return ivy.swapaxes(input, source, destination)
 
 
 movedim.unsupported_dtypes = (
