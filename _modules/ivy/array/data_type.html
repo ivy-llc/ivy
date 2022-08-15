@@ -139,7 +139,7 @@
 <div class="viewcode-block" id="ArrayWithDataTypes.astype"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.astype">[docs]</a>    <span class="k">def</span> <span class="nf">astype</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithDataTypes.broadcast_arrays"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.broadcast_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">broadcast_arrays</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
@@ -263,7 +263,7 @@
 <div class="viewcode-block" id="ArrayWithDataTypes.is_bool_dtype"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.is_bool_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_bool_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithDataTypes.is_float_dtype"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.is_float_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="ArrayWithDataTypes.is_float_dtype"><a class="viewcode-back" href="../../../data_classes/array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes.is_float_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        `ivy.Array` instance method variant of `ivy.is_float_dtype`. This method simply</span>
 <span class="sd">        checks to see if the array is of type `float`.</span>
@@ -286,7 +286,7 @@
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.int64)</span>
 <span class="sd">        &gt;&gt;&gt; print(ivy.is_float_dtype(x))</span>
-<span class="sd">        True</span>
+<span class="sd">        False</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.int32)</span>
 <span class="sd">        &gt;&gt;&gt; print(ivy.is_float_dtype(x))</span>
@@ -296,7 +296,7 @@
 <span class="sd">        &gt;&gt;&gt; print(ivy.is_float_dtype(x))</span>
 <span class="sd">        False</span>
 
-<span class="sd">        &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)x</span>
+<span class="sd">        &gt;&gt;&gt; arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)</span>
 <span class="sd">        &gt;&gt;&gt; print(ivy.is_float_dtype(arr))</span>
 <span class="sd">        True</span>
 
