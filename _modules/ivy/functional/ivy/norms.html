@@ -133,23 +133,28 @@
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">handle_nestable</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">inputs_to_ivy_arrays</span><span class="p">,</span>
+    <span class="n">integer_array_to_float</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
 
 
-<div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../../functional/ivy/norms/layer_norm/layer_norm_functional.html#ivy.functional.ivy.norms.layer_norm">[docs]</a><span class="nd">@handle_nestable</span>
+<div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../../functional/ivy/norms/layer_norm/layer_norm_functional.html#ivy.functional.ivy.norms.layer_norm">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
+<span class="nd">@integer_array_to_float</span>
 <span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
     <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
     <span class="n">new_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Applies Layer Normalization over a mini-batch of inputs</span>
 
@@ -221,7 +226,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
 <span class="sd">                           &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
 <span class="sd">    &gt;&gt;&gt; normalized_idxs = [0]</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.layer_norm(x, normalized_idxs, 1.25, 0.3)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.layer_norm(x, normalized_idxs, epsilon=1.25, scale=0.3)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0.658, 1.04, 1.3]),</span>
@@ -236,7 +241,7 @@
 <span class="sd">    &gt;&gt;&gt; normalized_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
 <span class="sd">    &gt;&gt;&gt; new_std = ivy.Container({&#39;a&#39;: 1.25, &#39;b&#39;: 1.5})</span>
 <span class="sd">    &gt;&gt;&gt; offset = ivy.Container({&#39;a&#39;: 0.2, &#39;b&#39;: 0.3})</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.layer_norm(x, normalized_idxs, new_std, offset)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.layer_norm(x, normalized_idxs, new_std=new_std, offset=offset)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0.772, 1.03, 1.2]),</span>
@@ -249,8 +254,8 @@
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">var</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">mean</span><span class="p">),</span> <span class="n">x</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stable_pow</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">new_std</span><span class="p">),</span> <span class="n">scale</span><span class="p">),</span> <span class="n">offset</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 </pre></div>
