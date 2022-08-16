@@ -1118,7 +1118,6 @@ def test_matrix_norm(
         max_dim_size=3,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
-    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 @settings(max_examples=1)
 def test_matrix_rank(
