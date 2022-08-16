@@ -21,6 +21,7 @@ def _clamp_bits(x1, x2):
 
 def abs(
     x: Union[float, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -30,17 +31,18 @@ def abs(
         return tf.abs(x)
 
 
-def acos(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def acos(x: Union[tf.Tensor, tf.Variable], /) -> Union[tf.Tensor, tf.Variable]:
     return tf.acos(x)
 
 
-def acosh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def acosh(x: Union[tf.Tensor, tf.Variable], /) -> Union[tf.Tensor, tf.Variable]:
     return tf.acosh(x)
 
 
 def add(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -49,24 +51,31 @@ def add(
 
 
 def asin(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.asin(x)
 
 
 def asinh(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.asinh(x)
 
 
-def atan(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def atan(x: Union[tf.Tensor, tf.Variable], /) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.atan(x)
 
 
 def atan2(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -74,13 +83,14 @@ def atan2(
     return tf.math.atan2(x1, x2)
 
 
-def atanh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def atanh(x: Union[tf.Tensor, tf.Variable], /) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.atanh(x)
 
 
 def bitwise_and(
     x1: Union[int, tf.Tensor, tf.Variable],
     x2: Union[int, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -92,7 +102,10 @@ def bitwise_and(
 
 
 def bitwise_invert(
-    x: Union[int, tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[int, tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" not in str(x.dtype):
         return tf.logical_not(x)
@@ -103,6 +116,7 @@ def bitwise_invert(
 def bitwise_left_shift(
     x1: Union[int, tf.Tensor, tf.Variable],
     x2: Union[int, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -114,6 +128,7 @@ def bitwise_left_shift(
 def bitwise_or(
     x1: Union[int, tf.Tensor, tf.Variable],
     x2: Union[int, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -127,6 +142,7 @@ def bitwise_or(
 def bitwise_right_shift(
     x1: Union[int, tf.Tensor, tf.Variable],
     x2: Union[int, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -138,6 +154,7 @@ def bitwise_right_shift(
 def bitwise_xor(
     x1: Union[int, tf.Tensor, tf.Variable],
     x2: Union[int, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -149,7 +166,10 @@ def bitwise_xor(
 
 
 def ceil(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
@@ -158,13 +178,19 @@ def ceil(
 
 
 def cos(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.cos(x)
 
 
 def cosh(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.cosh(x)
 
@@ -172,6 +198,7 @@ def cosh(
 def divide(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -187,6 +214,7 @@ def divide(
 def equal(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -195,19 +223,28 @@ def equal(
 
 
 def exp(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.exp(x)
 
 
 def expm1(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.expm1(x)
 
 
 def floor(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
@@ -218,6 +255,7 @@ def floor(
 def floor_divide(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -227,7 +265,9 @@ def floor_divide(
 
 
 def greater(
-    x1: Union[float, tf.Tensor, tf.Variable], x2: Union[float, tf.Tensor, tf.Variable]
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
+    /,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return tf.math.greater(x1, x2)
@@ -236,6 +276,7 @@ def greater(
 def greater_equal(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -244,7 +285,10 @@ def greater_equal(
 
 
 def isfinite(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         return tf.ones_like(x, tf.bool)
@@ -253,7 +297,10 @@ def isfinite(
 
 
 def isinf(
-    x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_int_dtype(x):
         return tf.zeros_like(x, tf.bool)
