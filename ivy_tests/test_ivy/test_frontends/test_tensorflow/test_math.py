@@ -236,7 +236,8 @@ def test_tensorflow_negative(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes[:2]))
+            set(ivy_np.valid_float_dtypes).intersection(set(
+            ivy_tf.valid_float_dtypes[:2]))
         ),
         num_arrays=2,
         shared_dtype=True,
