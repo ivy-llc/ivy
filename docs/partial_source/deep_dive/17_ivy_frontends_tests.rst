@@ -271,7 +271,7 @@ This function requires us to create extra methods for generating :code:`shape` a
             return draw(helpers.ints(min_value=0, max_value=5))
         elif ivy.is_int_dtype(dtype):
             return draw(helpers.ints(min_value=-5, max_value=5))
-        return draw(st.floats(-5, 5))
+        return draw(helpers.floats(min_value=-5, max_value=5))
 
 
     @given(
@@ -341,7 +341,7 @@ This function requires us to create extra methods for generating :code:`shape` a
             return draw(helpers.ints(min_value=0, max_value=5))
         if ivy.is_int_dtype(dtype):
             return draw(helpers.ints(min_value=-5, max_value=5))
-        return draw(st.floats(-5, 5))
+        return draw(helpers.floats(min_value=-5, max_value=5))
 
 
     @given(
@@ -407,7 +407,7 @@ This function requires us to create extra methods for generating :code:`shape` a
             return draw(helpers.ints(min_value=0, max_value=5))
         if ivy.is_int_dtype(dtype):
             return draw(helpers.ints(min_value=-5, max_value=5))
-        return draw(st.floats(-5, 5))
+        return draw(helpers.floats(min_value=-5, max_value=5))
 
 
     @given(
@@ -475,7 +475,7 @@ This function requires us to create extra methods for generating :code:`shape` a
             return draw(helpers.ints(min_value=0, max_value=5))
         if ivy.is_int_dtype(dtype):
             return draw(helpers.ints(min_value=-5, max_value=5))
-        return draw(st.floats(-5, 5))
+        return draw(helpers.floats(min_value=-5, max_value=5))
 
 
     @st.composite

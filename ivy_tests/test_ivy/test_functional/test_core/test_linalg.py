@@ -933,13 +933,12 @@ def test_vector_norm(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="pinv"),
-    rtol=st.floats(1e-5, 1e-3),
+    rtol=helpers.floats(min_value=1e-5, max_value=1e-3),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_pinv(
     *,
-    data,
     dtype_x,
     as_variable,
     with_out,
@@ -1136,7 +1135,6 @@ def test_matrix_norm(
         max_dim_size=3,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
-    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -1151,7 +1149,6 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
-    rtol,
 ):
     dtype, x = dtype_x
     helpers.test_function(
