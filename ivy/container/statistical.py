@@ -191,7 +191,10 @@ class ContainerWithStatistical(ContainerBase):
         """
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.var(x_, axis=axis, correction=correction, keepdims=keepdims)
+                lambda x_, _: ivy.var(x_,
+                                      axis=axis,
+                                      correction=correction,
+                                      keepdims=keepdims)
                 if ivy.is_array(x_)
                 else x_,
                 key_chains=key_chains,
@@ -343,7 +346,10 @@ class ContainerWithStatistical(ContainerBase):
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.std(x_, axis=axis, correction=correction, keepdims=keepdims)
+                lambda x_, _: ivy.std(x_,
+                                      axis=axis,
+                                      correction=correction,
+                                      keepdims=keepdims)
                 if ivy.is_array(x_)
                 else x_,
                 key_chains=key_chains,
