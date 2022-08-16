@@ -1,12 +1,13 @@
 # global
 import ivy
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # noinspection DuplicatedCode
@@ -50,6 +51,7 @@ def _arrays_idx_n_dtypes(draw):
 
 
 # concat
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
@@ -58,6 +60,7 @@ def _arrays_idx_n_dtypes(draw):
     ),
     native_array=helpers.array_bools(),
 )
+@settings(max_examples=1)
 def test_tensorflow_concat(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
@@ -104,6 +107,7 @@ def _fill_value(draw):
     return draw(st.floats(-5, 5))
 
 
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -118,6 +122,7 @@ def _fill_value(draw):
         fn_name="ivy.functional.frontends.tensorflow.fill"
     ),
 )
+@settings(max_examples=1)
 def test_tensorflow_full(
     shape,
     fill_value,
