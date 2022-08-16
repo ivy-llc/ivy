@@ -232,7 +232,7 @@ def test_tensorflow_negative(
     )
 
 
-#logical_and
+# logical_and
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple([ivy.bool]),
