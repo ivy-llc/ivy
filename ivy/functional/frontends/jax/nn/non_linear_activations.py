@@ -22,6 +22,13 @@ def gelu(x, approximate=True):
 gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
+def sigmoid(x):
+    return ivy.sigmoid(x)
+
+
+sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
 def one_hot(x, num_classes, *, device=None, out=None):
     return ivy.one_hot(x, num_classes, device=device, out=out)
 
