@@ -28,3 +28,7 @@ def one_hot(x, num_classes, *, device=None, out=None):
 
 def softmax(x, /, *, axis=None):
     return ivy.softmax(x, axis=axis)
+
+
+def softplus(x):
+    return ivy.softplus(x)
