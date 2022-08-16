@@ -218,7 +218,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
     num_positional_args=helpers.ints(min_value=0, max_value=2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
-    alpha=helpers.floats(),
+    alpha=st.floats(),
     )
     def test_leaky_relu(
     dtype_and_x,
