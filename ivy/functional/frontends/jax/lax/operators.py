@@ -54,3 +54,10 @@ def acos(x):
 
 
 acos.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def sin(x):
+    return ivy.sin(x)
+
+
+sin.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
