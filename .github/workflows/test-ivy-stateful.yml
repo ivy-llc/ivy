@@ -10,7 +10,8 @@ jobs:
      strategy:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
-         submodules: [test_activations, test_converters, test_layers, test_modules, test_norms, test_optimizers]
+         submodules: [test_activations, test_converters, test_layers, test_modules, test_norms, test_optimizers,
+                      test_sequential]
      continue-on-error: true
      runs-on: ubuntu-latest
      steps:
