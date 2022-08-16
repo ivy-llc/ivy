@@ -3086,7 +3086,6 @@ def num_positional_args(draw, *, fn_name: str = None):
         num_positional_args=num_positional_args(fn_name="add")
     )
     """
-    print("given", ivy.current_backend_str())
     num_positional_only = 0
     num_keyword_only = 0
     total = 0
@@ -3134,7 +3133,6 @@ def handle_cmd_line_args(test_fn):
             flag = True
         # set backend using the context manager
         with f.use:
-            print(f"\nhandle-: {test_fn.__name__}", f)
             # inspecting for keyword arguments in test function
             for param in inspect.signature(test_fn).parameters.values():
                 if param.name in cmd_line_args:
