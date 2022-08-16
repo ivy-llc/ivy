@@ -46,7 +46,7 @@ def moveaxis(input, source, destination):
     return ivy.swapaxes(input, source, destination)
 
 
-movedim.unsupported_dtypes = (
+moveaxis.unsupported_dtypes = (
     "uint16",
     "uint32",
     "uint64",
