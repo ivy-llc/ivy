@@ -2069,6 +2069,7 @@ def set_min_denominator(val: float) -> None:
     >>> y = ivy.get_min_denominator()
     >>> print(y)
     1e-13
+
     """
     ivy._MIN_DENOMINATOR = val
 
