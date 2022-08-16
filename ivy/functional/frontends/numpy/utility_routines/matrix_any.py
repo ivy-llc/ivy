@@ -1,5 +1,4 @@
 import ivy
-from ivy.func_wrapper import handle_out_argument
 
 
 def any(
@@ -14,5 +13,5 @@ def any(
     ret = ivy.where(ivy.array(where), ivy.array(x), ivy.zeros_like(x))
     ret = ivy.any(ret, axis=axis, keepdims=keepdims, out=out)
     if out is None and len(ret.shape) == 0:
-        ret = bool(ret) 
+        ret = bool(ret)
     return ret
