@@ -336,7 +336,7 @@ def test_numpy_sqrt(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="sqrt",
+        fn_tree="sqrt",
         x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
