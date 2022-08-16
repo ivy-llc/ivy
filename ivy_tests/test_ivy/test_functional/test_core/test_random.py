@@ -304,4 +304,4 @@ def test_shuffle(
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(ivy.sort(u, 0) == ivy.sort(v, 0))
+        assert ivy.all(ivy.sort(u, axis=0) == ivy.sort(v, axis=0))
