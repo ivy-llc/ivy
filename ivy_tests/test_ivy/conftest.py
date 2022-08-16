@@ -43,12 +43,16 @@ def pytest_configure(config):
 @pytest.fixture(autouse=True)
 def run_around_tests(device, f, compile_graph, call, fw, implicit):
     clear_backend_stack()
-    with DefaultDevice(device):
-        yield
+    if f is not None:
+        with f.use:
+            with DefaultDevice(device):
+                yield
+    else:
+        with DefaultDevice(device):
+            yield
 
 
 def pytest_generate_tests(metafunc):
-
     # device
     raw_value = metafunc.config.getoption("--device")
     if raw_value == "all":
