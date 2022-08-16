@@ -83,6 +83,13 @@ def abs(input, *, out=None):
     return ivy.abs(input, out=out)
 
 
+def cosh(input, *, out=None):
+    return ivy.cosh(input, out=out)
+
+
+cosh.unsupported_dtypes = ("float16",)
+
+
 def subtract(input, other, *, alpha=1, out=None):
     return ivy.subtract(input, other * alpha, out=out)
 
@@ -116,3 +123,10 @@ def asinh(input, *, out=None):
 
 
 asinh.unsupported_dtypes = ("float16",)
+
+
+def arctanh(input, *, out=None):
+    return ivy.atanh(input, out=out)
+
+
+arctanh.unsupported_dtypes = ("float16",)
