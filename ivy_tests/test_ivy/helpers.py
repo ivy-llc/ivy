@@ -2555,11 +2555,12 @@ def array_values(
                 )
             )
 
-        else:
+        elif min_value is None and max_value is None:
+
             limit = math.log(small_value_safety_factor)
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -3)
-            min_value_pos = round(limit, -3)
+            max_value_neg = round(-1 * limit, 3)
+            min_value_pos = round(limit, 3)
             max_value_pos = max_value
 
             values = draw(
@@ -2577,6 +2578,40 @@ def array_values(
                     | st.floats(
                         min_value=min_value_pos,
                         max_value=max_value_pos,
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=16,
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                    length=size,
+                )
+            )
+        elif max_value is None:
+            values = draw(
+                list_of_length(
+                    x=st.floats(
+                        min_value=round(limit, 3),
+                        max_value=max_value,
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=16,
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                    length=size,
+                )
+            )
+        else:
+            values = draw(
+                list_of_length(
+                    x=st.floats(
+                        min_value=min_value,
+                        max_value=round(-limit, 3)
+                        if min_value < round(-limit, 3)
+                        else max_value,
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2590,26 +2625,29 @@ def array_values(
         values = [v * large_value_safety_factor for v in values]
     elif dtype in ["float32", "bfloat16"]:
         if min_value is not None and max_value is not None:
-            values = draw(
-                list_of_length(
-                    x=st.floats(
-                        min_value=min_value,
-                        max_value=max_value,
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=32,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    ),
-                    length=size,
+            if min_value is not None and max_value is not None:
+                values = draw(
+                    list_of_length(
+                        x=st.floats(
+                            min_value=min_value,
+                            max_value=max_value,
+                            allow_nan=allow_nan,
+                            allow_subnormal=allow_subnormal,
+                            allow_infinity=allow_inf,
+                            width=32,
+                            exclude_min=exclude_min,
+                            exclude_max=exclude_max,
+                        ),
+                        length=size,
+                    )
                 )
-            )
-        else:
+
+        elif min_value is None and max_value is None:
+
             limit = math.log(small_value_safety_factor)
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -6)
-            min_value_pos = round(limit, -6)
+            max_value_neg = round(-1 * limit, 6)
+            min_value_pos = round(limit, 6)
             max_value_pos = max_value
 
             values = draw(
@@ -2627,6 +2665,40 @@ def array_values(
                     | st.floats(
                         min_value=min_value_pos,
                         max_value=max_value_pos,
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=32,
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                    length=size,
+                )
+            )
+        elif max_value is None:
+            values = draw(
+                list_of_length(
+                    x=st.floats(
+                        min_value=round(limit, 6),
+                        max_value=max_value,
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=32,
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                    length=size,
+                )
+            )
+        else:
+            values = draw(
+                list_of_length(
+                    x=st.floats(
+                        min_value=min_value,
+                        max_value=round(-limit, 6)
+                        if min_value < round(-limit, 6)
+                        else max_value,
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2641,27 +2713,29 @@ def array_values(
     elif dtype == "float64":
 
         if min_value is not None and max_value is not None:
-            values = draw(
-                list_of_length(
-                    x=st.floats(
-                        min_value=min_value,
-                        max_value=max_value,
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=64,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    ),
-                    length=size,
+            if min_value is not None and max_value is not None:
+                values = draw(
+                    list_of_length(
+                        x=st.floats(
+                            min_value=min_value,
+                            max_value=max_value,
+                            allow_nan=allow_nan,
+                            allow_subnormal=allow_subnormal,
+                            allow_infinity=allow_inf,
+                            width=64,
+                            exclude_min=exclude_min,
+                            exclude_max=exclude_max,
+                        ),
+                        length=size,
+                    )
                 )
-            )
-        else:
-            limit = math.log(small_value_safety_factor)
 
+        elif min_value is None and max_value is None:
+
+            limit = math.log(small_value_safety_factor)
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -15)
-            min_value_pos = round(limit, -15)
+            max_value_neg = round(-1 * limit, 15)
+            min_value_pos = round(limit, 15)
             max_value_pos = max_value
 
             values = draw(
@@ -2679,6 +2753,40 @@ def array_values(
                     | st.floats(
                         min_value=min_value_pos,
                         max_value=max_value_pos,
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=64,
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                    length=size,
+                )
+            )
+        elif max_value is None:
+            values = draw(
+                list_of_length(
+                    x=st.floats(
+                        min_value=round(limit, 15),
+                        max_value=max_value,
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=64,
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                    length=size,
+                )
+            )
+        else:
+            values = draw(
+                list_of_length(
+                    x=st.floats(
+                        min_value=min_value,
+                        max_value=round(-limit, 15)
+                        if min_value < round(-limit, 15)
+                        else max_value,
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
