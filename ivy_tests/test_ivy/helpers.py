@@ -2912,7 +2912,6 @@ def num_positional_args(draw, *, fn_name: str = None):
     num_keyword_only = 0
     total = 0
     fn = None
-
     for i, fn_name_key in enumerate(fn_name.split(".")):
         if i == 0:
             fn = ivy.__dict__[fn_name_key]
