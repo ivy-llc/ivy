@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy.functional.backends.numpy as ivy_np
@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # cross_entropy
+@handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_int_dtypes,
@@ -33,9 +34,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     axis=helpers.ints(min_value=-1, max_value=0),
     epsilon=st.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
-    data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_cross_entropy(
     *,
     dtype_and_true,
@@ -72,6 +72,7 @@ def test_cross_entropy(
 
 
 # binary_cross_entropy
+@handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_int_dtypes,
@@ -95,9 +96,8 @@ def test_cross_entropy(
     ),
     epsilon=st.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
-    data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_binary_cross_entropy(
     *,
     dtype_and_true,
@@ -131,6 +131,7 @@ def test_binary_cross_entropy(
 
 
 # sparse_cross_entropy
+@handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_int_dtypes,
@@ -155,9 +156,8 @@ def test_binary_cross_entropy(
     axis=helpers.ints(min_value=-1, max_value=0),
     epsilon=st.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
-    data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_sparse_cross_entropy(
     *,
     dtype_and_true,
