@@ -1,4 +1,3 @@
-# for review
 """Collection of tests for unified neural network activation functions."""
 
 # global
@@ -64,7 +63,6 @@ def test_leaky_relu(
     native_array,
     fw,
 ):
-    print("alpha: {} ".format(alpha))
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,

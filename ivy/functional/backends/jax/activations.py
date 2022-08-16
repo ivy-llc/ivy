@@ -1,4 +1,3 @@
-# for review
 """Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
 
 from typing import Optional

@@ -1,4 +1,3 @@
-# for review
 """Collection of TensorFlow activation functions, wrapped to fit Ivy syntax and
 signature.
 """

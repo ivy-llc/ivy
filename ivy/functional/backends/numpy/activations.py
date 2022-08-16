@@ -1,4 +1,3 @@
-# for review
 """Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
 
 from typing import Optional
