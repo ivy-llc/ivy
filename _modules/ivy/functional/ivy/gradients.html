@@ -80,14 +80,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -325,7 +325,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 0.3, -4.5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.variable(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([ 1. ,  0.3, -4.5])</span>
+<span class="sd">    ivy.variable([ 1. ,  0.3, -4.5])</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
@@ -333,8 +333,8 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.variable(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array([1., 2.]),</span>
-<span class="sd">        b: ivy.array([-0.2, 4.])</span>
+<span class="sd">        a: ivy.variable([1., 2.]),</span>
+<span class="sd">        b: ivy.variable([-0.2, 4.])</span>
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
@@ -510,7 +510,7 @@
 <span class="c1"># AutoGrad #</span>
 
 
-<div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../functional/ivy/gradients/execute_with_gradients.html#ivy.functional.ivy.gradients.execute_with_gradients">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../functional/ivy/gradients/execute_with_gradients.html#ivy.functional.ivy.gradients.execute_with_gradients">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
 <span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Call function func with input of xs variables, and return func first output y,</span>
 <span class="sd">    the gradients [dy/dx for x in xs], and any other function outputs after the returned</span>
@@ -564,7 +564,7 @@
 <span class="sd">    &gt;&gt;&gt; grad_fn = ivy.value_and_grad(func)</span>
 <span class="sd">    &gt;&gt;&gt; value_grad = grad_fn(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(value_grad)</span>
-<span class="sd">    (ivy.array(16.423332), ivy.array([[1.53, 0.7, 1.67], [0.933, 0.433, 2.07]]))</span>
+<span class="sd">    (ivy.variable(16.423332), ivy.array([[1.53, 0.7, 1.67], [0.933, 0.433, 2.07]]))</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>

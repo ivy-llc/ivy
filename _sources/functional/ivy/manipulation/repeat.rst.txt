@@ -5,9 +5,9 @@ repeat
 
 .. autofunction:: ivy.array.array_methods.repeat
 
-.. autofunction:: ivy.container.container_methods.static_repeat
-
 .. autofunction:: ivy.container.container_methods.repeat
+
+.. autofunction:: ivy.container.container_methods.static_repeat
 |
 | **Supported Frameworks:**
 

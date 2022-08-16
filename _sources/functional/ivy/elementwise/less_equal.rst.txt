@@ -5,9 +5,9 @@ less_equal
 
 .. autofunction:: ivy.array.array_methods.less_equal
 
-.. autofunction:: ivy.container.container_methods.static_less_equal
-
 .. autofunction:: ivy.container.container_methods.less_equal
+
+.. autofunction:: ivy.container.container_methods.static_less_equal
 |
 | **Supported Frameworks:**
 
