@@ -237,5 +237,4 @@ def einsum(
     *operands: torch.Tensor,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.einsum(equation, *operands)um(equation, *operands)
-
+    return torch.einsum(equation, *operands)
