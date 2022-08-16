@@ -1131,7 +1131,6 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
-    rtol,
 ):
     dtype, x = dtype_x
     helpers.test_function(

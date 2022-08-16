@@ -102,7 +102,10 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: True
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, mx.nd.NDArray],
+    val: Union[ivy.Array, mx.nd.NDArray],
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native[:] -= val_native
     if ivy.is_ivy_array(x):

@@ -48,7 +48,7 @@ def test_jax_nn_relu(
         fn_name="ivy.functional.frontends.jax.nn.leaky_relu"
     ),
     native_array=st.booleans(),
-    negative_slope=st.floats(min_value=0.0, max_value=1.0),
+    negative_slope=helpers.floats(min_value=0.0, max_value=1.0),
 )
 @settings(max_examples=1)
 def test_jax_nn_leaky_relu(
@@ -107,4 +107,39 @@ def test_jax_nn_gelu(
         fn_tree="nn.gelu",
         x=np.asarray(x, dtype=input_dtype),
         approximate=approximate,
+    )
+
+
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_int_dtypes, min_value=1, max_value=3
+    ),
+    num_classes=st.integers(min_value=4, max_value=6),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.nn.one_hot"
+    ),
+    native_array=st.booleans(),
+)
+def test_jax_nn_one_hot(
+    dtype_and_x,
+    num_classes,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="nn.one_hot",
+        x=np.asarray(x, dtype=input_dtype),
+        num_classes=num_classes,
     )
