@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy.functional.backends.numpy as ivy_np
@@ -11,6 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # all
+@handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=ivy_np.valid_int_dtypes,
@@ -22,9 +23,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="all"),
-    data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_all(
     *,
     dtype_x_axis,
@@ -55,6 +55,7 @@ def test_all(
 
 
 # any
+@handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=ivy_np.valid_int_dtypes,
@@ -66,9 +67,8 @@ def test_all(
     ),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="any"),
-    data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_any(
     *,
     dtype_x_axis,
