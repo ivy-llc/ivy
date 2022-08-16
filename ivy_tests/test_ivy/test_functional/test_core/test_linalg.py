@@ -1135,7 +1135,6 @@ def test_matrix_norm(
         max_dim_size=3,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
-    rtol=helpers.floats(allow_nan=False, allow_infinity=False) | st.just(None),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -1150,7 +1149,6 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
-    rtol,
 ):
     dtype, x = dtype_x
     helpers.test_function(
