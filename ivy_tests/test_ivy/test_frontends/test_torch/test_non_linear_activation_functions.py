@@ -1,11 +1,12 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
@@ -28,6 +29,7 @@ def _dtypes(draw):
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -36,11 +38,9 @@ def _dtypes(draw):
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
-    native_array=st.booleans(),
 )
+@settings(max_examples=1)
 def test_torch_sigmoid(
     dtype_and_x,
     as_variable,
@@ -65,6 +65,7 @@ def test_torch_sigmoid(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -74,12 +75,11 @@ def test_torch_sigmoid(
         ),
         min_num_dims=1,
     ),
-    as_variable=st.booleans(),
     axis=st.integers(-1, 0),
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
-    native_array=st.booleans(),
 )
+@settings(max_examples=1)
 def test_torch_softmax(
     dtype_and_x,
     as_variable,
@@ -106,6 +106,7 @@ def test_torch_softmax(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -117,9 +118,9 @@ def test_torch_softmax(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.gelu"
     ),
-    native_array=st.booleans(),
-    approximate=st.sampled_from(["none", "tanh"])
+    approximate=st.sampled_from(["none", "tanh"]),
 )
+@settings(max_examples=1)
 def test_torch_gelu(
     dtype_and_x,
     num_positional_args,

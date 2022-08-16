@@ -1,11 +1,12 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # noinspection DuplicatedCode
@@ -47,6 +48,7 @@ def _arrays_idx_n_dtypes(draw):
 
 
 # concat
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
@@ -56,6 +58,7 @@ def _arrays_idx_n_dtypes(draw):
     native_array=helpers.array_bools(),
     with_out=st.booleans(),
 )
+@settings(max_examples=1)
 def test_torch_cat(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
