@@ -8,7 +8,7 @@ import ivy
 
 # noinspection PyUnresolvedReferences
 class ArrayWithElementwise(abc.ABC):
-    def abs(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def abs(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.abs. This method simply wraps the
         function, and so the docstring for ivy.abs also applies to this method
@@ -102,6 +102,7 @@ class ArrayWithElementwise(abc.ABC):
     def add(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -238,6 +239,7 @@ class ArrayWithElementwise(abc.ABC):
     def atan2(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -311,6 +313,7 @@ class ArrayWithElementwise(abc.ABC):
     def bitwise_and(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -342,6 +345,7 @@ class ArrayWithElementwise(abc.ABC):
     def bitwise_left_shift(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -383,6 +387,7 @@ class ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have an integer or boolean data type.
+
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -398,6 +403,7 @@ class ArrayWithElementwise(abc.ABC):
     def bitwise_or(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -410,6 +416,9 @@ class ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have an integer or boolean data type.
+        x2
+            second input array. Must be compatible with ``self``
+
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -433,6 +442,7 @@ class ArrayWithElementwise(abc.ABC):
     def bitwise_right_shift(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -464,6 +474,7 @@ class ArrayWithElementwise(abc.ABC):
     def bitwise_xor(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -599,6 +610,7 @@ class ArrayWithElementwise(abc.ABC):
     def divide(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -649,6 +661,7 @@ class ArrayWithElementwise(abc.ABC):
     def equal(
         self: ivy.Array,
         x2: Union[float, ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -790,6 +803,7 @@ class ArrayWithElementwise(abc.ABC):
     def floor_divide(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -840,6 +854,7 @@ class ArrayWithElementwise(abc.ABC):
     def greater(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -880,6 +895,7 @@ class ArrayWithElementwise(abc.ABC):
     def greater_equal(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -987,6 +1003,7 @@ class ArrayWithElementwise(abc.ABC):
     def less(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1027,6 +1044,7 @@ class ArrayWithElementwise(abc.ABC):
     def less_equal(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1214,6 +1232,7 @@ class ArrayWithElementwise(abc.ABC):
     def logaddexp(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1309,6 +1328,7 @@ class ArrayWithElementwise(abc.ABC):
     def logical_or(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1359,6 +1379,7 @@ class ArrayWithElementwise(abc.ABC):
     def logical_xor(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1398,6 +1419,7 @@ class ArrayWithElementwise(abc.ABC):
     def multiply(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1451,6 +1473,7 @@ class ArrayWithElementwise(abc.ABC):
     def not_equal(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1503,6 +1526,7 @@ class ArrayWithElementwise(abc.ABC):
     def pow(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1536,6 +1560,7 @@ class ArrayWithElementwise(abc.ABC):
     def remainder(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1787,6 +1812,7 @@ class ArrayWithElementwise(abc.ABC):
     def subtract(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
