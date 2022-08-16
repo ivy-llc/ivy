@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
 
       - name: Get Category Substring
         uses: bhowell2/github-substring-action@v1.0.0
@@ -23,7 +26,7 @@ jobs:
         id: template
         uses: chuhlomin/render-template@v1.4
         with:
-          template: .github/reformat_checklist.md
+          template: ivy/automation_tools/checklists/reformat_checklist.md
           vars: |
             category_name: ${{ steps.category.outputs.substring }}
 
