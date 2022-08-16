@@ -6,3 +6,7 @@ def det(input, name=None):
 
 
 det.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def eigh(tensor, name=None):
+    return ivy.eigh(tensor)
