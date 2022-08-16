@@ -51,8 +51,8 @@ max.support_native_out = True
 
 def mean(
     x: torch.Tensor,
-    *,
     /,
+    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
@@ -73,8 +73,8 @@ mean.support_native_out = True
 
 def min(
     x: torch.Tensor,
-    *,
     /,
+    *,
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
@@ -237,4 +237,5 @@ def einsum(
     *operands: torch.Tensor,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.einsum(equation, *operands)
+    return torch.einsum(equation, *operands)um(equation, *operands)
+
