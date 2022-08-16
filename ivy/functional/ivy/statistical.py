@@ -92,7 +92,7 @@ def max(
     ivy.array(2)
 
     >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
-    >>> y = ivy.max(x, 0, True)
+    >>> y = ivy.max(x, axis=0, keepdims=True)
     >>> print(y)
     ivy.array([[4, 6, 10]])
 
