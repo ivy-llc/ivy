@@ -2964,15 +2964,13 @@ def handle_cmd_line_args(test_fn):
             # Numpy does not support GPU
             pytest.skip()
 
-        # randomly draw a backend if not set
         if not f:
+            # randomly draw a backend if not set
             fw_string = data.draw(st.sampled_from(FW_STRS))
-            # random sampling of the backend
             f = TEST_BACKENDS[fw_string]()
-        # use the one which is parametrized
         else:
+            # use the one which is parametrized
             flag = True
-
         # set backend using the context manager
         with f.use:
             # inspecting for keyword arguments in test function

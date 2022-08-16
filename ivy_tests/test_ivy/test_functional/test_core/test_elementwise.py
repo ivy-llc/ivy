@@ -4,7 +4,7 @@ from numbers import Number
 
 # global
 import numpy as np
-from hypothesis import given, assume
+from hypothesis import given, assume, settings
 
 # local
 import ivy
@@ -27,6 +27,7 @@ def _not_too_close_to_zero(x):
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="abs"),
 )
+@settings(max_examples=1)
 def test_abs(
     *,
     dtype_and_x,
@@ -59,6 +60,7 @@ def test_abs(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="acosh"),
 )
+@settings(max_examples=1)
 def test_acosh(
     *,
     dtype_and_x,
@@ -91,6 +93,7 @@ def test_acosh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
 )
+@settings(max_examples=1)
 def test_acos(
     *,
     dtype_and_x,
@@ -125,6 +128,7 @@ def test_acos(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
 )
+@settings(max_examples=1)
 def test_add(
     *,
     dtype_and_x,
@@ -159,6 +163,7 @@ def test_add(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="asin"),
 )
+@settings(max_examples=1)
 def test_asin(
     *,
     dtype_and_x,
@@ -191,6 +196,7 @@ def test_asin(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="asinh"),
 )
+@settings(max_examples=1)
 def test_asinh(
     *,
     dtype_and_x,
@@ -223,6 +229,7 @@ def test_asinh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="atan"),
 )
+@settings(max_examples=1)
 def test_atan(
     *,
     dtype_and_x,
@@ -262,6 +269,7 @@ def test_atan(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="atan2"),
 )
+@settings(max_examples=1)
 def test_atan2(
     *,
     dtype_and_x,
@@ -304,6 +312,7 @@ def test_atan2(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="atanh"),
 )
+@settings(max_examples=1)
 def test_atanh(
     *,
     dtype_and_x,
@@ -338,6 +347,7 @@ def test_atanh(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_and"),
 )
+@settings(max_examples=1)
 def test_bitwise_and(
     *,
     dtype_and_x,
@@ -378,6 +388,7 @@ def test_bitwise_and(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
 )
+@settings(max_examples=1)
 def test_bitwise_left_shift(
     *,
     dtype_and_x,
@@ -418,6 +429,7 @@ def test_bitwise_left_shift(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_invert"),
 )
+@settings(max_examples=1)
 def test_bitwise_invert(
     *,
     dtype_and_x,
@@ -452,6 +464,7 @@ def test_bitwise_invert(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_or"),
 )
+@settings(max_examples=1)
 def test_bitwise_or(
     *,
     dtype_and_x,
@@ -492,6 +505,7 @@ def test_bitwise_or(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
 )
+@settings(max_examples=1)
 def test_bitwise_right_shift(
     *,
     dtype_and_x,
@@ -532,6 +546,7 @@ def test_bitwise_right_shift(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_xor"),
 )
+@settings(max_examples=1)
 def test_bitwise_xor(
     *,
     dtype_and_x,
@@ -566,6 +581,7 @@ def test_bitwise_xor(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="ceil"),
 )
+@settings(max_examples=1)
 def test_ceil(
     *,
     dtype_and_x,
@@ -598,6 +614,7 @@ def test_ceil(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="cos"),
 )
+@settings(max_examples=1)
 def test_cos(
     *,
     dtype_and_x,
@@ -630,6 +647,7 @@ def test_cos(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="cosh"),
 )
+@settings(max_examples=1)
 def test_cosh(
     *,
     dtype_and_x,
@@ -664,6 +682,7 @@ def test_cosh(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="divide"),
 )
+@settings(max_examples=1)
 def test_divide(
     *,
     dtype_and_x,
@@ -706,6 +725,7 @@ def test_divide(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="equal"),
 )
+@settings(max_examples=1)
 def test_equal(
     *,
     dtype_and_x,
@@ -740,6 +760,7 @@ def test_equal(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="exp"),
 )
+@settings(max_examples=1)
 def test_exp(
     *,
     dtype_and_x,
@@ -772,6 +793,7 @@ def test_exp(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="expm1"),
 )
+@settings(max_examples=1)
 def test_expm1(
     *,
     dtype_and_x,
@@ -804,6 +826,7 @@ def test_expm1(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="floor"),
 )
+@settings(max_examples=1)
 def test_floor(
     *,
     dtype_and_x,
@@ -845,6 +868,7 @@ def test_floor(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
 )
+@settings(max_examples=1)
 def test_floor_divide(
     *,
     dtype_and_x,
@@ -890,6 +914,7 @@ def test_floor_divide(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="greater"),
 )
+@settings(max_examples=1)
 def test_greater(
     *,
     dtype_and_x,
@@ -932,6 +957,7 @@ def test_greater(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="greater_equal"),
 )
+@settings(max_examples=1)
 def test_greater_equal(
     *,
     dtype_and_x,
@@ -971,6 +997,7 @@ def test_greater_equal(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="isfinite"),
 )
+@settings(max_examples=1)
 def test_isfinite(
     *,
     dtype_and_x,
@@ -1003,6 +1030,7 @@ def test_isfinite(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="isinf"),
 )
+@settings(max_examples=1)
 def test_isinf(
     *,
     dtype_and_x,
@@ -1035,6 +1063,7 @@ def test_isinf(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="isnan"),
 )
+@settings(max_examples=1)
 def test_isnan(
     *,
     dtype_and_x,
@@ -1071,6 +1100,7 @@ def test_isnan(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="less"),
 )
+@settings(max_examples=1)
 def test_less(
     *,
     dtype_and_x,
@@ -1113,6 +1143,7 @@ def test_less(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="less_equal"),
 )
+@settings(max_examples=1)
 def test_less_equal(
     *,
     dtype_and_x,
@@ -1153,6 +1184,7 @@ def test_less_equal(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="log"),
 )
+@settings(max_examples=1)
 def test_log(
     *,
     dtype_and_x,
@@ -1189,6 +1221,7 @@ def test_log(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="log1p"),
 )
+@settings(max_examples=1)
 def test_log1p(
     *,
     dtype_and_x,
@@ -1225,6 +1258,7 @@ def test_log1p(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="log2"),
 )
+@settings(max_examples=1)
 def test_log2(
     *,
     dtype_and_x,
@@ -1261,6 +1295,7 @@ def test_log2(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="log10"),
 )
+@settings(max_examples=1)
 def test_log10(
     *,
     dtype_and_x,
@@ -1299,6 +1334,7 @@ def test_log10(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="logaddexp"),
 )
+@settings(max_examples=1)
 def test_logaddexp(
     *,
     dtype_and_x,
@@ -1334,6 +1370,7 @@ def test_logaddexp(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
     num_positional_args=helpers.num_positional_args(fn_name="logical_and"),
 )
+@settings(max_examples=1)
 def test_logical_and(
     *,
     dtype_and_x,
@@ -1368,6 +1405,7 @@ def test_logical_and(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
     num_positional_args=helpers.num_positional_args(fn_name="logical_not"),
 )
+@settings(max_examples=1)
 def test_logical_not(
     *,
     dtype_and_x,
@@ -1400,6 +1438,7 @@ def test_logical_not(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
     num_positional_args=helpers.num_positional_args(fn_name="logical_or"),
 )
+@settings(max_examples=1)
 def test_logical_or(
     *,
     dtype_and_x,
@@ -1434,6 +1473,7 @@ def test_logical_or(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
     num_positional_args=helpers.num_positional_args(fn_name="logical_xor"),
 )
+@settings(max_examples=1)
 def test_logical_xor(
     *,
     dtype_and_x,
@@ -1470,6 +1510,7 @@ def test_logical_xor(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="multiply"),
 )
+@settings(max_examples=1)
 def test_multiply(
     *,
     dtype_and_x,
@@ -1504,6 +1545,7 @@ def test_multiply(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="negative"),
 )
+@settings(max_examples=1)
 def test_negative(
     *,
     dtype_and_x,
@@ -1538,6 +1580,7 @@ def test_negative(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="not_equal"),
 )
+@settings(max_examples=1)
 def test_not_equal(
     *,
     dtype_and_x,
@@ -1572,6 +1615,7 @@ def test_not_equal(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="positive"),
 )
+@settings(max_examples=1)
 def test_positive(
     *,
     dtype_and_x,
@@ -1606,6 +1650,7 @@ def test_positive(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="pow"),
 )
+@settings(max_examples=1)
 def test_pow(
     *,
     dtype_and_x,
@@ -1663,6 +1708,7 @@ def test_pow(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="remainder"),
 )
+@settings(max_examples=1)
 def test_remainder(
     *,
     dtype_and_x,
@@ -1706,6 +1752,7 @@ def test_remainder(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="round"),
 )
+@settings(max_examples=1)
 def test_round(
     *,
     dtype_and_x,
@@ -1738,6 +1785,7 @@ def test_round(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="sign"),
 )
+@settings(max_examples=1)
 def test_sign(
     *,
     dtype_and_x,
@@ -1774,6 +1822,7 @@ def test_sign(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="sin"),
 )
+@settings(max_examples=1)
 def test_sin(
     *,
     dtype_and_x,
@@ -1806,6 +1855,7 @@ def test_sin(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="sinh"),
 )
+@settings(max_examples=1)
 def test_sinh(
     *,
     dtype_and_x,
@@ -1838,6 +1888,7 @@ def test_sinh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="square"),
 )
+@settings(max_examples=1)
 def test_square(
     *,
     dtype_and_x,
@@ -1872,6 +1923,7 @@ def test_square(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="sqrt"),
 )
+@settings(max_examples=1)
 def test_sqrt(
     *,
     dtype_and_x,
@@ -1906,6 +1958,7 @@ def test_sqrt(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="subtract"),
 )
+@settings(max_examples=1)
 def test_subtract(
     *,
     dtype_and_x,
@@ -1940,6 +1993,7 @@ def test_subtract(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="tan"),
 )
+@settings(max_examples=1)
 def test_tan(
     *,
     dtype_and_x,
@@ -1972,6 +2026,7 @@ def test_tan(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="tanh"),
 )
+@settings(max_examples=1)
 def test_tanh(
     *,
     dtype_and_x,
@@ -2004,6 +2059,7 @@ def test_tanh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="trunc"),
 )
+@settings(max_examples=1)
 def test_trunc(
     *,
     dtype_and_x,
@@ -2040,6 +2096,7 @@ def test_trunc(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="erf"),
 )
+@settings(max_examples=1)
 def test_erf(
     *,
     dtype_and_x,
@@ -2074,6 +2131,7 @@ def test_erf(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
 )
+@settings(max_examples=1)
 def test_minimum(
     *,
     dtype_and_x,
@@ -2119,6 +2177,7 @@ def test_minimum(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),
 )
+@settings(max_examples=1)
 def test_maximum(
     *,
     dtype_and_x,
