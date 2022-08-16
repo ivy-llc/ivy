@@ -3,8 +3,7 @@
 # global
 
 import numpy as np
-from hypothesis import given, strategies as st
-from hypothesis import settings
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy
@@ -48,12 +47,13 @@ def _arrays_idx_n_dtypes(draw):
 
 
 # concat
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     num_positional_args=helpers.num_positional_args(fn_name="concat"),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_concat(
     *,
     data,
@@ -84,6 +84,7 @@ def test_concat(
 
 
 # expand_dims
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -100,7 +101,7 @@ def test_concat(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_expand_dims(
     *,
     data,
@@ -134,6 +135,7 @@ def test_expand_dims(
 
 
 # flip
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -152,7 +154,7 @@ def test_expand_dims(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_flip(
     *,
     data,
@@ -194,6 +196,7 @@ def _permute_dims_helper(draw):
 
 
 # permute_dims
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -208,7 +211,7 @@ def _permute_dims_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_permute_dims(
     *,
     data,
@@ -239,6 +242,7 @@ def test_permute_dims(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -255,7 +259,7 @@ def test_permute_dims(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_reshape(
     *,
     data,
@@ -290,6 +294,7 @@ def test_reshape(
 @settings(
     deadline=750,
 )
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -323,7 +328,7 @@ def test_reshape(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_roll(
     *,
     data,
@@ -370,6 +375,7 @@ def _squeeze_helper(draw):
     return draw(st.sampled_from(valid_axes))
 
 
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -384,7 +390,7 @@ def _squeeze_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_squeeze(
     *,
     data,
@@ -436,6 +442,7 @@ def _stack_helper(draw):
 
 
 # stack
+@handle_cmd_line_args
 @given(
     dtypes_arrays_axis=_stack_helper(),
     as_variable=helpers.array_bools(
@@ -452,7 +459,7 @@ def _stack_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_stack(
     *,
     data,
@@ -521,6 +528,7 @@ def _repeat_helper(draw):
 
 # repeat
 @settings(deadline=750)
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -545,7 +553,7 @@ def _repeat_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_repeat(
     *,
     data,
@@ -607,6 +615,7 @@ def _tile_helper(draw):
 
 
 # tile
+@handle_cmd_line_args
 @given(
     dtype_value_repeat=_tile_helper(),
     as_variable=helpers.array_bools(num_arrays=2),
@@ -617,7 +626,7 @@ def _tile_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_tile(
     *,
     data,
@@ -680,6 +689,7 @@ def _pad_helper(draw):
 
 # constant_pad
 @settings(deadline=500)
+@handle_cmd_line_args
 @given(
     dtype_value_pad_width_constant=_pad_helper(),
     as_variable=st.booleans(),
@@ -687,7 +697,7 @@ def _pad_helper(draw):
     num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_constant_pad(
     *,
     data,
@@ -721,6 +731,7 @@ def test_constant_pad(
 
 # zero_pad
 @settings(deadline=500)
+@handle_cmd_line_args
 @given(
     dtype_value_pad_width=_pad_helper(),
     as_variable=st.booleans(),
@@ -731,7 +742,7 @@ def test_constant_pad(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_zero_pad(
     *,
     data,
@@ -764,6 +775,7 @@ def test_zero_pad(
 
 
 # swapaxes
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -783,7 +795,7 @@ def test_zero_pad(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_swapaxes(
     *,
     data,
@@ -819,6 +831,7 @@ def test_swapaxes(
 
 # clip
 @settings(deadline=500)
+@handle_cmd_line_args
 @given(
     x_min_n_max=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
@@ -831,7 +844,7 @@ def test_swapaxes(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_clip(
     *,
     data,
@@ -907,6 +920,7 @@ def _split_helper(draw):
     return noss_dtype, num_or_size_splits
 
 
+@handle_cmd_line_args
 @given(
     noss_type=st.shared(helpers.ints(min_value=1, max_value=2), key="noss_type"),
     dtype_value=helpers.dtype_and_values(
@@ -928,7 +942,7 @@ def _split_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@handle_cmd_line_args
+@settings(max_examples=1)
 def test_split(
     *,
     data,
