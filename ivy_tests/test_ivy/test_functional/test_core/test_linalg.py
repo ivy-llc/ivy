@@ -121,11 +121,33 @@ def _get_dtype_value1_value2_axis_for_tensordot(
 
 
 @st.composite
-def _get_dtype_and_matrix(draw):
+def _get_dtype_and_matrix(draw, *, symmetric=False):
     # batch_shape, shared, random_size
     input_dtype = draw(st.shared(st.sampled_from(ivy_np.valid_float_dtypes)))
     random_size = draw(helpers.ints(min_value=2, max_value=4))
     batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
+    if symmetric:
+        num_independnt_vals = int((random_size**2) / 2 + random_size / 2)
+        array_vals_flat = np.array(
+            draw(
+                helpers.array_values(
+                    dtype=input_dtype,
+                    shape=tuple(list(batch_shape) + [num_independnt_vals]),
+                    min_value=2,
+                    max_value=5,
+                )
+            )
+        )
+        array_vals = np.zeros(batch_shape + (random_size, random_size))
+        c = 0
+        for i in range(random_size):
+            for j in range(random_size):
+                if j < i:
+                    continue
+                array_vals[..., i, j] = array_vals_flat[..., c]
+                array_vals[..., j, i] = array_vals_flat[..., c]
+                c += 1
+        return input_dtype, array_vals.tolist()
     return input_dtype, draw(
         helpers.array_values(
             dtype=input_dtype,
@@ -354,7 +376,7 @@ def test_det(
 
 # eigh
 @given(
-    dtype_x=_get_dtype_and_matrix(),
+    dtype_x=_get_dtype_and_matrix(symmetric=True),
     num_positional_args=helpers.num_positional_args(fn_name="eigh"),
     data=st.data(),
 )
@@ -401,7 +423,7 @@ def test_eigh(
 
 # eigvalsh
 @given(
-    dtype_x=_get_dtype_and_matrix(),
+    dtype_x=_get_dtype_and_matrix(symmetric=True),
     num_positional_args=helpers.num_positional_args(fn_name="eigvalsh"),
     data=st.data(),
 )
@@ -911,13 +933,12 @@ def test_vector_norm(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="pinv"),
-    rtol=st.floats(1e-5, 1e-3),
+    rtol=helpers.floats(min_value=1e-5, max_value=1e-3),
     data=st.data(),
 )
 @handle_cmd_line_args
 def test_pinv(
     *,
-    data,
     dtype_x,
     as_variable,
     with_out,
@@ -1114,7 +1135,6 @@ def test_matrix_norm(
         max_dim_size=3,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
-    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -1129,7 +1149,6 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
-    rtol,
 ):
     dtype, x = dtype_x
     helpers.test_function(

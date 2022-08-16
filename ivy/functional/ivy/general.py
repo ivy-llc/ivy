@@ -697,6 +697,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndar
         input array
     copy
         whether to copy the array to a new address or not. Default is True.
+    
     Returns
     -------
     ret
@@ -2087,6 +2088,20 @@ def set_min_base(val: float) -> None:
     val
         The new value to set the minimum base to.
 
+
+    Examples
+    --------
+    >>> x = ivy.get_min_base()
+    >>> print(x)
+    1e-05
+
+    To set the minimum base to 1e-04
+
+    >>> ivy.set_min_base(1e-04)
+    >>> y = ivy.get_min_base()
+    >>> print(y)
+    1e-04
+
     """
     ivy._MIN_BASE = val
 
@@ -2436,14 +2451,69 @@ def inplace_decrement(
     Parameters
     ----------
     x
-        The array to decrement.
+        The input array to be decremented by the defined value.
     val
-        The array to decrement the variable with.
+        The value of decrement.
 
     Returns
     -------
     ret
         The array following the in-place decrement.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    >>> x = ivy.array([[5.3, 7., 0.],\
+                        [6.8, 8, 3.9],\
+                        [0., 10., 6.3]])
+    >>> y = ivy.inplace_decrement(x, 1.25)
+    >>> print(y)
+    ivy.array([[ 4.05,  5.75, -1.25],
+       [ 5.55,  6.75,  2.65],
+       [-1.25,  8.75,  5.05]])
+
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([-10, 24, -3])
+    >>> val = ivy.native_array([1, 2, 3])
+    >>> y = ivy.inplace_decrement(x, val)
+    >>> print(y)
+    ivy.array([-11,  22,  -6])
+
+    With :code:`ivy.Container` input
+    >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), b=ivy.array([0., -25., 50.]))
+    >>> y = ivy.inplace_decrement(x, 1.5)
+    >>> print(y)
+    {
+        a: ivy.array([-1., -6.5, 28.5]),
+        b: ivy.array([-1.5, -26.5, 48.5])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+    >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+    >>> z = ivy.inplace_decrement(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([0., 0., 0.]),
+        b: ivy.array([0., 0., 0.])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))
+    >>> y = ivy.Container(a=ivy.array([2., 5.5, 7.]), b=ivy.array([0., 25., 2.]))
+    >>> z = ivy.inplace_decrement(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([1., 1.5, 3.]),
+        b: ivy.array([0., 50., 3.5])
+    }
 
     """
     return current_backend(x).inplace_decrement(x, val)

@@ -27,7 +27,7 @@ def _fill_value(draw):
         return draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
         return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(st.floats(-5, 5))
+    return draw(helpers.floats(min_value=-5, max_value=5))
 
 
 @st.composite
@@ -71,7 +71,7 @@ def test_torch_full(
         native_array_flags=False,
         fw=fw,
         frontend="torch",
-        fn_name="full",
+        fn_tree="full",
         size=shape,
         fill_value=fill_value,
         dtype=dtypes[0],
