@@ -5,7 +5,7 @@ from typing import Dict, Union, Tuple
 from hypothesis import settings
 
 # local
-from ivy_tests.test_ivy.helpers import TEST_BACKENDS, TEST_CALL_METHODS
+from ivy_tests.test_ivy.helpers import TEST_BACKENDS, TEST_CALL_METHODS, FW_STRS
 from ivy import clear_backend_stack, DefaultDevice
 
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
@@ -63,7 +63,7 @@ def pytest_generate_tests(metafunc):
     # framework
     raw_value = metafunc.config.getoption("--backend")
     if raw_value == "all":
-        backend_strs = TEST_BACKENDS.keys()
+        backend_strs = FW_STRS
     else:
         backend_strs = raw_value.split(",")
 

@@ -856,7 +856,6 @@ def test_type_promote_arrays(
 
 
 # default_float_dtype
-@handle_cmd_line_args
 @pytest.mark.parametrize("float_dtype", [ivy.float16, ivy.float32, ivy.float64, None])
 @pytest.mark.parametrize(
     "input",
@@ -868,7 +867,6 @@ def test_type_promote_arrays(
     ],
 )
 @pytest.mark.parametrize("as_native", [True, False])
-@settings(max_examples=1)
 def test_default_float_dtype(*, input, float_dtype, as_native):
     res = ivy.default_float_dtype(
         input=input, float_dtype=float_dtype, as_native=as_native
@@ -887,7 +885,6 @@ def test_default_float_dtype(*, input, float_dtype, as_native):
 
 
 # default_int_dtype
-@handle_cmd_line_args
 @pytest.mark.parametrize("int_dtype", [ivy.int16, ivy.int32, ivy.int64, None])
 @pytest.mark.parametrize(
     "input",
@@ -900,7 +897,6 @@ def test_default_float_dtype(*, input, float_dtype, as_native):
     ],
 )
 @pytest.mark.parametrize("as_native", [True, False])
-@settings(max_examples=1)
 def test_default_int_dtype(*, input, int_dtype, as_native):
     res = ivy.default_int_dtype(input=input, int_dtype=int_dtype, as_native=as_native)
     assert (
