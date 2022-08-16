@@ -84,3 +84,4 @@ def test_torch_flipud(
         fn_tree="flipud",
         input=np.asarray(value, dtype=input_dtype),
     )
+    
