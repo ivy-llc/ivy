@@ -1,10 +1,11 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # noinspection DuplicatedCode
@@ -51,6 +52,7 @@ def _dtype_n_with_out(draw):
 
 
 # concat
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
@@ -60,6 +62,7 @@ def _dtype_n_with_out(draw):
     ),
     native_array=helpers.array_bools(),
 )
+@settings(max_examples=1)
 def test_numpy_concatenate(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,

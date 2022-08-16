@@ -1,10 +1,11 @@
 # global
 import ivy
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # full
@@ -30,6 +31,7 @@ def _fill_value(draw):
     return draw(st.floats(-5, 5))
 
 
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -44,6 +46,7 @@ def _fill_value(draw):
         fn_name="ivy.functional.frontends.numpy.full"
     ),
 )
+@settings(max_examples=1)
 def test_numpy_full(
     shape,
     fill_value,

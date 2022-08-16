@@ -1,14 +1,16 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, settings, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # sinh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -20,6 +22,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
     ),
     native_array=helpers.array_bools(num_arrays=1),
 )
+@settings(max_examples=1)
 def test_numpy_sinh(
     dtype_and_x,
     dtype,
