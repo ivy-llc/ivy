@@ -897,7 +897,7 @@ class ContainerWithManipulation(ContainerBase):
 
     def zero_pad(
         self: ivy.Container,
-        pad_width: Iterable[Tuple[int]],
+        pad_width: Iterable[Sequence[int]],
         value: Number = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,

@@ -315,7 +315,7 @@ class ArrayWithManipulation(abc.ABC):
 
     def zero_pad(
         self: ivy.Array,
-        pad_width: Iterable[Tuple[int]],
+        pad_width: Iterable[Sequence[int]],
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

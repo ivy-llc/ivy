@@ -1155,11 +1155,11 @@ def tile(
 @handle_out_argument
 @handle_nestable
 def zero_pad(
-    x: Union[ivy.Array, ivy.NativeArray],
-    pad_width: Iterable[Tuple[int]],
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    pad_width: Iterable[Sequence[int]],
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
     """Pads an array with zeros.
 
     Parameters
@@ -1178,5 +1178,93 @@ def zero_pad(
     ret
         Padded array of rank equal to x with shape increased according to pad_width.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring # noqa
+    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.zero_pad(x, 1)
+    >>> print(y)
+    ivy.array([0., 0., 1., 2., 0.])
+
+    >>> x = ivy.array([[[0., 0.], [1., 3.]], \
+                       [[3., 9.], [4., 12.]]])
+    >>> ivy.zero_pad(x, 1, out=x)
+    >>> print(x)
+    ivy.array([[[ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.]],
+               [[ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.],
+                [ 0.,  1.,  3.,  0.],
+                [ 0.,  0.,  0.,  0.]],
+               [[ 0.,  0.,  0.,  0.],
+                [ 0.,  3.,  9.,  0.],
+                [ 0.,  4., 12.,  0.],
+                [ 0.,  0.,  0.,  0.]],
+               [[ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.]]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0., 1., 2.])
+    >>> y = ivy.zero_pad(x, 1)
+    >>> print(y)
+    ivy.array([0., 0., 1., 2., 0.])
+
+
+    With one :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.zero_pad(x, 1)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0., 1., 2., 0.]),
+        b: ivy.array([0., 3., 4., 5., 0.])
+    }
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> width = ivy.Container(a=1, b=2)
+    >>> y = ivy.zero_pad(x, width)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0., 1., 2., 0.]),
+        b: ivy.array([0., 0., 3., 4., 5., 0., 0.])
+    }
+
+    Instance Method Examples
+    ------------------------
+    >>> x = ivy.array([[0., 1., 2.], [3., 4., 5.]])
+    >>> y = x.zero_pad(1)
+    >>> print(y)
+    ivy.array([[0., 0., 0., 0., 0.],
+               [0., 0., 1., 2., 0.],
+               [0., 3., 4., 5., 0.],
+               [0., 0., 0., 0., 0.]])
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+                          b=ivy.array([3., 4., 5.]))
+    >>> y = x.zero_pad(1)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0., 1., 2., 0.]),
+        b: ivy.array([0., 3., 4., 5., 0.])
+    }
     """
     return current_backend(x).zero_pad(x, pad_width, out=out)
