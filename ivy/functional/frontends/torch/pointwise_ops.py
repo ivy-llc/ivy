@@ -116,3 +116,10 @@ def asinh(input, *, out=None):
 
 
 asinh.unsupported_dtypes = ("float16",)
+
+
+def atanh(input, *, out=None):
+    return ivy.atanh(input, out=out)
+
+
+atanh.unsupported_dtypes = ("float16",)
