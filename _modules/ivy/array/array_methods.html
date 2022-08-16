@@ -3272,6 +3272,44 @@
     <span class="k">pass</span></div>
 
 
+<div class="viewcode-block" id="inplace_decrement"><a class="viewcode-back" href="../../../functional/ivy/general/inplace_decrement/inplace_decrement_array.html#ivy.array.array_methods.inplace_decrement">[docs]</a><span class="k">def</span> <span class="nf">inplace_decrement</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Array instance method variant of ivy.inplace_decrement. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.inplace_decrement also</span>
+<span class="sd">    applies to this method with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        The input array to be decremented by the defined value.</span>
+<span class="sd">    val</span>
+<span class="sd">        The value of decrement.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array following an in-place decrement.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` instance methods:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([5.7, 4.3, 2.5, 1.9])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.inplace_decrement(1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([4.7, 3.3, 1.5, 0.9])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.asarray([4., 5., 6.])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.inplace_decrement(2.5)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([1.5, 2.5, 3.5])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
 <div class="viewcode-block" id="stable_divide"><a class="viewcode-back" href="../../../functional/ivy/general/stable_divide/stable_divide_array.html#ivy.array.array_methods.stable_divide">[docs]</a><span class="k">def</span> <span class="nf">stable_divide</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">denominator</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
