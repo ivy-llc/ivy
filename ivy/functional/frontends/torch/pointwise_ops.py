@@ -130,10 +130,3 @@ def arctanh(input, *, out=None):
 
 
 arctanh.unsupported_dtypes = ("float16",)
-
-
-def atanh(input, *, out=None):
-    return ivy.atanh(input, out=out)
-
-
-arctanh.unsupported_dtypes = ("float16",)
