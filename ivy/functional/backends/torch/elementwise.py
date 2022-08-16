@@ -66,11 +66,11 @@ def bitwise_invert(
 bitwise_invert.support_native_out = True
 
 
-def isfinite(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def isfinite(x: torch.Tensor, /) -> torch.Tensor:
     return torch.isfinite(x)
 
 
-def isinf(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def isinf(x: torch.Tensor, /) -> torch.Tensor:
     return torch.isinf(x)
 
 
@@ -447,7 +447,7 @@ def pow(
 pow.support_native_out = True
 
 
-def round(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def round(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
