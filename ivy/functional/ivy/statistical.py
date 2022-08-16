@@ -435,7 +435,6 @@ def sum(
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0.41, 0.89])
@@ -443,11 +442,11 @@ def sum(
     >>> print(y)
     ivy.array(1.3)
 
-    >>> x = ivy.array([0.5, -0.7, 2.4])
-    >>> y = ivy.zeros(3)
+    >>> x = ivy.array([0.5, 0.7, 2.4])
+    >>> y = ivy.array(0.0)
     >>> ivy.sum(x, out=y)
     >>> print(y)
-    ivy.array(2.2)
+    ivy.array(3.6)
 
     >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
     >>> y = ivy.sum(x, axis = 1, keepdims = False)
@@ -468,7 +467,7 @@ def sum(
     ivy.array(1.9)
 
     >>> x = ivy.native_array([1.0, 2.0, 2.0, 3.0])
-    >>> y = ivy.array(0.0)
+    >>> y = ivy.array([0.0,0.0,0.0])
     >>> ivy.sum(x, out=y)
     >>> print(y)
     ivy.array(8.)
