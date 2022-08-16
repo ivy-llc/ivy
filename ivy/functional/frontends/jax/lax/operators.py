@@ -1,4 +1,5 @@
 # global
+from typing import Any
 import ivy
 
 
@@ -25,6 +26,13 @@ def full(shape, fill_value, dtype=None):
 
 
 full.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def max(x: Any, y: Any):
+    return ivy.maximum(x, y)
+
+
+max.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def abs(x):
