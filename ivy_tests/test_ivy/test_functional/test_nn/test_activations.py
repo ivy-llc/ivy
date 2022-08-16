@@ -189,7 +189,7 @@ def test_sigmoid(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
     ),
-    axis=st.integers(-1, 0),
+    axis=helpers.ints(min_value=-1, max_value=0),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
     data=st.data(),
 )

@@ -16,17 +16,6 @@ def tan(x, name=None):
 tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
-def concat(values, axis, name="concat"):
-    return ivy.concat(values, axis)
-
-
-def fill(dims, value, name="full"):
-    return ivy.full(dims, value)
-
-
-fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def multiply(x, y, name=None):
     return ivy.multiply(x, y)
 
@@ -41,8 +30,25 @@ def subtract(x, y, name=None):
 subtract.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
-def logical_xor(x, y, name='LogicalXor'):
+def logical_xor(x, y, name="LogicalXor"):
     return ivy.logical_xor(x, y)
 
 
 logical_xor.supported_dtypes = {"torch": ("bool", "bool")}
+
+
+def divide(x, y, name=None):
+    return ivy.divide(x, y)
+
+
+divide.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def negative(x, name=None):
+    return ivy.negative(x)
+
+
+negative.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
+    "tensorflow": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
+}
