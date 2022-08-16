@@ -47,7 +47,7 @@ def test_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
-    alpha=st.floats(width=16),
+    alpha=helpers.floats(width=16),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -63,6 +63,7 @@ def test_leaky_relu(
     native_array,
     fw,
 ):
+    print("alpha: {} ".format(alpha))
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -118,39 +119,6 @@ def test_gelu(
     )
 
 
-# tanh
-@given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    num_positional_args=helpers.num_positional_args(fn_name="tanh"),
-    data=st.data(),
-)
-@handle_cmd_line_args
-def test_tanh(
-    *,
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    container,
-    instance_method,
-    native_array,
-    fw,
-):
-    dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        fw=fw,
-        num_positional_args=num_positional_args,
-        container_flags=container,
-        instance_method=instance_method,
-        fn_name="tanh",
-        x=np.asarray(x, dtype=dtype),
-    )
-
-
 # sigmoid
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
@@ -189,7 +157,7 @@ def test_sigmoid(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
     ),
-    axis=st.integers(-1, 0),
+    axis=helpers.ints(min_value=-1, max_value=0),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
     data=st.data(),
 )
