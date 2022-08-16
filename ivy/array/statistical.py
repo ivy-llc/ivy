@@ -17,7 +17,7 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.min(self._data, axis, keepdims, out=out)
+        return ivy.min(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def max(
         self: ivy.Array,
@@ -27,7 +27,7 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.max(self._data, axis, keepdims, out=out)
+        return ivy.max(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def mean(
         self: ivy.Array,
@@ -37,7 +37,7 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.mean(self._data, axis, keepdims, out=out)
+        return ivy.mean(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def var(
         self: ivy.Array,
@@ -157,7 +157,7 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.std(self._data, axis, correction, keepdims, out=out)
+        return ivy.std(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def einsum(
         self: ivy.Array,
