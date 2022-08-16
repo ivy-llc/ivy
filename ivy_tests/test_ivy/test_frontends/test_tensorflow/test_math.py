@@ -257,7 +257,7 @@ def test_tensorflow_divide_no_nan(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="divide_no_nan",
+        fn_tree="math.divide_no_nan",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
