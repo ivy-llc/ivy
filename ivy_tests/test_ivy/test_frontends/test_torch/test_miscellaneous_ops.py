@@ -8,19 +8,6 @@ import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
 
 
-# composite the generation of ints of valid dtypes and tuple(int)
-# that shares the same size as input shape
-@st.composite
-def _roll_helper(draw):
-    return draw(
-        helpers.ints()
-        | helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        ret_tuple=True,
-          ),
-    )
-
-
 # roll
 @given(
     dtype_and_values=helpers.dtype_and_values(
@@ -30,10 +17,11 @@ def _roll_helper(draw):
         ),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
-    shift=_roll_helper(),
-    dims=helpers.get_axis(
+    shift=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        allow_none=True,
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -43,8 +31,8 @@ def _roll_helper(draw):
 )
 def test_torch_roll(
     dtype_and_values,
-    shifts,
-    dims,
+    shift,
+    axis,
     as_variable,
     num_positional_args,
     native_array,
@@ -61,6 +49,6 @@ def test_torch_roll(
         frontend="torch",
         fn_tree="roll",
         input=np.asarray(value, dtype=input_dtype),
-        shifts=shifts,
-        dims=dims,
+        shifts=shift,
+        dims=axis,
     )
