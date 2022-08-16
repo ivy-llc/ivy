@@ -283,6 +283,39 @@ with minimal changes.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.activations.ArrayWithActivations.tanh">
+<span class="sig-name descname"><span class="pre">tanh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/activations.html#ArrayWithActivations.tanh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.activations.ArrayWithActivations.tanh" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.tanh. This method simply wraps the
+function, and so the docstring for ivy.tanh also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array whose elements each represent a hyperbolic angle.
+Should have a real-valued floating-point data type.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – an array containing the hyperbolic tangent of each element in <code class="docutils literal notranslate"><span class="pre">self</span></code>.
+The returned array must have a real-valued floating-point data type
+determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">tanh</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([0., 0.762, 0.964])</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 <div class="line-block">

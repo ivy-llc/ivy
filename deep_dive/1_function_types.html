@@ -181,7 +181,6 @@ implementation.</p>
 (with docstrings removed) is given below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -192,7 +191,6 @@ implementation.</p>
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/torch/elementwise.py</span></code> is given below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
@@ -216,10 +214,9 @@ implementations in any of the backend files <code class="code docutils literal n
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span>
     <span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
@@ -254,7 +251,7 @@ and in this case the efficient backend-specific implementation will always be us
 <em>compositional</em> or <em>mixed</em> functions whatsoever.</p>
 <p>By definition, standalone functions can only reference themselves or other standalone functions.
 Most commonly, these functions are <em>convenience</em> functions (see below).</p>
-<p>As a first example, every function in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/nest.py">nest.py</a> module is a standalone function.
+<p>As a first example, every function in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/nest.py">nest.py</a> module is a standalone function.
 All of these either: (a) reference no other function at all, (b) only reference themselves recursively,
 or (c) reference other standalone functions.</p>
 <p>A few other examples outside of the <code class="code docutils literal notranslate"><span class="pre">nest.py</span></code> module are:
@@ -297,18 +294,18 @@ Convenience functions can be <em>primary</em>, <em>compositional</em>, <em>mixed
 This is another categorization which is <strong>not</strong> mutually exclusive, as outlined by the Venn diagram below:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/convenience.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/convenience.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/convenience.png?raw=true" style="width: 50%;" /></a>
 <p>Primary convenience functions include:
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246">ivy.can_cast</a> which determines if one data type can be cast to another data type according to type-promotion rules,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096">ivy.dtype</a> which gets the data type for the input array,
-and <a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L325">ivy.dev</a> which gets the device for the input array.</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22">ivy.can_cast</a> which determines if one data type can be cast to another data type according to type-promotion rules,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L140">ivy.dtype</a> which gets the data type for the input array,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L132">ivy.dev</a> which gets the device for the input array.</p>
 <p>Compositional convenience functions include:
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555">ivy.set_default_dtype</a> which sets the global default data dtype,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a> which returns the correct data type to use,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536">ivy.set_default_dtype</a> which sets the global default data dtype,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484">ivy.default_dtype</a> which returns the correct data type to use,
 considering both the inputs and also the globally set default,
-and <a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L131">ivy.get_all_arrays_on_dev</a> which gets all arrays which are currently on the specified device.</p>
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/device.py#L71">ivy.get_all_arrays_on_dev</a> which gets all arrays which are currently on the specified device.</p>
 <p>Standalone convenience functions include:
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L211">ivy.get_backend</a> which returns a local Ivy module with the associated backend framework.
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/nest.py#L618">ivy.nested_map</a> which enables an arbitrary function to be mapped across the leaves of an arbitrary nest,
-and <a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/nest.py#L15">ivy.index_nest</a> which enables an arbitrary nest to be recursively indexed.</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/nest.py#L333">ivy.nested_map</a> which enables an arbitrary function to be mapped across the leaves of an arbitrary nest,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/nest.py#L15">ivy.index_nest</a> which enables an arbitrary nest to be recursively indexed.</p>
 <p>There are many other examples. The convenience functions are not grouped by file or folder.
 Feel free to have a look through all of the <a class="reference external" href="https://github.com/unifyai/ivy/tree/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy">submodules</a>, you should be able to spot quite a few!</p>
 <p><strong>Round Up</strong></p>

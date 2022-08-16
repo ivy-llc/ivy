@@ -2,12 +2,6 @@ tanh
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.tanh
-
-.. autofunction:: ivy.array.array_methods.tanh
-
-.. autofunction:: ivy.container.container_methods.tanh
-
-.. autofunction:: ivy.container.container_methods.static_tanh
 |
 | **Supported Frameworks:**
 
@@ -27,15 +21,3 @@ tanh
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: tanh
-
-   tanh/tanh_functional.rst
-   tanh/static_tanh_container.rst
-   tanh/tanh_array.rst
-   tanh/tanh_container.rst
-
