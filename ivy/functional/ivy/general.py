@@ -2088,6 +2088,20 @@ def set_min_base(val: float) -> None:
     val
         The new value to set the minimum base to.
 
+
+    Examples
+    --------
+    >>> x = ivy.get_min_base()
+    >>> print(x)
+    1e-05
+
+    To set the minimum base to 1e-04
+
+    >>> ivy.set_min_base(1e-04)
+    >>> y = ivy.get_min_base()
+    >>> print(y)
+    1e-04
+
     """
     ivy._MIN_BASE = val
 
