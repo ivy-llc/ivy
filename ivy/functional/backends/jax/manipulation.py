@@ -229,6 +229,9 @@ def constant_pad(
     return ret
 
 
+constant_pad.unsupported_dtypes = ("uint64",)
+
+
 def zero_pad(
     x: JaxArray, /, pad_width: List[List[int]], *, out: Optional[JaxArray] = None
 ):

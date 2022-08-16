@@ -262,17 +262,6 @@ def repeat(
     return ret
 
 
-repeat.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "int8",
-    "int16",
-    "float16",
-)
-
-
 def tile(
     x: torch.Tensor, /, reps, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
