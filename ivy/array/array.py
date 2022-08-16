@@ -608,3 +608,6 @@ class Variable(Array):
     def __init__(self, data):
         assert ivy.is_variable(data)
         super().__init__(data)
+
+    def __repr__(self):
+        return super().__repr__().replace("array", "variable")

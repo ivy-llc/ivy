@@ -31,9 +31,10 @@ def _new_std_fun(x, *, axis, correction, dtype):
 
 def max(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -42,9 +43,10 @@ def max(
 
 def mean(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -53,9 +55,10 @@ def mean(
 
 def min(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -64,6 +67,7 @@ def min(
 
 def prod(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[tf.DType] = None,
@@ -86,10 +90,11 @@ def prod(
 
 def std(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -124,6 +129,7 @@ def std(
 
 def sum(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: tf.DType = None,
@@ -146,10 +152,11 @@ def sum(
 
 def var(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
