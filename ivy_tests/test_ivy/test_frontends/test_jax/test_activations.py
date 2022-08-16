@@ -130,6 +130,7 @@ def test_jax_nn_sigmoid(
         frontend="jax",
         fn_tree="nn.sigmoid",
         x=np.asarray(x, dtype=input_dtype),
+    )
 
 
 @given(
