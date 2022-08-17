@@ -1720,9 +1720,40 @@ def test_stable_divide(dtype_and_x, as_variable, num_positional_args, native_arr
         min_denominator=np.asarray(x[2], dtype=input_dtype[2])
     )
 
-def test_stable_pow():
-    # Jiahan is working on this
-    return
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        num_arrays=3,
+        min_value=0,
+        shared_dtype=True,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="stable_pow"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+)
+def test_stable_pow(
+    dtype_and_x, as_variable, num_positional_args, native_array, container, fw
+):
+    input_dtype, x = dtype_and_x
+    for i in range(len(input_dtype)):
+        if input_dtype[i] in ["uint8", "uint16", "uint32", "uint64"]:
+            return
+    # assume(not (input_dtype[i] in ["uint8"] for i in range(len(input_dtype))))
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="stable_pow",
+        base=np.asarray(x[0], dtype=input_dtype[0]),
+        exponent=np.asarray(x[1], dtype=input_dtype[1]),
+        min_base=np.asarray(x[2], dtype=input_dtype[2]),
+    )
 
 def test_get_all_arrays_in_memory():
     return
