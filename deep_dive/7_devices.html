@@ -171,7 +171,7 @@ and has simple logic in the constructor to verify that the string formatting is 
 When a backend is set, the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> is replaced with the backend-specific <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/backends/torch/__init__.py#L13">device class</a>.</p>
 <section id="device-module">
 <h2>Device Module<a class="headerlink" href="#device-module" title="Permalink to this heading"></a></h2>
-<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py">device.py</a> module provides a variety of functions for working with devices.
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py">device.py</a> module provides a variety of functions for working with devices.
 A few examples include
 <code class="code docutils literal notranslate"><span class="pre">ivy.get_all_ivy_arrays_on_dev</span></code> which gets all arrays which are currently alive on the specified device,
 <code class="code docutils literal notranslate"><span class="pre">ivy.dev</span></code> which gets the device for input array,
@@ -180,11 +180,11 @@ and <code class="code docutils literal notranslate"><span class="pre">ivy.num_gp
 which means that they do not directly modify arrays,
 as explained in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
 <p>For example, the following are all convenience functions:
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L460">ivy.total_mem_on_dev</a>, which gets the total amount of memory for a given device,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L600">ivy.dev_util</a>, which gets the current utilization (%) for a given device,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L659">ivy.num_cpu_cores</a>, which determines the number of cores available in the CPU,
-and <a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L720">ivy.default_device</a>, which returns the correct device to use.</p>
-<p><a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L720">ivy.default_device</a> is arguably the most important function.
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L215">ivy.total_mem_on_dev</a>, which gets the total amount of memory for a given device,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L326">ivy.dev_util</a>, which gets the current utilization (%) for a given device,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L371">ivy.num_cpu_cores</a>, which determines the number of cores available in the CPU,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a>, which returns the correct device to use.</p>
+<p><a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a> is arguably the most important function.
 Any function in the functional API that receives a <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument will make use of this function,
 as explained below.</p>
 </section>
@@ -204,10 +204,10 @@ the input arrays. In cases where the input arrays are located on different devic
 unless the function is specific to distributed training.</p>
 <p>The <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is handled in <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L286">infer_device</a> for all functions which have the <code class="code docutils literal notranslate"><span class="pre">&#64;infer_device</span></code>
 decorator, similar to how <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is handled.
-This function calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L720">ivy.default_device</a> in order to determine the correct device.
+This function calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a> in order to determine the correct device.
 As discussed in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
 this is applied to all applicable functions dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">backend setting</a>.</p>
-<p>Overall, <a class="reference external" href="https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L720">ivy.default_device</a> infers the device as follows:</p>
+<p>Overall, <a class="reference external" href="https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/ivy/device.py#L424">ivy.default_device</a> infers the device as follows:</p>
 <ol class="arabic simple">
 <li><p>if the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is provided, use this directly</p></li>
 <li><p>otherwise, if an array is present in the arguments (very rare if the <code class="code docutils literal notranslate"><span class="pre">device</span></code> argument is present), set <code class="code docutils literal notranslate"><span class="pre">arr</span></code> to this array. This will then be used to infer the device by calling <code class="code docutils literal notranslate"><span class="pre">ivy.dev</span></code> on the array</p></li>

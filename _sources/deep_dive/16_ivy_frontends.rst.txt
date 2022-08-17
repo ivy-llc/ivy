@@ -250,10 +250,9 @@ supporting this behaviour by default.
     # in ivy/functional/ivy/general.py
     def cumprod(
         x: Union[ivy.Array, ivy.NativeArray],
-        /,
         axis: int = 0,
-        *,
         exclusive: Optional[bool] = False,
+        *,
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         return current_backend(x).cumprod(x, axis, exclusive, out=out)
