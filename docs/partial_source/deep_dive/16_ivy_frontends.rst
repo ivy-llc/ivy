@@ -32,7 +32,7 @@ Basic
 -----
 
 **NOTE:** Type hints, docstrings and examples are not required when working on
-frontend methods.
+frontend functions.
 
 **Jax**
 
@@ -110,7 +110,7 @@ sub-category of :code:`arithmetic_operations` as shown in the
 :code:`numpy.add` in :code:`ivy` by simply importing
 :code:`ivy.functional.frontends.numpy`.
 
-The function arguments for this method is slightly more complex due to the extra
+The function arguments for this function are slightly more complex due to the extra
 optional arguments. Additional handling code is added to recover the behaviour
 according to the `numpy.add`_ documentation. For example, if :code:`dtype` is specified,
 the arguments to be added will be casted to the desired type through
@@ -228,17 +228,17 @@ we code its positional and keyword arguments accordingly, then return with
 Compositions
 ------------
 
-Sometimes, certain frontend methods meet special criteria:
+Sometimes, certain frontend functions meet special criteria:
 
 * it is unique to a particular frontend framework, and does not exist in the other
   frontends, or
-* it has extra features than the original backend method
+* it has extra features than the original backend function
 
 In such cases, compositions are required to recover the original behaviours.
 
 **Examples**
 
-In the native TensorFlow method :code:`tf.cumprod()`, it supports an extra
+In the native TensorFlow function :code:`tf.cumprod()`, it supports an extra
 argument - :code:`reverse`, which returns a flipped result if True. However,
 the backend :code:`ivy.cumprod()` does not come with this argument, thus not
 supporting this behaviour by default.
@@ -258,7 +258,7 @@ supporting this behaviour by default.
     ) -> Union[ivy.Array, ivy.NativeArray]:
         return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
-To enable this behaviour, we will need to incorporate methods that resemble the
+To enable this behaviour, we will need to incorporate functions that resemble the
 required behaviour. For example, we can reverse the result by calling
 :code:`ivy.flip()` after running :code:`ivy.cumprod()`.
 
