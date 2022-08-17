@@ -4,7 +4,6 @@ from ivy.functional.ivy.gradients import gradient_descent_update
 
 # local
 from typing import Optional, Union, Callable, Tuple, Any
-from ivy.func_wrapper import to_native_arrays_and_back
 
 # Extra #
 # ------#
@@ -373,7 +372,6 @@ def _train_tasks(
 # First Order
 
 
-@to_native_arrays_and_back
 def fomaml_step(
     batch: ivy.Container,
     inner_cost_fn: Callable,
@@ -493,7 +491,6 @@ def fomaml_step(
 fomaml_step.computes_gradients = True
 
 
-@to_native_arrays_and_back
 def reptile_step(
     batch: ivy.Container,
     cost_fn: Callable,
@@ -584,7 +581,6 @@ reptile_step.computes_gradients = True
 # Second Order
 
 
-@to_native_arrays_and_back
 def maml_step(
     batch: ivy.Container,
     inner_cost_fn: Callable,
