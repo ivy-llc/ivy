@@ -2558,10 +2558,12 @@ def array_values(
         else:
             limit = math.log(small_value_safety_factor)
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -3)
-            min_value_pos = round(limit, -3)
+            max_value_neg = round(-1 * limit, 3)
+            min_value_pos = round(limit, 3)
             max_value_pos = max_value
-
+            max_value_neg, min_value_pos = (
+                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+            )
             values = draw(
                 list_of_length(
                     x=st.floats(
@@ -2608,8 +2610,11 @@ def array_values(
         else:
             limit = math.log(small_value_safety_factor)
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -6)
-            min_value_pos = round(limit, -6)
+            max_value_neg = round(-1 * limit, 6)
+            min_value_pos = round(limit, 6)
+            max_value_neg, min_value_pos = (
+                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+            )
             max_value_pos = max_value
 
             values = draw(
@@ -2660,9 +2665,12 @@ def array_values(
             limit = math.log(small_value_safety_factor)
 
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -15)
-            min_value_pos = round(limit, -15)
+            max_value_neg = round(-1 * limit, 15)
+            min_value_pos = round(limit, 15)
             max_value_pos = max_value
+            max_value_neg, min_value_pos = (
+                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+            )
 
             values = draw(
                 list_of_length(

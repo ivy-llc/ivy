@@ -196,7 +196,7 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     >>> x = ivy.array([1., 0.3, -4.5])
     >>> y = ivy.variable(x)
     >>> print(y)
-    ivy.array([ 1. ,  0.3, -4.5])
+    ivy.variable([ 1. ,  0.3, -4.5])
 
     With :code:`ivy.Container` input:
 
@@ -204,8 +204,8 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     >>> y = ivy.variable(x)
     >>> print(y)
     {
-        a: ivy.array([1., 2.]),
-        b: ivy.array([-0.2, 4.])
+        a: ivy.variable([1., 2.]),
+        b: ivy.variable([-0.2, 4.])
     }
     """
     return current_backend(x).variable(x)
@@ -381,7 +381,7 @@ def stop_gradient(
 # AutoGrad #
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 def execute_with_gradients(func, xs, /, *, retain_grads=False):
     """Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned
@@ -435,7 +435,7 @@ def value_and_grad(func):
     >>> grad_fn = ivy.value_and_grad(func)
     >>> value_grad = grad_fn(x)
     >>> print(value_grad)
-    (ivy.array(16.423332), ivy.array([[1.53, 0.7, 1.67], [0.933, 0.433, 2.07]]))
+    (ivy.variable(16.423332), ivy.array([[1.53, 0.7, 1.67], [0.933, 0.433, 2.07]]))
 
     """
     return current_backend(None).value_and_grad(func)
