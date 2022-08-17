@@ -1,6 +1,22 @@
 import ivy
 
 
+# Helpers #
+###########
+def _type_conversion(x):
+    # Does type conversion, floats maps to float,
+    # 64bit dtype to float64, everything else to float32
+    x = ivy.asarray(x)
+    dtype = ivy.as_ivy_dtype(x.dtype)
+    if "float" not in dtype:
+        if "64" in dtype[-2:]:
+            dtype = "float64"
+        else:
+            dtype = "float32"
+
+    return ivy.astype(x, dtype)
+
+
 def relu(x):
     return ivy.relu(x)
 
@@ -22,22 +38,15 @@ relu6.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def soft_sign(x):
-    ret = x / (ivy.abs(x) + 1)
-
-    dtype = ivy.as_ivy_dtype(ivy.asarray(x).dtype)
-    if "float" not in dtype:
-        if "64" in dtype[-2:]:
-            dtype = "float64"
-        else:
-            dtype = "float32"
-
-    return ivy.astype(ret, dtype)
+    x = _type_conversion(x)
+    return x / (ivy.abs(x) + 1)
 
 
 soft_sign.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def silu(x):
+    x = _type_conversion(x)
     return x * sigmoid(x)
 
 
@@ -59,7 +68,8 @@ gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def sigmoid(x):
-    return ivy.sigmoid(x)
+    x = _type_conversion(x)
+    return ivy.sigmoid(x).astype(x.dtype)
 
 
 sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
