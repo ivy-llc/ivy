@@ -341,6 +341,7 @@ def permute_dims(
 @handle_nestable
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
@@ -596,51 +597,47 @@ def squeeze(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([[[0, 1], [2, 3]]])
-    >>> print(x.shape)
-    (1, 2, 2)
-
-    >>> print(ivy.squeeze(x, axis=0).shape)
-    (2, 2)
-
-    >>> print(ivy.squeeze(x).shape)
-    (2, 2)
+    >>> y = ivy.squeeze(x)
+    >>> print(y)
+    ivy.array([[0, 1], [2, 3]])
 
     >>> x = ivy.array([[[[1, 2, 3]], [[4, 5, 6]]]])
-    >>> print(x.shape)
-    (1, 2, 1, 3)
-
-    >>> print(ivy.squeeze(x, axis=2).shape)
-    (1, 2, 3)
+    >>> ivy.squeeze(x, axis=2)
+    >>> print(y)
+    ivy.array([[0,1],[2,3]])
 
     >>> x = ivy.array([[[0], [1], [2]]])
-    >>> print(x.shape)
-    (1, 3, 1)
-
-    >>> print(ivy.squeeze(x))
+    >>> y = ivy.squeeze(x)
+    >>> print(y)
     ivy.array([0, 1, 2])
 
-    >>> print(ivy.squeeze(x, axis=0))
+    >>> y = ivy.squeeze(x, axis=0)
+    >>> print(y)
     ivy.array([[0],
            [1],
            [2]])
 
-    >>> print(ivy.squeeze(x, axis=2))
+    >>> y = ivy.squeeze(x, axis=2)
+    >>> print(y)
     ivy.array([[0, 1, 2]])
 
-    >>> print(ivy.squeeze(x, axis=(0, 2)))
+    >>> y = ivy.squeeze(x, axis=(0, 2))
+    >>> print(y)
     ivy.array([0, 1, 2])
 
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0, 1, 2])
-    >>> print(ivy.squeeze(x))
+    >>> y = ivy.squeeze(x)
+    >>> print(y)
     ivy.array([0, 1, 2])
 
     >>> x = ivy.native_array([[[3]]])
-    >>> print(ivy.squeeze(x, 2))
+    >>> y = ivy.squeeze(x, 2)
+    >>> print(y)
     ivy.array([[3]])
 
-    >>> x = ivy.native_array(0)
+    >>> x = ivy.native_array([0])
     >>> print(ivy.squeeze(x, 0))
     ivy.array(0)
 

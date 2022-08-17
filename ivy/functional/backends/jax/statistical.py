@@ -1,6 +1,6 @@
 # global
 import jax.numpy as jnp
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union, Optional, Sequence
 
 # local
 import ivy
@@ -13,41 +13,43 @@ from ivy.functional.backends.jax import JaxArray
 
 def max(
     x: JaxArray,
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
 def mean(
     x: JaxArray,
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, list):
-        axis = tuple(axis)
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.mean(x, axis=axis, keepdims=keepdims)
 
 
 def min(
     x: JaxArray,
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
 def prod(
     x: JaxArray,
+    /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[jnp.dtype] = None,
@@ -72,22 +74,26 @@ def prod(
         else:
             dtype = jnp.uint64
     dtype = ivy.as_native_dtype(dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
 def std(
     x: JaxArray,
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
-    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
 def sum(
     x: JaxArray,
+    /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: jnp.dtype = None,
@@ -112,17 +118,20 @@ def sum(
         else:
             dtype = jnp.uint64
     dtype = ivy.as_native_dtype(dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
 def var(
     x: JaxArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
+    /,
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    correction: Union[int, float] = 0.0,
+    keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 
@@ -131,6 +140,8 @@ def var(
 
 
 def einsum(
-    equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
+    equation: str,
+    *operands: JaxArray,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)

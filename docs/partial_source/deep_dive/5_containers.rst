@@ -234,9 +234,10 @@ and :code:`ivy.negative`, each of which are themselves *nestable*.
     def cross_entropy(
         true: Union[ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Optional[int] = -1,
         epsilon: Optional[float] = 1e-7,
-        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
@@ -374,3 +375,12 @@ This should have hopefully given you a good feel for containers, and how these a
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `containers discussion`_,
 or reach out on `discord`_ in the `containers channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/oHcoYFi2rvI" class="video">
+    </iframe>

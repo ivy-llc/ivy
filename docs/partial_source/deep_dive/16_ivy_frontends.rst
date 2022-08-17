@@ -28,8 +28,11 @@ transpilations, as explained `here`_.
 
 Let's start with some examples to have a better idea on Ivy Frontends!
 
-Examples
---------
+Basic
+-----
+
+**NOTE:** Type hints, docstrings and examples are not required when working on
+frontend functions.
 
 **Jax**
 
@@ -107,7 +110,7 @@ sub-category of :code:`arithmetic_operations` as shown in the
 :code:`numpy.add` in :code:`ivy` by simply importing
 :code:`ivy.functional.frontends.numpy`.
 
-The function arguments for this method is slightly more complex due to the extra
+The function arguments for this function are slightly more complex due to the extra
 optional arguments. Additional handling code is added to recover the behaviour
 according to the `numpy.add`_ documentation. For example, if :code:`dtype` is specified,
 the arguments to be added will be casted to the desired type through
@@ -222,43 +225,74 @@ according to the `torch`_ directory. By referring to the `torch.tan`_ documentat
 we code its positional and keyword arguments accordingly, then return with
 :code:`ivy.tan` to link the operation to the backend framework.
 
-**More Examples**
+Compositions
+------------
 
-Additional examples for each framework on concatenation is added for better understanding!
+In many cases, frontend functions meet the following criteria:
 
-**Jax**
+* the function is unique to a particular frontend framework, and does not exist in the
+  other frameworks
+* the function has extra features and/or arguments on top of the most similar ivy
+  function that is available
 
-.. code-block:: python
+In such cases, compositions are required to replicate the function behaviour.
 
-    # in ivy/functional/frontends/jax/lax/operators.py
-    def concatenate(operands: Sequence[Any], dimension: int) -> Any:
-        return ivy.concat(operands, dimension)
+**Examples**
 
-**Numpy**
+In the native TensorFlow function :code:`tf.cumprod()`, it supports an extra
+argument - :code:`reverse`, which returns a flipped result if :code:`True`. However,
+the backend :code:`ivy.cumprod()` does not come with this argument, and thus does not
+support this behaviour by default.
 
-.. code-block:: python
-
-    # in ivy/functional/frontends/numpy/manipulation_routines/joining_arrays.py
-    def concatenate(arrays, /, axis=0, out=None, *, dtype=None, casting="same_kind"):
-        if dtype:
-            arrays = [ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype)) for a in arrays]
-        return ivy.concat(arrays, axis, out=out)
-
-**TensorFlow**
+**Ivy**
 
 .. code-block:: python
 
-    # in ivy/functional/frontends/tensorflow/functions.py
-    def concat(values, axis, name="concat"):
-        return ivy.concat(values, axis)
+    # in ivy/functional/ivy/general.py
+    def cumprod(
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        axis: int = 0,
+        *,
+        exclusive: Optional[bool] = False,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
-**PyTorch**
+To enable this behaviour, we will need to incorporate functions that resemble the
+required behaviour. For example, we can reverse the result by calling
+:code:`ivy.flip()` after running :code:`ivy.cumprod()`.
+
+**TensorFlow Frontend**
 
 .. code-block:: python
 
-    # in ivy/functional/frontends/torch/indexing_slicing_joining_mutating_ops.py
-    def cat(tensors, dim=0, *, out=None):
-        return ivy.concat(tensors, dim, out=out)
+    # ivy/functional/frontends/tensorflow/math/general.py
+    def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
+        ret = ivy.cumprod(x, axis, exclusive)
+        if reverse:
+            return ivy.flip(ret, axis)
+        return ret
+
+Through compositions, we can easily meet the required input-output behaviour.
+
+Temporary Compositions
+----------------------
+
+Sometimes, there is a clear omission of an Ivy function, which would make the frontend
+implementation much simpler. For example, implementing :code:`median` for the NumPy
+frontend would currently require a very manual and heavily compositional implementation.
+However, if the function :code:`ivy.median` was added to Ivy's functional API, then this
+frontend implementation would become very simple, with some light wrapping around
+:code:`ivy.median`.
+
+Adding :code:`ivy.median` would be a sensible decision, as many frameworks support this
+function. However, functions are added to Ivy in an iterative and deliberate manner,
+which doesn't always align with the timelines for the frontend implementations.
+Sometimes Ivy's API is not ready to have a new function added. In such cases, the
+frontend function should be added as a heavy composition, but a :code:`#ToDo` comment
+should be added, explaining that this frontend implementation will be updated as soon as
+:code:`ivy.<func_name>` is implemented.
 
 **Round Up**
 

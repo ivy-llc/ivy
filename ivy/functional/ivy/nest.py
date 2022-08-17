@@ -15,6 +15,7 @@ import ivy
 def index_nest(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
     index: Union[List[int], Tuple[int], Iterable[int]],
+    /,
 ) -> Any:
     """Index a nested object, using a tuple of indices or keys in the case of dicts.
 
@@ -73,7 +74,7 @@ def index_nest(
     return ret
 
 
-def prune_nest_at_index(nest: Iterable, index: Tuple):
+def prune_nest_at_index(nest: Iterable, index: Tuple, /):
     """Prune a nested object at a specified index.
 
     Parameters
@@ -94,6 +95,7 @@ def set_nest_at_index(
     nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
     index: Sequence[Union[str, int]],
     value: Any,
+    /,
 ):
     """Set the value of a nested item at a specified index.
 
@@ -158,7 +160,7 @@ def set_nest_at_index(
         ivy.set_nest_at_index(nest[index[0]], index[1:], value)
 
 
-def insert_into_nest_at_index(nest: Iterable, index: Tuple, value):
+def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /):
     if len(index) == 1:
         idx = index[0]
         if isinstance(nest, list):
@@ -169,7 +171,7 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value):
         insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
-def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable):
+def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable, /):
     """Map a function to the value of a nested item at a specified index.
 
     Parameters
@@ -188,7 +190,7 @@ def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable):
         map_nest_at_index(nest[index[0]], index[1:], fn)
 
 
-def multi_index_nest(nest: Iterable, indices: Tuple):
+def multi_index_nest(nest: Iterable, indices: Tuple, /):
     """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
     the case of dicts.
 
@@ -203,7 +205,7 @@ def multi_index_nest(nest: Iterable, indices: Tuple):
     return [index_nest(nest, index) for index in indices]
 
 
-def prune_nest_at_indices(nest: Iterable, indices: Tuple):
+def prune_nest_at_indices(nest: Iterable, indices: Tuple, /):
     """Prune a nested object at specified indices.
 
     Parameters
@@ -221,6 +223,7 @@ def set_nest_at_indices(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
     indices: Union[List[int], Tuple[int], Iterable[int]],
     values: Union[List[int], Tuple[int], Iterable[int]],
+    /,
 ) -> Any:
     """Set the value of a nested item at specified indices with specified values.
 
@@ -276,7 +279,7 @@ def set_nest_at_indices(
     [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
 
 
-def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values):
+def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values, /):
     """Insert a value into the nested item at specified indices with specified values.
 
     Parameters
@@ -298,7 +301,7 @@ def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values):
     ]
 
 
-def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable):
+def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     """Map a function to the values of a nested item at the specified indices.
 
     Parameters
@@ -533,8 +536,70 @@ def map(
     Returns
     -------
     ret
-        x following the applicable of fn to each of it's iterated items.
+        x following the application of fn to each of its iterated items.
+    
+    Examples
+    --------
+    With :code:`int` inputs:
 
+    >>> def special_square(x : float) -> float : return np.square(x)
+    >>> results = ivy.map(fn = special_square, \
+                          constant = None, \
+                          unique = {'x' : [1,2,3]}, \
+                          mean = False)
+    >>> print(results)
+    [1, 4, 9]
+
+    >>> results = ivy.map(fn = special_square, \
+                          constant = None, \
+                          unique = {'x':[0,1,2]},\
+                          mean = True)
+    >>> print(results)
+    1.6666666666666667
+
+    >>> def special_pow(x:float,y:float) ->float : return np.power(x,y)
+    >>> results = ivy.map(fn = special_pow, \
+                          constant = {'y':[0,1]}, \
+                          unique = {'x':[1,2,3]}, \
+                          mean = False)
+    >>> print(results)
+    [array([1,1]),
+    array([1,2]),
+    array([1,3])]
+
+    >>> results = ivy.map(fn = special_pow, \
+                          constant = {'y':[0,1]}, \
+                          unique = {'x':[1,2,3]}, \
+                          mean = True)
+    >>> print(results)
+    [1. 2.]
+
+    With :code:`float` inputs:
+
+    >>> def linear_model(w:float, x:float, b:float) -> float: return w*x + b
+    >>> results = ivy.map(fn = linear_model, \
+                          constant = {'w':10., 'b':1.}, \
+                          unique = {'x':[0.,1.,2.]}, \
+                          mean = False)
+    >>> print(results)
+    [1.0, 11.0, 21.0]
+
+    With :code:`ivy.Array` inputs:
+
+    >>> results = ivy.map(fn = linear_model, \
+        constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])}, \
+        unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \
+        mean = False)
+    >>> print(results)
+    [ivy.array([0., 10., 100.]),
+    ivy.array([1., 10., 101.])]
+
+    >>> results = ivy.map(fn = linear_model, \
+        constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])}, \
+        unique = {'x':[ivy.array([0.,1.,0.]), ivy.array([1.,1.,1.])]}, \
+        mean = True)
+    >>> print(results)
+    ivy.array([  0.5,  10. , 100. ])
     """
     c = ivy.default(constant, {})
     u = ivy.default(unique, {})
@@ -545,12 +610,14 @@ def map(
         )
     ]
     if mean:
-        return sum(rets) / len(rets)
+        rets = sum(rets) / len(rets)
+
     return rets
 
 
 def nested_map(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
+    /,
     fn: Callable,
     include_derived: Optional[Union[Dict[type, bool], bool]] = None,
     to_mutable: bool = False,
@@ -727,9 +794,10 @@ def nested_any(
 
 def copy_nest(
     nest: Union[ivy.Array, ivy.NativeArray, Iterable],
+    /,
     include_derived: bool = False,
     to_mutable: bool = False,
-) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
+) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """Copies a nest deeply, but without copying leaves of the nest, only the nest
     lists, tuples and dicts are copied.
 
@@ -749,6 +817,33 @@ def copy_nest(
     ret
         The copied nest.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> nest = ivy.array([[1.,2.,3.],[7.,8.,9.]])
+    >>> copied_nest = ivy.copy_nest(nest)
+    >>> print(copied_nest)
+    ivy.array([[1., 2., 3.],
+            [7., 8., 9.]])
+
+    With :code:`Iterable` input:
+
+    >>> nest = [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
+    >>> copied_nest = ivy.copy_nest(nest, include_derived = True)
+    >>> print(copied_nest)
+    [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
+
+    >>> nest = ([23, 25, 1337], [63, 98, 6])
+    >>> copied_nest = ivy.copy_nest(nest, to_mutable = True)
+    >>> print(copied_nest)
+    [[23, 25, 1337], [63, 98, 6]]
+
+    >>> nest = {'first': [23., 24., 25], 'second': [46., 48., 50]}
+    >>> copied_nest = ivy.copy_nest(nest)
+    >>> print(copied_nest)
+    {'first': [23.0, 24.0, 25], 'second': [46.0, 48.0, 50]}
+
     """
     class_instance = type(nest)
     check_fn = (
@@ -757,16 +852,27 @@ def copy_nest(
         else (lambda x_, t: type(nest) is t)
     )
     if check_fn(nest, tuple):
-        ret_list = [copy_nest(i, include_derived, to_mutable) for i in nest]
+        ret_list = [
+            copy_nest(i, include_derived=include_derived, to_mutable=to_mutable)
+            for i in nest
+        ]
         if to_mutable:
             return ret_list
         return class_instance(tuple(ret_list))
     elif check_fn(nest, list):
-        return class_instance([copy_nest(i, include_derived, to_mutable) for i in nest])
+        return class_instance(
+            [
+                copy_nest(i, include_derived=include_derived, to_mutable=to_mutable)
+                for i in nest
+            ]
+        )
     elif check_fn(nest, dict):
         class_instance = type(nest)
         return class_instance(
-            {k: copy_nest(v, include_derived, to_mutable) for k, v in nest.items()}
+            {
+                k: copy_nest(v, include_derived=include_derived, to_mutable=to_mutable)
+                for k, v in nest.items()
+            }
         )
     return nest
 
