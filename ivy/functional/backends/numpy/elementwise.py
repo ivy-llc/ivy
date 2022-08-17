@@ -300,9 +300,8 @@ def floor_divide(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.floor(
-        np.divide(x1, x2), out=out, dtype=np.promote_types(x1.dtype, x2.dtype)
-    )
+    dtype = np.promote_types(x1.dtype, x2.dtype)
+    return np.floor(np.divide(x1, x2)).astype(dtype)
 
 
 floor_divide.support_native_out = True
