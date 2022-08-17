@@ -73,3 +73,7 @@ def asin(x):
 
 def sinh(x):
     return ivy.sinh(x)
+
+
+def atan(x):
+    return ivy.atan(x)
