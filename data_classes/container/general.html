@@ -1351,6 +1351,42 @@ Default is False.</p></li>
 with arrays unpacked at leaves</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With one <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]]),</span>
+<span class="go">                    b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">[{</span>
+<span class="go">    a: ivy.array([[1, 2],</span>
+<span class="go">                 [3, 4]]),</span>
+<span class="go">    b: ivy.array([[9, 10],</span>
+<span class="go">                 [11, 12]])</span>
+<span class="go">}, {</span>
+<span class="go">    a: ivy.array([[5, 6],</span>
+<span class="go">                 [7, 8]]),</span>
+<span class="go">     b: ivy.array([[13, 14],</span>
+<span class="go">                  [15, 16]])</span>
+<span class="go">}]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]]),</span>
+<span class="go">                    b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">[{</span>
+<span class="go">    a: ivy.array([[[1, 2]],</span>
+<span class="go">                 [[5, 6]]]),</span>
+<span class="go">    b: ivy.array([[[9, 10]],</span>
+<span class="go">                 [[13, 14]]])</span>
+<span class="go">}, {</span>
+<span class="go">    a: ivy.array([[[3, 4]],</span>
+<span class="go">                 [[7, 8]]]),</span>
+<span class="go">    b: ivy.array([[[11, 12]],</span>
+<span class="go">                 [[15, 16]]])</span>
+<span class="go">}]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1463,6 +1499,24 @@ Default is False.</p></li>
 <dd class="field-odd"><p><em>ret</em> – Containers with arrays unpacked at leaves</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With one <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]]),</span>
+<span class="go">                    b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">[{</span>
+<span class="go">    a: ivy.array([[1, 2],</span>
+<span class="go">                 [3, 4]]),</span>
+<span class="go">    b: ivy.array([[9, 10],</span>
+<span class="go">                  [11, 12]])</span>
+<span class="go">}, {</span>
+<span class="go">    a: ivy.array([[5, 6],</span>
+<span class="go">                  [7, 8]]),</span>
+<span class="go">    b: ivy.array([[13, 14],</span>
+<span class="go">                  [15, 16]])</span>
+<span class="go">}]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
