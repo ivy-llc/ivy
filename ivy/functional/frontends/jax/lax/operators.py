@@ -77,3 +77,7 @@ def mul(x, y):
 
 def eq(x, y):
     return ivy.equal(x, y)
+
+
+def atan(x):
+    return ivy.atan(x)
