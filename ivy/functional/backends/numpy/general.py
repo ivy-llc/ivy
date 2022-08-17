@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -89,7 +89,11 @@ def floormod(
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: np.ndarray,
+    axis: int, 
+    keepdims: bool = False
+) -> List[np.ndarray]:
     if x.shape == ():
         return [x]
     x_split = np.split(x, x.shape[axis], axis)
