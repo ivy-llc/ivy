@@ -194,7 +194,7 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.gather(self._data, indices, axis, out=out)
 
     def scatter_nd(
-        self: ivy.array, 
+        self: ivy.Array, 
         updates:Union[ivy.Array, ivy.NativeArray],
         shape: Optional[ivy.Array] = None,
         tensor: Union[ivy.Array, ivy.NativeArray] = None,
