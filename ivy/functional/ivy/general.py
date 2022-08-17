@@ -1855,13 +1855,13 @@ def match_kwargs(
 
     Examples
     --------
-    >>> o = ivy.zeros(3)
+    >>> o = ivy.zeros(3, dtype=int)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.elementwise.add, ivy.layers.linear)
     >>> print(x)
     [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
 
-    >>> o = ivy.zeros(3)
+    >>> o = ivy.zeros(3, dtype=int)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.layers.linear, ivy.elementwise.add)
     >>> print(x)
