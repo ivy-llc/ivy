@@ -20,10 +20,10 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         ret_shape=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
-    scale=helpers.floats(min_value=0.0),
-    offset=helpers.floats(min_value=0.0),
-    epsilon=helpers.floats(min_value=ivy._MIN_BASE, max_value=0.1),
-    new_std=helpers.floats(min_value=0.0, exclude_min=True),
+    scale=st.floats(min_value=0.0),
+    offset=st.floats(min_value=0.0),
+    epsilon=st.floats(min_value=ivy._MIN_BASE, max_value=0.1),
+    new_std=st.floats(min_value=0.0, exclude_min=True),
     data=st.data(),
 )
 @handle_cmd_line_args

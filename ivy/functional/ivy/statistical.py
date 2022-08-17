@@ -20,10 +20,9 @@ from ivy.func_wrapper import (
 @handle_nestable
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: Optional[bool] = False,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the maximum value of the input array ``x``.
@@ -92,7 +91,7 @@ def max(
     ivy.array(2)
 
     >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
-    >>> y = ivy.max(x, axis=0, keepdims=True)
+    >>> y = ivy.max(x, 0, True)
     >>> print(y)
     ivy.array([[4, 6, 10]])
 
@@ -128,10 +127,9 @@ def max(
 @handle_nestable
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the arithmetic mean of the input array ``x``.
@@ -183,10 +181,9 @@ def mean(
 @handle_nestable
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the minimum value of the input array x.
@@ -237,7 +234,6 @@ def min(
 @handle_nestable
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -304,11 +300,10 @@ def prod(
 @handle_nestable
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the standard deviation of the input array ``x``.
@@ -376,7 +371,6 @@ def std(
 @handle_nestable
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -455,11 +449,10 @@ def sum(
 @handle_nestable
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """

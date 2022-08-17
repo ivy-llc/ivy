@@ -1,5 +1,4 @@
 # global
-from typing import Any
 import ivy
 
 
@@ -28,13 +27,6 @@ def full(shape, fill_value, dtype=None):
 full.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
-def max(x: Any, y: Any):
-    return ivy.maximum(x, y)
-
-
-max.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def abs(x):
     return ivy.abs(x)
 
@@ -49,16 +41,15 @@ def sqrt(x):
 sqrt.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
-
 def square(x):
     return ivy.square(x)
 
 
 square.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
+
 def acos(x):
     return ivy.acos(x)
 
 
 acos.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
