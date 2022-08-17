@@ -53,10 +53,13 @@ def moveaxis(input, source, destination):
                                                 ", their size must match"
         map = {}
         for i, j in zip(source, destination):
-            if i in map: i = map[i]
-            if j in map: j = map[j]
+            if i in map:
+                i = map[i]
+            if j in map:
+                j = map[j]
             input = ivy.swapaxes(input, i, j)
-            map[i] = j; map[j] = i
+            map[i] = j
+            map[j] = i
         return input
 
     return ivy.swapaxes(input, source, destination)
