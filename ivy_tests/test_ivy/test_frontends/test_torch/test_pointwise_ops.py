@@ -817,6 +817,7 @@ def test_torch_square(
     
     
 # atan2
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
