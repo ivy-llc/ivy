@@ -133,7 +133,6 @@
 
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">to_native_arrays_and_back</span>
 
 <span class="c1"># Extra #</span>
 <span class="c1"># ------#</span>
@@ -502,8 +501,7 @@
 <span class="c1"># First Order</span>
 
 
-<div class="viewcode-block" id="fomaml_step"><a class="viewcode-back" href="../../../../functional/ivy/meta/fomaml_step.html#ivy.functional.ivy.meta.fomaml_step">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">fomaml_step</span><span class="p">(</span>
+<div class="viewcode-block" id="fomaml_step"><a class="viewcode-back" href="../../../../functional/ivy/meta/fomaml_step.html#ivy.functional.ivy.meta.fomaml_step">[docs]</a><span class="k">def</span> <span class="nf">fomaml_step</span><span class="p">(</span>
     <span class="n">batch</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">inner_cost_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">outer_cost_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
@@ -622,8 +620,7 @@
 <span class="n">fomaml_step</span><span class="o">.</span><span class="n">computes_gradients</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<div class="viewcode-block" id="reptile_step"><a class="viewcode-back" href="../../../../functional/ivy/meta/reptile_step.html#ivy.functional.ivy.meta.reptile_step">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">reptile_step</span><span class="p">(</span>
+<div class="viewcode-block" id="reptile_step"><a class="viewcode-back" href="../../../../functional/ivy/meta/reptile_step.html#ivy.functional.ivy.meta.reptile_step">[docs]</a><span class="k">def</span> <span class="nf">reptile_step</span><span class="p">(</span>
     <span class="n">batch</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">cost_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">variables</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
@@ -713,8 +710,7 @@
 <span class="c1"># Second Order</span>
 
 
-<div class="viewcode-block" id="maml_step"><a class="viewcode-back" href="../../../../functional/ivy/meta/maml_step.html#ivy.functional.ivy.meta.maml_step">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="k">def</span> <span class="nf">maml_step</span><span class="p">(</span>
+<div class="viewcode-block" id="maml_step"><a class="viewcode-back" href="../../../../functional/ivy/meta/maml_step.html#ivy.functional.ivy.meta.maml_step">[docs]</a><span class="k">def</span> <span class="nf">maml_step</span><span class="p">(</span>
     <span class="n">batch</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
     <span class="n">inner_cost_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">outer_cost_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
