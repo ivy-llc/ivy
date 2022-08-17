@@ -70,5 +70,3 @@ def test_tensorflow_eigh(
         fn_tree="linalg.eigh",
         input=np.asarray(x, dtype=input_dtype),
     )
-
-
