@@ -14,7 +14,6 @@ from typing import Union, List
 from hypothesis import assume, given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
-from datetime import timedelta
 
 # local
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
@@ -3128,7 +3127,7 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
     return draw(st.booleans())
 
 
-def handle_cmd_line_args(deadline=timedelta(milliseconds=200)):
+def handle_cmd_line_args(deadline=4000):
     def wrap_test_fn(test_fn):
         from ivy_tests.test_ivy.conftest import (
             FW_STRS,
