@@ -28,7 +28,6 @@ def _dtypes(draw):
     )
 
 
-# relu
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
