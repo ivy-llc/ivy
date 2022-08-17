@@ -2382,6 +2382,12 @@ def array_and_indices(
     return (x, indices)
 
 
+def _zeroing(x):
+    # covnert -0.0 to 0.0
+    if x == 0.0:
+        return 0.0
+
+
 @st.composite
 def array_values(
     draw,
@@ -2636,6 +2642,12 @@ def array_values(
             elif max_value_pos is not None and max_value_pos <= min_value_pos:
                 min_value_pos = min_value_neg
                 max_value_pos = max_value_neg
+
+            min_value_pos = _zeroing(min_value_pos)
+            max_value_pos = _zeroing(max_value_pos)
+            min_value_neg = _zeroing(min_value_neg)
+            max_value_neg = _zeroing(max_value_neg)
+
             values = draw(
                 list_of_length(
                     x=st.floats(
