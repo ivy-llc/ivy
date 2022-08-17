@@ -411,7 +411,7 @@ def test_jax_lax_sign(
     ),
     native_array=st.booleans(),
 )
-def test_jax_lax_sign(
+def test_jax_lax_sinh(
     dtype_and_x,
     as_variable,
     num_positional_args,
