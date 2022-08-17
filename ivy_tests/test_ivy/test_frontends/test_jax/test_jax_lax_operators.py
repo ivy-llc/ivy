@@ -347,7 +347,7 @@ def test_jax_lax_acos(
         x=np.asarray(x, dtype=input_dtype),
     )
 
-    
+
 # sin
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
@@ -365,7 +365,7 @@ def test_jax_lax_sin(
     fw,
 ):
     input_dtype, x = dtype_and_x
- 
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -377,8 +377,8 @@ def test_jax_lax_sin(
         fn_tree="lax.sin",
         x=np.asarray(x, dtype=input_dtype),
     )
- 
- 
+
+
 # sign
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
@@ -396,7 +396,7 @@ def test_jax_lax_sign(
     fw,
 ):
     input_dtype, x = dtype_and_x
- 
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -408,8 +408,8 @@ def test_jax_lax_sign(
         fn_tree="lax.sign",
         x=np.asarray(x, dtype=input_dtype),
     )
- 
- 
+
+
 # asin
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
@@ -427,7 +427,7 @@ def test_jax_lax_asin(
     fw,
 ):
     input_dtype, x = dtype_and_x
- 
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -439,8 +439,8 @@ def test_jax_lax_asin(
         fn_tree="lax.asin",
         x=np.asarray(x, dtype=input_dtype),
     )
- 
- 
+
+
 # sinh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
@@ -458,7 +458,7 @@ def test_jax_lax_sinh(
     fw,
 ):
     input_dtype, x = dtype_and_x
- 
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
