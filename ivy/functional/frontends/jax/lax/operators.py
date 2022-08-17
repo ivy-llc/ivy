@@ -81,3 +81,10 @@ def eq(x, y):
 
 def atan(x):
     return ivy.atan(x)
+
+
+def ceil(x):
+    return ivy.ceil(x)
+
+
+ceil.unsupported_dtypes = {"torch": ("float16",)}
