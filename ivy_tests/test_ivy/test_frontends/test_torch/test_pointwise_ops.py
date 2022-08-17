@@ -818,7 +818,7 @@ def test_torch_arctanh(
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.square"
+        fn_name="ivy.functional.frontends.torch.square"
     ),
     native_array=st.booleans(),
 )
