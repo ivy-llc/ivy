@@ -371,7 +371,6 @@ def test_jax_lax_sin(
     )
 
 
-
 # sign
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
@@ -401,6 +400,7 @@ def test_jax_lax_sign(
         fn_tree="lax.sign",
         x=np.asarray(x, dtype=input_dtype),
     )
+
 
 # asin
 @given(
