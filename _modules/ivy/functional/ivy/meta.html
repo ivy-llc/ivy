@@ -245,7 +245,6 @@
                     <span class="k">else</span> <span class="n">variables</span><span class="o">.</span><span class="n">prune_key_chains</span><span class="p">(</span><span class="n">inner_v</span><span class="p">),</span>
                     <span class="n">inner_update_grads</span><span class="p">,</span>
                     <span class="n">inner_learning_rate</span><span class="p">,</span>
-                    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
@@ -254,7 +253,6 @@
                 <span class="n">variables</span><span class="p">,</span>
                 <span class="n">inner_update_grads</span><span class="p">,</span>
                 <span class="n">inner_learning_rate</span><span class="p">,</span>
-                <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -278,7 +276,7 @@
     <span class="k">if</span> <span class="n">stop_gradients</span><span class="p">:</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">batched</span><span class="p">:</span>
-        <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># average the cost or gradients across all timesteps if this option is chosen</span>
     <span class="k">if</span> <span class="n">average_across_steps</span><span class="p">:</span>
@@ -339,7 +337,7 @@
         <span class="n">num_tasks</span><span class="p">,</span>
         <span class="n">stop_gradients</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">grads</span> <span class="o">=</span> <span class="n">grads</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span> <span class="k">else</span> <span class="n">grads</span>
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">grads</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span> <span class="k">else</span> <span class="n">grads</span>
     <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">return_inner_v</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">cost</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">updated_ivs</span>
@@ -427,11 +425,11 @@
             <span class="k">return</span> <span class="p">(</span>
                 <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span>
                 <span class="nb">sum</span><span class="p">(</span><span class="n">all_grads</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">updated_ivs_to_return</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">updated_ivs_to_return</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">all_grads</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_tasks</span>
     <span class="k">if</span> <span class="n">return_inner_v</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">updated_ivs_to_return</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">updated_ivs_to_return</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span>
 
 
@@ -831,7 +829,7 @@
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">stop_gradients</span><span class="p">:</span>
         <span class="n">cost</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">grads</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">rets</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">grads</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">rets</span><span class="p">)</span></div>
 
 
 <span class="n">maml_step</span><span class="o">.</span><span class="n">computes_gradients</span> <span class="o">=</span> <span class="kc">True</span>
