@@ -228,20 +228,21 @@ we code its positional and keyword arguments accordingly, then return with
 Compositions
 ------------
 
-Sometimes, certain frontend functions meet special criteria:
+In many cases, frontend functions meet the following criteria:
 
-* it is unique to a particular frontend framework, and does not exist in the other
-  frontends, or
-* it has extra features than the original backend function
+* the function is unique to a particular frontend framework, and does not exist in the
+  other frameworks
+* the function has extra features and/or arguments on top of the most similar ivy
+  function that is available
 
-In such cases, compositions are required to recover the original behaviours.
+In such cases, compositions are required to replicate the function behaviour.
 
 **Examples**
 
 In the native TensorFlow function :code:`tf.cumprod()`, it supports an extra
-argument - :code:`reverse`, which returns a flipped result if True. However,
-the backend :code:`ivy.cumprod()` does not come with this argument, thus not
-supporting this behaviour by default.
+argument - :code:`reverse`, which returns a flipped result if :code:`True`. However,
+the backend :code:`ivy.cumprod()` does not come with this argument, and thus does not
+support this behaviour by default.
 
 **Ivy**
 
@@ -273,46 +274,25 @@ required behaviour. For example, we can reverse the result by calling
             return ivy.flip(ret, axis)
         return ret
 
-Through compositions, we can easily meet the desired objectives.
+Through compositions, we can easily meet the required input-output behaviour.
 
-Further Examples
-----------------
+Temporary Compositions
+----------------------
 
-Additional examples for each framework on concatenation is added for better understanding!
+Sometimes, there is a clear omission of an Ivy function, which would make the frontend
+implementation much simpler. For example, implementing :code:`median` for the NumPy
+frontend would currently require a very manual and heavily compositional implementation.
+However, if the function :code:`ivy.median` was added to Ivy's functional API, then this
+frontend implementation would become very simple, with some light wrapping around
+:code:`ivy.median`.
 
-**Jax**
-
-.. code-block:: python
-
-    # in ivy/functional/frontends/jax/lax/operators.py
-    def concatenate(operands: Sequence[Any], dimension: int) -> Any:
-        return ivy.concat(operands, dimension)
-
-**Numpy**
-
-.. code-block:: python
-
-    # in ivy/functional/frontends/numpy/manipulation_routines/joining_arrays.py
-    def concatenate(arrays, /, axis=0, out=None, *, dtype=None, casting="same_kind"):
-        if dtype:
-            arrays = [ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype)) for a in arrays]
-        return ivy.concat(arrays, axis, out=out)
-
-**TensorFlow**
-
-.. code-block:: python
-
-    # in ivy/functional/frontends/tensorflow/functions.py
-    def concat(values, axis, name="concat"):
-        return ivy.concat(values, axis)
-
-**PyTorch**
-
-.. code-block:: python
-
-    # in ivy/functional/frontends/torch/indexing_slicing_joining_mutating_ops.py
-    def cat(tensors, dim=0, *, out=None):
-        return ivy.concat(tensors, dim, out=out)
+Adding :code:`ivy.median` would be a sensible decision, as many frameworks support this
+function. However, functions are added to Ivy in an iterative and deliberate manner,
+which doesn't always align with the timelines for the frontend implementations.
+Sometimes Ivy's API is not ready to have a new function added. In such cases, the
+frontend function should be added as a heavy composition, but a :code:`#ToDo` comment
+should be added, explaining that this frontend implementation will be updated as soon as
+:code:`ivy.<func_name>` is implemented.
 
 **Round Up**
 
