@@ -68,11 +68,13 @@ def test_docstrings(backend):
     for k, v in ivy.__dict__.copy().items():
         if k == "Array":
             for method_name in dir(v):
-                if hasattr(ivy.functional,method_name):
+                if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Array, method_name)
                     if (
                         method_name in skip_arr_cont
-                        or helpers.gradient_incompatible_function(fn=getattr(ivy.functional, method_name))
+                        or helpers.gradient_incompatible_function(
+                            fn=getattr(ivy.functional, method_name)
+                        )
                         or helpers.docstring_examples_run(fn=method, from_array=True)
                     ):
                         continue
@@ -81,9 +83,9 @@ def test_docstrings(backend):
                 else:
                     method = getattr(ivy.Array, method_name)
                     if (
-                            method_name in skip_arr_cont
-                            or helpers.gradient_incompatible_function(fn=method)
-                            or helpers.docstring_examples_run(fn=method, from_array=True)
+                        method_name in skip_arr_cont
+                        or helpers.gradient_incompatible_function(fn=method)
+                        or helpers.docstring_examples_run(fn=method, from_array=True)
                     ):
                         continue
                     success = False
@@ -91,12 +93,16 @@ def test_docstrings(backend):
 
         elif k == "Container":
             for method_name in dir(v):
-                if hasattr(ivy.functional, method_name ):
+                if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
                     if (
                         method_name in skip_arr_cont
-                        or helpers.gradient_incompatible_function(fn=getattr(ivy.functional, method_name))
-                        or helpers.docstring_examples_run(fn=method, from_container=True)
+                        or helpers.gradient_incompatible_function(
+                            fn=getattr(ivy.functional, method_name)
+                        )
+                        or helpers.docstring_examples_run(
+                            fn=method, from_container=True
+                        )
                     ):
                         continue
                     success = False
@@ -104,14 +110,15 @@ def test_docstrings(backend):
                 else:
                     method = getattr(ivy.Container, method_name)
                     if (
-                            method_name in skip_arr_cont
-                            or helpers.gradient_incompatible_function(fn=method)
-                            or helpers.docstring_examples_run(fn=method, from_container=True)
+                        method_name in skip_arr_cont
+                        or helpers.gradient_incompatible_function(fn=method)
+                        or helpers.docstring_examples_run(
+                            fn=method, from_container=True
+                        )
                     ):
                         continue
                     success = False
                     failures.append("Container." + method_name)
-
 
         else:
             if (
