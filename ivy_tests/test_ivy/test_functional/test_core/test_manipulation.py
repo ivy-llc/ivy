@@ -21,19 +21,16 @@ def _concat_helper(draw):
         draw(helpers.get_shape(min_num_dims=1, max_num_dims=1, max_dim_size=1))
     )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    num_arrays = draw(st.integers(2, 2))
+    num_arrays = draw(helpers.ints(min_value=1, max_value=5))
     arrays = []
     dtypes = [dtype for _ in range(num_arrays)]
 
     for i in range(num_arrays):
         array_shape = shape[:]
-        # array_shape[axis] = draw(st.integers(1, 10))
         array_shape = tuple(array_shape)
 
         array = draw(helpers.array_values(dtype=dtype, shape=array_shape))
         arrays.append(np.asarray(array, dtype=dtype))
-        if len(shape) != len(arrays[-1].shape):
-            print(shape, arrays[-1].shape, array_shape)
     return dtypes, arrays, axis
 
 
@@ -56,6 +53,7 @@ def test_concat(
     instance_method,
     fw,
 ):
+
     dtypes, arrays, axis = dtypes_arrays_axis
 
     helpers.test_function(
@@ -80,14 +78,12 @@ def test_concat(
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="value_shape"), min_size=1, max_size=1
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+        min_size=1,
+        max_size=1,
+        force_int=True,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="expand_dims"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -104,9 +100,8 @@ def test_expand_dims(
     instance_method,
     fw,
 ):
+
     dtype, value = dtype_value
-    if not isinstance(axis, int):
-        axis = axis[0]
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -133,13 +128,9 @@ def test_expand_dims(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
         min_size=1,
         max_size=1,
+        force_int=True,
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="flip"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -156,9 +147,8 @@ def test_flip(
     instance_method,
     fw,
 ):
+
     dtype, value = dtype_value
-    if not isinstance(axis, int):
-        axis = axis[0]
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -190,12 +180,7 @@ def _permute_dims_helper(draw):
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     permutation=_permute_dims_helper(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="permute_dims"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -212,6 +197,7 @@ def test_permute_dims(
     instance_method,
     fw,
 ):
+
     dtype, value = dtype_value
 
     helpers.test_function(
@@ -237,12 +223,7 @@ def test_permute_dims(
     reshape=helpers.reshape_shapes(
         shape=st.shared(helpers.get_shape(), key="value_shape")
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="reshape"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -259,6 +240,7 @@ def test_reshape(
     instance_method,
     fw,
 ):
+
     dtype, value = dtype_value
 
     helpers.test_function(
@@ -319,12 +301,7 @@ def test_reshape(
             key="shift_len",
         ),
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="roll"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -384,12 +361,7 @@ def _squeeze_helper(draw):
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="squeeze"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -406,6 +378,7 @@ def test_squeeze(
     instance_method,
     fw,
 ):
+
     dtype, value = dtype_value
 
     helpers.test_function(
@@ -426,13 +399,15 @@ def test_squeeze(
 @st.composite
 def _stack_helper(draw):
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="values_shape"))
-    num_arrays = draw(st.shared(st.integers(1, 3), key="num_arrays"))
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=1, max_value=3), key="num_arrays")
+    )
     dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
     arrays = []
     dtypes = [dtype for _ in range(num_arrays)]
 
     for _ in range(num_arrays):
-        _, array = draw(helpers.dtype_and_values(available_dtypes=[dtype], shape=shape))
+        array = draw(helpers.array_values(dtype=dtype, shape=shape))
         arrays.append(np.asarray(array, dtype=dtype))
     return dtypes, arrays
 
@@ -445,18 +420,7 @@ def _stack_helper(draw):
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="values_shape"),
         force_int=True,
     ),
-    as_variable=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
-    ),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="stack"),
-    native_array=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
-    ),
-    container=helpers.array_bools(
-        num_arrays=st.shared(st.integers(1, 3), key="num_arrays")
-    ),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -473,6 +437,7 @@ def test_stack(
     instance_method,
     fw,
 ):
+
     dtypes, arrays = dtypes_arrays
 
     helpers.test_function(
@@ -500,12 +465,7 @@ def test_stack(
     x_min_n_max=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
     ),
-    as_variable=helpers.array_bools(num_arrays=3),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
-    native_array=helpers.array_bools(num_arrays=3),
-    container=helpers.array_bools(num_arrays=3),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -554,7 +514,10 @@ def _pad_helper(draw):
     pad_width = tuple(
         draw(
             st.lists(
-                st.tuples(st.integers(0, 100), st.integers(0, 100)),
+                st.tuples(
+                    helpers.ints(min_value=0, max_value=100),
+                    helpers.ints(min_value=0, max_value=100),
+                ),
                 min_size=len(shape),
                 max_size=len(shape),
             )
@@ -568,8 +531,6 @@ def _pad_helper(draw):
 @settings(deadline=1000)
 @given(
     dtype_value_pad_width_constant=_pad_helper(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
     data=st.data(),
 )
@@ -650,12 +611,7 @@ def _repeat_helper(draw):
         key="axis",
     ),
     repeat=st.one_of(st.integers(1, 100), _repeat_helper()),
-    as_variable=helpers.array_bools(num_arrays=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="repeat"),
-    native_array=helpers.array_bools(num_arrays=2),
-    container=helpers.array_bools(num_arrays=2),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -704,15 +660,14 @@ def test_repeat(
 @st.composite
 def _split_helper(draw):
     noss_is_int = draw(
-        st.shared(st.integers(1, 2), key="noss_type").map(lambda x: x == 1)
+        st.shared(helpers.ints(min_value=1, max_value=2), key="noss_type").map(
+            lambda x: x == 1
+        )
     )
-
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
-
-    axis = draw(st.shared(helpers.get_axis(shape=shape), key="target_axis"))
-
-    if not isinstance(axis, int):
-        axis = axis[0]
+    axis = draw(
+        st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
+    )
 
     if noss_is_int:
         if shape[axis] == 0:
@@ -740,24 +695,21 @@ def _split_helper(draw):
 
 
 @given(
-    noss_type=st.shared(st.integers(1, 2), key="noss_type"),
+    noss_type=st.shared(helpers.ints(min_value=1, max_value=2), key="noss_type"),
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     axis=st.shared(
         helpers.get_axis(
-            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape")
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
         ),
         key="target_axis",
     ),
-    num_or_size_splits=_split_helper(),
     with_remainder=st.booleans(),
-    as_variable=st.booleans(),
+    num_or_size_splits=_split_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="split"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -776,11 +728,8 @@ def test_split(
     instance_method,
     fw,
 ):
-    dtype, value = dtype_value
-    x = np.asarray(value, dtype=dtype)
 
-    if not isinstance(axis, int):
-        axis = axis[0]
+    dtype, value = dtype_value
 
     if noss_type == 2:
         num_or_size_splits = num_or_size_splits[1]
@@ -795,7 +744,7 @@ def test_split(
         instance_method=instance_method,
         fw=fw,
         fn_name="split",
-        x=x,
+        x=np.asarray(value, dtype=dtype),
         num_or_size_splits=num_or_size_splits,
         axis=axis,
         with_remainder=with_remainder,
@@ -809,17 +758,12 @@ def test_split(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     axis0=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
-    ).filter(lambda axis: isinstance(axis, int)),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"), force_int=True
+    ),
     axis1=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
-    ).filter(lambda axis: isinstance(axis, int)),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"), force_int=True
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="swapaxes"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -877,12 +821,7 @@ def _tile_helper(draw):
 # tile
 @given(
     dtype_value_repeat=_tile_helper(),
-    as_variable=helpers.array_bools(num_arrays=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="tile"),
-    native_array=helpers.array_bools(num_arrays=2),
-    container=helpers.array_bools(num_arrays=2),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
@@ -927,12 +866,7 @@ def test_tile(
 @settings(deadline=1000)
 @given(
     dtype_value_pad_width=_pad_helper(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="zero_pad"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
     data=st.data(),
 )
 @handle_cmd_line_args
