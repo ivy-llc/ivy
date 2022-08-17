@@ -8,7 +8,7 @@ from hypothesis import settings
 from ivy import clear_backend_stack, DefaultDevice
 from ivy_tests.test_ivy import helpers
 
-settings.register_profile("default", max_examples=1)
+settings.register_profile("default", max_examples=1, deadline=4000)
 settings.load_profile("default")
 
 
