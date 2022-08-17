@@ -16,7 +16,6 @@ class ArrayWithStatistical(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-
         return ivy.min(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def max(
