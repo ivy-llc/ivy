@@ -8,7 +8,12 @@ from hypothesis import settings
 from ivy import clear_backend_stack, DefaultDevice
 from ivy_tests.test_ivy import helpers
 
+settings.register_profile("default", max_examples=1)
+settings.load_profile("default")
+
+
 MAX_EXAMPLES: int
+DEADLINE: int
 
 FW_STRS = ["numpy", "jax", "tensorflow", "torch"]
 
@@ -44,12 +49,9 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 
 
 def pytest_configure(config):
-    global MAX_EXAMPLES
+    global MAX_EXAMPLES, DEADLINE
     MAX_EXAMPLES = config.getoption("--num-examples")
-    deadline = config.getoption("--deadline")
-    deadline = deadline if deadline else 4000
-    settings.register_profile("default", max_examples=1, deadline=deadline)
-    settings.load_profile("default")
+    DEADLINE = config.getoption("--deadline")
 
 
 @pytest.fixture(autouse=True)
