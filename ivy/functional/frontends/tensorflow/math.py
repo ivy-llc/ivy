@@ -39,3 +39,7 @@ def negative(x, name=None):
 negative.unsupported_dtypes = {
     "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
 }
+
+
+def reduce_all(input_tensor, axis=None, keepdims=False, name="reduce_all"):
+    return ivy.all(input_tensor, axis, keepdims)
