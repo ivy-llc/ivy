@@ -468,6 +468,7 @@ extra_promotion_table = {
     (float32, uint64): float32,
     (uint64, float64): float64,
     (float64, uint64): float64,
+    (bfloat16, bfloat16): bfloat16,
 }
 
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
