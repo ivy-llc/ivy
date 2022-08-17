@@ -141,6 +141,3 @@ arctanh.unsupported_dtypes = ("float16",)
 
 def square(input, *, out=None):
     return ivy.square(input, out=out)
-
-
-square.unsupported_dtypes = ("uint16", "uint64", "uint32")
