@@ -2530,6 +2530,14 @@ def array_values(
                 )
             max_neg_value = -1 if small_value_safety_factor > 1 else 0
             min_pos_value = 1 if small_value_safety_factor > 1 else 0
+
+            if min_value >= max_neg_value:
+                min_value = min_pos_value
+                max_neg_value = max_value
+            elif max_value <= min_pos_value:
+                min_pos_value = min_value
+                max_value = max_neg_value
+
             values = draw(
                 list_of_length(
                     x=st.integers(min_value, max_neg_value)
@@ -2559,10 +2567,18 @@ def array_values(
         else:
             limit = math.log(small_value_safety_factor)
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -3)
-            min_value_pos = round(limit, -3)
+            max_value_neg = round(-1 * limit, 3)
+            min_value_pos = round(limit, 3)
             max_value_pos = max_value
-
+            max_value_neg, min_value_pos = (
+                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+            )
+            if min_value_neg is not None and min_value_neg >= max_value_neg:
+                min_value_neg = min_value_pos
+                max_value_neg = max_value_pos
+            elif max_value_pos is not None and max_value_pos <= min_value_pos:
+                min_value_pos = min_value_neg
+                max_value_pos = max_value_neg
             values = draw(
                 list_of_length(
                     x=st.floats(
@@ -2609,10 +2625,18 @@ def array_values(
         else:
             limit = math.log(small_value_safety_factor)
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -6)
-            min_value_pos = round(limit, -6)
+            max_value_neg = round(-1 * limit, 6)
+            min_value_pos = round(limit, 6)
+            max_value_neg, min_value_pos = (
+                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+            )
             max_value_pos = max_value
-
+            if min_value_neg is not None and min_value_neg >= max_value_neg:
+                min_value_neg = min_value_pos
+                max_value_neg = max_value_pos
+            elif max_value_pos is not None and max_value_pos <= min_value_pos:
+                min_value_pos = min_value_neg
+                max_value_pos = max_value_neg
             values = draw(
                 list_of_length(
                     x=st.floats(
@@ -2661,10 +2685,18 @@ def array_values(
             limit = math.log(small_value_safety_factor)
 
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -15)
-            min_value_pos = round(limit, -15)
+            max_value_neg = round(-1 * limit, 15)
+            min_value_pos = round(limit, 15)
             max_value_pos = max_value
-
+            max_value_neg, min_value_pos = (
+                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+            )
+            if min_value_neg is not None and min_value_neg >= max_value_neg:
+                min_value_neg = min_value_pos
+                max_value_neg = max_value_pos
+            elif max_value_pos is not None and max_value_pos <= min_value_pos:
+                min_value_pos = min_value_neg
+                max_value_pos = max_value_neg
             values = draw(
                 list_of_length(
                     x=st.floats(

@@ -18,6 +18,7 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_float_dtypes,
             num_arrays=num_arrays,
+            small_value_safety_factor=1.2,
             min_num_dims=1,
             shared_dtype=True,
             ret_shape=True,
@@ -107,7 +108,7 @@ def test_is_variable(
         num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=instance_method,
+        instance_method=False,
         fw=fw,
         fn_name="is_variable",
         x=np.asarray(x, dtype=dtype),
