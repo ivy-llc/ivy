@@ -81,3 +81,7 @@ def eq(x, y):
 
 def atan(x):
     return ivy.atan(x)
+
+
+def bitwise_and(x, y):
+    return ivy.bitwise_and(x, y)
