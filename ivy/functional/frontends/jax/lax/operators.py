@@ -81,3 +81,7 @@ def eq(x, y):
 
 def atan(x):
     return ivy.atan(x)
+
+
+def sub(x, y):
+    return ivy.subtract(x, y)
