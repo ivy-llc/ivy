@@ -3451,7 +3451,8 @@ def logaddexp(
     b: ivy.array([[5.74, 5.07, 5.], 
                   [6.34, 6.02, 6.], 
                   [7.14, 7.01, 7.]])
-}
+    }
+    
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
@@ -3466,7 +3467,6 @@ def logaddexp(
     }
 
     """
-
     return ivy.current_backend(x1, x2).logaddexp(x1, x2, out=out)
 
 
