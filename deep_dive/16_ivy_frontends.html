@@ -169,7 +169,7 @@ transpilations, as explained <a class="reference external" href="https://lets-un
 <section id="basic">
 <h2>Basic<a class="headerlink" href="#basic" title="Permalink to this heading"></a></h2>
 <p><strong>NOTE:</strong> Type hints, docstrings and examples are not required when working on
-frontend methods.</p>
+frontend functions.</p>
 <p><strong>Jax</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/jax/lax/operators.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -236,7 +236,7 @@ sub-category of <code class="code docutils literal notranslate"><span class="pre
 <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory. This ensures direct access to
 <code class="code docutils literal notranslate"><span class="pre">numpy.add</span></code> in <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> by simply importing
 <code class="code docutils literal notranslate"><span class="pre">ivy.functional.frontends.numpy</span></code>.</p>
-<p>The function arguments for this method is slightly more complex due to the extra
+<p>The function arguments for this function are slightly more complex due to the extra
 optional arguments. Additional handling code is added to recover the behaviour
 according to the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.add.html">numpy.add</a> documentation. For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified,
 the arguments to be added will be casted to the desired type through
@@ -337,15 +337,15 @@ we code its positional and keyword arguments accordingly, then return with
 </section>
 <section id="compositions">
 <h2>Compositions<a class="headerlink" href="#compositions" title="Permalink to this heading"></a></h2>
-<p>Sometimes, certain frontend methods meet special criteria:</p>
+<p>Sometimes, certain frontend functions meet special criteria:</p>
 <ul class="simple">
 <li><p>it is unique to a particular frontend framework, and does not exist in the other
 frontends, or</p></li>
-<li><p>it has extra features than the original backend method</p></li>
+<li><p>it has extra features than the original backend function</p></li>
 </ul>
 <p>In such cases, compositions are required to recover the original behaviours.</p>
 <p><strong>Examples</strong></p>
-<p>In the native TensorFlow method <code class="code docutils literal notranslate"><span class="pre">tf.cumprod()</span></code>, it supports an extra
+<p>In the native TensorFlow function <code class="code docutils literal notranslate"><span class="pre">tf.cumprod()</span></code>, it supports an extra
 argument - <code class="code docutils literal notranslate"><span class="pre">reverse</span></code>, which returns a flipped result if True. However,
 the backend <code class="code docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code> does not come with this argument, thus not
 supporting this behaviour by default.</p>
@@ -362,7 +362,7 @@ supporting this behaviour by default.</p>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To enable this behaviour, we will need to incorporate methods that resemble the
+<p>To enable this behaviour, we will need to incorporate functions that resemble the
 required behaviour. For example, we can reverse the result by calling
 <code class="code docutils literal notranslate"><span class="pre">ivy.flip()</span></code> after running <code class="code docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>.</p>
 <p><strong>TensorFlow Frontend</strong></p>
