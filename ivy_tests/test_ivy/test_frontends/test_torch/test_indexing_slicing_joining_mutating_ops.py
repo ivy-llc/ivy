@@ -6,6 +6,7 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # noinspection DuplicatedCode
@@ -47,6 +48,7 @@ def _arrays_idx_n_dtypes(draw):
 
 
 # cat
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
@@ -79,8 +81,8 @@ def test_torch_cat(
         dim=unique_idx,
         out=None,
     )
-    
-    
+
+
 # concat
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
@@ -204,14 +206,15 @@ def test_torch_swapdims(
         dim0=dim0,
         dim1=dim1,
     )
-    
-    
+
+
 # reshape
 @given(
     dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)),
+                set(ivy_torch.valid_float_dtypes)
+            ),
         ),
         ret_shape=True,
     ),
@@ -241,4 +244,3 @@ def test_torch_reshape(
         input=np.asarray(value, dtype=input_dtype),
         shape=shape,
     )
-    
