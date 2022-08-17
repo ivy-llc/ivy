@@ -512,8 +512,10 @@ def test_jax_lax_atan2(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.current_backend().valid_dtypes,
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(ivy.valid_float_dtypes)
+        ),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -522,13 +524,13 @@ def test_jax_lax_atan2(
     ),
 )
 def test_jax_lax_min(
-    dtype_and_x,
+    dtypes_and_xs,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtypes, xs = dtype_and_x
+    input_dtypes, xs = dtypes_and_xs
     xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
