@@ -21,6 +21,22 @@ def relu6(x):
 relu6.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
+def soft_sign(x):
+    ret = x / (ivy.abs(x) + 1)
+
+    dtype = ivy.as_ivy_dtype(x.dtype)
+    if "float" not in dtype:
+        if "64" in dtype[-2:]:
+            dtype = "float64"
+        else:
+            dtype = "float32"
+
+    return ret.astype(dtype)
+
+
+soft_sign.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
 def leaky_relu(x, negative_slope=0.01):
     return ivy.leaky_relu(x, alpha=negative_slope)
 
