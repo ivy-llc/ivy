@@ -150,6 +150,143 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
+    def static_inplace_decrement(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.inplace_decrement. This method
+        simply wraps the function, and so the docstring for ivy.inplace_decrement
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input array to be decremented by the defined value.
+        val
+            The value of decrement.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            The array following an in-place decrement.
+
+        Examples
+        --------
+        Decrement by a value
+        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \
+                              b=ivy.array([0., -25., 50.]))
+        >>> y = ivy.inplace_decrement(x, 1.5)
+        >>> print(y)
+        {
+            a: ivy.array([-1., -6.5, 28.5]),
+            b: ivy.array([-1.5, -26.5, 48.5])
+        }
+
+        Decrement by a Container
+        >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+        >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+        >>> z = ivy.inplace_decrement(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([0., 0., 0.]),
+            b: ivy.array([0., 0., 0.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))
+        >>> y = ivy.Container(a=ivy.array([2., 5.5, 7.]), b=ivy.array([0., 25., 2.]))
+        >>> z = ivy.inplace_decrement(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([1., 1.5, 3.]),
+            b: ivy.array([0., 50., 3.5])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "inplace_decrement",
+            x,
+            val,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def inplace_decrement(
+        self: ivy.Container,
+        val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.inplace_decrement. This method
+        simply wraps the function, and so the docstring for ivy.inplace_decrement
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container to apply an in-place decrement.
+        val
+            The value of decrement.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container with the array following the in-place decrement.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
+                               b=ivy.array([1.5, -0.3, 0]),\
+                               c=ivy.array([-4.7, -5.4, 7.5]))
+        >>> y = x.inplace_decrement(2)
+        >>> print(y)
+        {
+            a: ivy.array([-8.7, 0.4, -10.5]),
+            b: ivy.array([-0.5, -2.3, -2]),
+            c: ivy.array([-6.7, -7.4, 5.5])
+        }
+
+        """
+        return self.static_inplace_decrement(
+            self,
+            val,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_all_equal(
         x1: Iterable[Any],
         x2: Iterable[Any],

@@ -20,7 +20,7 @@ def _new_var_fun(x, *, axis, correction, dtype):
 
 def _new_std_fun(x, *, axis, correction, dtype):
     output = torch.sqrt(_new_var_fun(x, axis=axis, correction=correction, dtype=dtype))
-    output = torch.tensor(output, dtype=dtype)
+    output = output.to(dtype=dtype)
     return output
 
 
@@ -30,9 +30,10 @@ def _new_std_fun(x, *, axis, correction, dtype):
 
 def max(
     x: torch.Tensor,
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():
@@ -50,9 +51,10 @@ max.support_native_out = True
 
 def mean(
     x: torch.Tensor,
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -71,9 +73,10 @@ mean.support_native_out = True
 
 def min(
     x: torch.Tensor,
+    /,
+    *,
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():
@@ -91,11 +94,11 @@ min.support_native_out = True
 
 def prod(
     x: torch.Tensor,
+    /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
         if x.dtype in [torch.int8, torch.int16]:
@@ -124,20 +127,20 @@ def prod(
                     ]
                 ),
                 dtype=dtype,
-                out=out,
             )
-    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
+    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
-prod.support_native_out = True
+prod.unsupported_dtypes = ("float16",)
 
 
 def std(
     x: torch.Tensor,
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -164,11 +167,12 @@ def std(
     return ret
 
 
-std.support_native_out = True
+std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
 
 
 def sum(
     x: torch.Tensor,
+    /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: torch.dtype = None,
@@ -188,28 +192,16 @@ def sum(
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
         return torch.sum(input=x, dtype=dtype)
-    elif type(axis) == tuple:
-        if len(axis) == 0:
-            axis = 0
-        else:
-            return torch.sum(
-                torch.Tensor(
-                    [
-                        torch.sum(input=x, dim=i, dtype=dtype, keepdim=keepdims)
-                        for i in axis
-                    ]
-                ),
-                dtype=dtype,
-            )
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
 def var(
     x: torch.Tensor,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -236,14 +228,13 @@ def var(
     return ret
 
 
-var.support_native_out = True
-
-
 # Extra #
 # ------#
 
 
 def einsum(
-    equation: str, *operands: torch.Tensor, out: Optional[torch.Tensor] = None
+    equation: str,
+    *operands: torch.Tensor,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.einsum(equation, *operands)

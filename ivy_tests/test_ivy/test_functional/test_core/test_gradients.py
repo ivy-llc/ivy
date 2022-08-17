@@ -18,6 +18,7 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_float_dtypes,
             num_arrays=num_arrays,
+            small_value_safety_factor=1.2,
             min_num_dims=1,
             shared_dtype=True,
             ret_shape=True,
@@ -28,7 +29,7 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         return dtypes, arrays
     lr = draw(
         st.one_of(
-            st.floats(min_value=0.0, max_value=1.0, exclude_min=True, width=16),
+            helpers.floats(min_value=0.0, max_value=1.0, exclude_min=True),
             helpers.array_values(
                 dtype=dtype, shape=shape, min_value=0.0, max_value=1.0, exclude_min=True
             ),
@@ -109,7 +110,7 @@ def test_is_variable(
         num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=instance_method,
+        instance_method=False,
         fw=fw,
         fn_name="is_variable",
         x=np.asarray(x, dtype=dtype),
@@ -299,9 +300,9 @@ def test_grad(x, dtype, func, fw):
 # adam_step
 @given(
     dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(num_arrays=3, no_lr=True),
-    step=st.integers(min_value=1, max_value=100),
+    step=helpers.ints(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon=helpers.lists(
-        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=16),
+        arg=helpers.floats(min_value=0, max_value=1, exclude_min=True),
         min_size=3,
         max_size=3,
     ),
@@ -420,7 +421,7 @@ def test_gradient_descent_update(
 # lars_update
 @given(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
-    decay_lambda=st.floats(min_value=0, max_value=1, exclude_min=True, width=16),
+    decay_lambda=helpers.floats(min_value=0, max_value=1, exclude_min=True),
     stop_gradients=st.booleans(),
     data=st.data(),
 )
@@ -461,7 +462,7 @@ def test_lars_update(
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
     step=st.integers(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon=helpers.lists(
-        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=16),
+        arg=helpers.floats(min_value=0, max_value=1, exclude_min=True),
         min_size=3,
         max_size=3,
     ),
@@ -511,14 +512,14 @@ def test_adam_update(
 # lamb_update
 @given(
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
-    step=st.integers(min_value=1, max_value=100),
+    step=helpers.ints(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon_n_lambda=helpers.lists(
-        arg=st.floats(min_value=0, max_value=1, exclude_min=True, width=16),
+        arg=helpers.floats(min_value=0, max_value=1, exclude_min=True),
         min_size=4,
         max_size=4,
     ),
     mtr=st.one_of(
-        st.integers(min_value=1), st.floats(min_value=0, exclude_min=True, width=16)
+        helpers.ints(min_value=1), st.floats(min_value=0, exclude_min=True, width=16)
     ),
     stopgrad=st.booleans(),
     data=st.data(),

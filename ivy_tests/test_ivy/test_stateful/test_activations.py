@@ -6,7 +6,6 @@ import numpy as np
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers as helpers
 
 
 # GELU
@@ -68,7 +67,7 @@ def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
     # value test
     assert np.allclose(call(gelu_layer, x), np.array(target))
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
         return
 
