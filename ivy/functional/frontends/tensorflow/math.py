@@ -52,15 +52,3 @@ negative.unsupported_dtypes = {
     "torch": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
     "tensorflow": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
 }
-
-
-def divide_no_nan(x, y, name="DivideNoNAN"):
-    return ivy.divide_no_nan(x, y)
-
-
-divide_no_nan.unsupported_dtypes = {
-    "torch": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
-    "tensorflow": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
-    "jax": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
-    "numpy": ("float16", "bfloat16", "uint8", "uint16", "uint32", "uint64"),
-}
