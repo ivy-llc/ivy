@@ -36,7 +36,6 @@ def min(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis

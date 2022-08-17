@@ -48,9 +48,10 @@ def mean(
 
 def min(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    /,
     *,
+    axis: Union[int, Tuple[int]] = None,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():
