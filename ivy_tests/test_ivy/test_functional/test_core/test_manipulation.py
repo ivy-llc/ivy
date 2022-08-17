@@ -15,28 +15,42 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
-def _concat_helper(draw):
-    dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
-    shape = list(
-        draw(helpers.get_shape(min_num_dims=1, max_num_dims=1, max_dim_size=1))
+def _arrays_idx_n_dtypes(draw):
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     )
-    axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    num_arrays = draw(helpers.ints(min_value=1, max_value=5))
-    arrays = []
-    dtypes = [dtype for _ in range(num_arrays)]
-
-    for i in range(num_arrays):
-        array_shape = shape[:]
-        array_shape = tuple(array_shape)
-
-        array = draw(helpers.array_values(dtype=dtype, shape=array_shape))
-        arrays.append(np.asarray(array, dtype=dtype))
-    return dtypes, arrays, axis
+    common_shape = draw(
+        helpers.lists(
+            arg=helpers.ints(min_value=2, max_value=3),
+            min_size=num_dims - 1,
+            max_size=num_dims - 1,
+        )
+    )
+    unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
+    unique_dims = draw(
+        helpers.lists(
+            arg=helpers.ints(min_value=2, max_value=3),
+            min_size=num_arrays,
+            max_size=num_arrays,
+        )
+    )
+    xs = list()
+    input_dtypes = draw(helpers.array_dtypes())
+    for ud, dt in zip(unique_dims, input_dtypes):
+        x = draw(
+            helpers.array_values(
+                shape=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:],
+                dtype=dt,
+            )
+        )
+        xs.append(x)
+    return xs, input_dtypes, unique_idx
 
 
 # concat
 @given(
-    dtypes_arrays_axis=_concat_helper(),
+    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     num_positional_args=helpers.num_positional_args(fn_name="concat"),
     data=st.data(),
 )
@@ -44,7 +58,7 @@ def _concat_helper(draw):
 def test_concat(
     *,
     data,
-    dtypes_arrays_axis,
+    xs_n_input_dtypes_n_unique_idx,
     as_variable,
     with_out,
     num_positional_args,
@@ -53,11 +67,11 @@ def test_concat(
     instance_method,
     fw,
 ):
-
-    dtypes, arrays, axis = dtypes_arrays_axis
+    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
 
     helpers.test_function(
-        input_dtypes=dtypes,
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -66,8 +80,8 @@ def test_concat(
         instance_method=instance_method,
         fw=fw,
         fn_name="concat",
-        xs=arrays,
-        axis=axis,
+        xs=xs,
+        axis=unique_idx,
     )
 
 
