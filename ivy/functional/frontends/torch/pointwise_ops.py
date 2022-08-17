@@ -144,7 +144,7 @@ def square(input, *, out=None):
 
 
 def atan2(input, other, *, out=None):
-    return ivy.atan2(input, other,  out=out)
+    return ivy.atan2(input, other, out=out)
 
 
 atan2.unsupported_dtypes = ("float16",)
