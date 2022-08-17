@@ -270,7 +270,7 @@ def test_jax_lax_sqrt(
         x=np.asarray(x, dtype=input_dtype),
     )
 
-        
+
 # acos
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
@@ -328,6 +328,6 @@ def test_jax_lax_square(
         native_array_flags=native_array,
         fw="fw",
         frontend="jax",
-        fn_name="lax.square",
+        fn_tree="lax.square",
         x=np.asarray(x, dtype=input_dtype),
     )
