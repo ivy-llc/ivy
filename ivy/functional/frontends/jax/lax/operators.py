@@ -69,3 +69,7 @@ def atan2(x, y):
 
 def min(x, y):
     return ivy.minimum(x, y)
+
+
+def mul(x, y):
+    return ivy.multiply(x, y)
