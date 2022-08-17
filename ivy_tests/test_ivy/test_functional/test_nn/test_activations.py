@@ -11,12 +11,11 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # relu
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="relu"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_relu(
     *,
     dtype_and_x,
@@ -44,13 +43,12 @@ def test_relu(
 
 
 # leaky_relu
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
-    alpha=helpers.floats(width=16),
-    data=st.data(),
+    alpha=st.floats(width=16),
 )
-@handle_cmd_line_args
 def test_leaky_relu(
     *,
     dtype_and_x,
@@ -81,13 +79,12 @@ def test_leaky_relu(
 
 
 # gelu
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gelu"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_gelu(
     *,
     dtype_and_x,
@@ -118,13 +115,44 @@ def test_gelu(
     )
 
 
+# tanh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="tanh"),
+)
+def test_tanh(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    container,
+    instance_method,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="tanh",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
 # sigmoid
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_sigmoid(
     *,
     dtype_and_x,
@@ -152,15 +180,14 @@ def test_sigmoid(
 
 
 # softmax
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_softmax(
     *,
     dtype_and_x,
@@ -190,14 +217,13 @@ def test_softmax(
 
 
 # softplus
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
     ),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_softplus(
     *,
     dtype_and_x,

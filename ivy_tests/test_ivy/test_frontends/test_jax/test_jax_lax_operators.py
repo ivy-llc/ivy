@@ -7,9 +7,11 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.jax as ivy_jax
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # add
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -48,6 +50,7 @@ def test_jax_lax_add(
 
 
 # tan
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
     as_variable=st.booleans(),
@@ -157,6 +160,7 @@ def _arrays_idx_n_dtypes(draw):
 
 
 # concat
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
@@ -211,6 +215,7 @@ def _fill_value(draw):
     return draw(helpers.floats(min_value=-5, max_value=5))
 
 
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -248,6 +253,7 @@ def test_jax_lax_full(
 
 
 # abs
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
     as_variable=st.booleans(),
@@ -279,6 +285,7 @@ def test_jax_lax_abs(
 
 
 # sqrt
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
     as_variable=st.booleans(),
@@ -310,6 +317,7 @@ def test_jax_lax_sqrt(
 
 
 # acos
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
     as_variable=st.booleans(),

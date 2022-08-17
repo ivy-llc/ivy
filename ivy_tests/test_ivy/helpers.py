@@ -7,13 +7,13 @@ from io import StringIO
 import sys
 import re
 import inspect
+import pytest
 import numpy as np
 import math
 from typing import Union, List
-from hypothesis import assume
+from hypothesis import assume, given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
-
 
 # local
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
@@ -3128,23 +3128,45 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
 
 
 def handle_cmd_line_args(test_fn):
-    # first four arguments are all fixtures
-    def new_fn(data, get_command_line_flags, fw, device, call, *args, **kwargs):
-        # inspecting for keyword arguments in test function
-        for param in inspect.signature(test_fn).parameters.values():
-            if param.name in cmd_line_args:
-                kwargs[param.name] = data.draw(
-                    bool_val_flags(get_command_line_flags[param.name])
-                )
-            elif param.name == "data":
-                kwargs["data"] = data
-            elif param.name == "fw":
-                kwargs["fw"] = fw
-            elif param.name == "device":
-                kwargs["device"] = device
-            elif param.name == "call":
-                kwargs["call"] = call
-        return test_fn(*args, **kwargs)
+    from ivy_tests.test_ivy.conftest import (
+        FW_STRS,
+        TEST_BACKENDS,
+        TEST_CALL_METHODS,
+        MAX_EXAMPLES,
+    )
+
+    # first[1:-2] 5 arguments are all fixtures
+    @given(data=st.data())
+    @settings(max_examples=int(MAX_EXAMPLES))
+    def new_fn(data, get_command_line_flags, device, f, call, fw, *args, **kwargs):
+        flag, fw_string = (False, "")
+        # skip test if device is gpu and backend is numpy
+        if "gpu" in device and call is np_call:
+            # Numpy does not support GPU
+            pytest.skip()
+        if not f:
+            # randomly draw a backend if not set
+            fw_string = data.draw(st.sampled_from(FW_STRS))
+            f = TEST_BACKENDS[fw_string]()
+        else:
+            # use the one which is parametrized
+            flag = True
+
+        # set backend using the context manager
+        with f.use:
+            # inspecting for keyword arguments in test function
+            for param in inspect.signature(test_fn).parameters.values():
+                if param.name in cmd_line_args:
+                    kwargs[param.name] = data.draw(
+                        bool_val_flags(get_command_line_flags[param.name])
+                    )
+                elif param.name == "fw":
+                    kwargs["fw"] = fw if flag else fw_string
+                elif param.name == "device":
+                    kwargs["device"] = device
+                elif param.name == "call":
+                    kwargs["call"] = call if flag else TEST_CALL_METHODS[fw_string]
+            return test_fn(*args, **kwargs)
 
     return new_fn
 
