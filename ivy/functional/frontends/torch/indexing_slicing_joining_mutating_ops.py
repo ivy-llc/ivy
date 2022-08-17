@@ -6,6 +6,10 @@ def cat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, dim, out=out)
 
 
+def concat(tensors, dim=0, *, out=None):
+    return ivy.concat(tensors, dim, out=out)
+
+
 def permute(input, dims):
     return ivy.permute_dims(input, dims)
 
@@ -32,7 +36,11 @@ def transpose(input, dim0, dim1):
     return ivy.swapaxes(input, dim0, dim1)
 
 
-transpose.unsupported_dtypes = (
+def reshape(input, shape):
+    return ivy.reshape(input, shape)
+
+
+reshape.unsupported_dtypes = (
     "uint16",
     "uint32",
     "uint64",

@@ -16,8 +16,8 @@ Inplace Updates
 .. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`ivy.reshape`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/manipulation.py#L418
-.. _`ivy.astype`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/data_type.py#L164
-.. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/creation.py#L64
+.. _`ivy.astype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L46
+.. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/creation.py#L114
 .. _`wrapping`:
 .. _`ivy.inplace_update`: https://github.com/unifyai/ivy/blob/3a21a6bef52b93989f2fa2fa90e3b0f08cc2eb1b/ivy/functional/ivy/general.py#L1137
 .. _`inplace updates discussion`: https://github.com/unifyai/ivy/discussions/1319
@@ -209,35 +209,35 @@ The implementations of :code:`ivy.tan` for each backend are as follows.
 
 .. code-block:: python
 
-    def tan(x: JaxArray) -> JaxArray:
+    def tan(x: JaxArray, /) -> JaxArray:
         return jnp.tan(x)
 
 **MXNet** (no :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: mx.NDArray) -> mx.NDArray:
+    def tan(x: mx.NDArray, /) -> mx.NDArray:
         return mx.nd.tan(x)
 
 **NumPy** (includes :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    def tan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
         return np.tan(x, out=out)
 
 **TensorFlow** (no :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: Tensor) -> Tensor:
+    def tan(x: Tensor, /) -> Tensor:
         return tf.tan(x)
 
 **PyTorch** (includes :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
         return torch.tan(x, out=out)
 
 
@@ -276,9 +276,10 @@ We'll use :code:`ivy.cross_entropy` as an example:
     def cross_entropy(
         true: Union[ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Optional[int] = -1,
         epsilon: Optional[float] = 1e-7,
-        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
