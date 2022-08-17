@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # random_uniform
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_low=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
@@ -68,7 +68,7 @@ def test_random_uniform(
 
 
 # random_normal
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_mean=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
@@ -146,7 +146,7 @@ def _pop_size_num_samples_replace_n_probs(draw):
 
 
 # multinomial
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     everything=_pop_size_num_samples_replace_n_probs(),
     num_positional_args=helpers.num_positional_args(fn_name="multinomial"),
@@ -192,7 +192,7 @@ def test_multinomial(
 
 
 # randint
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_low=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -252,7 +252,7 @@ def test_randint(
 
 
 # seed
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     seed_val=helpers.ints(min_value=0, max_value=2147483647),
 )
@@ -262,7 +262,7 @@ def test_seed(seed_val):
 
 
 # shuffle
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,

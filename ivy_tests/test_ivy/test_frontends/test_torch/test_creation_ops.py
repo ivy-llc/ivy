@@ -40,7 +40,7 @@ def _requires_grad(draw):
 
 
 # full
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     shape=helpers.get_shape(
         allow_none=False,

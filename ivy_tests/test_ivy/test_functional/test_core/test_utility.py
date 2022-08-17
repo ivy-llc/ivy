@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # all
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=ivy_np.valid_int_dtypes,
@@ -54,7 +54,7 @@ def test_all(
 
 
 # any
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=ivy_np.valid_int_dtypes,

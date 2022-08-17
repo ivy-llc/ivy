@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # add
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -45,7 +45,7 @@ def test_tensorflow_add(
 
 
 # tan
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
     as_variable=st.booleans(),
@@ -72,7 +72,7 @@ def test_tensorflow_tan(
 
 
 # multiply
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -106,7 +106,7 @@ def test_tensorflow_multiply(
 
 
 # subtract
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -142,7 +142,7 @@ def test_tensorflow_subtract(
 
 
 # logical_xor
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple([ivy.bool]),
@@ -174,7 +174,7 @@ def test_tensorflow_logical_xor(
 
 
 # divide
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -208,7 +208,7 @@ def test_tensorflow_divide(
 
 
 # negative
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(

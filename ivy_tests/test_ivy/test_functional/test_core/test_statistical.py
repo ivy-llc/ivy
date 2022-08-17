@@ -57,7 +57,7 @@ def statistical_dtype_values(draw, *, function):
 
 
 # min
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=statistical_dtype_values(function="min"),
     num_positional_args=helpers.num_positional_args(fn_name="min"),
@@ -95,7 +95,7 @@ def test_min(
 
 
 # max
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=statistical_dtype_values(function="max"),
     num_positional_args=helpers.num_positional_args(fn_name="max"),
@@ -133,7 +133,7 @@ def test_max(
 
 
 # mean
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=statistical_dtype_values(function="mean"),
     num_positional_args=helpers.num_positional_args(fn_name="mean"),
@@ -171,7 +171,7 @@ def test_mean(
 
 
 # var
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=statistical_dtype_values(function="var"),
     num_positional_args=helpers.num_positional_args(fn_name="var"),
@@ -209,7 +209,7 @@ def test_var(
 
 
 # prod
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=statistical_dtype_values(function="prod"),
     num_positional_args=helpers.num_positional_args(fn_name="prod"),
@@ -247,7 +247,7 @@ def test_prod(
 
 
 # sum
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=statistical_dtype_values(function="sum"),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
@@ -286,7 +286,7 @@ def test_sum(
 
 
 # std
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=statistical_dtype_values(function="std"),
     num_positional_args=helpers.num_positional_args(fn_name="std"),
@@ -326,7 +326,7 @@ def test_std(
 
 
 # einsum
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     eq_n_op_n_shp=st.sampled_from(
         [

@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # unique_values
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -50,7 +50,7 @@ def test_unique_values(
     )
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -89,7 +89,7 @@ def test_unique_all(
     )
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -128,7 +128,7 @@ def test_unique_counts(
     )
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,

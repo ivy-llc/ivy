@@ -29,7 +29,7 @@ def _dtypes(draw):
     )
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -64,7 +64,7 @@ def test_torch_sigmoid(
     )
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -104,7 +104,7 @@ def test_torch_softmax(
     )
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(

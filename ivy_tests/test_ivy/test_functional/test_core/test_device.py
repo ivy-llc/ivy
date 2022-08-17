@@ -71,7 +71,7 @@ def _empty_dir(path, recreate=False):
 # dev
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     array_shape=helpers.lists(
         arg=helpers.ints(min_value=2, max_value=3),
@@ -106,7 +106,7 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
 
 
 # as_ivy_dev
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     array_shape=helpers.lists(
         arg=helpers.ints(min_value=2, max_value=3),
@@ -137,7 +137,7 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
 
 
 # as_native_dev
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     array_shape=helpers.lists(
         arg=helpers.ints(min_value=1, max_value=3),
@@ -170,7 +170,7 @@ def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
 
 
 # memory_on_dev
-@handle_cmd_line_args
+@handle_cmd_line_args()
 def test_memory_on_dev(call):
     for device in _get_possible_devices():
         ret = ivy.total_mem_on_dev(device)
@@ -187,7 +187,7 @@ def test_memory_on_dev(call):
 # Device Allocation #
 
 # default_device
-@handle_cmd_line_args
+@handle_cmd_line_args()
 def test_default_device(device):
     # setting and unsetting
     orig_len = len(ivy.default_device_stack)
@@ -211,7 +211,7 @@ def test_default_device(device):
 
 
 # to_dev
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     array_shape=helpers.lists(
         arg=helpers.ints(min_value=1, max_value=3),
@@ -280,7 +280,7 @@ def _axis(draw):
     return draw(helpers.ints(min_value=0, max_value=max_val - 1))
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     array_shape=helpers.lists(
         arg=helpers.ints(min_value=1, max_value=3),
@@ -325,7 +325,7 @@ def test_split_func_call(
     assert np.allclose(ivy.to_numpy(c), ivy.to_numpy(c_true))
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     array_shape=helpers.lists(
         arg=helpers.ints(min_value=2, max_value=3),
@@ -382,7 +382,7 @@ def test_split_func_call_with_cont_input(
 
 
 # profiler
-@handle_cmd_line_args
+@handle_cmd_line_args()
 def test_profiler(device, fw):
     # ToDo: find way to prevent this test from hanging when run
     #  alongside other tests in parallel
@@ -428,7 +428,7 @@ def test_profiler(device, fw):
     assert not os.path.exists(fw_log_dir), "Profiler recreated logging folder"
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(num=helpers.ints(min_value=0, max_value=5))
 def test_num_arrays_on_dev(num, device):
     arrays = [
@@ -439,7 +439,7 @@ def test_num_arrays_on_dev(num, device):
         del item
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(num=helpers.ints(min_value=0, max_value=5))
 def test_get_all_arrays_on_dev(num, device):
     arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
@@ -448,7 +448,7 @@ def test_get_all_arrays_on_dev(num, device):
         assert id(a) in arr_ids_on_dev
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(num=helpers.ints(min_value=0, max_value=2), attr_only=st.booleans())
 def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     arr = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
@@ -484,7 +484,7 @@ def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     assert all([re.match(regex, line) for line in written])
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 def test_total_mem_on_dev(device):
     if "cpu" in device:
         assert ivy.total_mem_on_dev(device) == psutil.virtual_memory().total / 1e9
@@ -493,7 +493,7 @@ def test_total_mem_on_dev(device):
         assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 def test_used_mem_on_dev():
     devices = _get_possible_devices()
 
@@ -509,7 +509,7 @@ def test_used_mem_on_dev():
     )
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 def test_percent_used_mem_on_dev():
     devices = _get_possible_devices()
 
@@ -523,7 +523,7 @@ def test_percent_used_mem_on_dev():
     )
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 def test_gpu_is_available(fw):
     # If gpu is available but cannot be initialised it will fail the test
     if ivy.gpu_is_available():
@@ -536,7 +536,7 @@ def test_gpu_is_available(fw):
             assert False
 
 
-@handle_cmd_line_args
+@handle_cmd_line_args()
 def test_num_cpu_cores():
     # using multiprocessing module too because ivy uses psutil as basis.
     p_cpu_cores = psutil.cpu_count()

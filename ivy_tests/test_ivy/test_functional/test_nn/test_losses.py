@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # cross_entropy
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_int_dtypes,
@@ -71,7 +71,7 @@ def test_cross_entropy(
 
 
 # binary_cross_entropy
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_int_dtypes,
@@ -129,7 +129,7 @@ def test_binary_cross_entropy(
 
 
 # sparse_cross_entropy
-@handle_cmd_line_args
+@handle_cmd_line_args()
 @given(
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_int_dtypes,
