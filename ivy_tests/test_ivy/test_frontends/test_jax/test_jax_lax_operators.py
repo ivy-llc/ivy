@@ -390,7 +390,7 @@ def test_jax_lax_atan2(
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(ivy.valid_float_dtypes)
+            set(ivy_np.valid_numeric_dtypes).intersection(ivy.valid_numeric_dtypes)
         ),
         num_arrays=2,
         shared_dtype=True,
