@@ -45,7 +45,7 @@ def _get_shape_of_list(lst, shape=()):
 # ------#
 
 # set_framework
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(fw_str=st.sampled_from(["numpy", "jax", "torch", "mxnet"]))
 def test_set_framework(*, fw_str, device, call):
     ivy.set_backend(fw_str)
@@ -53,7 +53,7 @@ def test_set_framework(*, fw_str, device, call):
 
 
 # use_framework
-@handle_cmd_line_args()
+@handle_cmd_line_args
 def test_use_within_use_framework(*, device, call):
     with ivy.functional.backends.numpy.use:
         pass
@@ -67,7 +67,7 @@ def test_use_within_use_framework(*, device, call):
         pass
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(allow_duplicates=st.booleans())
 def test_match_kwargs(*, allow_duplicates):
     def func_a(a, b, c=2):
@@ -94,7 +94,7 @@ def test_match_kwargs(*, allow_duplicates):
         assert kwca == {"f": 5, "g": 6}
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 def test_get_referrers_recursive(*, device, call):
     class SomeClass:
         def __init__(self):
@@ -121,7 +121,7 @@ def test_get_referrers_recursive(*, device, call):
 
 
 # copy array
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
 def test_copy_array(*, dtype_and_x, device, call, fw):
     dtype, x = dtype_and_x
@@ -143,7 +143,7 @@ def test_copy_array(*, dtype_and_x, device, call, fw):
 
 
 # array_equal
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, num_arrays=2
@@ -186,7 +186,7 @@ def test_array_equal(*, x0_n_x1_n_res, device, call, fw):
 
 
 # arrays_equal
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, num_arrays=3
@@ -235,7 +235,7 @@ def test_arrays_equal(*, x0_n_x1_n_res, device, call, fw):
 
 
 # to_numpy
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
 def test_to_numpy(*, x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
@@ -254,7 +254,7 @@ def test_to_numpy(*, x0_n_x1_n_res, device, call, fw):
 
 
 # to_scalar
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
     dtype=st.sampled_from(ivy_np.valid_dtypes),
@@ -274,7 +274,7 @@ def test_to_scalar(*, object_in, dtype, device, call, fw):
 
 
 # to_list
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
 def test_to_list(*, x0_n_x1_n_res, device, call, fw):
     dtype, object_in = x0_n_x1_n_res
@@ -299,7 +299,7 @@ def test_to_list(*, x0_n_x1_n_res, device, call, fw):
 
 
 # shape
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     as_tensor=st.booleans(),
@@ -337,7 +337,7 @@ def test_shape(*, x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
 
 
 # get_num_dims
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     as_tensor=st.booleans(),
@@ -444,7 +444,7 @@ def test_clip_vector_norm(
 #     container=st.booleans(),
 #     instance_method=st.booleans(),
 # )
-# @handle_cmd_line_args()
+# @handle_cmd_line_args
 #
 # def test_floormod(
 #     xy,
@@ -1034,7 +1034,7 @@ def test_default(*, x_n_dv, dtype, tensor_fn, device, call):
     assert np.allclose(call(ivy.default, x, dv), y_true)
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 def test_cache_fn(device, call):
     def func():
         return ivy.random_uniform()
@@ -1062,7 +1062,7 @@ def test_cache_fn(device, call):
     assert ret0 is not ret1
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 def test_cache_fn_with_args(device, call):
     def func(_):
         return ivy.random_uniform()
@@ -1090,7 +1090,7 @@ def test_cache_fn_with_args(device, call):
     assert ret0 is not ret1
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 def test_framework_setting_with_threading(device, call):
     if call is helpers.jnp_call:
         # Numpy is the conflicting framework being tested against
@@ -1123,7 +1123,7 @@ def test_framework_setting_with_threading(device, call):
     assert not thread.join()
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 def test_framework_setting_with_multiprocessing(device, call):
 
     if call is helpers.np_call:
@@ -1161,7 +1161,7 @@ def test_framework_setting_with_multiprocessing(device, call):
     assert output_queue.get_nowait()
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 def test_explicit_ivy_framework_handles(device, call):
 
     if call is helpers.np_call:
@@ -1197,7 +1197,7 @@ def test_explicit_ivy_framework_handles(device, call):
 
 # ToDo: re-add this test once ivy.get_backend is working correctly, with the returned
 #  ivy handle having no dependence on the globally set ivy
-# @handle_cmd_line_args()
+# @handle_cmd_line_args
 #
 # def test_class_ivy_handles(device, call):
 #
@@ -1301,7 +1301,7 @@ def test_einops_repeat(*, x_n_pattern_n_al_n_newx, dtype, tensor_fn, device, cal
 
 
 # container types
-@handle_cmd_line_args()
+@handle_cmd_line_args
 def test_container_types(*, device, call):
     cont_types = ivy.container_types()
     assert isinstance(cont_types, list)
@@ -1311,7 +1311,7 @@ def test_container_types(*, device, call):
         assert hasattr(cont_type, "items")
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 def test_inplace_arrays_supported(*, device, call):
     cur_fw = ivy.current_backend_str()
     if cur_fw in ["numpy", "mxnet", "torch"]:
@@ -1322,7 +1322,7 @@ def test_inplace_arrays_supported(*, device, call):
         raise Exception("Unrecognized framework")
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 def test_inplace_variables_supported(*, device, call):
     cur_fw = ivy.current_backend_str()
     if cur_fw in ["numpy", "mxnet", "torch", "tensorflow"]:

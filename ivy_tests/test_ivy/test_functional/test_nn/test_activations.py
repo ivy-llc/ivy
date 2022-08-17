@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # relu
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="relu"),
@@ -43,7 +43,7 @@ def test_relu(
 
 
 # leaky_relu
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
@@ -79,7 +79,7 @@ def test_leaky_relu(
 
 
 # gelu
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     approximate=st.booleans(),
@@ -116,7 +116,7 @@ def test_gelu(
 
 
 # tanh
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="tanh"),
@@ -148,7 +148,7 @@ def test_tanh(
 
 
 # sigmoid
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
@@ -180,7 +180,7 @@ def test_sigmoid(
 
 
 # softmax
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
@@ -217,7 +217,7 @@ def test_softmax(
 
 
 # softplus
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1

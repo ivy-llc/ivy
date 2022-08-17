@@ -31,7 +31,7 @@ def _fill_value(draw):
     return draw(helpers.floats(min_value=-5, max_value=5))
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,

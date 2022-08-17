@@ -60,7 +60,7 @@ def test_unset_with_grads(grads):
 
 
 # variable
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
 )
@@ -88,7 +88,7 @@ def test_variable(
 
 
 # is_variable
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
 )
@@ -116,7 +116,7 @@ def test_is_variable(
 
 
 # variable data
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
 )
@@ -137,7 +137,7 @@ def test_variable_data(dtype_and_x, native_array, container, instance_method, fw
 
 
 # stop_gradient
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     preserve_type=st.booleans(),
@@ -162,7 +162,7 @@ def test_stop_gradient(
 
 
 # execute_with_gradients
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_xs=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
@@ -293,7 +293,7 @@ def test_grad(x, dtype, func, fw):
 
 
 # adam_step
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(num_arrays=3, no_lr=True),
     step=helpers.ints(min_value=1, max_value=100),
@@ -342,7 +342,7 @@ def test_adam_step(
 
 
 # optimizer_update
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_n_ws_n_effgrad_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     stop_gradients=st.booleans(),
@@ -376,7 +376,7 @@ def test_optimizer_update(
 
 
 # gradient_descent_update
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     stop_gradients=st.booleans(),
@@ -411,7 +411,7 @@ def test_gradient_descent_update(
 
 
 # lars_update
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     decay_lambda=helpers.floats(min_value=0, max_value=1, exclude_min=True),
@@ -449,7 +449,7 @@ def test_lars_update(
 
 
 # adam_update
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
     step=st.integers(min_value=1, max_value=100),
@@ -500,7 +500,7 @@ def test_adam_update(
 
 
 # lamb_update
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
     step=helpers.ints(min_value=1, max_value=100),

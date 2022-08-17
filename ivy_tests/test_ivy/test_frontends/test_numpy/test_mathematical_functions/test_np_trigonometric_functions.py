@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # cos
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -61,7 +61,7 @@ def test_numpy_cos(
 
 
 # tan
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -112,7 +112,7 @@ def test_numpy_tan(
 
 
 # arcsin
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -163,7 +163,7 @@ def test_numpy_arcsin(
 
 
 # arccos
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),

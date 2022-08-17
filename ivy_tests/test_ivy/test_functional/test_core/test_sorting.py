@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # argsort
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -59,7 +59,7 @@ def test_argsort(
 
 
 # sort
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=ivy_np.valid_numeric_dtypes,

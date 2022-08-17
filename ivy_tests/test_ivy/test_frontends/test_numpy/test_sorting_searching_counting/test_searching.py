@@ -20,7 +20,7 @@ def _broadcastable_trio(draw):
     return cond, x1, x2, dtype
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     broadcastables=_broadcastable_trio(),
     num_positional_args=helpers.num_positional_args(
@@ -53,7 +53,7 @@ def test_numpy_where(
     )
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,

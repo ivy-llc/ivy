@@ -48,7 +48,7 @@ def _arrays_idx_n_dtypes(draw):
 
 
 # cat
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),

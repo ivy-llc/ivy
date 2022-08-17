@@ -51,7 +51,7 @@ def _arrays_idx_n_dtypes(draw):
 
 
 # concat
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
@@ -106,7 +106,7 @@ def _fill_value(draw):
     return draw(helpers.floats(min_value=-5, max_value=5))
 
 
-@handle_cmd_line_args()
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
