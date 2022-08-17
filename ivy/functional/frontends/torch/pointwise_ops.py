@@ -6,9 +6,6 @@ def add(input, other, *, alpha=1, out=None):
     return ivy.add(input, other * alpha, out=out)
 
 
-add.unsupported_dtypes = ("float16",)
-
-
 def tan(input, *, out=None):
     return ivy.tan(input, out=out)
 
@@ -92,9 +89,6 @@ cosh.unsupported_dtypes = ("float16",)
 
 def subtract(input, other, *, alpha=1, out=None):
     return ivy.subtract(input, other * alpha, out=out)
-
-
-subtract.unsupported_dtypes = ("float16",)
 
 
 def exp(input, *, out=None):
