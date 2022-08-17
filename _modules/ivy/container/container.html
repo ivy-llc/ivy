@@ -453,6 +453,109 @@
     <span class="k">def</span> <span class="fm">__rxor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">other</span> <span class="o">!=</span> <span class="n">x</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Container.__rshift__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__rshift__">[docs]</a>    <span class="k">def</span> <span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container special method for the right shift operator, calling </span>
+<span class="sd">        :code:`operator.rshift` for each of the corresponding leaves of the</span>
+<span class="sd">        two containers.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            first input container. Should have an integer data type.</span>
+<span class="sd">        other</span>
+<span class="sd">            second input array or container. Must be compatible with ``self`` </span>
+<span class="sd">            (see :ref:`broadcasting`). Should have an integer data type. </span>
+<span class="sd">            Each element must be greater than or equal to ``0``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            a container containing the element-wise results. The returned array </span>
+<span class="sd">            must have a data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        With :code:`Number` instances at the leaves:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=128, b=43)</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=5, b=3)</span>
+<span class="sd">        &gt;&gt;&gt; z = x &gt;&gt; y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: 4,</span>
+<span class="sd">            b: 5</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With :code:`ivy.Array` instances at the leaves:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([16, 40, 120]),\</span>
+<span class="sd">                              b=ivy.array([15, 45, 143]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
+<span class="sd">                              b=ivy.array([0, 3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; z = x &gt;&gt; y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([8, 10, 15]),</span>
+<span class="sd">            b: ivy.array([15, 5, 8])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With a mix of :code:`ivy.Container` and :code:`ivy.Array` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([16, 40, 120]),\</span>
+<span class="sd">                              b=ivy.array([15, 45, 143]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; z = x &gt;&gt; y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([8, 10, 15]),</span>
+<span class="sd">            b: ivy.array([7, 11, 17])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">multi_map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">xs</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">rshift</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> 
+                <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="n">map_nests</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">rshift</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="p">),</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.__rrshift__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__rrshift__">[docs]</a>    <span class="k">def</span> <span class="fm">__rrshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container reverse special method for the right shift operator, calling</span>
+<span class="sd">        :code:`operator.rshift` for each of the corresponding leaves of the two</span>
+<span class="sd">        containers.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            first input container. Should have an integer data type.</span>
+<span class="sd">        other</span>
+<span class="sd">            second input array or container. Must be compatible with ``self``</span>
+<span class="sd">            (see :ref:`broadcasting`). Should have an integer data type. Each element</span>
+<span class="sd">            must be greater than or equal to ``0``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an container containing the element-wise results. The returned array </span>
+<span class="sd">            must have a data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; a = 64</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.Container(a = ivy.array([0, 1, 2]), \</span>
+<span class="sd">                              b = ivy.array([3, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = a &gt;&gt; b</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([64, 32, 16]),</span>
+<span class="sd">            b: ivy.array([8, 4, 2])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">other</span> <span class="o">&gt;&gt;</span> <span class="n">x</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">state_dict</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;_local_ivy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">try_else_none</span><span class="p">(</span>
