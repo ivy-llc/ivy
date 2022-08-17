@@ -65,3 +65,7 @@ def sinh(x):
 
 def atan2(x, y):
     return ivy.atan2(x, y)
+
+
+def min(x, y):
+    return ivy.minimum(x, y)
