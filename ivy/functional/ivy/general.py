@@ -2060,23 +2060,29 @@ def stable_divide(
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
-def stable_pow(base: Any, exponent: Any, min_base: float = None) -> Any:
+@inputs_to_native_arrays
+@handle_nestable
+def stable_pow(
+    base: Union[Number, ivy.Array, ivy.NativeArray],
+    exponent: Union[Number, ivy.Array, ivy.NativeArray],
+    min_base: float = None,
+) -> Any:
     """Raise the base by the power, with MIN_BASE added to the base when exponent > 1
     for numerical stability.
 
     Parameters
     ----------
     base
-        The numerator of the division.
+        The base number.
     exponent
-        The denominator of the division.
+        The exponent number.
     min_base
         The minimum base to use, use global ivy._MIN_BASE by default.
 
     Returns
     -------
     ret
-        The new item following the numerically stable division.
+        The new item following the numerically stable power.
 
 
     """
