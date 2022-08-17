@@ -128,7 +128,7 @@
              
   <h1>Source code for ivy.container.norms</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -139,116 +139,15 @@
 
 <span class="c1"># noinspection PyMissingConstructor</span>
 <div class="viewcode-block" id="ContainerWithNorms"><a class="viewcode-back" href="../../../data_classes/container/norms/ContainerWithNorms.html#ivy.container.norms.ContainerWithNorms">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithNorms</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithNorms.static_layer_norm"><a class="viewcode-back" href="../../../data_classes/container/norms/ContainerWithNorms.html#ivy.container.norms.ContainerWithNorms.static_layer_norm">[docs]</a>    <span class="k">def</span> <span class="nf">static_layer_norm</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-        <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-        <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
-        <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">new_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container static method variant of ivy.layer_norm. This method simply wraps</span>
-<span class="sd">        the function, and so the docstring for ivy.layer_norm also applies to this</span>
-<span class="sd">        method with minimal changes.</span>
-
-<span class="sd">        x</span>
-<span class="sd">            Input container</span>
-<span class="sd">        normalized_idxs</span>
-<span class="sd">            Indices to apply the normalization to.</span>
-<span class="sd">        epsilon</span>
-<span class="sd">            small constant to add to the denominator, use global ivy._MIN_BASE by</span>
-<span class="sd">            default.</span>
-<span class="sd">        scale</span>
-<span class="sd">            Learnable gamma variables for post-multiplication, default is None.</span>
-<span class="sd">        offset</span>
-<span class="sd">            Learnable beta variables for post-addition, default is None.</span>
-<span class="sd">        new_std</span>
-<span class="sd">            The standard deviation of the new normalized values. Default is 1.</span>
-<span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
-<span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
-<span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
-<span class="sd">        out</span>
-<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
-<span class="sd">            that the inputs broadcast to.</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            The layer after applying layer normalization.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        With one :code:`ivy.Container` input:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
-<span class="sd">                               &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
-<span class="sd">        &gt;&gt;&gt; normalized_idxs = [0]</span>
-<span class="sd">        &gt;&gt;&gt; norm = x.static_layer_norm(x, normalized_idxs, 1.25, 0.3)</span>
-<span class="sd">        &gt;&gt;&gt; print(norm)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([0.658, 1.04, 1.3]),</span>
-<span class="sd">            b: ivy.array([[0.759, 0.759, 0.759], </span>
-<span class="sd">                          [1.24, 1.24, 1.24]])</span>
-<span class="sd">        }</span>
-
-<span class="sd">        With multiple :code:`ivy.Container` inputs:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
-<span class="sd">                               &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
-<span class="sd">        &gt;&gt;&gt; normalized_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
-<span class="sd">        &gt;&gt;&gt; new_std = ivy.Container({&#39;a&#39;: 1.25, &#39;b&#39;: 1.5})</span>
-<span class="sd">        &gt;&gt;&gt; offset = ivy.Container({&#39;a&#39;: 0.2, &#39;b&#39;: 0.3})</span>
-<span class="sd">        &gt;&gt;&gt; norm = x.static_layer_norm(x, normalized_idxs, \</span>
-<span class="sd">                                       new_std=new_std, offset=offset)</span>
-<span class="sd">        &gt;&gt;&gt; print(norm)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([-1.42, 0.403, 1.62]),</span>
-<span class="sd">            b: ivy.array([[-1.54, 0.3, 2.14], </span>
-<span class="sd">                          [-1.54, 0.3, 2.14]])</span>
-<span class="sd">        }</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
-            <span class="s2">&quot;layer_norm&quot;</span><span class="p">,</span>
-            <span class="n">x</span><span class="p">,</span>
-            <span class="n">normalized_idxs</span><span class="p">,</span>
-            <span class="n">epsilon</span><span class="p">,</span>
-            <span class="n">scale</span><span class="p">,</span>
-            <span class="n">offset</span><span class="p">,</span>
-            <span class="n">new_std</span><span class="p">,</span>
-            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
-            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
-            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
-            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
-            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
-        <span class="p">)</span></div>
-
 <div class="viewcode-block" id="ContainerWithNorms.layer_norm"><a class="viewcode-back" href="../../../data_classes/container/norms/ContainerWithNorms.html#ivy.container.norms.ContainerWithNorms.layer_norm">[docs]</a>    <span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
         <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="n">new_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -271,16 +170,6 @@
 <span class="sd">            Learnable beta variables for post-addition, default is None.</span>
 <span class="sd">        new_std</span>
 <span class="sd">            The standard deviation of the new normalized values. Default is 1.</span>
-<span class="sd">        key_chains</span>
-<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
-<span class="sd">        to_apply</span>
-<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
-<span class="sd">            will be skipped. Default is True.</span>
-<span class="sd">        prune_unapplied</span>
-<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">            Default is False.</span>
-<span class="sd">        map_sequences</span>
-<span class="sd">            Whether to also map method to sequences (lists, tuples). Default is False.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
@@ -297,7 +186,7 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
 <span class="sd">                               &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
 <span class="sd">        &gt;&gt;&gt; normalized_idxs = [0]</span>
-<span class="sd">        &gt;&gt;&gt; norm = x.layer_norm(normalized_idxs, 1.25, 0.3)</span>
+<span class="sd">        &gt;&gt;&gt; norm = x.layer_norm(normalized_idxs, epsilon=1.25, scale=0.3)</span>
 <span class="sd">        &gt;&gt;&gt; print(norm)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0.658, 1.04, 1.3]),</span>
@@ -321,16 +210,13 @@
 <span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_layer_norm</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
             <span class="n">normalized_idxs</span><span class="p">,</span>
-            <span class="n">epsilon</span><span class="p">,</span>
-            <span class="n">scale</span><span class="p">,</span>
-            <span class="n">offset</span><span class="p">,</span>
-            <span class="n">new_std</span><span class="p">,</span>
-            <span class="n">key_chains</span><span class="p">,</span>
-            <span class="n">to_apply</span><span class="p">,</span>
-            <span class="n">prune_unapplied</span><span class="p">,</span>
-            <span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
+            <span class="n">new_std</span><span class="o">=</span><span class="n">new_std</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 </pre></div>

@@ -2,6 +2,12 @@ inplace_decrement
 =================
 
 .. autofunction:: ivy.functional.ivy.general.inplace_decrement
+
+.. autofunction:: ivy.array.array_methods.inplace_decrement
+
+.. autofunction:: ivy.container.container_methods.static_inplace_decrement
+
+.. autofunction:: ivy.container.container_methods.inplace_decrement
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ inplace_decrement
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: inplace_decrement
+
+   inplace_decrement/inplace_decrement_functional.rst
+   inplace_decrement/inplace_decrement_array.rst
+   inplace_decrement/inplace_decrement_container.rst
+   inplace_decrement/static_inplace_decrement_container.rst
+
