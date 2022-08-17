@@ -371,37 +371,6 @@ def test_jax_lax_sin(
     )
 
 
-# sign
-@given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.lax.sign"
-    ),
-    native_array=st.booleans(),
-)
-def test_jax_lax_sign(
-    dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
-):
-    input_dtype, x = dtype_and_x
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="jax",
-        fn_tree="lax.sign",
-        x=np.asarray(x, dtype=input_dtype),
-    )
-
-
 # asin
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
@@ -429,5 +398,36 @@ def test_jax_lax_asin(
         fw=fw,
         frontend="jax",
         fn_tree="lax.asin",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# sinh
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.sinh"
+    ),
+    native_array=st.booleans(),
+)
+def test_jax_lax_sinh(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.sinh",
         x=np.asarray(x, dtype=input_dtype),
     )
