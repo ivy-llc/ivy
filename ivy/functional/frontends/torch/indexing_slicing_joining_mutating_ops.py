@@ -6,6 +6,10 @@ def cat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, dim, out=out)
 
 
+def concat(tensors, dim=0, *, out=None):
+    return ivy.concat(tensors, dim, out=out)
+
+
 def permute(input, dims):
     return ivy.permute_dims(input, dims)
 
@@ -34,8 +38,8 @@ def movedim(input, source, destination):
     loop over both tuples and swap input tensor's axes individually in the correct order
     """
     if isinstance(source, tuple) or isinstance(destination, tuple):
-        assert len(source) == len(destination), 
-            "if either dimension input is a tuple, their size must match"
+        assert len(source) == len(destination
+          ), "if either dimension input is a tuple, their size must match"
         map = {}
         for i, j in zip(source, destination):
             if i in map:
@@ -50,7 +54,11 @@ def movedim(input, source, destination):
     return ivy.swapaxes(input, source, destination)
 
 
-movedim.unsupported_dtypes = (
+def reshape(input, shape):
+    return ivy.reshape(input, shape)
+
+
+reshape.unsupported_dtypes = (
     "uint16",
     "uint32",
     "uint64",
