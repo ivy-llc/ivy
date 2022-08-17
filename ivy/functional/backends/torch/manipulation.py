@@ -77,6 +77,22 @@ flip.unsupported_dtypes = (
 )
 
 
+def flipud(
+    x: torch.Tensor, 
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    num_dims: int = len(x.shape)
+    assert num_dims, "Input must be >= 1-dimensional"
+    return torch.flipud(x)
+
+
+flipud.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
+
+
 def permute_dims(
     x: torch.Tensor, axes: Tuple[int, ...], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
