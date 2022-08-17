@@ -996,10 +996,17 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_scatter_nd(
+<<<<<<< HEAD
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
         tensor: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+=======
+        params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+>>>>>>> 398abadb63f1fed0717c5c2c36dfa5d23d5a7d4b
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1015,10 +1022,16 @@ class ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
+<<<<<<< HEAD
+=======
+        params
+            The container in which to scatter the values.
+>>>>>>> 398abadb63f1fed0717c5c2c36dfa5d23d5a7d4b
         indices
             Index array or container.
         updates
             values to update input tensor with
+<<<<<<< HEAD
         shape
             The shape of the result. Default is None, in which case tensor argument must be
             provided.
@@ -1028,6 +1041,12 @@ class ContainerWithGeneral(ContainerBase):
             scatter into a zeros array.
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
+=======
+        reduction
+            ...
+        shape
+            ...
+>>>>>>> 398abadb63f1fed0717c5c2c36dfa5d23d5a7d4b
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1052,6 +1071,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+<<<<<<< HEAD
         scatter into an array
         >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
                   b=ivy.array([[2],[3],[4]]))
@@ -1082,13 +1102,20 @@ class ContainerWithGeneral(ContainerBase):
             a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
             b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
         }
+=======
+
+>>>>>>> 398abadb63f1fed0717c5c2c36dfa5d23d5a7d4b
         """
         return ContainerBase.multi_map_in_static_method(
             "scatter_nd",
             indices,
             updates,
             shape,  
+<<<<<<< HEAD
             tensor,      
+=======
+            params,      
+>>>>>>> 398abadb63f1fed0717c5c2c36dfa5d23d5a7d4b
             reduction,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1099,9 +1126,15 @@ class ContainerWithGeneral(ContainerBase):
     
     def scatter_nd(
         self: ivy.Container,
+<<<<<<< HEAD
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         shape: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         tensor: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+=======
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+>>>>>>> 398abadb63f1fed0717c5c2c36dfa5d23d5a7d4b
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1115,6 +1148,7 @@ class ContainerWithGeneral(ContainerBase):
         This method simply wraps the function, and so the docstring
         for ivy.scatter_nd also applies to this method
         with minimal changes.
+<<<<<<< HEAD
         Parameters
         ----------
         self
@@ -1130,6 +1164,21 @@ class ContainerWithGeneral(ContainerBase):
             scatter into a zeros array.
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
+=======
+
+        Parameters
+        ----------
+        self
+            The container in which to scatter the values.
+        indices
+            Index array or container.
+        updates
+            values to update input tensor with
+        reduction
+            ...
+        shape
+            ...
+>>>>>>> 398abadb63f1fed0717c5c2c36dfa5d23d5a7d4b
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1152,6 +1201,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container of given shape, with the values updated at the indices.
 
+<<<<<<< HEAD
         Examples
         --------
         scatter into an array
@@ -1196,6 +1246,12 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied, 
             map_sequences, 
             out=out
+=======
+        """
+        return self.static_scatter_nd(
+            indices, updates, shape, self, reduction, key_chains, 
+            to_apply, prune_unapplied, map_sequences, out=out
+>>>>>>> 398abadb63f1fed0717c5c2c36dfa5d23d5a7d4b
         )
 
     @staticmethod
