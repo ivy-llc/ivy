@@ -1,10 +1,10 @@
 import numpy as np
 from hypothesis import given, strategies as st
 
+import ivy.functional.backends.jax as ivy_jax
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.jax as ivy_jax
 
 
 @given(
@@ -38,7 +38,11 @@ def test_jax_nn_relu(
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_numeric_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+    ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.relu6"
