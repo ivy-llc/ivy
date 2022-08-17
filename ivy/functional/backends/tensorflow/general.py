@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 
 _round = round
 import numpy as np
@@ -67,7 +67,11 @@ def floormod(
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int,
+    keepdims: bool = False
+) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]
     ret = tf.unstack(x, axis=axis)
@@ -108,7 +112,9 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: True
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(x_native - val_native)
@@ -118,7 +124,7 @@ def inplace_decrement(x, val):
             x = ivy.Array(x_native)
     else:
         if ivy.is_ivy_array(x):
-            x.data = val_native
+            x.data -= val_native
         else:
             x = ivy.Array(val_native)
     return x

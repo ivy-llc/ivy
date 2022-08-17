@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -64,6 +64,8 @@ def inplace_update(
         val_native = np.ascontiguousarray(val_native)
 
     if val_native.shape == x_native.shape:
+        if x_native.dtype != val_native.dtype:
+            x_native = x_native.astype(val_native.dtype)
         np.copyto(x_native, val_native)
     else:
         x_native = val_native
@@ -87,7 +89,11 @@ def floormod(
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: np.ndarray,
+    axis: int, 
+    keepdims: bool = False
+) -> List[np.ndarray]:
     if x.shape == ():
         return [x]
     x_split = np.split(x, x.shape[axis], axis)
@@ -96,7 +102,9 @@ def unstack(x, axis, keepdims=False):
     return [np.squeeze(item, axis) for item in x_split]
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native -= val_native
     if ivy.is_ivy_array(x):
