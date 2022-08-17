@@ -1020,14 +1020,14 @@ class ContainerWithGeneral(ContainerBase):
         updates
             values to update input tensor with
         shape
-            The shape of the result. Default is None, in which case tensor argument must be
-            provided.
+            The shape of the result. Default is None, in which case tensor argument 
+            must be provided.
         tensor
-            The tensor in which to scatter the results, default is None, in which case the
-            shape arg is used to
-            scatter into a zeros array.
+            The tensor in which to scatter the results, default is None, 
+            in which case the shape arg is used to scatter into a zeros array.
         reduction
-            The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
+            The reduction method for the scatter, one of 'sum', 'min', 'max' 
+            or 'replace'
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1060,7 +1060,8 @@ class ContainerWithGeneral(ContainerBase):
         >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
                                 b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
 
-        z = ivy.Container.static_scatter_nd(indices, updates, tensor=arr, reduction='replace')
+        z = ivy.Container.static_scatter_nd(indices, updates, 
+                                            tensor=arr, reduction='replace')
         >> print(z)
         {
             a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
@@ -1109,7 +1110,7 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Conatiner:
+    ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.scatter_nd.
         This method simply wraps the function, and so the docstring
@@ -1122,14 +1123,14 @@ class ContainerWithGeneral(ContainerBase):
         updates
             values to update input tensor with
         shape
-            The shape of the result. Default is None, in which case tensor argument must be
-            provided.
+            The shape of the result. Default is None, in which case tensor argument
+            must be provided.
         tensor
-            The tensor in which to scatter the results, default is None, in which case the
-            shape arg is used to
-            scatter into a zeros array.
+            The tensor in which to scatter the results, default is None, 
+            in which case the shape arg is used to scatter into a zeros array.
         reduction
-            The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
+            The reduction method for the scatter, one of 'sum', 'min', 'max' 
+            or 'replace'
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
