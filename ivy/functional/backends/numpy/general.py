@@ -64,6 +64,8 @@ def inplace_update(
         val_native = np.ascontiguousarray(val_native)
 
     if val_native.shape == x_native.shape:
+        if x_native.dtype != val_native.dtype:
+            x_native = x_native.astype(val_native.dtype)
         np.copyto(x_native, val_native)
     else:
         x_native = val_native
