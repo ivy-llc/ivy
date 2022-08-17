@@ -12,4 +12,4 @@ def eigvals(tensor, name=None):
     return ivy.eigvals(tensor)
 
 
-eigvals.unsupported_dtypes = ("float16","bfloat16")
+eigvals.unsupported_dtypes = ("float16", "bfloat16")

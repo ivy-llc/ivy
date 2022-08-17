@@ -70,5 +70,3 @@ def test_tensorflow_eigvals(
         fn_tree="linalg.eigvals",
         input=np.asarray(x, dtype=input_dtype),
     )
-
-
