@@ -69,7 +69,7 @@ class ArrayWithGradients(abc.ABC):
         """
         return ivy.is_variable(self, exclusive=exclusive)
 
-    is_variable.computes_gradients = True
+    # is_variable.computes_gradients = True
 
     def variable_data(self: ivy.Array) -> bool:
         """

@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import strategies as st, given, assume, settings
+from hypothesis import given, assume, settings
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # unique_values
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -18,10 +19,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_dim_size=3,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_values"),
-    data=st.data(),
 )
-@settings(deadline=None)
-@handle_cmd_line_args
+@settings(max_examples=1, deadline=None)
 def test_unique_values(
     *,
     dtype_and_x,
@@ -51,6 +50,7 @@ def test_unique_values(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -60,9 +60,7 @@ def test_unique_values(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_all"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_unique_all(
     *,
     dtype_and_x,
@@ -91,6 +89,7 @@ def test_unique_all(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -100,9 +99,7 @@ def test_unique_all(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_counts"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_unique_counts(
     *,
     dtype_and_x,
@@ -131,6 +128,7 @@ def test_unique_counts(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -140,9 +138,7 @@ def test_unique_counts(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_inverse"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_unique_inverse(
     *,
     dtype_and_x,

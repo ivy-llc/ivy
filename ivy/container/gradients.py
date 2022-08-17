@@ -191,7 +191,7 @@ class ContainerWithGradients(ContainerBase):
             exclusive=exclusive,
         )
 
-    static_is_variable.computes_gradients = True
+    # static_is_variable.computes_gradients = True
 
     @staticmethod
     def static_is_variable(
@@ -331,7 +331,7 @@ class ContainerWithGradients(ContainerBase):
             exclusive=exclusive,
         )
 
-    is_variable.computes_gradients = True
+    # is_variable.computes_gradients = True
 
     @staticmethod
     def static_execute_with_gradients(
