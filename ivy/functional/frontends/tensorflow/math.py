@@ -1,4 +1,5 @@
 # global
+from cmath import nan
 import ivy
 
 
@@ -41,5 +42,25 @@ negative.unsupported_dtypes = {
 }
 
 
+def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
+    return input_tensor.map(lambda x: 1.0 / x if (x != 0) or (x != nan) else 0.0)
+
+
 def reduce_all(input_tensor, axis=None, keepdims=False, name="reduce_all"):
     return ivy.all(input_tensor, axis, keepdims)
+
+
+def reduce_any(input_tensor, axis=None, keepdims=False, name="reduce_any"):
+    return ivy.any(input_tensor, axis, keepdims)
+
+
+def reduce_euclidean_norm(
+    input_tensor, axis=None, keepdims=False, name="reduce_euclidean_norm"
+):
+    return ivy.vector_norm(
+        input_tensor, axis, keepdims, ord="2"
+    )  # ord = '2' is the euclidean norm
+
+
+def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
+    return ivy.exp(input_tensor).sum(axis, keepdims).log()
