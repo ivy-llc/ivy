@@ -2790,7 +2790,7 @@ def scatter_nd(
     reduction: str = "sum",
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Scatter updates into a new array according to indices.
 
     Parameters
@@ -2819,6 +2819,36 @@ def scatter_nd(
     -------
     ret
         New array of given shape, with the values scattered at the indices.
+
+    Examples
+    --------
+    scatter into an empty array
+    >> indices = ivy.array([[4],[3],[6]])
+    >> updates = ivy.Container(a=ivy.array([100, 200, 200]),
+                    b=ivy.array([20, 30, 40]))
+    >> shape = ivy.Container(a=ivy.array([10]),
+                            b = ivy.array([10]))
+    >> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
+    print(z)
+    {
+        a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
+        b: ivy.array([0, 0, 0, 30, 20, 0, 40, 0, 0, 0])
+    }
+
+    scatter into an array
+    >> indices = ivy.array([[4],[3],[6]])
+    >> updates = ivy.Container(a=ivy.array([100, 200, 200]),
+                    b=ivy.array([20, 30, 40]))
+    >> shape = ivy.array([10, 10])
+    >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+                            b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+    >> z = ivy.scatter_nd(indices, updates, tensor=arr, reduction='replace')
+    >> print(z)
+    {
+        a: ivy.array([1, 2, 3, 200, 100, 6, 200, 8, 9, 10]),
+        b: ivy.array([1, 2, 3, 30, 20, 6, 40, 8, 9, 10])
+    }
+
 
     """
     return current_backend(indices).scatter_nd(
