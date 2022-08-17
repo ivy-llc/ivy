@@ -300,7 +300,7 @@ def floor_divide(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.floor(np.divide(x1, x2, out=out), out=out)
+    return floor(divide(x1, x2, out=out), out=out)
 
 
 floor_divide.support_native_out = True
