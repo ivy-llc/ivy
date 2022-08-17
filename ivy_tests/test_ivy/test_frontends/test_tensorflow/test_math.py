@@ -7,9 +7,11 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # add
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -43,6 +45,7 @@ def test_tensorflow_add(
 
 
 # tan
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
     as_variable=st.booleans(),
@@ -69,6 +72,7 @@ def test_tensorflow_tan(
 
 
 # multiply
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -102,6 +106,7 @@ def test_tensorflow_multiply(
 
 
 # subtract
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -137,6 +142,7 @@ def test_tensorflow_subtract(
 
 
 # logical_xor
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple([ivy.bool]),
@@ -168,6 +174,7 @@ def test_tensorflow_logical_xor(
 
 
 # divide
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -201,6 +208,7 @@ def test_tensorflow_divide(
 
 
 # negative
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
