@@ -3114,7 +3114,6 @@ def handle_cmd_line_args(test_fn):
         if "gpu" in device and call is np_call:
             # Numpy does not support GPU
             pytest.skip()
-
         if not f:
             # randomly draw a backend if not set
             fw_string = data.draw(st.sampled_from(FW_STRS))
@@ -3122,9 +3121,9 @@ def handle_cmd_line_args(test_fn):
         else:
             # use the one which is parametrized
             flag = True
+
         # set backend using the context manager
         with f.use:
-            print(f"\nhandle-{test_fn.__name__}", f)
             # inspecting for keyword arguments in test function
             for param in inspect.signature(test_fn).parameters.values():
                 if param.name in cmd_line_args:
