@@ -132,6 +132,7 @@ def mean(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+    
     """Calculates the arithmetic mean of the input array ``x``.
 
     **Special Cases**
