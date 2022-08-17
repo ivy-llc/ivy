@@ -116,7 +116,6 @@ def _train_task(
                     else variables.prune_key_chains(inner_v),
                     inner_update_grads,
                     inner_learning_rate,
-                    inplace=False,
                     stop_gradients=stop_gradients,
                 )
             )
@@ -125,7 +124,6 @@ def _train_task(
                 variables,
                 inner_update_grads,
                 inner_learning_rate,
-                inplace=False,
                 stop_gradients=stop_gradients,
             )
 
@@ -149,7 +147,7 @@ def _train_task(
     if stop_gradients:
         variables = variables.stop_gradient()
     if not batched:
-        variables = variables.expand_dims(0)
+        variables = variables.expand_dims(axis=0)
 
     # average the cost or gradients across all timesteps if this option is chosen
     if average_across_steps:
@@ -210,7 +208,7 @@ def _train_tasks_batched(
         num_tasks,
         stop_gradients,
     )
-    grads = grads.mean(0) if isinstance(grads, ivy.Container) else grads
+    grads = grads.mean(axis=0) if isinstance(grads, ivy.Container) else grads
     if order == 1:
         if return_inner_v in ["all", True]:
             return cost, grads, updated_ivs
@@ -298,11 +296,11 @@ def _train_tasks_with_for_loop(
             return (
                 total_cost / num_tasks,
                 sum(all_grads) / num_tasks,
-                ivy.concat(updated_ivs_to_return, 0),
+                ivy.concat(updated_ivs_to_return, axis=0),
             )
         return total_cost / num_tasks, sum(all_grads) / num_tasks
     if return_inner_v:
-        return total_cost / num_tasks, ivy.concat(updated_ivs_to_return, 0)
+        return total_cost / num_tasks, ivy.concat(updated_ivs_to_return, axis=0)
     return total_cost / num_tasks
 
 
@@ -702,7 +700,7 @@ def maml_step(
     )
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
-    return (cost, grads.sum(0), *rets)
+    return (cost, grads.sum(axis=0), *rets)
 
 
 maml_step.computes_gradients = True
