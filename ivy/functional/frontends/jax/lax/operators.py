@@ -75,5 +75,9 @@ def sinh(x):
     return ivy.sinh(x)
 
 
+def atan2(x, y):
+    return ivy.atan2(x, y)
+
+
 def atan(x):
     return ivy.atan(x)
