@@ -1832,10 +1832,10 @@ def arg_names(receiver):
 
 
 def match_kwargs(
-        kwargs: dict,
+        kwargs: Dict,
         *receivers: Iterable[Callable],
         allow_duplicates: bool = False
-) -> Union[List[dict], dict]:
+) -> Union[List[Dict], Dict]:
     """Match keyword arguments to either class or function receivers.
 
     Parameters
