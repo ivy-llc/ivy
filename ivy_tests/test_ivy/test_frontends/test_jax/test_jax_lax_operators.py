@@ -371,16 +371,16 @@ def test_jax_lax_sin(
     )
 
 
-# sign
+# asin
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.lax.sign"
+        fn_name="ivy.functional.frontends.jax.lax.asin"
     ),
     native_array=st.booleans(),
 )
-def test_jax_lax_sign(
+def test_jax_lax_asin(
     dtype_and_x,
     as_variable,
     num_positional_args,
@@ -397,7 +397,7 @@ def test_jax_lax_sign(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_tree="lax.sign",
+        fn_tree="lax.asin",
         x=np.asarray(x, dtype=input_dtype),
     )
 
