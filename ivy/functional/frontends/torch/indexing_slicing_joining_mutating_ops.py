@@ -38,8 +38,8 @@ def movedim(input, source, destination):
     loop over both tuples and swap input tensor's axes individually in the correct order
     """
     if isinstance(source, tuple) or isinstance(destination, tuple):
-        assert len(source) == len(destination), "if either dimension input is a tuple, "\
-                                                "their size must match"
+        assert len(source) == len(destination), "if either dimension input is a tuple"\
+                                                ", their size must match"
         map = {}
         for i, j in zip(source, destination):
             if i in map:
