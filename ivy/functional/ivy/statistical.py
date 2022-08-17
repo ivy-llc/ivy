@@ -181,9 +181,10 @@ def mean(
 @handle_nestable
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    /,
     *,
+    axis: Union[int, Tuple[int]] = None,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the minimum value of the input array x.

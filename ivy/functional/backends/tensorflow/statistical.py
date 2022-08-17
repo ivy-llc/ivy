@@ -36,7 +36,6 @@ def min(
     x: Union[tf.Tensor, tf.Variable],
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
