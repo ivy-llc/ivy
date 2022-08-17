@@ -124,7 +124,7 @@ def test_linspace(
         large_value_safety_factor=0.5,
     ),
     num=helpers.ints(min_value=1, max_value=5),
-    base=helpers.floats(min_value=0.1, max_value=10.0),
+    base=st.floats(min_value=0.1, max_value=10.0),
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="logspace"),
     data=st.data(),
@@ -444,7 +444,7 @@ def _fill_value(draw):
         return draw(helpers.ints(min_value=0, max_value=5))
     if ivy.is_int_dtype(dtype):
         return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(helpers.floats(min_value=-5, max_value=5))
+    return draw(st.floats(-5, 5))
 
 
 # full
@@ -641,7 +641,7 @@ def test_ones(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ones_like"),
+    num_positional_args=helpers.ints(min_value=0, max_value=1),
     data=st.data(),
 )
 @handle_cmd_line_args

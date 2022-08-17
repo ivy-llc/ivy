@@ -12,8 +12,6 @@ import math
 from typing import Union, List
 from hypothesis import assume
 import hypothesis.extra.numpy as nph  # noqa
-from hypothesis.internal.floats import float_of
-
 
 # local
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
@@ -517,168 +515,18 @@ def var_fn(x, *, dtype=None, device=None):
 
 
 @st.composite
-def floats(
-    draw,
-    *,
-    min_value=None,
-    max_value=None,
-    allow_nan=False,
-    allow_inf=False,
-    allow_subnormal=False,
-    width=None,
-    exclude_min=True,
-    exclude_max=True,
-    safety_factor=0.99,
-    small_value_safety_factor=1.1,
-):
-    """Draws an arbitrarily sized list of floats with a safety factor applied
-        to avoid values being generated at the edge of a dtype limit.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    min_value
-        minimum value of floats generated.
-    max_value
-        maximum value of floats generated.
-    allow_nan
-        if True, allow Nans in the list.
-    allow_inf
-        if True, allow inf in the list.
-    allow_subnormal
-        if True, allow subnormals in the list.
-    width
-        The width argument specifies the maximum number of bits of precision
-        required to represent the generated float. Valid values are 16, 32, or 64.
-    exclude_min
-        if True, exclude the minimum limit.
-    exclude_max
-        if True, exclude the maximum limit.
-    safety_factor
-        default = 0.99. Only values which are 99% or less than the edge of
-        the limit for a given dtype are generated.
-    small_value_safety_factor
-        default = 1.1.
-
-    Returns
-    -------
-    ret
-        list of floats.
-    """
-    lim_float16 = 65504
-    lim_float32 = 3.4028235e38
-    lim_float64 = 1.7976931348623157e308
-
-    if min_value is not None and max_value is not None:
-        if (
-            min_value > -lim_float16 * safety_factor
-            and max_value < lim_float16 * safety_factor
-            and (width == 16 or not ivy.exists(width))
-        ):
-            # dtype float16
-            width = 16
-        elif (
-            min_value > -lim_float32 * safety_factor
-            and max_value < lim_float32 * safety_factor
-            and (width == 32 or not ivy.exists(width))
-        ):
-            # dtype float32
-            width = 32
-        else:
-            # dtype float64
-            width = 64
-
-        min_value = float_of(min_value, width)
-        max_value = float_of(max_value, width)
-
-        values = draw(
-            st.floats(
-                min_value=min_value,
-                max_value=max_value,
-                allow_nan=allow_nan,
-                allow_subnormal=allow_subnormal,
-                allow_infinity=allow_inf,
-                width=width,
-                exclude_min=exclude_min,
-                exclude_max=exclude_max,
-            )
-        )
-
-    else:
-        if ivy.exists(min_value):
-            if min_value > -lim_float16 * safety_factor and (
-                width == 16 or not ivy.exists(width)
-            ):
-                dtype_min = "float16"
-            elif min_value > -lim_float32 * safety_factor and (
-                width == 32 or not ivy.exists(width)
-            ):
-                dtype_min = "float32"
-            else:
-                dtype_min = "float64"
-        else:
-            dtype_min = draw(st.sampled_from(ivy_np.valid_float_dtypes))
-
-        if ivy.exists(max_value):
-            if max_value < lim_float16 * safety_factor and (
-                width == 16 or not ivy.exists(width)
-            ):
-                dtype_max = "float16"
-            elif max_value < lim_float32 * safety_factor and (
-                width == 32 or not ivy.exists(width)
-            ):
-                dtype_max = "float32"
-            else:
-                dtype_max = "float64"
-        else:
-            dtype_max = draw(st.sampled_from(ivy_np.valid_float_dtypes))
-
-        dtype = ivy.promote_types(dtype_min, dtype_max)
-
-        if dtype == "float16" or 16 == ivy.default(width, 0):
-            width = 16
-            min_value = float_of(-lim_float16 * safety_factor, width)
-            max_value = float_of(lim_float16 * safety_factor, width)
-        elif dtype in ["float32", "bfloat16"] or 32 == ivy.default(width, 0):
-            width = 32
-            min_value = float_of(-lim_float32 * safety_factor, width)
-            max_value = float_of(lim_float32 * safety_factor, width)
-        else:
-            width = 64
-            min_value = float_of(-lim_float64 * safety_factor, width)
-            max_value = float_of(lim_float64 * safety_factor, width)
-
-        values = draw(
-            st.floats(
-                min_value=min_value,
-                max_value=max_value,
-                allow_nan=allow_nan,
-                allow_subnormal=allow_subnormal,
-                allow_infinity=allow_inf,
-                width=width,
-                exclude_min=exclude_min,
-                exclude_max=exclude_max,
-            )
-        )
-    return values
-
-
-@st.composite
 def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     """Draws an arbitrarily sized list of integers with a safety factor
     applied to values.
 
     Parameters
     ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
     min_value
         minimum value of integers generated.
+
     max_value
         maximum value of integers generated.
+
     safety_factor
         default = 0.95. Only values which are 95% or less than the edge of
         the limit for a given dtype are generated.
@@ -721,8 +569,8 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
 def assert_all_close(
     ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
-    """Matches the ret_np and ret_from_np inputs element-by-element to ensure that
-    they are the same.
+    """Matches the ret_np and ret_from_np inputs element-by-element to ensure that they
+    are the same.
 
     Parameters
     ----------
@@ -847,11 +695,10 @@ def value_test(
     Parameters
     ----------
     ret_np_flat
-        A list (flattened) containing Numpy arrays. Return from the
-        framework to test.
+        A list (flattened) containing Numpy arrays. Return from the framework to test.
     ret_from_np_flat
-        A list (flattened) containing Numpy arrays. Return from the ground
-        truth framework.
+        A list (flattened) containing Numpy arrays. Return from the ground truth
+        framework.
     rtol
         Relative Tolerance Value.
     atol
@@ -1143,8 +990,8 @@ def create_args_kwargs(
     input_dtypes
         data-types of the input arguments and keyword-arguments.
     as_variable_flags
-        A list of booleans. if True for a corresponding input argument, it is called
-        as an Ivy Variable.
+        A list of booleans. if True for a corresponding input argument, it is called as
+        an Ivy Variable.
     native_array_flags
         if not None, the corresponding argument is called as a Native Array.
     container_flags
@@ -2446,23 +2293,18 @@ def array_values(
             min_value = ivy.default(
                 min_value, 1 if small_value_safety_factor < 1 else 0
             )
-            max_value = ivy.default(
-                max_value, min(255, round(255 * large_value_safety_factor))
-            )
+            max_value = ivy.default(max_value, round(255 * large_value_safety_factor))
         elif dtype == "uint16":
             min_value = ivy.default(
                 min_value, 1 if small_value_safety_factor < 1 else 0
             )
-            max_value = ivy.default(
-                max_value, min(65535, round(65535 * large_value_safety_factor))
-            )
+            max_value = ivy.default(max_value, round(65535 * large_value_safety_factor))
         elif dtype == "uint32":
             min_value = ivy.default(
                 min_value, 1 if small_value_safety_factor < 1 else 0
             )
             max_value = ivy.default(
-                max_value,
-                min(4294967295, round(4294967295 * large_value_safety_factor)),
+                max_value, round(4294967295 * large_value_safety_factor)
             )
         elif dtype == "uint64":
             min_value = ivy.default(
@@ -2488,28 +2330,26 @@ def array_values(
         else:
             if dtype == "int8":
                 min_value = ivy.default(
-                    min_value, max(-128, round(-128 * large_value_safety_factor))
+                    min_value, round(-128 * large_value_safety_factor)
                 )
                 max_value = ivy.default(
-                    max_value, min(127, round(127 * large_value_safety_factor))
+                    max_value, round(127 * large_value_safety_factor)
                 )
 
             elif dtype == "int16":
                 min_value = ivy.default(
-                    min_value, max(-32768, round(-32768 * large_value_safety_factor))
+                    min_value, round(-32768 * large_value_safety_factor)
                 )
                 max_value = ivy.default(
-                    max_value, min(32767, round(32767 * large_value_safety_factor))
+                    max_value, round(32767 * large_value_safety_factor)
                 )
 
             elif dtype == "int32":
                 min_value = ivy.default(
-                    min_value,
-                    max(-2147483648, round(-2147483648 * large_value_safety_factor)),
+                    min_value, round(-2147483648 * large_value_safety_factor)
                 )
                 max_value = ivy.default(
-                    max_value,
-                    min(2147483647, round(2147483647 * large_value_safety_factor)),
+                    max_value, round(2147483647 * large_value_safety_factor)
                 )
 
             elif dtype == "int64":
@@ -2792,7 +2632,7 @@ def none_or_list_of_floats(
     if no_none:
         if dtype == "float16":
             values = list_of_length(
-                x=floats(
+                x=st.floats(
                     min_value=min_value,
                     max_value=max_value,
                     width=16,

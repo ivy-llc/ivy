@@ -108,9 +108,7 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: True
 
 
-def inplace_decrement(
-    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
-) -> ivy.Array:
+def inplace_decrement(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(x_native - val_native)

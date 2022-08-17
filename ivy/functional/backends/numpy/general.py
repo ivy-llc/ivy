@@ -96,9 +96,7 @@ def unstack(x, axis, keepdims=False):
     return [np.squeeze(item, axis) for item in x_split]
 
 
-def inplace_decrement(
-    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
-) -> ivy.Array:
+def inplace_decrement(x, val):
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native -= val_native
     if ivy.is_ivy_array(x):
