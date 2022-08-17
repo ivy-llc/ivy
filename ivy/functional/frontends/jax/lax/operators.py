@@ -67,5 +67,9 @@ def sign(x):
     return ivy.sign(x)
 
 
+def asin(x):
+    return ivy.asin(x)
+
+
 def sinh(x):
     return ivy.sinh(x)
