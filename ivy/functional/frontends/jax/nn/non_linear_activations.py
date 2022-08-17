@@ -8,6 +8,19 @@ def relu(x):
 relu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
+def relu6(x):
+    res = ivy.minimum(ivy.maximum(x, 0.0), 6.0)
+
+    dtype = ivy.as_ivy_dtype(x.dtype)
+    if "float" in dtype:
+        return res.astype(dtype)
+
+    return res.astype("float64")
+
+
+relu6.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
 def leaky_relu(x, negative_slope=0.01):
     return ivy.leaky_relu(x, alpha=negative_slope)
 
