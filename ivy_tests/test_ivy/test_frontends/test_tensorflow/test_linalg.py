@@ -48,7 +48,7 @@ def test_tensorflow_det(
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
+    dtype_and_input=_get_dtype_and_matrix(),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.eigh"
@@ -56,9 +56,9 @@ def test_tensorflow_det(
     native_array=st.booleans(),
 )
 def test_tensorflow_eigh(
-        dtype_and_x, as_variable, num_positional_args, native_array, fw
+        dtype_and_input, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -68,5 +68,7 @@ def test_tensorflow_eigh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.eigh",
-        x=np.asarray(x, dtype=input_dtype),
+        input=np.asarray(x, dtype=input_dtype),
     )
+
+
