@@ -71,5 +71,13 @@ def min(x, y):
     return ivy.minimum(x, y)
 
 
+def mul(x, y):
+    return ivy.multiply(x, y)
+
+
+def eq(x, y):
+    return ivy.equal(x, y)
+
+
 def atan(x):
     return ivy.atan(x)
