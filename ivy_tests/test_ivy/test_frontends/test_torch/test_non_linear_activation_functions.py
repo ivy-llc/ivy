@@ -26,8 +26,8 @@ def _dtypes(draw):
             key="dtype",
         )
     )
-    
- 
+
+
 # relu
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -51,7 +51,6 @@ def test_torch_relu(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -142,4 +141,3 @@ def test_torch_softmax(
         dim=axis,
         dtype=dtypes[0],
     )
-
