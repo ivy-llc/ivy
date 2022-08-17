@@ -3,19 +3,16 @@ signature.
 """
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 
 _round = round
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
 import tensorflow as tf
-from tensorflow.python.framework.tensor_shape import TensorShape
 
 # local
 import ivy
-from ivy.functional.ivy.device import default_device
-from ivy.functional.backends.tensorflow.device import as_native_dev
 
 
 def is_native_array(x, exclusive=False):
@@ -26,7 +23,11 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def copy_array(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
+def copy_array(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.identity(x)
 
 
@@ -37,8 +38,11 @@ def array_equal(
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
-def to_numpy(x: Union[tf.Tensor, tf.Variable]) -> np.ndarray:
-    return np.asarray(tf.convert_to_tensor(x))
+def to_numpy(x: Union[tf.Tensor, tf.Variable], copy: bool = True) -> np.ndarray:
+    if copy:
+        return np.array(tf.convert_to_tensor(x))
+    else:
+        return np.asarray(tf.convert_to_tensor(x))
 
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable]) -> Number:
@@ -52,6 +56,8 @@ def to_list(x: Union[tf.Tensor, tf.Variable]) -> list:
 def floormod(
     x: Union[tf.Tensor, tf.Variable],
     y: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x, "dtype") and hasattr(y, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
@@ -61,7 +67,11 @@ def floormod(
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int,
+    keepdims: bool = False
+) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]
     ret = tf.unstack(x, axis=axis)
@@ -95,11 +105,16 @@ def inplace_update(
     return x
 
 
-inplace_arrays_supported = lambda: False
+def inplace_arrays_supported():
+    return False
+
+
 inplace_variables_supported = lambda: True
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(x_native - val_native)
@@ -109,13 +124,15 @@ def inplace_decrement(x, val):
             x = ivy.Array(x_native)
     else:
         if ivy.is_ivy_array(x):
-            x.data = val_native
+            x.data -= val_native
         else:
             x = ivy.Array(val_native)
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(x_native + val_native)
@@ -134,18 +151,32 @@ def inplace_increment(x, val):
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumsum(x, axis)
 
 
 def cumprod(
-    x: Union[tf.Tensor, tf.Variable], axis: int = 0, exclusive: Optional[bool] = False
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+    exclusive: Optional[bool] = False,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
+def scatter_flat(
+    indices: Union[tf.Tensor, tf.Variable],
+    updates: Union[tf.Tensor, tf.Variable],
+    size: Optional[int] = None,
+    tensor: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    reduction: str = "sum",
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -207,13 +238,14 @@ def _parse_ellipsis(so, ndims):
 
 # noinspection PyShadowingNames
 def scatter_nd(
-    indices,
-    updates,
+    indices: Union[tf.Tensor, tf.Variable],
+    updates: Union[tf.Tensor, tf.Variable],
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor=None,
-    reduction="sum",
-):
-
+    tensor: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    reduction: str = "sum",
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
             tf.cast(tensor, dtype=updates.dtype)
@@ -267,7 +299,7 @@ def scatter_nd(
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     if reduction == "sum":
@@ -304,21 +336,31 @@ def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
     axis: Optional[int] = -1,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
     return tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
-def gather_nd(params, indices):
+def gather_nd(
+    params: Union[tf.Tensor, tf.Variable],
+    indices: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.gather_nd(params, indices)
 
 
-def one_hot(indices, depth, *, device):
-    device = default_device(device)
-    if device is not None:
-        with tf.device(as_native_dev(device)):
-            return tf.one_hot(indices, depth)
-    return tf.one_hot(indices, depth)
+def one_hot(
+    indices: Union[tf.Tensor, tf.Variable],
+    depth: int,
+    *,
+    device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    with tf.device(device):
+        return tf.one_hot(indices, depth)
 
 
 def current_backend_str():
@@ -331,18 +373,22 @@ def multiprocessing(context=None):
     )
 
 
-def indices_where(x):
+def indices_where(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.where(x)
 
 
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
-) -> Union[tf.Tensor, tf.Variable, TensorShape]:
+) -> Union[tf.Tensor, ivy.Shape, ivy.Array]:
     if as_array:
-        return tf.shape(x)
+        return ivy.array(tf.shape(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):

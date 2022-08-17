@@ -5,6 +5,8 @@ Open Tasks
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
+.. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html
+.. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -64,8 +66,9 @@ Specifically, you **do not** need to address the following:
 However, everything else covered in the :ref:`Deep Dive` must be addressed.
 Some common important tasks are:
 
-#. remove all :code:`lambda` and direct bindings for the backend functions,
-   with each function instead defined using :code:`def`.
+#. remove all :code:`lambda` and direct bindings for the backend functions
+   (in :code:`ivy.functional.backends`), with each function instead defined using
+   :code:`def`.
 #. implement the following if they don't exist but should do: :code:`ivy.Array` instance
    method, :code:`ivy.Container` static method, :code:`ivy.Container` instance method,
    :code:`ivy.Array` special method, :code:`ivy.Array` reverse special method,
@@ -79,7 +82,53 @@ Some common important tasks are:
 #. add the correct :ref:`Docstrings` to every function **and** its *relevant methods*,
    including those you did not implement yourself.
 #. add thorough :ref:`Docstring Examples` for every function **and** its
-   *relevant methods*
+   *relevant methods* and ensure they pass the docstring tests.
+
+Formatting checklist
+~~~~~~~~~~~~~~~~~~~~
+
+After creating your Pull Request on github, you should then produce the checklist
+for the formatting task as follows: 
+
+1. Add a comment with the following format: 
+:code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* 
+is the name of the category that the function belongs to. An example of this is shown below.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_generator.png?raw=true
+   :width: 420
+
+Using this formatting will then trigger our github automation bots to update your 
+comment with the proper markdown text for the checklist. These updates might take a
+few moments to take effect, so please be patient. 🙂
+
+2. After adding the checklist to your PR, you should then modify this checklist with 
+the status of each item according to the symbols(emojis) within the LEGEND section.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true
+   :width: 420
+
+3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
+your PR and we will start checking your implementation and marking the items as complete 
+using the checkboxes next to them.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_checked.png?raw=true
+   :width: 420
+
+4. In case you are stuck or need help with one of the checklist items, please add the
+🆘 symbol next to the item on the checklist, and proceed to add a comment elaborating
+on your point of struggle with this item. The PR assignee will then see this comment
+and address your issues.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_SOS.png?raw=true
+   :width: 420
+
+**Notes**: 
+
+1. It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.
+2. Please pay attention to the formatting of the checklist generating comment, as it is important.
+3. Do not edit the checklist, if you are facing issues, please add them in a different comment.
+4. Please refrain from using the checkboxes next to checklist items.
+
 
 Frontend APIs
 -------------
@@ -89,8 +138,41 @@ frontend functional APIs (see :ref:`Ivy as a Transpiler`),
 with frontend APIs implemented for:
 :code:`JAX`, :code:`MXNet`, :code:`NumPy`, :code:`TensorFlow` and :code:`PyTorch`.
 
-This task is not *quite* ready to be engaged with yet,
-more details coming in the next few weeks! 🗓️
+Currently, we have many ToDo list issues
+`open <https://github.com/unifyai/ivy/issues?page=1&q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22>`_
+for this task, which is explained below.
+
+The general workflow for this task is:
+
+#. implement the function by following the `Ivy Frontends`_ guide
+#. write tests for your function by following the `Ivy Frontend Tests`_ guide
+#. verify that the tests for your function are passing
+
+If you feel as though there is an ivy function clearly missing, which would make your
+frontend function much simpler to implement, then you have two options:
+
+#. try to implement the function as a composition of currently present ivy functions,
+   as explained in the "Temporary Compositions" sub-section of the `Ivy Frontends`_
+   guide, and add the :code:`#ToDo` comment in the implementation as explained. Once the
+   PR is merged, your sub-task issue will then be closed as normal.
+#. alternatively, you can add the "Next Release" label to your sub-task issue, and then
+   simply choose another frontend function to work on, leaving the original issue open.
+
+There are a few points to take note of when working on your chosen frontend function:
+
+#. you should only implement **one** frontend function.
+#. the frontend function is framework-specific, thus it should be implemented in
+   its respective frontend framework only.
+#. each frontend function should be tested on all backends to ensure that conversions
+   are working correctly.
+#. type hints, docstrings and examples are not required for frontend functions.
+
+In the case where your chosen function exists in all frameworks by default, but
+is not implemented in Ivy's functional API, please convert your existing GitHub
+issue to request for the function to be added to Ivy. Meanwhile, you can select
+another frontend function to work on from the ToDo list! If you're stuck on a
+function which requires complex compositions, you're allowed to reselect a function
+too!
 
 **Round Up**
 

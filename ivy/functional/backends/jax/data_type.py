@@ -59,6 +59,9 @@ class Finfo:
     def __init__(self, jnp_finfo: jnp.finfo):
         self._jnp_finfo = jnp_finfo
 
+    def __repr__(self):
+        return repr(self._jnp_finfo)
+
     @property
     def bits(self):
         return self._jnp_finfo.bits
@@ -130,14 +133,14 @@ def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
     return jnp.iinfo(ivy.as_native_dtype(type))
 
 
-def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
+def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> ivy.Dtype:
     if len(arrays_and_dtypes) <= 1:
         return jnp.result_type(arrays_and_dtypes)
 
     result = jnp.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
     for i in range(2, len(arrays_and_dtypes)):
         result = jnp.result_type(result, arrays_and_dtypes[i])
-    return result
+    return as_ivy_dtype(result)
 
 
 # Extra #

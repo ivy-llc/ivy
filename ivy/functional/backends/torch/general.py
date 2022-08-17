@@ -9,9 +9,6 @@ from functools import reduce
 from typing import List, Optional, Union, Sequence
 from numbers import Number
 
-# local
-from ivy.functional.backends.torch.device import as_native_dev, dev
-
 
 torch_scatter = None
 
@@ -24,7 +21,7 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def copy_array(x: torch.Tensor) -> torch.Tensor:
+def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return x.clone()
 
 
@@ -35,13 +32,21 @@ def array_equal(x0: torch.Tensor, x1: torch.Tensor) -> bool:
     return torch.equal(x0, x1)
 
 
-def to_numpy(x: torch.Tensor) -> np.ndarray:
-    if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
+def to_numpy(x: torch.Tensor, copy: bool = True) -> np.ndarray:
+    if isinstance(x, (float, int, bool)):
         return x
+    elif isinstance(x, np.ndarray):
+        if copy:
+            return x.copy()
+        else:
+            return x
     elif torch.is_tensor(x):
         if x.dtype is torch.bfloat16:
             x = x.to(torch.float16)
-        return x.detach().cpu().numpy()
+        if copy:
+            return x.detach().cpu().numpy()
+        else:
+            raise ValueError("Overwriting the same address is not supported for torch.")
     raise ValueError("Expected a pytorch tensor.")
 
 
@@ -59,12 +64,18 @@ def to_list(x: torch.Tensor) -> list:
     raise ValueError("Expected a pytorch tensor.")
 
 
-def floormod(x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
+def floormod(
+    x: torch.Tensor, y: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     ret = x % y
     return ret
 
 
-def unstack(x, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+def unstack(
+    x: torch.Tensor,
+    axis: int,
+    keepdims: bool = False
+) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))
@@ -91,7 +102,10 @@ def inplace_update(
     return x
 
 
-inplace_arrays_supported = lambda: True
+def inplace_arrays_supported():
+    return True
+
+
 inplace_variables_supported = lambda: True
 
 
@@ -121,14 +135,20 @@ def inplace_increment(
     return x
 
 
-def cumsum(x: torch.Tensor, axis: int = 0, out: Optional[torch.Tensor] = None):
+def cumsum(
+    x: torch.Tensor, axis: int = 0, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.cumsum(x, axis, out=out)
+
+
+cumsum.support_native_out = True
 
 
 def cumprod(
     x: torch.Tensor,
     axis: int = 0,
     exclusive: Optional[bool] = False,
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if exclusive:
@@ -139,14 +159,19 @@ def cumprod(
     return torch.cumprod(x, axis, out=out)
 
 
+cumprod.support_native_out = True
+
+
 # noinspection PyShadowingNames
 def scatter_flat(
-    indices,
-    updates,
+    indices: torch.Tensor,
+    updates: torch.Tensor,
     size: Optional[int] = None,
     tensor: Optional[torch.Tensor] = None,
     reduction: str = "sum",
-):
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -212,12 +237,14 @@ def _parse_ellipsis(so, ndims):
 
 # noinspection PyShadowingNames
 def scatter_nd(
-    indices,
-    updates,
+    indices: torch.Tensor,
+    updates: torch.Tensor,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor=None,
-    reduction="sum",
-):
+    tensor: Optional[torch.Tensor] = None,
+    reduction: str = "sum",
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
 
     # handle numeric updates
     updates = torch.tensor(
@@ -269,7 +296,7 @@ def scatter_nd(
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     indices_shape = indices.shape
@@ -341,12 +368,16 @@ def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
     axis: Optional[int] = -1,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.gather(params, axis, indices.type(torch.int64))
 
 
 # noinspection PyShadowingNames
-def gather_nd(params, indices):
+def gather_nd(
+    params: torch.Tensor, indices: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -381,26 +412,33 @@ def multiprocessing(context=None):
     return torch.multiprocessing.get_context(context)
 
 
-def indices_where(x, out: Optional[torch.Tensor] = None):
+def indices_where(
+    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     where_x = torch.where(x)
     res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1, out=out)
     return res
 
 
+indices_where.support_native_out = True
+
+
 # noinspection PyUnresolvedReferences,PyShadowingNames
-def one_hot(indices, depth: int, *, device: torch.device):
-    if device is None:
-        device = dev(indices)
-    return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(
-        as_native_dev(device)
-    )
+def one_hot(
+    indices: torch.Tensor,
+    depth: int,
+    *,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(device)
 
 
-def shape(x: torch.Tensor, as_array: bool = False) -> Union[torch.Size, torch.Tensor]:
+def shape(x: torch.Tensor, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return torch.tensor(x.shape)
+        return ivy.array(x.shape)
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:

@@ -1,12 +1,11 @@
+# For Review
 # global
 import mxnet as mx
-from typing import Union, List, Optional, Iterable, Sequence
-from numbers import Number
+from typing import Union, List, Optional, Iterable, Sequence, Tuple
 
 # local
 import ivy
-from ivy import default_device, as_native_dtype, default_dtype, as_ivy_dtype
-from ivy.functional.backends.mxnet import _mxnet_init_context
+from ivy import as_native_dtype, default_dtype, as_ivy_dtype
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
@@ -29,88 +28,111 @@ def _linspace(start, stop, num, cont):
     return ret
 
 
-def arange(stop, start=0, step=1, dtype=None, device=None):
-    cont = _mxnet_init_context(default_device(device))
-    stop = stop if isinstance(stop, Number) else stop.asscalar()
-    start = start if isinstance(start, Number) else start.asscalar()
-    step = step if isinstance(step, Number) else step.asscalar()
-    return mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
+def arange(
+    stop: Optional[float] = None,
+    start: float = 0,
+    step: float = 1,
+    dtype: Optional[type] = None,
+    device: mx.context.Context = None,
+) -> mx.nd.NDArray:
+    stop = stop if isinstance(stop, float) else stop.asscalar()
+    start = start if isinstance(start, float) else start.asscalar()
+    step = step if isinstance(step, float) else step.asscalar()
+    return mx.nd.arange(start, stop, ctx=device, step=step, dtype=dtype)
 
 
 def asarray(
-    object_in,
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    object_in: Union[mx.nd.NDArray, List[float], Tuple[float]],
+    dtype: Optional[type] = None,
+    device: mx.context.Context = None,
     copy: Optional[bool] = None,
-):
+) -> mx.nd.NDArray:
     # mxnet don't have asarray implementation, haven't properly tested
-    cont = _mxnet_init_context(default_device(device))
     if copy is None:
         copy = False
     if copy:
         if dtype is None and isinstance(object_in, mx.nd.NDArray):
-            return mx.nd.array(object_in, cont).as_in_context(cont)
+            return mx.nd.array(object_in, device).as_in_context(device)
         if dtype is None and not isinstance(object_in, mx.nd.NDArray):
-            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
         else:
-            dtype = as_ivy_dtype(default_dtype(dtype, object_in))
-            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+            dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
     else:
         if dtype is None and isinstance(object_in, mx.nd.NDArray):
-            return object_in.as_in_context(cont)
+            return object_in.as_in_context(device)
         if dtype is None and not isinstance(object_in, mx.nd.NDArray):
-            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
         else:
-            dtype = as_ivy_dtype(default_dtype(dtype, object_in))
-            return mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
+            dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
 
 
 def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    *,
+    dtype: type,
+    device: mx.context.Context,
 ) -> mx.nd.NDArray:
-    cont = _mxnet_init_context(default_device(device))
-    return mx.nd.empty(shape, as_native_dtype(default_dtype(dtype)), cont)
+    return mx.nd.empty(shape, dtype, device)
 
 
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: Optional[int] = 0,
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    *,
+    dtype: type,
+    device: mx.context.Context,
 ) -> mx.nd.NDArray:
-    cont = _mxnet_init_context(default_device(device))
-    return mx.nd.eye(n_rows, n_cols, k, ctx=cont).astype(dtype)
+    return mx.nd.eye(n_rows, n_cols, k, ctx=device).astype(dtype)
 
 
 # noinspection PyUnresolvedReferences
-def from_dlpack(x):
+def from_dlpack(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.nd.from_dlpack(x)
 
 
 def full(
-    shape: Union[ivy.NativeShape, Sequence[int]], fill_value, dtype=None, device=None
-):
-    shape = ivy.shape_to_tuple(shape)
-    cont = _mxnet_init_context(default_device(device))
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    fill_value: float,
+    dtype: Optional[type] = None,
+    device: Optional[mx.context.Context] = None,
+) -> mx.nd.NDArray:
+    if isinstance(shape, int):
+        shape = (shape,)
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(
             mx.nd.full(
                 (1,),
                 fill_value,
-                cont,
-                as_native_dtype(default_dtype(dtype, fill_value)),
+                device,
+                as_native_dtype(default_dtype(dtype=dtype, item=fill_value)),
             )
         )
     return mx.nd.full(
-        shape, fill_value, cont, as_native_dtype(default_dtype(dtype, fill_value))
+        shape,
+        fill_value,
+        device,
+        as_native_dtype(default_dtype(dtype=dtype, item=fill_value)),
     )
 
 
-def linspace(start, stop, num, axis=None, device=None):
-    cont = _mxnet_init_context(default_device(device))
+def linspace(
+    start: Union[mx.nd.NDArray, float],
+    stop: Union[mx.nd.NDArray, float],
+    num: int,
+    axis: Optional[int] = None,
+    device: mx.context.Context = None,
+) -> mx.nd.NDArray:
     num = num.asnumpy()[0] if isinstance(num, mx.nd.NDArray) else num
     start_is_array = isinstance(start, mx.nd.NDArray)
     stop_is_array = isinstance(stop, mx.nd.NDArray)
@@ -122,13 +144,13 @@ def linspace(start, stop, num, axis=None, device=None):
         start_shape = list(stop.shape)
         stop = stop.reshape((-1,))
     if start_is_array and stop_is_array:
-        res = [_linspace(strt, stp, num, cont) for strt, stp in zip(start, stop)]
+        res = [_linspace(strt, stp, num, device) for strt, stp in zip(start, stop)]
     elif start_is_array and not stop_is_array:
-        res = [_linspace(strt, stop, num, cont) for strt in start]
+        res = [_linspace(strt, stop, num, device) for strt in start]
     elif not start_is_array and stop_is_array:
-        res = [_linspace(start, stp, num, cont) for stp in stop]
+        res = [_linspace(start, stp, num, device) for stp in stop]
     else:
-        return _linspace(start, stop, num, cont)
+        return _linspace(start, stop, num, device)
     new_shape = start_shape + [num]
     res = mx.nd.concat(*res, dim=-1).reshape(new_shape)
     if axis is not None:
@@ -144,24 +166,26 @@ def meshgrid(*xs: mx.nd.NDArray, indexing: Optional[str] = "xy") -> List[mx.nd.N
 
 def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    *,
+    dtype: type,
+    device: mx.context.Context,
 ) -> mx.nd.NDArray:
-    cont = _mxnet_init_context(default_device(device))
     shape = [shape] if shape is not isinstance(shape, Iterable) else shape
     if len(shape) == 0 or 0 in shape:
-        return _1_dim_array_to_flat_array(mx.nd.ones((1,), ctx=cont).astype(dtype))
-    return mx.nd.ones(shape, ctx=cont).astype(dtype)
+        return _1_dim_array_to_flat_array(mx.nd.ones((1,), ctx=device).astype(dtype))
+    return mx.nd.ones(shape, ctx=device).astype(dtype)
 
 
 def ones_like(
     x: mx.nd.NDArray,
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: Optional[Union[ivy.Device, mx.context.Context]] = None,
+    /,
+    *,
+    dtype: type,
+    device: mx.context.Context,
 ) -> mx.nd.NDArray:
     if x.shape == ():
-        return mx.nd.array(1.0, ctx=_mxnet_init_context(default_device(device)))
-    mx_ones = mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(device)))
+        return mx.nd.array(1.0, ctx=device)
+    mx_ones = mx.nd.ones_like(x, ctx=device)
     return mx_ones if dtype is None else mx_ones.astype(dtype)
 
 
@@ -175,17 +199,22 @@ def zeros(
     dtype: type,
     device: mx.context.Context,
 ) -> mx.nd.NDArray:
-    cont = _mxnet_init_context(device)
     if len(shape) == 0 or 0 in shape:
-        return _1_dim_array_to_flat_array(mx.nd.zeros((1,), ctx=cont).astype(dtype))
-    return mx.nd.zeros(shape, ctx=cont).astype(dtype)
+        return _1_dim_array_to_flat_array(mx.nd.zeros((1,), ctx=device).astype(dtype))
+    return mx.nd.zeros(shape, ctx=device).astype(dtype)
 
 
-def zeros_like(x, dtype=None, device=None):
+def zeros_like(
+    x: mx.nd.NDArray,
+    /,
+    *,
+    dtype: Optional[type] = None,
+    device: Optional[mx.context.Context] = None,
+) -> mx.nd.NDArray:
     if x.shape == ():
-        return mx.nd.array(0.0, ctx=_mxnet_init_context(default_device(device)))
-    mx_zeros = mx.nd.zeros_like(x, ctx=_mxnet_init_context(default_device(device)))
-    return mx_zeros if not dtype else mx_zeros.astype(dtype)
+        return mx.nd.array(0.0, ctx=device)
+    mx_zeros = mx.nd.zeros_like(x, ctx=device)
+    return mx_zeros.astype(dtype)
 
 
 # Extra #
@@ -195,6 +224,14 @@ def zeros_like(x, dtype=None, device=None):
 array = asarray
 
 
-def logspace(start, stop, num, base=10.0, axis=None, device=None):
-    power_seq = linspace(start, stop, num, axis, default_device(device))
+def logspace(
+    start: Union[mx.nd.NDArray, int],
+    stop: Union[mx.nd.NDArray, int],
+    num: int,
+    base: float = 10.0,
+    axis: int = None,
+    *,
+    device: mx.context.Context,
+) -> mx.nd.NDArray:
+    power_seq = linspace(start, stop, num, axis, device)
     return base**power_seq

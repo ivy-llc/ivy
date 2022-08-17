@@ -8,11 +8,13 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+@handle_cmd_line_args
 @given(
     dtype_x_normidxs=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=ivy_np.valid_numeric_dtypes,
         allow_inf=False,
         min_num_dims=1,
         min_axis=1,
@@ -23,13 +25,9 @@ import ivy_tests.test_ivy.helpers as helpers
     offset=st.floats(min_value=0.0),
     epsilon=st.floats(min_value=ivy._MIN_BASE, max_value=0.1),
     new_std=st.floats(min_value=0.0, exclude_min=True),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_layer_norm(
+    *,
     dtype_x_normidxs,
     num_positional_args,
     scale,
@@ -45,15 +43,15 @@ def test_layer_norm(
 ):
     dtype, x, normalized_idxs = dtype_x_normidxs
     helpers.test_function(
-        dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "layer_norm",
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="layer_norm",
         x=np.asarray(x, dtype=dtype),
         normalized_idxs=normalized_idxs,
         epsilon=epsilon,

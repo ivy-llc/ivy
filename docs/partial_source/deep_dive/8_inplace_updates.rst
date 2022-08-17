@@ -16,14 +16,15 @@ Inplace Updates
 .. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`ivy.reshape`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/manipulation.py#L418
-.. _`ivy.astype`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/data_type.py#L164
-.. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/creation.py#L64
+.. _`ivy.astype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L46
+.. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/creation.py#L114
 .. _`wrapping`:
 .. _`ivy.inplace_update`: https://github.com/unifyai/ivy/blob/3a21a6bef52b93989f2fa2fa90e3b0f08cc2eb1b/ivy/functional/ivy/general.py#L1137
 .. _`inplace updates discussion`: https://github.com/unifyai/ivy/discussions/1319
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/982738152236130335
+.. _`in the decorator`: https://github.com/unifyai/ivy/blob/588618fe04de21f79d68a8f6cbb48ab3402c6905/ivy/func_wrapper.py#L287
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
 This enables much more control over the memory-efficiency of the program,
@@ -208,35 +209,35 @@ The implementations of :code:`ivy.tan` for each backend are as follows.
 
 .. code-block:: python
 
-    def tan(x: JaxArray) -> JaxArray:
+    def tan(x: JaxArray, /) -> JaxArray:
         return jnp.tan(x)
 
 **MXNet** (no :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: mx.NDArray) -> mx.NDArray:
+    def tan(x: mx.NDArray, /) -> mx.NDArray:
         return mx.nd.tan(x)
 
 **NumPy** (includes :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    def tan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
         return np.tan(x, out=out)
 
 **TensorFlow** (no :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: Tensor) -> Tensor:
+    def tan(x: Tensor, /) -> Tensor:
         return tf.tan(x)
 
 **PyTorch** (includes :code:`out` argument):
 
 .. code-block:: python
 
-    def tan(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
         return torch.tan(x, out=out)
 
 
@@ -275,9 +276,10 @@ We'll use :code:`ivy.cross_entropy` as an example:
     def cross_entropy(
         true: Union[ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Optional[int] = -1,
         epsilon: Optional[float] = 1e-7,
-        *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
@@ -314,6 +316,35 @@ Technically, this could be handled using the
 `handle_out_argument <https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/func_wrapper.py#L361>`_
 wrapping, but we opt to implement this in the compositional function itself,
 due to point 1 mentioned above.
+
+**Mixed Functions**
+
+As explained in the :ref:`Function Types` section, *mixed* functions can effectively
+behave as either compositional or primary functions, depending on the backend
+that is selected.
+
+Unlike *compositional* arguments, where the :code:`handle_out_argument` decorator is not
+included, this decorator *should* be included for *mixed* functions. This decorator is
+needed in order to ensure the :code:`out` argument is handled correctly when the backend
+*does* include a backend-specific implementation, which itself may or may not handle the
+:code:`out` argument explicitly. In such cases, the *mixed* function behaves like a
+*primary* function. If the backend-specific implementation does not handle the
+:code:`out` argument explicitly (there is no attribute :code:`support_native_out`
+specified on the backend function), then it will need to be handled `in the decorator`_.
+
+However, the inclusion of this decorator means that in cases where the *mixed* function
+is called compositionally (there is no backend implementation), then the :code:`out`
+argument will also be handled `in the decorator`_, this time because of the lack of the
+:code:`support_native_out` attribute found on the compositional implementation. But this
+is not ideal. All compositional implementations are fully capable of handling the
+:code:`out` argument explicitly, and so handling it `in the decorator`_ will likely be
+less efficient, and prevent us from leveraging backend-specific in-place optimizations
+where they might exist when calling the individual Ivy functions of the compositional
+implementation.
+
+Therefore, we always add the :code:`support_native_out` attribute to *mixed* functions,
+to ensure that the :code:`out` argument is always handled directly by the compositional
+implementation, rather than being handled `in the decorator`_.
 
 copy argument
 -------------

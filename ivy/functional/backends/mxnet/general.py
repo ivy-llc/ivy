@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 import ivy
 
 _round = round
@@ -37,7 +37,7 @@ def array_equal(x0: mx.nd.NDArray, x1: mx.nd.NDArray) -> bool:
     return mx.nd.min(mx.nd.broadcast_equal(x0, x1)) == 1
 
 
-def to_numpy(x: mx.nd.NDArray) -> mx.nd.NDArray:
+def to_numpy(x: mx.nd.NDArray, copy: bool = True) -> mx.nd.NDArray:
     if isinstance(x, np.ndarray):
         return x
     else:
@@ -73,7 +73,11 @@ def floormod(
 container_types = lambda: []
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: mx.nd.NDArray, 
+    axis: int,
+    keepdims: bool = False,
+) -> List[mx.nd.NDArray]:
     if x.shape == ():
         return [x]
     num_outputs = x.shape[axis]
@@ -95,11 +99,17 @@ def inplace_update(
     return x
 
 
-inplace_arrays_supported = lambda: True
+def inplace_arrays_supported():
+    return True
+
+
 inplace_variables_supported = lambda: True
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, mx.nd.NDArray],
+    val: Union[ivy.Array, mx.nd.NDArray],
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native[:] -= val_native
     if ivy.is_ivy_array(x):
@@ -109,7 +119,10 @@ def inplace_decrement(x, val):
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, mx.nd.NDArray],
+    val: Union[ivy.Array, mx.nd.NDArray],
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native[:] += val_native
     if ivy.is_ivy_array(x):
@@ -242,15 +255,17 @@ def multiprocessing(context=None):
     )
 
 
-def one_hot(indices, depth, device=None):
+def one_hot(indices: mx.nd.NDArray, depth: int, *, device: mx.context.Context):
     return mx.nd.one_hot(indices, depth)
 
 
-def shape(x: mx.nd.NDArray, as_array: bool = False) -> Union[tuple, mx.nd.NDArray]:
+def shape(
+    x: mx.nd.NDArray, as_array: bool = False
+) -> Union[mx.nd.NDArray, ivy.Shape, ivy.Array]:
     if as_array:
-        return mx.nd.shape_array(x)
+        return ivy.array(mx.nd.shape_array(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):

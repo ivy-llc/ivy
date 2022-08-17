@@ -10,14 +10,38 @@ class ArrayWithLosses(abc.ABC):
     def cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.cross_entropy
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.cross_entropy. This method simply
+        wraps the function, and so the docstring for ivy.cross_entropy also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array containing true labels.
+        pred
+            input array containing the predicted labels.
+        axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``,
+            the cross-entropy will be computed along the last dimension.
+            Default: ``-1``.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The cross-entropy loss between the given distributions.
 
         Examples
         --------
@@ -32,13 +56,33 @@ class ArrayWithLosses(abc.ABC):
     def binary_cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
-        epsilon: float = 1e-7,
+        /,
         *,
+        epsilon: float = 1e-7,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.binary_cross_entropy. This method
         simply wraps the function, and so the docstring for ivy.binary_cross_entropy
         also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array containing true labels.
+        pred
+            input array containing Predicted labels.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The binary cross entropy between the given distributions.
 
         Examples
         --------
@@ -53,15 +97,38 @@ class ArrayWithLosses(abc.ABC):
     def sparse_cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sparse_cross_entropy. This method
         simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
         also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array containing the true labels as logits.
+        pred
+            input array containing the predicted labels as logits.
+        axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``, the
+            cross-entropy will be computed along the last dimension. Default: ``-1``.
+            epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The sparse cross-entropy loss between the given distributions.
 
         Examples
         --------

@@ -1,7 +1,7 @@
 # global
 import math
 import jax.numpy as jnp
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import Union, Tuple, Optional, List, Sequence, Iterable
 from numbers import Number
 
 # local
@@ -18,7 +18,7 @@ def _flat_array_to_1_dim_array(x):
 
 
 def concat(
-    xs: List[JaxArray], axis: int = 0, out: Optional[JaxArray] = None
+    xs: List[JaxArray], axis: int = 0, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     is_tuple = type(xs) is tuple
 
@@ -34,11 +34,12 @@ def concat(
     return ret
 
 
-def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
+def expand_dims(
+    x: JaxArray,
+    axis: Union[int, Tuple[int], List[int]] = 0,
+) -> JaxArray:
     try:
         ret = jnp.expand_dims(x, axis)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
         return ret
     except ValueError as error:
         raise IndexError(error)
@@ -47,6 +48,7 @@ def expand_dims(x: JaxArray, axis: int = 0, out: Optional[JaxArray] = None) -> J
 def flip(
     x: JaxArray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.flip(x, axis=axis)
@@ -54,7 +56,7 @@ def flip(
 
 
 def permute_dims(
-    x: JaxArray, axes: Tuple[int, ...], out: Optional[JaxArray] = None
+    x: JaxArray, axes: Tuple[int, ...], *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jnp.transpose(x, axes)
     return ret
@@ -63,24 +65,34 @@ def permute_dims(
 def reshape(
     x: JaxArray,
     shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     copy: Optional[bool] = None,
 ) -> JaxArray:
-    ret = jnp.reshape(x, shape)
-    return ret
+    if copy:
+        newarr = jnp.copy(x)
+        return jnp.reshape(newarr, shape)
+    return jnp.reshape(x, shape)
 
 
 def roll(
     x: JaxArray,
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.roll(x, shift, axis)
 
 
-def squeeze(x: JaxArray, axis: Union[int, Tuple[int], List[int]] = None) -> JaxArray:
+def squeeze(
+    x: JaxArray,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
-            ret = x
+            return x
         raise ValueError(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
@@ -90,7 +102,10 @@ def squeeze(x: JaxArray, axis: Union[int, Tuple[int], List[int]] = None) -> JaxA
 
 
 def stack(
-    x: Union[Tuple[JaxArray], List[JaxArray]], axis: Optional[int] = None
+    x: Union[Tuple[JaxArray], List[JaxArray]],
+    axis: Optional[int] = None,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
         axis = 0
@@ -102,7 +117,14 @@ def stack(
 # ------#
 
 
-def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
+def split(
+    x,
+    num_or_size_splits=None,
+    axis=0,
+    with_remainder=False,
+    *,
+    out: Optional[JaxArray] = None,
+):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception(
@@ -126,18 +148,29 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return jnp.split(x, num_or_size_splits, axis)
 
 
-def repeat(x: JaxArray, repeats: Union[int, List[int]], axis: int = None) -> JaxArray:
+def repeat(
+    x: JaxArray,
+    repeats: Union[int, Iterable[int]],
+    axis: int = None,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+
     ret = jnp.repeat(x, repeats, axis)
     return ret
 
 
-def tile(x: JaxArray, reps, out: Optional[JaxArray] = None) -> JaxArray:
+def tile(x: JaxArray, reps, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.tile(x, reps)
     return ret
 
 
 def clip(
-    x: JaxArray, x_min: Union[Number, JaxArray], x_max: Union[Number, JaxArray]
+    x: JaxArray,
+    x_min: Union[Number, JaxArray],
+    x_max: Union[Number, JaxArray],
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if (
         hasattr(x_min, "dtype")
@@ -174,19 +207,25 @@ def clip(
 
 
 def constant_pad(
-    x: JaxArray, pad_width: List[List[int]], value: Number = 0.0
+    x: JaxArray,
+    pad_width: List[List[int]],
+    value: Number = 0.0,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
     return ret
 
 
-def zero_pad(x: JaxArray, pad_width: List[List[int]], out: Optional[JaxArray] = None):
+def zero_pad(
+    x: JaxArray, pad_width: List[List[int]], *, out: Optional[JaxArray] = None
+):
     ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
     return ret
 
 
 def swapaxes(
-    x: JaxArray, axis0: int, axis1: int, out: Optional[JaxArray] = None
+    x: JaxArray, axis0: int, axis1: int, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jnp.swapaxes(x, axis0, axis1)
     return ret

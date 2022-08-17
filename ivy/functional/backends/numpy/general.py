@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -16,7 +16,7 @@ from ivy.functional.backends.numpy.device import _to_device
 # --------#
 
 
-def copy_array(x: np.ndarray) -> np.ndarray:
+def copy_array(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return x.copy()
 
 
@@ -24,8 +24,11 @@ def array_equal(x0: np.ndarray, x1: np.ndarray) -> bool:
     return np.array_equal(x0, x1)
 
 
-def to_numpy(x: np.ndarray) -> np.ndarray:
-    return x
+def to_numpy(x: np.ndarray, copy: bool = True) -> np.ndarray:
+    if copy:
+        return x.copy()
+    else:
+        return x
 
 
 def to_scalar(x: np.ndarray) -> Number:
@@ -40,7 +43,10 @@ def container_types():
     return []
 
 
-inplace_arrays_supported = lambda: True
+def inplace_arrays_supported():
+    return True
+
+
 inplace_variables_supported = lambda: True
 
 
@@ -57,8 +63,12 @@ def inplace_update(
     if not val_native.flags.c_contiguous:
         val_native = np.ascontiguousarray(val_native)
 
-    x_native.data = val_native
-
+    if val_native.shape == x_native.shape:
+        if x_native.dtype != val_native.dtype:
+            x_native = x_native.astype(val_native.dtype)
+        np.copyto(x_native, val_native)
+    else:
+        x_native = val_native
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
@@ -72,12 +82,18 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def floormod(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+def floormod(
+    x: np.ndarray, y: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     ret = np.asarray(x % y)
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: np.ndarray,
+    axis: int, 
+    keepdims: bool = False
+) -> List[np.ndarray]:
     if x.shape == ():
         return [x]
     x_split = np.split(x, x.shape[axis], axis)
@@ -86,7 +102,9 @@ def unstack(x, axis, keepdims=False):
     return [np.squeeze(item, axis) for item in x_split]
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native -= val_native
     if ivy.is_ivy_array(x):
@@ -96,7 +114,9 @@ def inplace_decrement(x, val):
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native += val_native
     if ivy.is_ivy_array(x):
@@ -112,6 +132,9 @@ def cumsum(
     return np.cumsum(x, axis, out=out)
 
 
+cumsum.support_native_out = True
+
+
 def cumprod(
     x: np.ndarray,
     axis: int = 0,
@@ -120,13 +143,24 @@ def cumprod(
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = np.cumprod(x, -1, out=out)
+        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        res = np.cumprod(x, -1)
         return np.swapaxes(res, axis, -1)
     return np.cumprod(x, axis, out=out)
 
 
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
+cumprod.support_native_out = True
+
+
+def scatter_flat(
+    indices: np.ndarray,
+    updates: np.ndarray,
+    size: Optional[int] = None,
+    tensor: Optional[np.ndarray] = None,
+    reduction: str = "sum",
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -164,16 +198,18 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum"):
 
 # noinspection PyShadowingNames
 def scatter_nd(
-    indices,
-    updates,
+    indices: np.ndarray,
+    updates: np.ndarray,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor=None,
-    reduction="sum",
-):
+    tensor: Optional[np.ndarray] = None,
+    reduction: str = "sum",
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
+        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -212,11 +248,15 @@ def gather(
     params: np.ndarray,
     indices: np.ndarray,
     axis: Optional[int] = -1,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return _to_device(np.take_along_axis(params, indices, axis))
 
 
-def gather_nd(params, indices):
+def gather_nd(
+    params: np.ndarray, indices: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -258,18 +298,23 @@ def indices_where(x, out: Optional[np.ndarray] = None):
     return res
 
 
+indices_where.support_native_out = True
+
+
 # noinspection PyUnusedLocal
-def one_hot(indices, depth, *, device):
+def one_hot(
+    indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = np.eye(depth)[np.array(indices).reshape(-1)]
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(x: np.ndarray, as_array: bool = False) -> Union[tuple, np.ndarray]:
+def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return np.asarray(np.shape(x))
+        return ivy.array(np.shape(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):

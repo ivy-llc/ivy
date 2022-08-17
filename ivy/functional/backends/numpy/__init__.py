@@ -19,10 +19,10 @@ int8 = ivy.IntDtype("int8")
 int16 = ivy.IntDtype("int16")
 int32 = ivy.IntDtype("int32")
 int64 = ivy.IntDtype("int64")
-uint8 = ivy.IntDtype("uint8")
-uint16 = ivy.IntDtype("uint16")
-uint32 = ivy.IntDtype("uint32")
-uint64 = ivy.IntDtype("uint64")
+uint8 = ivy.UintDtype("uint8")
+uint16 = ivy.UintDtype("uint16")
+uint32 = ivy.UintDtype("uint32")
+uint64 = ivy.UintDtype("uint64")
 bfloat16 = ivy.FloatDtype("bfloat16")
 float16 = ivy.FloatDtype("float16")
 float32 = ivy.FloatDtype("float32")
@@ -75,12 +75,18 @@ valid_numeric_dtypes = (
 )
 valid_int_dtypes = (int8, int16, int32, int64, uint8, uint16, uint32, uint64)
 valid_float_dtypes = (float16, float32, float64)
+valid_uint_dtypes = (uint8, uint16, uint32, uint64)
 
 # invalid data types
 invalid_dtypes = (bfloat16,)
 invalid_numeric_dtypes = (bfloat16,)
 invalid_int_dtypes = ()
 invalid_float_dtypes = (bfloat16,)
+invalid_uint_dtypes = ()
+
+native_inplace_support = False
+
+supports_gradients = False
 
 
 def closest_valid_dtype(type):

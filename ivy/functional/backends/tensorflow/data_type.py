@@ -44,6 +44,9 @@ class Finfo:
     def __init__(self, tf_finfo: tf.experimental.numpy.finfo):
         self._tf_finfo = tf_finfo
 
+    def __repr__(self):
+        return repr(self._tf_finfo)
+
     @property
     def bits(self):
         return self._tf_finfo.bits
@@ -117,7 +120,7 @@ def broadcast_to(
 
 
 def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bool:
-    if isinstance(from_, tf.Tensor):
+    if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
         from_ = from_.dtype
     from_str = str(from_)
     to_str = str(to)
@@ -153,7 +156,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
 
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
-) -> tf.DType:
+) -> ivy.Dtype:
     if len(arrays_and_dtypes) <= 1:
         return tf.experimental.numpy.result_type(arrays_and_dtypes)
 
@@ -162,7 +165,7 @@ def result_type(
     )
     for i in range(2, len(arrays_and_dtypes)):
         result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
-    return result
+    return as_ivy_dtype(result)
 
 
 # Extra #

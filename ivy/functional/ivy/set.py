@@ -1,9 +1,8 @@
 # global
-from typing import Union, Tuple, Optional
+from typing import Union, NamedTuple, Optional
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
@@ -17,9 +16,7 @@ from ivy.func_wrapper import (
 
 @to_native_arrays_and_back
 @handle_nestable
-def unique_all(
-    x: Union[ivy.Array, ivy.NativeArray]
-) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
+def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     """Returns the unique elements of an input array ``x``, the first occurring indices
     for each unique element in ``x``, the indices from the set of unique elements that
     reconstruct ``x``, and the corresponding counts for each unique element in ``x``.
@@ -248,12 +245,12 @@ def unique_all(
     ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 
     """
-    return current_backend(x).unique_all(x)
+    return ivy.current_backend(x).unique_all(x)
 
 
 @to_native_arrays_and_back
 @handle_nestable
-def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
+def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     """Returns a tuple of two arrays, one being the unique elements of an input array x
     and the other one the indices from the set of uniques elements that reconstruct x.
 
@@ -268,7 +265,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
         tuple of two arrays (values, inverse_indices)
 
     """
-    return current_backend(x).unique_inverse(x)
+    return ivy.current_backend(x).unique_inverse(x)
 
 
 @to_native_arrays_and_back
@@ -276,6 +273,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy
 @handle_nestable
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -322,12 +320,12 @@ def unique_values(
            implementations.
 
     """
-    return current_backend(x).unique_values(x, out=out)
+    return ivy.current_backend(x).unique_values(x, out=out)
 
 
 @to_native_arrays_and_back
 @handle_nestable
-def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.Array]:
+def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     """
     Returns the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.
@@ -416,4 +414,4 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array, ivy.
         b: (list[2],<classivy.array.array.Array>shape=[4])
     }
     """
-    return current_backend(x).unique_counts(x)
+    return ivy.current_backend(x).unique_counts(x)

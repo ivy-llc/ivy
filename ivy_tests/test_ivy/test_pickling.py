@@ -16,7 +16,10 @@ import ivy.functional.backends.numpy as ivy_np
 # pickling array test to str
 @given(
     array_shape=helpers.lists(
-        st.integers(0, 5), min_size="num_dims", max_size="num_dims", size_bounds=[0, 5]
+        arg=helpers.ints(min_value=0, max_value=5),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[0, 5],
     ),
     dtype=st.sampled_from(list(ivy_np.valid_dtypes)),
     data=st.data(),
@@ -39,7 +42,10 @@ def test_pickle_to_string(array_shape, dtype, data, device, fw):
 # pickling array test to disk
 @given(
     array_shape=helpers.lists(
-        st.integers(0, 5), min_size="num_dims", max_size="num_dims", size_bounds=[0, 5]
+        arg=helpers.ints(min_value=0, max_value=5),
+        min_size="num_dims",
+        max_size="num_dims",
+        size_bounds=[0, 5],
     ),
     dtype=st.sampled_from(list(ivy_np.valid_dtypes)),
     data=st.data(),
