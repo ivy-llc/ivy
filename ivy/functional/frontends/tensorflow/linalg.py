@@ -8,8 +8,8 @@ def det(input, name=None):
 det.unsupported_dtypes = ("float16", "bfloat16")
 
 
-def eigh(tensor, name=None):
-    return ivy.eigh(tensor)
+def eigvals(tensor, name=None):
+    return ivy.eigvals(tensor)
 
 
-eigh.unsupported_dtypes = ("float16", "bfloat16")
+eigvals.unsupported_dtypes = ("float16","bfloat16")
