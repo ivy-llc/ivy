@@ -27,16 +27,22 @@ def execute_with_gradients(func, xs, retain_grads=False):
     with tf.GradientTape(
         persistent=retain_grads, watch_accessed_variables=False
     ) as tape:
-        tape.watch(ivy.to_native(xs))
+        # tape.watch(ivy.to_native(xs))
+        xs = ivy.to_native(xs)
+        tape.watch(xs)
+        # xs = ivy.to_ivy(xs, nested=True)
         func_ret = func(xs)
+        # xs = ivy.to_native(xs, nested=True)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
         rest = func_ret[1:]
     else:
         y = func_ret
         rest = tuple()
-    y = ivy.to_native(y)
-    grads = tape.gradient(y, ivy.to_native(xs))
+    y = ivy.to_native(y, nested=True)
+    # grads = tape.gradient(y, ivy.to_native(xs))
+    grads = tape.gradient(y, xs)
+    print(grads)
     grads = ivy.to_ivy(grads)
     y = ivy.to_ivy(y)
     if not retain_grads:
