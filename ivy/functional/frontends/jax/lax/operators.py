@@ -63,10 +63,9 @@ def sin(x):
 sin.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
-
 def sign(x):
     return ivy.sign(x)
 
+
 def asin(x):
     return ivy.asin(x)
-
