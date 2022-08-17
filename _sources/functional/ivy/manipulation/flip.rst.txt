@@ -5,8 +5,6 @@ flip
 
 .. autofunction:: ivy.array.array_methods.flip
 
-.. autofunction:: ivy.container.container_methods.static_flip
-
 .. autofunction:: ivy.container.container_methods.flip
 |
 | **Supported Frameworks:**
@@ -37,5 +35,4 @@ flip
    flip/flip_functional.rst
    flip/flip_array.rst
    flip/flip_container.rst
-   flip/static_flip_container.rst
 
