@@ -73,3 +73,7 @@ def min(x, y):
 
 def mul(x, y):
     return ivy.multiply(x, y)
+
+
+def eq(x, y):
+    return ivy.equal(x, y)
