@@ -3,7 +3,7 @@
 # global
 
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st, settings
 
 # local
 import ivy
@@ -53,7 +53,6 @@ def _arrays_idx_n_dtypes(draw):
     num_positional_args=helpers.num_positional_args(fn_name="concat"),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_concat(
     *,
     data,
@@ -101,7 +100,6 @@ def test_concat(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_expand_dims(
     *,
     data,
@@ -154,7 +152,6 @@ def test_expand_dims(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_flip(
     *,
     data,
@@ -211,7 +208,6 @@ def _permute_dims_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_permute_dims(
     *,
     data,
@@ -259,7 +255,6 @@ def test_permute_dims(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_reshape(
     *,
     data,
@@ -328,7 +323,6 @@ def test_reshape(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_roll(
     *,
     data,
@@ -390,7 +384,6 @@ def _squeeze_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_squeeze(
     *,
     data,
@@ -459,7 +452,6 @@ def _stack_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_stack(
     *,
     data,
@@ -553,7 +545,6 @@ def _repeat_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_repeat(
     *,
     data,
@@ -626,7 +617,6 @@ def _tile_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_tile(
     *,
     data,
@@ -697,7 +687,6 @@ def _pad_helper(draw):
     num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_constant_pad(
     *,
     data,
@@ -742,7 +731,6 @@ def test_constant_pad(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_zero_pad(
     *,
     data,
@@ -795,7 +783,6 @@ def test_zero_pad(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_swapaxes(
     *,
     data,
@@ -844,7 +831,6 @@ def test_swapaxes(
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_clip(
     *,
     data,
@@ -942,7 +928,6 @@ def _split_helper(draw):
     instance_method=st.booleans(),
     data=st.data(),
 )
-@settings(max_examples=1)
 def test_split(
     *,
     data,

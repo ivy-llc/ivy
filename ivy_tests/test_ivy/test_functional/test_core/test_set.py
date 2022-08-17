@@ -61,7 +61,6 @@ def test_unique_values(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_all"),
 )
-@settings(max_examples=1)
 def test_unique_all(
     *,
     dtype_and_x,
@@ -101,7 +100,6 @@ def test_unique_all(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_counts"),
 )
-@settings(max_examples=1)
 def test_unique_counts(
     *,
     dtype_and_x,
@@ -141,7 +139,6 @@ def test_unique_counts(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_inverse"),
 )
-@settings(max_examples=1)
 def test_unique_inverse(
     *,
     dtype_and_x,

@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st, assume, settings
+from hypothesis import given, strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -56,7 +56,6 @@ def x_and_linear(draw, dtypes):
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
 )
-@settings(max_examples=1)
 def test_linear(
     *,
     dtype_x_weight_bias,
@@ -115,7 +114,6 @@ def test_linear(
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-@settings(max_examples=1)
 def test_dropout(
     *,
     dtype_and_x,
@@ -203,7 +201,6 @@ def x_and_scaled_attention(draw, dtypes):
         fn_name="scaled_dot_product_attention"
     ),
 )
-@settings(max_examples=1)
 def test_scaled_dot_product_attention(
     *,
     dtype_q_k_v_mask_scale,
@@ -288,7 +285,6 @@ def x_and_mha(draw, dtypes):
     ),
     num_positional_args=helpers.num_positional_args(fn_name="multi_head_attention"),
 )
-@settings(max_examples=1)
 def test_multi_head_attention(
     *,
     dtype_mha,
@@ -556,7 +552,6 @@ def _x_and_filters(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv1d"),
 )
-@settings(max_examples=1)
 def test_conv1d(
     *,
     x_f_d_df,
@@ -607,7 +602,6 @@ def test_conv1d(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv1d_transpose"),
 )
-@settings(max_examples=1)
 def test_conv1d_transpose(
     *,
     x_f_d_df,
@@ -660,7 +654,6 @@ def test_conv1d_transpose(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
 )
-@settings(max_examples=1)
 def test_conv2d(
     *,
     x_f_d_df,
@@ -709,7 +702,6 @@ def test_conv2d(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
 )
-@settings(max_examples=1)
 def test_conv2d_transpose(
     *,
     x_f_d_df,
@@ -763,7 +755,6 @@ def test_conv2d_transpose(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="depthwise_conv2d"),
 )
-@settings(max_examples=1)
 def test_depthwise_conv2d(
     *,
     x_f_d_df,
@@ -815,7 +806,6 @@ def test_depthwise_conv2d(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d"),
 )
-@settings(max_examples=1)
 def test_conv3d(
     *,
     x_f_d_df,
@@ -865,7 +855,6 @@ def test_conv3d(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d_transpose"),
 )
-@settings(max_examples=1)
 def test_conv3d_transpose(
     *,
     x_f_d_df,
@@ -975,7 +964,6 @@ def x_and_lstm(draw, dtypes):
     ),
     num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
 )
-@settings(max_examples=1)
 def test_lstm(
     *,
     dtype_lstm,

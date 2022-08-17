@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -16,7 +16,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="relu"),
 )
-@settings(max_examples=1)
 def test_relu(
     *,
     dtype_and_x,
@@ -50,7 +49,6 @@ def test_relu(
     num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
     alpha=st.floats(width=16),
 )
-@settings(max_examples=1)
 def test_leaky_relu(
     *,
     dtype_and_x,
@@ -88,7 +86,6 @@ def test_leaky_relu(
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gelu"),
 )
-@settings(max_examples=1)
 def test_gelu(
     *,
     dtype_and_x,
@@ -125,7 +122,6 @@ def test_gelu(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="tanh"),
 )
-@settings(max_examples=1)
 def test_tanh(
     *,
     dtype_and_x,
@@ -158,7 +154,6 @@ def test_tanh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
 )
-@settings(max_examples=1)
 def test_sigmoid(
     *,
     dtype_and_x,
@@ -194,7 +189,6 @@ def test_sigmoid(
     axis=helpers.ints(min_value=-1, max_value=0),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
 )
-@settings(max_examples=1)
 def test_softmax(
     *,
     dtype_and_x,
@@ -231,7 +225,6 @@ def test_softmax(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
 )
-@settings(max_examples=1)
 def test_softplus(
     *,
     dtype_and_x,

@@ -4,7 +4,7 @@
 # global
 import hypothesis.extra.numpy as hnp
 import numpy as np
-from hypothesis import given, strategies as st, settings
+from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -28,7 +28,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     num_positional_args=helpers.num_positional_args(fn_name="native_array"),
 )
-@settings(max_examples=1)
 def test_native_array(
     *,
     dtype_and_x,
@@ -77,7 +76,6 @@ def test_native_array(
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="linspace"),
 )
-@settings(max_examples=1)
 def test_linspace(
     *,
     dtype_and_start_stop,
@@ -128,7 +126,6 @@ def test_linspace(
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="logspace"),
 )
-@settings(max_examples=1)
 def test_logspace(
     *,
     dtype_and_start_stop,
@@ -173,7 +170,6 @@ def test_logspace(
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="arange"),
 )
-@settings(max_examples=1)
 def test_arange(
     *,
     start,
@@ -216,7 +212,6 @@ def test_arange(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="asarray"),
 )
-@settings(max_examples=1)
 def test_asarray(
     *,
     dtype_and_x,
@@ -257,7 +252,6 @@ def test_asarray(
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="empty"),
 )
-@settings(max_examples=1)
 def test_empty(
     *,
     shape,
@@ -303,7 +297,6 @@ def test_empty(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="empty_like"),
 )
-@settings(max_examples=1)
 def test_empty_like(
     *,
     dtype_and_x,
@@ -352,7 +345,6 @@ def test_empty_like(
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="eye"),
 )
-@settings(max_examples=1)
 def test_eye(
     *,
     n_rows,
@@ -398,7 +390,6 @@ def test_eye(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="from_dlpack"),
 )
-@settings(max_examples=1)
 def test_from_dlpack(
     *,
     dtype_and_x,
@@ -460,7 +451,6 @@ def _fill_value(draw):
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(fn_name="full"),
 )
-@settings(max_examples=1)
 def test_full(
     *,
     shape,
@@ -510,7 +500,6 @@ def _dtype_and_values(draw):
     fill_value=_fill_value(),
     num_positional_args=helpers.num_positional_args(fn_name="full_like"),
 )
-@settings(max_examples=1)
 def test_full_like(
     *,
     dtype_and_x,
@@ -560,7 +549,6 @@ dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="dtyp
     indexing=st.sampled_from(["xy", "ij"]),
     dtype=dtype_shared,
 )
-@settings(max_examples=1)
 def test_meshgrid(
     *,
     arrays,
@@ -604,7 +592,6 @@ def test_meshgrid(
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="ones"),
 )
-@settings(max_examples=1)
 def test_ones(
     *,
     shape,
@@ -643,7 +630,6 @@ def test_ones(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="ones_like"),
 )
-@settings(max_examples=1)
 def test_ones_like(
     *,
     dtype_and_x,
@@ -686,7 +672,6 @@ def test_ones_like(
     k=helpers.ints(min_value=-10, max_value=10),
     num_positional_args=helpers.num_positional_args(fn_name="tril"),
 )
-@settings(max_examples=1)
 def test_tril(
     *,
     dtype_and_x,
@@ -729,7 +714,6 @@ def test_tril(
     k=helpers.ints(min_value=-10, max_value=10),
     num_positional_args=helpers.num_positional_args(fn_name="triu"),
 )
-@settings(max_examples=1)
 def test_triu(
     *,
     dtype_and_x,
@@ -771,7 +755,6 @@ def test_triu(
     dtype=st.sampled_from(ivy_np.valid_int_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="zeros"),
 )
-@settings(max_examples=1)
 def test_zeros(
     *,
     shape,
@@ -810,7 +793,6 @@ def test_zeros(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="zeros_like"),
 )
-@settings(max_examples=1)
 def test_zeros_like(
     *,
     dtype_and_x,

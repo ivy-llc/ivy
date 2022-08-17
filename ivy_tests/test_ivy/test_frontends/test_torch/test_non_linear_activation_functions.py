@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -40,7 +40,6 @@ def _dtypes(draw):
     ),
     num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
 )
-@settings(max_examples=1)
 def test_torch_sigmoid(
     dtype_and_x,
     as_variable,
@@ -79,7 +78,6 @@ def test_torch_sigmoid(
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
 )
-@settings(max_examples=1)
 def test_torch_softmax(
     dtype_and_x,
     as_variable,
@@ -120,7 +118,6 @@ def test_torch_softmax(
     ),
     approximate=st.sampled_from(["none", "tanh"]),
 )
-@settings(max_examples=1)
 def test_torch_gelu(
     dtype_and_x,
     num_positional_args,

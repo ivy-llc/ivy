@@ -1,7 +1,7 @@
 # global
 import ivy
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -26,7 +26,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-@settings(max_examples=1)
 def test_jax_lax_add(
     dtype_and_x,
     as_variable,
@@ -60,7 +59,6 @@ def test_jax_lax_add(
     ),
     native_array=st.booleans(),
 )
-@settings(max_examples=1)
 def test_jax_lax_tan(
     dtype_and_x,
     as_variable,
@@ -171,7 +169,6 @@ def _arrays_idx_n_dtypes(draw):
     ),
     native_array=helpers.array_bools(),
 )
-@settings(max_examples=1)
 def test_jax_lax_concat(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
@@ -233,7 +230,6 @@ def _fill_value(draw):
         fn_name="ivy.functional.frontends.jax.lax.full"
     ),
 )
-@settings(max_examples=1)
 def test_jax_lax_full(
     shape,
     fill_value,
@@ -266,7 +262,6 @@ def test_jax_lax_full(
     ),
     native_array=st.booleans(),
 )
-@settings(max_examples=1)
 def test_jax_lax_abs(
     dtype_and_x,
     as_variable,
@@ -299,7 +294,6 @@ def test_jax_lax_abs(
     ),
     native_array=st.booleans(),
 )
-@settings(max_examples=1)
 def test_jax_lax_sqrt(
     dtype_and_x,
     as_variable,
@@ -332,7 +326,6 @@ def test_jax_lax_sqrt(
     ),
     native_array=st.booleans(),
 )
-@settings(max_examples=1)
 def test_jax_lax_acos(
     dtype_and_x,
     as_variable,

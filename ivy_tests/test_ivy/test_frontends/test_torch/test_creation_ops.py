@@ -1,6 +1,6 @@
 # global
 import ivy
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -56,7 +56,6 @@ def _requires_grad(draw):
         fn_name="ivy.functional.frontends.torch.full"
     ),
 )
-@settings(max_examples=1)
 def test_torch_full(
     shape,
     fill_value,

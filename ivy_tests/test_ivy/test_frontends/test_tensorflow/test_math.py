@@ -1,7 +1,7 @@
 # global
 import ivy
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -26,7 +26,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-@settings(max_examples=1)
 def test_tensorflow_add(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
@@ -55,7 +54,6 @@ def test_tensorflow_add(
     ),
     native_array=st.booleans(),
 )
-@settings(max_examples=1)
 def test_tensorflow_tan(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
@@ -89,7 +87,6 @@ def test_tensorflow_tan(
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-@settings(max_examples=1)
 def test_tensorflow_multiply(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
@@ -126,7 +123,6 @@ def test_tensorflow_multiply(
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-@settings(max_examples=1)
 def test_tensorflow_subtract(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
@@ -159,7 +155,6 @@ def test_tensorflow_subtract(
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-@settings(max_examples=1)
 def test_tensorflow_logical_xor(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
@@ -194,7 +189,6 @@ def test_tensorflow_logical_xor(
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-@settings(max_examples=1)
 def test_tensorflow_divide(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
@@ -229,7 +223,6 @@ def test_tensorflow_divide(
     ),
     native_array=st.booleans(),
 )
-@settings(max_examples=1)
 def test_tensorflow_negative(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):

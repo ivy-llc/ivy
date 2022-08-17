@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, assume, settings, strategies as st
+from hypothesis import given, assume, strategies as st
 
 
 # local
@@ -22,7 +22,6 @@ import pytest
 
 # dtype objects
 @handle_cmd_line_args
-@settings(max_examples=1)
 def test_dtype_instances(device, call):
     assert ivy.exists(ivy.int8)
     assert ivy.exists(ivy.int16)
@@ -157,7 +156,6 @@ def dtypes_shared(draw, num_dtypes):
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-@settings(max_examples=1)
 def test_astype(
     dtype_and_x,
     dtype,
@@ -206,7 +204,6 @@ def broadcastable_arrays(draw, dtypes):
     container=helpers.array_bools(),
     instance_method=helpers.array_bools(),
 )
-@settings(max_examples=1)
 def test_broadcast_arrays(
     arrays,
     input_dtypes,
@@ -259,7 +256,6 @@ def array_and_broadcastable_shape(draw, dtype):
     container_flags=st.booleans(),
     instance_method=st.booleans(),
 )
-@settings(max_examples=1)
 def test_broadcast_to(
     array_and_shape,
     input_dtype,
@@ -300,7 +296,6 @@ def test_broadcast_to(
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-@settings(max_examples=1)
 def test_can_cast(
     dtype_and_x,
     to_dtype,
@@ -352,7 +347,6 @@ def _array_or_type(draw, float_or_int):
     type=_array_or_type("float"),
     num_positional_args=helpers.num_positional_args(fn_name="finfo"),
 )
-@settings(max_examples=1)
 def test_finfo(
     type,
     num_positional_args,
@@ -391,7 +385,6 @@ def test_finfo(
     type=_array_or_type("int"),
     num_positional_args=helpers.num_positional_args(fn_name="iinfo"),
 )
-@settings(max_examples=1)
 def test_iinfo(
     type,
     num_positional_args,
@@ -441,7 +434,6 @@ def test_iinfo(
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-@settings(max_examples=1)
 def test_result_type(
     dtype_and_x,
     as_variable,
@@ -478,7 +470,6 @@ def test_result_type(
 @given(
     input_dtype=st.sampled_from(ivy.valid_dtypes),
 )
-@settings(max_examples=1)
 def test_as_ivy_dtype(
     input_dtype,
 ):
@@ -509,7 +500,6 @@ _valid_dtype_in_all_frameworks = [
 # as_native_dtype
 @handle_cmd_line_args
 @given(input_dtype=st.sampled_from(_valid_dtype_in_all_frameworks))
-@settings(max_examples=1)
 def test_as_native_dtype(
     input_dtype,
 ):
@@ -529,7 +519,6 @@ def test_as_native_dtype(
 # closest_valid_dtypes
 @handle_cmd_line_args
 @given(input_dtype=st.sampled_from(_valid_dtype_in_all_frameworks))
-@settings(max_examples=1)
 def test_closest_valid_dtype(
     input_dtype,
 ):
@@ -546,7 +535,6 @@ def test_closest_valid_dtype(
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     as_native=st.booleans(),
 )
-@settings(max_examples=1)
 def test_default_dtype(
     input_dtype,
     as_native,
@@ -583,7 +571,6 @@ def test_default_dtype(
     native_array=st.booleans(),
     container=st.booleans(),
 )
-@settings(max_examples=1)
 def test_dtype(
     array,
     input_dtype,
@@ -616,7 +603,6 @@ def test_dtype(
     input_dtype=st.sampled_from(ivy_np.valid_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="dtype_bits"),
 )
-@settings(max_examples=1)
 def test_dtype_bits(
     input_dtype,
     num_positional_args,
@@ -660,7 +646,6 @@ def test_dtype_bits(
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-@settings(max_examples=1)
 def test_is_bool_dtype(
     array,
     input_dtype,
@@ -705,7 +690,6 @@ def test_is_bool_dtype(
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-@settings(max_examples=1)
 def test_is_float_dtype(
     array,
     input_dtype,
@@ -749,7 +733,6 @@ def test_is_float_dtype(
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-@settings(max_examples=1)
 def test_is_int_dtype(
     array,
     input_dtype,
@@ -787,7 +770,6 @@ def test_is_int_dtype(
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
     container=helpers.list_of_length(x=st.booleans(), length=2),
 )
-@settings(max_examples=1)
 def test_promote_types(
     dtype_and_values,
     as_variable,
@@ -827,7 +809,6 @@ def test_promote_types(
     num_positional_args=helpers.num_positional_args(fn_name="type_promote_arrays"),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-@settings(max_examples=1)
 def test_type_promote_arrays(
     dtype_and_values,
     as_variable,
@@ -926,7 +907,6 @@ def dtypes_list(draw):
 # function_unsupported_dtypes
 @handle_cmd_line_args
 @given(supported_dtypes=dtypes_list())
-@settings(max_examples=1)
 def test_function_supported_dtypes(
     supported_dtypes,
 ):
@@ -942,7 +922,6 @@ def test_function_supported_dtypes(
 # function_unsupported_dtypes
 @handle_cmd_line_args
 @given(unsupported_dtypes=dtypes_list())
-@settings(max_examples=1)
 def test_function_unsupported_dtypes(
     unsupported_dtypes,
 ):
@@ -960,7 +939,6 @@ def test_function_unsupported_dtypes(
 @given(
     dtype_in=st.sampled_from(ivy.valid_dtypes),
 )
-@settings(max_examples=1)
 def test_invalid_dtype(dtype_in, fw):
     res = ivy.invalid_dtype(dtype_in)
     fw_invalid_dtypes = {
@@ -986,7 +964,6 @@ def test_invalid_dtype(dtype_in, fw):
 @given(
     dtype=st.sampled_from(ivy.valid_dtypes),
 )
-@settings(max_examples=1)
 def test_unset_default_dtype(dtype):
     stack_size_before = len(ivy.default_dtype_stack)
     ivy.set_default_dtype(dtype)
@@ -1002,7 +979,6 @@ def test_unset_default_dtype(dtype):
 @given(
     dtype=st.sampled_from(ivy.valid_float_dtypes),
 )
-@settings(max_examples=1)
 def test_unset_default_float_dtype(dtype):
     stack_size_before = len(ivy.default_float_dtype_stack)
     ivy.set_default_float_dtype(dtype)
@@ -1018,7 +994,6 @@ def test_unset_default_float_dtype(dtype):
 @given(
     dtype=st.sampled_from(ivy.valid_int_dtypes),
 )
-@settings(max_examples=1)
 def test_unset_default_int_dtype(dtype):
     stack_size_before = len(ivy.default_int_dtype_stack)
     ivy.set_default_int_dtype(dtype)
@@ -1034,7 +1009,6 @@ def test_unset_default_int_dtype(dtype):
 @given(
     dtype_in=st.sampled_from(ivy.valid_dtypes),
 )
-@settings(max_examples=1)
 def test_valid_dtype(dtype_in, fw):
     res = ivy.valid_dtype(dtype_in)
     fw_valid_dtypes = {

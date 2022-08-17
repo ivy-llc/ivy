@@ -1,7 +1,7 @@
 # global
 import ivy
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -60,7 +60,6 @@ def _arrays_idx_n_dtypes(draw):
     ),
     native_array=helpers.array_bools(),
 )
-@settings(max_examples=1)
 def test_tensorflow_concat(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
@@ -122,7 +121,6 @@ def _fill_value(draw):
         fn_name="ivy.functional.frontends.tensorflow.fill"
     ),
 )
-@settings(max_examples=1)
 def test_tensorflow_full(
     shape,
     fill_value,

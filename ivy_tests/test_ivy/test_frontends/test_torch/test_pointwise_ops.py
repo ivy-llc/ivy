@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -28,7 +28,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="functional.frontends.torch.add"
     ),
 )
-@settings(max_examples=1)
 def test_torch_add(
     dtype_and_x,
     alpha,
@@ -70,7 +69,6 @@ def test_torch_add(
         fn_name="functional.frontends.torch.tan"
     ),
 )
-@settings(max_examples=1)
 def test_torch_tan(
     dtype_and_x,
     as_variable,
@@ -147,7 +145,6 @@ def test_torch_atan(
         fn_name="functional.frontends.torch.tanh"
     ),
 )
-@settings(max_examples=1)
 def test_torch_tanh(
     dtype_and_x,
     as_variable,
@@ -185,7 +182,6 @@ def test_torch_tanh(
         fn_name="functional.frontends.torch.abs"
     ),
 )
-@settings(max_examples=1)
 def test_torch_abs(
     dtype_and_x,
     as_variable,
@@ -223,7 +219,6 @@ def test_torch_abs(
         fn_name="functional.frontends.torch.cos"
     ),
 )
-@settings(max_examples=1)
 def test_torch_cos(
     dtype_and_x,
     as_variable,
@@ -261,7 +256,6 @@ def test_torch_cos(
         fn_name="functional.frontends.torch.sin"
     ),
 )
-@settings(max_examples=1)
 def test_torch_sin(
     dtype_and_x,
     as_variable,
@@ -299,7 +293,6 @@ def test_torch_sin(
         fn_name="functional.frontends.torch.acos"
     ),
 )
-@settings(max_examples=1)
 def test_torch_acos(
     dtype_and_x,
     as_variable,
@@ -337,7 +330,6 @@ def test_torch_acos(
         fn_name="functional.frontends.torch.sinh"
     ),
 )
-@settings(max_examples=1)
 def test_torch_sinh(
     dtype_and_x,
     as_variable,
@@ -375,7 +367,6 @@ def test_torch_sinh(
         fn_name="functional.frontends.torch.acosh"
     ),
 )
-@settings(max_examples=1)
 def test_torch_acosh(
     dtype_and_x,
     as_variable,
@@ -413,7 +404,6 @@ def test_torch_acosh(
         fn_name="functional.frontends.torch.arccos"
     ),
 )
-@settings(max_examples=1)
 def test_torch_arccos(
     dtype_and_x,
     as_variable,
@@ -456,7 +446,6 @@ def test_torch_arccos(
         fn_name="functional.frontends.torch.subtract"
     ),
 )
-@settings(max_examples=1)
 def test_torch_subtract(
     dtype_and_x,
     alpha,
@@ -537,7 +526,6 @@ def test_torch_exp(
         fn_name="functional.frontends.torch.asin"
     ),
 )
-@settings(max_examples=1)
 def test_torch_asin(
     dtype_and_x,
     as_variable,
@@ -575,7 +563,6 @@ def test_torch_asin(
         fn_name="functional.frontends.torch.arccosh"
     ),
 )
-@settings(max_examples=1)
 def test_torch_arccosh(
     dtype_and_x,
     as_variable,
@@ -613,7 +600,6 @@ def test_torch_arccosh(
         fn_name="functional.frontends.torch.arcsin"
     ),
 )
-@settings(max_examples=1)
 def test_torch_arcsin(
     dtype_and_x,
     as_variable,
@@ -651,7 +637,6 @@ def test_torch_arcsin(
         fn_name="functional.frontends.torch.asinh"
     ),
 )
-@settings(max_examples=1)
 def test_torch_asinh(
     dtype_and_x,
     as_variable,

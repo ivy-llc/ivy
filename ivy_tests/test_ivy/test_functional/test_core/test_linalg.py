@@ -4,7 +4,7 @@
 import sys
 
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -227,7 +227,6 @@ def _get_dtype_and_vector(draw):
         fn_name="vector_to_skew_symmetric_matrix"
     ),
 )
-@settings(max_examples=1)
 def test_vector_to_skew_symmetric_matrix(
     *,
     dtype_x,
@@ -266,7 +265,6 @@ def test_vector_to_skew_symmetric_matrix(
     num_positional_args=helpers.num_positional_args(fn_name="matrix_power"),
     n=helpers.ints(min_value=1, max_value=8),
 )
-@settings(max_examples=1)
 def test_matrix_power(
     *,
     dtype_x,
@@ -303,7 +301,6 @@ def test_matrix_power(
     y=_get_second_matrix_and_dtype(),
     num_positional_args=helpers.num_positional_args(fn_name="matmul"),
 )
-@settings(max_examples=1)
 def test_matmul(
     *,
     x,
@@ -344,7 +341,6 @@ def test_matmul(
     dtype_x=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(fn_name="det"),
 )
-@settings(max_examples=1)
 def test_det(
     *,
     dtype_x,
@@ -377,7 +373,6 @@ def test_det(
     dtype_x=_get_dtype_and_matrix(symmetric=True),
     num_positional_args=helpers.num_positional_args(fn_name="eigh"),
 )
-@settings(max_examples=1)
 def test_eigh(
     *,
     dtype_x,
@@ -423,7 +418,6 @@ def test_eigh(
     dtype_x=_get_dtype_and_matrix(symmetric=True),
     num_positional_args=helpers.num_positional_args(fn_name="eigvalsh"),
 )
-@settings(max_examples=1)
 def test_eigvalsh(
     *,
     dtype_x,
@@ -461,7 +455,6 @@ def test_eigvalsh(
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
 )
-@settings(max_examples=1)
 def test_inv(
     *,
     dtype_x,
@@ -495,7 +488,6 @@ def test_inv(
     dtype_x=_get_first_matrix_and_dtype(),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_transpose"),
 )
-@settings(max_examples=1)
 def test_matrix_transpose(
     *,
     dtype_x,
@@ -535,7 +527,6 @@ def test_matrix_transpose(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="outer"),
 )
-@settings(max_examples=1)
 def test_outer(
     *,
     dtype_xy,
@@ -581,7 +572,6 @@ def test_outer(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
 )
-@settings(max_examples=1)
 def test_slogdet(
     *,
     dtype_x,
@@ -650,7 +640,6 @@ def _get_second_matrix(draw):
     y=_get_second_matrix(),
     num_positional_args=helpers.num_positional_args(fn_name="solve"),
 )
-@settings(max_examples=1)
 def test_solve(
     *,
     x,
@@ -696,7 +685,6 @@ def test_solve(
     ),
     num_positional_args=helpers.ints(min_value=0, max_value=1),
 )
-@settings(max_examples=1)
 def test_svdvals(
     *,
     dtype_x,
@@ -735,7 +723,6 @@ def test_svdvals(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="tensordot"),
 )
-@settings(max_examples=1)
 def test_tensordot(
     *,
     dtype_x1_x2_axis,
@@ -787,7 +774,6 @@ def test_tensordot(
     num_positional_args=helpers.num_positional_args(fn_name="trace"),
     offset=helpers.ints(min_value=-10, max_value=10),
 )
-@settings(max_examples=1)
 def test_trace(
     *,
     dtype_x,
@@ -828,7 +814,6 @@ def test_trace(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="vecdot"),
 )
-@settings(max_examples=1)
 def test_vecdot(
     *,
     dtype_x1_x2_axis,
@@ -877,7 +862,6 @@ def test_vecdot(
     kd=st.booleans(),
     ord=helpers.ints(min_value=1, max_value=2),
 )
-@settings(max_examples=1)
 def test_vector_norm(
     *,
     dtype_values_axis,
@@ -921,7 +905,6 @@ def test_vector_norm(
     num_positional_args=helpers.num_positional_args(fn_name="pinv"),
     rtol=st.floats(1e-5, 1e-3),
 )
-@settings(max_examples=1)
 def test_pinv(
     *,
     dtype_x,
@@ -963,7 +946,6 @@ def test_pinv(
     num_positional_args=helpers.num_positional_args(fn_name="qr"),
     mode=st.sampled_from(("reduced", "complete")),
 )
-@settings(max_examples=1)
 def test_qr(
     *,
     dtype_x,
@@ -1016,7 +998,6 @@ def test_qr(
     num_positional_args=helpers.num_positional_args(fn_name="svd"),
     fm=st.booleans(),
 )
-@settings(max_examples=1)
 def test_svd(
     *,
     dtype_x,
@@ -1077,7 +1058,6 @@ def test_svd(
     kd=st.booleans(),
     ord=helpers.ints(min_value=1, max_value=2) | st.sampled_from(("fro", "nuc")),
 )
-@settings(max_examples=1)
 def test_matrix_norm(
     *,
     dtype_x,
@@ -1119,7 +1099,6 @@ def test_matrix_norm(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
 )
-@settings(max_examples=1)
 def test_matrix_rank(
     *,
     dtype_x,
@@ -1162,7 +1141,6 @@ def test_matrix_rank(
     num_positional_args=helpers.num_positional_args(fn_name="cholesky"),
     upper=st.booleans(),
 )
-@settings(max_examples=1)
 def test_cholesky(
     *,
     dtype_x,
@@ -1207,7 +1185,6 @@ def test_cholesky(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="cross"),
 )
-@settings(max_examples=1)
 def test_cross(
     *,
     dtype_x1_x2_axis,
@@ -1255,7 +1232,6 @@ def test_cross(
         helpers.ints(min_value=-2, max_value=1), min_size=2, max_size=2, unique=True
     ).filter(lambda axes: axes[0] % 2 != axes[1] % 2),
 )
-@settings(max_examples=1)
 def test_diagonal(
     *,
     dtype_x,

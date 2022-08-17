@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, settings
+from hypothesis import given
 
 # local
 import ivy.functional.backends.numpy as ivy_np
@@ -35,7 +35,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     epsilon=helpers.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
 )
-@settings(max_examples=1)
 def test_cross_entropy(
     *,
     dtype_and_true,
@@ -97,7 +96,6 @@ def test_cross_entropy(
     epsilon=helpers.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
 )
-@settings(max_examples=1)
 def test_binary_cross_entropy(
     *,
     dtype_and_true,
@@ -157,7 +155,6 @@ def test_binary_cross_entropy(
     epsilon=helpers.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
 )
-@settings(max_examples=1)
 def test_sparse_cross_entropy(
     *,
     dtype_and_true,

@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -22,7 +22,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     native_array=helpers.array_bools(num_arrays=1),
 )
-@settings(max_examples=1)
 def test_numpy_cos(
     dtype_and_x,
     dtype,
@@ -74,7 +73,6 @@ def test_numpy_cos(
     ),
     native_array=helpers.array_bools(num_arrays=1),
 )
-@settings(max_examples=1)
 def test_numpy_tan(
     dtype_and_x,
     dtype,
@@ -126,7 +124,6 @@ def test_numpy_tan(
     ),
     native_array=helpers.array_bools(num_arrays=1),
 )
-@settings(max_examples=1)
 def test_numpy_arcsin(
     dtype_and_x,
     dtype,
@@ -178,7 +175,6 @@ def test_numpy_arcsin(
     ),
     native_array=helpers.array_bools(num_arrays=1),
 )
-@settings(max_examples=1)
 def test_numpy_arccos(
     dtype_and_x,
     dtype,

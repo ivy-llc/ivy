@@ -56,7 +56,6 @@ def _broadcastable_trio(draw):
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="argmax"),
 )
-@settings(max_examples=1)
 def test_argmax(
     *,
     dtype_x_axis,
@@ -92,7 +91,6 @@ def test_argmax(
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="argmin"),
 )
-@settings(max_examples=1)
 def test_argmin(
     *,
     dtype_x_axis,
@@ -134,7 +132,6 @@ def test_argmin(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="nonzero"),
 )
-@settings(max_examples=1)
 def test_nonzero(
     *,
     dtype_and_x,
@@ -166,7 +163,6 @@ def test_nonzero(
     broadcastables=_broadcastable_trio(),
     num_positional_args=helpers.num_positional_args(fn_name="where"),
 )
-@settings(max_examples=1)
 def test_where(
     *,
     broadcastables,

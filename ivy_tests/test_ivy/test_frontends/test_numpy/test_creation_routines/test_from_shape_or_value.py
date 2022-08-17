@@ -1,6 +1,6 @@
 # global
 import ivy
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -46,7 +46,6 @@ def _fill_value(draw):
         fn_name="ivy.functional.frontends.numpy.full"
     ),
 )
-@settings(max_examples=1)
 def test_numpy_full(
     shape,
     fill_value,

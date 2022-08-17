@@ -1,5 +1,5 @@
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 
 # local
@@ -17,7 +17,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     native_array=st.booleans(),
 )
-@settings(max_examples=1)
 def test_jax_nn_relu(
     dtype_and_x,
     as_variable,
@@ -50,7 +49,6 @@ def test_jax_nn_relu(
     native_array=st.booleans(),
     negative_slope=helpers.floats(min_value=0.0, max_value=1.0),
 )
-@settings(max_examples=1)
 def test_jax_nn_leaky_relu(
     dtype_and_x,
     as_variable,
@@ -85,7 +83,6 @@ def test_jax_nn_leaky_relu(
     ),
     native_array=st.booleans(),
 )
-@settings(max_examples=1)
 def test_jax_nn_gelu(
     dtype_and_x,
     as_variable,

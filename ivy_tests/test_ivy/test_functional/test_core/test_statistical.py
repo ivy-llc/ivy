@@ -1,7 +1,7 @@
 """Collection of tests for statistical functions."""
 # global
 import numpy as np
-from hypothesis import given, assume, settings, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -64,7 +64,6 @@ def statistical_dtype_values(draw, *, function):
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@settings(max_examples=1)
 def test_min(
     *,
     dtype_and_x,
@@ -103,7 +102,6 @@ def test_min(
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@settings(max_examples=1)
 def test_max(
     *,
     dtype_and_x,
@@ -142,7 +140,6 @@ def test_max(
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@settings(max_examples=1)
 def test_mean(
     *,
     dtype_and_x,
@@ -181,7 +178,6 @@ def test_mean(
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@settings(max_examples=1)
 def test_var(
     *,
     dtype_and_x,
@@ -220,7 +216,6 @@ def test_var(
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@settings(max_examples=1)
 def test_prod(
     *,
     dtype_and_x,
@@ -259,7 +254,6 @@ def test_prod(
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@settings(max_examples=1)
 def test_sum(
     *,
     dtype_and_x,
@@ -299,7 +293,6 @@ def test_sum(
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@settings(max_examples=1)
 def test_std(
     *,
     dtype_and_x,
@@ -346,7 +339,6 @@ def test_std(
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-@settings(max_examples=1)
 def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device, call):
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp

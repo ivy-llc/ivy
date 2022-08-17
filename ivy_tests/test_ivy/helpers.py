@@ -10,8 +10,8 @@ import inspect
 import pytest
 import numpy as np
 import math
-from typing import Union, List, Dict
-from hypothesis import assume, given
+from typing import Union, List
+from hypothesis import assume, given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
 
@@ -30,7 +30,6 @@ from ivy.functional.backends.torch.general import (
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-FW_STRS = ["numpy", "jax", "tensorflow", "torch"]
 cmd_line_args = (
     "as_variable",
     "native_array",
@@ -322,22 +321,6 @@ def mx_call(func, *args, **kwargs):
 
 
 _calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]
-
-# config for running tests
-TEST_BACKENDS: Dict[str, callable] = {
-    "numpy": lambda: get_ivy_numpy(),
-    "jax": lambda: get_ivy_jax(),
-    "tensorflow": lambda: get_ivy_tensorflow(),
-    "torch": lambda: get_ivy_torch(),
-    "": lambda: None,
-}
-TEST_CALL_METHODS: Dict[str, callable] = {
-    "numpy": np_call,
-    "jax": jnp_call,
-    "tensorflow": tf_call,
-    "torch": torch_call,
-    "": None,
-}
 
 
 # function that trims white spaces from docstrings
@@ -3086,6 +3069,7 @@ def num_positional_args(draw, *, fn_name: str = None):
         num_positional_args=num_positional_args(fn_name="add")
     )
     """
+    print("given", ivy.current_backend_str())
     num_positional_only = 0
     num_keyword_only = 0
     total = 0
@@ -3115,10 +3099,17 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
 
 def handle_cmd_line_args(test_fn):
     # first[1:-2] 5 arguments are all fixtures
+    from ivy_tests.test_ivy.conftest import (
+        FW_STRS,
+        TEST_BACKENDS,
+        TEST_CALL_METHODS,
+        MAX_EXAMPLES,
+    )
+
     @given(data=st.data())
+    @settings(max_examples=int(MAX_EXAMPLES))
     def new_fn(data, get_command_line_flags, device, f, call, fw, *args, **kwargs):
         flag, fw_string = (False, "")
-
         # skip test if device is gpu and backend is numpy
         if "gpu" in device and call is np_call:
             # Numpy does not support GPU
@@ -3133,6 +3124,7 @@ def handle_cmd_line_args(test_fn):
             flag = True
         # set backend using the context manager
         with f.use:
+            print(f"\nhandle-{test_fn.__name__}", f)
             # inspecting for keyword arguments in test function
             for param in inspect.signature(test_fn).parameters.values():
                 if param.name in cmd_line_args:

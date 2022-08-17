@@ -1,5 +1,5 @@
 import hypothesis.extra.numpy as hnp
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 import numpy as np
 
 # local
@@ -27,7 +27,6 @@ def _broadcastable_trio(draw):
         fn_name="ivy.functional.frontends.numpy.where"
     ),
 )
-@settings(max_examples=1)
 def test_numpy_where(
     *,
     broadcastables,
@@ -63,7 +62,6 @@ def test_numpy_where(
         fn_name="ivy.functional.frontends.numpy.nonzero"
     ),
 )
-@settings(max_examples=1)
 def test_numpy_nonzero(
     *,
     dtype_and_a,

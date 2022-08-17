@@ -1,7 +1,7 @@
 """Collection of tests for unified gradient functions."""
 
 # global
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 import pytest
 import numpy as np
 
@@ -63,7 +63,6 @@ def test_unset_with_grads(grads):
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
 )
-@settings(max_examples=1)
 def test_variable(
     *,
     dtype_and_x,
@@ -92,7 +91,6 @@ def test_variable(
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
 )
-@settings(max_examples=1)
 def test_is_variable(
     *,
     dtype_and_x,
@@ -121,7 +119,6 @@ def test_is_variable(
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
 )
-@settings(max_examples=1)
 def test_variable_data(dtype_and_x, native_array, container, instance_method, fw):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -144,7 +141,6 @@ def test_variable_data(dtype_and_x, native_array, container, instance_method, fw
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     preserve_type=st.booleans(),
 )
-@settings(max_examples=1)
 def test_stop_gradient(
     dtype_and_x, preserve_type, with_out, native_array, container, instance_method, fw
 ):
@@ -176,7 +172,6 @@ def test_stop_gradient(
     ),
     retain_grads=st.booleans(),
 )
-@settings(max_examples=1)
 def test_execute_with_gradients(
     *,
     dtype_and_xs,
@@ -307,7 +302,6 @@ def test_grad(x, dtype, func, fw):
         max_size=3,
     ),
 )
-@settings(max_examples=1)
 def test_adam_step(
     *,
     dtype_n_dcdw_n_mw_n_vw,
@@ -352,7 +346,6 @@ def test_adam_step(
     dtype_n_ws_n_effgrad_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     stop_gradients=st.booleans(),
 )
-@settings(max_examples=1)
 def test_optimizer_update(
     dtype_n_ws_n_effgrad_n_lr,
     stop_gradients,
@@ -387,7 +380,6 @@ def test_optimizer_update(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     stop_gradients=st.booleans(),
 )
-@settings(max_examples=1)
 def test_gradient_descent_update(
     *,
     dtype_n_ws_n_dcdw_n_lr,
@@ -424,7 +416,6 @@ def test_gradient_descent_update(
     decay_lambda=helpers.floats(min_value=0, max_value=1, exclude_min=True),
     stop_gradients=st.booleans(),
 )
-@settings(max_examples=1)
 def test_lars_update(
     *,
     dtype_n_ws_n_dcdw_n_lr,
@@ -468,7 +459,6 @@ def test_lars_update(
     ),
     stopgrad=st.booleans(),
 )
-@settings(max_examples=1)
 def test_adam_update(
     *,
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr,
@@ -523,7 +513,6 @@ def test_adam_update(
     ),
     stopgrad=st.booleans(),
 )
-@settings(max_examples=1)
 def test_lamb_update(
     *,
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr,

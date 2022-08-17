@@ -12,7 +12,7 @@ import numpy as np
 import nvidia_smi
 import psutil
 import pytest
-from hypothesis import strategies as st, given, assume, settings
+from hypothesis import strategies as st, given, assume
 
 # local
 import ivy
@@ -81,7 +81,6 @@ def _empty_dir(path, recreate=False):
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
 )
-@settings(max_examples=1)
 def test_dev(*, array_shape, dtype, as_variable, fw):
 
     assume(not (fw == "torch" and "int" in dtype))
@@ -117,7 +116,6 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
 )
-@settings(max_examples=1)
 def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
 
     assume(not (fw == "torch" and "int" in dtype))
@@ -149,7 +147,6 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes[1:]),
 )
-@settings(max_examples=1)
 def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
@@ -174,7 +171,6 @@ def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
 
 # memory_on_dev
 @handle_cmd_line_args
-@settings(max_examples=1)
 def test_memory_on_dev(call):
     for device in _get_possible_devices():
         ret = ivy.total_mem_on_dev(device)
@@ -192,7 +188,6 @@ def test_memory_on_dev(call):
 
 # default_device
 @handle_cmd_line_args
-@settings(max_examples=1)
 def test_default_device(device):
     # setting and unsetting
     orig_len = len(ivy.default_device_stack)
@@ -227,7 +222,6 @@ def test_default_device(device):
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     stream=helpers.ints(min_value=0, max_value=50),
 )
-@settings(max_examples=1)
 def test_to_device(
     *, array_shape, dtype, as_variable, with_out, fw, device, call, stream
 ):
@@ -298,7 +292,6 @@ def _axis(draw):
     chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=_axis(),
 )
-@settings(max_examples=1)
 def test_split_func_call(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
@@ -344,7 +337,6 @@ def test_split_func_call(
     chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=helpers.ints(min_value=0, max_value=1),
 )
-@settings(max_examples=1)
 def test_split_func_call_with_cont_input(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
@@ -391,7 +383,6 @@ def test_split_func_call_with_cont_input(
 
 # profiler
 @handle_cmd_line_args
-@settings(max_examples=1)
 def test_profiler(device, fw):
     # ToDo: find way to prevent this test from hanging when run
     #  alongside other tests in parallel
@@ -439,7 +430,6 @@ def test_profiler(device, fw):
 
 @handle_cmd_line_args
 @given(num=helpers.ints(min_value=0, max_value=5))
-@settings(max_examples=1)
 def test_num_arrays_on_dev(num, device):
     arrays = [
         ivy.array(np.random.uniform(size=2).tolist(), device=device) for _ in range(num)
@@ -451,7 +441,6 @@ def test_num_arrays_on_dev(num, device):
 
 @handle_cmd_line_args
 @given(num=helpers.ints(min_value=0, max_value=5))
-@settings(max_examples=1)
 def test_get_all_arrays_on_dev(num, device):
     arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
     arr_ids_on_dev = [id(a) for a in ivy.get_all_ivy_arrays_on_dev(device).values()]
@@ -461,7 +450,6 @@ def test_get_all_arrays_on_dev(num, device):
 
 @handle_cmd_line_args
 @given(num=helpers.ints(min_value=0, max_value=2), attr_only=st.booleans())
-@settings(max_examples=1)
 def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     arr = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
 
@@ -497,7 +485,6 @@ def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
 
 
 @handle_cmd_line_args
-@settings(max_examples=1)
 def test_total_mem_on_dev(device):
     if "cpu" in device:
         assert ivy.total_mem_on_dev(device) == psutil.virtual_memory().total / 1e9
@@ -507,7 +494,6 @@ def test_total_mem_on_dev(device):
 
 
 @handle_cmd_line_args
-@settings(max_examples=1)
 def test_used_mem_on_dev():
     devices = _get_possible_devices()
 
@@ -524,7 +510,6 @@ def test_used_mem_on_dev():
 
 
 @handle_cmd_line_args
-@settings(max_examples=1)
 def test_percent_used_mem_on_dev():
     devices = _get_possible_devices()
 
@@ -539,7 +524,6 @@ def test_percent_used_mem_on_dev():
 
 
 @handle_cmd_line_args
-@settings(max_examples=1)
 def test_gpu_is_available(fw):
     # If gpu is available but cannot be initialised it will fail the test
     if ivy.gpu_is_available():
@@ -553,7 +537,6 @@ def test_gpu_is_available(fw):
 
 
 @handle_cmd_line_args
-@settings(max_examples=1)
 def test_num_cpu_cores():
     # using multiprocessing module too because ivy uses psutil as basis.
     p_cpu_cores = psutil.cpu_count()

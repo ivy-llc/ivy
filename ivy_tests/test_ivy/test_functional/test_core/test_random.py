@@ -2,7 +2,7 @@
 
 # global
 import numpy as np
-from hypothesis import given, assume, settings, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -27,7 +27,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
 )
-@settings(max_examples=1)
 def test_random_uniform(
     *,
     dtype_and_low,
@@ -84,7 +83,6 @@ def test_random_uniform(
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
 )
-@settings(max_examples=1)
 def test_random_normal(
     *,
     dtype_and_mean,
@@ -153,7 +151,6 @@ def _pop_size_num_samples_replace_n_probs(draw):
     everything=_pop_size_num_samples_replace_n_probs(),
     num_positional_args=helpers.num_positional_args(fn_name="multinomial"),
 )
-@settings(max_examples=1)
 def test_multinomial(
     *,
     everything,
@@ -214,7 +211,6 @@ def test_multinomial(
     dtype=st.sampled_from(("int8", "int16", "int32", "int64", None)),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
 )
-@settings(max_examples=1)
 def test_randint(
     *,
     dtype_and_low,
@@ -276,7 +272,6 @@ def test_seed(seed_val):
     ),
     num_positional_args=helpers.num_positional_args(fn_name="shuffle"),
 )
-@settings(max_examples=1)
 def test_shuffle(
     *,
     dtype_and_x,
