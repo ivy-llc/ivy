@@ -684,6 +684,51 @@
 <div class="viewcode-block" id="astype"><a class="viewcode-back" href="../../../functional/ivy/data_type/astype/astype_array.html#ivy.array.array_methods.astype">[docs]</a><span class="k">def</span> <span class="nf">astype</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Copies an array to a specified data type irrespective of</span>
+<span class="sd">    :ref:`type-promotion` rules.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">    Casting floating-point ``NaN`` and ``infinity`` values to integral data types</span>
+<span class="sd">    is not specified and is implementation-dependent.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">    When casting a boolean input array to a numeric data type, a value of ``True``</span>
+<span class="sd">    must cast to a numeric value equal to ``1``, and a value of ``False`` must cast</span>
+<span class="sd">    to a numeric value equal to ``0``.</span>
+
+<span class="sd">    When casting a numeric input array to ``bool``, a value of ``0`` must cast to</span>
+<span class="sd">    ``False``, and a non-zero value must cast to ``True``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        array to cast.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        desired data type.</span>
+<span class="sd">    copy</span>
+<span class="sd">        specifies whether to copy an array when the specified ``dtype`` matches</span>
+<span class="sd">        the data type of the input array ``x``. If ``True``, a newly allocated</span>
+<span class="sd">        array must always be returned. If ``False`` and the specified ``dtype``</span>
+<span class="sd">        matches the data type of the input array, the input array must be returned;</span>
+<span class="sd">        otherwise, a newly allocated must be returned. Default: ``True``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
+<span class="sd">        that the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array having the specified data type. The returned array must have</span>
+<span class="sd">        the same shape as ``x``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[-1, -2], [0, 2]])</span>
+<span class="sd">    &gt;&gt;&gt; print(x.astype(ivy.float64))</span>
+<span class="sd">    ivy.array([[-1., -2.],  [0.,  2.]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -3517,7 +3562,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">)</span></div>
 
-<span class="n">is_variable</span><span class="o">.</span><span class="n">computes_gradients</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># is_variable.computes_gradients = True</span>
 
 <div class="viewcode-block" id="variable_data"><a class="viewcode-back" href="../../../functional/ivy/gradients/variable_data/variable_data_array.html#ivy.array.array_methods.variable_data">[docs]</a><span class="k">def</span> <span class="nf">variable_data</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -4820,11 +4865,12 @@
 <div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../functional/ivy/norms/layer_norm/layer_norm_array.html#ivy.array.array_methods.layer_norm">[docs]</a><span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">normalized_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">,</span>
     <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">new_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
