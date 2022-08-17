@@ -4391,7 +4391,6 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([4.05, 5.05, 6.05]),
             b: ivy.array([5.05, 6.05, 7.05])
         }
-
         """
         return ContainerBase.multi_map_in_static_method(
             "logaddexp",
@@ -4461,7 +4460,6 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([4.05, 5.05, 6.05]),
             b: ivy.array([5.05, 6.05, 7.05])
         }
-
         """
         return self.static_logaddexp(
             self,
