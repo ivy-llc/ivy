@@ -54,6 +54,7 @@ def test_docstrings(backend):
         "argmax",
         "split",
         "det",
+        "cumprod"
         "where",
     ]
 
