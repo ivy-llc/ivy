@@ -14,6 +14,7 @@ from typing import Union, List
 from hypothesis import assume, given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
+from datetime import timedelta
 
 # local
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
@@ -3127,21 +3128,20 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
     return draw(st.booleans())
 
 
-def handle_cmd_line_args(deadline=4000):
+def handle_cmd_line_args(deadline=timedelta(milliseconds=200)):
     def wrap_test_fn(test_fn):
         from ivy_tests.test_ivy.conftest import (
             FW_STRS,
             TEST_BACKENDS,
             TEST_CALL_METHODS,
             MAX_EXAMPLES,
-            DEADLINE,
         )
 
         # first[1:-2] 5 arguments are all fixtures
         @given(data=st.data())
         @settings(
             max_examples=int(MAX_EXAMPLES),
-            deadline=DEADLINE if DEADLINE is not None else deadline,
+            deadline=deadline,
         )
         def new_fn(data, get_command_line_flags, device, f, call, fw, *args, **kwargs):
             flag, fw_string = (False, "")
