@@ -69,6 +69,3 @@ def sign(x):
 
 def sinh(x):
     return ivy.sinh(x)
-
-
-
