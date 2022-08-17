@@ -826,13 +826,14 @@ def test_torch_square(
             )
         ),
         num_arrays=2,
+        shared_dtype=True,
     ),
-    as_variable=st.booleans(),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.atan2"
     ),
-    native_array=st.booleans(),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_torch_atan2(
     dtype_and_x,
