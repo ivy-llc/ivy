@@ -1,0 +1,13 @@
+user.name=Bambarithm
+user.email=mkhadim33@gmail.com
+core.autocrlf=input
+core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+remote.origin.url=https://github.com/Bambarithm/ivy
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+branch.master.remote=origin
+branch.master.merge=refs/heads/master
+remote.upstream.url=https://github.com/unifyai/ivy.git
+remote.upstream.fetch=+refs/heads/*:refs/remotes/upstream/*
