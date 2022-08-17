@@ -47,7 +47,7 @@ def pytest_configure(config):
     global MAX_EXAMPLES
     MAX_EXAMPLES = config.getoption("--num-examples")
     deadline = config.getoption("--deadline")
-    deadline = deadline if not None else 4000
+    deadline = deadline if not "None" else 4000
     settings.register_profile("default", max_examples=1, deadline=deadline)
     settings.load_profile("default")
 
