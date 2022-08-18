@@ -648,30 +648,30 @@ def eigvalsh(
     
     With multiple :code:`ivy.Container` inputs:
     
-    >>> x = ivy.Container(a = ivy.native_array[[2.0, 4.0], \
-                                               [6.0, 8.0]], \
+    >>> x = ivy.Container(a = ivy.native_array[[9.0, 10.0], \
+                                               [11.0, 12.0]], \
                           b = ivy.native_array([[1.0, 2.0], \
                                                [3.0, 4.0]]))
     >>> y = ivy.eigvalsh(x)
     >>> print(y)
     {
         
-      a: ivy.array([-1.70820393, 11.70820393]), \
+      a: ivy.array([-0.60180166, 21.60180166]), \
       b: ivy.array([-0.85410197,  5.85410197])
     
     }
     
     With multiple :code:`ivy.Array` inputs:   
     
-    >>> x = ivy.array([[2.0, 4.0], \
-                       [6.0, 8.0]])
+    >>> x = ivy.array([[1.0, 2.0], \
+                       [3.0, 5.0]])
                                    
     >>> y = ivy.array([[2.0, 5.0, 9.0], \
                        [2.0, 5.0 ,7.0], \
                        [1.0, 7.0, 8.0]])
     >>> e, e_1 = ivy.eigvalsh(x, y)
     >>> print(e, e_1)
-    ivy.array([-1.70820393, 11.70820393]), 
+    ivy.array([-0.60555128,  6.60555128]), 
     ivy.array([-0.97757691,  1.97202598, 14.00555093])                           
                          
 
