@@ -50,7 +50,7 @@ def silu(x):
     return x * sigmoid(x)
 
 
-soft_sign.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+silu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def leaky_relu(x, negative_slope=0.01):
