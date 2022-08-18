@@ -6,9 +6,11 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # add
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -21,13 +23,10 @@ import ivy.functional.backends.torch as ivy_torch
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=helpers.floats(min_value=-1e06, max_value=1e06),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
+    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.add"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_add(
     dtype_and_x,
@@ -57,6 +56,7 @@ def test_torch_add(
 
 
 # tan
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -65,12 +65,9 @@ def test_torch_add(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.tan"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_tan(
     dtype_and_x,
@@ -135,6 +132,7 @@ def test_torch_atan(
 
 
 # tanh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -143,12 +141,9 @@ def test_torch_atan(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.tanh"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_tanh(
     dtype_and_x,
@@ -174,6 +169,7 @@ def test_torch_tanh(
 
 
 # abs
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -182,12 +178,9 @@ def test_torch_tanh(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.abs"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_abs(
     dtype_and_x,
@@ -213,6 +206,7 @@ def test_torch_abs(
 
 
 # cos
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -221,12 +215,9 @@ def test_torch_abs(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.cos"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_cos(
     dtype_and_x,
@@ -252,6 +243,7 @@ def test_torch_cos(
 
 
 # sin
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -260,12 +252,9 @@ def test_torch_cos(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.sin"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_sin(
     dtype_and_x,
@@ -291,6 +280,7 @@ def test_torch_sin(
 
 
 # acos
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -299,12 +289,9 @@ def test_torch_sin(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.acos"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_acos(
     dtype_and_x,
@@ -330,6 +317,7 @@ def test_torch_acos(
 
 
 # sinh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -338,12 +326,9 @@ def test_torch_acos(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.sinh"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_sinh(
     dtype_and_x,
@@ -369,6 +354,7 @@ def test_torch_sinh(
 
 
 # acosh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -377,12 +363,9 @@ def test_torch_sinh(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.acosh"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_acosh(
     dtype_and_x,
@@ -408,6 +391,7 @@ def test_torch_acosh(
 
 
 # arccos
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -416,12 +400,9 @@ def test_torch_acosh(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.arccos"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_arccos(
     dtype_and_x,
@@ -447,6 +428,7 @@ def test_torch_arccos(
 
 
 # subtract
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -459,13 +441,10 @@ def test_torch_arccos(
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=helpers.floats(min_value=-1e06, max_value=1e06),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
+    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.subtract"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_subtract(
     dtype_and_x,
@@ -534,6 +513,7 @@ def test_torch_exp(
 
 
 # asin
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -542,12 +522,9 @@ def test_torch_exp(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.asin"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_asin(
     dtype_and_x,
@@ -573,6 +550,7 @@ def test_torch_asin(
 
 
 # arccosh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -581,12 +559,9 @@ def test_torch_asin(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.arccosh"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_arccosh(
     dtype_and_x,
@@ -612,6 +587,7 @@ def test_torch_arccosh(
 
 
 # arcsin
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -620,12 +596,9 @@ def test_torch_arccosh(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.arcsin"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_arcsin(
     dtype_and_x,
@@ -651,6 +624,7 @@ def test_torch_arcsin(
 
 
 # asinh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -659,12 +633,9 @@ def test_torch_arcsin(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.asinh"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_asinh(
     dtype_and_x,
@@ -802,5 +773,44 @@ def test_torch_arctanh(
         frontend="torch",
         fn_tree="arctanh",
         input=np.asarray(x, dtype=input_dtype),
+        out=None,
+    )
+
+
+# square
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
+            )
+        )
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.square"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_square(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="square",
+        input=np.asarray(input, dtype=input_dtype),
         out=None,
     )
