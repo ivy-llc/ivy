@@ -1,16 +1,20 @@
 
 #### IMPORTANT NOTICE 🚨:
-The ivy docs represent the ground truth for the task descriptions and this checklist should only be used as a supplementary item to aid with the review process.
+The [Ivy Docs](https://lets-unify.ai/ivy/) represent the ground truth for the task descriptions and this checklist should only be used as a supplementary item to aid with the review process.
 
 #### LEGEND 🗺:
-❌ :  Check item is not completed. 
-✅ :  Check item is ready for review.
-🆘 :  Stuck/Doubting implementation (PR author should add comments explaining why).
-⏩ :  Check is not applicable to function (skip).
-🆗 :  Check item is already implemented and does not require any edits.
+- ❌ :  Check item is not completed. 
+- ✅ :  Check item is ready for review.
+- 🆘 :  Stuck/Doubting implementation (PR author should add comments explaining why).
+- ⏩ :  Check is not applicable to function (skip).
+- 🆗 :  Check item is already implemented and does not require any edits.
 
 #### CHECKS 📑:
-1. - [ ] ❌:  Remove all lambda and direct bindings for the backend functions in [ivy/functional/backends](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends).
+1. - [ ] ❌:  Remove all lambda and direct bindings for the backend functions in:
+       - [ ] ❌: [ivy/functional/backends/jax/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/jax/{{ .category_name }}.py).
+       - [ ] ❌: [ivy/functional/backends/numpy/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/numpy/{{ .category_name }}.py).
+       - [ ] ❌: [ivy/functional/backends/tensorflow/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/tensorflow/{{ .category_name }}.py).
+       - [ ] ❌: [ivy/functional/backends/torch/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/torch/{{ .category_name }}.py).
 2. - [ ] ❌: Implement the following if they don't exist: 
        1. - [ ]  ❌: The `ivy.Array` instance method in [ivy/array/{{ .category_name }}.py](https://github.com/unifyai/ivy/blob/master/ivy/array/{{ .category_name }}.py).
        2. - [ ]  ❌: The `ivy.Array` special method in [ivy/array/array.py](https://github.com/unifyai/ivy/blob/master/ivy/array/array.py).
@@ -29,11 +33,11 @@ The ivy docs represent the ground truth for the task descriptions and this check
               - [ ] ❌:  Replace `out` with `ret` in the `Returns` section.
        2. - [ ] ❌:  Reference to docstring for ivy.function_name ([5.a](#ref1)) for the function description **and** modified `Parameters` and `Returns` sections as described in [the docs](https://lets-unify.ai/ivy/deep_dive/12_docstrings.html#docstrings) in:
               - [ ] ❌:  [ivy/array/{{ .category_name }}.py](https://github.com/unifyai/ivy/blob/master/ivy/array/{{ .category_name }}.py).
-              - [ ] ❌:  [ivy/container/{{ .category_name }}.py](https://github.com/unifyai/ivy/blob/master/ivy/container/{{ .category_name }}.py).
+              - [ ] ❌:  [ivy/container/{{ .category_name }}.py](https://github.com/unifyai/ivy/blob/master/ivy/container/{{ .category_name }}.py) (in the static and instance method versions).
               - [ ] ❌:   [ivy/array/array.py](https://github.com/unifyai/ivy/blob/master/ivy/array/array.py) if the function has a special method  ( like `__function_name__` ).
-              - [ ] ❌:  [ivy/array/array.py](https://github.com/unifyai/ivy/blob/master/ivy/array/array.py) if the function has a reverse special method  ( like `__function_name__` ).
+              - [ ] ❌:  [ivy/array/array.py](https://github.com/unifyai/ivy/blob/master/ivy/array/array.py) if the function has a reverse special method  ( like `__rfunction_name__` ).
               - [ ] ❌: [ivy/container/container.py](https://github.com/unifyai/ivy/blob/master/ivy/container/container.py) if the function has a special method ( like `__function_name__` ).
-              - [ ] ❌:  [ivy/container/container.py](https://github.com/unifyai/ivy/blob/master/ivy/container/container.py) if the function has a reverse special method  ( like `__function_name__` ).
+              - [ ] ❌:  [ivy/container/container.py](https://github.com/unifyai/ivy/blob/master/ivy/container/container.py) if the function has a reverse special method  ( like `__rfunction_name__` ).
 6. - [ ] ❌: Add thorough  [Docstring Examples](https://lets-unify.ai/ivy/deep_dive/13_docstring_examples.html#docstring-examples)  for every function  **and**  its  _relevant methods_  and ensure they pass the docstring tests.
 	
 		**Functional Examples** in [ivy/functional/{{ .category_name }}.py](https://github.com/unifyai/ivy/blob/master/ivy/functional/ivy/{{ .category_name }}.py).
@@ -53,7 +57,7 @@ The ivy docs represent the ground truth for the task descriptions and this check
 	 	6. - [ ] ❌: <a name="ref2"></a> Add an example that passes in an  `ivy.Container`  instance in place of one of the arguments. 
 	 	7. - [ ] ❌: <a name="ref3"></a> Add an example passes in  `ivy.Container`  instances for multiple arguments.
 		
-		**Container Static Method Examples** in [ivy/container/{{ .category_name }}e.py](https://github.com/unifyai/ivy/blob/master/ivy/container/{{ .category_name }}.py).
+		**Container Static Method Examples** in [ivy/container/{{ .category_name }}.py](https://github.com/unifyai/ivy/blob/master/ivy/container/{{ .category_name }}.py).
 
 	 	8. - [ ] ❌: The example from point ([6.f](#ref2)) should be replicated, but added to the  `ivy.Container`  **static method** docstring in with  `ivy.<func_name>`  replaced with  `ivy.Container.static_<func_name>`  in the example.
 	 	9. - [ ] ❌: The example from point ([6.g](#ref3)) should be replicated, but added to the  `ivy.Container`  **static method** docstring, with  `ivy.<func_name>`  replaced with  `ivy.Container.static_<func_name>`  in the example.
