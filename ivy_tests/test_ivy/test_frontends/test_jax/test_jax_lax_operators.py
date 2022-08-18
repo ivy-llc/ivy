@@ -727,11 +727,9 @@ def test_jax_lax_bitwise_and(
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.bitwise_or"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_jax_lax_bitwise_or(
     dtype_and_x,
