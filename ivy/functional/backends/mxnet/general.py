@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 import ivy
 
 _round = round
@@ -73,7 +73,11 @@ def floormod(
 container_types = lambda: []
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: mx.nd.NDArray, 
+    axis: int,
+    keepdims: bool = False,
+) -> List[mx.nd.NDArray]:
     if x.shape == ():
         return [x]
     num_outputs = x.shape[axis]
@@ -102,7 +106,10 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: True
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, mx.nd.NDArray],
+    val: Union[ivy.Array, mx.nd.NDArray],
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native[:] -= val_native
     if ivy.is_ivy_array(x):

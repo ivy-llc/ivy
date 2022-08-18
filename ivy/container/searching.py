@@ -11,10 +11,11 @@ class ContainerWithSearching(ContainerBase):
     @staticmethod
     def static_argmax(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argmax. This method simply
@@ -49,10 +50,11 @@ class ContainerWithSearching(ContainerBase):
 
     def argmax(
         self: ivy.Container,
+        /,
+        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argmax. This method simply
@@ -86,10 +88,11 @@ class ContainerWithSearching(ContainerBase):
     @staticmethod
     def static_argmin(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argmin. This method simply
@@ -124,10 +127,11 @@ class ContainerWithSearching(ContainerBase):
 
     def argmin(
         self: ivy.Container,
+        /,
+        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
-        *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argmin. This method simply
@@ -161,7 +165,8 @@ class ContainerWithSearching(ContainerBase):
 
     @staticmethod
     def static_nonzero(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray]
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.nonzero. This method simply
@@ -181,7 +186,7 @@ class ContainerWithSearching(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method("nonzero", x)
 
-    def nonzero(self: ivy.Container) -> ivy.Container:
+    def nonzero(self: ivy.Container, /) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.nonzero. This method simply
         wraps the function, and so the docstring for ivy.nonzero also applies
@@ -205,8 +210,9 @@ class ContainerWithSearching(ContainerBase):
         condition: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.where. This method simply
@@ -240,8 +246,9 @@ class ContainerWithSearching(ContainerBase):
         self: ivy.Container,
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.where. This method simply
