@@ -249,7 +249,11 @@ def insert_into_nest_at_indices(nest, indices, values):
     ]
 
 
-def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
+def map_nest_at_indices(
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+    indices: Union[List[int], Tuple[int], Iterable[int]],
+    fn: Callable,
+) -> Any:
     """Map a function to the values of a nested item at the specified indices.
 
     Parameters
