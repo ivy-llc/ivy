@@ -26,11 +26,9 @@ relu.unsupported_dtypes = {"torch": ("float16",)}
 
 def relu6(x):
     res = ivy.minimum(ivy.maximum(x, 0.0), 6.0)
-
     dtype = ivy.as_ivy_dtype(ivy.asarray(x).dtype)
     if "float" in dtype:
-        return res.astype(dtype)
-
+        return ivy.astype(res, dtype)
     return ivy.astype(res, "float64")
 
 
@@ -85,3 +83,18 @@ def softmax(x, /, *, axis=None):
 
 def softplus(x):
     return ivy.softplus(x)
+
+
+def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
+    # TODO: implement where in mean
+    if mean is None:
+        mean = ivy.mean(x, axis=axis, where=where)
+    if variance is None:
+        variance = ivy.mean(
+            ivy.square(x, axis, keepdims=True), axis=axis, where=where
+        ) - ivy.square(mean)
+
+    return (x - mean) * ivy.sqrt(variance + epsilon)
+
+
+sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
