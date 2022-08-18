@@ -304,9 +304,6 @@ def floor_divide(
     return np.floor(np.divide(x1, x2)).astype(x1.dtype)
 
 
-floor_divide.support_native_out = True
-
-
 @_handle_0_dim_output
 def greater(
     x1: Union[float, np.ndarray],
