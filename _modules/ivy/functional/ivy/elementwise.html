@@ -1359,9 +1359,8 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the </span>
-<span class="sd">    right according to the respective element ``x2_i`` of the input array ``x2``.</span>
+    <span class="sd">&quot;&quot;&quot;Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right</span>
+<span class="sd">    according to the respective element ``x2_i`` of the input array ``x2``.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">       This operation must be an arithmetic shift (i.e., sign-propagating) and thus</span>
@@ -1372,9 +1371,9 @@
 <span class="sd">    x1</span>
 <span class="sd">        first input array. Should have an integer data type.</span>
 <span class="sd">    x2</span>
-<span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). </span>
-<span class="sd">        Should have an integer data type. Each element must be greater than or equal</span>
-<span class="sd">        to ``0``.</span>
+<span class="sd">        second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`).</span>
+<span class="sd">        Should have an integer data type. Each element must be greater than or equal to</span>
+<span class="sd">        0.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -1382,97 +1381,16 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise results. The returned array must have a </span>
-<span class="sd">        data type determined by :ref:`type-promotion`.</span>
-
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html&gt;`_  </span>
-<span class="sd">    in the standard.</span>
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
+<span class="sd">        out (array), an array containing the element-wise results.</span>
+<span class="sd">        The returned array must have a data type determined by Type Promotion Rules.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-
-<span class="sd">    With :code:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([2, 9, 16, 31])</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.array([0, 1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.bitwise_right_shift(a, b)</span>
+<span class="sd">    &gt;&gt;&gt; lhs = ivy.array([5, 2, 3, 1], dtype=ivy.int64)</span>
+<span class="sd">    &gt;&gt;&gt; rhs = ivy.array([1, 3, 2, 1], dtype=ivy.int64)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.bitwise_right_shift(lhs, rhs)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([2, 4, 4, 3])</span>
-
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([[32, 40, 55], \</span>
-<span class="sd">                       [16, 33, 170]])</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.array([5, 2, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.zeros((2, 3))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.bitwise_right_shift(a, b, out=y)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[ 1., 10., 27.],</span>
-<span class="sd">               [ 0.,  8., 85.]])</span>
-
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([[10, 64], \</span>
-<span class="sd">                       [43, 87], \</span>
-<span class="sd">                       [5, 37]])</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.array([1, 3])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.bitwise_right_shift(a, b, out=a)</span>
-<span class="sd">    &gt;&gt;&gt; print(a)</span>
-<span class="sd">    ivy.array([[ 5,  8],</span>
-<span class="sd">               [21, 10],</span>
-<span class="sd">               [ 2,  4]])</span>
-
-<span class="sd">    With :code: `ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; a = ivy.native_array([[32, 40, 55], \</span>
-<span class="sd">                              [16, 33, 170]])</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.native_array([5, 2, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.bitwise_right_shift(a, b)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[ 1, 10, 27],</span>
-<span class="sd">               [ 0,  8, 85]])</span>
-
-<span class="sd">    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([[10, 64], \</span>
-<span class="sd">                       [43, 87], \</span>
-<span class="sd">                       [5, 37]])</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.native_array([1, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.bitwise_right_shift(a, b)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[ 5,  8],</span>
-<span class="sd">               [21, 10],</span>
-<span class="sd">               [ 2,  4]])</span>
-
-<span class="sd">    With one :code:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; a = ivy.Container(a = ivy.array([100, 200]), \</span>
-<span class="sd">                          b = ivy.array([125, 243]))</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.array([3, 6])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.bitwise_right_shift(a, b)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([12, 3]),</span>
-<span class="sd">        b: ivy.array([15, 3])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; a = ivy.Container(a = ivy.array([10, 25, 42]), \</span>
-<span class="sd">                          b = ivy.array([64, 65]), \</span>
-<span class="sd">                          c = ivy.array([200, 225, 255]))</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.Container(a = ivy.array([0, 1, 2]), \</span>
-<span class="sd">                          b = ivy.array([6]), \</span>
-<span class="sd">                          c = ivy.array([4, 5, 6]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.bitwise_right_shift(a, b)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([10, 12, 10]),</span>
-<span class="sd">        b: ivy.array([1, 1]),</span>
-<span class="sd">        c: ivy.array([12, 7, 3])</span>
-<span class="sd">    }</span>
+<span class="sd">    ivy.array([2, 0, 0, 0])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 

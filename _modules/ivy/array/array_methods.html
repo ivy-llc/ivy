@@ -1459,15 +1459,6 @@
 <span class="sd">        an array containing the element-wise results.</span>
 <span class="sd">        The returned array must have a data type determined</span>
 <span class="sd">        by :ref:`type-promotion`.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([[2, 3, 4], [5, 10, 64]])</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.array([0, 1, 2])</span>
-<span class="sd">    &gt;&gt;&gt; y = a.bitwise_right_shift(b)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[ 2,  1,  1],</span>
-<span class="sd">                [ 5,  5, 16]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -3095,19 +3086,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        List of arrays, unpacked along specified dimensions.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2], [3, 4]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.unstack(axis=0)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [ivy.array([1, 2]), ivy.array([3, 4])]</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2], [3, 4]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.unstack(axis=1, keepdims=True)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [ivy.array([[1],</span>
-<span class="sd">            [3]]), ivy.array([[2],</span>
-<span class="sd">            [4]])]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
