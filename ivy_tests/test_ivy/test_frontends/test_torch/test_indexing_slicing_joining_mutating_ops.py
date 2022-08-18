@@ -253,8 +253,8 @@ def test_torch_reshape(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)),
         ),
-        num_arrays=2,
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        num_arrays=st.shared(helpers.ints(min_value=1, max_value=4), key="num_arrays"),
+        shape=helpers.get_shape(min_num_dims=1),
         ret_shape=True,
     ),
     as_variable=helpers.array_bools(),
