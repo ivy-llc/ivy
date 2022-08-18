@@ -1377,6 +1377,55 @@ def unstack(
     ret
         List of arrays, unpacked along specified dimensions.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> y = ivy.unstack(x, axis=0)
+    >>> print(y)
+    [ivy.array([[1, 2],
+                [3, 4]]), ivy.array([[5, 6],
+                [7, 8]])]
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> y = ivy.unstack(x, axis=1, keepdims=True)
+    >>> print(y)
+    [ivy.array([[[1, 2]],
+                [[5, 6]]]), ivy.array([[[3, 4]],
+                [[7, 8]]])]
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> ivy.unstack(x, axis=0)
+    [{
+        a: ivy.array([[1, 2],
+                      [3, 4]]),
+        b: ivy.array([[9, 10],
+                      [11, 12]])
+    }, {
+        a: ivy.array([[5, 6],
+                      [7, 8]]),
+        b: ivy.array([[13, 14],
+                      [15, 16]])
+    }]
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                          b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> vy.unstack(x, axis=1, keepdims=True)
+    [{
+        a: ivy.array([[[1, 2]],
+                      [[5, 6]]]),
+        b: ivy.array([[[9, 10]],
+                      [[13, 14]]])
+    }, {
+        a: ivy.array([[[3, 4]],
+                      [[7, 8]]]),
+        b: ivy.array([[[11, 12]],
+                      [[15, 16]]])
+    }]
     """
     return current_backend(x).unstack(x, axis, keepdims)
 
@@ -2638,9 +2687,8 @@ def cumprod(
     ret
         Input array with cumulatively multiplied elements along axis.
 
-    Functional Examples
+    Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([2, 3, 4])
@@ -2649,48 +2697,87 @@ def cumprod(
     ivy.array([2, 6, 24])
 
     >>> x = ivy.array([2, 3, 4])
-    >>> exclusive = True
-    >>> y = ivy.cumprod(x, exclusive=exclusive)
+    >>> y = ivy.cumprod(x, exclusive=True)
     >>> print(y)
     ivy.array([1, 2, 6])
 
-    Example specifying axes
-
-    >>> x = ivy.array([[2, 3], \
-                       [5, 7], \
+    >>> x = ivy.array([[2, 3],
+                       [5, 7],
                        [11, 13]])
-    >>> exclusive = True
     >>> y = ivy.zeros((3, 2))
-    >>> ivy.cumprod(x, axis=1, exclusive=exclusive, out=y)
+    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
     >>> print(y)
-    ivy.array([[1.,2.],[1.,5.],[1.,11.]])
+    ivy.array([[ 1.,  2.],
+               [ 1.,  5.],
+               [ 1., 11.]])
 
     >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
-    >>> exclusive = True
-    >>> ivy.cumprod(x, axis=0, exclusive=exclusive, out=x)
+    >>> ivy.cumprod(x, axis=0, exclusive=True, out=x)
     >>> print(x)
     ivy.array([[1,  1],
                [2,  3],
                [10, 21]])
 
+    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
+    >>> y = ivy.zeros((3, 2))
+    >>> x.cumprod(axis=0, exclusive=True, out=y)
+    >>> print(x)
+    ivy.array([[1.,  1.],
+                [2.,  3.],
+                [10., 21.]])
 
-     With :code:`ivy.NativeArray` input:
+    With :code:`ivy.Container` input:
 
-     >>> x = ivy.native_array([2, 3, 4])
-     >>> y = ivy.cumprod(x)
-     >>> print(y)
-     ivy.array([2, 6, 24])
+    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.cumprod(x)
+    >>> print(y)
+    {
+        a: ivy.array([2, 6, 24]),
+        b: ivy.array([3, 12, 60])
+    }
 
+    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.cumprod(x, exclusive=True)
+    >>> print(y)
+    {
+        a: ivy.array([1, 2, 6]),
+        b: ivy.array([1, 3, 12])
+    }
 
-     With :code:`ivy.Container` input:
-     >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
-     >>> y = ivy.cumprod(x)
-     >>> print(y)
-     {
-         a: ivy.array([2, 6, 24]),
-         b: ivy.array([3, 12, 60])
-     }
+    >>> x = ivy.Container(a=ivy.array([[2, 3],
+                                       [5, 7],
+                                       [11, 13]]),
+                          b=ivy.array([[3, 4],
+                                       [4, 5],
+                                       [5, 6]]))
+    >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([[1, 2],
+                      [1, 5],
+                      [1, 11]]),
+        b: ivy.array([[1, 3],
+                      [1, 4],
+                      [1, 5]])
+    }
 
+    >>> x = ivy.Container(a=ivy.array([[2, 3],
+                                        [5, 7],
+                                        [11, 13]]),
+                            b=ivy.array([[3, 4],
+                                        [4, 5],
+                                        [5, 6]]))
+    >>> x.cumprod(axis=0, exclusive=True, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([[1, 1],
+                      [2, 3],
+                      [10, 21]]),
+        b: ivy.array([[1, 1],
+                      [3, 4],
+                      [15, 42]])
+    }
     """
     return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
