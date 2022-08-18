@@ -17,6 +17,17 @@ def _type_conversion(x):
     return ivy.astype(x, dtype)
 
 
+def _type_conversion_64(x):
+    # Does type conversion, floats maps to float,
+    # everything else to float64
+    x = ivy.asarray(x)
+    dtype = ivy.as_ivy_dtype(x.dtype)
+    if "float" in dtype:
+        return ivy.astype(x, dtype)
+
+    return ivy.astype(x, "float64")
+
+
 def relu(x):
     return ivy.relu(x)
 
@@ -26,10 +37,7 @@ relu.unsupported_dtypes = {"torch": ("float16",)}
 
 def relu6(x):
     res = ivy.minimum(ivy.maximum(x, 0.0), 6.0)
-    dtype = ivy.as_ivy_dtype(ivy.asarray(x).dtype)
-    if "float" in dtype:
-        return ivy.astype(res, dtype)
-    return ivy.astype(res, "float64")
+    return _type_conversion_64(res)
 
 
 relu6.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
@@ -52,22 +60,28 @@ silu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def leaky_relu(x, negative_slope=0.01):
+    x = _type_conversion_64(x)
     return ivy.leaky_relu(x, alpha=negative_slope)
 
 
-leaky_relu.unsupported_dtypes = {"torch": ("float16",)}
+leaky_relu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def gelu(x, approximate=True):
-    return ivy.gelu(x, approximate=approximate)
+    # TODO: Fix gelu backend implementation
+    if approximate:
+        x = _type_conversion_64(x)
+    ret = ivy.gelu(x, approximate=approximate)
+    return ret.astype(x.dtype)
 
 
-gelu.unsupported_dtypes = {"torch": ("float16",)}
+gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def sigmoid(x):
     x = _type_conversion(x)
-    return ivy.sigmoid(x).astype(x.dtype)
+    ret = ivy.sigmoid(x)
+    return ivy.astype(ret, x.dtype)
 
 
 sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
@@ -77,12 +91,23 @@ def one_hot(x, num_classes, *, device=None, out=None):
     return ivy.one_hot(x, num_classes, device=device, out=out)
 
 
-def softmax(x, /, *, axis=None):
-    return ivy.softmax(x, axis=axis)
+one_hot.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def softmax(x, /, *, axis=-1):
+    x = _type_conversion(x)
+    return ivy.softmax(x, axis=axis).astype(x.dtype)
+
+
+softmax.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def softplus(x):
-    return ivy.softplus(x)
+    x = _type_conversion(x)
+    return ivy.softplus(x).astype(x.dtype)
+
+
+softplus.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
