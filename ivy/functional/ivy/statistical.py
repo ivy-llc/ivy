@@ -368,7 +368,11 @@ def std(
     ivy.array(0.8164966)
 
     """
-    return current_backend(x).std(x, axis, correction, keepdims, out=out)
+    return current_backend(x).std(x,
+                                  axis=axis,
+                                  correction=correction,
+                                  keepdims=keepdims,
+                                  out=out)
 
 
 @to_native_arrays_and_back
@@ -643,7 +647,11 @@ def var(
     }
 
     """
-    return current_backend(x).var(x, axis=axis, correction=correction, keepdims=keepdims, out=out)
+    return current_backend(x).var(x,
+                                  axis=axis,
+                                  correction=correction,
+                                  keepdims=keepdims,
+                                  out=out)
 
 
 # Extra #
