@@ -300,8 +300,8 @@ def floor_divide(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    dtype = np.promote_types(x1.dtype, x2.dtype)
-    return np.floor(np.divide(x1, x2)).astype(dtype)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return np.floor(np.divide(x1, x2)).astype(x1.dtype)
 
 
 floor_divide.support_native_out = True
