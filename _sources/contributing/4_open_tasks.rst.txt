@@ -148,16 +148,6 @@ The general workflow for this task is:
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. verify that the tests for your function are passing
 
-If you feel as though there is an ivy function clearly missing, which would make your
-frontend function much simpler to implement, then you have two options:
-
-#. try to implement the function as a composition of currently present ivy functions,
-   as explained in the "Temporary Compositions" sub-section of the `Ivy Frontends`_
-   guide, and add the :code:`#ToDo` comment in the implementation as explained. Once the
-   PR is merged, your sub-task issue will then be closed as normal.
-#. alternatively, you can add the "Next Release" label to your sub-task issue, and then
-   simply choose another frontend function to work on, leaving the original issue open.
-
 There are a few points to take note of when working on your chosen frontend function:
 
 #. you should only implement **one** frontend function.

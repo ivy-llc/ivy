@@ -2,12 +2,6 @@ cumprod
 =======
 
 .. autofunction:: ivy.functional.ivy.general.cumprod
-
-.. autofunction:: ivy.array.array_methods.cumprod
-
-.. autofunction:: ivy.container.container_methods.cumprod
-
-.. autofunction:: ivy.container.container_methods.static_cumprod
 |
 | **Supported Frameworks:**
 
@@ -27,15 +21,3 @@ cumprod
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: cumprod
-
-   cumprod/cumprod_functional.rst
-   cumprod/cumprod_array.rst
-   cumprod/cumprod_container.rst
-   cumprod/static_cumprod_container.rst
-

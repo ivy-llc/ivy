@@ -175,12 +175,12 @@
 <li><p>float64</p></li>
 <li><p>bool</p></li>
 </ul>
-<p>These are all defined at <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225">import time</a>, with each of these set as an <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096">ivy.Dtype</a> instance.
+<p>These are all defined at <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225">import time</a>, with each of these set as an <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L51">ivy.Dtype</a> instance.
 The <code class="code docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> class derives from <code class="code docutils literal notranslate"><span class="pre">str</span></code>,
 and has simple logic in the constructor to verify that the string formatting is correct.
 All data types can be queried as attributes of the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace, such as <code class="code docutils literal notranslate"><span class="pre">ivy.float32</span></code> etc.</p>
 <p>In addition, <em>native</em> data types are <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L241">also specified</a> at import time.
-Likewise, these are all <em>initially</em> set as <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096">ivy.Dtype</a> instances.</p>
+Likewise, these are all <em>initially</em> set as <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L51">ivy.Dtype</a> instances.</p>
 <p>There is also an <code class="code docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> class defined, but this is initially set as an <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L38">empty class</a>.</p>
 <p>The following <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L256">tuples</a> are also defined: <code class="code docutils literal notranslate"><span class="pre">all_dtypes</span></code>, <code class="code docutils literal notranslate"><span class="pre">all_numeric_dtypes</span></code>, <code class="code docutils literal notranslate"><span class="pre">all_int_dtypes</span></code>,
 <code class="code docutils literal notranslate"><span class="pre">all_float_dtypes</span></code>. These each contain all possible data types which fall into the corresponding category.
@@ -206,7 +206,7 @@ we should no longer be able to access <code class="code docutils literal notrans
 This is <a class="reference external" href="https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/backend_handler.py#L194">handled</a> in <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend</span></code>.</p>
 <section id="data-type-module">
 <h2>Data Type Module<a class="headerlink" href="#data-type-module" title="Permalink to this heading"></a></h2>
-<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py">data_type.py</a> module provides a variety of functions for working with data types.
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py">data_type.py</a> module provides a variety of functions for working with data types.
 A few examples include
 <code class="code docutils literal notranslate"><span class="pre">ivy.astype</span></code> which copies an array to a specified data type,
 <code class="code docutils literal notranslate"><span class="pre">ivy.broadcast_to</span></code> which broadcasts an array to a specified shape,
@@ -214,11 +214,11 @@ and <code class="code docutils literal notranslate"><span class="pre">ivy.result
 <p>Many functions in the <code class="code docutils literal notranslate"><span class="pre">data_type.py</span></code> module are <em>convenience</em> functions,
 which means that they do not directly modify arrays, as explained in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
 <p>For example, the following are all convenience functions:
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246">ivy.can_cast</a>, which determines if one data type can be cast to another data type according to type-promotion rules,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096">ivy.dtype</a>, which gets the data type for the input array,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555">ivy.set_default_dtype</a>, which sets the global default data dtype,
-and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a>, which returns the correct data type to use.</p>
-<p><a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a> is arguably the most important function.
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22">ivy.can_cast</a>, which determines if one data type can be cast to another data type according to type-promotion rules,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L51">ivy.dtype</a>, which gets the data type for the input array,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536">ivy.set_default_dtype</a>, which sets the global default data dtype,
+and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484">ivy.default_dtype</a>, which returns the correct data type to use.</p>
+<p><a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484">ivy.default_dtype</a> is arguably the most important function.
 Any function in the functional API that receives a <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument will make use of this function,
 as explained below.</p>
 </section>
@@ -232,10 +232,10 @@ The non-creation functions which do support it are generally functions that invo
 array, which could result in overflows, and so an explicit <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is useful to handling such cases.</p>
 <p>The <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is handled in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249">infer_dtype</a> wrapper, for all functions which have the decorator
 <code class="code docutils literal notranslate"><span class="pre">&#64;infer_dtype</span></code>.
-This function calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a> in order to determine the correct data type.
+This function calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484">ivy.default_dtype</a> in order to determine the correct data type.
 As discussed in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
 this is applied to all applicable functions dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">backend setting</a>.</p>
-<p>Overall, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a> infers the data type as follows:</p>
+<p>Overall, <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484">ivy.default_dtype</a> infers the data type as follows:</p>
 <ol class="arabic simple">
 <li><p>if the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is provided, use this directly</p></li>
 <li><p>otherwise, if an array is present in the arguments, set <code class="code docutils literal notranslate"><span class="pre">arr</span></code> to this array. This will then be used to infer the data type by calling <code class="code docutils literal notranslate"><span class="pre">ivy.dtype</span></code> on the array</p></li>
