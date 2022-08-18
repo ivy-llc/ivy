@@ -96,3 +96,7 @@ def bitwise_and(x, y):
 
 def bitwise_or(x, y):
     return ivy.bitwise_or(x, y)
+
+
+def bitwise_xor(x, y):
+    return ivy.bitwise_xor(x, y)
