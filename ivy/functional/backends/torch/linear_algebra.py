@@ -147,15 +147,7 @@ def matrix_rank(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
-    if rtol is None and out is None:
-        ret = torch.linalg.matrix_rank(x)
-    elif rtol is None and out is not None:
-        ret = torch.linalg.matrix_rank(x, out=out)
-    elif rtol is not None and out is None:
-        ret = torch.linalg.matrix_rank(x, rtol)
-    else:
-        ret = torch.linalg.matrix_rank(x, rtol, out=out)
-
+    ret = torch.linalg.matrix_rank(x, atol=rtol, out=out)
     ret = torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
     return ret
 
