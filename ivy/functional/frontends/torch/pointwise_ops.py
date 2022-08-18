@@ -142,3 +142,10 @@ def atan2(input, other, *, out=None):
 
 
 atan2.unsupported_dtypes = ("float16",)
+
+
+def bitwise_and(input, other, *, out=None):
+    return ivy.bitwise_and(input, other, out=out)
+
+
+bitwise_and.unsupported_dtypes = ("float16",)
