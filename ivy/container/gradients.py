@@ -192,78 +192,7 @@ class ContainerWithGradients(ContainerBase):
         )
 
     # static_is_variable.computes_gradients = True
-
-    @staticmethod
-    def static_is_variable(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        exclusive: Union[bool, ivy.Container] = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.is_variable. This method simply wraps
-        the function, and so the docstring for ivy.is_variable also applies to this
-        method with minimal changes.
-        Parameters
-        ----------
-        x
-            An ivy container.
-        exclusive
-            Whether to check if the data type is exclusively a variable, rather than an
-            array. For frameworks like JAX that do not have exclusive variable types,
-            the function will always return False if this flag is set, otherwise the
-            check is the same for general arrays. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        Returns
-        -------
-        ret
-            Boolean, true if x is a trainable variable, false otherwise.
-        Examples
-        --------
-        With :code:`ivy.Container` input:
-        >>> x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))
-        >>> is_var = ivy.Container.static_is_variable(x, exclusive=True)
-        >>> print(is_var)
-        {
-            a: false,
-            b: false
-        }
-        With multiple :code:`ivy.Container` inputs:
-        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),\
-                              b=ivy.array([0., -0.4, 8]))
-        >>> exclusive = ivy.Container(a=False, b=True)
-        >>> is_var = ivy.Container.static_is_variable(x, exclusive=exclusive)
-        >>> print(is_var)
-        {
-            a: true,
-            b: false
-        }
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "is_variable",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            exclusive=exclusive,
-        )
-
-    static_is_variable.computes_gradients = True
-
+    
     def is_variable(
         self: ivy.Container,
         /,
