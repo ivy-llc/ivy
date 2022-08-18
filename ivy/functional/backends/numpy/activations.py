@@ -5,6 +5,7 @@ from typing import Optional
 # global
 import numpy as np
 
+from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 try:
     from scipy.special import erf
@@ -54,5 +55,6 @@ def softmax(
     return exp_x / np.sum(exp_x, axis, keepdims=True)
 
 
+@_handle_0_dim_output
 def softplus(x: np.ndarray, /) -> np.ndarray:
     return np.log1p(np.exp(-np.abs(x))) + np.maximum(x, 0)
