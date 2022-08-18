@@ -142,3 +142,10 @@ def atan2(input, other, *, out=None):
 
 
 atan2.unsupported_dtypes = ("float16",)
+
+
+def log10(input, *, out=None):
+    return ivy.log10(input, out=out)
+
+
+log10.unsupported_dtypes = ("float16",)
