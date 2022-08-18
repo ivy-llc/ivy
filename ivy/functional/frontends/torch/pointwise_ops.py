@@ -149,3 +149,10 @@ def log10(input, *, out=None):
 
 
 log10.unsupported_dtypes = ("float16",)
+
+
+def trunc(input, *, out=None):
+    return ivy.trunc(input, out=out)
+
+
+trunc.unsupported_dtypes = ("float16",)
