@@ -161,7 +161,7 @@ class ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.all_equal. This method simply wraps
-        the function, and so the docstring for ivy.add also applies to this method
+        the function, and so the docstring for ivy.all_equal also applies to this method
         with minimal changes.
 
         Parameters

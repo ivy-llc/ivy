@@ -141,7 +141,7 @@ def is_native_array(
         return False
 
 
-def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
+def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: Optional[bool] = False) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
@@ -353,6 +353,14 @@ def copy_array(
 ) -> ivy.Array:
     """Copy an array.
 
+    Parameters
+    ----------
+    x
+        array, input array containing elements to copy.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+    
     Returns
     -------
     ret
@@ -552,6 +560,22 @@ def array_equal(
     >>> print(k)
     False
 
+    With :code:`ivy.Array` instance method:
+
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([1, 0, 1])
+    >>> y = x1.array_equal(x2)
+    >>> print(y)
+    False
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` instance method:
+
+    >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
+    >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
+    >>> y = x1.all_equal(x2)
+    >>> print(y)
+    True
+
     """
     return current_backend(x0).array_equal(x0, x1)
 
@@ -725,6 +749,22 @@ def all_equal(
         a: true,
         b: false
     }
+
+    With :code:`ivy.Array` instance method:
+
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([1, 0, 1])
+    >>> y = x1.all_equal(x2, equality_matrix= False)
+    >>> print(y)
+    False
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` instance method:
+
+    >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
+    >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
+    >>> y = x1.all_equal(x2, equality_matrix= True)
+    >>> print(y)
+    ivy.array([[ True,  True], [ True,  True]])
 
     """
     equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
@@ -1458,7 +1498,7 @@ def fourier_encode(
 @inputs_to_native_arrays
 @handle_nestable
 def value_is_nan(
-    x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True
+    x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: Optional[bool] = True
 ) -> bool:
     """Determine whether the single valued array or scalar is of nan type.
 
