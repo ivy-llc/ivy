@@ -120,16 +120,19 @@ def test_torch_concat(
 
 # permute
 @given(
-    dtype_values_axis=helpers.dtype_values_axis(
+    dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)
-            ),
+            )
         ),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
-    axis=helpers.get_axis(
+    dims=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        min_size=len(st.shared(helpers.get_shape(min_num_dims=1), key="shape")),
+        max_size=len(st.shared(helpers.get_shape(min_num_dims=1), key="shape")),
+        unique=True,
         ret_tuple=True,
     ),
     as_variable=helpers.array_bools(),
@@ -139,16 +142,16 @@ def test_torch_concat(
     native_array=helpers.array_bools(),
 )
 def test_torch_permute(
-    dtype_values_axis,
-    axis,
+    dtype_and_values,
+    dims,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
-    dtype, value, axis = dtype_values_axis
+    input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -156,8 +159,8 @@ def test_torch_permute(
         fw=fw,
         frontend="torch",
         fn_tree="permute",
-        input=np.asarray(value, dtype=dtype),
-        dims=axis,
+        input=np.asarray(value, dtype=input_dtype),
+        dims=dims,
     )
 
 
