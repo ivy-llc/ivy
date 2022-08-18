@@ -10,7 +10,11 @@ The ivy docs represent the ground truth for the task descriptions and this check
 🆗 :  Check item is already implemented and does not require any edits.
 
 #### CHECKS 📑:
-1. - [ ] ❌:  Remove all lambda and direct bindings for the backend functions in [ivy/functional/backends](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends).
+1. - [ ] ❌:  Remove all lambda and direct bindings for the backend functions in 
+       - [ ] ❌: [ivy/functional/backends/jax/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/jax/{{ .category_name }}.py).
+       - [ ] ❌: [ivy/functional/backends/numpy/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/numpy/{{ .category_name }}.py).
+       - [ ] ❌: [ivy/functional/backends/tensorflow/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/tensorflow/{{ .category_name }}.py).
+       - [ ] ❌: [ivy/functional/backends/torch/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/torch/{{ .category_name }}.py).
 2. - [ ] ❌: Implement the following if they don't exist: 
        1. - [ ]  ❌: The `ivy.Array` instance method in [ivy/array/{{ .category_name }}.py](https://github.com/unifyai/ivy/blob/master/ivy/array/{{ .category_name }}.py).
        2. - [ ]  ❌: The `ivy.Array` special method in [ivy/array/array.py](https://github.com/unifyai/ivy/blob/master/ivy/array/array.py).
