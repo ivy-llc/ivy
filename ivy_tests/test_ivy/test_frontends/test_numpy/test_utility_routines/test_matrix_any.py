@@ -92,13 +92,13 @@ def test_numpy_any(
     if keepdims:
         out = ivy.zeros(
             [dim if i != axis and axis is not None
-            else 1 for i, dim in enumerate(x.shape)],
+             else 1 for i, dim in enumerate(x.shape)],
             dtype=bool
         ) if with_out else None
     else:
         out = ivy.zeros(
             [dim for i, dim in enumerate(x.shape)
-            if i != axis and axis is not None],
+             if i != axis and axis is not None],
             dtype=bool
         ) if with_out else None
     where = np_frontend_helpers.handle_where_and_array_bools(
