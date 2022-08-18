@@ -1252,6 +1252,7 @@ def test_method(
     num_positional_args_constructor: int,
     fw: str,
     class_name: str,
+    method_name: str = "__call__",
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
@@ -1336,7 +1337,7 @@ def test_method(
     # run
     ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
-        ins, *calling_args, **calling_kwargs
+        ins.__getattribute__(method_name), *calling_args, **calling_kwargs
     )
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
@@ -1354,7 +1355,7 @@ def test_method(
     )
     ins_gt = ivy.__dict__[class_name](*constructor_args_gt, **constructor_kwargs_gt)
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-        ins_gt, *calling_args_gt, **calling_kwargs_gt
+        ins_gt.__getattribute__(method_name), *calling_args_gt, **calling_kwargs_gt
     )
     ivy.unset_backend()
     # assuming value test will be handled manually in the test function
