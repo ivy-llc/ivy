@@ -142,3 +142,10 @@ def atan2(input, other, *, out=None):
 
 
 atan2.unsupported_dtypes = ("float16",)
+
+
+def negative(input, *, out=None):
+    return ivy.neg(input, out=out)
+
+
+negative.unsupported_dtypes = ("float16",)
