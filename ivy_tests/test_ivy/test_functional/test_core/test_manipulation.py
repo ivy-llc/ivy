@@ -274,7 +274,6 @@ def test_reshape(
 
 # roll
 @settings(
-    deadline=1250,
     suppress_health_check=(HealthCheck.data_too_large,),  # jax.roll is very slow
 )
 @given(
@@ -286,15 +285,11 @@ def test_reshape(
         available_dtypes=[ivy.int32],
         max_num_dims=1,
         min_dim_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(1,))
-            .map(lambda x: abs(x[0]))
-            .filter(lambda x: x > 0),
+            helpers.array_values(dtype="int32", shape=(), min_value=1),
             key="shift_len",
         ),
         max_dim_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(1,))
-            .map(lambda x: abs(x[0]))
-            .filter(lambda x: x > 0),
+            helpers.array_values(dtype="int32", shape=(), min_value=1),
             key="shift_len",
         ),
     ),
@@ -303,15 +298,11 @@ def test_reshape(
         force_tuple=True,
         unique=False,
         min_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(1,))
-            .map(lambda x: abs(x[0]))
-            .filter(lambda x: x > 0),
+            helpers.array_values(dtype="int32", shape=(), min_value=1),
             key="shift_len",
         ),
         max_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(1,))
-            .map(lambda x: abs(x[0]))
-            .filter(lambda x: x > 0),
+            helpers.array_values(dtype="int32", shape=(), min_value=1),
             key="shift_len",
         ),
     ),
@@ -335,6 +326,15 @@ def test_roll(
 ):
 
     value_dtype, value = dtype_value
+    """
+    To avoid making composite strategies, this if-else statement manipulates shift and
+    axis depending on if shift is a list or an integer.
+    
+    If it  an integer then axis (which will be a list of 
+    length 1) is converted into an int.
+    
+    If shift has 1 o
+    """
     if isinstance(shift[1], int):
         shift = shift[1]
         axis = axis[0]
@@ -427,7 +427,6 @@ def _stack_helper(draw):
 
 
 # stack
-@settings(deadline=500)
 @given(
     dtypes_arrays=_stack_helper(),
     axis=helpers.get_axis(
@@ -474,7 +473,6 @@ def test_stack(
 
 
 # clip
-@settings(deadline=500)
 @given(
     x_min_n_max=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
@@ -542,7 +540,6 @@ def _pad_helper(draw):
 
 
 # constant_pad
-@settings(deadline=1000)
 @given(
     dtype_value_pad_width_constant=_pad_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
@@ -608,7 +605,6 @@ def _repeat_helper(draw):
 
 
 # repeat
-@settings(deadline=750)
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -877,7 +873,6 @@ def test_tile(
 
 
 # zero_pad
-@settings(deadline=1000)
 @given(
     dtype_value_pad_width=_pad_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="zero_pad"),
