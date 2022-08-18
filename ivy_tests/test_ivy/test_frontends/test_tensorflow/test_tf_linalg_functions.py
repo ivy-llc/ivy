@@ -11,8 +11,8 @@ import ivy.functional.backends.numpy as ivy_np
     dtype_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes[1:],
         min_num_dims=2,
-        min_value=-10000000000.0,
-        max_value=10000000000.0
+        min_value=-1.0000000200408773e+20,
+        max_value=1.0000000200408773e+20
     ),
     as_variables=st.booleans(),
     native_array=st.booleans(),
