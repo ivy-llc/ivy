@@ -137,3 +137,11 @@ def arctanh(input, *, out=None):
 
 
 arctanh.unsupported_dtypes = ("float16",)
+
+
+# bitwise_and
+def bitwise_and(input, other, *, out=None):
+    return ivy.bitwise_and(input, other, out=out)
+
+
+bitwise_and.unsupported_dtypes = ("float16",)
