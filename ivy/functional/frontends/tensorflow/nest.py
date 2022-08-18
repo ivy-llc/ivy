@@ -10,14 +10,20 @@ RAGGED_TYPES = (tf.RaggedTensor,)
 def flatten(structure, expand_composites=False):
     if expand_composites and isinstance(structure, RAGGED_TYPES):
         new_struc = []
+        all_splits = [0]
+        splits = []
+        buffer = []
         for child in structure:
-            result = flatten(child, True)
-            new_struc.append(result[0])
-        structure = new_struc
-        new_struc = []
-        for child in structure:
-            new_struc += ivy.to_list(child)
-        return [ivy.native_array(new_struc)]
+            splits.append(child.shape[0])
+            if isinstance(child, RAGGED_TYPES):
+                result = flatten(child, True)
+                new_struc += ivy.to_list(result[0])
+                buffer += result[1:]
+            else:
+                new_struc += ivy.to_list(child)
+        for idx in splits:
+            all_splits.append(all_splits[-1] + idx)
+        return [ivy.native_array(new_struc), ivy.native_array(all_splits)] + buffer
     # if expand_composites and isinstance(structure, tf.RaggedTensor):
     #     print('yes!')
     #     return structure
