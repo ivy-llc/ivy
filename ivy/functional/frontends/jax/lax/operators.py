@@ -88,3 +88,7 @@ def ceil(x):
 
 
 ceil.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def bitwise_and(x, y):
+    return ivy.bitwise_and(x, y)
