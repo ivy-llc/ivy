@@ -11,7 +11,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 # equal
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes, num_arrays=2
+        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
@@ -53,7 +53,7 @@ def test_numpy_equal(
         where=where,
         casting="same_kind",
         order="K",
-        dtype=None,
+        dtype=dtype,
         subok=True,
         test_values=False
     )
