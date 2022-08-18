@@ -51,10 +51,11 @@ class NativeShape:
 
 class Device(str):
     def __new__(cls, dev_str):
-        assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
-        if dev_str != "cpu":
-            assert dev_str[3] == ":"
-            assert dev_str[4:].isnumeric()
+        if dev_str != "":
+            assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
+            if dev_str != "cpu":
+                assert dev_str[3] == ":"
+                assert dev_str[4:].isnumeric()
         return str.__new__(cls, dev_str)
 
 
@@ -74,7 +75,9 @@ class Shape(tuple):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
             shape_tup = tuple(shape_tup)
-        assert builtins.all([isinstance(v, int) for v in shape_tup])
+        assert builtins.all(
+            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup]
+        )
         if ivy.shape_array_mode():
             return ivy.array(shape_tup)
         return tuple.__new__(cls, shape_tup)
@@ -118,6 +121,8 @@ _MIN_BASE = 1e-5
 import threading
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
+from .array import conversions as arr_conversions
+from .container import conversions as cont_conversions
 from .container import (
     ContainerBase,
     Container,
@@ -173,6 +178,7 @@ add_ivy_array_instance_methods(
     Array,
     [
         activations,
+        arr_conversions,
         creation,
         data_type,
         device,
@@ -197,6 +203,7 @@ add_ivy_container_instance_methods(
     Container,
     [
         activations,
+        cont_conversions,
         creation,
         data_type,
         device,
@@ -222,6 +229,7 @@ add_ivy_container_instance_methods(
     Container,
     [
         activations,
+        cont_conversions,
         creation,
         data_type,
         device,
@@ -342,7 +350,7 @@ invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
 
 # data type promotion
-promotion_table = {
+array_api_promotion_table = {
     (int8, int8): int8,
     (int8, int16): int16,
     (int8, int32): int32,
@@ -410,12 +418,66 @@ promotion_table = {
     (float64, float64): float64,
     (bool, bool): bool,
 }
-
 locks = {"backend_setter": threading.Lock()}
+extra_promotion_table = {
+    (int8, float16): float16,
+    (float16, int8): float16,
+    (int8, float32): float32,
+    (float32, int8): float32,
+    (int8, float64): float64,
+    (float64, int8): float64,
+    (int16, float16): float16,
+    (float16, int16): float16,
+    (int16, float32): float32,
+    (float32, int16): float32,
+    (int16, float64): float64,
+    (float64, int16): float64,
+    (int32, float16): float16,
+    (float16, int32): float16,
+    (int32, float32): float32,
+    (float32, int32): float32,
+    (int32, float64): float64,
+    (float64, int32): float64,
+    (int64, float16): float16,
+    (float16, int64): float16,
+    (int64, float32): float32,
+    (float32, int64): float32,
+    (int64, float64): float64,
+    (float64, int64): float64,
+    (uint8, float16): float16,
+    (float16, uint8): float16,
+    (uint8, float32): float32,
+    (float32, uint8): float32,
+    (uint8, float64): float64,
+    (float64, uint8): float64,
+    (uint16, float16): float16,
+    (float16, uint16): float16,
+    (uint16, float32): float32,
+    (float32, uint16): float32,
+    (uint16, float64): float64,
+    (float64, uint16): float64,
+    (uint32, float16): float16,
+    (float16, uint32): float16,
+    (uint32, float32): float32,
+    (float32, uint32): float32,
+    (uint32, float64): float64,
+    (float64, uint32): float64,
+    (uint64, float16): float16,
+    (float16, uint64): float16,
+    (uint64, float32): float32,
+    (float32, uint64): float32,
+    (uint64, float64): float64,
+    (float64, uint64): float64,
+}
+
+promotion_table = {**array_api_promotion_table, **extra_promotion_table}
+
 
 backend = "none"
 
 native_inplace_support = None
+
+supports_gradients = None
 
 if "IVY_BACKEND" in os.environ:
     ivy.set_backend(os.environ["IVY_BACKEND"])

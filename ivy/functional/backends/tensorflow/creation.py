@@ -1,6 +1,7 @@
+# For Review
 # global
 import tensorflow as tf
-from typing import Union, Sequence, List, Optional
+from typing import Union, Tuple, List, Optional, Sequence
 
 # local
 import ivy
@@ -19,14 +20,15 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 
 def arange(
-    start,
-    stop=None,
-    step=1,
+    start: float,
+    /,
+    stop: Optional[float] = None,
+    step: float = 1,
     *,
-    dtype: tf.DType = None,
+    dtype: Optional[tf.DType] = None,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
-):
+) -> Union[tf.Tensor, tf.Variable]:
     if stop is None:
         stop = start
         start = 0
@@ -48,7 +50,7 @@ def arange(
             else:
                 return tf.range(start, stop, delta=step)
         else:
-            dtype = as_native_dtype(default_dtype(dtype))
+            dtype = as_native_dtype(default_dtype(dtype=dtype))
             if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
                 return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
             else:
@@ -56,13 +58,14 @@ def arange(
 
 
 def asarray(
-    object_in,
+    object_in: Union[tf.Tensor, tf.Variable, List[float], Tuple[float]],
+    /,
     *,
-    copy=None,
+    copy: Optional[bool] = None,
     dtype: tf.DType = None,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
-):
+) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         if copy:
             if dtype is None and isinstance(object_in, tf.Tensor):
@@ -72,14 +75,14 @@ def asarray(
                     dtype = default_dtype(item=object_in, as_native=True)
                     tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
-                    dtype = default_dtype(dtype, object_in, True)
+                    dtype = default_dtype(dtype=dtype, item=object_in, as_native=True)
                     tensor = tf.convert_to_tensor(
                         ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype, object_in))
+                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
                 try:
                     tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
@@ -95,13 +98,13 @@ def asarray(
                 try:
                     return tf.convert_to_tensor(object_in)
                 except (TypeError, ValueError):
-                    dtype = as_ivy_dtype(default_dtype(dtype, object_in))
+                    dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
                     return tf.convert_to_tensor(
                         ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype, object_in))
+                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
                 try:
                     tensor = tf.convert_to_tensor(object_in, dtype=dtype)
                 except (TypeError, ValueError):
@@ -125,6 +128,7 @@ def empty(
 
 def empty_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     dtype: tf.DType,
     device: str,
@@ -137,9 +141,10 @@ def empty_like(
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
+    /,
+    *,
     k: Optional[int] = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
-    *,
     dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
@@ -183,9 +188,15 @@ def eye(
             return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+eye.unsupported_dtypes = ("uint16",)
+
+
 # noinspection PyShadowingNames
-def from_dlpack(x, *, out: Union[tf.Tensor, tf.Variable] = None):
-    return tf.experimental.dlpack.from_dlpack(x)
+def from_dlpack(
+    x: Union[tf.Tensor, tf.Variable], /, *, out: Union[tf.Tensor, tf.Variable] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
+    return tf.experimental.dlpack.from_dlpack(dlcapsule)
 
 
 def full(
@@ -196,7 +207,7 @@ def full(
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.default_dtype(dtype, item=fill_value, as_native=True)
+    dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
     with tf.device(device):
         return tf.fill(
@@ -207,6 +218,7 @@ def full(
 
 def full_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     fill_value: Union[int, float],
     *,
     dtype: tf.DType,
@@ -219,12 +231,13 @@ def full_like(
 
 
 def linspace(
-    start,
-    stop,
-    num,
-    axis=None,
-    endpoint=True,
+    start: Union[tf.Tensor, tf.Variable, float],
+    stop: Union[tf.Tensor, tf.Variable, float],
+    /,
+    num: int,
     *,
+    axis: Optional[int] = None,
+    endpoint: bool = True,
     dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
@@ -261,6 +274,7 @@ def ones(
 
 def ones_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     dtype: tf.DType,
     device: str,
@@ -272,8 +286,9 @@ def ones_like(
 
 def tril(
     x: Union[tf.Tensor, tf.Variable],
-    k: int = 0,
+    /,
     *,
+    k: int = 0,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.tril(x, k)
@@ -281,8 +296,9 @@ def tril(
 
 def triu(
     x: Union[tf.Tensor, tf.Variable],
-    k: int = 0,
+    /,
     *,
+    k: int = 0,
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.triu(x, k)
@@ -301,6 +317,7 @@ def zeros(
 
 def zeros_like(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     dtype: tf.DType,
     device: str,
@@ -318,14 +335,16 @@ array = asarray
 
 
 def logspace(
-    start,
-    stop,
-    num,
-    base=10.0,
-    axis=None,
+    start: Union[tf.Tensor, tf.Variable, int],
+    stop: Union[tf.Tensor, tf.Variable, int],
+    /,
+    num: int,
     *,
+    base: float = 10.0,
+    axis: Optional[int] = None,
+    dtype: tf.DType,
     device: str,
     out: Union[tf.Tensor, tf.Variable] = None
-):
-    power_seq = linspace(start, stop, num, axis, dtype=None, device=device)
+) -> Union[tf.Tensor, tf.Variable]:
+    power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
     return base**power_seq

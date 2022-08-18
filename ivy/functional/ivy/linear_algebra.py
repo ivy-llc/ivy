@@ -180,90 +180,49 @@ def cross(
     ret
          an array containing the cross products. The returned array must have a data
          type determined by Type Promotion Rules.
+         
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
 
-    Functional Examples
+    Examples
     --------
-
     With :code:`ivy.Array` inputs:
 
-    1. Axis = -1: (default) vector cross product
-
     >>> x = ivy.array([1., 0., 0.])
     >>> y = ivy.array([0., 1., 0.])
     >>> z = ivy.cross(x, y)
     >>> print(z)
     ivy.array([0., 0., 1.])
 
-    With :code:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([1., 3., 5.])
-    >>> y = ivy.native_array([2., 4., 6.])
-    >>> z = ivy.cross(x, y)
-    >>> print(z)
-    ivy.array([-2., 4., -2.])
-
     With :code:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
-    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
+    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), \
+                          b=ivy.array([0., 0., 2.]))
+    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), \
+                          b=ivy.array([3., 0., 0.]))
     >>> z = ivy.cross(x,y)
     >>> print(z)
     {
-    a: ivy.array([0., 0., 35.]),
-    b: ivy.array([0., 6., 0.])
+        a: ivy.array([0., 0., 35.]),
+        b: ivy.array([0., 6., 0.])
     }
 
-    With a combination of :code:`ivy.Array`
-    and :code:`ivy.Container` inputs:
+    With a combination of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.array([9., 0., 3.])
-    >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
+    >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), \
+                          b=ivy.array([1., 0., 1.]))
     >>> z = ivy.cross(x,y)
     >>> print(z)
     {
-    a: ivy.array([-3., 3., 9.]),
-    b: ivy.array([0., -6., 0.])
+        a: ivy.array([-3., 3., 9.]),
+        b: ivy.array([0., -6., 0.])
     }
-
-    With a combination of :code:`ivy.NativeArray`
-    and :code:`ivy.Array` inputs:
-
-    2. Axis = 0: changing vector definition
-
-    >>> x = ivy.native_array([[1., 2.], \
-                              [4., 5.], \
-                              [7., 8.]])
-    >>> y = ivy.array([[1.],\
-                       [0.],\
-                       [0.]])
-    >>> z = ivy.cross(x,y, axis = 0)
-    >>> print(z)
-    ivy.array([[ 0.,  0.],
-               [7.,  8.],
-               [ -4., -5.]])
-
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance inputs:
-
-    >>> x = ivy.array([1., 0., 0.])
-    >>> y = ivy.array([0., 1., 0.])
-    >>> z = x.cross(y)
-    >>> print(z)
-    ivy.array([0., 0., 1.])
-
-    With :code:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
-    >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
-    >>> z = x.cross(y)
-    >>> print(z)
-    {
-    a: ivy.array([0., 0., 35.]),
-    b: ivy.array([0., 6., 0.])
-    }
-
     """
     return current_backend(x1).cross(x1, x2, axis, out=out)
 
@@ -533,9 +492,7 @@ def diagonal(
 @handle_out_argument
 @handle_nestable
 def eigh(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -736,11 +693,11 @@ def matmul(
     Parameters
     ----------
     x1
-         first input array. Should have a numeric data type. Must have at least one
-         dimension.
+        first input array. Should have a numeric data type. Must have at least one
+        dimension.
     x2
-         second input array. Should have a numeric data type. Must have at least one
-         dimension.
+        second input array. Should have a numeric data type. Must have at least one
+        dimension.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -782,6 +739,71 @@ def matmul(
         shape (L,), and K != L.
     -   if x1 is an array having shape (..., M, K), x2 is an array having shape
         (..., L, N), and K != L.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.__matmul__.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([2., 0., 3.])
+    >>> y = ivy.array([4., 1., 8.])
+    >>> z = ivy.matmul(x, y)
+    >>> print(z)
+    ivy.array(32.)
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([[1., 2.],  \
+                            [0., 1.]]) 
+    >>> y = ivy.native_array([[2., 0.],  \
+                            [0., 3.]])
+    >>> z = ivy.matmul(x, y)
+    >>> print(z)
+    ivy.array([[2., 6.],
+                [0., 3.]])
+    
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([5., 1.]), b=ivy.array([1., 0.]))
+    >>> y = ivy.Container(a=ivy.array([4., 7.]), b=ivy.array([3., 0.]))
+    >>> z = ivy.matmul(x,y)
+    >>> print(z)
+    {
+        a: ivy.array(27.),
+        b: ivy.array(3.)
+    }
+    
+    With a combination of :code:`ivy.Array`
+    and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([9., 0.])
+    >>> y = ivy.Container(a=ivy.array([2., 1.]), b=ivy.array([1., 0.]))
+    >>> z = ivy.matmul(x, y)
+    >>> print(z)
+    {
+        a: ivy.array(18.),
+        b: ivy.array(9.)
+    }
+
+    With a combination of :code:`ivy.NativeArray`
+    and :code:`ivy.Array` inputs:
+    
+    >>> x = ivy.native_array([[1., 2.], \
+                            [0., 3.]])
+    >>> y = ivy.array([[1.], \
+                        [3.]])
+    >>> z = ivy.matmul(x, y)
+    >>> print(z)
+    ivy.array([[7.],
+               [9.]])
 
     """
     return current_backend(x1).matmul(x1, x2, out=out)
@@ -879,9 +901,39 @@ def matrix_rank(
 
     Examples
     --------
+    With :code: 'ivy.Array' inputs:
+
+    1. Full Matrix
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> ivy.matrix_rank(x)
-    ivy.array(2)
+    ivy.array(2.)
+
+    2. Rank Deficient Matrix
+    >>> x = ivy.array([[1., 0.], [0., 0.]])
+    >>> ivy.matrix_rank(x)
+    ivy.array(1.)
+
+    3. 1 Dimension - rank 1 unless all 0
+    >>> x = ivy.array([[1., 1.])
+    >>> ivy.matrix_rank(x)
+    ivy.array(1.)
+
+    >>> x = ivy.array([[0., 0.])
+    >>> ivy.matrix_rank(x)
+    ivy.array(0)
+
+    With :code: 'ivy.NativeArray' inputs:
+
+    >>> x = ivy.native_array([[1., 2.], [3., 4.]], [[1., 0.], [0., 0.]])
+    >>> ivy.matrix_rank(x)
+    ivy.array([2., 1.])
+
+    With :code: 'ivy.Container' inputs:
+    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]) ,
+                            b = ivy.array([[1., 0.], [0., 0.]]))
+    >>> ivy.matrix_rank(x)
+    {a:ivy.array(2.), b:ivy.array(1.)}
+
 
     """
     return current_backend(x).matrix_rank(x, rtol, out=out)
@@ -1250,6 +1302,90 @@ def svdvals(
         array with shape ``(..., K)`` that contains the vector(s) of singular values of
         length ``K``, where K = min(M, N). The values are sorted in descending order by
         magnitude.
+
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[5.0, 7.0], [4.0, 3.0]])
+    >>> S = ivy.svdvals(x)
+    >>> print(S.shape)
+    (2,)
+
+    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
+
+    >>> _, SS, _ = ivy.svd(x)
+    >>> print(SS.shape)
+    (2,)
+
+    >>> error = (SS - S).abs()
+    >>> print(error)
+    ivy.array([0.,0.])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],\
+                              [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
+    >>> print(x.shape)
+    torch.Size([4, 3])
+
+    >>> S = ivy.svdvals(x)
+    >>> print(S)
+    ivy.array([10.3, 1.16, 0.615])
+
+    >>> _, SS, _ = ivy.svd(x)
+    >>> print(SS)
+    ivy.array([10.3, 1.16, 0.615])
+
+    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().
+
+    >>> error = (SS - S).abs()
+    >>> print(error)
+    ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[2.0, 3.0], [3.0, 4.0],\
+                                       [1.0, 3.0], [3.0, 5.0]]),\
+                          b=ivy.array([[7.0, 1.0, 2.0, 3.0],\
+                                       [2.0, 5.0, 3.0, 4.0],\
+                                       [2.0, 6.0, 1.0, 3.0],\
+                                       [3.0, 4.0, 5.0, 9.0]]))
+    >>> y = ivy.svdvals(x)
+    >>> print(y)
+    {
+        a: ivy.array([9.01, 0.866]),
+        b: ivy.array([15.8, 5.56, 4.17, 0.864])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[8.0, 3.0], [2.0, 3.0],\
+                       [2.0, 1.0], [3.0, 4.0],\
+                       [4.0, 1.0], [5.0, 6.0]])
+    >>> y = x.svdvals()
+    >>> print(y)
+    ivy.array([13.4, 3.88])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([[2.0, 3.0, 6.0], [5.0, 3.0, 4.0],\
+                                       [1.0, 7.0, 3.0], [3.0, 2.0, 5.0]]),\
+                          b=ivy.array([[7.0, 1.0, 2.0, 3.0, 9.0],\
+                                       [2.0, 5.0, 3.0, 4.0, 10.0],\
+                                       [2.0, 11.0, 6.0, 1.0, 3.0],\
+                                       [8.0, 3.0, 4.0, 5.0, 9.0]]))
+    >>> y = x.svdvals()
+    >>> print(y)
+    {
+        a: ivy.array([13., 4.64, 2.55]),
+        b: ivy.array([23.2, 10.4, 4.31, 1.36])
+    }
+
 
     """
     return current_backend(x).svdvals(x, out=out)

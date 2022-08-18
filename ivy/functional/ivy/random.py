@@ -6,13 +6,54 @@ from typing import Optional, Union
 # local
 import ivy
 from ivy.func_wrapper import (
-    infer_device,
     infer_dtype,
-    outputs_to_ivy_arrays,
+    infer_device,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
 )
+from ivy.backend_handler import backend_stack
+
+
+# Helpers #
+# ------- #
+
+
+def _check_bounds_and_get_shape(low, high, shape):
+    if shape is not None:
+        if not isinstance(low, (int, float)) or not isinstance(high, (int, float)):
+            raise Exception(
+                "`shape` argument can only be specified when `low` \
+                              and `high` arguments are numerics (not arrays)"
+            )
+        return shape
+    valid_types = (ivy.Array, ivy.NativeArray)
+    if len(backend_stack) == 0:
+        valid_types += (ivy.current_backend().NativeArray,)
+    if isinstance(low, valid_types):
+        if isinstance(high, valid_types):
+            if ivy.shape(low) != ivy.shape(high):
+                raise Exception("shape of bounds have to be the same")
+        return ivy.shape(low)
+    if isinstance(high, valid_types):
+        return ivy.shape(high)
+    return ()
+
+
+def _randint_check_dtype_and_bound(low, high, dtype):
+    if ivy.is_float_dtype(dtype) or ivy.is_uint_dtype(dtype):
+        raise Exception("randint cannot take `float` dtype")
+    if ivy.is_uint_dtype(low) or ivy.is_uint_dtype(high):
+        raise Exception("`low` and `high` cannot take `uint` dtype")
+    if ivy.is_float_dtype(low) or ivy.is_float_dtype(high):
+        raise Exception("`low` and `high` cannot take `float` dtype")
+    if ivy.any(ivy.greater_equal(low, high)):
+        raise Exception("`low` must be smaller than `high`")
+
+
+def _check_valid_scale(std):
+    if (isinstance(std, (int, float)) and std < 0) or ivy.any(ivy.less(std, 0)):
+        raise Exception("`std` must be non-negative")
 
 
 # Extra #
@@ -25,12 +66,12 @@ from ivy.func_wrapper import (
 @infer_dtype
 @handle_nestable
 def random_uniform(
+    *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
     high: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    dtype=None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Draws samples from a uniform distribution. Samples are uniformly distributed over
@@ -42,16 +83,21 @@ def random_uniform(
     ----------
     low
         Lower boundary of the output interval. All values generated will be greater than
-        or equal to ``low``.
+        or equal to ``low``. If array, must have same shape as ``high``.
     high
         Upper boundary of the output interval. All the values generated will be less
-        than ``high``.
+        than ``high``. If array, must have same shape as ``low``.
     shape
         If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn.
-        If size is ``None`` (Default), a single value is returned.
+        Can only be specified when ``low`` and ``high`` are numeric values, else
+        exception will be raised.
+        Default is ``None``, where a single value is returned.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
         (Default value = None).
+    dtype
+         output array data type. If ``dtype`` is ``None``, the output array data
+         type will be the default floating-point data type. Default ``None``
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -64,51 +110,76 @@ def random_uniform(
     Functional Examples
     -------------------
 
-    >>> y = ivy.random_uniform()
-    >>> print(y)
+    >>> ivy.random_uniform()
     ivy.array(0.26431865)
 
-    >>> y = ivy.random_uniform(shape=3)
-    >>> print(y)
+    >>> ivy.random_uniform(shape=3)
     ivy.array([0.475, 0.878, 0.861])
 
-    >>> y = ivy.random_uniform(0.0, 2.0, device="cpu")
-    >>> print(y)
-    ivy.array(1.89150229)
+    >>> ivy.random_uniform(shape=(2,3))
+    ivy.array([[0.929 , 0.545 , 0.789 ],
+               [0.519 , 0.0435, 0.381 ]])
 
-    >>> y = ivy.random_uniform(0.7, 1.0, device="cpu", shape=(2, 2))
-    >>> print(y)
-    ivy.array([[0.89629126, 0.94198485],
-               [0.91405606, 0.72848724]])
+    >>> ivy.random_uniform(low=3.0, high=6.0)
+    ivy.array(3.4608004)
 
-    Instance Method Examples
-    ------------------------
+    >>> ivy.random_uniform(low=1.0, high=2.0, shape=(2,1))
+    ivy.array([[1.85],
+               [1.81]])
 
-    With :code:`ivy.Container` input:
+    >>> z = ivy.zeros(())
+    >>> ivy.random_uniform(low=1.0, high=2.0, out=z)
+    ivy.array(1.8458502)
 
-    >>> y = ivy.Container(a=ivy.random_uniform(), \
-                          b=ivy.random_uniform(shape=2))
-    >>> print(y)
-    {
-    a: ivy.array(0.7550739),
-    b: ivy.array([0.624, 0.00109])
-    }
+    >>> ivy.random_uniform(low=1.0, high=2.0, shape=(2,2), device='cpu')
+    ivy.array([[1.81, 1.8 ],
+               [1.32, 1.43]])
 
+    >>> ivy.random_uniform(low=1.0, high=2.0, shape=(2,2), device='cpu', \
+                           dtype='int32')
+    ivy.array([[1, 1],
+               [1, 1]])
+
+    >>> z = ivy.zeros((1,2))
+    >>> ivy.random_uniform(low=1.0, high=2.0, shape=(1,2), device='cpu', \
+                           dtype='float64', out=z)
+    ivy.array([[1.34, 1.02]])
+
+    >>> x = ivy.array([4.8, 5.6])
+    >>> y = ivy.array([9.8, 7.4])
+    >>> ivy.random_uniform(low=x, high=y)
+    ivy.array([0.475, 0.878])
+
+    >>> z = ivy.zeros((2,))
+    >>> ivy.random_uniform(low=x, high=y, out=z)
+    ivy.array([9.41, 7.17])
+
+    >>> ivy.random_uniform(low=x, high=y, device='cpu')
+    ivy.array([6.88, 6.75])
+
+    >>> ivy.random_uniform(low=x, high=y, device='cpu', dtype='float64')
+    ivy.array([8.62, 6.47])
+
+    >>> z = ivy.zeros((2,))
+    >>> ivy.random_uniform(low=x, high=y, device='cpu', dtype='float64', out=z)
+    ivy.array([5. , 7.3])
     """
     return ivy.current_backend().random_uniform(
-        low, high, shape, device=device, dtype=dtype, out=out
+        low=low, high=high, shape=shape, device=device, dtype=dtype, out=out
     )
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
+@infer_dtype
 @handle_nestable
 def random_normal(
-    mean: float = 0.0,
-    std: float = 1.0,
-    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     *,
+    mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
+    std: Union[float, ivy.NativeArray, ivy.Array] = 1.0,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.array:
@@ -118,15 +189,21 @@ def random_normal(
     Parameters
     ----------
     mean
-        The mean of the normal distribution to sample from. Default is ``0``.
+        The mean of the normal distribution to sample from. Default is ``0.0``.
     std
         The standard deviation of the normal distribution to sample from.
-        Default is ``1``.
+        Must be non-negative. Default is ``1.0``.
     shape
-        Output shape. If the given shape is, e.g., ``(m, n, k)``, then ``m * n * k``
-        samples are drawn. If size is ``None`` (default), a single value is returned.
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn.
+        Can only be specified when ``mean`` and ``std`` are numeric values, else
+        exception will be raised.
+        Default is ``None``, where a single value is returned.
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default floating-point data type. Default ``None``
     device
-        (Default value = ``None``)
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        (Default value = None).
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -136,41 +213,66 @@ def random_normal(
      ret
         Drawn samples from the parameterized normal distribution.
 
-    Funtional Examples
-    ------------------
+    Functional Examples
+    -------------------
 
-    >>> y = ivy.random_normal(0.0, 2.0)
-    >>> print(y)
-    ivy.array(0.6444774682897879)
+    >>> ivy.random_normal()
+    ivy.array(-0.22346112)
 
-    >>> y = ivy.random_normal(shape=3)
-    >>> print(y)
-    ivy.array([ 0.811, -0.508, -0.564])
+    >>> ivy.random_normal(shape=3)
+    ivy.array([-0.73  ,  0.0922, -0.515 ])
 
-    >>> y = ivy.random_normal(0.0,2.0,device='cpu')
-    >>> print(y)
-    ivy.array(-0.7268672)
+    >>> ivy.random_normal(shape=(2,3))
+    ivy.array([[-0.361 ,  0.596 , -0.247 ],
+               [-1.39  ,  0.0426, -0.627 ]])
 
-    >>> y = ivy.random_normal(0.7, 1.0, device="cpu", shape=(2, 2))
-    >>> print(y)
-    ivy.array([[1.17 , 0.968],
-               [0.175, 0.064]])
+    >>> ivy.random_normal(mean=3.0, std=6.0)
+    ivy.array(4.9213753)
 
-    Instance Method Examples
-    ------------------------
+    >>> ivy.random_normal(mean=1.0, std=2.0, shape=(2,1))
+    ivy.array([[2.19],
+               [2.78]])
 
-    With :code:`ivy.Container` input:
+    >>> z = ivy.zeros(())
+    >>> ivy.random_normal(mean=1.0, std=2.0, out=z)
+    ivy.array(0.12818667)
 
-    >>> y = ivy.Container(a=ivy.random_normal(), \
-                          b=ivy.random_normal(shape=2))
-    >>> print(y)
-    {
-    a: ivy.array(-0.40935726),
-    b: ivy.array([1.54 , 0.556])
-    }
+    >>> ivy.random_normal(mean=1.0, std=2.0, shape=(2,2), device='cpu')
+    ivy.array([[ 2.91 ,  1.3  ],
+               [ 3.37 , -0.799]])
 
+    >>> ivy.random_normal(mean=1.0, std=2.0, shape=(2,2), device='cpu', \
+                          dtype='int32')
+    ivy.array([[ 0, -1],
+               [ 0,  3]])
+
+    >>> z = ivy.zeros((1,2))
+    >>> ivy.random_normal(mean=1.0, std=2.0, shape=(1,2), device='cpu', \
+                          dtype='float64', out=z)
+    ivy.array([[-2.01, -1.95]])
+
+    >>> x = ivy.array([4.8, 5.6])
+    >>> y = ivy.array([9.8, 7.4])
+    >>> ivy.random_normal(mean=x, std=y)
+    ivy.array([ 4.43 , -0.469])
+
+    >>> z = ivy.zeros((2,))
+    >>> ivy.random_normal(mean=x, std=y, out=z)
+    ivy.array([0.287, 8.55 ])
+
+    >>> ivy.random_normal(mean=x, std=y, device='cpu')
+    ivy.array([18.9, 15.2])
+
+    >>> ivy.random_normal(mean=x, std=y, device='cpu', dtype='float64')
+    ivy.array([-4.1   , -0.0366])
+
+    >>> z = ivy.zeros((2,))
+    >>> ivy.random_normal(mean=x, std=y, device='cpu', dtype='float64', out=z)
+    ivy.array([12.4, 11. ])
     """
-    return ivy.current_backend().random_normal(mean, std, shape, device=device, out=out)
+    return ivy.current_backend().random_normal(
+        mean=mean, std=std, shape=shape, dtype=dtype, device=device, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -180,10 +282,11 @@ def random_normal(
 def multinomial(
     population_size: int,
     num_samples: int,
+    /,
+    *,
     batch_size: int = 1,
     probs: Union[ivy.Array, ivy.NativeArray] = None,
     replace: bool = True,
-    *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.array:
@@ -202,7 +305,7 @@ def multinomial(
         Number of tensors to generate. Default is 1.
     probs
         The unnormalized probabilities for all elements in population,
-        default is uniform *[batch_shape, num_classes]*
+        default is uniform *[batch_shape, population_size]*
     replace
         Whether to replace samples once they've been drawn. Default is True.
     device
@@ -265,20 +368,28 @@ def multinomial(
 
     """
     return ivy.current_backend().multinomial(
-        population_size, num_samples, batch_size, probs, replace, device=device, out=out
+        population_size,
+        num_samples,
+        batch_size=batch_size,
+        probs=probs,
+        replace=replace,
+        device=device,
+        out=out,
     )
 
 
-@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @infer_device
 @handle_nestable
 def randint(
-    low: int,
-    high: int,
-    shape: Union[ivy.Shape, ivy.NativeShape],
+    low: Union[int, ivy.NativeArray, ivy.Array],
+    high: Union[int, ivy.NativeArray, ivy.Array],
+    /,
     *,
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns an array filled with random integers generated uniformly between
@@ -291,10 +402,16 @@ def randint(
     high
         One above the highest integer that can be drawn from the distribution.
     shape
-        a Sequence defining the shape of the output array.
+        If the given shape is, e.g ``(m, n, k)``, then ``m * n * k`` samples are drawn
+        Can only be specified when ``mean`` and ``std`` are numeric values, else
+        exception will be raised.
+        Default is ``None``, where a single value is returned.
     device
         device on which to create the array. 'cuda:0',
         'cuda:1', 'cpu' etc. (Default value = None).
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default integer data type. Default ``None``
     out
         optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
@@ -307,32 +424,34 @@ def randint(
 
     Examples
     --------
-    >>> y = ivy.randint(0, 9, (1,1))
+    >>> y = ivy.randint(0, 9, shape=(1,1))
     >>> print(y)
     ivy.array([[5]])
 
-    >>> y = ivy.randint(2, 20, (2, 2), device='cpu')
+    >>> y = ivy.randint(2, 20, shape=(2, 2), device='cpu')
     >>> print(y)
     ivy.array([[5,8],[9,3]])
 
     >>> x = ivy.array([1, 2, 3])
-    >>> ivy.randint(0, 10, (3,), out=x)
+    >>> ivy.randint(0, 10, shape=(3,), out=x)
     >>> print(x)
     ivy.array([2, 6, 7])
 
     >>> y = ivy.zeros((3, 3))
-    >>> ivy.randint(3, 15, (3, 3), device='cpu', out=y)
+    >>> ivy.randint(3, 15, shape=(3, 3), device='cpu', out=y)
     >>> print(y)
     ivy.array([[ 7,  7,  5],
                [12,  8,  8],
                [ 8, 11,  3]])
 
     """
-    return ivy.current_backend().randint(low, high, shape, device=device, out=out)
+    return ivy.current_backend().randint(
+        low, high, shape=shape, device=device, dtype=dtype, out=out
+    )
 
 
 @handle_nestable
-def seed(seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
     Parameters
@@ -343,17 +462,17 @@ def seed(seed_value: int = 0) -> None:
 
     Examples
     --------
-    >>> ivy.seed(42)
+    >>> ivy.seed(seed_value=42)
 
     """
-    return ivy.current_backend().seed(seed_value)
+    return ivy.current_backend().seed(seed_value=seed_value)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def shuffle(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Shuffles the given array along axis 0.
 

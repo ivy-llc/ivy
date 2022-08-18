@@ -35,10 +35,10 @@ which everything else in the framework depends.
 Our CI always tests against the latest version available on PyPI,
 and this has been the case since we started development.
 We do not lock-in any versions during our continuous testing,
-and we will contunue to always pull the latest version.
+and we will continue to always pull the latest version.
 
 In future, we hope to add explicit testing also for previous versions,
-so we can guaranteed backward compatibility for each backend.
+so we can guarantee backward compatibility for each backend.
 We will also add an option to select backend versions for the small minority of cases
 where changes in the backend functional APIs do cause breaking changes for Ivy.
 
@@ -66,6 +66,21 @@ wraps the backend compilation methods, for example :code:`jax.jit`, :code:`tf.fu
 :code:`torch.jit.trace`. For some backends, shape-checking will be performed during the compilation phase and for others
 it will not.
 
+GPU handling
+------------
+**Q:** How does Ivy handle GPU usage? 
+
+**A:** Ivy handles GPU usage by simply wrapping the backend frameworks, and so Ivy will use GPUs in the same manner as the 
+backend framework does. E.g. When using a torch backend, then torch will be a dependency of Ivy, and its handling of GPU 
+functionalities will be inherited and extended upon by Ivy.
+
+Model Deployment
+----------------
+**Q:** Does Ivy support model deployment?
+**A:** Yes, Ivy will support efficient model deployment. However, currently this feature is not yet supported as the graph compiler 
+module is still under development, and will be released soon with ivy version 1.2.0.
+
+
 Dynamic Control Flow
 --------------------
 **Q:** Tensorflow has dynamic control-flow primitives (loops, branches) even within a static computation graph.
@@ -80,7 +95,7 @@ TensorFlow eager and PyTorch allow you to use full python control flow, (loops, 
 dynamic dispatch, recursion) but there is no static computation graph. How will Ivy handle dynamic control flow?
 Will Ivy parse python ASTs?
 
-**A:** For now, Ivy will not support dynamic control flow by parsing ASTs. The dynamicism of :code:`for` loops and
+**A:** For now, Ivy will not support dynamic control flow by parsing ASTs. The dynamism of :code:`for` loops and
 :code:`while` loops will be ignored during compilation, and just the static trace which chains the array operations
 performed during the forward pass at compile time will be preserved.
 
