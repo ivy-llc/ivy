@@ -3,7 +3,7 @@ import ivy
 
 
 def mean(
-    x,
+    a,
     axis=None,
     dtype=None,
     out=None,
@@ -12,8 +12,8 @@ def mean(
     where=True
 ):
     if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.mean(x, out=out)
+        a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+    ret = ivy.mean(a, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
