@@ -9,12 +9,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_numeric_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.relu"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_nn_relu(
     dtype_and_x,
@@ -24,7 +26,6 @@ def test_jax_nn_relu(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -38,17 +39,16 @@ def test_jax_nn_relu(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_jax.valid_numeric_dtypes,
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.relu6"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_nn_relu6(
     dtype_and_x,
@@ -58,10 +58,9 @@ def test_jax_nn_relu6(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=True,
+        as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
@@ -72,17 +71,16 @@ def test_jax_nn_relu6(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_jax.valid_numeric_dtypes,
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.soft_sign"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_nn_soft_sign(
     dtype_and_x,
@@ -106,17 +104,16 @@ def test_jax_nn_soft_sign(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_jax.valid_numeric_dtypes,
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.silu"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_nn_silu(
     dtype_and_x,
@@ -142,12 +139,14 @@ def test_jax_nn_silu(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.leaky_relu"
     ),
-    native_array=st.booleans(),
     negative_slope=helpers.floats(min_value=0.0, max_value=1.0),
 )
 def test_jax_nn_leaky_relu(
@@ -176,13 +175,15 @@ def test_jax_nn_leaky_relu(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+    ),
     approximate=st.booleans(),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.gelu"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_nn_gelu(
     dtype_and_x,
@@ -208,13 +209,16 @@ def test_jax_nn_gelu(
     )
 
 
+@handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_numeric_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.sigmoid"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_nn_sigmoid(
     dtype_and_x,
@@ -238,16 +242,19 @@ def test_jax_nn_sigmoid(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_int_dtypes, min_value=1, max_value=3
+        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+        min_value=1,
+        max_value=3,
     ),
     num_classes=st.integers(min_value=4, max_value=6),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.one_hot"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_nn_one_hot(
     dtype_and_x,
@@ -273,18 +280,19 @@ def test_jax_nn_one_hot(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
         min_value=-2,
         min_num_dims=1,
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.softmax"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_nn_softmax(
     dtype_and_x,
@@ -310,15 +318,16 @@ def test_jax_nn_softmax(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_float_dtypes,
+        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.softplus"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_nn_softplus(
     dtype_and_x,
