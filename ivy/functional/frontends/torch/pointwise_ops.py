@@ -149,4 +149,3 @@ def atan2(input, other, *, out=None):
 
 
 atan2.unsupported_dtypes = ("float16",)
-
