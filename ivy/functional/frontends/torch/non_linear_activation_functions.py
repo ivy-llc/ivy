@@ -26,4 +26,4 @@ def gelu(input, approximate="none"):
     return ivy.gelu(input, approximate)
 
 
-gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+gelu.unsupported_dtypes = ("float16",)
