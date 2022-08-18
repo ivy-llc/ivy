@@ -1267,7 +1267,6 @@ def bitwise_right_shift(
 
     Examples
     --------
-
     With :code:`ivy.Array` input:
 
     >>> a = ivy.array([2, 9, 16, 31])
