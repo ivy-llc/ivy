@@ -9,7 +9,6 @@ def sigmoid(input, out=None):
 sigmoid.unsupported_dtypes = ("float16",)
 
 
-
 def leaky_relu(input, negative_slope=0.01):
     return ivy.leaky_relu(input, negative_slope)
 
@@ -24,4 +23,3 @@ def softmax(input, dim=None, dtype=None):
 
 
 softmax.unsupported_dtypes = ("float16",)
-
