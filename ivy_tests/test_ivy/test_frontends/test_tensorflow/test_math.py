@@ -244,7 +244,9 @@ def test_tensorflow_negative(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_tf.valid_float_dtypes, min_value=1.0, max_value=1.0
+        available_dtypes=ivy_tf.valid_float_dtypes,
+        small_value_safety_factor=1.0,
+        large_value_safety_factor=1.0,
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
