@@ -717,3 +717,40 @@ def test_jax_lax_bitwise_and(
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
+
+
+# bitwise_or
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_int_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.bitwise_or"
+    ),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+)
+def test_jax_lax_bitwise_or(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.bitwise_or",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
+    )
