@@ -1,6 +1,6 @@
 
 #### IMPORTANT NOTICE 🚨:
-The ivy docs represent the ground truth for the task descriptions and this checklist should only be used as a supplementary item to aid with the review process.
+The [Ivy Docs](https://lets-unify.ai/ivy/) represent the ground truth for the task descriptions and this checklist should only be used as a supplementary item to aid with the review process.
 
 #### LEGEND 🗺:
 - ❌ :  Check item is not completed. 
@@ -10,7 +10,7 @@ The ivy docs represent the ground truth for the task descriptions and this check
 - 🆗 :  Check item is already implemented and does not require any edits.
 
 #### CHECKS 📑:
-1. - [ ] ❌:  Remove all lambda and direct bindings for the backend functions in 
+1. - [ ] ❌:  Remove all lambda and direct bindings for the backend functions in:
        - [ ] ❌: [ivy/functional/backends/jax/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/jax/{{ .category_name }}.py).
        - [ ] ❌: [ivy/functional/backends/numpy/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/numpy/{{ .category_name }}.py).
        - [ ] ❌: [ivy/functional/backends/tensorflow/{{ .category_name }}.py](https://github.com/unifyai/ivy/tree/master/ivy/functional/backends/tensorflow/{{ .category_name }}.py).
