@@ -1,5 +1,6 @@
 import ivy    
 
+
 def median_overwrite(a, axis=None, keepdims=False):
     a = ivy.array(a)
     if keepdims:
@@ -8,7 +9,7 @@ def median_overwrite(a, axis=None, keepdims=False):
     if axis is not None:
         a[axis] = ivy.sort(a[axis])
     else:
-        a = ivy.sort(a.reshape(1,-1))
+        a = ivy.sort(a.reshape(1, -1))
 
     if len(a) % 2 == 0:
         med = a[len(a) / 2]
@@ -25,7 +26,7 @@ def _median(a, axis=None):
     if axis is not None:
         b = ivy.sort(ivy.array(a[axis]))
     else:
-        b = ivy.sort(ivy.array(a).reshape(1,-1))
+        b = ivy.sort(ivy.array(a).reshape(1, -1))
 
     if len(b) % 2 == 0:
         med = b[len(b) / 2]
@@ -35,7 +36,7 @@ def _median(a, axis=None):
     return med
 
 
-def median(a, * ,axis=None, out=None, overwrite_input=False, keepdims=False):
+def median(a, *, axis=None, out=None, overwrite_input=False, keepdims=False):
 
     if overwrite_input:
         med = median_overwrite(a, axis, keepdims)
