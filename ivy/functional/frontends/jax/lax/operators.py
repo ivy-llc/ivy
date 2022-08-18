@@ -92,3 +92,7 @@ ceil.unsupported_dtypes = {"torch": ("float16",)}
 
 def bitwise_and(x, y):
     return ivy.bitwise_and(x, y)
+
+
+def bitwise_or(x, y):
+    return ivy.bitwise_or(x, y)
