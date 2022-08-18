@@ -78,6 +78,8 @@ def mul(x, y):
 def eq(x, y):
     return ivy.equal(x, y)
 
+eq.unsupported_dtypes = {"torch": ("bfloat16",)}
+
 
 def atan(x):
     return ivy.atan(x)
