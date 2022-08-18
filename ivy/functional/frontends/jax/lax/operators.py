@@ -106,3 +106,10 @@ def neg(x):
 
 
 neg.unsupported_dtypes = {"torch": ("bfloat16",)}
+
+
+def argmax(operand, axis, index_dtype):
+    return ivy.astype(ivy.argmax(operand, axis=axis), dtype=index_dtype)
+
+
+argmax.unsupported_dtypes = {"torch": ("bfloat16",)}
