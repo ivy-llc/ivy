@@ -254,9 +254,11 @@ def test_torch_reshape(
                 set(ivy_torch.valid_float_dtypes)),
         ),
         num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
-        shape=helpers.get_shape(min_num_dims=1),
-        ret_shape=True,
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ).filter(lambda axis: isinstance(axis, int)),
     as_variable=helpers.array_bools(
         num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
     ),
@@ -270,13 +272,14 @@ def test_torch_reshape(
 )
 def test_torch_stack(
     dtype_value_shape,
+    dim,
     as_variable,
     num_positional_args,
     native_array,
     with_out,
     fw,
 ):
-    input_dtype, value, shape = dtype_value_shape
+    input_dtype, value = dtype_value_shape
     tensors = [np.asarray(x, dtype=dtype) for x, dtype in zip(value, input_dtype)]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -288,6 +291,6 @@ def test_torch_stack(
         frontend="torch",
         fn_tree="stack",
         tensors=tensors,
-        dim=shape,
+        dim=dim,
         out=None,
     )
