@@ -891,7 +891,6 @@ def test_torch_atan2(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        input=np.asarray(x, dtype=input_dtype),
         fn_tree="atan2",
         input=np.asarray(x[0], dtype=input_dtype[0]),
         other=np.asarray(x[1], dtype=input_dtype[1]),
