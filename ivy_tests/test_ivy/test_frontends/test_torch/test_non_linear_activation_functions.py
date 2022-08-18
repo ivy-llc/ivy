@@ -127,7 +127,7 @@ def test_torch_leaky_relu(
     alpha,
 ):
     input_dtype, x = dtype_and_x
-    
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=False,
@@ -136,7 +136,7 @@ def test_torch_leaky_relu(
         native_array_flags=False,
         fw=fw,
         frontend="torch",
-        fn_name="nn.functional.leaky_relu",
+        fn_tree="nn.functional.leaky_relu",
         input=np.asarray(x, dtype=input_dtype),
         negative_slope=alpha,
     )
