@@ -52,7 +52,7 @@ def test_numpy_add(
         fn_tree="add",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
-        out=None,
+        # out=None,
         where=where,
         casting="same_kind",
         order="k",
