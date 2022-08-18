@@ -1,7 +1,7 @@
+# For Review
 # global
 import mxnet as mx
-from typing import Union, List, Optional, Iterable, Sequence
-from numbers import Number
+from typing import Union, List, Optional, Iterable, Sequence, Tuple
 
 # local
 import ivy
@@ -29,26 +29,24 @@ def _linspace(start, stop, num, cont):
 
 
 def arange(
-    stop,
-    start=0,
-    step=1,
-    *,
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: mx.context.Context,
-):
-    stop = stop if isinstance(stop, Number) else stop.asscalar()
-    start = start if isinstance(start, Number) else start.asscalar()
-    step = step if isinstance(step, Number) else step.asscalar()
+    stop: Optional[float] = None,
+    start: float = 0,
+    step: float = 1,
+    dtype: Optional[type] = None,
+    device: mx.context.Context = None,
+) -> mx.nd.NDArray:
+    stop = stop if isinstance(stop, float) else stop.asscalar()
+    start = start if isinstance(start, float) else start.asscalar()
+    step = step if isinstance(step, float) else step.asscalar()
     return mx.nd.arange(start, stop, ctx=device, step=step, dtype=dtype)
 
 
 def asarray(
-    object_in,
+    object_in: Union[mx.nd.NDArray, List[float], Tuple[float]],
+    dtype: Optional[type] = None,
+    device: mx.context.Context = None,
     copy: Optional[bool] = None,
-    *,
-    dtype: Optional[Union[ivy.Dtype, type]] = None,
-    device: mx.context.Context,
-):
+) -> mx.nd.NDArray:
     # mxnet don't have asarray implementation, haven't properly tested
     if copy is None:
         copy = False
@@ -56,18 +54,26 @@ def asarray(
         if dtype is None and isinstance(object_in, mx.nd.NDArray):
             return mx.nd.array(object_in, device).as_in_context(device)
         if dtype is None and not isinstance(object_in, mx.nd.NDArray):
-            return mx.nd.array(object_in, device, dtype=default_dtype(dtype, object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
         else:
-            dtype = as_ivy_dtype(default_dtype(dtype, object_in))
-            return mx.nd.array(object_in, device, dtype=default_dtype(dtype, object_in))
+            dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
     else:
         if dtype is None and isinstance(object_in, mx.nd.NDArray):
             return object_in.as_in_context(device)
         if dtype is None and not isinstance(object_in, mx.nd.NDArray):
-            return mx.nd.array(object_in, device, dtype=default_dtype(dtype, object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
         else:
-            dtype = as_ivy_dtype(default_dtype(dtype, object_in))
-            return mx.nd.array(object_in, device, dtype=default_dtype(dtype, object_in))
+            dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
 
 
 def empty(
@@ -91,33 +97,42 @@ def eye(
 
 
 # noinspection PyUnresolvedReferences
-def from_dlpack(x):
+def from_dlpack(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.nd.from_dlpack(x)
 
 
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]],
-    fill_value: Union[int, float],
-    *,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    device: mx.context.Context,
-):
-    shape = ivy.to_ivy_shape(shape)
+    fill_value: float,
+    dtype: Optional[type] = None,
+    device: Optional[mx.context.Context] = None,
+) -> mx.nd.NDArray:
+    if isinstance(shape, int):
+        shape = (shape,)
     if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(
             mx.nd.full(
                 (1,),
                 fill_value,
                 device,
-                as_native_dtype(default_dtype(dtype, fill_value)),
+                as_native_dtype(default_dtype(dtype=dtype, item=fill_value)),
             )
         )
     return mx.nd.full(
-        shape, fill_value, device, as_native_dtype(default_dtype(dtype, fill_value))
+        shape,
+        fill_value,
+        device,
+        as_native_dtype(default_dtype(dtype=dtype, item=fill_value)),
     )
 
 
-def linspace(start, stop, num, axis=None, *, dtype: type, device: mx.context.Context):
+def linspace(
+    start: Union[mx.nd.NDArray, float],
+    stop: Union[mx.nd.NDArray, float],
+    num: int,
+    axis: Optional[int] = None,
+    device: mx.context.Context = None,
+) -> mx.nd.NDArray:
     num = num.asnumpy()[0] if isinstance(num, mx.nd.NDArray) else num
     start_is_array = isinstance(start, mx.nd.NDArray)
     stop_is_array = isinstance(stop, mx.nd.NDArray)
@@ -163,6 +178,7 @@ def ones(
 
 def ones_like(
     x: mx.nd.NDArray,
+    /,
     *,
     dtype: type,
     device: mx.context.Context,
@@ -188,7 +204,13 @@ def zeros(
     return mx.nd.zeros(shape, ctx=device).astype(dtype)
 
 
-def zeros_like(x, *, dtype: type, device: mx.context.Context):
+def zeros_like(
+    x: mx.nd.NDArray,
+    /,
+    *,
+    dtype: Optional[type] = None,
+    device: Optional[mx.context.Context] = None,
+) -> mx.nd.NDArray:
     if x.shape == ():
         return mx.nd.array(0.0, ctx=device)
     mx_zeros = mx.nd.zeros_like(x, ctx=device)
@@ -202,6 +224,14 @@ def zeros_like(x, *, dtype: type, device: mx.context.Context):
 array = asarray
 
 
-def logspace(start, stop, num, base=10.0, axis=None, *, device: mx.context.Context):
+def logspace(
+    start: Union[mx.nd.NDArray, int],
+    stop: Union[mx.nd.NDArray, int],
+    num: int,
+    base: float = 10.0,
+    axis: int = None,
+    *,
+    device: mx.context.Context,
+) -> mx.nd.NDArray:
     power_seq = linspace(start, stop, num, axis, device)
     return base**power_seq

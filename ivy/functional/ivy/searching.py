@@ -20,11 +20,12 @@ from ivy.func_wrapper import (
 @handle_nestable
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> Union[ivy.Array, int]:
     """Returns the indices of the maximum values along a specified axis. When the
     maximum value occurs multiple times, only the indices corresponding to the first
     occurrence are returned.
@@ -116,11 +117,12 @@ def argmax(
 @handle_nestable
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: Optional[int] = None,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> Union[ivy.Array, int]:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
     occurrence are returned.
@@ -217,7 +219,7 @@ def argmin(
 
 @to_native_arrays_and_back
 @handle_nestable
-def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
+def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
     Parameters
@@ -321,6 +323,7 @@ def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:

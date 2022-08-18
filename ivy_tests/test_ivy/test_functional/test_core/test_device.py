@@ -5,18 +5,20 @@ import io
 import multiprocessing
 import os
 import re
+import shutil
 import sys
 
 import numpy as np
 import nvidia_smi
 import psutil
 import pytest
-from hypothesis import strategies as st, given
+from hypothesis import strategies as st, given, assume
 
 # local
 import ivy
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # Helpers #
@@ -53,6 +55,14 @@ def _get_possible_devices():
     return list(map(ivy.Device, devices))
 
 
+def _empty_dir(path, recreate=False):
+    # Delete the directory if it exists and create it again if recreate is True
+    if os.path.exists(path):
+        shutil.rmtree(path)
+    if recreate:
+        os.makedirs(path)
+
+
 # Tests #
 # ------#
 
@@ -61,20 +71,19 @@ def _get_possible_devices():
 # dev
 
 
+@handle_cmd_line_args
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(2, 3),
+        arg=helpers.ints(min_value=2, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
 )
-def test_dev(array_shape, dtype, as_variable, fw):
-    if fw == "torch" and "int" in dtype:
-        return
+def test_dev(*, array_shape, dtype, as_variable, fw):
 
+    assume(not (fw == "torch" and "int" in dtype))
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
     for device in _get_possible_devices():
@@ -97,19 +106,19 @@ def test_dev(array_shape, dtype, as_variable, fw):
 
 
 # as_ivy_dev
+@handle_cmd_line_args
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(2, 3),
+        arg=helpers.ints(min_value=2, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
 )
-def test_as_ivy_dev(array_shape, dtype, as_variable, fw):
-    if fw == "torch" and "int" in dtype:
-        return
+def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
+
+    assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
@@ -118,7 +127,7 @@ def test_as_ivy_dev(array_shape, dtype, as_variable, fw):
         if as_variable:
             x = ivy.variable(x)
 
-        native_device = ivy.dev(x, True)
+        native_device = ivy.dev(x, as_native=True)
         ret = ivy.as_ivy_dev(native_device)
 
         # Type test
@@ -128,19 +137,17 @@ def test_as_ivy_dev(array_shape, dtype, as_variable, fw):
 
 
 # as_native_dev
+@handle_cmd_line_args
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(1, 3),
+        arg=helpers.ints(min_value=1, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes[1:]),
 )
-def test_as_native_dev(array_shape, dtype, as_variable, fw, call):
-    if fw == "torch" and "int" in dtype:
-        return
+def test_as_native_dev(*, array_shape, dtype, as_variable, fw, call):
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
@@ -160,13 +167,10 @@ def test_as_native_dev(array_shape, dtype, as_variable, fw, call):
             assert ret.type == device.type
         else:
             assert ret == device
-        # compilation test
-        if call is helpers.torch_call:
-            # pytorch scripting does not handle converting string to device
-            return
 
 
 # memory_on_dev
+@handle_cmd_line_args
 def test_memory_on_dev(call):
     for device in _get_possible_devices():
         ret = ivy.total_mem_on_dev(device)
@@ -183,6 +187,7 @@ def test_memory_on_dev(call):
 # Device Allocation #
 
 # default_device
+@handle_cmd_line_args
 def test_default_device(device):
     # setting and unsetting
     orig_len = len(ivy.default_device_stack)
@@ -206,21 +211,21 @@ def test_default_device(device):
 
 
 # to_dev
+@handle_cmd_line_args
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(1, 3),
+        arg=helpers.ints(min_value=1, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    stream=st.integers(0, 50),
+    stream=helpers.ints(min_value=0, max_value=50),
 )
-def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, stream):
-    if fw == "torch" and "int" in dtype:
-        return
+def test_to_device(
+    *, array_shape, dtype, as_variable, with_out, fw, device, call, stream
+):
+    assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
     x = ivy.asarray(x)
@@ -231,7 +236,7 @@ def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, 
     out = ivy.zeros(ivy.shape(x), device=device, dtype=dtype) if with_out else None
 
     device = ivy.dev(x)
-    x_on_dev = ivy.to_device(x, device=device, stream=stream, out=out)
+    x_on_dev = ivy.to_device(x, device, stream=stream, out=out)
     dev_from_new_x = ivy.dev(x_on_dev)
 
     if with_out:
@@ -242,9 +247,8 @@ def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, 
         assert ivy.dev(x_on_dev, as_native=True) == ivy.dev(out, as_native=True)
 
         # check if native arrays are the same
-        if ivy.current_backend_str() in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            return
+        # these backends do not support native inplace updates
+        assume(not (fw in ["tensorflow", "jax"]))
 
         assert x_on_dev.data is out.data
 
@@ -272,27 +276,26 @@ def test_to_device(array_shape, dtype, as_variable, with_out, fw, device, call, 
 
 @st.composite
 def _axis(draw):
-    max_val = draw(st.shared(st.integers(), key="num_dims"))
-    return draw(st.integers(0, max_val - 1))
+    max_val = draw(st.shared(helpers.ints(), key="num_dims"))
+    return draw(helpers.ints(min_value=0, max_value=max_val - 1))
 
 
+@handle_cmd_line_args
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(1, 3),
+        arg=helpers.ints(min_value=1, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    chunk_size=st.integers(1, 3),
+    chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=_axis(),
 )
 def test_split_func_call(
-    array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
+    *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
-    if fw == "torch" and "int" in dtype:
-        return
+    assume(not (fw == "torch" and "int" in dtype))
 
     # inputs
     shape = tuple(array_shape)
@@ -322,28 +325,30 @@ def test_split_func_call(
     assert np.allclose(ivy.to_numpy(c), ivy.to_numpy(c_true))
 
 
+@handle_cmd_line_args
 @given(
     array_shape=helpers.lists(
-        arg=st.integers(2, 3),
+        arg=helpers.ints(min_value=2, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[2, 3],
     ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    chunk_size=st.integers(1, 3),
-    axis=st.integers(0, 1),
+    chunk_size=helpers.ints(min_value=1, max_value=3),
+    axis=helpers.ints(min_value=0, max_value=1),
 )
 def test_split_func_call_with_cont_input(
-    array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
+    *, array_shape, dtype, as_variable, chunk_size, axis, fw, device, call
 ):
     # Skipping some dtype for certain frameworks
-    if (
-        (fw == "torch" and "int" in dtype)
-        or (fw == "numpy" and "float16" in dtype)
-        or (fw == "tensorflow" and "u" in dtype)
-    ):
-        return
+    assume(
+        not (
+            (fw == "torch" and "int" in dtype)
+            or (fw == "numpy" and "float16" in dtype)
+            or (fw == "tensorflow" and "u" in dtype)
+        )
+    )
+
     shape = tuple(array_shape)
     x1 = np.random.uniform(size=shape).astype(dtype)
     x2 = np.random.uniform(size=shape).astype(dtype)
@@ -377,29 +382,54 @@ def test_split_func_call_with_cont_input(
 
 
 # profiler
-def test_profiler(device, call):
+@handle_cmd_line_args
+def test_profiler(device, fw):
     # ToDo: find way to prevent this test from hanging when run
     #  alongside other tests in parallel
 
-    # log dir
+    # log dir, each framework uses their own folder,
+    # so we can run this test in parallel
     this_dir = os.path.dirname(os.path.realpath(__file__))
     log_dir = os.path.join(this_dir, "../log")
+    fw_log_dir = os.path.join(log_dir, fw)
+
+    # Remove old content and recreate log dir
+    _empty_dir(fw_log_dir, True)
+
     # with statement
-    with ivy.Profiler(log_dir):
+    with ivy.Profiler(fw_log_dir):
         a = ivy.ones([10])
         b = ivy.zeros([10])
-        a + b
+        _ = a + b
+
+    # Should have content in folder
+    assert len(os.listdir(fw_log_dir)) != 0, "Profiler did not log anything"
+
+    # Remove old content and recreate log dir
+    _empty_dir(fw_log_dir, True)
+
+    # Profiler should stop log
+    assert len(os.listdir(fw_log_dir)) == 0, "Profiler logged something while stopped"
 
     # start and stop methods
-    profiler = ivy.Profiler(log_dir)
+    profiler = ivy.Profiler(fw_log_dir)
     profiler.start()
     a = ivy.ones([10])
     b = ivy.zeros([10])
-    a + b
+    _ = a + b
     profiler.stop()
 
+    # Should have content in folder
+    assert len(os.listdir(fw_log_dir)) != 0, "Profiler did not log anything"
 
-@given(num=st.integers(0, 5))
+    # Remove old content including the logging folder
+    _empty_dir(fw_log_dir, False)
+
+    assert not os.path.exists(fw_log_dir), "Profiler recreated logging folder"
+
+
+@handle_cmd_line_args
+@given(num=helpers.ints(min_value=0, max_value=5))
 def test_num_arrays_on_dev(num, device):
     arrays = [
         ivy.array(np.random.uniform(size=2).tolist(), device=device) for _ in range(num)
@@ -409,7 +439,8 @@ def test_num_arrays_on_dev(num, device):
         del item
 
 
-@given(num=st.integers(0, 5))
+@handle_cmd_line_args
+@given(num=helpers.ints(min_value=0, max_value=5))
 def test_get_all_arrays_on_dev(num, device):
     arrays = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
     arr_ids_on_dev = [id(a) for a in ivy.get_all_ivy_arrays_on_dev(device).values()]
@@ -417,7 +448,8 @@ def test_get_all_arrays_on_dev(num, device):
         assert id(a) in arr_ids_on_dev
 
 
-@given(num=st.integers(0, 2), attr_only=st.booleans())
+@handle_cmd_line_args
+@given(num=helpers.ints(min_value=0, max_value=2), attr_only=st.booleans())
 def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     arr = [ivy.array(np.random.uniform(size=2)) for _ in range(num)]
 
@@ -452,6 +484,7 @@ def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     assert all([re.match(regex, line) for line in written])
 
 
+@handle_cmd_line_args
 def test_total_mem_on_dev(device):
     if "cpu" in device:
         assert ivy.total_mem_on_dev(device) == psutil.virtual_memory().total / 1e9
@@ -460,6 +493,7 @@ def test_total_mem_on_dev(device):
         assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
 
 
+@handle_cmd_line_args
 def test_used_mem_on_dev():
     devices = _get_possible_devices()
 
@@ -470,9 +504,12 @@ def test_used_mem_on_dev():
 
     # Testing if it's detects changes in RAM usage, cannot apply this to GPU, as we can
     # only get the total memory usage of a GPU, not the usage by the program.
-    _ram_array_and_clear_test(lambda: ivy.used_mem_on_dev(ivy.Device("cpu"), True))
+    _ram_array_and_clear_test(
+        lambda: ivy.used_mem_on_dev(ivy.Device("cpu"), process_specific=True)
+    )
 
 
+@handle_cmd_line_args
 def test_percent_used_mem_on_dev():
     devices = _get_possible_devices()
 
@@ -482,10 +519,11 @@ def test_percent_used_mem_on_dev():
 
     # Same as test_used_mem_on_dev, but using percent of total memory as metric function
     _ram_array_and_clear_test(
-        lambda: ivy.percent_used_mem_on_dev(ivy.Device("cpu"), True)
+        lambda: ivy.percent_used_mem_on_dev(ivy.Device("cpu"), process_specific=True)
     )
 
 
+@handle_cmd_line_args
 def test_gpu_is_available(fw):
     # If gpu is available but cannot be initialised it will fail the test
     if ivy.gpu_is_available():
@@ -498,6 +536,7 @@ def test_gpu_is_available(fw):
             assert False
 
 
+@handle_cmd_line_args
 def test_num_cpu_cores():
     # using multiprocessing module too because ivy uses psutil as basis.
     p_cpu_cores = psutil.cpu_count()
@@ -517,4 +556,3 @@ def test_num_cpu_cores():
 # dev_util # working fine for cpu
 # tpu_is_available
 # _assert_dev_correct_formatting
-# class Profiler

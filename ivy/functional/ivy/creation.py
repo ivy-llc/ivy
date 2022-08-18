@@ -1,7 +1,9 @@
+# For Review
 # global
-import numpy as np
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
+
+import numpy as np
 
 # local
 import ivy
@@ -28,7 +30,9 @@ def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
         ivy.is_float_dtype(dtype)
         and isinstance(fill_value, float)
         or (isinstance(fill_value, bool))
-    ), "the fill_value and data type are not compatible"
+    ), "the fill_value:\n\n{}\n\nand data type:\n\n{}\n\nare not compatible.".format(
+        fill_value, dtype
+    )
 
 
 # Array API Standard #
@@ -41,6 +45,7 @@ def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
 @handle_nestable
 def arange(
     start: Number,
+    /,
     stop: Optional[Number] = None,
     step: Number = 1,
     *,
@@ -108,8 +113,9 @@ def arange(
 @handle_nestable
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
-    copy: Optional[bool] = None,
+    /,
     *,
+    copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
@@ -120,10 +126,13 @@ def asarray(
     x
         input data, in any form that can be converted to an array. This includes lists,
         lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
+    copy
+        boolean, indicating whether or not to copy the input. Default: ``None``.
     dtype
-        datatype, optional. Datatype is inferred from the input data.
+       output array data type. If ``dtype`` is ``None``, the output array data type must
+       be the default floating-point data type. Default  ``None``.
     device
-        device on which to place the created array. Default: None.
+       device on which to place the created array. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -257,17 +266,19 @@ def ones(
 @handle_out_argument
 @infer_dtype
 @infer_device
+@infer_dtype
 @handle_nestable
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    fill_value: Union[int, float],
+    /,
+    fill_value: float,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array filled with ``fill_value`` and having the same ``shape`` as
-    an input array ``x``.
+    an input array ``x`` .
 
     Parameters
     ----------
@@ -300,14 +311,78 @@ def full_like(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+    With int datatype:
+    
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> fill_value = 1
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
     ivy.array([1, 1, 1, 1, 1, 1])
+    
+    >>> fill_value = 0.000123
+    >>> x = ivy.ones(5)
+    >>> y = ivy.full_like(x, fill_value)
+    >>> print(y)
+    ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
+    With float datatype:
+    
+    >>> x = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+    >>> fill_value = 0.000123
+    >>> y = ivy.full_like(x, fill_value)
+    >>> print(y)
+    ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
+
+    With ivy.NativeArray input:
+    
+    >>> x = ivy.native_array([3.0, 8.0])
+    >>> fill_value = 0.000123
+    >>> y = ivy.full_like(x,fill_value)
+    >>> print(y)
+    ivy.array([0.000123, 0.000123])
+    
+    >>> x = ivy.native_array([[3., 8., 2.], [2., 8., 3.]])
+    >>> y = ivy.full_like(x, fill_value)
+    >>> print(y)
+    ivy.array([[0.000123, 0.000123, 0.000123],
+           [0.000123, 0.000123, 0.000123]])
+
+    With ivy.Container input:
+    
+    >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
+                           b=ivy.array([4.123,5.23,6.23]))
+    >>> fill_value = 15.0
+    >>> y = ivy.full_like(x, fill_value)
+    >>> print(y)
+    {
+        a: ivy.array([15., 15., 15.]),
+        b: ivy.array([15., 15., 15.])
+    }
+
+    Instance Method Examples:
+    ------------------------
+
+    With ivy.Array input:
+    
+    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> fill_value = 1
+    >>> y = x.full_like(fill_value)
+    >>> print(y)
+    ivy.array([1, 1, 1, 1, 1, 1])
+
+    With ivy.Container input:
+    
+    >>> x = ivy.Container(a=ivy.array([1,2,3]), \
+                           b=ivy.array([4,5,6]))
+    >>> fill_value = 10
+    >>> y = x.full_like(fill_value)
+    >>> print(y)
+    {
+        a: ivy.array([10, 10, 10]),
+        b: ivy.array([10, 10, 10])
+    }
     """
     return current_backend(x).full_like(
         x, fill_value, dtype=dtype, device=device, out=out
@@ -321,6 +396,7 @@ def full_like(
 @handle_nestable
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -364,7 +440,6 @@ def ones_like(
     >>> print(y)
     ivy.array([[1, 1, 1],
            [1, 1, 1]])
-
     """
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
@@ -376,6 +451,7 @@ def ones_like(
 @handle_nestable
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -486,7 +562,11 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 def tril(
-    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    k: int = 0,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -527,7 +607,11 @@ def tril(
 @handle_out_argument
 @handle_nestable
 def triu(
-    x: Union[ivy.Array, ivy.NativeArray], k: int = 0, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    k: int = 0,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
@@ -616,6 +700,7 @@ def empty(
 @handle_nestable
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -663,9 +748,10 @@ def empty_like(
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
+    /,
+    *,
     k: Optional[int] = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -717,12 +803,13 @@ def eye(
 @infer_device
 @handle_nestable
 def linspace(
-    start: Union[ivy.Array, ivy.NativeArray, int, float],
-    stop: Union[ivy.Array, ivy.NativeArray, int, float],
+    start: Union[ivy.Array, ivy.NativeArray, float],
+    stop: Union[ivy.Array, ivy.NativeArray, float],
+    /,
     num: int,
-    axis: int = None,
-    endpoint: bool = True,
     *,
+    axis: Optional[int] = None,
+    endpoint: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -781,6 +868,7 @@ def meshgrid(
     arrays
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
+
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -872,7 +960,7 @@ def meshgrid(
 @handle_nestable
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
-    fill_value: Union[int, float, bool],
+    fill_value: Union[float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -913,14 +1001,56 @@ def full(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
-    >>> shape = (2,2)
-    >>> fill_value = 10
-    >>> y = ivy.full(shape, fill_value)
-    >>> print(y)
-    ivy.array([[10, 10],
-           [10, 10]])
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Shape` input:
+
+    >>> shape = ivy.Shape((2,2))
+    >>> fill_value = 8.6
+    >>> x = ivy.full(shape, fill_value)
+    >>> print(x)
+    ivy.array([[8.6, 8.6],
+               [8.6, 8.6]])
+
+    With :code:`ivy.NativeShape` input:
+
+    >>> shape = ivy.NativeShape((2, 2, 2))
+    >>> fill_value = True
+    >>> dtype = ivy.bool
+    >>> device = ivy.Device('cpu')
+    >>> x = ivy.full(shape, fill_value, dtype=dtype, device=device)
+    >>> print(x)
+    ivy.array([[[True,  True],
+                [True,  True]],
+               [[True,  True],
+                [True,  True]]])
+
+    With :code:`ivy.NativeDevice` input:
+
+    >>> shape = ivy.NativeShape((1, 2))
+    >>> fill_value = 0.68
+    >>> dtype = ivy.float64
+    >>> device = ivy.NativeDevice('cpu')
+    >>> x = ivy.full(shape, fill_value, dtype=dtype, device=device)
+    >>> print(x)
+    ivy.array([[0.68, 0.68]])
+
+    With :code:'ivy.Container' input:
+
+    >>> shape = ivy.Container(a=ivy.NativeShape((2, 1)), b=ivy.Shape((2, 1, 2)))
+    >>> fill_value = ivy.Container(a=0.99, b=False)
+    >>> dtype = ivy.Container(a=ivy.float64, b=ivy.bool)
+    >>> device = ivy.Container(a=ivy.NativeDevice('cpu'), b=ivy.Device('cpu'))
+    >>> x = ivy.full(shape, fill_value, dtype=dtype, device=device)
+    >>> print(x)
+    {
+        a: ivy.array([[0.99],
+                      [0.99]]),
+        b: ivy.array([[[False, False]],
+                      [[False, False]]])
+    }
+
 
     """
     return current_backend().full(
@@ -932,9 +1062,7 @@ def full(
 @handle_out_argument
 @handle_nestable
 def from_dlpack(
-    x: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
@@ -980,6 +1108,7 @@ array = asarray
 
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -1011,15 +1140,18 @@ def native_array(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@infer_dtype
 @infer_device
 @handle_nestable
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, int],
     stop: Union[ivy.Array, ivy.NativeArray, int],
+    /,
     num: int,
-    base: float = 10.0,
-    axis: int = None,
     *,
+    base: float = 10.0,
+    axis: Optional[int] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -1058,5 +1190,5 @@ def logspace(
 
     """
     return current_backend(start).logspace(
-        start, stop, num, base, axis, device=device, out=out
+        start, stop, num, base, axis, dtype=dtype, device=device, out=out
     )

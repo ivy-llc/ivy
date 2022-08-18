@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Sequence, List
+from typing import Optional, Union, Sequence, List
 
 # local
 import ivy
@@ -82,7 +82,11 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: np.ndarray, dtype: np.dtype, *, copy: bool = True) -> np.ndarray:
+def astype(
+        x: np.ndarray, dtype: np.dtype, 
+        *, 
+        copy: bool = True, 
+        out: Optional[ivy.Array] = None,) -> np.ndarray:
     dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
@@ -131,13 +135,13 @@ def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
     return np.iinfo(ivy.as_native_dtype(type))
 
 
-def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> np.dtype:
+def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> ivy.Dtype:
     if len(arrays_and_dtypes) <= 1:
         return np.result_type(arrays_and_dtypes)
     result = np.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
     for i in range(2, len(arrays_and_dtypes)):
         result = np.result_type(result, arrays_and_dtypes[i])
-    return result
+    return as_ivy_dtype(result)
 
 
 # Extra #
@@ -159,6 +163,9 @@ def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
         raise TypeError(
             f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
         )
+
+
+as_native_dtype.unsupported_dtypes = ("bfloat16",)
 
 
 def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:

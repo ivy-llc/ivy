@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional, Union, Sequence
+from typing import Iterable, Optional, Union, Sequence, List
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -51,8 +51,11 @@ def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-def to_numpy(x: JaxArray) -> np.ndarray:
-    return np.asarray(_to_array(x))
+def to_numpy(x: JaxArray, copy: bool = True) -> np.ndarray:
+    if copy:
+        return np.array(_to_array(x))
+    else:
+        return np.asarray(_to_array(x))
 
 
 def to_scalar(x: JaxArray) -> Number:
@@ -81,17 +84,16 @@ def container_types():
     return [FlatMapping]
 
 
-def floormod(
-    x: JaxArray, 
-    y: JaxArray, 
-    *, 
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = x % y
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: JaxArray,
+    axis: int,
+    keepdims: bool = False
+) -> List[JaxArray]:
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]
@@ -124,12 +126,7 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: False
 
 
-def cumsum(
-    x: JaxArray, 
-    axis: int = 0,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def cumsum(x: JaxArray, axis: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cumsum(x, axis)
 
 
@@ -149,12 +146,12 @@ def cumprod(
 
 
 def scatter_flat(
-    indices: JaxArray, 
-    updates: JaxArray, 
-    size: Optional[int] = None, 
-    tensor: Optional[JaxArray] = None, 
-    reduction: str = "sum", 
-    *, 
+    indices: JaxArray,
+    updates: JaxArray,
+    size: Optional[int] = None,
+    tensor: Optional[JaxArray] = None,
+    reduction: str = "sum",
+    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     target = tensor
@@ -192,10 +189,10 @@ def scatter_flat(
 
 # noinspection PyShadowingNames
 def scatter_nd(
-    indices: JaxArray, 
-    updates: JaxArray, 
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None, 
-    tensor: Optional[JaxArray] = None, 
+    indices: JaxArray,
+    updates: JaxArray,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor: Optional[JaxArray] = None,
     reduction: str = "sum",
     *,
     out: Optional[JaxArray] = None
@@ -262,8 +259,8 @@ def scatter_nd(
 
 
 def gather(
-    params: JaxArray, 
-    indices: JaxArray, 
+    params: JaxArray,
+    indices: JaxArray,
     axis: int = -1,
     *,
     out: Optional[JaxArray] = None
@@ -272,10 +269,7 @@ def gather(
 
 
 def gather_nd(
-    params: JaxArray, 
-    indices: JaxArray,
-    *,
-    out: Optional[JaxArray] = None
+    params: JaxArray, indices: JaxArray, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     indices_shape = indices.shape
     params_shape = params.shape
@@ -312,22 +306,14 @@ def multiprocessing(context=None):
 
 # noinspection PyUnusedLocal
 def one_hot(
-    indices: JaxArray, 
-    depth: int, 
-    *, 
-    device,
-    out: Optional[JaxArray] = None
+    indices: JaxArray, depth: int, *, device, out: Optional[JaxArray] = None
 ) -> JaxArray:
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
     return _to_device(res.reshape(list(indices.shape) + [depth]), device)
 
 
-def indices_where(
-    x: JaxArray, 
-    *, 
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def indices_where(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     where_x = jnp.where(x)
     ret = jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
     return ret
@@ -342,7 +328,9 @@ def inplace_decrement(x, val):
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, JaxArray], val: Union[ivy.Array, JaxArray]
+) -> Union[ivy.Array, ivy.Container]:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_ivy_array(x):
         x.data += val_native

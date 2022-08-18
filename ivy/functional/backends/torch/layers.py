@@ -1,12 +1,15 @@
 """Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-import math
 import torch
 from typing import List, Optional, Tuple, Union, Sequence
 
 # local
 import ivy
+
+
+def _out_shape(x, strides, pad, dilations, filters):
+    return (x - 1) * strides - 2 * pad + dilations * (filters - 1) + 1
 
 
 # noinspection PyUnresolvedReferences
@@ -15,10 +18,11 @@ def conv1d(
     filters: torch.Tensor,
     strides: int,
     padding: str,
+    /,
+    *,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, tuple):
         strides = strides[0]
@@ -29,13 +33,9 @@ def conv1d(
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     x_shape = x.shape[2]
-    if padding == "SAME":
-        if x_shape % strides == 0:
-            pad_w = max(f_w_after_dilation - strides, 0)
-        else:
-            pad_w = max(f_w_after_dilation - (x_shape % strides), 0)
-        x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], value=0)
-    elif padding != "VALID":
+    pad_w = ivy.handle_padding(x_shape, strides, f_w_after_dilation, padding)
+    x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], value=0)
+    if padding != "VALID" and padding != "SAME":
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
@@ -46,38 +46,66 @@ def conv1d(
     return res
 
 
+conv1d.unsupported_dtypes = ("float16",)
+
+
 # noinspection PyUnresolvedReferences
 def conv1d_transpose(
     x,
     filters,
     strides: int,
     padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: int = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ):
     filter_shape = list(filters.shape[0:1])
-    filters = filters.permute(1, 2, 0)
+    filters = filters.permute(2, 1, 0)
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
+    if output_shape is None:
+        new_w = ivy.deconv_length(
+            x.shape[2], strides, filter_shape[0], padding, dilations
+        )
+        output_shape = [new_w]
+    not_valid_h = False
+    filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
+    pad_w = ivy.handle_padding(output_shape[0], strides, filter_shape[0], padding)
     if padding == "VALID":
         padding_list: List[int] = [0]
     elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
+        if pad_w % 2 != 0:
+            pad_w -= 1
+            not_valid_h = True
+        pad_w = pad_w // 2
+        padding_list = [pad_w]
     else:
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
+    out_w = _out_shape(x.shape[2], strides, pad_w, dilations, filters.shape[2])
+    output_padding = [max(output_shape[0] - out_w, 0)]
     res = torch.nn.functional.conv_transpose1d(
-        x, filters, None, strides, padding_list, dilation=dilations
+        x,
+        filters,
+        None,
+        strides,
+        padding_list,
+        dilation=dilations,
+        output_padding=output_padding,
     )
-    return res.permute(0, 2, 1)
+    if not_valid_h:
+        res = res[:, :, 0:-1]
+    if data_format == "NWC":
+        res = res.permute(0, 2, 1)
+    return res
 
 
-conv1d.unsupported_dtypes = ('float16',)
+conv1d_transpose.unsupported_dtypes = ("float16",)
 
 
 # noinspection PyUnresolvedReferences
@@ -86,10 +114,11 @@ def conv2d(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
         strides = (strides, strides)
@@ -112,21 +141,12 @@ def conv2d(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
-
-    if padding == "SAME":
-        if x_shape[1] % strides[1] == 0:
-            pad_w = max(filter_shape[1] - strides[1], 0)
-        else:
-            pad_w = max(filter_shape[1] - (x_shape[1] % strides[1]), 0)
-
-        if x_shape[0] % strides[0] == 0:
-            pad_h = max(filter_shape[0] - strides[0], 0)
-        else:
-            pad_h = max(filter_shape[0] - (x_shape[0] % strides[0]), 0)
-        x = torch.nn.functional.pad(
-            x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
-        )
-    elif padding != "VALID":
+    pad_h = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_w = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    x = torch.nn.functional.pad(
+        x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
+    )
+    if padding != "VALID" and padding != "SAME":
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
@@ -137,38 +157,86 @@ def conv2d(
     return res
 
 
-conv2d.unsupported_dtypes = ('float16',)
+conv2d.unsupported_dtypes = ("float16",)
 
 
 # noinspection PyUnresolvedReferences
 def conv2d_transpose(
     x: torch.Tensor,
     filters: torch.Tensor,
-    strides: int,
+    strides: Union[int, Tuple[int, int]],
     padding: str,
-    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: str = "NHWC",
-    dilations: int = 1,
+    /,
     *,
-    out: Optional[torch.Tensor] = None
+    output_shape=None,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
+    out: Optional[torch.Tensor] = None,
 ):
-    filter_shape = list(filters.shape[0:1])
-    filters = filters.permute(2, 3, 0, 1)
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    filter_shape = list(filters.shape[0:2])
+    filters = filters.permute(3, 2, 0, 1)
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
+    if output_shape is None:
+        new_h = ivy.deconv_length(
+            x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
+        )
+        new_w = ivy.deconv_length(
+            x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
+        )
+        output_shape = [new_h, new_w]
+    not_valid_h = False
+    not_valid_w = False
+    filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
+    filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
+    pad_w = ivy.handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
+    pad_h = ivy.handle_padding(output_shape[0], strides[0], filter_shape[0], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
+        if pad_h % 2 != 0:
+            pad_h -= 1
+            not_valid_h = True
+        if pad_w % 2 != 0:
+            pad_w -= 1
+            not_valid_w = True
+        pad_h = pad_h // 2
+        pad_w = pad_w // 2
+
+        padding_list = [pad_h, pad_w]
+
     else:
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
+    out_h = _out_shape(x.shape[2], strides[0], pad_h, dilations[0], filters.shape[2])
+    out_w = _out_shape(x.shape[3], strides[1], pad_w, dilations[1], filters.shape[3])
+    output_padding = [
+        max(output_shape[0] - out_h, 0),
+        max(output_shape[1] - out_w, 0),
+    ]
     res = torch.nn.functional.conv_transpose2d(
-        x, filters, None, strides, padding_list, dilation=dilations
+        x,
+        filters,
+        None,
+        strides,
+        padding_list,
+        dilation=dilations,
+        output_padding=output_padding,
     )
-    return res.permute(0, 2, 3, 1)
+    if not_valid_h:
+        res = res[:, :, 0:-1, :]
+    if not_valid_w:
+        res = res[:, :, :, 0:-1]
+    if data_format == "NHWC":
+        res = res.permute(0, 2, 3, 1)
+    return res
+
+
+conv2d_transpose.unsupported_dtypes = ("float16",)
 
 
 # noinspection PyUnresolvedReferences
@@ -177,62 +245,106 @@ def depthwise_conv2d(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
     padding: str,
+    /,
+    *,
     data_format: str = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    filter_shape = list(filters.shape[0:2])
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+
+    f_w_after_dilation = filters.shape[1] + (
+        (dilations[1] - 1) * (filters.shape[1] - 1)
+    )
+    f_h_after_dilation = filters.shape[0] + (
+        (dilations[0] - 1) * (filters.shape[0] - 1)
+    )
+    filter_shape = [f_h_after_dilation, f_w_after_dilation]
     dims_in = filters.shape[-1]
     filters = torch.unsqueeze(filters, -1)
     filters = filters.permute(2, 3, 0, 1)
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    if padding == "VALID":
-        padding_list: List[int] = [0, 0]
-    elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
-    else:
+    x_shape = list(x.shape[2:])
+    pad_h = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_w = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    x = torch.nn.functional.pad(
+        x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
+    )
+
+    if padding != "VALID" and padding != "SAME":
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
     # noinspection PyArgumentEqualDefault
     res = torch.nn.functional.conv2d(
-        x, filters, None, strides, padding_list, dilations, dims_in
+        x, filters, None, strides, "valid", dilations, dims_in
     )
-    return res.permute(0, 2, 3, 1)
+    if data_format == "NHWC":
+        return res.permute(0, 2, 3, 1)
+    return res
+
+
+depthwise_conv2d.unsupported_dtypes = ("float16",)
 
 
 # noinspection PyUnresolvedReferences
 def conv3d(
-    x,
-    filters,
-    strides: int,
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int, int, int]],
     padding: str,
-    data_format: str = "NDHWC",
-    dilations: int = 1,
+    /,
     *,
-    out: Optional[torch.Tensor] = None
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
+    out: Optional[torch.Tensor] = None,
 ):
-    filter_shape = list(filters.shape[0:3])
-    filters = filters.permute(3, 4, 0, 1, 2)
+    strides = [strides] * 3 if isinstance(strides, int) else strides
+    dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
+    f_w_after_dilation = filters.shape[2] + (
+        (dilations[2] - 1) * (filters.shape[2] - 1)
+    )
+    f_h_after_dilation = filters.shape[1] + (
+        (dilations[1] - 1) * (filters.shape[1] - 1)
+    )
+    f_d_after_dilation = filters.shape[0] + (
+        (dilations[0] - 1) * (filters.shape[0] - 1)
+    )
+    filter_shape = [f_d_after_dilation, f_h_after_dilation, f_w_after_dilation]
+    filters = filters.permute(4, 3, 0, 1, 2)
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
-    if padding == "VALID":
-        padding_list: List[int] = [0, 0, 0]
-    elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
-    else:
+    x_shape = list(x.shape[2:])
+    pad_d = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
+    pad_h = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
+    pad_w = ivy.handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
+    x = torch.nn.functional.pad(
+        x,
+        [
+            pad_w // 2,
+            pad_w - pad_w // 2,
+            pad_h // 2,
+            pad_h - pad_h // 2,
+            pad_d // 2,
+            pad_d - pad_d // 2,
+        ],
+        value=0,
+    )
+    if padding != "VALID" and padding != "SAME":
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
-    res = torch.nn.functional.conv3d(x, filters, None, strides, padding_list, dilations)
-    return res.permute(0, 2, 3, 4, 1)
+    res = torch.nn.functional.conv3d(x, filters, None, strides, "valid", dilations)
+    if data_format == "NDHWC":
+        res = res.permute(0, 2, 3, 4, 1)
+    return res
 
 
-conv3d.unsupported_dtypes = ('float16',)
+conv3d.unsupported_dtypes = ("float16",)
 
 
 # noinspection PyUnresolvedReferences
@@ -241,26 +353,87 @@ def conv3d_transpose(
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
+    /,
+    *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
-    *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    filter_shape = list(filters.shape[0:1])
+    strides = [strides] * 3 if isinstance(strides, int) else strides
+    dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
+    filter_shape = list(filters.shape[0:3])
     filters = filters.permute(3, 4, 0, 1, 2)
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
+    if output_shape is None:
+        new_d = ivy.deconv_length(
+            x.shape[2], strides[0], filter_shape[0], padding, dilations[0]
+        )
+        new_h = ivy.deconv_length(
+            x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
+        )
+        new_w = ivy.deconv_length(
+            x.shape[4], strides[2], filter_shape[2], padding, dilations[2]
+        )
+        output_shape = [new_d, new_h, new_w]
+    not_valid_h = False
+    not_valid_d = False
+    not_valid_w = False
+    filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
+    filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
+    filter_shape[2] = filter_shape[2] + (filter_shape[2] - 1) * (dilations[2] - 1)
+    pad_d = ivy.handle_padding(output_shape[0], strides[0], filter_shape[0], padding)
+    pad_h = ivy.handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
+    pad_w = ivy.handle_padding(output_shape[2], strides[2], filter_shape[2], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0, 0]
     elif padding == "SAME":
-        padding_list: List[int] = [math.floor(item / 2) for item in filter_shape]
+        if pad_d % 2 != 0:
+            pad_d -= 1
+            not_valid_d = True
+        if pad_h % 2 != 0:
+            pad_h -= 1
+            not_valid_h = True
+        if pad_w % 2 != 0:
+            pad_w -= 1
+            not_valid_w = True
+        pad_d = pad_d // 2
+        pad_h = pad_h // 2
+        pad_w = pad_w // 2
+        padding_list = [pad_d, pad_h, pad_w]
+
     else:
         raise Exception(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
+    out_d = _out_shape(x.shape[2], strides[0], pad_d, dilations[0], filters.shape[2])
+    out_h = _out_shape(x.shape[3], strides[1], pad_h, dilations[1], filters.shape[3])
+    out_w = _out_shape(x.shape[4], strides[2], pad_w, dilations[2], filters.shape[4])
+    output_padding = [
+        max(output_shape[0] - out_d, 0),
+        max(output_shape[1] - out_h, 0),
+        max(output_shape[2] - out_w, 0),
+    ]
     res = torch.nn.functional.conv_transpose3d(
-        x, filters, None, strides, padding_list, dilation=dilations
+        x,
+        filters,
+        None,
+        strides,
+        padding_list,
+        dilation=dilations,
+        output_padding=output_padding,
     )
-    return res.permute(0, 2, 3, 4, 1)
+    if not_valid_d:
+        res = res[:, :, 0:-1, :, :]
+    if not_valid_h:
+        res = res[:, :, :, 0:-1, :]
+    if not_valid_w:
+        res = res[:, :, :, :, 0:-1]
+    if data_format == "NDHWC":
+        res = res.permute(0, 2, 3, 4, 1)
+    return res
+
+
+conv3d_transpose.unsupported_dtypes = ("float16",)

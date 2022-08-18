@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -24,8 +24,11 @@ def array_equal(x0: np.ndarray, x1: np.ndarray) -> bool:
     return np.array_equal(x0, x1)
 
 
-def to_numpy(x: np.ndarray) -> np.ndarray:
-    return x
+def to_numpy(x: np.ndarray, copy: bool = True) -> np.ndarray:
+    if copy:
+        return x.copy()
+    else:
+        return x
 
 
 def to_scalar(x: np.ndarray) -> Number:
@@ -61,6 +64,8 @@ def inplace_update(
         val_native = np.ascontiguousarray(val_native)
 
     if val_native.shape == x_native.shape:
+        if x_native.dtype != val_native.dtype:
+            x_native = x_native.astype(val_native.dtype)
         np.copyto(x_native, val_native)
     else:
         x_native = val_native
@@ -78,16 +83,17 @@ def is_native_array(x, exclusive=False):
 
 
 def floormod(
-    x: np.ndarray, 
-    y: np.ndarray, 
-    *, 
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, y: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.asarray(x % y)
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: np.ndarray,
+    axis: int, 
+    keepdims: bool = False
+) -> List[np.ndarray]:
     if x.shape == ():
         return [x]
     x_split = np.split(x, x.shape[axis], axis)
@@ -96,7 +102,9 @@ def unstack(x, axis, keepdims=False):
     return [np.squeeze(item, axis) for item in x_split]
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native -= val_native
     if ivy.is_ivy_array(x):
@@ -106,7 +114,9 @@ def inplace_decrement(x, val):
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native += val_native
     if ivy.is_ivy_array(x):
