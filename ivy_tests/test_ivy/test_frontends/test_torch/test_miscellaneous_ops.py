@@ -84,7 +84,7 @@ def test_torch_roll(
     if isinstance(shift, int) and isinstance(axis, tuple):
         axis = axis[0]
     if all(isinstance(shift, tuple), isinstance(
-        axis, tuple), len(shift) != len(axis)):
+            axis, tuple), len(shift) != len(axis)):
         shift = shift[:min(len(shift), len(axis))]
         axis = axis[:min(len(axis), len(shift))]
     helpers.test_frontend_function(
