@@ -24,3 +24,7 @@ def reshape(input, shape):
     
 def stack(tensors, dim=0, *, out=None):
     return ivy.stack(tensors, dim, out=out)
+
+
+def squeeze(input, dim=None, *, out=None):
+    return ivy.squeeze(input, dim, out=out)
