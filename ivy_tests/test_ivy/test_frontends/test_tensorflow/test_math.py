@@ -241,8 +241,11 @@ def test_tensorflow_negative(
 
 
 # log_sigmoid
+@handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_tf.valid_float_dtypes, min_value=1.0, max_value=1.0
+    ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.log_sigmoid"
