@@ -126,26 +126,33 @@ def test_torch_permute(
     
 # stack
 @given(
-    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    as_variable=st.booleans(),
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)),
+        ),
+        num_arrays=2,
+        ret_shape=True,
+    ),
+    as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.stack"
     ),
-    native_array=st.booleans(),
+    native_array=helpers.array_bools(),
     with_out=st.booleans(),
 )
 def test_torch_stack(
-    xs_n_input_dtypes_n_unique_idx,
+    dtype_value_shape,
     as_variable,
     num_positional_args,
     native_array,
     with_out,
     fw,
 ):
-    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    input_dtype, value, shape = dtype_value_shape
+    tensors = [np.asarray(x, dtype=dtype) for x, dtype in zip(value, input_dtype)]
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -153,7 +160,7 @@ def test_torch_stack(
         fw=fw,
         frontend="torch",
         fn_tree="stack",
-        tensors=xs,
-        dim=unique_idx,
+        tensors=tensors,
+        dim=shape,
         out=None,
     )
