@@ -254,6 +254,7 @@ def test_torch_reshape(
                 set(ivy_torch.valid_float_dtypes)),
         ),
         num_arrays=2,
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         ret_shape=True,
     ),
     as_variable=helpers.array_bools(),
