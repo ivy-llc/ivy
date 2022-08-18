@@ -81,6 +81,12 @@ def test_torch_roll(
     fw,
 ):
     input_dtype, value = dtype_and_values
+    if isinstance(shift, int) and isinstance(axis, tuple):
+        axis = axis[0]
+    if all(isinstance(shift, tuple), isinstance(
+        axis, tuple), len(shift) != len(axis)):
+        shift = shift[:min(len(shift), len(axis))]
+        axis = axis[:min(len(axis), len(shift))]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
