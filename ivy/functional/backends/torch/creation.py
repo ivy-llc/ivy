@@ -39,6 +39,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
     start: float,
+    /,
     stop: Optional[float] = None,
     step: float = 1,
     *,
@@ -71,6 +72,7 @@ arange.support_native_out = True
 
 def asarray(
     object_in: Union[torch.Tensor, np.ndarray, List[float], Tuple[float]],
+    /,
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
@@ -121,6 +123,7 @@ empty.support_native_out = True
 
 def empty_like(
     x: torch.Tensor,
+    /,
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -132,9 +135,10 @@ def empty_like(
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
+    /,
+    *,
     k: Optional[int] = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
-    *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
@@ -189,7 +193,7 @@ def eye(
 eye.support_native_out = True
 
 
-def from_dlpack(x, *, out: Optional[torch.Tensor] = None):
+def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
     x = x.detach() if x.requires_grad else x
     return torch.utils.dlpack.from_dlpack(x)
 
@@ -220,6 +224,7 @@ full.support_native_out = True
 
 def full_like(
     x: torch.Tensor,
+    /,
     fill_value: Union[int, float],
     *,
     dtype: torch.dtype,
@@ -233,10 +238,11 @@ def full_like(
 def linspace(
     start: Union[torch.Tensor, float],
     stop: Union[torch.Tensor, float],
+    /,
     num: int,
+    *,
     axis: Optional[int] = None,
     endpoint: bool = True,
-    *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
@@ -370,6 +376,7 @@ ones.support_native_out = True
 
 def ones_like(
     x: torch.Tensor,
+    /,
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -379,7 +386,7 @@ def ones_like(
 
 
 def tril(
-    x: torch.Tensor, k: int = 0, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, k: int = 0, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.tril(x, diagonal=k, out=out)
 
@@ -388,7 +395,7 @@ tril.support_native_out = True
 
 
 def triu(
-    x: torch.Tensor, k: int = 0, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, k: int = 0, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.triu(x, diagonal=k, out=out)
 
@@ -411,6 +418,7 @@ zeros.support_native_out = True
 
 def zeros_like(
     x: torch.Tensor,
+    /,
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -429,15 +437,16 @@ array = asarray
 def logspace(
     start: Union[torch.Tensor, int],
     stop: Union[torch.Tensor, int],
+    /,
     num: int,
+    *,
     base: float = 10.0,
     axis: Optional[int] = None,
-    *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    power_seq = ivy.linspace(start, stop, num, axis, dtype=dtype, device=device)
+    power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
     return base**power_seq
 
 
