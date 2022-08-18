@@ -149,3 +149,10 @@ def negative(input, *, out=None):
 
 
 negative.unsupported_dtypes = ("float16",)
+
+
+def log10(input, *, out=None):
+    return ivy.log10(input, out=out)
+
+
+log10.unsupported_dtypes = ("float16",)
