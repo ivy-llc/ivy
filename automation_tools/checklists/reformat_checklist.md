@@ -53,7 +53,7 @@ The ivy docs represent the ground truth for the task descriptions and this check
 	 	6. - [ ] ❌: <a name="ref2"></a> Add an example that passes in an  `ivy.Container`  instance in place of one of the arguments. 
 	 	7. - [ ] ❌: <a name="ref3"></a> Add an example passes in  `ivy.Container`  instances for multiple arguments.
 		
-		**Container Static Method Examples** in [ivy/container/{{ .category_name }}e.py](https://github.com/unifyai/ivy/blob/master/ivy/container/{{ .category_name }}.py).
+		**Container Static Method Examples** in [ivy/container/{{ .category_name }}.py](https://github.com/unifyai/ivy/blob/master/ivy/container/{{ .category_name }}.py).
 
 	 	8. - [ ] ❌: The example from point ([6.f](#ref2)) should be replicated, but added to the  `ivy.Container`  **static method** docstring in with  `ivy.<func_name>`  replaced with  `ivy.Container.static_<func_name>`  in the example.
 	 	9. - [ ] ❌: The example from point ([6.g](#ref3)) should be replicated, but added to the  `ivy.Container`  **static method** docstring, with  `ivy.<func_name>`  replaced with  `ivy.Container.static_<func_name>`  in the example.
