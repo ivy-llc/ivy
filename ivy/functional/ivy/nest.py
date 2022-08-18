@@ -268,7 +268,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     >>> nest = [['a', 'c', 'e', 'd', 'u', 'k'], ['m', 'n', 'f', 'p', 'q', 't']]
     >>> indices = [[0, 4], [1, 5]]
     >>> fn = lambda x : x + 'b'
-    >>> ivy.set_nest_at_indices(nest, indices, fn)
+    >>> ivy.map_nest_at_indices(nest, indices, fn)
     >>> print(nest)
     [['a', 'c', 'e', 'd', 'ub', 'k'], ['m', 'n', 'f', 'p', 'q', 'tb']]
 
@@ -277,7 +277,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     >>> nest = ([-9, 8, -27],[9, -4, -5, 7])
     >>> indices = ((0, 2),(1, 0),(1, 2))
     >>> fn = abs
-    >>> ivy.set_nest_at_indices(nest, indices, fn)
+    >>> ivy.map_nest_at_indices(nest, indices, fn)
     >>> print(nest)
     ([-9, 8, 27], [9, -4, 5, 7])
 
@@ -286,7 +286,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     >>> nest = {'a': [8., 16., 22.], 'b': [10., 44., 81.], 'c': [9., 75., 37.]}
     >>> indices = (('a', 2), ('b', 0), ('c', 1))
     >>> fn = lambda x : x + 1
-    >>> ivy.set_nest_at_indices(nest, indices, fn)
+    >>> ivy.map_nest_at_indices(nest, indices, fn)
     >>> print(nest)
     {'a': [8.0, 16.0, 23.0], 'b': [11.0, 44.0, 81.0], 'c': [9.0, 76.0, 37.0]}
 
@@ -295,7 +295,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     >>> nest = ivy.array([[-9., 8., -17.],[11., -3., 5.]])
     >>> indices = ((0, 1),(1, 1),(1, 2))
     >>> values = lambda x : x ** 2
-    >>> ivy.set_nest_at_indices(nest, indices, fn)
+    >>> ivy.map_nest_at_indices(nest, indices, fn)
     >>> print(nest)
     ivy.array([[-9., 64., -17.], [11., 9., 25.]])
     """
