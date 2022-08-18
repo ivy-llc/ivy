@@ -68,7 +68,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#basic">Basic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compositions">Compositions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#further-examples">Further Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#temporary-compositions">Temporary Compositions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
@@ -169,7 +169,7 @@ transpilations, as explained <a class="reference external" href="https://lets-un
 <section id="basic">
 <h2>Basic<a class="headerlink" href="#basic" title="Permalink to this heading"></a></h2>
 <p><strong>NOTE:</strong> Type hints, docstrings and examples are not required when working on
-frontend methods.</p>
+frontend functions.</p>
 <p><strong>Jax</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/jax/lax/operators.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -236,7 +236,7 @@ sub-category of <code class="code docutils literal notranslate"><span class="pre
 <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory. This ensures direct access to
 <code class="code docutils literal notranslate"><span class="pre">numpy.add</span></code> in <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> by simply importing
 <code class="code docutils literal notranslate"><span class="pre">ivy.functional.frontends.numpy</span></code>.</p>
-<p>The function arguments for this method is slightly more complex due to the extra
+<p>The function arguments for this function are slightly more complex due to the extra
 optional arguments. Additional handling code is added to recover the behaviour
 according to the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.add.html">numpy.add</a> documentation. For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified,
 the arguments to be added will be casted to the desired type through
@@ -337,31 +337,33 @@ we code its positional and keyword arguments accordingly, then return with
 </section>
 <section id="compositions">
 <h2>Compositions<a class="headerlink" href="#compositions" title="Permalink to this heading"></a></h2>
-<p>Sometimes, certain frontend methods meet special criteria:</p>
+<p>In many cases, frontend functions meet the following criteria:</p>
 <ul class="simple">
-<li><p>it is unique to a particular frontend framework, and does not exist in the other
-frontends, or</p></li>
-<li><p>it has extra features than the original backend method</p></li>
+<li><p>the function is unique to a particular frontend framework, and does not exist in the
+other frameworks</p></li>
+<li><p>the function has extra features and/or arguments on top of the most similar ivy
+function that is available</p></li>
 </ul>
-<p>In such cases, compositions are required to recover the original behaviours.</p>
+<p>In such cases, compositions are required to replicate the function behaviour.</p>
 <p><strong>Examples</strong></p>
-<p>In the native TensorFlow method <code class="code docutils literal notranslate"><span class="pre">tf.cumprod()</span></code>, it supports an extra
-argument - <code class="code docutils literal notranslate"><span class="pre">reverse</span></code>, which returns a flipped result if True. However,
-the backend <code class="code docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code> does not come with this argument, thus not
-supporting this behaviour by default.</p>
+<p>In the native TensorFlow function <code class="code docutils literal notranslate"><span class="pre">tf.cumprod()</span></code>, it supports an extra
+argument - <code class="code docutils literal notranslate"><span class="pre">reverse</span></code>, which returns a flipped result if <code class="code docutils literal notranslate"><span class="pre">True</span></code>. However,
+the backend <code class="code docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code> does not come with this argument, and thus does not
+support this behaviour by default.</p>
 <p><strong>Ivy</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/general.py</span>
 <span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">exclusive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">exclusive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To enable this behaviour, we will need to incorporate methods that resemble the
+<p>To enable this behaviour, we will need to incorporate functions that resemble the
 required behaviour. For example, we can reverse the result by calling
 <code class="code docutils literal notranslate"><span class="pre">ivy.flip()</span></code> after running <code class="code docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>.</p>
 <p><strong>TensorFlow Frontend</strong></p>
@@ -373,37 +375,23 @@ required behaviour. For example, we can reverse the result by calling
     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
-<p>Through compositions, we can easily meet the desired objectives.</p>
+<p>Through compositions, we can easily meet the required input-output behaviour.</p>
 </section>
-<section id="further-examples">
-<h2>Further Examples<a class="headerlink" href="#further-examples" title="Permalink to this heading"></a></h2>
-<p>Additional examples for each framework on concatenation is added for better understanding!</p>
-<p><strong>Jax</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/jax/lax/operators.py</span>
-<span class="k">def</span> <span class="nf">concatenate</span><span class="p">(</span><span class="n">operands</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">operands</span><span class="p">,</span> <span class="n">dimension</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Numpy</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/manipulation_routines/joining_arrays.py</span>
-<span class="k">def</span> <span class="nf">concatenate</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">dtype</span><span class="p">:</span>
-        <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>TensorFlow</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/functions.py</span>
-<span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;concat&quot;</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>PyTorch</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/torch/indexing_slicing_joining_mutating_ops.py</span>
-<span class="k">def</span> <span class="nf">cat</span><span class="p">(</span><span class="n">tensors</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">tensors</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-</pre></div>
-</div>
+<section id="temporary-compositions">
+<h2>Temporary Compositions<a class="headerlink" href="#temporary-compositions" title="Permalink to this heading"></a></h2>
+<p>Sometimes, there is a clear omission of an Ivy function, which would make the frontend
+implementation much simpler. For example, implementing <code class="code docutils literal notranslate"><span class="pre">median</span></code> for the NumPy
+frontend would currently require a very manual and heavily compositional implementation.
+However, if the function <code class="code docutils literal notranslate"><span class="pre">ivy.median</span></code> was added to Ivy’s functional API, then this
+frontend implementation would become very simple, with some light wrapping around
+<code class="code docutils literal notranslate"><span class="pre">ivy.median</span></code>.</p>
+<p>Adding <code class="code docutils literal notranslate"><span class="pre">ivy.median</span></code> would be a sensible decision, as many frameworks support this
+function. However, functions are added to Ivy in an iterative and deliberate manner,
+which doesn’t always align with the timelines for the frontend implementations.
+Sometimes Ivy’s API is not ready to have a new function added. In such cases, the
+frontend function should be added as a heavy composition, but a <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment
+should be added, explaining that this frontend implementation will be updated as soon as
+<code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code> is implemented.</p>
 <p><strong>Round Up</strong></p>
 <p>This should hopefully allow you to have a better grasp on the Ivy Frontend APIs
 after going through the contents! We have a <a class="reference external" href="https://www.youtube.com/watch?v=72kBVJTpzIw&amp;list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t">YouTube tutorial series</a> on this

@@ -705,13 +705,82 @@
     <span class="k">def</span> <span class="fm">__rlshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_left_shift</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+<div class="viewcode-block" id="Array.__rshift__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rshift__">[docs]</a>    <span class="nd">@_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array special method variant of ivy.bitwise_right_shift. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.bitwise_right_shift</span>
+<span class="sd">        also applies to this method with minimal changes.</span>
 
-    <span class="nd">@_native_wrapper</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            first input array. Should have an integer data type.</span>
+<span class="sd">        other</span>
+<span class="sd">            second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).</span>
+<span class="sd">            Should have an integer data type. Each element must be greater than or equal</span>
+<span class="sd">            to ``0``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the element-wise results. The returned array must have</span>
+<span class="sd">            a data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Array` instances only:</span>
+
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([2, 3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.array([0, 1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; y = a &gt;&gt; b</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([2, 1, 1])</span>
+
+<span class="sd">        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([5, 10, 64])</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([3]))</span>
+<span class="sd">        &gt;&gt;&gt; y = a &gt;&gt; b</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([5, 5, 16]),</span>
+<span class="sd">            b: ivy.array([0, 1, 8])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Array.__rrshift__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rrshift__">[docs]</a>    <span class="nd">@_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rrshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array reverse special method variant of ivy.bitwise_right_shift.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for</span>
+<span class="sd">        ivy.bitwise_right_shift also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            first input array. Should have an integer data type.</span>
+<span class="sd">        other</span>
+<span class="sd">            second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).</span>
+<span class="sd">            Should have an integer data type. Each element must be greater than or equal</span>
+<span class="sd">            to ``0``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the element-wise results. The returned array must have</span>
+<span class="sd">            a data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; a = 32</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.array([0, 1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; y = a &gt;&gt; b</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([32, 16,  8])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
     <span class="c1"># noinspection PyDefaultArgument</span>
     <span class="nd">@_native_wrapper</span>
@@ -736,7 +805,10 @@
 <div class="viewcode-block" id="Variable"><a class="viewcode-back" href="../../../data_classes/array/array/Variable.html#ivy.array.array.Variable">[docs]</a><span class="k">class</span> <span class="nc">Variable</span><span class="p">(</span><span class="n">Array</span><span class="p">):</span>
 <div class="viewcode-block" id="Variable.__init__"><a class="viewcode-back" href="../../../data_classes/array/array/Variable.html#ivy.array.array.Variable.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="s2">&quot;variable&quot;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

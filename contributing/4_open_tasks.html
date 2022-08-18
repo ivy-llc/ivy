@@ -262,6 +262,16 @@ for this task, which is explained below.</p>
 <li><p>write tests for your function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html">Ivy Frontend Tests</a> guide</p></li>
 <li><p>verify that the tests for your function are passing</p></li>
 </ol>
+<p>If you feel as though there is an ivy function clearly missing, which would make your
+frontend function much simpler to implement, then you have two options:</p>
+<ol class="arabic simple">
+<li><p>try to implement the function as a composition of currently present ivy functions,
+as explained in the “Temporary Compositions” sub-section of the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html">Ivy Frontends</a>
+guide, and add the <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment in the implementation as explained. Once the
+PR is merged, your sub-task issue will then be closed as normal.</p></li>
+<li><p>alternatively, you can add the “Next Release” label to your sub-task issue, and then
+simply choose another frontend function to work on, leaving the original issue open.</p></li>
+</ol>
 <p>There are a few points to take note of when working on your chosen frontend function:</p>
 <ol class="arabic simple">
 <li><p>you should only implement <strong>one</strong> frontend function.</p></li>
