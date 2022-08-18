@@ -2545,7 +2545,6 @@ def array_values(
                 )
             )
     elif dtype == "float16":
-
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2604,7 +2603,7 @@ def array_values(
                 )
             )
         values = [v * large_value_safety_factor for v in values]
-    elif dtype in ["float32", "bfloat16"]:
+    elif dtype == "float32":
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2662,8 +2661,7 @@ def array_values(
                 )
             )
         values = [v * large_value_safety_factor for v in values]
-    elif dtype == "float64":
-
+    elif dtype in ["float64", "bfloat16"]:
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2682,13 +2680,12 @@ def array_values(
             )
         else:
             limit = math.log(small_value_safety_factor)
-
             min_value_neg = min_value
             max_value_neg = round(-1 * limit, 15)
             min_value_pos = round(limit, 15)
             max_value_pos = max_value
             max_value_neg, min_value_pos = (
-                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+                np.array([max_value_neg, min_value_pos]).astype("float64").tolist()
             )
             if min_value_neg is not None and min_value_neg >= max_value_neg:
                 min_value_neg = min_value_pos
