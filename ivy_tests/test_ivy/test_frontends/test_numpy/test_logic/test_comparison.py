@@ -6,7 +6,7 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
 
 # equal
 @given(
@@ -57,4 +57,3 @@ def test_numpy_equal(
         subok=True,
         test_values=False
     )
-
