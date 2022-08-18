@@ -79,6 +79,9 @@ def eq(x, y):
     return ivy.equal(x, y)
 
 
+eq.unsupported_dtypes = {"torch": ("bfloat16",)}
+
+
 def atan(x):
     return ivy.atan(x)
 
@@ -88,3 +91,26 @@ def ceil(x):
 
 
 ceil.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def bitwise_and(x, y):
+    return ivy.bitwise_and(x, y)
+
+
+def bitwise_or(x, y):
+    return ivy.bitwise_or(x, y)
+
+
+def neg(x):
+    return ivy.negative(x)
+
+
+neg.unsupported_dtypes = {"torch": ("bfloat16",)}
+
+
+def argmax(operand, axis, index_dtype):
+    return ivy.astype(ivy.argmax(operand, axis=axis), dtype=index_dtype)
+
+
+def argmin(operand, axis, index_dtype):
+    return ivy.astype(ivy.argmin(operand, axis=axis), dtype=index_dtype)

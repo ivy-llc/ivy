@@ -135,3 +135,17 @@ arctanh.unsupported_dtypes = ("float16",)
 
 def square(input, *, out=None):
     return ivy.square(input, out=out)
+
+
+def atan2(input, other, *, out=None):
+    return ivy.atan2(input, other, out=out)
+
+
+atan2.unsupported_dtypes = ("float16",)
+
+
+def log10(input, *, out=None):
+    return ivy.log10(input, out=out)
+
+
+log10.unsupported_dtypes = ("float16",)
