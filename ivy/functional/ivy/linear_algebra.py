@@ -610,35 +610,36 @@ def eigvalsh(
     --------
     With :code:`ivy.Array` inputs:
     
-    >>> x = ivy.array([[1, 2, -1],\
-                       [2, 1, 3],\
-                       [-1, 3, 0]])
+    >>> x = ivy.array([[1.0, 2.0, -1.0],\
+                       [2.0, 1.0, 3.0],\
+                       [-1.0, 3.0, 0.0]])
     >>> e = ivy.eigvalsh(x)
     >>> print(e)
     ivy.array([-3.50330763,  1.61507163,  3.88823601])
     
-    >>> x = ivy.array([[1, 2, -1, 3], \
-                       [2, 1, 3, 7], \
-                       [-1, 3, 0, 8], \ 
-                       [3, 5, 1, 6]])
+    >>> x = ivy.array([[1.0, 2.0, -1.0, 3.0], \
+                       [2.0, 1.0, 3.0, 7.0], \
+                       [-1,.0 3.0, 0.0, 8.0], \ 
+                       [3.0, 5.0, 1.0, 6.0]])
     >>> ivy.eigvalsh(x, out = x)
     >>> print(x)
     ivy.array([-3.77873333, -0.95821512,  1.91380981, 10.82313865])
     
     With :code:`ivy.NativeArray` inputs:
     
-    >>> x = ivy.native_array([[1, 2, -1], \
-                              [2, 1, 3], \
-                              [-1, 3, 0]])
-    >>> y = ivy.zeros([3,]) 
+    >>> x = ivy.array([[2.0, 6.0, 5.0, 8.0], \
+                       [4.0, 5.7, 6.0, 2.0], \
+                       [3.0, 5.0, 5.0, 3.0], \
+                       [3.0, 4.0, 6.0, 7.0]])
+    >>> y = ivy.zeros([4,]) 
     >>> ivy.eigvalsh(x, out = y)
     >>> print(y)
-    ivy.array([-3.50330763,  1.61507163,  3.88823601])
+    ivy.array([-0.83244573, -0.18719656,  2.70769061, 18.01195167])
     
     With :code:`ivy.Container` inputs:
     
-    >>> x = ivy.Container(a = ivy.array[[2, 4], \
-                                        [6, 8]])
+    >>> x = ivy.Container(a = ivy.array[[2.0, 4.0], \
+                                        [6.0, 8.0]])
     >>> y = ivy.eigvalsh(x)
     >>> print(y)
     {   
@@ -647,10 +648,10 @@ def eigvalsh(
     
     With multiple :code:`ivy.Container` inputs:
     
-    >>> x = ivy.Container(a = ivy.native_array[[2, 4], \
-                                               [6, 8]], \
-                          b = ivy.native_array([[1, 2], \
-                                               [3, 4]]))
+    >>> x = ivy.Container(a = ivy.native_array[[2.0, 4.0], \
+                                               [6.0, 8.0]], \
+                          b = ivy.native_array([[1.0, 2.0], \
+                                               [3.0, 4.0]]))
     >>> y = ivy.eigvalsh(x)
     >>> print(y)
     {
@@ -662,12 +663,12 @@ def eigvalsh(
     
     With multiple :code:`ivy.Array` inputs:   
     
-    >>> x = ivy.array([[2, 4], \
-                       [6, 8]])
+    >>> x = ivy.array([[2.0, 4.0], \
+                       [6.0, 8.0]])
                                    
-    >>> y = ivy.array([[2, 5, 9], \
-                       [2, 5 ,7], \
-                       [1, 7, 8]])
+    >>> y = ivy.array([[2.0, 5.0, 9.0], \
+                       [2.0, 5.0 ,7.0], \
+                       [1.0, 7.0, 8.0]])
     >>> e, e_1 = ivy.eigvalsh(x, y)
     >>> print(e, e_1)
     ivy.array([-1.70820393, 11.70820393]), 
