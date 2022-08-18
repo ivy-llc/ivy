@@ -65,3 +65,30 @@ def sinh(x):
 
 def atan2(x, y):
     return ivy.atan2(x, y)
+
+
+def min(x, y):
+    return ivy.minimum(x, y)
+
+
+def mul(x, y):
+    return ivy.multiply(x, y)
+
+
+def eq(x, y):
+    return ivy.equal(x, y)
+
+
+def atan(x):
+    return ivy.atan(x)
+
+
+def ceil(x):
+    return ivy.ceil(x)
+
+
+ceil.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def bitwise_and(x, y):
+    return ivy.bitwise_and(x, y)

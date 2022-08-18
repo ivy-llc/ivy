@@ -1,12 +1,13 @@
 import numpy as np
 from hypothesis import given, strategies as st
 
-import ivy.functional.backends.jax as ivy_jax
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.jax as ivy_jax
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_numeric_dtypes),
     as_variable=st.booleans(),
@@ -139,6 +140,7 @@ def test_jax_nn_silu(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
     as_variable=st.booleans(),
@@ -172,6 +174,7 @@ def test_jax_nn_leaky_relu(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
     approximate=st.booleans(),

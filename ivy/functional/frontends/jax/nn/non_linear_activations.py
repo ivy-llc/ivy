@@ -21,7 +21,7 @@ def relu(x):
     return ivy.relu(x)
 
 
-relu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+relu.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def relu6(x):
@@ -57,14 +57,14 @@ def leaky_relu(x, negative_slope=0.01):
     return ivy.leaky_relu(x, alpha=negative_slope)
 
 
-leaky_relu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+leaky_relu.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def gelu(x, approximate=True):
     return ivy.gelu(x, approximate=approximate)
 
 
-gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+gelu.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def sigmoid(x):
