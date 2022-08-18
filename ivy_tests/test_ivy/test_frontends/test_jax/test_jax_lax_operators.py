@@ -650,6 +650,38 @@ def test_jax_lax_atan(
     )
 
 
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(ivy.valid_float_dtypes)
+        ),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.ceil"
+    ),
+)
+def test_jax_lax_ceil(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.ceil",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
 # bitwise_and
 @handle_cmd_line_args
 @given(
