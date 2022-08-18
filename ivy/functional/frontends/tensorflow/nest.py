@@ -4,7 +4,7 @@ import tensorflow as tf
 
 
 RAGGED_TYPES = (tf.RaggedTensor,)
-# SPARSE_TYPES = (tf.)
+SPARSE_TYPES = (tf.SparseTensor,)
 
 
 def flatten(structure, expand_composites=False):
@@ -36,9 +36,8 @@ def flatten(structure, expand_composites=False):
             ivy.native_array(new_struc),
             ivy.native_array(all_splits, dtype="int64"),
         ] + buffer
-    # if expand_composites and isinstance(structure, tf.RaggedTensor):
-    #     print('yes!')
-    #     return structure
+    if expand_composites and isinstance(structure, SPARSE_TYPES):
+        return [structure.indices, structure.values, structure.dense_shape]
     if isinstance(structure, (tuple, list)):
         new_struc = []
         for child in structure:
