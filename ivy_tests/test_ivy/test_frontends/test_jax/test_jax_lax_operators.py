@@ -819,3 +819,39 @@ def test_jax_lax_argmax(
         axis=axis,
         index_dtype=index_dtype,
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=_dtype_x_bounded_axis(
+        available_dtypes=ivy.valid_numeric_dtypes,
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.argmin"
+    ),
+    index_dtype=st.sampled_from(ivy.valid_int_dtypes),
+)
+def test_jax_lax_argmin(
+    dtype_x_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    index_dtype,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.argmin",
+        operand=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        index_dtype=index_dtype,
+    )
