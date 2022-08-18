@@ -1,6 +1,8 @@
 # global
 import ivy
 
+def leaky_relu():
+    return ivy.leaky_rely()
 
 def sigmoid(input, out=None):
     return ivy.sigmoid(input, out=out)
