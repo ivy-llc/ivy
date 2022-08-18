@@ -4381,6 +4381,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
+        Using :code:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
                               b=ivy.array([2, 3, 4]))
         >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
@@ -4450,6 +4452,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
+        Using :code:`ivy.Container` input:
+        
         >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
                               b=ivy.array([2, 3, 4]))
         >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\

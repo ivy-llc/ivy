@@ -3459,7 +3459,7 @@ def logaddexp(
                         b=ivy.array([2., 3., 4.]))
     >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
                         b=ivy.array([5., 6., 7.]))
-    >>> z = ivy.Container.logaddexp(y,x)
+    >>> z = ivy.logaddexp(y,x)
     >>> print(z)
     {
         a: ivy.array([4.05, 5.05, 6.05]),
