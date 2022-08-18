@@ -253,15 +253,19 @@ def test_torch_reshape(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)),
         ),
-        num_arrays=st.shared(helpers.ints(min_value=1, max_value=4), key="num_arrays"),
+        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
         shape=helpers.get_shape(min_num_dims=1),
         ret_shape=True,
     ),
-    as_variable=helpers.array_bools(),
+    as_variable=helpers.array_bools(
+        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.stack"
     ),
-    native_array=helpers.array_bools(),
+    native_array=helpers.array_bools(
+        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
+    ),
     with_out=st.booleans(),
 )
 def test_torch_stack(
