@@ -2369,6 +2369,14 @@ def array_values(
                 )
             max_neg_value = -1 if small_value_safety_factor > 1 else 0
             min_pos_value = 1 if small_value_safety_factor > 1 else 0
+
+            if min_value >= max_neg_value:
+                min_value = min_pos_value
+                max_neg_value = max_value
+            elif max_value <= min_pos_value:
+                min_pos_value = min_value
+                max_value = max_neg_value
+
             values = draw(
                 list_of_length(
                     x=st.integers(min_value, max_neg_value)
