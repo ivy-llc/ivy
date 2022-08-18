@@ -277,7 +277,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     >>> nest = ([-9, 8, -27],[9, -4, -5, 7])
     >>> indices = ((0, 2),(1, 0),(1, 2))
     >>> fn = abs
-    >>> ivy.set_nest_at_indices(nest, indices, fn)
+    >>> ivy.map_nest_at_indices(nest, indices, fn)
     >>> print(nest)
     ([-9, 8, 27], [9, -4, 5, 7])
 
