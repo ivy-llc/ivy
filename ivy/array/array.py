@@ -579,7 +579,7 @@ class Array(
     @_native_wrapper
     def __rshift__(self, other):
         """
-        ivy.Array special method variant of ivy.bitwise_right_shift. This method 
+        ivy.Array special method variant of ivy.bitwise_right_shift. This method
         simply wraps the function, and so the docstring for ivy.bitwise_right_shift
         also applies to this method with minimal changes.
 
@@ -588,7 +588,7 @@ class Array(
         self
             first input array. Should have an integer data type.
         other
-            second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). 
+            second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
             Should have an integer data type. Each element must be greater than or equal
             to ``0``.
 
@@ -624,7 +624,7 @@ class Array(
     @_native_wrapper
     def __rrshift__(self, other):
         """
-        ivy.Array reverse special method variant of ivy.bitwise_right_shift. 
+        ivy.Array reverse special method variant of ivy.bitwise_right_shift.
         This method simply wraps the function, and so the docstring for
         ivy.bitwise_right_shift also applies to this method with minimal changes.
 
@@ -633,7 +633,7 @@ class Array(
         self
             first input array. Should have an integer data type.
         other
-            second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). 
+            second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
             Should have an integer data type. Each element must be greater than or equal
             to ``0``.
 
@@ -645,7 +645,6 @@ class Array(
 
         Examples
         --------
-        
         >>> a = 32
         >>> b = ivy.array([0, 1, 2])
         >>> y = a >> b
