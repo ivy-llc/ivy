@@ -38,12 +38,12 @@ def ones_like_v_0p4p0_and_above(
     return ret
 
 
-ones_like_v_0p4p0_and_above.version = True
+ones_like_v_0p4p0_and_above.version_support = True
 
 
-def ones_like_v_0p3p1_to_0p3p0(input, out=None):
+def ones_like_v_0p3p0_to_0p3p1(input, out=None):
     ret = ivy.ones_like(input, out=None)
     return ret
 
 
-ones_like_v_0p3p1_to_0p3p0.version = True
+ones_like_v_0p3p0_to_0p3p1.version_support = True
