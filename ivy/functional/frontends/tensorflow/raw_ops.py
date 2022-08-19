@@ -11,7 +11,7 @@ def acosh(x, name="acosh"):
 
 
 def concat(values, axis, name="concat"):
-    return ivy.concat(values, axis)
+    return ivy.concat(values, axis=axis)
 
 
 def cos(x, name="cos"):
