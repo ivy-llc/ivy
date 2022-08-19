@@ -114,3 +114,7 @@ def argmax(operand, axis, index_dtype):
 
 def argmin(operand, axis, index_dtype):
     return ivy.astype(ivy.argmin(operand, axis=axis), dtype=index_dtype)
+
+
+def bitwise_xor(x, y):
+    return ivy.bitwise_xor(x, y)
