@@ -2,6 +2,7 @@
 import ivy
 
 
+
 def leaky_relu(input, negative_slope=0.01, out=None):
     return ivy.leaky_rely(input, alpha=negative_slope, out=out)
 
