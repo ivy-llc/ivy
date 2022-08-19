@@ -12,6 +12,6 @@ def while_loop(cond_fun, body_fun, init_val):
     body = ivy.compile(body_fun, example_inputs=[init_val])
     # function body
     val = init_val
-    while cond(val):
+    while ivy.all(cond(val)):
         val = body(val)
     return val
