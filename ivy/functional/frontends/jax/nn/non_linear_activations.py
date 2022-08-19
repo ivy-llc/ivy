@@ -89,10 +89,14 @@ sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def one_hot(x, num_classes, *, device=None, out=None):
-    return ivy.one_hot(x, num_classes, device=device, out=out)
+    ret = ivy.one_hot(x, num_classes, device=device, out=out)
+    return ret.astype("float64")
 
 
-one_hot.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+one_hot.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16"),
+    "tensorflow": ("int8", "int16", "uint16", "uint32", "uint64"),
+}
 
 
 def softmax(x, /, *, axis=-1):
