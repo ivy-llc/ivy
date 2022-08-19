@@ -964,7 +964,7 @@ def test_torch_log10(
     num_positional_args,
     native_array,
     fw,
- ):
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1018,7 +1018,6 @@ def test_torch_trunc(
         out=None,
     )
     
-
 
 # sqrt
 @handle_cmd_line_args
