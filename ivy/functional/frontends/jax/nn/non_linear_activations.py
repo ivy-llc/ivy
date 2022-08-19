@@ -69,11 +69,7 @@ leaky_relu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def gelu(x, approximate=True):
-    # TODO: Fix gelu backend implementation
-    if approximate:
-        x = _type_conversion_64(x)
-    ret = ivy.gelu(x, approximate=approximate)
-    return ret.astype(x.dtype)
+    return ivy.gelu(x, approximate=approximate)
 
 
 gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
