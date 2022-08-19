@@ -100,8 +100,67 @@ class ArrayWithGeneral(abc.ABC):
         ret
             List of arrays, unpacked along specified dimensions.
 
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> y = x.unstack(axis=0)
+        >>> print(y)
+        [ivy.array([1, 2]), ivy.array([3, 4])]
+
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> y = x.unstack(axis=1, keepdims=True)
+        >>> print(y)
+        [ivy.array([[1],
+                [3]]), ivy.array([[2],
+                [4]])]
         """
         return ivy.unstack(self._data, axis, keepdims)
+
+    def cumprod(
+        self: ivy.Array,
+        axis: int = 0,
+        exclusive: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cumprod. This method simply wraps the
+        function, and so the docstring for ivy.cumprod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        axis
+            int, axis along which to take the cumulative product. Default is 0.
+        exclusive
+            optional bool, whether to exclude the first value of the input array.
+            Default is False.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Input array with cumulatively multiplied elements along the specified axis.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 4, 5])
+        >>> y = x.cumprod()
+        >>> print(y)
+        ivy.array([  1,   2,   6,  24, 120])
+
+        >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
+        >>> y = ivy.zeros((3, 2))
+        >>> x.cumprod(axis=1, exclusive=True, out=y)
+        >>> print(y)
+        ivy.array([[ 1.,  2.],
+                   [ 1.,  5.],
+                   [ 1., 11.]])
+        """
+        return ivy.cumprod(self._data, axis, exclusive, out=out)
 
     def gather(
         self: ivy.Array,
