@@ -44,8 +44,9 @@ relu6.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def soft_sign(x):
-    x = _type_conversion(x)
-    return x / (ivy.abs(x) + 1)
+    dtype = _type_conversion(x).dtype
+    ret = x / (ivy.abs(x) + 1)
+    return ret.astype(dtype)
 
 
 soft_sign.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
