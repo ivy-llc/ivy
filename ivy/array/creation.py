@@ -12,6 +12,7 @@ import ivy
 class ArrayWithCreation(abc.ABC):
     def asarray(
         self: ivy.Array,
+        /,
         *,
         copy: Optional[bool] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -46,6 +47,7 @@ class ArrayWithCreation(abc.ABC):
 
     def full_like(
         self: ivy.Array,
+        /,
         fill_value: float,
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -79,6 +81,28 @@ class ArrayWithCreation(abc.ABC):
             an array having the same shape as ``self`` and where every element is equal
             to ``fill_value``.
 
+        Instance Method Examples:
+        ------------------------
+
+        With int datatype:
+        >>> x = ivy.array([1,2,3])
+        >>> fill_value = 0
+        >>> x.full_like(fill_value)
+        ivy.array([0, 0, 0])
+
+        With float datatype:
+        >>> fill_value = 0.000123
+        >>> x = ivy.array(ivy.ones(5))
+        >>> y = x.full_like(fill_value)
+        >>> print(y)
+        ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
+
+        With ivy.Array input:
+        >>> x = ivy.array([1, 2, 3, 4, 5, 6])
+        >>> fill_value = 1
+        >>> y = x.full_like(fill_value)
+        >>> print(y)
+        ivy.array([1, 1, 1, 1, 1, 1])
         """
         return ivy.full_like(
             self._data, fill_value, dtype=dtype, device=device, out=out
@@ -86,6 +110,7 @@ class ArrayWithCreation(abc.ABC):
 
     def ones_like(
         self: ivy.Array,
+        /,
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -120,6 +145,7 @@ class ArrayWithCreation(abc.ABC):
 
     def zeros_like(
         self: ivy.Array,
+        /,
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -152,7 +178,9 @@ class ArrayWithCreation(abc.ABC):
         """
         return ivy.zeros_like(self._data, dtype=dtype, device=device, out=out)
 
-    def tril(self: ivy.Array, k: int = 0, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def tril(
+        self: ivy.Array, /, k: int = 0, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tril. This method simply wraps the
         function, and so the docstring for ivy.tril also applies to this method
@@ -180,9 +208,11 @@ class ArrayWithCreation(abc.ABC):
             on the same device as ``self``.
 
         """
-        return ivy.tril(self._data, k, out=out)
+        return ivy.tril(self._data, k=k, out=out)
 
-    def triu(self: ivy.Array, k: int = 0, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def triu(
+        self: ivy.Array, /, k: int = 0, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.triu. This method simply wraps the
         function, and so the docstring for ivy.triu also applies to this method
@@ -210,10 +240,11 @@ class ArrayWithCreation(abc.ABC):
             on the same device as ``self``.
 
         """
-        return ivy.triu(self._data, k, out=out)
+        return ivy.triu(self._data, k=k, out=out)
 
     def empty_like(
         self: ivy.Array,
+        /,
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -249,6 +280,7 @@ class ArrayWithCreation(abc.ABC):
 
     def meshgrid(
         self: ivy.Array,
+        /,
         *arrays: Union[ivy.Array, ivy.NativeArray],
         indexing: Optional[str] = "xy",
     ) -> List[ivy.Array]:
@@ -283,6 +315,7 @@ class ArrayWithCreation(abc.ABC):
 
     def from_dlpack(
         self: ivy.Array,
+        /,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -311,6 +344,7 @@ class ArrayWithCreation(abc.ABC):
 
     def native_array(
         self: ivy.Array,
+        /,
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
