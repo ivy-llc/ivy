@@ -14,8 +14,7 @@ def version_extractor(name, version):
     Parameters
     ----------
     name
-        the version specific name of the function for which the version support is to be provided. This
-        function will have a "version_support" attribute.
+        the version specific name of the function for which the version support is to be provided.
     version
         the version of the current framework for which the support is to be provided, the
         version is inferred by importing the framework in the case of frontend version support
