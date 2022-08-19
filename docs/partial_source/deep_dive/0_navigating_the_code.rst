@@ -6,6 +6,7 @@ Navigating the Code
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`project structure channel`: https://discord.com/channels/799879767196958751/982737793476345888
+.. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 
 Categorization
 --------------
@@ -83,6 +84,7 @@ look something like the following, (explained in much more detail in the followi
 
     def my_func(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         axes: Union[int, Tuple[int], List[int]],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -129,6 +131,16 @@ look something like the following, (explained in much more detail in the followi
         """
         return ivy.current_backend(x).my_func(x, axes, dtype=dtype, device=device, out=out)
 
+We follow the `Array API Standard convention`_ about positional and keyword arguments.
+
+* Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name. When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based solely on their order.
+* Optional parameters must be keyword-only arguments
+
+This convention makes it easier for us to modify functions in the future. Keyword-only parameters will mandate the use
+of argument names when calling functions, and this will increase our flexibility for extending function behaviour in
+future releases without breaking forward compatibility. Similar arguments can be kept together in the argument list,
+rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
+
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
 Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
 All functions which produce a single array include the :code:`out` argument.
@@ -144,6 +156,7 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
 
     def my_func(
         x: torch.Tensor,
+        /,
         axes: Union[int, Tuple[int], List[int]],
         *,
         dtype: torch.dtype,

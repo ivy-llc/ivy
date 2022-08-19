@@ -7,7 +7,6 @@ import numpy as np
 # local
 import ivy
 from ivy.container import Container
-import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
 
@@ -27,11 +26,9 @@ import ivy.functional.backends.numpy as ivy_np
     inplace=st.booleans(),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-def test_sgd_optimizer(
-    bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
-):
+def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
@@ -76,7 +73,7 @@ def test_sgd_optimizer(
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if call is helpers.mx_call:
+    if ivy.current_backend_str() == "mxnet":
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:
@@ -85,7 +82,7 @@ def test_sgd_optimizer(
     assert ivy.max(ivy.abs(grads.b)) > 0
     assert ivy.max(ivy.abs(grads.w)) > 0
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
         return
 
@@ -106,11 +103,9 @@ def test_sgd_optimizer(
     inplace=st.booleans(),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-def test_lars_optimizer(
-    bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
-):
+def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
@@ -157,7 +152,7 @@ def test_lars_optimizer(
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if call is helpers.mx_call:
+    if ivy.current_backend_str() == "mxnet":
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:
@@ -166,7 +161,7 @@ def test_lars_optimizer(
     assert ivy.max(ivy.abs(grads.b)) > 0
     assert ivy.max(ivy.abs(grads.w)) > 0
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
         return
 
@@ -187,11 +182,9 @@ def test_lars_optimizer(
     inplace=st.booleans(),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-def test_adam_optimizer(
-    bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
-):
+def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
@@ -240,7 +233,7 @@ def test_adam_optimizer(
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if call is helpers.mx_call:
+    if ivy.current_backend_str() == "mxnet":
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:
@@ -266,11 +259,9 @@ def test_adam_optimizer(
     inplace=st.booleans(),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes),
 )
-def test_lamb_optimizer(
-    bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph, call
-):
+def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
@@ -319,7 +310,7 @@ def test_lamb_optimizer(
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if call is helpers.mx_call:
+    if ivy.current_backend_str() == "mxnet":
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:

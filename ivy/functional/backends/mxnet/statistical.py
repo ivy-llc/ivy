@@ -1,5 +1,5 @@
 from numbers import Number
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple, Union, Sequence
 import mxnet as mx
 
 # Local
@@ -152,8 +152,8 @@ def sum(
 
 def var(
     x: mx.nd.NDArray,
-    axis: Union[int, Tuple[int, ...]] = None,
-    keepdims: bool = False,
+    axis: Union[int, Sequence[int]] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     mean_of_x_sqrd = mean(x**2, axis, keepdims)
