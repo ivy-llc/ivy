@@ -33,6 +33,10 @@ def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
 
 
+def cos(x, name="acosh"):
+    return ivy.cos(x)
+
+
 def fill(dims, value, name="full"):
     return ivy.full(dims, value)
 
