@@ -14,3 +14,4 @@ def sparse_categorical_crossentropy(
 
 sparse_categorical_crossentropy.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
+
