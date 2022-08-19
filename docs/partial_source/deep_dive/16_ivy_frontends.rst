@@ -42,8 +42,6 @@ frontend functions.
     def add(x, y):
         return ivy.add(x, y)
 
-    add.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
 In the original Jax library, :code:`add` is under `jax.lax.add`_. Thus, an
 identical module of :code:`lax` is created and the function is placed there. It
 is then categorised under :code:`operators` as shown in the `jax.lax`_ package directory.
@@ -57,25 +55,25 @@ where we will also have the same two arguments in our Jax frontend :code:`add`.
 Then, this function will return :code:`ivy.add`, which links to the :code:`add`
 function according to the framework set in the backend.
 
-You may have noticed that the function has an additional attribute
-:code:`unsupported_dtypes`. This is because users are allowed to set a backend
-operating framework which is not Jax. There may be certain :code:`dtype` which
-the backend cannot support, for instance, PyTorch does not support
-:code:`float16` and :code:`bfloat16` in their :code:`add` function. These are then
-specified with the help of this attribute.
-
 .. code-block:: python
 
     # in ivy/functional/frontends/jax/lax/operators.py
     def tan(x):
         return ivy.tan(x)
 
-    tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+    tan.unsupported_dtypes = {"torch": ("float16",)}
 
 Looking at a second example, :code:`tan`, it is placed under :code:`operators`
 according to the `jax.lax`_ directory. By referring to the `jax.lax.tan`_ documentation,
 it has only one argument, and just as our :code:`add` function, we link its return to
 :code:`ivy.tan` so that the computation operation depends on the backend framework.
+
+You may have noticed that the function has an additional attribute
+:code:`unsupported_dtypes`. This is because users are allowed to set a backend
+operating framework which is not Jax. There may be certain :code:`dtype` which
+the backend cannot support, for instance, PyTorch does not support
+:code:`float16` in their :code:`tan` function. These are then
+specified with the help of this attribute.
 
 **NumPy**
 
@@ -101,8 +99,6 @@ it has only one argument, and just as our :code:`add` function, we link its retu
         if ivy.is_array(where):
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
         return ret
-
-    add.unsupported_dtypes = {"torch": ("float16",)}
 
 In NumPy, :code:`add` is categorised under :code:`mathematical_functions` with a
 sub-category of :code:`arithmetic_operations` as shown in the
@@ -157,8 +153,6 @@ arguments just like its :code:`add` function, thus needing additional handling c
     def add(x, y, name=None):
         return ivy.add(x, y)
 
-    add.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
 In the original TensorFlow library (`tf`_ directory), :code:`add` does not have
 a specific category. Therefore, it is categorised under :code:`functions` in Ivy.
 This ensures that :code:`tf.add` is available directly without further major
@@ -177,7 +171,7 @@ unsupported dtypes in any backend, it is specified with the help of the
     def tan(x, name=None):
         return ivy.tan(x)
 
-    tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+    tan.unsupported_dtypes = {"torch": ("float16",)}
 
 Let's look at another example, :code:`tan`, it is placed under :code:`functions` just
 like :code:`add`. By referring to the `tf.tan`_ documentation, we code the arguments
@@ -191,8 +185,6 @@ operation is decided according to the backend framework.
     # in ivy/functional/frontends/torch/pointwise_ops.py
     def add(input, other, *, alpha=1, out=None):
         return ivy.add(input, other * alpha, out=out)
-
-    add.unsupported_dtypes = ("float16",)
 
 For PyTorch, :code:`add` is categorised under :code:`pointwise_ops` as shown in
 the `torch`_ directory. This ensures direct access to :code:`torch.add` in :code:`ivy`
