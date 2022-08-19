@@ -8,6 +8,7 @@ import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+# sparse_categorical_crossentropy
 @handle_cmd_line_args
 @given(
     y_true=st.lists(st.integers(min_value=0, max_value=5), min_size=1, max_size=1),
@@ -18,12 +19,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_value=10,
     ),
     from_logits=st.booleans(),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.sparse_categorical_crossentropy"
     ),
-    with_out=st.booleans(),
-    native_array=st.booleans()
 )
 def test_sparse_categorical_crossentropy(
     y_true,
@@ -32,7 +30,6 @@ def test_sparse_categorical_crossentropy(
     as_variable,
     num_positional_args,
     native_array,
-    with_out,
     fw
 ):
     y_true = ivy.array(y_true, dtype=ivy.int32)
@@ -45,14 +42,13 @@ def test_sparse_categorical_crossentropy(
     helpers.test_frontend_function(
         input_dtypes=[ivy.int32, dtype],
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="metrics.sparse_categorical_crossentropy",
+        fn_tree="sparse_categorical_crossentropy",
         y_true=y_true,
         y_pred=y_pred,
         from_logits=from_logits
     )
-
