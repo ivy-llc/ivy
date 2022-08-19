@@ -118,3 +118,7 @@ def argmin(operand, axis, index_dtype):
 
 def bitwise_xor(x, y):
     return ivy.bitwise_xor(x, y)
+
+
+def cosh(x):
+    return ivy.cosh(x)
