@@ -47,7 +47,7 @@ def test_sparse_categorical_crossentropy(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="sparse_categorical_crossentropy",
+        fn_tree="keras.metrics.sparse_categorical_crossentropy",
         y_true=y_true,
         y_pred=y_pred,
         from_logits=from_logits

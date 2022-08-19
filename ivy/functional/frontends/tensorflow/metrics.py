@@ -8,7 +8,7 @@ def sparse_categorical_crossentropy(
     axis=-1
 ):
     if from_logits:
-        ivy.softmax(y_pred, out=y_pred)
+        y_pred = ivy.softmax(y_pred)
     return ivy.sparse_cross_entropy(y_true, y_pred, axis=axis)
 
 
