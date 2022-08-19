@@ -5,20 +5,9 @@ import jax.lax as jlax
 import jax.numpy as jnp
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
-
-
-def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
-    # Get the dilated kernel size
-    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
-
-    if padding == "VALID":
-        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == "SAME":
-        dim_size = dim_size * stride_size
-
-    return dim_size
 
 
 def _conv_transpose_padding(k, s, padding, dilation, diff=0):
@@ -73,7 +62,7 @@ def conv1d_transpose(
         x_shape = list(x.shape[1:2])
     else:
         x_shape = list(x.shape[2:])
-    out_w = _deconv_length(
+    out_w = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
 
@@ -166,10 +155,10 @@ def conv2d_transpose(
         x_shape = list(x.shape[1:3])
     else:
         x_shape = list(x.shape[2:])
-    out_h = _deconv_length(
+    out_h = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
-    out_w = _deconv_length(
+    out_w = ivy.deconv_length(
         x_shape[1], strides[1], filters.shape[1], padding, dilations[1]
     )
     if output_shape is None:
@@ -235,13 +224,13 @@ def conv3d_transpose(
         x_shape = list(x.shape[1:4])
     else:
         x_shape = list(x.shape[2:])
-    out_d = _deconv_length(
+    out_d = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
-    out_h = _deconv_length(
+    out_h = ivy.deconv_length(
         x_shape[1], strides[1], filters.shape[1], padding, dilations[1]
     )
-    out_w = _deconv_length(
+    out_w = ivy.deconv_length(
         x_shape[2], strides[2], filters.shape[2], padding, dilations[2]
     )
     if output_shape is None:

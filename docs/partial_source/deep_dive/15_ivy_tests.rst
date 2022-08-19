@@ -171,7 +171,7 @@ For example, this `line`_ here, can also be written as -:
 
 .. code-block:: python
 
-    st.one_of(st.none(), st.integers(-ndim, ndim -1))
+    st.one_of(st.none(), helpers.ints(min_value=-ndim, max_value=ndim -1))
 
 9. `shared`_ - This returns a strategy that draws a shared value per run, drawn from base. Any two shared instances with
 the same key will share the same value. For example, `here`_, the parameters, *input_dtype* and *as_variable* share
@@ -215,10 +215,10 @@ and passing them as inputs to the test. For example, in this code snippet here -
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
     as_variable=helpers.list_of_length(st.booleans(), 2),
     native_array=st.booleans(),
-    num_positional_args=st.integers(0, 2),
+    num_positional_args=helpers.ints(min_value=0, max_value=2),
     container=helpers.list_of_length(st.booleans(), 2),
     instance_method=st.booleans(),
-    alpha=st.floats(),
+    alpha=helpers.floats(),
     )
     def test_leaky_relu(
     dtype_and_x,
@@ -309,7 +309,7 @@ returns -:
 .. code-block:: python
 
     #a sequence of floats with arbitrary lengths ranging from [1,5]
-    print_hypothesis_examples(array_dtypes(st.integers(1,5)))
+    print_hypothesis_examples(array_dtypes(helpers.ints(min_value=1, max_value=5)))
 
     ['float16', 'float32', 'float16', 'float16', 'float32']
     ['float64', 'float64', 'float32', 'float32', 'float16']
@@ -320,7 +320,7 @@ This function should be used whenever we are testing an ivy function that accept
 
 .. code-block:: python
 
-    print_hypothesis_examples(array_bools(na = st.integers(1,5)))
+    print_hypothesis_examples(array_bools(na = helpers.ints(min_value=1, max_value=5)))
 
     [False, True, True, False, True]
     [False]
@@ -333,12 +333,12 @@ for each input we have three boolean values associated with it that define addit
 3. **lists** - As the name suggests, we use it to generate lists composed of anything, as specified by the user. For example
 in `test_device`_ file, it is used to generate a list of array_shapes, in `test_manipulation`_, it is used to generate a list
 of common_shapes, and more in `test_layers`_. The function takes in 3 arguments, first is the strategy by which the elements
-are to be generated, in majority of the cases this is **st.integers**, with range specified, and the other arguments are
+are to be generated, in majority of the cases this is **helpers.ints**, with range specified, and the other arguments are
 sequence arguments as specified in **array_dtypes**. For example -:
 
 .. code-block:: python
 
-    print_hypothesis_examples(lists(st.integers(1,6), min_size = 0,max_size = 5))
+    print_hypothesis_examples(lists(helpers.ints(min_value=1, max_value=6), min_size = 0,max_size = 5))
 
     [2, 5, 6]
     [1]
@@ -349,14 +349,14 @@ The generated values are then passed to the array creation functions inside the 
 
 .. code-block:: python
 
-    print_hypothesis_examples(valid_axes(st.integers(2,3), size_bounds = [1,3]))
+    print_hypothesis_examples(valid_axes(helpers.ints(min_value=2, max_value=3), size_bounds = [1,3]))
 
     (-3, 1, -1)
     (1, -2)
 
 It should be used in functions which expect axes as a required or an optional argument.
 
-5. **integers** - This is similar to the *st.integers* strategy, with the only difference being that here the range can
+5. **integers** - This is similar to the *helpers.ints* strategy, with the only difference being that here the range can
 either be specified manually, or a shared key can be provided. The way shared keys work has been discussed in the
 *Important Strategies* sections above.
 

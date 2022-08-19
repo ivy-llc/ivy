@@ -54,18 +54,26 @@ def asarray(
         if dtype is None and isinstance(object_in, mx.nd.NDArray):
             return mx.nd.array(object_in, device).as_in_context(device)
         if dtype is None and not isinstance(object_in, mx.nd.NDArray):
-            return mx.nd.array(object_in, device, dtype=default_dtype(dtype, object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
         else:
-            dtype = as_ivy_dtype(default_dtype(dtype, object_in))
-            return mx.nd.array(object_in, device, dtype=default_dtype(dtype, object_in))
+            dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
     else:
         if dtype is None and isinstance(object_in, mx.nd.NDArray):
             return object_in.as_in_context(device)
         if dtype is None and not isinstance(object_in, mx.nd.NDArray):
-            return mx.nd.array(object_in, device, dtype=default_dtype(dtype, object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
         else:
-            dtype = as_ivy_dtype(default_dtype(dtype, object_in))
-            return mx.nd.array(object_in, device, dtype=default_dtype(dtype, object_in))
+            dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+            return mx.nd.array(
+                object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
+            )
 
 
 def empty(
@@ -107,11 +115,14 @@ def full(
                 (1,),
                 fill_value,
                 device,
-                as_native_dtype(default_dtype(dtype, fill_value)),
+                as_native_dtype(default_dtype(dtype=dtype, item=fill_value)),
             )
         )
     return mx.nd.full(
-        shape, fill_value, device, as_native_dtype(default_dtype(dtype, fill_value))
+        shape,
+        fill_value,
+        device,
+        as_native_dtype(default_dtype(dtype=dtype, item=fill_value)),
     )
 
 
@@ -167,6 +178,7 @@ def ones(
 
 def ones_like(
     x: mx.nd.NDArray,
+    /,
     *,
     dtype: type,
     device: mx.context.Context,
@@ -194,6 +206,8 @@ def zeros(
 
 def zeros_like(
     x: mx.nd.NDArray,
+    /,
+    *,
     dtype: Optional[type] = None,
     device: Optional[mx.context.Context] = None,
 ) -> mx.nd.NDArray:

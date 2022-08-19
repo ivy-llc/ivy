@@ -49,6 +49,7 @@ where examples for each backend is shown below.
 
     def full_like(
         x: JaxArray,
+        /,
         fill_value: Union[int, float],
         *,
         dtype: jnp.dtype,
@@ -70,6 +71,7 @@ where examples for each backend is shown below.
 
     def full_like(
         x: np.ndarray,
+        /,
         fill_value: Union[int, float],
         *,
         dtype: np.dtype,
@@ -88,6 +90,7 @@ where examples for each backend is shown below.
 
     def full_like(
         x: Union[tf.Tensor, tf.Variable],
+        /,
         fill_value: Union[int, float],
         *,
         dtype: tf.DType,
@@ -107,6 +110,7 @@ where examples for each backend is shown below.
 
     def full_like(
         x: torch.Tensor,
+        /,
         fill_value: Union[int, float],
         *,
         dtype: torch.dtype,
