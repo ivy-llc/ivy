@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # sparse_categorical_crossentropy
 @handle_cmd_line_args
 @given(
-    y_true=st.lists(st.integers(min_value=0, max_value=5), min_size=1, max_size=1),
+    y_true=st.lists(st.integers(min_value=0, max_value=4), min_size=1, max_size=1),
     dtype_y_pred=helpers.dtype_and_values(
         available_dtypes=ivy_tf.valid_float_dtypes,
         shape=(5,),
