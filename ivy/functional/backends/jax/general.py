@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional, Union, Sequence
+from typing import Iterable, Optional, Union, Sequence, List
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -89,7 +89,11 @@ def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> Jax
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: JaxArray,
+    axis: int,
+    keepdims: bool = False
+) -> List[JaxArray]:
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]
