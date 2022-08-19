@@ -468,6 +468,15 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> a = ivy.array([[2, 3, 4], [5, 10, 64]])
+        >>> b = ivy.array([0, 1, 2])
+        >>> y = a.bitwise_right_shift(b)
+        >>> print(y)
+        ivy.array([[ 2,  1,  1],
+                    [ 5,  5, 16]])
         """
         return ivy.bitwise_right_shift(self._data, x2, out=out)
 

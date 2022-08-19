@@ -1834,6 +1834,30 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+        >>> b = ivy.array([0, 1, 2])
+        >>> y = ivy.Container.static_bitwise_right_shift(a, b)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 1]),
+            b: ivy.array([5, 5, 16])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([2]))
+        >>> y = ivy.Container.static_bitwise_right_shift(a, b)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 1]),
+            b: ivy.array([1, 2, 16])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "bitwise_right_shift",
@@ -1889,6 +1913,17 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([2]))
+        >>> y = a.bitwise_right_shift(b)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 1]),
+            b: ivy.array([1, 2, 16])
+        }
         """
         return self.static_bitwise_right_shift(
             self,

@@ -41,6 +41,16 @@ negative.unsupported_dtypes = {
 }
 
 
+def log_sigmoid(x, name=None):
+    return -ivy.softplus(-x)
+
+
+log_sigmoid.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16", "float32", "float64"),
+}
+
+
 def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
     return ivy.where(input_tensor == 0, ivy.array(0.0), 1 / input_tensor)
 
