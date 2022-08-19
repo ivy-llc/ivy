@@ -2382,6 +2382,12 @@ def array_and_indices(
     return (x, indices)
 
 
+def _zeroing(x):
+    # covnert -0.0 to 0.0
+    if x == 0.0:
+        return 0.0
+
+
 @st.composite
 def array_values(
     draw,
@@ -2545,7 +2551,6 @@ def array_values(
                 )
             )
     elif dtype == "float16":
-
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2604,7 +2609,7 @@ def array_values(
                 )
             )
         values = [v * large_value_safety_factor for v in values]
-    elif dtype in ["float32", "bfloat16"]:
+    elif dtype == "float32":
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2636,6 +2641,12 @@ def array_values(
             elif max_value_pos is not None and max_value_pos <= min_value_pos:
                 min_value_pos = min_value_neg
                 max_value_pos = max_value_neg
+
+            min_value_pos = _zeroing(min_value_pos)
+            max_value_pos = _zeroing(max_value_pos)
+            min_value_neg = _zeroing(min_value_neg)
+            max_value_neg = _zeroing(max_value_neg)
+
             values = draw(
                 list_of_length(
                     x=st.floats(
@@ -2662,8 +2673,7 @@ def array_values(
                 )
             )
         values = [v * large_value_safety_factor for v in values]
-    elif dtype == "float64":
-
+    elif dtype in ["float64", "bfloat16"]:
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2682,13 +2692,12 @@ def array_values(
             )
         else:
             limit = math.log(small_value_safety_factor)
-
             min_value_neg = min_value
             max_value_neg = round(-1 * limit, 15)
             min_value_pos = round(limit, 15)
             max_value_pos = max_value
             max_value_neg, min_value_pos = (
-                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+                np.array([max_value_neg, min_value_pos]).astype("float64").tolist()
             )
             if min_value_neg is not None and min_value_neg >= max_value_neg:
                 min_value_neg = min_value_pos
@@ -2978,7 +2987,8 @@ def get_axis(
     unique=True,
     min_size=1,
     max_size=None,
-    ret_tuple=False,
+    force_tuple=False,
+    force_int=False,
 ):
     """Draws one or more axis for the given shape.
 
@@ -2986,7 +2996,7 @@ def get_axis(
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list)
+        data-set (ex. list).
     shape
         shape of the array as a tuple, or a hypothesis strategy from which the shape
         will be drawn
@@ -3002,16 +3012,25 @@ def get_axis(
         axes drawn
     max_size
         int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
-        axes drawn; if None and unique is True, then it is set to the number of axes
-        in the shape
-    ret_tuple
-        boolean; if False, randomly draw both integers and List[int]; If True, draw
-        only List[int] as tuple[int]
+        axes drawn.
+        If None and unique is True, then it is set to the number of axes in the shape
+    force_tuple
+        boolean, if true, all axis will be returned as a tuple. If force_tuple and
+        force_int are true, then an AssertionError is raised
+    force_int
+        boolean, if true, all axis will be returned as an int. If force_tuple and
+        force_int are true, then an AssertionError is raised
 
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
+    assert not (force_int and force_tuple), (
+        "Cannot return an int and a tuple. If "
+        "both are valid then set 'force_int' "
+        "and 'force_tuple' to False."
+    )
+
     # Draw values from any strategies given
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
@@ -3026,39 +3045,33 @@ def get_axis(
     if max_size is None and unique:
         max_size = max(axes, min_size)
 
+    valid_strategies = []
+
     if allow_none:
+        valid_strategies.append(st.none())
+
+    if not force_tuple:
         if axes == 0:
-            axis = draw(
-                st.none()
-                | st.just(0)
-                | st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            valid_strategies.append(st.just(0))
+        else:
+            valid_strategies.append(st.integers(-axes, axes - 1))
+    if not force_int:
+        if axes == 0:
+            valid_strategies.append(
+                st.lists(st.just(0), min_size=min_size, max_size=max_size)
             )
         else:
-            axis = draw(
-                st.none()
-                | ints(min_value=-axes, max_value=axes - 1)
-                | st.lists(
-                    ints(min_value=-axes, max_value=axes - 1),
+            valid_strategies.append(
+                st.lists(
+                    st.integers(-axes, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
                 )
             )
-    else:
-        if axes == 0:
-            axis = draw(
-                st.just(0) | st.lists(st.just(0), min_size=min_size, max_size=max_size)
-            )
-        else:
-            axis = draw(
-                ints(min_value=-axes, max_value=axes - 1)
-                | st.lists(
-                    ints(min_value=-axes, max_value=axes - 1),
-                    min_size=min_size,
-                    max_size=max_size,
-                    unique_by=unique_by,
-                )
-            )
+
+    axis = draw(st.one_of(*valid_strategies))
+
     if type(axis) == list:
         if sorted:
 
@@ -3069,8 +3082,6 @@ def get_axis(
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
-    elif ret_tuple:
-        axis = tuple([axis])
     return axis
 
 
@@ -3132,12 +3143,11 @@ def handle_cmd_line_args(test_fn):
         FW_STRS,
         TEST_BACKENDS,
         TEST_CALL_METHODS,
-        MAX_EXAMPLES,
     )
 
     # first[1:-2] 5 arguments are all fixtures
     @given(data=st.data())
-    @settings(max_examples=int(MAX_EXAMPLES))
+    @settings(max_examples=1)
     def new_fn(data, get_command_line_flags, device, f, call, fw, *args, **kwargs):
         flag, fw_string = (False, "")
         # skip test if device is gpu and backend is numpy

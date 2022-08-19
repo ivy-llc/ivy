@@ -68,9 +68,7 @@ def floormod(
 
 
 def unstack(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: int,
-    keepdims: bool = False
+    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
 ) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]
@@ -361,6 +359,9 @@ def one_hot(
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.one_hot(indices, depth)
+
+
+one_hot.unsupported_dtypes = ("int8", "int16", "uint16", "uint32", "uint64")
 
 
 def current_backend_str():
