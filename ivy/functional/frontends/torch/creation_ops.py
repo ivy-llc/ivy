@@ -21,3 +21,29 @@ def full(
 
 
 full.unsupported_dtypes = ("float16",)
+
+
+def ones_like_v_0p4p0_and_above(
+    input,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    memory_format=None
+):
+    ret = ivy.ones_like(input, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+ones_like_v_0p4p0_and_above.version = True
+
+
+def ones_like_v_0p3p1_to_0p3p0(input, out=None):
+    ret = ivy.ones_like(input, out=None)
+    return ret
+
+
+ones_like_v_0p3p1_to_0p3p0.version = True
