@@ -13,10 +13,11 @@ from ivy.func_wrapper import handle_nestable
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: int = -1,
     epsilon: float = 1e-7,
-    *,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes cross-entropy between predicted and true discrete distributions.
 
@@ -58,10 +59,15 @@ def cross_entropy(
     return ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out)
 
 
+cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
+
+
 @handle_nestable
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     epsilon: float = 1e-7,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -151,14 +157,20 @@ def binary_cross_entropy(
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     return ivy.negative(
-        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out), out=out
+        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out),
+        out=out,
     )
+
+
+binary_cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @handle_nestable
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: int = -1,
     epsilon: float = 1e-7,
     out: Optional[ivy.Array] = None,
@@ -259,4 +271,8 @@ def sparse_cross_entropy(
 
     """
     true = ivy.one_hot(true, pred.shape[axis])
-    return cross_entropy(true, pred, axis, epsilon, out=out)
+    return ivy.cross_entropy(true, pred, axis=axis, epsilon=epsilon, out=out)
+
+
+sparse_cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
+sparse_cross_entropy.supported_dtypes = {"tensorflow": ("uint8", "int32", "int64")}

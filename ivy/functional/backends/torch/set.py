@@ -1,12 +1,13 @@
 # global
 import torch
-from typing import Tuple
+from typing import NamedTuple, Optional
 from collections import namedtuple
 
 
 def unique_all(
     x: torch.Tensor,
-) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    /,
+) -> NamedTuple:
     Results = namedtuple(
         typename="unique_all",
         field_names=["values", "indices", "inverse_indices", "counts"],
@@ -46,7 +47,10 @@ def unique_all(
     )
 
 
-def unique_counts(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+unique_all.unsupported_dtypes = ("float16",)
+
+
+def unique_counts(x: torch.Tensor, /) -> NamedTuple:
     v, c = torch.unique(torch.reshape(x, [-1]), return_counts=True)
     nan_idx = torch.where(torch.isnan(v))
     c[nan_idx] = 1
@@ -54,7 +58,10 @@ def unique_counts(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
     return uc(v, c)
 
 
-def unique_inverse(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+unique_counts.unsupported_dtypes = ("float16",)
+
+
+def unique_inverse(x: torch.Tensor, /) -> NamedTuple:
     out = namedtuple("unique_inverse", ["values", "inverse_indices"])
     values, inverse_indices = torch.unique(x, return_inverse=True)
     nan_idx = torch.isnan(x)
@@ -64,6 +71,14 @@ def unique_inverse(x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
     return out(values, inverse_indices)
 
 
-def unique_values(x: torch.Tensor) -> torch.Tensor:
+unique_inverse.unsupported_dtypes = ("float16",)
+
+
+def unique_values(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     ret = torch.unique(x)
     return ret
+
+
+unique_values.unsupported_dtypes = ("float16",)

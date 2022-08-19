@@ -12,65 +12,86 @@ Let’s dive straight in and check out what the :code:`ivy.Array` constructor lo
 .. code-block:: python
 
     # ivy/array/__init__.py
-    class Array(ivy.ArrayWithDevice, ivy.ArrayWithGeneral,
-                ivy.ArrayWithGradients, ivy.ArrayWithImage,
-                ivy.ArrayWithLinalg, ivy.ArrayWithLogic,
-                ivy.ArrayWithMath, ivy.ArrayWithMeta,
-                ivy.ArrayWithRandom, ivy.ArrayWithReductions):
-
+    class Array(
+        ArrayWithActivations,
+        ArrayWithCreation,
+        ArrayWithDataTypes,
+        ArrayWithDevice,
+        ArrayWithElementwise,
+        ArrayWithGeneral,
+        ArrayWithGradients,
+        ArrayWithImage,
+        ArrayWithLayers,
+        ArrayWithLinearAlgebra,
+        ArrayWithLosses,
+        ArrayWithManipulation,
+        ArrayWithNorms,
+        ArrayWithRandom,
+        ArrayWithSearching,
+        ArrayWithSet,
+        ArrayWithSorting,
+        ArrayWithStatistical,
+        ArrayWithUtility,
+    ):
         def __init__(self, data):
+            ArrayWithActivations.__init__(self)
+            ArrayWithCreation.__init__(self)
+            ArrayWithDataTypes.__init__(self)
+            ArrayWithDevice.__init__(self)
+            ArrayWithElementwise.__init__(self)
+            ArrayWithGeneral.__init__(self)
+            ArrayWithGradients.__init__(self)
+            ArrayWithImage.__init__(self)
+            ArrayWithLayers.__init__(self)
+            ArrayWithLinearAlgebra.__init__(self)
+            ArrayWithLosses.__init__(self)
+            ArrayWithManipulation.__init__(self)
+            ArrayWithNorms.__init__(self)
+            ArrayWithRandom.__init__(self)
+            ArrayWithSearching.__init__(self)
+            ArrayWithSet.__init__(self)
+            ArrayWithSorting.__init__(self)
+            ArrayWithStatistical.__init__(self)
+            ArrayWithUtility.__init__(self)
+            self._init(data)
+
+        def _init(self, data):
             if ivy.is_ivy_array(data):
                 self._data = data.data
             else:
                 assert ivy.is_native_array(data)
                 self._data = data
             self._shape = self._data.shape
-            self._size = functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
+            self._size = (
+                functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
+            )
             self._dtype = ivy.dtype(self._data)
             self._device = ivy.dev(self._data)
             self._dev_str = ivy.as_ivy_dev(self._device)
-            self._pre_repr = 'ivy.'
-            if 'gpu' in self._dev_str:
-                self._post_repr = ', dev={})'.format(self._dev_str)
+            self._pre_repr = "ivy."
+            if "gpu" in self._dev_str:
+                self._post_repr = ", dev={})".format(self._dev_str)
             else:
-                self._post_repr = ')'
+                self._post_repr = ")"
+            self.framework_str = ivy.current_backend_str()
+            self._is_variable = ivy.is_variable(self._data)
 
         # Properties #
         # -----------#
 
-    @property
-    def data(self):
-        return self._data
+        # noinspection PyPep8Naming
+        @property
+        def mT(self):
+            assert len(self._data.shape) >= 2
+            return ivy.matrix_transpose(self._data)
 
-    @property
-    def shape(self):
-        return tuple(self._shape)
+        @property
+        def data(self):
+            return self._data
 
-    @property
-    def ndim(self):
-        return len(tuple(self._shape))
-
-    @property
-    def size(self):
-        return self._size
-
-    @property
-    def dtype(self):
-        return self._dtype
-
-    @property
-    def device(self):
-        return self._device
-
-    @property
-    def T(self):
-        assert len(self._data.shape) == 2
-        return ivy.matrix_transpose(self._data)
-
-    @property
-    def mT(self):
-        assert len(self._data.shape) >= 2
-        return ivy.matrix_transpose(self._data)
+        @property
+        def shape(self):
+            return ivy.Shape(self._shape)
 
 We can see that the :code:`ivy.Array` class is a simple wrapper around an :code:`ivy.NativeArray` class (such as  :code:`np.ndarray`, :code:`torch.Tensor` etc), stored in the :code:`self._data` attribute.
 
@@ -92,17 +113,17 @@ Consider the code below:
 
 .. code-block:: python
 
-    ivy.set_framework(...)
+    ivy.set_backend(...)
     x = ivy.array([1, 2, 3])
     x[0] = 0
     print(x)
 
-Let's first assume we use numpy in the backend by calling :code:`ivy.set_framework('numpy')` in the first line.
+Let's first assume we use numpy in the backend by calling :code:`ivy.set_backend('numpy')` in the first line.
 :code:`x` would then be a :code:`np.ndarray` instance.
 
 In this case, the code will execute without error, printing :code:`array([0, 2, 3])` to the console.
 
-Now consider we use JAX in the backend by calling :code:`ivy.set_framework('jax')` in the first line.
+Now consider we use JAX in the backend by calling :code:`ivy.set_backend('jax')` in the first line.
 :code:`x` would then be a :code:`jax.numpy.ndarray` instance.
 
 The code will now throw the error :code:`TypeError: '<class 'jaxlib.xla_extension.DeviceArray'>' object does not support item assignment.` :code:`JAX arrays are immutable.` :code:`Instead of x[idx] = y, use x = x.at[idx].set(y) or another .at[] method` when we try to set index 0 to the value 0.
@@ -116,7 +137,7 @@ For the purposes of explanation, we can re-write the above code as follows:
 
 .. code-block:: python
 
-    ivy.set_framework(...)
+    ivy.set_backend(...)
     x = ivy.array([1, 2, 3])
     x.__setitem__(0, 0)
     print(x)
@@ -135,7 +156,10 @@ Let's take a look at how that method is implemented in the :code:`ivy.Array` cla
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')
+            self._data = ivy.scatter_nd(
+                query, val, tensor=self._data, reduction="replace"
+            )._data
+            self._dtype = ivy.dtype(self._data)
 
 We can implement inplace updates in the :code:`ivy.Array` class without requiring inplace updates in the backend array classes.
 If the backend does not support inplace updates, then we can use the :code:`ivy.scatter_nd` method to return a new array and store this in the :code:`self._data` attribute.
@@ -170,84 +194,10 @@ Therefore, with the design of Ivy, we have made the decision to require all arra
 API Monkey Patching
 -------------------
 
-If you've looked through the code at all, you may notice that the Ivy methods do not return :code:`ivy.Array` instances at all.
+All ivy functions with array inputs/outputs have been wrapped to return :code:`ivy.Array` instances while accepting both :code:`ivy.Array` and :code:`ivy.NativeArray` instances.
+This allows for the control required to provide a unified array interface.
+For more detail on wrapping, see the the `Function Wrapping <https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html>`_ page in deep dive.
 
-This is true, as far as the code appears, the methods actually return :code:`ivy.NativeArray` instances.
-
-For example, let's take a look at the :code:`ivy.inv` method with a PyTorch backend.
-
-.. code-block:: python
-
-    # ivy/functional/backends/torch/linear_algebra.py
-    def inv(x: torch.Tensor) -> torch.Tensor:
-        return torch.inverse(x)
-
-Passing in an :code:`ivy.Array` instance for :code:`x` will throw an error. The method will also always return a :code:`torch.Tensor`, not an :code:`ivy.Array`,
-but we have just explained that every Ivy method both accepts and returns :code:`ivy.Array` instances, what gives?
-
-In order to avoid excessive code duplication, we have opted to implement this behaviour via monkey-patching, using :code:`_wrap_method`:
-
-.. code-block:: python
-
-    # ivy/func_wrapper.py
-    def _wrap_method(fn):
-
-        if hasattr(fn, '__name__') and \
-                (fn.__name__[0] == '_' or
-                 fn.__name__ in NON_WRAPPED_METHODS):
-            return fn
-
-        if hasattr(fn, 'wrapped') and fn.wrapped:
-            return fn
-
-        def _method_wrapped(*args, **kwargs):
-            native_args, native_kwargs = \
-                ivy.args_to_native(*args, **kwargs)
-            return ivy.to_ivy(
-                        fn(*native_args, **native_kwargs),
-                        nested=True)
-
-        if hasattr(fn, '__name__'):
-            _method_wrapped.__name__ = fn.__name__
-        _method_wrapped.wrapped = True
-        _method_wrapped.inner_fn = fn
-        return _method_wrapped
-
-When setting any backend framework, the entire :code:`ivy.__dict__` is traversed and every method is wrapped using the :code:`_wrap_method` outlined above.
-Therefore, all Ivy methods accept and return :code:`ivy.Array` instances without issue, whist still making use of the wrapped backend methods which only operate with :code:`ivy.NativeArray` instances, such as:code:`torch.Tensor` etc.
-
-Breaking :code:`_wrap_method` down a bit, first we verify the method should be wrapped, otherwise we return the method without wrapping.
-Next, we check if the method is already wrapped, and if so we just return this already wrapped method.
-Then we define the new wrapped method :code:`_method_wrapped`.
-Finally, we copy the method name over to :code:`_method_wrapped`, and flag the wrapped attribute,
-store the unwrapped inner function as an attribute, and return the wrapped method.
-
-Importantly, :code:`ivy.args_to_native` does not fail in the inputs are already native arrays.
-This means that every Ivy method is able to accept either :code:`ivy.Array` or :code:`ivy.NativeArray` instances for each array argument,
-but the returned arrays are always enforced to be :code:`ivy.Array` instances.
-
-This just simplifies the transition from native code to Ivy code in any given project, preventing code such as the following from needlessly throwing an error:
-
-.. code-block:: python
-
-    x = torch.randn(10, 10)
-    # lots of torch code
-    y = ivy.inv(x)
-    # lots of ivy code
-
-The unwrap method is much simpler, implemented as follows:
-
-.. code-block:: python
-
-    # ivy/func_wrapper.py
-    def _unwrap_method(method_wrapped):
-
-        if not hasattr(method_wrapped, 'wrapped') or \
-                not method_wrapped.wrapped:
-            return method_wrapped
-        return method_wrapped.inner_fn
-
-This is called whenever a framework is unset, and each method is unwrapped back to the original version.
 
 Instance Methods
 ----------------
@@ -286,7 +236,7 @@ One benefit of these instance methods is that they can help to tidy up code. For
 
 In the example above, not only is the :code:`ivy.Array` approach shorter to write, but more importantly there is much better alignment between each function and the function arguments. It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
 
-In addition to the functions in the topic-specific parent classes, there are 41 builtin methods implemented directly in the :code:`ivy.Array` class, most of which directly wrap a method in Ivy's functional API. some examples are given below.
+In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the :code:`ivy.Array` class, most of which directly wrap a method in Ivy's functional API. some examples are given below.
 
 .. code-block:: python
 

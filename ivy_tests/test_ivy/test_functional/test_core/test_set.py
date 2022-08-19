@@ -1,28 +1,29 @@
 # global
 import numpy as np
-from hypothesis import strategies as st, given
+from hypothesis import given, assume, settings
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # unique_values
+@handle_cmd_line_args
 @given(
-    array_shape=helpers.lists(
-        st.integers(1, 3), min_size="num_dims", max_size="num_dims", size_bounds=[1, 3]
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="unique_values"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
+@settings(max_examples=1, deadline=None)
 def test_unique_values(
-    array_shape,
-    input_dtype,
+    *,
+    dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
@@ -32,38 +33,37 @@ def test_unique_values(
     fw,
     device,
 ):
-    shape = tuple(array_shape)
-
-    x = np.random.uniform(size=shape).astype(input_dtype)
+    dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "unique_values",
-        x=x,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="unique_values",
+        x=np.asarray(x, dtype=dtype),
     )
 
 
+@handle_cmd_line_args
 @given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="unique_all"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_unique_all(
-    array_shape,
-    input_dtype,
+    *,
+    dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
@@ -72,40 +72,37 @@ def test_unique_all(
     fw,
     device,
 ):
-    shape = tuple(array_shape)
-
-    x = np.random.uniform(size=shape).astype(input_dtype)
+    dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "unique_all",
-        x=x,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="unique_all",
+        x=np.asarray(x, dtype=dtype),
     )
 
 
+@handle_cmd_line_args
 @given(
-    array_shape=helpers.lists(
-        st.integers(2, 5), min_size="num_dims", max_size="num_dims", size_bounds=[2, 5]
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    data=st.data(),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="unique_counts"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_unique_counts(
-    array_shape,
-    input_dtype,
-    data,
+    *,
+    dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
@@ -114,38 +111,37 @@ def test_unique_counts(
     fw,
     device,
 ):
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
+    dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "unique_counts",
-        x=x,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="unique_counts",
+        x=np.asarray(x, dtype=dtype),
     )
 
 
+@handle_cmd_line_args
 @given(
-    array_shape=helpers.lists(
-        st.integers(2, 5), min_size="num_dims", max_size="num_dims", size_bounds=[2, 5]
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
     ),
-    input_dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
-    data=st.data(),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="unique_inverse"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_unique_inverse(
-    array_shape,
-    input_dtype,
-    data,
+    *,
+    dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
@@ -154,20 +150,18 @@ def test_unique_inverse(
     fw,
     device,
 ):
-    if fw == "torch" and ("int" in input_dtype or "16" in input_dtype):
-        return
-
-    x = data.draw(helpers.nph.arrays(shape=array_shape, dtype=input_dtype))
+    dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
-        input_dtype,
-        as_variable,
-        False,
-        num_positional_args,
-        native_array,
-        container,
-        instance_method,
-        fw,
-        "unique_inverse",
-        x=x,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="unique_inverse",
+        x=np.asarray(x, dtype=dtype),
     )
