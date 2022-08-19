@@ -120,7 +120,7 @@ def max(
         b: ivy.array(4)
     }
     """
-    return current_backend(x).max(x, axis, keepdims, out=out)
+    return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -175,7 +175,7 @@ def mean(
            default floating-point data type.
 
     """
-    return current_backend(x).mean(x, axis, keepdims, out=out)
+    return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -229,7 +229,7 @@ def min(
         as x.
 
     """
-    return current_backend.min(x, axis, keepdims, out=out)
+    return current_backend.min(x, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -368,7 +368,11 @@ def std(
     ivy.array(0.8164966)
 
     """
-    return current_backend(x).std(x, axis, correction, keepdims, out=out)
+    return current_backend(x).std(x,
+                                  axis=axis,
+                                  correction=correction,
+                                  keepdims=keepdims,
+                                  out=out)
 
 
 @to_native_arrays_and_back
@@ -643,7 +647,11 @@ def var(
     }
 
     """
-    return current_backend(x).var(x, axis, correction, keepdims, out=out)
+    return current_backend(x).var(x,
+                                  axis=axis,
+                                  correction=correction,
+                                  keepdims=keepdims,
+                                  out=out)
 
 
 # Extra #

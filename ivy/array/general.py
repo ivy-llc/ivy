@@ -100,6 +100,19 @@ class ArrayWithGeneral(abc.ABC):
         ret
             List of arrays, unpacked along specified dimensions.
 
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> y = x.unstack(axis=0)
+        >>> print(y)
+        [ivy.array([1, 2]), ivy.array([3, 4])]
+
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> y = x.unstack(axis=1, keepdims=True)
+        >>> print(y)
+        [ivy.array([[1],
+                [3]]), ivy.array([[2],
+                [4]])]
         """
         return ivy.unstack(self._data, axis, keepdims)
 

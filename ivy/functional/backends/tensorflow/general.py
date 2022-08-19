@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 
 _round = round
 import numpy as np
@@ -67,7 +67,11 @@ def floormod(
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int,
+    keepdims: bool = False
+) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]
     ret = tf.unstack(x, axis=axis)
