@@ -9,9 +9,10 @@ import ivy
 class ArrayWithUtility(abc.ABC):
     def all(
         self: ivy.Array,
+        /,
+        *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -59,13 +60,14 @@ class ArrayWithUtility(abc.ABC):
         >>> print(y)
         ivy.array(False)
         """
-        return ivy.all(self._data, axis, keepdims, out=out)
+        return ivy.all(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def any(
         self: ivy.Array,
+        /,
+        *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -113,4 +115,4 @@ class ArrayWithUtility(abc.ABC):
         >>> print(y)
         ivy.array(True)
         """
-        return ivy.any(self._data, axis, keepdims, out=out)
+        return ivy.any(self._data, axis=axis, keepdims=keepdims, out=out)

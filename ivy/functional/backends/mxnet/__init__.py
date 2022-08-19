@@ -57,6 +57,8 @@ invalid_int_dtypes = (ivy.int16, ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_float_dtypes = (ivy.bfloat16,)
 invalid_uint_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 
+supports_gradients = True
+
 
 def closest_valid_dtype(type):
     if type is None:
