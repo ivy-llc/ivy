@@ -243,7 +243,7 @@ ivy.full()
 
 Here we are going to look at an example of a function that does not consume an :code:`array`.
 This is the creation function :code:`full()`, which takes an array shape as an argument to create an array and filled with elements of a given value.
-This function requires us to create extra methods for generating :code:`shape` and :code:`fill value`, these use the :code:`shared` hypothesis strategy.
+This function requires us to create extra functions for generating :code:`shape` and :code:`fill value`, these use the :code:`shared` hypothesis strategy.
 
 
 **Jax**
