@@ -239,9 +239,8 @@ def test_tensorflow_negative(
         x=np.asarray(x, dtype=input_dtype),
     )
 
-    # log_sigmoid
 
-
+# log_sigmoid
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -271,9 +270,8 @@ def test_tensorflow_log_sigmoid(
         x=np.asarray(x, dtype=input_dtype),
     )
 
-    # reciprocal_no_nan()
 
-
+# reciprocal_no_nan()
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
