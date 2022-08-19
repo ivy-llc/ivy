@@ -52,5 +52,3 @@ def test_sparse_categorical_crossentropy(
         y_pred=y_pred,
         from_logits=from_logits
     )
-
-
