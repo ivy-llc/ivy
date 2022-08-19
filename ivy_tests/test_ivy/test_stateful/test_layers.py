@@ -31,7 +31,7 @@ import ivy.functional.backends.numpy as ivy_np
     as_variable=st.booleans(),
 )
 def test_linear_layer(
-    bs_ic_oc_target, with_v, dtype, as_variable, device, compile_graph, call
+    bs_ic_oc_target, with_v, dtype, as_variable, device, compile_graph
 ):
     # smoke test
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -94,7 +94,9 @@ def test_linear_layer(
     if not with_v:
         return
     assert np.allclose(
-        call(linear_layer, x), np.array(target, dtype=dtype), rtol=tolerance_dict[dtype]
+        ivy.to_numpy(linear_layer(x)),
+        np.array(target, dtype=dtype),
+        rtol=tolerance_dict[dtype],
     )
     # compilation test
     if ivy.current_backend_str() == "torch":
@@ -111,7 +113,7 @@ def test_linear_layer(
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
     as_variable=st.booleans(),
 )
-def test_dropout_layer(x_shape, dtype, as_variable, device, compile_graph, call):
+def test_dropout_layer(x_shape, dtype, as_variable, device, compile_graph):
     # smoke test
     if as_variable:
         x = ivy.variable(ivy.array(ivy.random_uniform(shape=x_shape), dtype=dtype))
@@ -125,7 +127,7 @@ def test_dropout_layer(x_shape, dtype, as_variable, device, compile_graph, call)
     assert ret.shape == x.shape
     # value test
     ivy.seed(seed_value=0)
-    assert np.min(call(dropout_layer, x)) == 0.0
+    assert np.min(ivy.to_numpy(dropout_layer(x))) == 0.0
     # compilation test
     if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
@@ -152,7 +154,6 @@ def test_multi_head_attention_layer(
     as_variable,
     device,
     compile_graph,
-    call,
     dtype,
 ):
     x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
@@ -231,7 +232,7 @@ def test_multi_head_attention_layer(
     if not with_v:
         return
     assert np.allclose(
-        call(multi_head_attention_layer, x, context, mask),
+        ivy.to_numpy(multi_head_attention_layer(x, context, mask)),
         np.array(ground_truth),
         rtol=tolerance_dict[dtype],
     )
@@ -269,16 +270,16 @@ def test_multi_head_attention_layer(
     as_variable=st.booleans(),
 )
 def test_conv1d_layer(
-    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph, call
+    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph
 ):
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
+    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         return
-    if call in [helpers.np_call, helpers.jnp_call]:
+    if ivy.current_backend_str() in ("numpy", "jax"):
         # numpy and jax do not yet support conv1d
         return
-    if call in [helpers.torch_call] and (dtype == "float16"):
+    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
         # we are skipping for float16 as it torch.nn.functional.conv1d
         # doesn't seem to be able to handle it
         return
@@ -346,9 +347,11 @@ def test_conv1d_layer(
     # value test
     if not with_v:
         return
-    assert np.allclose(call(conv1d_layer, x), target, rtol=tolerance_dict[dtype])
+    assert np.allclose(
+        ivy.to_numpy(conv1d_layer(x)), target, rtol=tolerance_dict[dtype]
+    )
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
         return
 
@@ -385,16 +388,16 @@ def test_conv1d_layer(
     as_variable=st.booleans(),
 )
 def test_conv1d_transpose_layer(
-    x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, as_variable, device, compile_graph, call
+    x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, as_variable, device, compile_graph
 ):
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
+    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         return
-    if call in [helpers.np_call, helpers.jnp_call]:
+    if ivy.current_backend_str() in ("numpy", "jax"):
         # numpy and jax do not yet support conv1d
         return
-    if call in [helpers.torch_call] and (dtype == "float16"):
+    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
         # we are skipping for float16 as it torch.nn.functional.conv2d
         # doesn't seem to be able to handle it
         return
@@ -462,9 +465,11 @@ def test_conv1d_transpose_layer(
     # value test
     if not with_v:
         return
-    assert np.allclose(call(conv1d_trans_layer, x), target, rtol=tolerance_dict[dtype])
+    assert np.allclose(
+        ivy.to_numpy(conv1d_trans_layer(x)), target, rtol=tolerance_dict[dtype]
+    )
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
         return
 
@@ -558,16 +563,16 @@ def test_conv1d_transpose_layer(
     as_variable=st.booleans(),
 )
 def test_conv2d_layer(
-    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph, call
+    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph
 ):
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
+    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         return
-    if call in [helpers.np_call, helpers.jnp_call]:
+    if ivy.current_backend_str() in ("numpy", "jax"):
         # numpy and jax do not yet support conv1d
         return
-    if call in [helpers.torch_call] and (dtype == "float16"):
+    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
         # we are skipping for float16 as it torch.nn.functional.conv2d
         # doesn't seem to be able to handle it
         return
@@ -639,9 +644,11 @@ def test_conv2d_layer(
     # value test
     if not with_v:
         return
-    assert np.allclose(call(conv2d_layer, x), target, rtol=tolerance_dict[dtype])
+    assert np.allclose(
+        ivy.to_numpy(conv2d_layer(x)), target, rtol=tolerance_dict[dtype]
+    )
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
         return
 
@@ -706,17 +713,17 @@ def test_conv2d_layer(
     as_variable=st.booleans(),
 )
 def test_conv2d_transpose_layer(
-    x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, as_variable, device, compile_graph, call
+    x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, as_variable, device, compile_graph
 ):
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
+    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         return
-    if call in [helpers.np_call, helpers.jnp_call]:
+    if ivy.current_backend_str() in ("numpy", "jax"):
         # numpy and jax do not yet support conv1d
         return
-    if call in [helpers.torch_call] and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv_transpose2d
+    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
+        # we are skipping for float16 as it torch.nn.functional.conv2d
         # doesn't seem to be able to handle it
         return
     # smoke test
@@ -789,10 +796,10 @@ def test_conv2d_transpose_layer(
     if not with_v:
         return
     assert np.allclose(
-        call(conv2d_transpose_layer, x), target, rtol=tolerance_dict[dtype]
+        ivy.to_numpy(conv2d_transpose_layer(x)), target, rtol=tolerance_dict[dtype]
     )
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
         return
 
@@ -846,16 +853,16 @@ def test_conv2d_transpose_layer(
     as_variable=st.booleans(),
 )
 def test_depthwise_conv2d_layer(
-    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph, call
+    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph
 ):
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
+    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         return
-    if call in [helpers.np_call, helpers.jnp_call]:
+    if ivy.current_backend_str() in ("numpy", "jax"):
         # numpy and jax do not yet support conv1d
         return
-    if call in [helpers.torch_call] and (dtype == "float16"):
+    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
         # we are skipping for float16 as it torch.nn.functional.conv2d
         # doesn't seem to be able to handle it
         return
@@ -915,7 +922,7 @@ def test_depthwise_conv2d_layer(
     if not with_v:
         return
     assert np.allclose(
-        call(depthwise_conv2d_layer, x), target, rtol=tolerance_dict[dtype]
+        ivy.to_numpy(depthwise_conv2d_layer(x)), target, rtol=tolerance_dict[dtype]
     )
 
 
@@ -1041,17 +1048,17 @@ def test_depthwise_conv2d_layer(
     as_variable=st.booleans(),
 )
 def test_conv3d_layer(
-    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph, call
+    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph
 ):
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
+    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         return
-    if call in [helpers.np_call, helpers.jnp_call]:
+    if ivy.current_backend_str() in ("numpy", "jax"):
         # numpy and jax do not yet support conv1d
         return
-    if call in [helpers.torch_call] and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv3d
+    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
+        # we are skipping for float16 as it torch.nn.functional.conv2d
         # doesn't seem to be able to handle it
         return
     # smoke test
@@ -1122,7 +1129,9 @@ def test_conv3d_layer(
     # value test
     if not with_v:
         return
-    assert np.allclose(call(conv3d_layer, x), target, rtol=tolerance_dict[dtype])
+    assert np.allclose(
+        ivy.to_numpy(conv3d_layer(x)), target, rtol=tolerance_dict[dtype]
+    )
 
 
 # # conv3d transpose
@@ -1287,20 +1296,20 @@ def test_conv3d_layer(
     as_variable=st.booleans(),
 )
 def test_conv3d_transpose_layer(
-    x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, as_variable, device, compile_graph, call
+    x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, as_variable, device, compile_graph
 ):
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if call in [helpers.tf_call, helpers.tf_graph_call] and "cpu" in device:
+    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         return
-    if call in [helpers.np_call, helpers.jnp_call]:
+    if ivy.current_backend_str() in ("numpy", "jax"):
         # numpy and jax do not yet support conv1d
         return
-    if call in [helpers.mx_call] and "cpu" in device:
+    if ivy.current_backend_str() == "mxnet" and "cpu" in device:
         # mxnet only supports 3d transpose convolutions with CUDNN
         return
-    if call in [helpers.torch_call] and (dtype == "float16"):
-        # we are skipping for float16 as it torch.nn.functional.conv_transpose3d
+    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
+        # we are skipping for float16 as it torch.nn.functional.conv2d
         # doesn't seem to be able to handle it
         return
     # smoke test
@@ -1373,7 +1382,7 @@ def test_conv3d_transpose_layer(
     if not with_v:
         return
     assert np.allclose(
-        call(conv3d_transpose_layer, x), target, rtol=tolerance_dict[dtype]
+        ivy.to_numpy(conv3d_transpose_layer(x)), target, rtol=tolerance_dict[dtype]
     )
 
 
@@ -1405,9 +1414,8 @@ def test_lstm_layer(
     as_variable,
     device,
     compile_graph,
-    call,
 ):
-    if call in [helpers.torch_call] and (dtype == "float16"):
+    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
         # we are skipping for float16 as it torch.nn.functional.conv3d
         # doesn't seem to be able to handle it
         return
@@ -1475,7 +1483,8 @@ def test_lstm_layer(
         np.asarray(output_true_flat).reshape((b, t, 1)), (1, 1, hidden_channels)
     )
     state_c_true = np.ones([b, hidden_channels]) * state_c_true_val
-    output, (state_h, state_c) = call(lstm_layer, x, initial_state=initial_state)
+    ret = lstm_layer(x, initial_state=initial_state)
+    output, (state_h, state_c) = ivy.nested_map(ret, ivy.to_numpy)
     assert np.allclose(output, output_true, atol=1e-6, rtol=tolerance_dict[dtype])
     assert np.allclose(state_c, state_c_true, atol=1e-6, rtol=tolerance_dict[dtype])
 
@@ -1502,7 +1511,7 @@ def test_lstm_layer(
     as_variable=st.booleans(),
 )
 def test_sequential_layer(
-    bs_c_target, with_v, seq_v, dtype, as_variable, device, compile_graph, call
+    bs_c_target, with_v, seq_v, dtype, as_variable, device, compile_graph
 ):
     # smoke test
     batch_shape, channels, target = bs_c_target
@@ -1590,4 +1599,6 @@ def test_sequential_layer(
     # value test
     if not with_v:
         return
-    assert np.allclose(call(seq, x), np.array(target), rtol=tolerance_dict[dtype])
+    assert np.allclose(
+        ivy.to_numpy(seq(x)), np.array(target), rtol=tolerance_dict[dtype]
+    )
