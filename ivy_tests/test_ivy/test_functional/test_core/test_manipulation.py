@@ -48,12 +48,12 @@ def _arrays_idx_n_dtypes(draw):
 
 
 # concat
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     num_positional_args=helpers.num_positional_args(fn_name="concat"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_concat(
     *,
     data,
@@ -85,6 +85,7 @@ def test_concat(
 
 
 # expand_dims
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -99,7 +100,6 @@ def test_concat(
     num_positional_args=helpers.num_positional_args(fn_name="expand_dims"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_expand_dims(
     *,
     data,
@@ -132,6 +132,7 @@ def test_expand_dims(
 
 
 # flip
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -146,7 +147,6 @@ def test_expand_dims(
     num_positional_args=helpers.num_positional_args(fn_name="flip"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_flip(
     *,
     data,
@@ -187,6 +187,7 @@ def _permute_dims_helper(draw):
 
 
 # permute_dims
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -196,7 +197,6 @@ def _permute_dims_helper(draw):
     num_positional_args=helpers.num_positional_args(fn_name="permute_dims"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_permute_dims(
     *,
     data,
@@ -228,6 +228,7 @@ def test_permute_dims(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -239,7 +240,6 @@ def test_permute_dims(
     num_positional_args=helpers.num_positional_args(fn_name="reshape"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_reshape(
     *,
     data,
@@ -289,8 +289,7 @@ def test_reshape(
     shift and axis must have the same length as per the array API standard for the roll
     function. 
 """
-
-
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -324,7 +323,6 @@ def test_reshape(
     num_positional_args=helpers.num_positional_args(fn_name="roll"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_roll(
     *,
     data,
@@ -377,6 +375,7 @@ def _squeeze_helper(draw):
     return draw(st.sampled_from(valid_axes))
 
 
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -386,7 +385,6 @@ def _squeeze_helper(draw):
     num_positional_args=helpers.num_positional_args(fn_name="squeeze"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_squeeze(
     *,
     data,
@@ -435,6 +433,7 @@ def _stack_helper(draw):
 
 
 # stack
+@handle_cmd_line_args
 @given(
     dtypes_arrays=_stack_helper(),
     axis=helpers.get_axis(
@@ -444,7 +443,6 @@ def _stack_helper(draw):
     num_positional_args=helpers.num_positional_args(fn_name="stack"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_stack(
     *,
     data,
@@ -613,6 +611,7 @@ def _repeat_helper(draw):
 
 
 # repeat
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -632,7 +631,6 @@ def _repeat_helper(draw):
     num_positional_args=helpers.num_positional_args(fn_name="repeat"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_repeat(
     *,
     data,
@@ -726,6 +724,7 @@ def _split_helper(draw):
     return tuple(num_or_size_splits)
 
 
+@handle_cmd_line_args
 @given(
     noss_type=st.shared(helpers.ints(min_value=1, max_value=2), key="noss_type"),
     dtype_value=helpers.dtype_and_values(
@@ -744,7 +743,6 @@ def _split_helper(draw):
     num_positional_args=helpers.num_positional_args(fn_name="split"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_split(
     *,
     data,
@@ -781,6 +779,7 @@ def test_split(
 
 
 # swapaxes
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -795,7 +794,6 @@ def test_split(
     num_positional_args=helpers.num_positional_args(fn_name="swapaxes"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_swapaxes(
     *,
     data,
@@ -840,8 +838,7 @@ def test_swapaxes(
         key of value_shape. Each integer is between 0 and 10, and represents how many
         time each dimension needs to be tiled 
 """
-
-
+@handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -858,7 +855,6 @@ def test_swapaxes(
     num_positional_args=helpers.num_positional_args(fn_name="tile"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_tile(
     *,
     data,
@@ -898,12 +894,12 @@ def test_tile(
 
 
 # zero_pad
+@handle_cmd_line_args
 @given(
     dtype_value_pad_width=_pad_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="zero_pad"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_zero_pad(
     *,
     data,

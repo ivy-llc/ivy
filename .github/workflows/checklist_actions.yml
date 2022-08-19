@@ -1,4 +1,4 @@
-name: Edit-in-comment
+name: Comment-to-Checklist
 
 on:
   issue_comment:
@@ -9,31 +9,31 @@ jobs:
     if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, 'add_reformatting_checklist_') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: |
-          echo A comment on PR $NUMBER
-          echo The body of comment $ID is "$BODY"
-        env:
-          NUMBER: ${{ github.event.issue.number }}  
-          BODY: ${{ github.event.comment.body }}
-          ID: ${{ github.event.comment.id }}
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
 
-      - uses: bhowell2/github-substring-action@v1.0.0
+      - name: Get Category Substring
+        uses: bhowell2/github-substring-action@v1.0.0
         id: category
         with:
           value: ${{ github.event.comment.body }}
           index_of_str: "add_reformatting_checklist_"
+
       - name: Render template
         id: template
         uses: chuhlomin/render-template@v1.4
         with:
-          template: .github/reformat_checklist.md
+          template: ivy/automation_tools/checklists/reformat_checklist.md
           vars: |
             category_name: ${{ steps.category.outputs.substring }}
-      
+
       - name: Update Comment
         uses: peter-evans/create-or-update-comment@v2.0.0
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           comment-id: ${{ github.event.comment.id }}
           body: ${{ steps.template.outputs.result }}
