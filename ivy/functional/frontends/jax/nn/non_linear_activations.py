@@ -114,18 +114,3 @@ def softplus(x):
 
 
 softplus.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
-def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
-    # TODO: implement where in mean
-    if mean is None:
-        mean = ivy.mean(x, axis=axis, where=where)
-    if variance is None:
-        variance = ivy.mean(
-            ivy.square(x, axis, keepdims=True), axis=axis, where=where
-        ) - ivy.square(mean)
-
-    return (x - mean) * ivy.sqrt(variance + epsilon)
-
-
-sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
