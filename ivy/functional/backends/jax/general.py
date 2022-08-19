@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional, Union, Sequence
+from typing import Iterable, Optional, Union, Sequence, List
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -51,8 +51,11 @@ def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-def to_numpy(x: JaxArray) -> np.ndarray:
-    return np.asarray(_to_array(x))
+def to_numpy(x: JaxArray, copy: bool = True) -> np.ndarray:
+    if copy:
+        return np.array(_to_array(x))
+    else:
+        return np.asarray(_to_array(x))
 
 
 def to_scalar(x: JaxArray) -> Number:
@@ -86,7 +89,11 @@ def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> Jax
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: JaxArray,
+    axis: int,
+    keepdims: bool = False
+) -> List[JaxArray]:
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]
@@ -321,7 +328,9 @@ def inplace_decrement(x, val):
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, JaxArray], val: Union[ivy.Array, JaxArray]
+) -> Union[ivy.Array, ivy.Container]:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_ivy_array(x):
         x.data += val_native

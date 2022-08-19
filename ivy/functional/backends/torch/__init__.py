@@ -64,6 +64,8 @@ invalid_uint_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 
 native_inplace_support = True
 
+supports_gradients = True
+
 
 def closest_valid_dtype(type):
     if type is None:
