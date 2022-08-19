@@ -7,7 +7,6 @@ import numpy as np
 # local
 import ivy
 from ivy.container import Container
-import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 
 # Linear #
