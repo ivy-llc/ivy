@@ -46,11 +46,11 @@ All :code:`ivy.Module` instances have an attribute v (short for variables), whic
     print(linear.v)
 
     {
-        b: tensor([0.8979, 0.3198, 0.0196, 0.3126]),
-        w: tensor([[0.3717, 0.9687],
-                   [0.6958, 0.5122],
-                   [0.3902, 0.8800],
-                   [0.5613, 0.1982]])
+        b: ivy.array([0., 0., 0., 0.]),
+        w: ivy.array([[-0.729, 0.396],
+                      [-1., -0.764],
+                      [-0.872, 0.211],
+                      [0.439, -0.644]])
     }
 
 This is all well and good for defining a single layer, but manually defining all variables in :code:`_create_variables` for very complex networks would be a total nightmare.
@@ -78,12 +78,12 @@ In this case, we don’t specify any variables manually using :code:`_create_var
 
     {
         linear0: {
-            b: (<class torch.Tensor> shape=[64]),
-            w: (<class torch.Tensor> shape=[64, 3])
+            b: (<class ivy.array.array.Variable> shape=[64]),
+            w: (<class ivy.array.array.Variable> shape=[64, 3])
         },
         linear1: {
-            b: tensor([0.9563]),
-            w: (<class torch.Tensor> shape=[1, 64])
+            b: ivy.array([0.]),
+            w: (<class ivy.array.array.Variable> shape=[1, 64])
         }
     }
 
@@ -108,12 +108,12 @@ As a list:
     {
         linear: {
             v0: {
-                b: (<class torch.Tensor> shape=[64]),
-                w: (<class torch.Tensor> shape=[64, 3])
+                b: (<class ivy.array.array.Variable> shape=[64]),
+                w: (<class ivy.array.array.Variable> shape=[64, 3])
             },
             v1: {
-                b: tensor([0.6440]),
-                w: (<class torch.Tensor> shape=[1, 64])
+                b: ivy.array([0.]),
+                w: (<class ivy.array.array.Variable> shape=[1, 64])
             }
         }
     }
@@ -137,12 +137,12 @@ As a tuple:
     {
         linear: {
             v0: {
-                b: (<class torch.Tensor> shape=[64]),
-                w: (<class torch.Tensor> shape=[64, 3])
+                b: (<class ivy.array.array.Variable> shape=[64]),
+                w: (<class ivy.array.array.Variable> shape=[64, 3])
             },
             v1: {
-                b: tensor([0.6440]),
-                w: (<class torch.Tensor> shape=[1, 64])
+                b: ivy.array([0.]),
+                w: (<class ivy.array.array.Variable> shape=[1, 64])
             }
         }
     }
@@ -167,12 +167,12 @@ As a dict:
     {
         linear: {
             key0: {
-                b: (<class torch.Tensor> shape=[64]),
-                w: (<class torch.Tensor> shape=[64, 3])
+                b: (<class ivy.array.array.Variable> shape=[64]),
+                w: (<class ivy.array.array.Variable> shape=[64, 3])
             },
             key1: {
-                b: tensor([0.1823]),
-                w: (<class torch.Tensor> shape=[1, 64])
+                b: ivy.array([0.]),
+                w: (<class ivy.array.array.Variable> shape=[1, 64])
             }
         }
     }
@@ -199,17 +199,17 @@ As a nested list:
         linear: {
             v0: {
                 v0: {
-                    b: (<class torch.Tensor> shape=[64]),
-                    w: (<class torch.Tensor> shape=[64, 3])
+                    b: (<class ivy.array.array.Variable> shape=[64]),
+                    w: (<class ivy.array.array.Variable> shape=[64, 3])
                 },
                 v1: {
-                    b: (<class torch.Tensor> shape=[64]),
-                    w: (<class torch.Tensor> shape=[64, 64])
+                    b: (<class ivy.array.array.Variable> shape=[64]),
+                    w: (<class ivy.array.array.Variable> shape=[64, 64])
                 }
             },
             v1: {
-                b: tensor([0.8075]),
-                w: (<class torch.Tensor> shape=[1, 64])
+                b: ivy.array([0.]),
+                w: (<class ivy.array.array.Variable> shape=[1, 64])
             }
         }
     }
@@ -240,21 +240,21 @@ Duplicates are also handled correctly, if for example a layer is stored both as 
     {
         linear: {
             v0: {
-                b: (<class torch.Tensor> shape=[64]),
-                w: (<class torch.Tensor> shape=[64, 3])
+                b: (<class ivy.array.array.Variable> shape=[64]),
+                w: (<class ivy.array.array.Variable> shape=[64, 3])
             },
             v1: {
-                b: (<class torch.Tensor> shape=[64]),
-                w: (<class torch.Tensor> shape=[64, 64])
+                b: (<class ivy.array.array.Variable> shape=[64]),
+                w: (<class ivy.array.array.Variable> shape=[64, 64])
             },
             v2: {
-                b: (<class torch.Tensor> shape=[64]),
-                w: (<class torch.Tensor> shape=[64, 64])
+                b: (<class ivy.array.array.Variable> shape=[64]),
+                w: (<class ivy.array.array.Variable> shape=[64, 64])
             }
         },
         linear3: {
-            b: tensor([0.2346]),
-            w: (<class torch.Tensor> shape=[1, 64])
+            b: ivy.array([0.]),
+            w: (<class ivy.array.array.Variable> shape=[1, 64])
         }
     }
 
@@ -289,12 +289,12 @@ It may seem counter intuitive to implement the activation as an :code:`ivy.Modul
     {
         submodules: {
             v0: {
-                b: (<class torch.Tensor> shape=[64]),
-                w: (<class torch.Tensor> shape=[64, 3])
+                b: (<class ivy.array.array.Variable> shape=[64]),
+                w: (<class ivy.array.array.Variable> shape=[64, 3])
             },
-            v1: {
-                b: tensor([0.1300]),
-                w: (<class torch.Tensor> shape=[1, 64])
+            v2: {
+                b: ivy.array([0.]),
+                w: (<class ivy.array.array.Variable> shape=[1, 64])
             }
         }
     }

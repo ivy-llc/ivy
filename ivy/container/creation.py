@@ -13,6 +13,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_arange(
         start: Number,
+        /,
         stop: Optional[Number] = None,
         step: Number = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -48,6 +49,7 @@ class ContainerWithCreation(ContainerBase):
             np.ndarray,
             ivy.Container,
         ],
+        /,
         copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -74,6 +76,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_zeros(
         shape: Union[int, Tuple[int], List[int]],
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -98,6 +101,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_ones(
         shape: Union[int, Tuple[int], List[int]],
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -122,6 +126,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_full_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         fill_value: Union[int, float],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -133,8 +138,8 @@ class ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.full_like. This method simply wraps 
-        the function, and so the docstring for ivy.full_like also applies to this 
+        ivy.Container static method variant of ivy.full_like. This method simply wraps
+        the function, and so the docstring for ivy.full_like also applies to this
         method with minimal changes.
 
         Parameters
@@ -205,6 +210,7 @@ class ContainerWithCreation(ContainerBase):
 
     def full_like(
         self: ivy.Container,
+        /,
         fill_value: Union[int, float],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -216,7 +222,7 @@ class ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.full_like. This method simply wraps 
+        ivy.Container instance method variant of ivy.full_like. This method simply wraps
         the function, and so the docstring for ivy.full_like also applies to this method
         with minimal changes.
 
@@ -288,6 +294,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_ones_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -297,20 +304,55 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.ones_like. This method simply
+        wraps the function, and so the docstring for ivy.ones_like also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array from which to derive the output array shape.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output array data type
+            must be inferred from ``self``. Default  ``None``.
+        device
+            device on which to place the created array. If device is ``None``, the
+            output array device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container having the same shape as ``self`` and filled with ones.
+        """
         return ContainerBase.multi_map_in_static_method(
             "ones_like",
             x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
             dtype=dtype,
             device=device,
         )
 
     def ones_like(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -320,6 +362,40 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.ones_like. This method simply
+        wraps the function, and so the docstring for ivy.ones_like also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array from which to derive the output array shape.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output array data type
+            must be inferred from ``self``. Default  ``None``.
+        device
+            device on which to place the created array. If device is ``None``, the
+            output array device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container having the same shape as ``self`` and filled with ones.
+        """
         return self.static_ones_like(
             self,
             key_chains,
@@ -334,6 +410,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_zeros_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -343,6 +420,40 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.zeros_like. This method simply
+        wraps the function, and so the docstring for ivy.zeros_like also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array or container from which to derive the output container shape.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output container
+            data type must be inferred from ``self``. Default  ``None``.
+        device
+            device on which to place the created array. If device is ``None``, the
+            output container device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an container having the same shape as ``x`` and filled with ``zeros``.
+        """
         return ContainerBase.multi_map_in_static_method(
             "zeros_like",
             x,
@@ -357,6 +468,7 @@ class ContainerWithCreation(ContainerBase):
 
     def zeros_like(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -366,6 +478,40 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.zeros_like. This method simply
+        wraps the function, and so the docstring for ivy.zeros_like also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array or container from which to derive the output container shape.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output container
+            data type must be inferred from ``self``. Default  ``None``.
+        device
+            device on which to place the created array. If device is ``None``, the
+            output container device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output container, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an container having the same shape as ``x`` and filled with ``zeros``.
+        """
         return self.static_zeros_like(
             self,
             key_chains,
@@ -380,6 +526,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_tril(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         k: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -401,6 +548,7 @@ class ContainerWithCreation(ContainerBase):
 
     def tril(
         self: ivy.Container,
+        /,
         k: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -422,6 +570,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_triu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         k: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -443,6 +592,7 @@ class ContainerWithCreation(ContainerBase):
 
     def triu(
         self: ivy.Container,
+        /,
         k: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -464,6 +614,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_empty_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -487,6 +638,7 @@ class ContainerWithCreation(ContainerBase):
 
     def empty_like(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -511,6 +663,7 @@ class ContainerWithCreation(ContainerBase):
     def static_eye(
         n_rows: int,
         n_cols: Optional[int] = None,
+        /,
         k: Optional[int] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -539,6 +692,7 @@ class ContainerWithCreation(ContainerBase):
     def static_linspace(
         start: Union[ivy.Array, ivy.NativeArray, float],
         stop: Union[ivy.Array, ivy.NativeArray, float],
+        /,
         num: int,
         axis: int = None,
         endpoint: bool = True,
@@ -590,6 +744,7 @@ class ContainerWithCreation(ContainerBase):
 
     def meshgrid(
         self: ivy.Container,
+        /,
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
         indexing: Optional[str] = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -614,6 +769,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_from_dlpack(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -633,6 +789,7 @@ class ContainerWithCreation(ContainerBase):
 
     def from_dlpack(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -659,6 +816,7 @@ class ContainerWithCreation(ContainerBase):
             np.ndarray,
             ivy.Container,
         ],
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -682,6 +840,7 @@ class ContainerWithCreation(ContainerBase):
 
     def native_array(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -706,6 +865,7 @@ class ContainerWithCreation(ContainerBase):
     def static_logspace(
         start: Union[ivy.Array, ivy.NativeArray, float],
         stop: Union[ivy.Array, ivy.NativeArray, float],
+        /,
         num: int,
         base: float = 10.0,
         axis: int = None,
