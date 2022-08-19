@@ -124,7 +124,12 @@ def matrix_rank(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    ret = jnp.linalg.matrix_rank(x, rtol)
+    if x.size == 0:
+        ret = 0
+    elif x.size == 1:
+        ret = jnp.count_nonzero(x)
+    else:
+        ret = jnp.linalg.matrix_rank(x, rtol)
     ret = jnp.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
     return ret
 
