@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Optional, Sequence, Any
+from typing import Union, Optional, Sequence
 
 
 def all(
@@ -27,7 +27,5 @@ def any(
 ) -> np.ndarray:
     return np.asarray(np.any(x, axis=axis, keepdims=keepdims, out=out))
 
-def is_tensor(x: Any) -> bool:
-    return False
 
 any.support_native_out = True

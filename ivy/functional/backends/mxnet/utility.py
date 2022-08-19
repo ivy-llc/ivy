@@ -1,6 +1,6 @@
 # global
 import mxnet as mx
-from typing import Union, Optional, Sequence, Any
+from typing import Union, Optional, Sequence
 
 # local
 from ivy.functional.backends.mxnet.statistical import prod
@@ -37,7 +37,3 @@ def any(
     keepdims: bool = False,
 ) -> mx.nd.NDArray:
     return mx.nd.array(mx.nd.array(x).asnumpy().any(axis=axis, keepdims=keepdims))
-
-#mxnet treats multidimensional matrices as ``NDArrays`` not Tensors
-def is_tensor(x: Any) -> bool:
-    return False

@@ -1,7 +1,7 @@
 # global
 import ivy
 import torch
-from typing import Union, Optional, Sequence, Any
+from typing import Union, Optional, Sequence
 
 
 def all(
@@ -50,8 +50,5 @@ def any(
         x = torch.any(x, dim=a if keepdims else a - i, keepdim=keepdims, out=out)
     return x
 
-def is_tensor(x: Any) -> bool:
-    return torch.is_tensor(x)
 
 any.support_native_out = True
-

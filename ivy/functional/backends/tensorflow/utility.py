@@ -1,6 +1,6 @@
 # global
 import tensorflow as tf
-from typing import Union, Optional, Sequence, Any
+from typing import Union, Optional, Sequence
 
 
 def all(
@@ -33,6 +33,3 @@ def any(
     elif isinstance(axis, list):
         axis = tuple(axis)
     return tf.reduce_any(tf.cast(x, tf.bool), axis=axis, keepdims=keepdims)
-
-def is_tensor(x: Any) -> bool:
-    return tf.is_tensor(x)
