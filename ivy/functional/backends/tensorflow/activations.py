@@ -34,7 +34,7 @@ def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
 def softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ) -> Tensor:
-    return tf.exp(x) / tf.reduce_sum(tf.exp(x), axis, keepdims=True)
+    return tf.nn.softmax(x, axis)
 
 
 def softplus(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
