@@ -244,8 +244,8 @@ def test_torch_reshape(
         input=np.asarray(value, dtype=input_dtype),
         shape=shape,
     )
-    
-    
+
+
 # stack
 @given(
     dtype_value_shape=helpers.dtype_and_values(
@@ -293,4 +293,51 @@ def test_torch_stack(
         tensors=tensors,
         dim=dim,
         out=None,
+    )
+
+
+# transpose
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        ),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    dim0=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ).filter(lambda axis: isinstance(axis, int)),
+    dim1=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ).filter(lambda axis: isinstance(axis, int)),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.transpose"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_transpose(
+    dtype_and_values,
+    dim0,
+    dim1,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="transpose",
+        input=np.asarray(value, dtype=input_dtype),
+        dim0=dim0,
+        dim1=dim1,
     )
