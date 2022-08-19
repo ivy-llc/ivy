@@ -2,6 +2,10 @@
 import ivy
 
 
+def acos(x, name="acos"):
+    return ivy.acos(x)
+
+
 def concat(values, axis, name="concat"):
     return ivy.concat(values, axis)
 
