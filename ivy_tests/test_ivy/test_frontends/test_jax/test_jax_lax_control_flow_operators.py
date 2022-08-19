@@ -35,6 +35,7 @@ def test_jax_map(
         return x + x
 
     input_dtype, x = dtype_and_x
+
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
