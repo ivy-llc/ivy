@@ -121,5 +121,4 @@ def bitwise_xor(x, y):
 
 
 def cosh(x):
-
     return ivy.cosh(x)
