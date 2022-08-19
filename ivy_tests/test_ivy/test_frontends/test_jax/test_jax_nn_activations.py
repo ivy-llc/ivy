@@ -370,8 +370,7 @@ def test_jax_nn_normalize(
     native_array,
     fw,
 ):
-    # input_dtype, x = dtype_and_x
-    input_dtype, x = ("int16", [0, -182])
+    input_dtype, x = dtype_and_x
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
