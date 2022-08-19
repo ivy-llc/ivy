@@ -876,7 +876,8 @@ class ContainerWithRandom(ContainerBase):
         Examples
         --------
 
-        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), b=ivy.array([[0.9,2.4],[7.6,5.4]]))
+        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
+                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))
         >>> ivy.Container.static_shuffle(x)
             {
                 a: ivy.array([[6.5, 2.3], 
@@ -885,7 +886,8 @@ class ContainerWithRandom(ContainerBase):
                             [7.6, 5.4]])
             }
 
-        >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
+        >>> z = ivy.Container(a=ivy.zeros((2,2)), \
+                              b=ivy.ones((2,2)))
         >>> ivy.Container.static_shuffle(x, out=z)
             {
                 a: ivy.array([[6.5, 2.3], 
@@ -953,7 +955,8 @@ class ContainerWithRandom(ContainerBase):
 
         With :code:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), b=ivy.array([[0.9,2.4],[7.6,5.4]]))
+        >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
+                              b=ivy.array([[0.9,2.4],[7.6,5.4]]))
         >>> x.shuffle()
             {
                 a: ivy.array([[6.5, 2.3], 
@@ -962,7 +965,8 @@ class ContainerWithRandom(ContainerBase):
                             [0.9, 2.4]])
             }
 
-        >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
+        >>> z = ivy.Container(a=ivy.zeros((2,2)), \
+                              b=ivy.ones((2,2)))
         >>> x.shuffle(out = z)
             {
                 a: ivy.array([[6.5, 2.3], 
@@ -979,7 +983,8 @@ class ContainerWithRandom(ContainerBase):
                             [7.6, 5.4]])
             }
 
-        >>> z = ivy.Container(a=ivy.zeros((2,2)), b=ivy.ones((2,2)))
+        >>> z = ivy.Container(a=ivy.zeros((2,2)), \ 
+                              b=ivy.ones((2,2)))
         >>> ivy.shuffle(x, out = z)
             {
                 a: ivy.array([[9.8, 7.6], 
