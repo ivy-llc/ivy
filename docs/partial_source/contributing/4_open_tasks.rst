@@ -84,6 +84,52 @@ Some common important tasks are:
 #. add thorough :ref:`Docstring Examples` for every function **and** its
    *relevant methods* and ensure they pass the docstring tests.
 
+Formatting checklist
+~~~~~~~~~~~~~~~~~~~~
+
+After creating your Pull Request on github, you should then produce the checklist
+for the formatting task as follows: 
+
+1. Add a comment with the following format: 
+:code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* 
+is the name of the category that the function belongs to. An example of this is shown below.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_generator.png?raw=true
+   :width: 420
+
+Using this formatting will then trigger our github automation bots to update your 
+comment with the proper markdown text for the checklist. These updates might take a
+few moments to take effect, so please be patient. 🙂
+
+2. After adding the checklist to your PR, you should then modify this checklist with 
+the status of each item according to the symbols(emojis) within the LEGEND section.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true
+   :width: 420
+
+3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
+your PR and we will start checking your implementation and marking the items as complete 
+using the checkboxes next to them.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_checked.png?raw=true
+   :width: 420
+
+4. In case you are stuck or need help with one of the checklist items, please add the
+🆘 symbol next to the item on the checklist, and proceed to add a comment elaborating
+on your point of struggle with this item. The PR assignee will then see this comment
+and address your issues.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_SOS.png?raw=true
+   :width: 420
+
+**Notes**: 
+
+1. It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.
+2. Please pay attention to the formatting of the checklist generating comment, as it is important.
+3. Do not edit the checklist, if you are facing issues, please add them in a different comment.
+4. Please refrain from using the checkboxes next to checklist items.
+
+
 Frontend APIs
 -------------
 
@@ -101,6 +147,16 @@ The general workflow for this task is:
 #. implement the function by following the `Ivy Frontends`_ guide
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. verify that the tests for your function are passing
+
+If you feel as though there is an ivy function clearly missing, which would make your
+frontend function much simpler to implement, then you have two options:
+
+#. try to implement the function as a composition of currently present ivy functions,
+   as explained in the "Temporary Compositions" sub-section of the `Ivy Frontends`_
+   guide, and add the :code:`#ToDo` comment in the implementation as explained. Once the
+   PR is merged, your sub-task issue will then be closed as normal.
+#. alternatively, you can add the "Next Release" label to your sub-task issue, and then
+   simply choose another frontend function to work on, leaving the original issue open.
 
 There are a few points to take note of when working on your chosen frontend function:
 

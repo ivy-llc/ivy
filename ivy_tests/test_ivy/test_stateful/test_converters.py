@@ -8,7 +8,6 @@ import jax.numpy as jnp
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers as helpers
 
 
 class TorchLinearModule(torch.nn.Module):
