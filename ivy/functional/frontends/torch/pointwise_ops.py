@@ -156,3 +156,10 @@ def log10(input, *, out=None):
 
 
 log10.unsupported_dtypes = ("float16",)
+
+
+def sqrt(input, *, out=None):
+    return ivy.sqrt(input, out=out)
+
+
+sqrt.unsupported_dtypes = ("float16",)
