@@ -349,3 +349,38 @@ def test_jax_nn_softplus(
         fn_tree="nn.softplus",
         x=np.asarray(x, dtype=input_dtype),
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+        min_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.nn.normalize"
+    ),
+)
+def test_jax_nn_normalize(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    # input_dtype, x = dtype_and_x
+    input_dtype, x = ("int16", [0, -182])
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="nn.normalize",
+        x=np.asarray(x, dtype=input_dtype),
+    )
