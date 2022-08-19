@@ -26,20 +26,15 @@ def _cast_for_binary_op(x1, x2):
     return ivy.promote_types_of_inputs(x1, x2)
 
 
-def abs(
-    x: Union[float, JaxArray],
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.absolute(x)
 
 
-def acos(x: JaxArray, /) -> JaxArray:
+def acos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arccos(x)
 
 
-def acosh(x: JaxArray, /) -> JaxArray:
+def acosh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arccosh(x)
 
 
@@ -48,45 +43,29 @@ def add(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.add(x1, x2)
 
 
-def asin(
-    x: JaxArray,
-    /,
-    *,
-    out: Union[float, JaxArray] = None
-) -> JaxArray:
+def asin(x: JaxArray, /, *, out: Union[float, JaxArray] = None) -> JaxArray:
     return jnp.arcsin(x)
 
 
-def asinh(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def asinh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arcsinh(x)
 
 
-def atan(x: JaxArray, /) -> JaxArray:
+def atan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arctan(x)
 
 
-def atan2(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def atan2(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.arctan2(x1, x2)
 
 
-def atanh(x: JaxArray, /) -> JaxArray:
+def atanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.arctanh(x)
 
 
@@ -95,17 +74,14 @@ def bitwise_and(
     x2: Union[int, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_and(x1, x2)
 
 
 def bitwise_invert(
-    x: Union[int, JaxArray],
-    /,
-    *,
-    out: Optional[JaxArray] = None
+    x: Union[int, JaxArray], /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.bitwise_not(x)
 
@@ -115,7 +91,7 @@ def bitwise_left_shift(
     x2: Union[int, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2, clamp=True)
     return jnp.left_shift(x1, x2)
@@ -126,7 +102,7 @@ def bitwise_or(
     x2: Union[int, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_or(x1, x2)
@@ -137,7 +113,7 @@ def bitwise_right_shift(
     x2: Union[int, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2, clamp=True)
     return jnp.right_shift(x1, x2)
@@ -148,39 +124,24 @@ def bitwise_xor(
     x2: Union[int, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2)
     return jnp.bitwise_xor(x1, x2)
 
 
-def ceil(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def ceil(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
         return jnp.ceil(x)
 
 
-def cos(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def cos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cos(x)
 
 
-def cosh(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def cosh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cosh(x)
 
 
@@ -188,6 +149,8 @@ def divide(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     ret = jax.numpy.divide(x1, x2)
@@ -203,36 +166,21 @@ def equal(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.equal(x1, x2)
 
 
-def exp(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def exp(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.exp(x)
 
 
-def expm1(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def expm1(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.expm1(x)
 
 
-def floor(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def floor(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
@@ -244,7 +192,7 @@ def floor_divide(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return jax.numpy.floor_divide(x1, x2)
@@ -254,6 +202,8 @@ def greater(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.greater(x1, x2)
 
@@ -263,35 +213,20 @@ def greater_equal(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.greater_equal(x1, x2)
 
 
-def isfinite(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def isfinite(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isfinite(x)
 
 
-def isinf(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def isinf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isinf(x)
 
 
-def isnan(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def isnan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isnan(x)
 
 
@@ -299,6 +234,8 @@ def less(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
     /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.less(x1, x2)
 
@@ -308,92 +245,51 @@ def less_equal(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.less_equal(x1, x2)
 
 
-def log(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def log(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.log(x)
 
 
-def log10(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def log10(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.log10(x)
 
 
-def log1p(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def log1p(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.log1p(x)
 
 
-def log2(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def log2(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.log2(x)
 
 
 def logaddexp(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.logaddexp(x1, x2)
 
 
 def logical_and(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.logical_and(x1, x2)
 
 
-def logical_not(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def logical_not(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.logical_not(x)
 
 
 def logical_or(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.logical_or(x1, x2)
 
 
 def logical_xor(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.logical_xor(x1, x2)
 
@@ -403,17 +299,14 @@ def multiply(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.multiply(x1, x2)
 
 
 def negative(
-    x: Union[float, JaxArray],
-    /,
-    *,
-    out: Optional[JaxArray] = None
+    x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.negative(x)
 
@@ -423,17 +316,14 @@ def not_equal(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.not_equal(x1, x2)
 
 
 def positive(
-    x: Union[float, JaxArray],
-    /,
-    *,
-    out: Optional[JaxArray] = None
+    x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.positive(x)
 
@@ -443,7 +333,7 @@ def pow(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.power(x1, x2)
@@ -454,66 +344,36 @@ def remainder(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.remainder(x1, x2)
 
 
-def round(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def round(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
         return jnp.round(x)
 
 
-def sign(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sign(x)
 
 
-def sin(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def sin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sin(x)
 
 
-def sinh(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def sinh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinh(x)
 
 
-def sqrt(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def sqrt(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sqrt(x)
 
 
-def square(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def square(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.square(x)
 
 
@@ -522,36 +382,21 @@ def subtract(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.subtract(x1, x2)
 
 
-def tan(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def tan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tan(x)
 
 
-def tanh(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def tanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tanh(x)
 
 
-def trunc(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
+def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
@@ -562,20 +407,12 @@ def trunc(
 # ------#
 
 
-def erf(
-    x: JaxArray,
-    /,
-    *, out: Optional[JaxArray] = None
-) -> JaxArray:
+def erf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.scipy.special.erf(x)
 
 
 def maximum(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.maximum(x1, x2)
@@ -586,7 +423,7 @@ def minimum(
     x2: Union[float, JaxArray],
     /,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.minimum(x1, x2)

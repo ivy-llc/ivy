@@ -71,7 +71,11 @@ def floormod(
     return ret
 
 
-def unstack(x, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+def unstack(
+    x: torch.Tensor,
+    axis: int,
+    keepdims: bool = False
+) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))

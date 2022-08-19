@@ -25,13 +25,14 @@ def variable_data(x):
 
 # noinspection PyShadowingNames
 def execute_with_gradients(func, xs, retain_grads=False):
-    func_ret = func(ivy.to_ivy(xs))
+    func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
         rest = func_ret[1:]
     else:
         y = func_ret
         rest = tuple()
+    xs = ivy.to_native(xs)
     y = ivy.to_native(y)
     if isinstance(xs, ivy.Container):
         x_grads_flat = list(
