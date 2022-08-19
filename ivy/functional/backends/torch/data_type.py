@@ -5,10 +5,26 @@ from typing import Union, Sequence, List
 # local
 import ivy
 
+native_dtype_dict = {
+    "int8": torch.int8,
+    "int16": torch.int16,
+    "int32": torch.int32,
+    "int64": torch.int64,
+    "uint8": torch.uint8,
+    "bfloat16": torch.bfloat16,
+    "float16": torch.float16,
+    "float32": torch.float32,
+    "float64": torch.float64,
+    "bool": torch.bool,
+}
+
 
 class Finfo:
     def __init__(self, torch_finfo: torch.finfo):
         self._torch_finfo = torch_finfo
+
+    def __repr__(self):
+        return repr(self._torch_finfo)
 
     @property
     def bits(self):
@@ -53,7 +69,7 @@ def astype(x: torch.Tensor, dtype: torch.dtype, *, copy: bool = True) -> torch.T
 
 
 def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
-    return torch.broadcast_tensors(*arrays)
+    return list(torch.broadcast_tensors(*arrays))
 
 
 def broadcast_to(
@@ -100,7 +116,7 @@ def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
     return torch.iinfo(ivy.as_native_dtype(type))
 
 
-def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> torch.dtype:
+def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dtype:
     input = []
     for val in arrays_and_dtypes:
         torch_val = as_native_dtype(val)
@@ -141,18 +157,15 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str]) -> ivy.Dtype:
 def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
-    return {
-        "int8": torch.int8,
-        "int16": torch.int16,
-        "int32": torch.int32,
-        "int64": torch.int64,
-        "uint8": torch.uint8,
-        "bfloat16": torch.bfloat16,
-        "float16": torch.float16,
-        "float32": torch.float32,
-        "float64": torch.float64,
-        "bool": torch.bool,
-    }[ivy.Dtype(dtype_in)]
+    if dtype_in in native_dtype_dict.keys():
+        return native_dtype_dict[ivy.Dtype(dtype_in)]
+    else:
+        raise TypeError(
+            f"Cannot convert to PyTorch dtype. {dtype_in} is not supported by PyTorch."
+        )
+
+
+as_native_dtype.unsupported_dtypes = ("uint16",)
 
 
 def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:

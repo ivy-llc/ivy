@@ -15,7 +15,7 @@ def _flat_array_to_1_dim_array(x):
 
 
 def concat(
-    xs: List[np.ndarray], axis: int = 0, out: Optional[np.ndarray] = None
+    xs: List[np.ndarray], axis: int = 0, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     is_tuple = type(xs) is tuple
     if axis is None:
@@ -34,7 +34,13 @@ def concat(
     return ret
 
 
-def expand_dims(x: np.ndarray, axis: int = 0) -> np.ndarray:
+concat.support_native_out = True
+
+
+def expand_dims(
+    x: np.ndarray,
+    axis: Union[int, Tuple[int], List[int]] = 0,
+) -> np.ndarray:
     ret = np.expand_dims(x, axis)
     return ret
 
@@ -42,6 +48,8 @@ def expand_dims(x: np.ndarray, axis: int = 0) -> np.ndarray:
 def flip(
     x: np.ndarray,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     num_dims = len(x.shape)
     if not num_dims:
@@ -55,7 +63,9 @@ def flip(
     return ret
 
 
-def permute_dims(x: np.ndarray, axes: Tuple[int, ...]) -> np.ndarray:
+def permute_dims(
+    x: np.ndarray, axes: Tuple[int, ...], *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     ret = np.transpose(x, axes)
     return ret
 
@@ -63,23 +73,30 @@ def permute_dims(x: np.ndarray, axes: Tuple[int, ...]) -> np.ndarray:
 def reshape(
     x: np.ndarray,
     shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     copy: Optional[bool] = None,
 ) -> np.ndarray:
-    ret = np.reshape(x, shape)
-    return ret
+    if copy:
+        newarr = x.copy()
+        return np.reshape(newarr, shape)
+    return np.reshape(x, shape)
 
 
 def roll(
     x: np.ndarray,
-    shift: Union[int, Tuple[int, ...]],
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    shift: Union[int, Sequence[int]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.roll(x, shift, axis)
 
 
 def squeeze(
     x: np.ndarray,
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
@@ -97,9 +114,12 @@ def stack(
     x: Union[Tuple[np.ndarray], List[np.ndarray]],
     axis: Optional[int] = 0,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.stack(x, axis, out=out)
+
+
+stack.support_native_out = True
 
 
 # Extra #
@@ -111,6 +131,7 @@ def split(
     num_or_size_splits=None,
     axis=0,
     with_remainder=False,
+    *,
     out: Optional[np.ndarray] = None,
 ):
     if x.shape == ():
@@ -136,41 +157,56 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
+split.support_native_out = True
+
+
 def repeat(
-    x: np.ndarray, repeats: Union[int, List[int]], axis: int = None
+    x: np.ndarray,
+    repeats: Union[int, List[int]],
+    axis: int = None,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.repeat(x, repeats, axis)
     return ret
 
 
-def tile(x: np.ndarray, reps, out: Optional[np.ndarray] = None) -> np.ndarray:
+def tile(x: np.ndarray, reps, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     ret = np.tile(x, reps)
     return ret
 
 
 def constant_pad(
-    x: np.ndarray, pad_width: List[List[int]], value: Number = 0.0
+    x: np.ndarray,
+    pad_width: List[List[int]],
+    value: Number = 0.0,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
     return ret
 
 
 def zero_pad(
-    x: np.ndarray, pad_width: List[List[int]], out: Optional[np.ndarray] = None
+    x: np.ndarray, pad_width: List[List[int]], *, out: Optional[np.ndarray] = None
 ):
     ret = np.pad(_flat_array_to_1_dim_array(x), pad_width)
     return ret
 
 
 def swapaxes(
-    x: np.ndarray, axis0: int, axis1: int, out: Optional[np.ndarray] = None
+    x: np.ndarray, axis0: int, axis1: int, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.swapaxes(x, axis0, axis1)
     return ret
 
 
 def clip(
-    x: np.ndarray, x_min: Union[Number, np.ndarray], x_max: Union[Number, np.ndarray]
+    x: np.ndarray,
+    x_min: Union[Number, np.ndarray],
+    x_max: Union[Number, np.ndarray],
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.asarray(np.clip(x, x_min, x_max))
     return ret

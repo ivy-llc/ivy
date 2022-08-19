@@ -4,23 +4,28 @@
 # local
 from typing import List, Union, Optional
 import ivy
-from ivy.func_wrapper import handle_nestable
+from ivy.func_wrapper import (
+    inputs_to_ivy_arrays,
+    integer_array_to_float,
+)
 
 
 # Extra #
 # ------#
 
 
-@handle_nestable
+@inputs_to_ivy_arrays
+@integer_array_to_float
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],
+    /,
+    *,
     epsilon: float = ivy._MIN_BASE,
     scale: float = 1.0,
     offset: float = 0.0,
     new_std: float = 1.0,
-    *,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies Layer Normalization over a mini-batch of inputs
 
@@ -52,24 +57,24 @@ def layer_norm(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([[1.0, 2.0], [3.0, 4.0]])
-    >>> norm = ivy.layer_norm(x, [0, 1], new_std=2.0)
-    >>> print(norm)
+    >>> y = ivy.layer_norm(x, [0, 1], new_std=2.0)
+    >>> print(y)
     ivy.array([[-2.68 , -0.894],
                [ 0.894,  2.68 ]])
 
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
-    >>> norm = ivy.zeros((2, 3))
-    >>> ivy.layer_norm(x, [0], out=norm)
-    >>> print(norm)
+    >>> y = ivy.zeros((2, 3))
+    >>> ivy.layer_norm(x, [0], out=y)
+    >>> print(y)
     ivy.array([[-1., -1., -1.],
                [ 1.,  1.,  1.]])
 
     >>> x = ivy.array([[0.0976, -0.3452,  1.2740], \
                        [0.1047,  0.5886,  1.2732], \
                        [0.7696, -1.7024, -2.2518]])
-    >>> norm = ivy.layer_norm(x, [0, 1], epsilon=0.001, \
+    >>> y = ivy.layer_norm(x, [0, 1], epsilon=0.001, \
                               new_std=1.5, offset=0.5, scale=0.5)
-    >>> print(norm)
+    >>> print(y)
     ivy.array([[ 0.576,  0.292,  1.33 ],
                [ 0.581,  0.891,  1.33 ],
                [ 1.01 , -0.579, -0.931]])
@@ -78,8 +83,8 @@ def layer_norm(
 
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
-    >>> norm = ivy.layer_norm(x, normalized_idxs, new_std=1.25, offset=0.2)
-    >>> print(norm)
+    >>> y = ivy.layer_norm(x, normalized_idxs, new_std=1.25, offset=0.2)
+    >>> print(y)
     {
         a: ivy.array([[-1.05, -1.05, -1.05],
                       [1.45, 1.45, 1.45]]),
@@ -92,8 +97,8 @@ def layer_norm(
     >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]), \
                            'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
     >>> normalized_idxs = [0]
-    >>> norm = ivy.layer_norm(x, normalized_idxs, 1.25, 0.3)
-    >>> print(norm)
+    >>> y = ivy.layer_norm(x, normalized_idxs, epsilon=1.25, scale=0.3)
+    >>> print(y)
     {
         a: ivy.array([0.658, 1.04, 1.3]),
         b: ivy.array([[0.759, 0.759, 0.759], 
@@ -107,8 +112,8 @@ def layer_norm(
     >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
     >>> new_std = ivy.Container({'a': 1.25, 'b': 1.5})
     >>> offset = ivy.Container({'a': 0.2, 'b': 0.3})
-    >>> norm = ivy.layer_norm(x, normalized_idxs, new_std, offset)
-    >>> print(norm)
+    >>> y = ivy.layer_norm(x, normalized_idxs, new_std=new_std, offset=offset)
+    >>> print(y)
     {
         a: ivy.array([0.772, 1.03, 1.2]),
         b: ivy.array([[0.796, 1., 1.2], 
@@ -120,7 +125,7 @@ def layer_norm(
     instances in place of any of the arguments.
 
     """
-    mean = ivy.mean(x, normalized_idxs, keepdims=True)
-    var = ivy.var(x, normalized_idxs, keepdims=True)
+    mean = ivy.mean(x, axis=normalized_idxs, keepdims=True)
+    var = ivy.var(x, axis=normalized_idxs, keepdims=True)
     x = ivy.divide(ivy.add(ivy.negative(mean), x), ivy.stable_pow(var, 0.5, epsilon))
     return ivy.add(ivy.multiply(ivy.multiply(x, new_std), scale), offset, out=out)

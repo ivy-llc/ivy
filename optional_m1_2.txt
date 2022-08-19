@@ -1,0 +1,4 @@
+torch-scatter==2.0.9 # torch_scatter requires a prior existing installation of torch, hence 2 optional files 
+# mxnet version 2.0.0 is to be built from source for m1 devices link : https://mxnet.apache.org/versions/1.9.0/get_started/osx_setup
+scipy==1.8.1
+dm-haiku==0.0.6 # mod_name=haiku

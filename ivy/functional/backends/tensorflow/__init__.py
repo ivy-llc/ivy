@@ -49,7 +49,7 @@ valid_dtypes = (
     ivy.float64,
     ivy.bool,
 )
-valid_numeirc_dtypes = (
+valid_numeric_dtypes = (
     ivy.int8,
     ivy.int16,
     ivy.int32,
@@ -74,12 +74,18 @@ valid_int_dtypes = (
     ivy.uint64,
 )
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 
 # invalid data types
 invalid_dtypes = ()
 invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
+invalid_uint_dtypes = ()
+
+native_inplace_support = False
+
+supports_gradients = True
 
 
 def closest_valid_dtype(type):
