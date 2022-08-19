@@ -2242,12 +2242,27 @@
 
 
 <div class="viewcode-block" id="set_min_denominator"><a class="viewcode-back" href="../../../../functional/ivy/general/set_min_denominator.html#ivy.functional.ivy.general.set_min_denominator">[docs]</a><span class="k">def</span> <span class="nf">set_min_denominator</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Set the global minimum denominator used by ivy for numerically stable division.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set the global minimum denominator used by ivy for numerically stable division.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    val</span>
-<span class="sd">        The new value to set the minimum denominator to.</span>
+<span class="sd">        The value to set the global minimum denominator to.</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.get_min_denominator()</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    1e-12</span>
+
+<span class="sd">    To set the minimum denominator to 1e-13</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_min_denominator(1e-13)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.get_min_denominator()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    1e-13</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_DENOMINATOR</span> <span class="o">=</span> <span class="n">val</span></div>
