@@ -11,3 +11,4 @@
    contributing.rst
    deep_dive.rst
    faq.rst
+   glossary.rst

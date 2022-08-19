@@ -13,6 +13,8 @@ from ivy.functional.backends.mxnet import (
 # noinspection PyShadowingBuiltins
 def all(
     x: mx.nd.NDArray,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
 ) -> mx.nd.NDArray:
@@ -29,6 +31,8 @@ def all(
 # noinspection PyShadowingBuiltins
 def any(
     x: mx.nd.NDArray,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
 ) -> mx.nd.NDArray:

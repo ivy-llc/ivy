@@ -186,8 +186,6 @@ def matrix_norm(
             ret = x
         else:
             ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
-    elif ord == "fro":
-        ret = tf.linalg.norm(x, 2, axes, keepdims)
     else:
         ret = tf.linalg.norm(x, ord, axes, keepdims)
 
@@ -250,14 +248,9 @@ def matrix_rank(
     else:
         x = tf.reshape(x, [-1])
         x = tf.expand_dims(x, 0)
-        if hasattr(rtol, "dtype"):
-            if rtol.dtype != x.dtype:
-                promoted_dtype = tf.experimental.numpy.promote_types(
-                    rtol.dtype, x.dtype
-                )
-                x = tf.cast(x, promoted_dtype)
-                rtol = tf.cast(rtol, promoted_dtype)
+        x, rtol = ivy.promote_types_of_inputs(x, rtol)
         ret = tf.linalg.matrix_rank(x, rtol)
+    ret = tf.cast(ret, ivy.default_int_dtype(as_native=True))
     return ret
 
 
@@ -290,6 +283,7 @@ def outer(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.outer(x1, x2)
 
 
@@ -302,7 +296,7 @@ def pinv(
     if rtol is None:
         ret = tf.linalg.pinv(x)
     else:
-        ret = tf.linalg.pinv(tf.cast(x != 0, "float32"), tf.cast(rtol != 0, "float32"))
+        ret = tf.linalg.pinv(x, rtol)
     return ret
 
 
@@ -348,11 +342,7 @@ def solve(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    if x1.dtype != tf.float32 or x1.dtype != tf.float64:
-        x1 = tf.cast(x1, tf.float32)
-    if x2.dtype != tf.float32 or x2.dtype != tf.float32:
-        x2 = tf.cast(x2, tf.float32)
-
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     expanded_last = False
     if len(x2.shape) <= 1:
         if x2.shape[-1] == x1.shape[-1]:
@@ -510,7 +500,7 @@ def vector_to_skew_symmetric_matrix(
     a2s = vector_expanded[..., 1:2, :]
     a3s = vector_expanded[..., 2:3, :]
     # BS x 1 x 1
-    zs = tf.zeros(batch_shape + [1, 1])
+    zs = tf.zeros(batch_shape + [1, 1], dtype=vector.dtype)
     # BS x 1 x 3
     row1 = tf.concat((zs, -a3s, a2s), -1)
     row2 = tf.concat((a3s, zs, -a1s), -1)

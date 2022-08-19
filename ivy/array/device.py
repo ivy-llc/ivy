@@ -10,7 +10,7 @@ import ivy
 
 class ArrayWithDevice(abc.ABC):
     def dev(
-        self: ivy.Array, as_native: bool = False
+        self: ivy.Array, *, as_native: bool = False
     ) -> Union[ivy.Device, ivy.NativeDevice]:
         """
         ivy.Array instance method variant of ivy.dev. This method simply wraps
@@ -18,7 +18,7 @@ class ArrayWithDevice(abc.ABC):
         method with minimal changes.
 
         """
-        return ivy.dev(self, as_native)
+        return ivy.dev(self, as_native=as_native)
 
     def to_device(
         self: ivy.Array,
@@ -33,4 +33,4 @@ class ArrayWithDevice(abc.ABC):
         to this method with minimal changes.
 
         """
-        return ivy.to_device(self, device, stream=stream, out=out)
+        return ivy.to_device(self._data, device, stream=stream, out=out)
