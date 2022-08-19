@@ -161,167 +161,6 @@ def _convert_vars(
     return new_vars
 
 
-def np_call(func, *args, **kwargs):
-    """Call a given function and return the result as a Numpy Array.
-
-    Parameters
-    ----------
-    func
-        The given function (callable).
-    args
-        The arguments to be given.
-    kwargs
-        The keywords args to be given.
-
-    Returns
-    -------
-    ret
-        The result of the function call as a Numpy Array
-    """
-    ret = func(*args, **kwargs)
-    if isinstance(ret, (list, tuple)):
-        return ivy.to_native(ret, nested=True)
-    return ivy.to_numpy(ret)
-
-
-def jnp_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=jnp.asarray
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(), from_type=np.ndarray, to_type_callable=jnp.asarray
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(jnp.ndarray, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(jnp.ndarray, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def tf_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=tf.convert_to_tensor
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(),
-        from_type=np.ndarray,
-        to_type_callable=tf.convert_to_tensor,
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(tensor_type, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(tensor_type, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def tf_graph_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=tf.convert_to_tensor
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(),
-        from_type=np.ndarray,
-        to_type_callable=tf.convert_to_tensor,
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-
-    @tf.function
-    def tf_func(*local_args, **local_kwargs):
-        return func(*local_args, **local_kwargs)
-
-    output = tf_func(*new_args, **new_kwargs)
-
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(tensor_type, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(tensor_type, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def torch_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=torch.from_numpy
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(), from_type=np.ndarray, to_type_callable=torch.from_numpy
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(torch.Tensor, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(torch.Tensor, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def mx_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=mx_nd.array
-    )
-    new_kw_items = _convert_vars(
-        vars_in=kwargs.values(), from_type=np.ndarray, to_type_callable=mx_nd.array
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_items))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(mx_nd.ndarray.NDArray, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(mx_nd.ndarray.NDArray, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-_calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]
-
-
 # function that trims white spaces from docstrings
 def trim(*, docstring):
     """Trim function from PEP-257"""
@@ -3142,16 +2981,15 @@ def handle_cmd_line_args(test_fn):
     from ivy_tests.test_ivy.conftest import (
         FW_STRS,
         TEST_BACKENDS,
-        TEST_CALL_METHODS,
     )
 
     # first[1:-2] 5 arguments are all fixtures
     @given(data=st.data())
     @settings(max_examples=1)
-    def new_fn(data, get_command_line_flags, device, f, call, fw, *args, **kwargs):
+    def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
         flag, fw_string = (False, "")
         # skip test if device is gpu and backend is numpy
-        if "gpu" in device and call is np_call:
+        if "gpu" in device and ivy.current_backend_str() == "numpy":
             # Numpy does not support GPU
             pytest.skip()
         if not f:
@@ -3174,8 +3012,6 @@ def handle_cmd_line_args(test_fn):
                     kwargs["fw"] = fw if flag else fw_string
                 elif param.name == "device":
                     kwargs["device"] = device
-                elif param.name == "call":
-                    kwargs["call"] = call if flag else TEST_CALL_METHODS[fw_string]
             return test_fn(*args, **kwargs)
 
     return new_fn
