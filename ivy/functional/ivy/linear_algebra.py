@@ -605,7 +605,7 @@ def eigvalsh(
     
     With multiple :code:`ivy.Container` inputs:
     
-    >>> x = ivy.Container(a = ivy.native_array[[9.0, 10.0], \
+    >>> x = ivy.Container(a = ivy.native_array([[9.0, 10.0], \
                                                [11.0, 12.0]], \
                           b = ivy.native_array([[1.0, 2.0], \
                                                [3.0, 4.0]]))
