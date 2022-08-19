@@ -6,7 +6,7 @@ def leaky_relu(input, negative_slope=0.01, out=None):
     return ivy.leaky_rely(input, alpha=negative_slope, out=out)
 
 
-leaky_relu.unsupported_dtypes("float16",)
+leaky_relu.unsupported_dtypes("float16")
 
 
 def sigmoid(input, out=None):
