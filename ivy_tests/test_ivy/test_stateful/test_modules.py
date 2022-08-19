@@ -33,9 +33,9 @@ class TrainableModule(ivy.Module):
 
 # module training
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_training(bs_ic_oc, device, compile_graph, call):
+def test_module_training(bs_ic_oc, device, compile_graph):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -63,7 +63,7 @@ def test_module_training(bs_ic_oc, device, compile_graph, call):
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if call is helpers.mx_call:
+    if ivy.current_backend_str() == "mxnet":
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:
@@ -76,7 +76,7 @@ def test_module_training(bs_ic_oc, device, compile_graph, call):
     assert ivy.max(ivy.abs(grads.linear2.b)) > 0
     assert ivy.max(ivy.abs(grads.linear2.w)) > 0
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
 
@@ -98,9 +98,9 @@ class TrainableModuleWithList(ivy.Module):
 
 # module with list training
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_list_training(bs_ic_oc, device, compile_graph, call):
+def test_module_w_list_training(bs_ic_oc, device, compile_graph):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -128,7 +128,7 @@ def test_module_w_list_training(bs_ic_oc, device, compile_graph, call):
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if call is helpers.mx_call:
+    if ivy.current_backend_str() == "mxnet":
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:
@@ -141,19 +141,19 @@ def test_module_w_list_training(bs_ic_oc, device, compile_graph, call):
     assert ivy.max(ivy.abs(grads.layers.v2.b)) > 0
     assert ivy.max(ivy.abs(grads.layers.v2.w)) > 0
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
 
 
 # module with partial v
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_partial_v(bs_ic_oc, device, compile_graph, call):
+def test_module_w_partial_v(bs_ic_oc, device, compile_graph):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         pytest.skip()
-    if call is helpers.mx_call:
+    if ivy.current_backend_str() == "mxnet":
         # MXNet ivy.Container repr currently does not work
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -222,7 +222,7 @@ class ModuleWithNoneAttribute(ivy.Module):
 
 # module with none attribute
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_none_attribute(bs_ic_oc, device, compile_graph, call):
+def test_module_w_none_attribute(bs_ic_oc, device, compile_graph):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -260,7 +260,7 @@ class TrainableModuleWithDuplicate(ivy.Module):
 # module training with duplicate
 @pytest.mark.parametrize("bs_c", [([1, 2], 64)])
 @pytest.mark.parametrize("same_layer", [True, False])
-def test_module_training_with_duplicate(bs_c, same_layer, device, compile_graph, call):
+def test_module_training_with_duplicate(bs_c, same_layer, device, compile_graph):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -289,7 +289,7 @@ def test_module_training_with_duplicate(bs_c, same_layer, device, compile_graph,
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if call is helpers.mx_call:
+    if ivy.current_backend_str() == "mxnet":
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:
@@ -300,7 +300,7 @@ def test_module_training_with_duplicate(bs_c, same_layer, device, compile_graph,
     if not same_layer:
         assert ivy.max(ivy.abs(grads.linear1.b)) > 0
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
 
@@ -322,7 +322,7 @@ class TrainableModuleWithDict(ivy.Module):
 
 # module with dict training
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_dict_training(bs_ic_oc, device, compile_graph, call):
+def test_module_w_dict_training(bs_ic_oc, device, compile_graph):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -352,7 +352,7 @@ def test_module_w_dict_training(bs_ic_oc, device, compile_graph, call):
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if call is helpers.mx_call:
+    if ivy.current_backend_str() == "mxnet":
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:
@@ -365,7 +365,7 @@ def test_module_w_dict_training(bs_ic_oc, device, compile_graph, call):
     assert ivy.max(ivy.abs(grads.layers.linear2.b)) > 0
     assert ivy.max(ivy.abs(grads.layers.linear2.w)) > 0
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
 
@@ -386,7 +386,7 @@ class WithCustomVarStructure(ivy.Module):
 
 # with custom var structure
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_with_custom_var_structure(bs_ic_oc, device, call):
+def test_with_custom_var_structure(bs_ic_oc, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -425,7 +425,7 @@ class WithNestedModules(ivy.Module):
 
 # top variables
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_top_variables(bs_ic_oc, device, call):
+def test_top_variables(bs_ic_oc, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -462,7 +462,7 @@ def test_top_variables(bs_ic_oc, device, call):
 
 # top module
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_top_module(bs_ic_oc, device, call):
+def test_top_module(bs_ic_oc, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -488,7 +488,7 @@ def test_top_module(bs_ic_oc, device, call):
 
 # v with top v key chains
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_v_with_top_v_key_chains(bs_ic_oc, device, call):
+def test_v_with_top_v_key_chains(bs_ic_oc, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -546,7 +546,7 @@ def test_v_with_top_v_key_chains(bs_ic_oc, device, call):
 
 # module depth
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_depth(bs_ic_oc, device, call):
+def test_module_depth(bs_ic_oc, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -570,7 +570,7 @@ def test_module_depth(bs_ic_oc, device, call):
 
 # module height
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_height(bs_ic_oc, device, call):
+def test_module_height(bs_ic_oc, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -594,7 +594,7 @@ def test_module_height(bs_ic_oc, device, call):
 
 # sub modules
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_sub_modules(bs_ic_oc, device, call):
+def test_sub_modules(bs_ic_oc, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -624,7 +624,7 @@ def test_sub_modules(bs_ic_oc, device, call):
 
 # track submod returns
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_track_submod_rets(bs_ic_oc, device, call):
+def test_module_track_submod_rets(bs_ic_oc, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -679,9 +679,9 @@ def test_module_track_submod_rets(bs_ic_oc, device, call):
 
 # check submod returns
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_check_submod_rets(bs_ic_oc, device, call):
+def test_module_check_submod_rets(bs_ic_oc, device):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -764,9 +764,9 @@ def test_module_check_submod_rets(bs_ic_oc, device, call):
 
 # track submod call order
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_track_submod_call_order(bs_ic_oc, device, call):
+def test_module_track_submod_call_order(bs_ic_oc, device):
     # smoke test
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
