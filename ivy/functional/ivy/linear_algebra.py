@@ -541,7 +541,7 @@ def eigh(
 def eigvalsh(
     x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)...
+    r"""Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
     x.
 
     Parameters
@@ -550,13 +550,13 @@ def eigvalsh(
         input array having shape (..., M, M) and whose innermost two dimensions form...
         square matrices. Must have floating-point data type.
     out
-        optional output array, for writing the result to. It must have a shape that the...
+        optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
     -------
     ret
-        an array containing the computed eigenvalues. The returned array must have shape...
+        an array containing the computed eigenvalues. The returned array must have shape
         (..., M) and have the same data type as x.
     
     This function conforms to the `Array API Standard...
@@ -575,7 +575,7 @@ def eigvalsh(
     ivy.array([-3.50330763,  1.61507163,  3.88823601])
     
     >>> x = ivy.array([[1.0, 2.0, -1.0, 3.0], \
-                       [2.0, 1.0, 3.0, 7.0], \
+                       [2.0, 1.0, 3.0, 7.0],  \
                        [-1,.0 3.0, 0.0, 8.0], \ 
                        [3.0, 5.0, 1.0, 6.0]])
     >>> ivy.eigvalsh(x, out = x)
