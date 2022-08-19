@@ -71,6 +71,11 @@ def reduce_euclidean_norm(
     )  # ord = '2' is the euclidean norm
 
 
+reduce_euclidean_norm.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+}
+
+
 def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
     return ivy.exp(input_tensor).sum(axis=axis, keepdims=keepdims).log()
 
