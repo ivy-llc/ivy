@@ -174,8 +174,6 @@ frontend functions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/jax/lax/operators.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-
-<span class="n">add</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">)}</span>
 </pre></div>
 </div>
 <p>In the original Jax library, <code class="code docutils literal notranslate"><span class="pre">add</span></code> is under <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html">jax.lax.add</a>. Thus, an
@@ -189,23 +187,23 @@ Jax to ensure identical behaviour. In this case, <a class="reference external" h
 where we will also have the same two arguments in our Jax frontend <code class="code docutils literal notranslate"><span class="pre">add</span></code>.
 Then, this function will return <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, which links to the <code class="code docutils literal notranslate"><span class="pre">add</span></code>
 function according to the framework set in the backend.</p>
-<p>You may have noticed that the function has an additional attribute
-<code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code>. This is because users are allowed to set a backend
-operating framework which is not Jax. There may be certain <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> which
-the backend cannot support, for instance, PyTorch does not support
-<code class="code docutils literal notranslate"><span class="pre">float16</span></code> and <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> in their <code class="code docutils literal notranslate"><span class="pre">add</span></code> function. These are then
-specified with the help of this attribute.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/jax/lax/operators.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="n">tan</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">)}</span>
+<span class="n">tan</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
 </pre></div>
 </div>
 <p>Looking at a second example, <code class="code docutils literal notranslate"><span class="pre">tan</span></code>, it is placed under <code class="code docutils literal notranslate"><span class="pre">operators</span></code>
 according to the <a class="reference external" href="https://jax.readthedocs.io/en/latest/jax.lax.html">jax.lax</a> directory. By referring to the <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html">jax.lax.tan</a> documentation,
 it has only one argument, and just as our <code class="code docutils literal notranslate"><span class="pre">add</span></code> function, we link its return to
 <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> so that the computation operation depends on the backend framework.</p>
+<p>You may have noticed that the function has an additional attribute
+<code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code>. This is because users are allowed to set a backend
+operating framework which is not Jax. There may be certain <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> which
+the backend cannot support, for instance, PyTorch does not support
+<code class="code docutils literal notranslate"><span class="pre">float16</span></code> in their <code class="code docutils literal notranslate"><span class="pre">tan</span></code> function. These are then
+specified with the help of this attribute.</p>
 <p><strong>NumPy</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
@@ -227,8 +225,6 @@ it has only one argument, and just as our <code class="code docutils literal not
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">where</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ret</span><span class="p">)),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span>
-
-<span class="n">add</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
 </pre></div>
 </div>
 <p>In NumPy, <code class="code docutils literal notranslate"><span class="pre">add</span></code> is categorised under <code class="code docutils literal notranslate"><span class="pre">mathematical_functions</span></code> with a
@@ -275,8 +271,6 @@ arguments just like its <code class="code docutils literal notranslate"><span cl
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/functions.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-
-<span class="n">add</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">)}</span>
 </pre></div>
 </div>
 <p>In the original TensorFlow library (<a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf">tf</a> directory), <code class="code docutils literal notranslate"><span class="pre">add</span></code> does not have
@@ -293,7 +287,7 @@ unsupported dtypes in any backend, it is specified with the help of the
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="n">tan</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">)}</span>
+<span class="n">tan</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
 </pre></div>
 </div>
 <p>Let’s look at another example, <code class="code docutils literal notranslate"><span class="pre">tan</span></code>, it is placed under <code class="code docutils literal notranslate"><span class="pre">functions</span></code> just
@@ -304,8 +298,6 @@ operation is decided according to the backend framework.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/torch/pointwise_ops.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-
-<span class="n">add</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)</span>
 </pre></div>
 </div>
 <p>For PyTorch, <code class="code docutils literal notranslate"><span class="pre">add</span></code> is categorised under <code class="code docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as shown in
