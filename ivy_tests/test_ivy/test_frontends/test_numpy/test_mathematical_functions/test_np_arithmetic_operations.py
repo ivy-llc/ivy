@@ -6,9 +6,11 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # add
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
@@ -47,7 +49,7 @@ def test_numpy_add(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="add",
+        fn_tree="add",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
@@ -99,7 +101,7 @@ def test_numpy_subtract(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="subtract",
+        fn_tree="subtract",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
@@ -139,7 +141,7 @@ def test_numpy_vdot(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="vdot",
+        fn_tree="vdot",
         a=np.asarray(x[0], dtype=input_dtype[0]),
         b=np.asarray(x[1], dtype=input_dtype[1]),
         test_values=False,
@@ -185,7 +187,7 @@ def test_numpy_divide(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="divide",
+        fn_tree="divide",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
@@ -237,7 +239,7 @@ def test_numpy_multiply(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="multiply",
+        fn_tree="multiply",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
@@ -287,7 +289,7 @@ def test_numpy_square(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="square",
+        fn_tree="square",
         x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,

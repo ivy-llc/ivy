@@ -5,21 +5,30 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # noinspection DuplicatedCode
 @st.composite
 def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(st.integers(1, 4), key="num_dims"))
-    num_arrays = draw(st.shared(st.integers(2, 4), key="num_arrays"))
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+    )
     common_shape = draw(
         helpers.lists(
-            arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
+            arg=helpers.ints(min_value=2, max_value=3),
+            min_size=num_dims - 1,
+            max_size=num_dims - 1,
         )
     )
-    unique_idx = draw(helpers.integers(min_value=0, max_value=num_dims - 1))
+    unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
+        helpers.lists(
+            arg=helpers.ints(min_value=2, max_value=3),
+            min_size=num_arrays,
+            max_size=num_arrays,
+        )
     )
     xs = list()
     input_dtypes = draw(helpers.array_dtypes())
@@ -43,6 +52,7 @@ def _dtype_n_with_out(draw):
 
 
 # concat
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
@@ -71,7 +81,7 @@ def test_numpy_concatenate(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="concatenate",
+        fn_tree="concatenate",
         arrays=xs,
         axis=unique_idx,
         out=None,

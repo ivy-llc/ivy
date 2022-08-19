@@ -4,7 +4,7 @@ Data Types
 .. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
 .. _`infer_dtype`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249
 .. _`import time`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225
-.. _`ivy.Dtype`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L51
+.. _`ivy.Dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096
 .. _`empty class`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L38
 .. _`also specified`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L241
 .. _`tuples`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L256
@@ -17,10 +17,10 @@ Data Types
 .. _`original definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/__init__.py#L225
 .. _`new definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16
 .. _`handled`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/backend_handler.py#L194
-.. _`data_type.py`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py
-.. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22
-.. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484
-.. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536
+.. _`data_type.py`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py
+.. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246
+.. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
+.. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555
 .. _`data types discussion`: https://github.com/unifyai/ivy/discussions/1307
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
@@ -264,6 +264,17 @@ which consists of all the :code:`dtypes` that every function of that particular 
 and so if a certain :code:`dtype` is already present in the :code:`ivy.invalid_dtypes` then we should
 not repeat flag it by adding it into the :code:`unsupported_dtypes`.
 
+Support for Integer Arrays
+--------------------------
+
+Some backends like :code:`tensorflow` donot support integer array inputs for certain functions. For example
+:code:`ivy.cos` wouldn't work for an input like :code:`ivy.array([1,2,3])` when the backend is set to :code:`tensorflow`
+the reason being that :code:`tensorflow` only supports non-integer values for this function. However, backends like
+:code:`torch` and :code:`jax` support integer arrays as inputs. So to provide this same functionality in
+:code:`tensorflow` we simply promote any integer array passed to such functions to the default float dtype.
+This behavior in Ivy makes it much easier to support such frameworks in our frontends, without the need for
+lots of extra logic for handling integer array inputs. This approach is also in keeping with our general approach in Ivy
+of implementing the superset of all behavior, rather than the lowest common denominator
 
 **Round Up**
 
@@ -272,3 +283,12 @@ This should have hopefully given you a good feel for data types, and how these a
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `data types discussion`_,
 or reach out on `discord`_ in the `data types channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/2qOBzQdLXn4" class="video">
+    </iframe>

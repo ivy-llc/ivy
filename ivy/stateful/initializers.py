@@ -82,7 +82,9 @@ class Uniform:
             )
         wlim = ((self._numerator / fan) ** self._power) * self._gain
         return ivy.variable(
-            ivy.random_uniform(-wlim, wlim, var_shape, device=device, dtype=dtype),
+            ivy.random_uniform(
+                low=-wlim, high=wlim, shape=var_shape, device=device, dtype=dtype
+            ),
         )
 
 
@@ -152,5 +154,5 @@ class KaimingNormal:
             )
         std = (2 / ((1 + negative_slope**2) * fan)) ** 0.5
         return ivy.variable(
-            ivy.random_normal(self._mean, std, var_shape, device=device)
+            ivy.random_normal(mean=self._mean, std=std, shape=var_shape, device=device)
         )
