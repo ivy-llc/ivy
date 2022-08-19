@@ -283,7 +283,7 @@ def test_jax_nn_one_hot(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=ivy_jax.valid_float_dtypes,  # change this to generate all nums
         large_value_safety_factor=1,
         small_value_safety_factor=1,
         min_value=-2,

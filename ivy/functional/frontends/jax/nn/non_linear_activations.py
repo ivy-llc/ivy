@@ -100,8 +100,9 @@ one_hot.unsupported_dtypes = {
 
 
 def softmax(x, /, *, axis=-1):
-    x = _type_conversion(x)
-    return ivy.softmax(x, axis=axis).astype(x.dtype)
+    dtype = _type_conversion(x).dtype
+    ret = ivy.softmax(x, axis=axis)
+    return ret.astype(dtype)
 
 
 softmax.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
