@@ -375,7 +375,7 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.stable_divide(self, denominator, min_denominator=min_denominator)
-        
+
     def stable_pow(
         self: ivy.Array,
         exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -402,7 +402,6 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.asarray([2, 4, 5])
         >>> y = x.stable_pow(2)
         >>> print(y)

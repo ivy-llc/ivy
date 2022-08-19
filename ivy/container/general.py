@@ -1720,7 +1720,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
         >>> y = ivy.Container.static_stable_pow(x, 3)
         >>> print(y)
@@ -1819,7 +1818,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
         >>> y = ivy.Container.stable_pow(x, 3)
         >>> print(y)

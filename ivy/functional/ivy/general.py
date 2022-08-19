@@ -2208,7 +2208,6 @@ def stable_pow(
 
     Examples
     --------
-
     With :code:`int` input:
 
     >>> x = ivy.stable_pow(3, 5)
