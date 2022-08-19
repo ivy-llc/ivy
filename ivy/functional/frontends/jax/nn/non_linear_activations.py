@@ -93,10 +93,7 @@ def one_hot(x, num_classes, *, device=None, out=None):
     return ret.astype("float64")
 
 
-one_hot.unsupported_dtypes = {
-    "torch": ("float16", "bfloat16"),
-    "tensorflow": ("int8", "int16", "uint16", "uint32", "uint64"),
-}
+one_hot.supported_dtypes = {"tensorflow": ("uint8", "int32", "int64")}
 
 
 def softmax(x, /, *, axis=-1):
