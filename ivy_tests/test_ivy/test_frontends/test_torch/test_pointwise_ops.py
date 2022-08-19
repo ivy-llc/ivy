@@ -908,12 +908,9 @@ def test_torch_log10(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.sqrt"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_sqrt(
     dtype_and_x,
