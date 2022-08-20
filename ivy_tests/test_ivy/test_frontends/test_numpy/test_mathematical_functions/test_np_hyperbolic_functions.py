@@ -109,3 +109,4 @@ def test_numpy_tanh(
         subok=True,
         test_values=False,
     )
+    
