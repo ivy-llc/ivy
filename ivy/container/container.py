@@ -347,7 +347,6 @@ class Container(
 
         Examples
         --------
-
         With :code:`Number` instances at the leaves:
 
         >>> x = ivy.Container(a=128, b=43)
@@ -386,8 +385,9 @@ class Container(
         """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
-                lambda xs, _: operator.rshift(xs[0], xs[1]), 
-                [self, other], map_nests=True
+                lambda xs, _: operator.rshift(xs[0], xs[1]),
+                [self, other],
+                map_nests=True,
             )
         return self.map(lambda x, kc: operator.rshift(x, other), map_sequences=True)
 
@@ -409,12 +409,11 @@ class Container(
         Returns
         -------
         ret
-            an container containing the element-wise results. The returned array 
+            a container containing the element-wise results. The returned array
             must have a data type determined by :ref:`type-promotion`.
 
         Examples
         --------
-        
         >>> a = 64
         >>> b = ivy.Container(a = ivy.array([0, 1, 2]), \
                               b = ivy.array([3, 4, 5]))

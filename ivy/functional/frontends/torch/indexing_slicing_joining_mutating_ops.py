@@ -25,6 +25,18 @@ swapdims.unsupported_dtypes = (
 )
 
 
+def transpose(input, dim0, dim1):
+    return ivy.swapaxes(input, dim0, dim1)
+
+
+def reshape(input, shape):
+    return ivy.reshape(input, shape)
+    
+    
+def stack(tensors, dim=0, *, out=None):
+    return ivy.stack(tensors, dim, out=out)
+
+
 def movedim(input, source, destination):
     """
     If either dimension input is a tuple, 
@@ -45,7 +57,3 @@ def movedim(input, source, destination):
         return input
 
     return ivy.swapaxes(input, source, destination)
-
-
-def reshape(input, shape):
-    return ivy.reshape(input, shape)
