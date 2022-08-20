@@ -627,6 +627,74 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
+# Device Distribution #
+
+class DevDistItem(MultiDevItem):
+
+    def __repr__(self):
+        return 'DevDistItem(' + self._data.__repr__() + ')'
+
+
+class DevDistIter(MultiDevIter):
+
+    def __repr__(self):
+        return 'DevDistIter(' + self._data.__repr__() + ')'
+
+
+class DevDistNest(MultiDevNest):
+
+    def __repr__(self):
+        return 'DevDistNest(' + self._data.__repr__() + ')'
+
+
+def dev_dist_array(x, devs: Union[Iterable[str], Dict[str, int]], axis=0):
+    """
+    Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.
+    
+    Parameters
+    ----------
+    x
+        The array to distribute across devices.
+    devs
+        The devices to distribute the array across.
+    axis
+        The axis along which to split the array. Default is 0.
+
+    Returns
+    -------
+    ret
+        Array distributed across the target devices
+
+    """
+
+    split_arg = list(devs.values()) if isinstance(devs, dict) else len(devs)
+    return DevDistItem(
+        {ds: ivy.to_dev(x_sub, ds) for x_sub, ds in zip(ivy.split(x, split_arg, axis, with_remainder=True), devs)})
+
+
+def dev_dist(x, devs: Union[Iterable[str], Dict[str, int]], axis=0):
+    """
+    Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.
+
+    Parameters
+    ----------
+    x
+        The input array or container to distribute across devices.
+    devs
+        The devices to distribute the input across.
+    axis
+        The axis along which to split the input. Default is 0.
+
+    Returns
+    -------
+    ret
+        array or container distributed across the target devices
+    """
+    if ivy.is_array(x):
+        return dev_dist_array(x, devs, axis)
+    elif isinstance(x, ivy.Container):
+        return x.dev_dist(devs, axis)
+    return x
 
 
 # Availability
