@@ -87,3 +87,9 @@ reduce_logsumexp.unsupported_dtypes = {
 
 def argmax(input, axis, output_type, name=None):
     return ivy.argmax(input, axis=axis)
+
+
+def reduce_sum(input_tensor,axis=None, keepdims=False,name="reduce_sum"):
+    return ivy.sum(input_tensor,axis=axis,keepdims=keepdims)
+
+
