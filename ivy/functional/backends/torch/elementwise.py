@@ -66,11 +66,11 @@ def bitwise_invert(
 bitwise_invert.support_native_out = True
 
 
-def isfinite(x: torch.Tensor, /) -> torch.Tensor:
+def isfinite(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.isfinite(x)
 
 
-def isinf(x: torch.Tensor, /) -> torch.Tensor:
+def isinf(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.isinf(x)
 
 

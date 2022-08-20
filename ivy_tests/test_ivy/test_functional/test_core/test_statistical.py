@@ -339,7 +339,7 @@ def test_std(
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device, call):
+def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
     operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]
@@ -354,7 +354,7 @@ def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device, call):
     assert ret.shape == true_shape
     # value test
     assert np.allclose(
-        call(ivy.einsum, eq, *operands),
+        ivy.to_numpy(ivy.einsum(eq, *operands)),
         ivy.functional.backends.numpy.einsum(
             eq, *[ivy.to_numpy(op) for op in operands]
         ),

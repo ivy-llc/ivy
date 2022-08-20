@@ -161,167 +161,6 @@ def _convert_vars(
     return new_vars
 
 
-def np_call(func, *args, **kwargs):
-    """Call a given function and return the result as a Numpy Array.
-
-    Parameters
-    ----------
-    func
-        The given function (callable).
-    args
-        The arguments to be given.
-    kwargs
-        The keywords args to be given.
-
-    Returns
-    -------
-    ret
-        The result of the function call as a Numpy Array
-    """
-    ret = func(*args, **kwargs)
-    if isinstance(ret, (list, tuple)):
-        return ivy.to_native(ret, nested=True)
-    return ivy.to_numpy(ret)
-
-
-def jnp_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=jnp.asarray
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(), from_type=np.ndarray, to_type_callable=jnp.asarray
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(jnp.ndarray, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(jnp.ndarray, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def tf_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=tf.convert_to_tensor
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(),
-        from_type=np.ndarray,
-        to_type_callable=tf.convert_to_tensor,
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(tensor_type, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(tensor_type, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def tf_graph_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=tf.convert_to_tensor
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(),
-        from_type=np.ndarray,
-        to_type_callable=tf.convert_to_tensor,
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-
-    @tf.function
-    def tf_func(*local_args, **local_kwargs):
-        return func(*local_args, **local_kwargs)
-
-    output = tf_func(*new_args, **new_kwargs)
-
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(tensor_type, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(tensor_type, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def torch_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=torch.from_numpy
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(), from_type=np.ndarray, to_type_callable=torch.from_numpy
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(torch.Tensor, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(torch.Tensor, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def mx_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=mx_nd.array
-    )
-    new_kw_items = _convert_vars(
-        vars_in=kwargs.values(), from_type=np.ndarray, to_type_callable=mx_nd.array
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_items))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(mx_nd.ndarray.NDArray, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(mx_nd.ndarray.NDArray, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-_calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]
-
-
 # function that trims white spaces from docstrings
 def trim(*, docstring):
     """Trim function from PEP-257"""
@@ -2382,6 +2221,12 @@ def array_and_indices(
     return (x, indices)
 
 
+def _zeroing(x):
+    # covnert -0.0 to 0.0
+    if x == 0.0:
+        return 0.0
+
+
 @st.composite
 def array_values(
     draw,
@@ -2545,7 +2390,6 @@ def array_values(
                 )
             )
     elif dtype == "float16":
-
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2604,7 +2448,7 @@ def array_values(
                 )
             )
         values = [v * large_value_safety_factor for v in values]
-    elif dtype in ["float32", "bfloat16"]:
+    elif dtype == "float32":
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2636,6 +2480,12 @@ def array_values(
             elif max_value_pos is not None and max_value_pos <= min_value_pos:
                 min_value_pos = min_value_neg
                 max_value_pos = max_value_neg
+
+            min_value_pos = _zeroing(min_value_pos)
+            max_value_pos = _zeroing(max_value_pos)
+            min_value_neg = _zeroing(min_value_neg)
+            max_value_neg = _zeroing(max_value_neg)
+
             values = draw(
                 list_of_length(
                     x=st.floats(
@@ -2662,8 +2512,7 @@ def array_values(
                 )
             )
         values = [v * large_value_safety_factor for v in values]
-    elif dtype == "float64":
-
+    elif dtype in ["float64", "bfloat16"]:
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2682,13 +2531,12 @@ def array_values(
             )
         else:
             limit = math.log(small_value_safety_factor)
-
             min_value_neg = min_value
             max_value_neg = round(-1 * limit, 15)
             min_value_pos = round(limit, 15)
             max_value_pos = max_value
             max_value_neg, min_value_pos = (
-                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+                np.array([max_value_neg, min_value_pos]).astype("float64").tolist()
             )
             if min_value_neg is not None and min_value_neg >= max_value_neg:
                 min_value_neg = min_value_pos
@@ -2978,7 +2826,8 @@ def get_axis(
     unique=True,
     min_size=1,
     max_size=None,
-    ret_tuple=False,
+    force_tuple=False,
+    force_int=False,
 ):
     """Draws one or more axis for the given shape.
 
@@ -2986,7 +2835,7 @@ def get_axis(
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list)
+        data-set (ex. list).
     shape
         shape of the array as a tuple, or a hypothesis strategy from which the shape
         will be drawn
@@ -3002,16 +2851,25 @@ def get_axis(
         axes drawn
     max_size
         int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
-        axes drawn; if None and unique is True, then it is set to the number of axes
-        in the shape
-    ret_tuple
-        boolean; if False, randomly draw both integers and List[int]; If True, draw
-        only List[int] as tuple[int]
+        axes drawn.
+        If None and unique is True, then it is set to the number of axes in the shape
+    force_tuple
+        boolean, if true, all axis will be returned as a tuple. If force_tuple and
+        force_int are true, then an AssertionError is raised
+    force_int
+        boolean, if true, all axis will be returned as an int. If force_tuple and
+        force_int are true, then an AssertionError is raised
 
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
+    assert not (force_int and force_tuple), (
+        "Cannot return an int and a tuple. If "
+        "both are valid then set 'force_int' "
+        "and 'force_tuple' to False."
+    )
+
     # Draw values from any strategies given
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
@@ -3026,39 +2884,33 @@ def get_axis(
     if max_size is None and unique:
         max_size = max(axes, min_size)
 
+    valid_strategies = []
+
     if allow_none:
+        valid_strategies.append(st.none())
+
+    if not force_tuple:
         if axes == 0:
-            axis = draw(
-                st.none()
-                | st.just(0)
-                | st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            valid_strategies.append(st.just(0))
+        else:
+            valid_strategies.append(st.integers(-axes, axes - 1))
+    if not force_int:
+        if axes == 0:
+            valid_strategies.append(
+                st.lists(st.just(0), min_size=min_size, max_size=max_size)
             )
         else:
-            axis = draw(
-                st.none()
-                | ints(min_value=-axes, max_value=axes - 1)
-                | st.lists(
-                    ints(min_value=-axes, max_value=axes - 1),
+            valid_strategies.append(
+                st.lists(
+                    st.integers(-axes, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
                 )
             )
-    else:
-        if axes == 0:
-            axis = draw(
-                st.just(0) | st.lists(st.just(0), min_size=min_size, max_size=max_size)
-            )
-        else:
-            axis = draw(
-                ints(min_value=-axes, max_value=axes - 1)
-                | st.lists(
-                    ints(min_value=-axes, max_value=axes - 1),
-                    min_size=min_size,
-                    max_size=max_size,
-                    unique_by=unique_by,
-                )
-            )
+
+    axis = draw(st.one_of(*valid_strategies))
+
     if type(axis) == list:
         if sorted:
 
@@ -3069,8 +2921,6 @@ def get_axis(
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
-    elif ret_tuple:
-        axis = tuple([axis])
     return axis
 
 
@@ -3131,17 +2981,15 @@ def handle_cmd_line_args(test_fn):
     from ivy_tests.test_ivy.conftest import (
         FW_STRS,
         TEST_BACKENDS,
-        TEST_CALL_METHODS,
-        MAX_EXAMPLES,
     )
 
     # first[1:-2] 5 arguments are all fixtures
     @given(data=st.data())
-    @settings(max_examples=int(MAX_EXAMPLES))
-    def new_fn(data, get_command_line_flags, device, f, call, fw, *args, **kwargs):
+    @settings(max_examples=1)
+    def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
         flag, fw_string = (False, "")
         # skip test if device is gpu and backend is numpy
-        if "gpu" in device and call is np_call:
+        if "gpu" in device and ivy.current_backend_str() == "numpy":
             # Numpy does not support GPU
             pytest.skip()
         if not f:
@@ -3164,8 +3012,6 @@ def handle_cmd_line_args(test_fn):
                     kwargs["fw"] = fw if flag else fw_string
                 elif param.name == "device":
                     kwargs["device"] = device
-                elif param.name == "call":
-                    kwargs["call"] = call if flag else TEST_CALL_METHODS[fw_string]
             return test_fn(*args, **kwargs)
 
     return new_fn
@@ -3177,3 +3023,51 @@ def gradient_incompatible_function(*, fn):
         and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
     )
+
+
+@st.composite
+def statistical_dtype_values(draw, *, function):
+    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
+
+    size = draw(st.integers(1, 10))
+
+    if dtype == "float16":
+        max_value = 2048
+    elif dtype == "float32":
+        max_value = 16777216
+    elif dtype == "float64":
+        max_value = 9.0071993e15
+
+    if function == "prod":
+        abs_value_limit = 0.99 * max_value ** (1 / size)
+    elif function in ["var", "std"]:
+        abs_value_limit = 0.99 * (max_value / size) ** 0.5
+    else:
+        abs_value_limit = 0.99 * max_value / size
+
+    values = draw(
+        list_of_length(
+            x=st.floats(
+                -abs_value_limit,
+                abs_value_limit,
+                allow_subnormal=False,
+                allow_infinity=False,
+            ),
+            length=size,
+        )
+    )
+
+    shape = np.asarray(values, dtype=dtype).shape
+    size = np.asarray(values, dtype=dtype).size
+    axis = draw(get_axis(shape=shape, allow_none=True))
+    if function == "var" or function == "std":
+        if isinstance(axis, int):
+            correction = draw(st.integers(-shape[axis], shape[axis] - 1)
+                              | st.floats(-shape[axis], shape[axis] - 1))
+            return dtype, values, axis, correction
+
+        correction = draw(st.integers(-size, size - 1)
+                          | st.floats(-size, size - 1))
+        return dtype, values, axis, correction
+
+    return dtype, values, axis
