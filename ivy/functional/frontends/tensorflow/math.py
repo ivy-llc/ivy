@@ -83,3 +83,7 @@ def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsu
 reduce_logsumexp.unsupported_dtypes = {
     "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
 }
+
+
+def argmax(input, axis, output_type, name=None):
+    return ivy.argmax(input, axis=axis)
