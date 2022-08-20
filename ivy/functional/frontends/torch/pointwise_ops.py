@@ -6,9 +6,6 @@ def add(input, other, *, alpha=1, out=None):
     return ivy.add(input, other * alpha, out=out)
 
 
-add.unsupported_dtypes = ("float16",)
-
-
 def tan(input, *, out=None):
     return ivy.tan(input, out=out)
 
@@ -83,11 +80,15 @@ def abs(input, *, out=None):
     return ivy.abs(input, out=out)
 
 
+def cosh(input, *, out=None):
+    return ivy.cosh(input, out=out)
+
+
+cosh.unsupported_dtypes = ("float16",)
+
+
 def subtract(input, other, *, alpha=1, out=None):
     return ivy.subtract(input, other * alpha, out=out)
-
-
-subtract.unsupported_dtypes = ("float16",)
 
 
 def exp(input, *, out=None):
@@ -116,6 +117,59 @@ def asinh(input, *, out=None):
 
 
 asinh.unsupported_dtypes = ("float16",)
+
+
+def atanh(input, *, out=None):
+    return ivy.atanh(input, out=out)
+
+
+atanh.unsupported_dtypes = ("float16",)
+
+
+def arctanh(input, *, out=None):
+    return ivy.atanh(input, out=out)
+
+
+arctanh.unsupported_dtypes = ("float16",)
+
+
+def square(input, *, out=None):
+    return ivy.square(input, out=out)
+
+
+def atan2(input, other, *, out=None):
+    return ivy.atan2(input, other, out=out)
+
+
+atan2.unsupported_dtypes = ("float16",)
+
+
+def negative(input, *, out=None):
+    return ivy.negative(input, out=out)
+
+
+negative.unsupported_dtypes = ("float16",)
+
+
+def bitwise_and(input, other, *, out=None):
+    return ivy.bitwise_and(input, other, out=out)
+
+
+bitwise_and.unsupported_dtypes = ("float16",)
+
+
+def log10(input, *, out=None):
+    return ivy.log10(input, out=out)
+
+
+log10.unsupported_dtypes = ("float16",)
+
+
+def sqrt(input, *, out=None):
+    return ivy.sqrt(input, out=out)
+
+
+sqrt.unsupported_dtypes = ("float16",)
 
 
 def neg(input, *, out=None):
