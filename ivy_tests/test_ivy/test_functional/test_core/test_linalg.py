@@ -1098,8 +1098,7 @@ def test_matrix_norm(
         max_value=1e+05
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
-    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
-    data=st.data()
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None)
 )
 def test_matrix_rank(
     *,
