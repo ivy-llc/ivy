@@ -22,7 +22,7 @@ import pytest
 
 # dtype objects
 @handle_cmd_line_args
-def test_dtype_instances(device, call):
+def test_dtype_instances(device):
     assert ivy.exists(ivy.int8)
     assert ivy.exists(ivy.int16)
     assert ivy.exists(ivy.int32)
