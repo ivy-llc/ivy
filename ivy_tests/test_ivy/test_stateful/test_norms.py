@@ -25,7 +25,7 @@ import ivy_tests.test_ivy.helpers as helpers
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_layer_norm_layer(
-    x_n_ns_n_target, with_v, dtype, tensor_fn, device, compile_graph, call
+    x_n_ns_n_target, with_v, dtype, tensor_fn, device, compile_graph
 ):
     # smoke test
     x, normalized_shape, target = x_n_ns_n_target
@@ -49,8 +49,8 @@ def test_layer_norm_layer(
     # value test
     if not with_v:
         return
-    assert np.allclose(call(norm_layer, x), ivy.to_numpy(target))
+    assert np.allclose(ivy.to_numpy(norm_layer(x)), ivy.to_numpy(target))
     # compilation test
-    if call in [helpers.torch_call]:
+    if ivy.current_backend_str() == "torch":
         # this is not a backend implemented function
         return

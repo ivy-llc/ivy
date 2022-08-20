@@ -5,6 +5,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # full
@@ -27,7 +28,7 @@ def _fill_value(draw):
         return draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
         return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(st.floats(-5, 5))
+    return draw(helpers.floats(min_value=-5, max_value=5))
 
 
 @st.composite
@@ -39,6 +40,7 @@ def _requires_grad(draw):
 
 
 # full
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
