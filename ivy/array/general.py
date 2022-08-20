@@ -204,6 +204,7 @@ class ArrayWithGeneral(abc.ABC):
     ) -> ivy.Array:
         """
         Scatter updates into an array according to indices.
+
         Parameters
         ----------
         self
@@ -225,6 +226,7 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             New array of given shape, with the values scattered at the indices.
+        
         Examples
         --------
         scatter values into an array
