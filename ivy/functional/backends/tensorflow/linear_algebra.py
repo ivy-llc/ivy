@@ -246,6 +246,8 @@ def matrix_rank(
     elif tf.size(x) == 1:
         ret = tf.math.count_nonzero(x)
     else:
+        if len(rtol) > 0:
+            rtol = rtol[0]
         x, rtol = ivy.promote_types_of_inputs(x, rtol)
         ret = tf.linalg.matrix_rank(x, rtol)
     ret = tf.cast(ret, ivy.default_int_dtype(as_native=True))
