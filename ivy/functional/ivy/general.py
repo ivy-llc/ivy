@@ -1832,9 +1832,7 @@ def arg_names(receiver):
 
 
 def match_kwargs(
-        kwargs: Dict,
-        *receivers: Iterable[Callable],
-        allow_duplicates: bool = False
+    kwargs: Dict, *receivers: Iterable[Callable], allow_duplicates: bool = False
 ) -> Union[List[Dict], Dict]:
     """Match keyword arguments to either class or function receivers.
 
@@ -1857,13 +1855,13 @@ def match_kwargs(
     --------
     >>> o = ivy.zeros(3, dtype=int)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
-    >>> x = ivy.match_kwargs(kwargs, ivy.elementwise.add, ivy.layers.linear)
+    >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
     >>> print(x)
     [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
 
     >>> o = ivy.zeros(3, dtype=int)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
-    >>> x = ivy.match_kwargs(kwargs, ivy.layers.linear, ivy.elementwise.add)
+    >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
     >>> print(x)
     [{'out': ivy.array([0, 0, 0]), 'bias': ivy.array([0, 1, 2])}, {}]
 
