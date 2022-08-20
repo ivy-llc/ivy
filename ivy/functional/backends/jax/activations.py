@@ -37,8 +37,9 @@ def softmax(
     *,
     axis: Optional[int] = None,
 ) -> JaxArray:
-    exp_x = jnp.exp(x)
-    return exp_x / jnp.sum(exp_x, axis, keepdims=True)
+    if axis is None:
+        axis = -1
+    return jax.nn.softmax(x, axis)
 
 
 def softplus(x: JaxArray, /) -> JaxArray:
