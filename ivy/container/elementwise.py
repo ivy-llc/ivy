@@ -126,7 +126,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -251,7 +251,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -459,7 +459,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     def add(
@@ -527,7 +527,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -668,7 +668,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -791,7 +791,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -913,7 +913,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -1072,7 +1072,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -1195,7 +1195,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -1265,7 +1265,6 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1310,7 +1309,8 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out)
+            out=out,
+        )
 
     @staticmethod
     def static_bitwise_left_shift(
@@ -1422,7 +1422,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -1519,7 +1519,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -1644,7 +1644,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -1721,7 +1721,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     def bitwise_or(
@@ -1785,7 +1785,8 @@ class ContainerWithElementwise(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences, out=out
+            map_sequences=map_sequences,
+            out=out,
         )
 
     @staticmethod
@@ -1833,6 +1834,30 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+        >>> b = ivy.array([0, 1, 2])
+        >>> y = ivy.Container.static_bitwise_right_shift(a, b)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 1]),
+            b: ivy.array([5, 5, 16])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([2]))
+        >>> y = ivy.Container.static_bitwise_right_shift(a, b)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 1]),
+            b: ivy.array([1, 2, 16])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "bitwise_right_shift",
@@ -1888,6 +1913,17 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([2]))
+        >>> y = a.bitwise_right_shift(b)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 1]),
+            b: ivy.array([1, 2, 16])
+        }
         """
         return self.static_bitwise_right_shift(
             self,
@@ -1895,7 +1931,8 @@ class ContainerWithElementwise(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences, out=out
+            map_sequences=map_sequences,
+            out=out,
         )
 
     @staticmethod
@@ -2009,7 +2046,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -2117,7 +2154,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -2262,7 +2299,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -2401,7 +2438,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -2533,7 +2570,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -2634,7 +2671,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -2754,7 +2791,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -2863,7 +2900,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -3024,7 +3061,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -3162,7 +3199,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -3272,7 +3309,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -3393,7 +3430,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -3494,7 +3531,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -3595,7 +3632,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -3732,7 +3769,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -3866,7 +3903,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -3967,7 +4004,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -4097,7 +4134,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -4198,7 +4235,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -4314,7 +4351,7 @@ class ContainerWithElementwise(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
                               b=ivy.array([-0., -3.9, float('+inf')]), \
                               c=ivy.array([7.9, 1.1, 1.]))
-        >>> y = x.log10(x)
+        >>> y = x.log10()
         >>> print(y)
         {
             a: ivy.array([-inf, nan]),
@@ -4328,7 +4365,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -4440,7 +4477,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -4616,7 +4653,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -4715,7 +4752,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -4860,7 +4897,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -5005,7 +5042,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -5115,7 +5152,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -5214,7 +5251,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -5324,7 +5361,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -5423,7 +5460,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -5533,7 +5570,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -5713,7 +5750,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -5836,7 +5873,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -5957,7 +5994,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -6080,7 +6117,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -6221,7 +6258,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -6322,7 +6359,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -6423,7 +6460,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -6532,7 +6569,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -6653,7 +6690,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -6775,7 +6812,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -6874,7 +6911,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -6971,7 +7008,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -7070,12 +7107,13 @@ class ContainerWithElementwise(ContainerBase):
 
         """
         return self.static_minimum(
-            self, x2,
+            self,
+            x2,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -7159,11 +7197,11 @@ class ContainerWithElementwise(ContainerBase):
 
         """
         return self.static_maximum(
-            self, 
+            self,
             x2,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
