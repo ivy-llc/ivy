@@ -63,7 +63,6 @@ def min(
         return torch.amin(input=x, out=out)
     return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
 
-
 def prod(
     x: torch.Tensor,
     *,
