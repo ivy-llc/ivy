@@ -5,6 +5,8 @@ tile
 
 .. autofunction:: ivy.array.array_methods.tile
 
+.. autofunction:: ivy.container.container_methods.static_tile
+
 .. autofunction:: ivy.container.container_methods.tile
 |
 | **Supported Frameworks:**
@@ -33,6 +35,7 @@ tile
    :caption: tile
 
    tile/tile_functional.rst
+   tile/static_tile_container.rst
    tile/tile_array.rst
    tile/tile_container.rst
 
