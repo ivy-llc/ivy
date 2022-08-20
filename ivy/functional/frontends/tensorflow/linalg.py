@@ -1,6 +1,4 @@
 import ivy
-import tensorflow
-
 
 def det(input, name=None):
     return ivy.det(input)
