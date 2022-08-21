@@ -895,3 +895,78 @@ def test_jax_lax_bitwise_xor(
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
+
+
+@st.composite
+def _dtypes(draw):
+    return draw(
+        st.shared(
+            helpers.list_of_length(
+                x=st.sampled_from(ivy_np.valid_numeric_dtypes), length=1
+            ),
+            key="dtype",
+        )
+    )
+
+
+@st.composite
+def _fill_value(draw):
+    dtype = draw(_dtypes())[0]
+    if ivy.is_uint_dtype(dtype):
+        return draw(helpers.ints(min_value=0, max_value=5))
+    if ivy.is_int_dtype(dtype):
+        return draw(helpers.ints(min_value=-5, max_value=5))
+    return draw(helpers.floats(min_value=-5, max_value=5))
+
+
+@st.composite
+def _dtype_and_values(draw):
+    return draw(
+        helpers.dtype_and_values(
+            available_dtypes=ivy_np.valid_numeric_dtypes,
+            num_arrays=1,
+            min_num_dims=1,
+            dtype=draw(_dtypes()),
+        )
+    )
+
+
+@st.composite
+def _shape_or_none(draw):
+    return draw(helpers.get_shape() | st.none())
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_dtype_and_values(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.full_like"
+    ),
+    fill_val=_fill_value(),
+    shape=_shape_or_none(),
+)
+def test_jax_lax_full_like(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    fill_val,
+    shape,
+):
+    dtype, x = dtype_and_x
+    fill_val = fill_val
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.full_like",
+        x=np.asarray(x, dtype=dtype),
+        fill_value=fill_val,
+        dtype=dtype,
+        shape=shape,
+    )
