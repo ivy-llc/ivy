@@ -534,7 +534,6 @@ def map(
     -------
     ret
         x following the application of fn to each of its iterated items.
-    
     Examples
     --------
     With :code:`int` inputs:

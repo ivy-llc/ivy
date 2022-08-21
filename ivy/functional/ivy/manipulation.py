@@ -599,57 +599,6 @@ def squeeze(
     >>> y = ivy.squeeze(x)
     >>> print(y)
     ivy.array([[0, 1], [2, 3]])
-
-    >>> x = ivy.array([[[[1, 2, 3]], [[4, 5, 6]]]])
-    >>> ivy.squeeze(x, axis=2)
-    >>> print(y)
-   ivy.array([[0,1],[2,3]])
-
-    >>> x = ivy.array([[[0], [1], [2]]])
-    >>> y = ivy.squeeze(x)
-    >>> print(y)
-    ivy.array([0, 1, 2])
-
-    >>> y = ivy.squeeze(x, axis=0)
-    >>> print(y)
-    ivy.array([[0],
-           [1],
-           [2]])
-
-    >>> y = ivy.squeeze(x, axis=2)
-    >>> print(y)
-    ivy.array([[0, 1, 2]])
-
-    >>> y = ivy.squeeze(x, axis=(0, 2))
-    >>> print(y)
-    ivy.array([0, 1, 2])
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, 1, 2])
-    >>> y = ivy.squeeze(x)
-    >>> print(y)
-    ivy.array([0, 1, 2])
-
-    >>> x = ivy.native_array([[[3]]])
-    >>> y = ivy.squeeze(x, 2)
-    >>> print(y)
-    ivy.array([[3]])
-
-    >>> x = ivy.native_array([0])
-    >>> print(ivy.squeeze(x, 0))
-    ivy.array(0)
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.squeeze(x)
-    >>> print(y)
-    {
-        a: ivy.array([0., 1., 2.]),
-        b: ivy.array([3., 4., 5.])
-    }
     """
     return current_backend(x).squeeze(x, axis, out=out)
 
