@@ -8,7 +8,12 @@ import ivy
 
 class ArrayWithDataTypes(abc.ABC):
     def astype(
-        self: ivy.Array, dtype: ivy.Dtype, copy: bool = True, out: ivy.Array = None
+        self: ivy.Array,
+        dtype: ivy.Dtype,
+        /,
+        *,
+        copy: bool = True,
+        out: ivy.Array = None,
     ) -> ivy.Array:
         """Copies an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
@@ -55,7 +60,7 @@ class ArrayWithDataTypes(abc.ABC):
         >>> print(x.astype(ivy.float64))
         ivy.array([[-1., -2.],  [0.,  2.]])
         """
-        return ivy.astype(self._data, dtype=dtype, copy=copy, out=out)
+        return ivy.astype(self._data, dtype, copy=copy, out=out)
 
     def broadcast_arrays(
         self: ivy.Array, *arrays: Union[ivy.Array, ivy.NativeArray]
@@ -230,7 +235,7 @@ class ArrayWithDataTypes(abc.ABC):
 
     def result_type(
         self: ivy.Array,
-        *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
+        *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype],
     ) -> ivy.Dtype:
         """
         `ivy.Array` instance method variant of `ivy.result_type`. This method simply

@@ -15,7 +15,7 @@ tan.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def concatenate(operands, dimension):
-    return ivy.concat(operands, dimension)
+    return ivy.concat(operands, axis=dimension)
 
 
 def full(shape, fill_value, dtype=None):
@@ -109,8 +109,57 @@ neg.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 def argmax(operand, axis, index_dtype):
-    return ivy.astype(ivy.argmax(operand, axis=axis), dtype=index_dtype)
+    return ivy.astype(ivy.argmax(operand, axis=axis), index_dtype)
+
+
+argmax.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 def argmin(operand, axis, index_dtype):
-    return ivy.astype(ivy.argmin(operand, axis=axis), dtype=index_dtype)
+    return ivy.astype(ivy.argmin(operand, axis=axis), index_dtype)
+
+
+argmin.unsupported_dtypes = {"torch": ("bfloat16",)}
+
+
+def bitwise_xor(x, y):
+    return ivy.bitwise_xor(x, y)
+
+
+def full_like(x, fill_value, dtype=None, shape=None):
+    if shape is None:
+        return ivy.full_like(x, fill_value, dtype=dtype)
+    return ivy.full(shape, fill_value, dtype=dtype)
+
+
+def exp(x):
+    return ivy.exp(x)
+
+
+exp.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def convert_element_type(operand, new_dtype):
+    return ivy.astype(operand, new_dtype)
+
+
+def cumprod(operand, axis=0, reverse=False):
+    if reverse:
+        return ivy.flip(ivy.cumprod(ivy.flip(operand), axis))
+    return ivy.cumprod(operand, axis)
+
+
+cumprod.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def cumsum(operand, axis=0, reverse=False):
+    if reverse:
+        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis))
+    return ivy.cumsum(operand, axis)
+
+
+cumsum.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def ge(x, y):
+    return ivy.greater(x, y)
