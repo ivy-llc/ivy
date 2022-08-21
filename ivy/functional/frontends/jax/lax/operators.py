@@ -150,3 +150,12 @@ def cumprod(operand, axis=0, reverse=False):
 
 
 cumprod.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def cumsum(operand, axis=0, reverse=False):
+    if reverse:
+        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis))
+    return ivy.cumsum(operand, axis)
+
+
+cumsum.unsupported_dtypes = {"torch": ("float16",)}
