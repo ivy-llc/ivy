@@ -25,6 +25,7 @@ jobs:
           pip3 install --upgrade pip
           pip3 install wheel setuptools
           pip3 install -r ivy_models/requirements.txt
+          pip3 install -r ivy_models/optional.txt
           cat ivy_doc_builder/requirements.txt | xargs -n 1 pip3 install
 
       - name: Build Docs
