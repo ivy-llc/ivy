@@ -1394,7 +1394,7 @@ def test_inplace_increment(*, x_n_inc, tensor_fn, device):
 
 @pytest.mark.parametrize(
     "backend_str",
-    [None ,"numpy", "mxnet", "torch", "tensorflow", "jax"]
+    [None, "numpy", "mxnet", "torch", "tensorflow", "jax"]
 )
 def test_current_backend_str(backend_str):
     if backend_str:
