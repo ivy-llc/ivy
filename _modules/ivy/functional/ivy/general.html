@@ -2101,13 +2101,13 @@
 <span class="sd">    Without setting default backend of NumPy</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.current_backend_str)</span>
-<span class="sd">    &#39;&#39;</span>
+<span class="sd">    &lt;function current_backend_str at 0x7fbc15f65af0&gt;</span>
 
 <span class="sd">    With setting default backend as &#39;torch&#39;</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;torch&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.current_backend_str)</span>
-<span class="sd">    &quot;torch&quot;</span>
+<span class="sd">    &lt;function current_backend_str at 0x7fbba0a07c10&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fw</span> <span class="o">=</span> <span class="n">current_backend</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">backend_stack</span><span class="p">:</span>
