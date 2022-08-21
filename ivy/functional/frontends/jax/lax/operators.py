@@ -114,3 +114,7 @@ def argmax(operand, axis, index_dtype):
 
 def argmin(operand, axis, index_dtype):
     return ivy.astype(ivy.argmin(operand, axis=axis), dtype=index_dtype)
+
+
+def ge(x, y):
+    return ivy.greater(x, y)
