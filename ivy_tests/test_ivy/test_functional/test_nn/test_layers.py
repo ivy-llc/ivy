@@ -48,18 +48,16 @@ def x_and_linear(draw, dtypes):
 
 
 # linear
+@handle_cmd_line_args
 @given(
     dtype_x_weight_bias=x_and_linear(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
     ),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_linear(
     *,
-    data,
     dtype_x_weight_bias,
     as_variable,
     with_out,
@@ -98,6 +96,7 @@ def test_linear(
 # --------#
 
 # dropout
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
@@ -108,18 +107,15 @@ def test_linear(
         max_num_dims=1,
         min_dim_size=2,
     ),
-    data=st.data(),
-    prob=st.floats(min_value=0, max_value=0.9, width=64),
+    prob=helpers.floats(min_value=0, max_value=0.9, width=64),
     scale=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="dropout"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
 )
-@handle_cmd_line_args
 def test_dropout(
     *,
-    data,
     dtype_and_x,
     prob,
     scale,
@@ -132,7 +128,6 @@ def test_dropout(
     fw,
     device,
 ):
-
     dtype, x = dtype_and_x
     x = np.asarray(x, dtype=dtype)
     ret = helpers.test_function(
@@ -151,7 +146,7 @@ def test_dropout(
         scale=scale,
         dtype=dtype,
     )
-    ret = helpers.flatten(ret=ret)
+    ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:
         # cardinality test
         assert u.shape == x.shape
@@ -171,10 +166,17 @@ def x_and_scaled_attention(draw, dtypes):
             st.integers(1, 3),
         )
     )
+<<<<<<< HEAD
     num_queries = draw(st.integers(min_value=1, max_value=3))
     num_keys = draw(st.integers(min_value=1, max_value=3))
     feat_dim = draw(st.integers(min_value=1, max_value=3))
     scale = draw(st.floats(min_value=0.1, max_value=1, width=64))
+=======
+    num_queries = draw(helpers.ints(min_value=1, max_value=3))
+    num_keys = draw(helpers.ints(min_value=1, max_value=3))
+    feat_dim = draw(helpers.ints(min_value=1, max_value=3))
+    scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
+>>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
 
     q_shape = batch_shape + (num_queries,) + (feat_dim,)
     k_shape = batch_shape + (num_keys,) + (feat_dim,)
@@ -193,6 +195,7 @@ def x_and_scaled_attention(draw, dtypes):
 
 
 # # scaled_dot_product_attention
+@handle_cmd_line_args
 @given(
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
@@ -200,12 +203,9 @@ def x_and_scaled_attention(draw, dtypes):
     num_positional_args=helpers.num_positional_args(
         fn_name="scaled_dot_product_attention"
     ),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_scaled_dot_product_attention(
     *,
-    data,
     dtype_q_k_v_mask_scale,
     as_variable,
     num_positional_args,
@@ -252,7 +252,7 @@ def x_and_mha(draw, dtypes):
     x_mha_shape = (num_queries,) + (feat_dim * num_heads,)
     context_shape = (num_keys,) + (2 * feat_dim * num_heads,)
     mask_shape = (num_queries,) + (num_keys,)
-    scale = draw(st.floats(min_value=0.1, max_value=1, width=64))
+    scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
     x_mha = draw(
         helpers.array_values(
             dtype=dtype,
@@ -281,17 +281,15 @@ def x_and_mha(draw, dtypes):
 
 
 # multi_head_attention
+@handle_cmd_line_args
 @given(
     dtype_mha=x_and_mha(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="multi_head_attention"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_multi_head_attention(
     *,
-    data,
     dtype_mha,
     as_variable,
     num_positional_args,
@@ -378,9 +376,15 @@ def _x_and_filters(
         else:
             filter_shape = draw(
                 st.tuples(
+<<<<<<< HEAD
                     st.integers(3, 5),
                     st.shared(st.integers(1, 3), key="d_in"),
                     st.shared(st.integers(1, 3), key="d_in"),
+=======
+                    st.integers(min_value=3, max_value=5),
+                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
+                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
+>>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
                 )
             )
             min_x_width = 1
@@ -545,6 +549,7 @@ def _x_and_filters(
 
 
 # conv1d
+@handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
@@ -555,12 +560,9 @@ def _x_and_filters(
         type="1d",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv1d"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_conv1d(
     *,
-    data,
     x_f_d_df,
     as_variable,
     num_positional_args,
@@ -595,6 +597,7 @@ def test_conv1d(
 
 
 # conv1d_transpose
+@handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
@@ -606,12 +609,9 @@ def test_conv1d(
         transpose=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv1d_transpose"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_conv1d_transpose(
     *,
-    data,
     x_f_d_df,
     as_variable,
     num_positional_args,
@@ -648,6 +648,7 @@ def test_conv1d_transpose(
 
 
 # conv2d
+@handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
@@ -658,12 +659,9 @@ def test_conv1d_transpose(
         type="2d",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_conv2d(
     *,
-    data,
     x_f_d_df,
     as_variable,
     num_positional_args,
@@ -696,6 +694,7 @@ def test_conv2d(
 
 
 # conv2d_transpose
+@handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
@@ -707,9 +706,7 @@ def test_conv2d(
         transpose=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_conv2d_transpose(
     *,
     x_f_d_df,
@@ -750,6 +747,7 @@ def test_conv2d_transpose(
 
 
 # depthwise_conv2d
+@handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
@@ -760,9 +758,7 @@ def test_conv2d_transpose(
         type="depthwise",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="depthwise_conv2d"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_depthwise_conv2d(
     *,
     x_f_d_df,
@@ -801,6 +797,7 @@ def test_depthwise_conv2d(
 
 
 # conv3d
+@handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
@@ -811,12 +808,9 @@ def test_depthwise_conv2d(
         type="3d",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_conv3d(
     *,
-    data,
     x_f_d_df,
     as_variable,
     num_positional_args,
@@ -850,6 +844,7 @@ def test_conv3d(
 
 
 # conv3d_transpose
+@handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
@@ -861,9 +856,7 @@ def test_conv3d(
         transpose=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d_transpose"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_conv3d_transpose(
     *,
     x_f_d_df,
@@ -964,17 +957,15 @@ def x_and_lstm(draw, dtypes):
 
 
 # lstm
+@handle_cmd_line_args
 @given(
     dtype_lstm=x_and_lstm(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_lstm(
     *,
-    data,
     dtype_lstm,
     as_variable,
     num_positional_args,

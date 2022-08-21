@@ -19,17 +19,15 @@ def _broadcastable_trio(draw):
     return cond, x1, x2, dtype
 
 
+@handle_cmd_line_args
 @given(
     broadcastables=_broadcastable_trio(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.where"
     ),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_numpy_where(
     *,
-    data,
     broadcastables,
     as_variable,
     with_out,
@@ -47,8 +45,41 @@ def test_numpy_where(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="where",
+        fn_tree="where",
         cond=cond,
         x1=x1,
         x2=x2,
     )
+<<<<<<< HEAD
+=======
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.nonzero"
+    ),
+)
+def test_numpy_nonzero(
+    *,
+    dtype_and_a,
+    native_array,
+    num_positional_args,
+    fw,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="nonzero",
+        a=np.asarray(a, dtype=dtype),
+    )
+>>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be

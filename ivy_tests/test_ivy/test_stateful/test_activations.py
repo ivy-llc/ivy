@@ -6,7 +6,6 @@ import numpy as np
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers as helpers
 
 
 # GELU
@@ -49,7 +48,7 @@ import ivy_tests.test_ivy.helpers as helpers
 )
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
+def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph):
     # smoke test
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.asarray(
@@ -66,9 +65,9 @@ def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
     # cardinality test
     assert ret.shape == tuple(batch_shape + [output_channels])
     # value test
-    assert np.allclose(call(gelu_layer, x), np.array(target))
+    assert np.allclose(ivy.to_numpy(gelu_layer(x)), np.array(target))
     # compilation test
-    if call is helpers.torch_call:
+    if ivy.current_backend_str() == "torch":
         # pytest scripting does not **kwargs
         return
 
@@ -113,7 +112,7 @@ def test_gelu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
 )
 @pytest.mark.parametrize("dtype", ["float32"])
 @pytest.mark.parametrize("tensor_fn", [ivy.array])
-def test_geglu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
+def test_geglu(bs_oc_target, dtype, tensor_fn, device, compile_graph):
     # smoke test
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.asarray(
@@ -132,4 +131,4 @@ def test_geglu(bs_oc_target, dtype, tensor_fn, device, compile_graph, call):
     # cardinality test
     assert ret.shape == tuple(batch_shape + [output_channels])
     # value test
-    assert np.allclose(call(geglu_layer, x), np.array(target))
+    assert np.allclose(ivy.to_numpy(geglu_layer(x)), np.array(target))

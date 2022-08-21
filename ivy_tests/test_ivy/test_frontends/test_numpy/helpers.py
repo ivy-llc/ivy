@@ -24,7 +24,7 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x)) for x in helpers.flatten(ret=frontend_ret)
     ]
-    helpers.value_test(ret_np_flat=ret_flat, ret_from_np_flat=frontend_ret_flat)
+    helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
 
 
 # noinspection PyShadowingNames

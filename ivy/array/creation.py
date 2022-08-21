@@ -202,7 +202,7 @@ class ArrayWithCreation(abc.ABC):
             on the same device as ``self``.
 
         """
-        return ivy.tril(self._data, k, out=out)
+        return ivy.tril(self._data, k=k, out=out)
 
     def triu(self: ivy.Array, k: int = 0, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
@@ -232,7 +232,7 @@ class ArrayWithCreation(abc.ABC):
             on the same device as ``self``.
 
         """
-        return ivy.triu(self._data, k, out=out)
+        return ivy.triu(self._data, k=k, out=out)
 
     def empty_like(
         self: ivy.Array,

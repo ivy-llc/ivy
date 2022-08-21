@@ -29,7 +29,6 @@ import ivy_tests.test_ivy.helpers as helpers
 )
 def test_fomaml_step_unique_vars(
     device,
-    call,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -177,7 +176,6 @@ def test_fomaml_step_unique_vars(
 )
 def test_fomaml_step_shared_vars(
     device,
-    call,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -344,7 +342,6 @@ def test_fomaml_step_shared_vars(
 )
 def test_fomaml_step_overlapping_vars(
     device,
-    call,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -492,9 +489,9 @@ def test_fomaml_step_overlapping_vars(
 @pytest.mark.parametrize("num_tasks", [1, 2])
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
 def test_reptile_step(
-    device, call, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v
+    device, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v
 ):
-    if call in [helpers.np_call, helpers.mx_call]:
+    if ivy.current_backend_str() in ("numpy", "mxnet"):
         # Numpy does not support gradients, jax does not support gradients on custom
         # nested classes, and mxnet does not support only_inputs argument to
         # mx.autograd.grad
@@ -606,7 +603,6 @@ def test_reptile_step(
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
 def test_maml_step_unique_vars(
     device,
-    call,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -615,13 +611,13 @@ def test_maml_step_unique_vars(
     num_tasks,
     return_inner_v,
 ):
-    if call in [helpers.np_call, helpers.mx_call]:
+    if ivy.current_backend_str() in ("numpy", "mxnet"):
         # Numpy does not support gradients, jax does not support gradients on custom
         # nested classes, and mxnet does not support only_inputs argument to
         # mx.autograd.grad
         pytest.skip()
 
-    if call in [helpers.tf_call, helpers.tf_graph_call]:
+    if ivy.current_backend_str() == "tensorflow":
         # ToDo: work out why MAML does not work for tensorflow
         pytest.skip()
 
@@ -754,7 +750,6 @@ def test_maml_step_unique_vars(
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
 def test_maml_step_shared_vars(
     device,
-    call,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -763,13 +758,13 @@ def test_maml_step_shared_vars(
     num_tasks,
     return_inner_v,
 ):
-    if call in [helpers.np_call, helpers.mx_call]:
+    if ivy.current_backend_str() in ("numpy", "mxnet"):
         # Numpy does not support gradients, jax does not support gradients on custom
         # nested classes, and mxnet does not support only_inputs argument to
         # mx.autograd.grad
         pytest.skip()
 
-    if call in [helpers.tf_call, helpers.tf_graph_call]:
+    if ivy.current_backend_str() == "tensorflow":
         # ToDo: work out why MAML does not work for tensorflow
         pytest.skip()
 
@@ -969,7 +964,6 @@ def test_maml_step_shared_vars(
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
 def test_maml_step_overlapping_vars(
     device,
-    call,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -978,13 +972,13 @@ def test_maml_step_overlapping_vars(
     num_tasks,
     return_inner_v,
 ):
-    if call in [helpers.np_call, helpers.mx_call]:
+    if ivy.current_backend_str() in ("numpy", "mxnet"):
         # Numpy does not support gradients, jax does not support gradients on custom
         # nested classes, and mxnet does not support only_inputs argument to
         # mx.autograd.grad
         pytest.skip()
 
-    if call in [helpers.tf_call, helpers.tf_graph_call]:
+    if ivy.current_backend_str() == "tensorflow":
         # ToDo: work out why MAML does not work for tensorflow in wrapped mode
         pytest.skip()
     # config

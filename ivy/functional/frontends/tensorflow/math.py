@@ -6,31 +6,22 @@ def add(x, y, name=None):
     return ivy.add(x, y)
 
 
-add.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def tan(x, name=None):
     return ivy.tan(x)
 
 
-tan.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+tan.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def multiply(x, y, name=None):
     return ivy.multiply(x, y)
 
 
-multiply.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def subtract(x, y, name=None):
     return ivy.subtract(x, y)
 
 
-subtract.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
-def logical_xor(x, y, name='LogicalXor'):
+def logical_xor(x, y, name="LogicalXor"):
     return ivy.logical_xor(x, y)
 
 
@@ -41,6 +32,7 @@ def divide(x, y, name=None):
     return ivy.divide(x, y)
 
 
+<<<<<<< HEAD
 divide.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
@@ -49,3 +41,60 @@ def logical_or(x, y, name='LogicalOr'):
 
 
 logical_or.supported_dtypes = {"torch": ("bool", "bool")}
+=======
+def negative(x, name=None):
+    return ivy.negative(x)
+
+
+negative.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+}
+
+
+def log_sigmoid(x, name=None):
+    return -ivy.softplus(-x)
+
+
+log_sigmoid.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16", "float32", "float64"),
+}
+
+
+def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
+    return ivy.where(input_tensor == 0, 0.0, 1 / input_tensor)
+
+
+def reduce_all(input_tensor, axis=None, keepdims=False, name="reduce_all"):
+    return ivy.all(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_any(input_tensor, axis=None, keepdims=False, name="reduce_any"):
+    return ivy.any(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_euclidean_norm(
+    input_tensor, axis=None, keepdims=False, name="reduce_euclidean_norm"
+):
+    return ivy.vector_norm(
+        input_tensor, axis=axis, keepdims=keepdims, ord=2
+    )  # ord = '2' is the euclidean norm
+
+
+reduce_euclidean_norm.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+}
+
+
+def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
+    return ivy.exp(input_tensor).sum(axis=axis, keepdims=keepdims).log()
+
+
+reduce_logsumexp.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+}
+
+
+def argmax(input, axis, output_type, name=None):
+    return ivy.argmax(input, axis=axis)
+>>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
