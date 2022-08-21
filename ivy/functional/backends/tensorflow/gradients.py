@@ -27,7 +27,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     with tf.GradientTape(
         persistent=retain_grads, watch_accessed_variables=False
     ) as tape:
-        tape.watch(ivy.to_native(xs))
+        tape.watch(xs)
         func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
@@ -36,8 +36,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     y = ivy.to_native(y)
-    grads = tape.gradient(y, ivy.to_native(xs))
-    grads = ivy.to_ivy(grads)
+    grads = tape.gradient(y, xs)
     y = ivy.to_ivy(y)
     if not retain_grads:
         y = ivy.stop_gradient(y)
@@ -58,13 +57,9 @@ def value_and_grad(func):
             lambda x: ivy.to_ivy(x),
             include_derived=True,
         )
-        grad_idxs = ivy.nested_indices_where(grads_, lambda x: ivy.is_ivy_array(x))
+        grad_idxs = ivy.nested_indices_where(grads_, lambda x: x is not None)
         grad_array_vals = list(ivy.multi_index_nest(grads_, grad_idxs))
-        xs = ivy.to_ivy(xs)
-        if isinstance(xs, ivy.Array):
-            grads = grads_
-        else:
-            ivy.set_nest_at_indices(grads, grad_idxs, grad_array_vals)
+        ivy.set_nest_at_indices(grads, grad_idxs, grad_array_vals)
         y = ivy.to_ivy(y)
         return y, grads
 

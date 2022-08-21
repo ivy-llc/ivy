@@ -9,10 +9,9 @@ import ivy
 class ArrayWithSearching(abc.ABC):
     def argmax(
         self: ivy.Array,
-        /,
-        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -48,10 +47,9 @@ class ArrayWithSearching(abc.ABC):
 
     def argmin(
         self: ivy.Array,
-        /,
-        *,
         axis: Optional[int] = None,
         keepdims: Optional[bool] = False,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -86,7 +84,7 @@ class ArrayWithSearching(abc.ABC):
         """
         return ivy.argmin(self._data, axis=axis, keepdims=keepdims, out=out)
 
-    def nonzero(self: ivy.Array, /) -> ivy.Array:
+    def nonzero(self: ivy.Array):
         """
         ivy.Array instance method variant of ivy.nonzero. This method simply
         wraps the function, and so the docstring for ivy.nonzero also applies
@@ -109,7 +107,6 @@ class ArrayWithSearching(abc.ABC):
         self: ivy.Array,
         x1: ivy.Array,
         x2: ivy.Array,
-        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

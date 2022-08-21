@@ -1,9 +1,11 @@
 """Collection of tests for searching functions."""
 
-# Global
+# Gloabl
+from datetime import timedelta
+
 import hypothesis.extra.numpy as hnp
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, settings
 
 # local
 import ivy.functional.backends.numpy as ivy_np
@@ -48,14 +50,16 @@ def _broadcastable_trio(draw):
 #############
 
 
-@handle_cmd_line_args
 @given(
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="argmax"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_argmax(
     *,
+    data,
     dtype_x_axis,
     keepdims,
     as_variable,
@@ -83,14 +87,16 @@ def test_argmax(
     )
 
 
-@handle_cmd_line_args
 @given(
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="argmin"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_argmin(
     *,
+    data,
     dtype_x_axis,
     keepdims,
     as_variable,
@@ -118,7 +124,7 @@ def test_argmin(
     )
 
 
-@handle_cmd_line_args
+@settings(deadline=timedelta(milliseconds=500))
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_int_dtypes,
@@ -128,9 +134,12 @@ def test_argmin(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="nonzero"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_nonzero(
     *,
+    data,
     dtype_and_x,
     as_variable,
     with_out,
@@ -155,13 +164,15 @@ def test_nonzero(
     )
 
 
-@handle_cmd_line_args
 @given(
     broadcastables=_broadcastable_trio(),
     num_positional_args=helpers.num_positional_args(fn_name="where"),
+    data=st.data(),
 )
+@handle_cmd_line_args
 def test_where(
     *,
+    data,
     broadcastables,
     as_variable,
     with_out,

@@ -56,7 +56,11 @@ def cross_entropy(
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
-    return ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out)
+    return ivy.astype(
+        ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out),
+        pred.dtype,
+        out=out,
+    )
 
 
 cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
@@ -156,8 +160,12 @@ def binary_cross_entropy(
 
     """
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    return ivy.negative(
-        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out),
+    return ivy.astype(
+        ivy.negative(
+            ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out),
+            out=out,
+        ),
+        pred.dtype,
         out=out,
     )
 

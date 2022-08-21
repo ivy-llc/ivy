@@ -13,10 +13,9 @@ from ivy.functional.backends.jax import JaxArray
 
 def max(
     x: JaxArray,
-    /,
-    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
+    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
@@ -24,10 +23,9 @@ def max(
 
 def mean(
     x: JaxArray,
-    /,
-    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     if axis is None:
@@ -40,10 +38,9 @@ def mean(
 
 def min(
     x: JaxArray,
-    /,
-    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
@@ -51,7 +48,6 @@ def min(
 
 def prod(
     x: JaxArray,
-    /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[jnp.dtype] = None,
@@ -81,11 +77,10 @@ def prod(
 
 def std(
     x: JaxArray,
-    /,
-    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
+    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
@@ -93,7 +88,6 @@ def std(
 
 def sum(
     x: JaxArray,
-    /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: jnp.dtype = None,
@@ -123,11 +117,10 @@ def sum(
 
 def var(
     x: JaxArray,
-    /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
+    *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
@@ -138,8 +131,6 @@ def var(
 
 
 def einsum(
-    equation: str,
-    *operands: JaxArray,
-    out: Optional[JaxArray] = None
+    equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)

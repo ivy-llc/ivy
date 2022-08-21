@@ -1,7 +1,6 @@
 """Base Container Object."""
 
 # global
-from itertools import chain
 import re
 import abc
 import copy
@@ -1458,27 +1457,6 @@ class ContainerBase(dict, abc.ABC):
 
     # Public Methods #
     # ---------------#
-
-    def duplicate_array_keychains(self):
-        duplciates = ()
-        key_chains = self.all_key_chains()
-        skips = set()
-        for i in range(len(key_chains)):
-            temp_duplicates = ()
-            if key_chains[i] in skips:
-                continue
-            for j in range(i + 1, len(key_chains)):
-                if key_chains[j] in skips:
-                    continue
-                if self[key_chains[i]] is self[key_chains[j]]:
-                    if key_chains[i] not in temp_duplicates:
-                        temp_duplicates += (key_chains[i],)
-                    if key_chains[j] not in temp_duplicates:
-                        temp_duplicates += (key_chains[j],)
-            if len(temp_duplicates) > 0:
-                duplciates += (temp_duplicates,)
-            skips = chain.from_iterable(duplciates)
-        return duplciates
 
     def update_config(self, **config):
         new_config = dict()

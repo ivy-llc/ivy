@@ -41,9 +41,7 @@ class ArrayWithSet(abc.ABC):
         """
         return ivy.unique_counts(self._data)
 
-    def unique_values(
-        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def unique_values(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.unique_values(self._data, out=out)
 
     def unique_all(

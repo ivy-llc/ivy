@@ -273,7 +273,6 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
 @handle_nestable
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:

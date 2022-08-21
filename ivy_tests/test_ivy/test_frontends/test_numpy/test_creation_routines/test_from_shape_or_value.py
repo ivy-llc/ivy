@@ -5,7 +5,6 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # full
@@ -27,16 +26,10 @@ def _fill_value(draw):
     if ivy.is_uint_dtype(dtype):
         return draw(st.integers(0, 5))
     elif ivy.is_int_dtype(dtype):
-<<<<<<< HEAD
         return draw(st.integers(-5, 5))
     return draw(st.floats(-5, 5))
-=======
-        return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(helpers.floats(min_value=-5, max_value=5))
->>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
 
 
-@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -66,7 +59,7 @@ def test_numpy_full(
         native_array_flags=False,
         fw=fw,
         frontend="numpy",
-        fn_tree="full",
+        fn_name="full",
         shape=shape,
         fill_value=fill_value,
         dtype=dtypes[0],

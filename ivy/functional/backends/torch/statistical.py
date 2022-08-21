@@ -7,36 +7,15 @@ from typing import Tuple, Union, Optional, Sequence
 import ivy
 
 
-<<<<<<< HEAD
-=======
-def _new_var_fun(x, *, axis, correction, dtype):
-    output = x.to(dtype)
-    length = output.shape[axis]
-    divisor = length - correction
-    mean = torch.sum(output, dim=axis) / length
-    output = torch.abs(output.to(dtype=dtype) - torch.unsqueeze(mean, dim=axis))
-    output = output**2
-    output = torch.sum(output, axis=axis) / divisor
-    return output
-
-
-def _new_std_fun(x, *, axis, correction, dtype):
-    output = torch.sqrt(_new_var_fun(x, axis=axis, correction=correction, dtype=dtype))
-    output = output.to(dtype=dtype)
-    return output
-
-
->>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
 # Array API Standard #
 # -------------------#
 
 
 def max(
     x: torch.Tensor,
-    /,
-    *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: Optional[bool] = False,
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():
@@ -54,10 +33,9 @@ max.support_native_out = True
 
 def mean(
     x: torch.Tensor,
-    /,
-    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -76,10 +54,9 @@ mean.support_native_out = True
 
 def min(
     x: torch.Tensor,
-    /,
-    *,
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():
@@ -97,11 +74,11 @@ min.support_native_out = True
 
 def prod(
     x: torch.Tensor,
-    /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if dtype is None:
         if x.dtype in [torch.int8, torch.int16]:
@@ -129,27 +106,22 @@ def prod(
                     ]
                 ),
                 dtype=dtype,
-<<<<<<< HEAD
                 out=out,
-=======
->>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
             )
-    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
+    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
 
 
-prod.unsupported_dtypes = ("float16",)
+prod.support_native_out = True
 
 
 def std(
     x: torch.Tensor,
-    /,
-    *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-<<<<<<< HEAD
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -175,34 +147,13 @@ def std(
                 out=out,
             )
     return x
-=======
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    dtype = x.dtype
-    if isinstance(axis, tuple):
-        ret = []
-        for i in axis:
-            ret.append(_new_std_fun(x, axis=i, correction=correction, dtype=dtype))
-        ret = torch.tensor(ret, dtype=dtype)
-    elif isinstance(axis, int):
-        ret = _new_std_fun(x, axis=axis, correction=correction, dtype=dtype)
-    else:
-        num = torch.numel(x)
-        ret = _new_std_fun(
-            torch.reshape(x, (num,)), axis=0, correction=correction, dtype=dtype
-        )
-
-    if keepdims:
-        ret = torch.reshape(ret, x.shape)
-    return ret
->>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
 
 
-std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
+std.support_native_out = True
 
 
 def sum(
     x: torch.Tensor,
-    /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: torch.dtype = None,
@@ -220,7 +171,6 @@ def sum(
 
     if axis is None:
         return torch.sum(input=x, dtype=dtype)
-<<<<<<< HEAD
     elif type(axis) == list:
         return torch.sum(input=x, dim=axis)
     elif type(axis) == tuple:
@@ -236,45 +186,24 @@ def sum(
                 ),
                 dtype=dtype,
             )
-=======
->>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
 def var(
     x: torch.Tensor,
-    /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-<<<<<<< HEAD
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     return torch.var(x, dim=axis, keepdim=keepdims, unbiased=False, out=out)
-=======
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    dtype = x.dtype
-    if isinstance(axis, tuple):
-        ret = []
-        for i in axis:
-            ret.append(_new_var_fun(x, axis=i, correction=correction, dtype=dtype))
-        ret = torch.tensor(ret, dtype=dtype)
-    elif isinstance(axis, int):
-        ret = _new_var_fun(x, axis=axis, correction=correction, dtype=dtype)
-    else:
-        num = torch.numel(x)
-        ret = _new_var_fun(
-            torch.reshape(x, (num,)), axis=0, correction=correction, dtype=dtype
-        )
 
-    if keepdims:
-        ret = torch.reshape(ret, x.shape)
-    return ret
->>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
+
+var.support_native_out = True
 
 
 # Extra #
@@ -282,8 +211,6 @@ def var(
 
 
 def einsum(
-    equation: str,
-    *operands: torch.Tensor,
-    out: Optional[torch.Tensor] = None,
+    equation: str, *operands: torch.Tensor, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.einsum(equation, *operands)

@@ -1,4 +1,3 @@
-# For Review
 # global
 import ivy
 import math
@@ -16,9 +15,8 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 def concat(
     xs: List[tf.Tensor],
-    /,
-    *,
     axis: int = 0,
+    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     is_tuple = type(xs) is tuple
@@ -43,8 +41,6 @@ def concat(
 
 def expand_dims(
     x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
     axis: Union[int, Tuple[int], List[int]] = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
@@ -57,9 +53,8 @@ def expand_dims(
 
 def flip(
     x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    *,
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     num_dims = len(x.shape)
@@ -81,7 +76,6 @@ def flip(
 
 def permute_dims(
     x: Union[tf.Tensor, tf.Variable],
-    /,
     axes: Tuple[int, ...],
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -92,7 +86,6 @@ def permute_dims(
 
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
-    /,
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
@@ -105,10 +98,9 @@ def reshape(
 
 def roll(
     x: Union[tf.Tensor, tf.Variable],
-    /,
     shift: Union[int, Sequence[int]],
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
+    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
@@ -126,7 +118,6 @@ def roll(
 
 def squeeze(
     x: Union[tf.Tensor, tf.Variable],
-    /,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -166,13 +157,12 @@ def squeeze(
 
 
 def stack(
-    arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
-    /,
-    *,
+    x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     axis: Optional[int] = 0,
+    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.stack(arrays, axis)
+    ret = tf.experimental.numpy.stack(x, axis)
     return ret
 
 
@@ -182,11 +172,10 @@ def stack(
 
 def split(
     x,
-    /,
-    *,
     num_or_size_splits=None,
     axis=0,
     with_remainder=False,
+    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if x.shape == ():
@@ -213,10 +202,9 @@ def split(
 
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
-    /,
     repeats: Union[int, List[int]],
-    *,
     axis: int = None,
+    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.repeat(x, repeats, axis)
@@ -229,7 +217,7 @@ repeat.supported_dtypes = (
 )
 
 
-def tile(x, /, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def tile(x, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     if isinstance(reps, Number):
@@ -250,7 +238,7 @@ tile.unsupported_dtypes = (
 
 
 def constant_pad(
-    x, /, pad_width, *, value=0, out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    x, pad_width, value=0, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
@@ -258,16 +246,14 @@ def constant_pad(
     return ret
 
 
-def zero_pad(x, /, pad_width, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def zero_pad(x, pad_width, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     ret = tf.pad(x, pad_width)
     return ret
 
 
-def swapaxes(
-    x, axis0, axis1, /, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None
-):
+def swapaxes(x, axis0, axis1, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
     x_shape = x.shape
     num_dims = len(x_shape)
     axis0 %= num_dims
@@ -285,7 +271,6 @@ def clip(
     x: Union[tf.Tensor, tf.Variable],
     x_min: Union[Number, tf.Tensor, tf.Variable],
     x_max: Union[Number, tf.Tensor, tf.Variable],
-    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

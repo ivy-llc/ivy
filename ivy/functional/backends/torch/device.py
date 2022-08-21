@@ -18,10 +18,7 @@ torch_scatter = None
 # ----#
 
 
-def dev(x: torch.Tensor,
-        /,
-        *,
-        as_native: bool = False) -> Union[ivy.Device, torch.device]:
+def dev(x: torch.Tensor, as_native: bool = False) -> Union[ivy.Device, torch.device]:
     dv = x.device
     if as_native:
         if isinstance(dv, torch.device):
@@ -31,11 +28,7 @@ def dev(x: torch.Tensor,
 
 
 def to_device(
-        x: torch.Tensor,
-        device: torch.device,
-        /,
-        *,
-        stream: Optional[int] = None
+    x: torch.Tensor, device: torch.device, stream: Optional[int] = None
 ) -> torch.Tensor:
     if device is None:
         return x
@@ -45,7 +38,7 @@ def to_device(
     return ret
 
 
-def as_ivy_dev(device: torch.device, /):
+def as_ivy_dev(device: torch.device):
     if isinstance(device, str):
         return ivy.Device(device)
     dev_type, dev_idx = (device.type, device.index)
@@ -58,15 +51,14 @@ def as_ivy_dev(device: torch.device, /):
 
 
 def as_native_dev(
-        device: Optional[Union[ivy.Device, torch.device]] = None,
-        /,
+    device: Optional[Union[ivy.Device, torch.device]] = None
 ) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
     return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
 
-def clear_mem_on_dev(device: torch.device, /):
+def clear_mem_on_dev(device):
     if "gpu" in device:
         torch.cuda.empty_cache()
 

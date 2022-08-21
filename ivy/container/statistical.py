@@ -12,83 +12,72 @@ from ivy.container.base import ContainerBase
 class ContainerWithStatistical(ContainerBase):
     def min(
         self: ivy.Container,
-        /,
-        *,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.min(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
+                lambda x_, _: ivy.min(x_, axis, keepdims) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
             out=out,
         )
 
     def max(
         self: ivy.Container,
-        /,
-        *,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.max(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
+                lambda x_, _: ivy.max(x_, axis, keepdims) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
             out=out,
         )
 
     def mean(
         self: ivy.Container,
-        /,
-        *,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.mean(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
+                lambda x_, _: ivy.mean(x_, axis, keepdims) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
             out=out,
         )
 
     def var(
         self: ivy.Container,
-        /,
-        *,
         axis: Union[int, Tuple[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
@@ -96,6 +85,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -191,16 +181,13 @@ class ContainerWithStatistical(ContainerBase):
         """
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.var(x_,
-                                      axis=axis,
-                                      correction=correction,
-                                      keepdims=keepdims)
+                lambda x_, _: ivy.var(x_, axis, correction, keepdims)
                 if ivy.is_array(x_)
                 else x_,
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
             out=out,
         )
@@ -208,8 +195,6 @@ class ContainerWithStatistical(ContainerBase):
     @staticmethod
     def static_var(
         x: ivy.Container,
-        /,
-        *,
         axis: Union[int, Tuple[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
@@ -217,6 +202,7 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -281,8 +267,6 @@ class ContainerWithStatistical(ContainerBase):
 
     def prod(
         self: ivy.Container,
-        /,
-        *,
         axis: Union[int, Tuple[int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
@@ -290,25 +274,24 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.prod(x_, axis=axis, keepdims=keepdims)
+                lambda x_, _: ivy.prod(x_, axis=axis, keepdims=keepdims, dtype=dtype)
                 if ivy.is_array(x_)
                 else x_,
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
             out=out,
         )
 
     def sum(
         self: ivy.Container,
-        /,
-        *,
         axis: Union[int, Tuple[int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
@@ -316,25 +299,24 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.sum(x_, axis=axis, keepdims=keepdims)
+                lambda x_, _: ivy.sum(x_, axis=axis, dtype=dtype, keepdims=keepdims)
                 if ivy.is_array(x_)
                 else x_,
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
             out=out,
         )
 
     def std(
         self: ivy.Container,
-        /,
-        *,
         axis: Union[int, Tuple[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
@@ -342,20 +324,18 @@ class ContainerWithStatistical(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.handle_inplace(
             self.map(
-                lambda x_, _: ivy.std(x_,
-                                      axis=axis,
-                                      correction=correction,
-                                      keepdims=keepdims)
+                lambda x_, _: ivy.std(x_, axis, correction, keepdims)
                 if ivy.is_array(x_)
                 else x_,
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
             ),
             out=out,
         )

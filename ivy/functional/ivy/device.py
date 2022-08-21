@@ -41,7 +41,6 @@ class DefaultDevice:
     def __init__(
         self,
         device: Union[ivy.Device, ivy.NativeDevice],
-        /,
     ) -> None:
         """Initialises the DefaultDevice class
 
@@ -110,7 +109,7 @@ class DefaultDevice:
 # Helpers #
 
 # noinspection PyShadowingNames
-def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
+def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice]) -> int:
     global dev_handles
     if device in dev_handles:
         return dev_handles[device]
@@ -126,8 +125,7 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
 
 
 def get_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice],
-    /,
+    device: Union[ivy.Device, ivy.NativeDevice]
 ) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
@@ -161,7 +159,7 @@ def get_all_ivy_arrays_on_dev(
     return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 
-def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
+def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> int:
     """Returns the number of arrays which are currently alive on the specified device.
 
     Parameters
@@ -295,7 +293,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
 @handle_nestable
 def print_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
+    device: Union[ivy.Device, ivy.NativeDevice], attr_only: bool = True
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -320,7 +318,7 @@ def print_all_ivy_arrays_on_dev(
 
 
 def dev(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """
     Get the native device handle for input array x.
@@ -345,13 +343,13 @@ def dev(
     >>> print(y)
     cpu
     """
-    return ivy.current_backend(x).dev(x, as_native=as_native)
+    return ivy.current_backend(x).dev(x, as_native)
 
 
 # Conversions
 
 
-def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
+def as_ivy_dev(device: Union[ivy.Device, str]) -> ivy.Device:
     """Convert native data type to string representation.
 
     Parameters
@@ -368,7 +366,7 @@ def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
     return ivy.current_backend().as_ivy_dev(device)
 
 
-def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeDevice:
+def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevice:
     """Convert device string representation to native device type.
 
     Parameters
@@ -388,7 +386,7 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
 # Memory
 
 
-def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
+def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     """Clear memory cache on target device.
 
     Parameters
@@ -400,7 +398,7 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     ivy.current_backend(None).clear_mem_on_dev(device)
 
 
-def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
+def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the total amount of memory (in GB) for a given device string. In case of CPU,
     the total RAM is returned.
 
@@ -439,7 +437,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
 
 
 def used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, process_specific: bool = False
+    device: Union[ivy.Device, ivy.NativeDevice], process_specific: bool = False
 ) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
@@ -479,8 +477,6 @@ def used_mem_on_dev(
 
 def percent_used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice],
-    /,
-    *,
     process_specific: bool = False,
 ) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
@@ -501,16 +497,16 @@ def percent_used_mem_on_dev(
 
     Examples
     --------
-    >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = False)
+    >>> x = ivy.percent_used_mem_on_dev(device = "cpu", process_specific = False)
     >>> print(x)
     94.036902561555
 
-    >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = True)
+    >>> x = ivy.percent_used_mem_on_dev(device = "cpu", process_specific = True)
     >>> print(x)
     0.7024003467681645
 
     >>> x = ivy.as_native_dev("gpu:0")
-    >>> y = ivy.percent_used_mem_on_dev(x, process_specific = False)
+    >>> y = ivy.percent_used_mem_on_dev(device = x, process_specific = False)
     >>> print(y)
     0.7095597456708771
 
@@ -537,7 +533,7 @@ def percent_used_mem_on_dev(
 # Utilization
 
 
-def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
+def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """Get the current utilization (%) for a given device.
 
     Parameters
@@ -596,7 +592,7 @@ def gpu_is_available() -> bool:
     return ivy.current_backend().gpu_is_available()
 
 
-def num_cpu_cores(*, logical: bool = True) -> int:
+def num_cpu_cores(logical: bool = True) -> int:
     """Determine the number of cores available in the cpu.
 
     Parameters
@@ -611,7 +607,7 @@ def num_cpu_cores(*, logical: bool = True) -> int:
 
     Examples
     --------
-    >>> print(ivy.num_cpu_cores(logical=False))
+    >>> print(ivy.num_cpu_cores(False))
     2
 
     """
@@ -659,8 +655,6 @@ def tpu_is_available() -> bool:
 # noinspection PyShadowingNames
 def default_device(
     device: Union[ivy.Device, ivy.NativeDevice] = None,
-    /,
-    *,
     item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
     as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -726,7 +720,7 @@ def default_device(
     return ivy.as_ivy_dev(ret)
 
 
-def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
+def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     """Set the default device to given device instance
 
     Parameters
@@ -784,10 +778,9 @@ def unset_default_device() -> None:
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
-    /,
     *,
     stream: Optional[Union[int, Any]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
@@ -823,7 +816,7 @@ def to_device(
 # Function Splitting #
 
 
-def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float:
+def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
     """
     Get a device's global split factor, which can be used to scale the device's
     batch splitting chunk sizes across the codebase.
@@ -860,9 +853,7 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float
 
 
 def set_split_factor(
-    factor: float,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    /,
+    factor: float, device: Union[ivy.Device, ivy.NativeDevice] = None
 ) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
@@ -911,8 +902,6 @@ def split_func_call(
     func: Callable,
     inputs: Union[ivy.Array, ivy.NativeArray],
     mode: str,
-    /,
-    *,
     max_chunk_size: int = None,
     chunk_size: int = None,
     input_axes: Union[int, Iterable[int]] = 0,
@@ -1045,7 +1034,7 @@ def _is_valid_devices_attributes(fn: Callable) -> bool:
 
 
 @handle_nestable
-def function_unsupported_devices(fn: Callable, /) -> Tuple:
+def function_unsupported_devices(fn: Callable) -> Tuple:
     """Returns the unsupported devices of the current backend's function.
 
     Parameters
@@ -1078,7 +1067,7 @@ def function_unsupported_devices(fn: Callable, /) -> Tuple:
 
 
 @handle_nestable
-def function_supported_devices(fn: Callable, /) -> Tuple:
+def function_supported_devices(fn: Callable) -> Tuple:
     """Returns the supported devices of the current backend's function.
 
     Parameters

@@ -178,7 +178,6 @@ def ones(
 
 def ones_like(
     x: mx.nd.NDArray,
-    /,
     *,
     dtype: type,
     device: mx.context.Context,
@@ -206,8 +205,6 @@ def zeros(
 
 def zeros_like(
     x: mx.nd.NDArray,
-    /,
-    *,
     dtype: Optional[type] = None,
     device: Optional[mx.context.Context] = None,
 ) -> mx.nd.NDArray:

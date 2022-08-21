@@ -7,24 +7,24 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
-# Acos
-@handle_cmd_line_args
+# add
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
+        num_arrays=2,
+        shared_dtype=True,
     ),
-    as_variable=st.booleans(),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.acos"
+        fn_name="ivy.functional.frontends.tensorflow.add"
     ),
-    native_array=st.booleans(),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-def test_tensorflow_acos(
+def test_tensorflow_add(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -36,26 +36,22 @@ def test_tensorflow_acos(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="acos",
-        x=np.asarray(x, dtype=input_dtype),
+        fn_name="add",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
-# Acosh
-@handle_cmd_line_args
+# tan
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.acosh"
+        fn_name="ivy.functional.frontends.tensorflow.tan"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_acosh(
+def test_tensorflow_tan(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -67,7 +63,7 @@ def test_tensorflow_acosh(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="acosh",
+        fn_name="tan",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -105,7 +101,6 @@ def _arrays_idx_n_dtypes(draw):
 
 
 # concat
-@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
@@ -131,71 +126,9 @@ def test_tensorflow_concat(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="concat",
+        fn_name="concat",
         values=xs,
         axis=unique_idx,
-    )
-
-
-# cos
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
-    ),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.cos"
-    ),
-    native_array=st.booleans(),
-)
-def test_tensorflow_cos(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="tensorflow",
-        fn_tree="cos",
-        x=np.asarray(x, dtype=input_dtype),
-    )
-
-
-# cosh
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
-    ),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.cosh"
-    ),
-    native_array=st.booleans(),
-)
-def test_tensorflow_cosh(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="tensorflow",
-        fn_tree="cosh",
-        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -218,16 +151,10 @@ def _fill_value(draw):
     if ivy.is_uint_dtype(dtype):
         return draw(st.integers(0, 5))
     elif ivy.is_int_dtype(dtype):
-<<<<<<< HEAD:ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tf_functions.py
         return draw(st.integers(-5, 5))
     return draw(st.floats(-5, 5))
-=======
-        return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(helpers.floats(min_value=-5, max_value=5))
->>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be:ivy_tests/test_ivy/test_frontends/test_tensorflow/test_raw_ops.py
 
 
-@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -257,12 +184,11 @@ def test_tensorflow_full(
         native_array_flags=False,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="fill",
+        fn_name="fill",
         dims=shape,
         value=fill_value,
         rtol=1e-05,
     )
-<<<<<<< HEAD:ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tf_functions.py
 
 
 # mutiply
@@ -366,7 +292,7 @@ def test_tensorflow_logical_xor(
     )
 
 
-# logical_or 
+# logical_or
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -397,5 +323,3 @@ def test_tensorflow_logical_or(
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
-=======
->>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be:ivy_tests/test_ivy/test_frontends/test_tensorflow/test_raw_ops.py

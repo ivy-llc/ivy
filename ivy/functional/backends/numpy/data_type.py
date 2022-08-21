@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Optional, Union, Sequence, List
+from typing import Union, Sequence, List
 
 # local
 import ivy
@@ -82,11 +82,7 @@ class Finfo:
 # -------------------#
 
 
-def astype(
-        x: np.ndarray, dtype: np.dtype, 
-        *, 
-        copy: bool = True, 
-        out: Optional[ivy.Array] = None,) -> np.ndarray:
+def astype(x: np.ndarray, dtype: np.dtype, *, copy: bool = True) -> np.ndarray:
     dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:

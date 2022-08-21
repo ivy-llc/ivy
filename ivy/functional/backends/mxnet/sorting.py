@@ -8,8 +8,6 @@ import ivy
 
 def argsort(
     x: mx.nd.NDArray,
-    /,
-    *,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
@@ -23,8 +21,6 @@ def argsort(
 
 def sort(
     x: mx.nd.NDArray,
-    /,
-    *,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
@@ -40,8 +36,6 @@ def sort(
 def searchsorted(
     x: mx.nd.NDArray,
     v: mx.nd.NDArray,
-    /,
-    *,
     side="left",
     sorter=None,
     out: Optional[mx.nd.NDArray] = None,

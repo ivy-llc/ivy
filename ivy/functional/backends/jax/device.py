@@ -29,10 +29,7 @@ def _to_array(x):
 
 
 def dev(
-    x: JaxArray,
-    /,
-    *,
-    as_native: bool = False,
+    x: JaxArray, as_native: bool = False
 ) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return ""
@@ -47,11 +44,7 @@ def dev(
 
 
 def to_device(
-        x: JaxArray,
-        device: jaxlib.xla_extension.Device,
-        /,
-        *,
-        stream: Optional[int] = None
+    x: JaxArray, device: jaxlib.xla_extension.Device, stream: Optional[int] = None
 ):
     if device is not None:
         cur_dev = as_ivy_dev(dev(x))
@@ -70,7 +63,7 @@ def _to_device(x, device=None):
     return x
 
 
-def as_ivy_dev(device, /):
+def as_ivy_dev(device):
     if isinstance(device, str):
         return ivy.Device(device)
     if device is None:
@@ -81,7 +74,7 @@ def as_ivy_dev(device, /):
     return ivy.Device(p + ":" + str(dev_id))
 
 
-def as_native_dev(device, /):
+def as_native_dev(device):
     if not isinstance(device, str):
         return device
     dev_split = ivy.Device(device).split(":")
@@ -93,7 +86,7 @@ def as_native_dev(device, /):
     return jax.devices(device)[idx]
 
 
-def clear_mem_on_dev(device, /):
+def clear_mem_on_dev(device):
     return None
 
 
