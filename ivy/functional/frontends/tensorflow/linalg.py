@@ -6,3 +6,10 @@ def det(input, name=None):
 
 
 det.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def solve(x, y):
+    return ivy.solve(x, y)
+
+
+solve.unsupported_dtypes = ("float16", "bfloat16")
