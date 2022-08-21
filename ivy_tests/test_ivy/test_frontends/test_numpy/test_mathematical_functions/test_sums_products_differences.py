@@ -54,5 +54,5 @@ def test_numpy_prod(
         keepdims=np._NoValue,
         initial=np._NoValue,
         where=where,
-        test_values=True,
+        test_values=False,
     )
