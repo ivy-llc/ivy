@@ -85,5 +85,8 @@ reduce_logsumexp.unsupported_dtypes = {
 }
 
 
-def argmax(input, axis, output_type, name=None):
-    return ivy.argmax(input, axis=axis)
+def argmax(values, axis, name=None):
+    return ivy.argmax(values, axis)
+
+
+argmax.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
