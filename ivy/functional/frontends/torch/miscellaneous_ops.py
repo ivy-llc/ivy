@@ -2,7 +2,7 @@ import ivy
 
 
 def flip(input, dims):
-    return ivy.flip(input, dims)
+    return ivy.flip(input, axis=dims)
 
 
 flip.unsupported_dtypes = (
