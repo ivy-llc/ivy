@@ -34,7 +34,9 @@ def mean(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.mean(x, axis=axis, keepdims=keepdims, out=out))
+    return np.asarray(
+        np.mean(x, axis=axis, dtype="float32", keepdims=keepdims, out=out)
+    )
 
 
 mean.support_native_out = True
@@ -160,9 +162,7 @@ var.support_native_out = True
 
 
 def einsum(
-    equation: str,
-    *operands: np.ndarray, 
-    out: Optional[np.ndarray] = None
+    equation: str, *operands: np.ndarray, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.asarray(np.einsum(equation, *operands, out=out))
 
