@@ -666,7 +666,6 @@ def value_test(
     ret_np_from_gt_flat,
     rtol=None,
     atol=1e-6,
-    test_values: bool = True,
     ground_truth_backend="TensorFlow",
 ):
     """Performs a value test for matching the arrays in ret_np_flat and
@@ -701,27 +700,25 @@ def value_test(
             ret_np_flat, ret_np_from_gt_flat
         )
     )
-    if test_values:
-        # value tests, iterating through each array in the flattened returns
-        if not rtol:
-            for ret_np, ret_from_np in zip(ret_np_flat, ret_np_from_gt_flat):
-                rtol = TOLERANCE_DICT.get(str(ret_from_np.dtype), 1e-03)
-                assert_all_close(
-                    ret_np,
-                    ret_from_np,
-                    rtol=rtol,
-                    atol=atol,
-                    ground_truth_backend=ground_truth_backend,
-                )
-        else:
-            for ret_np, ret_from_np in zip(ret_np_flat, ret_np_from_gt_flat):
-                assert_all_close(
-                    ret_np,
-                    ret_from_np,
-                    rtol=rtol,
-                    atol=atol,
-                    ground_truth_backend=ground_truth_backend,
-                )
+    if not rtol:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_np_from_gt_flat):
+            rtol = TOLERANCE_DICT.get(str(ret_from_np.dtype), 1e-03)
+            assert_all_close(
+                ret_np,
+                ret_from_np,
+                rtol=rtol,
+                atol=atol,
+                ground_truth_backend=ground_truth_backend,
+            )
+    else:
+        for ret_np, ret_from_np in zip(ret_np_flat, ret_np_from_gt_flat):
+            assert_all_close(
+                ret_np,
+                ret_from_np,
+                rtol=rtol,
+                atol=atol,
+                ground_truth_backend=ground_truth_backend,
+            )
 
 
 def args_to_container(array_args):
@@ -1227,16 +1224,31 @@ def test_method(
         return ret, ret_from_gt
     # value test
     if test_values == "with_v":
-        test_values = (
-            True if "v" in kwargs_np_constructor or "v" in kwargs_np_method else False
+        if "v" in kwargs_np_constructor or "v" in kwargs_np_method:
+            value_test(
+                ret_np_flat=ret_np_flat,
+                ret_np_from_gt_flat=ret_np_from_gt_flat,
+                rtol=rtol_,
+                atol=atol_,
+            )
+        else:
+            if type(ret_np_flat) != list:
+                ret_np_flat = [ret_np_flat]
+            if type(ret_np_from_gt_flat) != list:
+                ret_np_from_gt_flat = [ret_np_from_gt_flat]
+            assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
+                "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
+                "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
+                    ret_np_flat, ret_np_from_gt_flat
+                )
+            )
+    elif test_values:
+        value_test(
+            ret_np_flat=ret_np_flat,
+            ret_np_from_gt_flat=ret_np_from_gt_flat,
+            rtol=rtol_,
+            atol=atol_,
         )
-    value_test(
-        ret_np_flat=ret_np_flat,
-        ret_np_from_gt_flat=ret_np_from_gt_flat,
-        rtol=rtol_,
-        atol=atol_,
-        test_values=test_values,
-    )
 
 
 def test_function(
