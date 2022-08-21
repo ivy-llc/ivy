@@ -134,3 +134,7 @@ def full_like(x, fill_value, dtype=None, shape=None):
 
 def exp(x):
     return ivy.exp(x)
+
+
+def convert_element_type(operand, new_dtype):
+    return ivy.astype(operand, new_dtype)
