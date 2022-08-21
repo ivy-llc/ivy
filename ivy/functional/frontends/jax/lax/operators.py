@@ -15,7 +15,7 @@ tan.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def concatenate(operands, dimension):
-    return ivy.concat(operands, dimension)
+    return ivy.concat(operands, axis=dimension)
 
 
 def full(shape, fill_value, dtype=None):
