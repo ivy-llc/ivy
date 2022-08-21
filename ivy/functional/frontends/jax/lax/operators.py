@@ -130,3 +130,7 @@ def full_like(x, fill_value, dtype=None, shape=None):
     if shape is None:
         return ivy.full_like(x, fill_value, dtype=dtype)
     return ivy.full(shape, fill_value, dtype=dtype)
+
+
+def exp(x):
+    return ivy.exp(x)
