@@ -85,5 +85,5 @@ reduce_logsumexp.unsupported_dtypes = {
 }
 
 
-def argmax(values, axis, name=None):
-    return ivy.argmax(values, axis)
+def argmax(input, axis, output_type, name=None):
+    return ivy.argmax(input, axis=axis)
