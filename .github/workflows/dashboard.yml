@@ -16,7 +16,7 @@ jobs:
           path: ivy
           persist-credentials: false
       - name: Setup Python
-        uses: actions/setup-python@v23
+        uses: actions/setup-python@v3
         with:
           python-version: "3.10"
       - name: Install Dependencies
