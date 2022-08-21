@@ -130,6 +130,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Base Container Object.&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">copy</span>
@@ -1586,6 +1587,27 @@
 
     <span class="c1"># Public Methods #</span>
     <span class="c1"># ---------------#</span>
+
+<div class="viewcode-block" id="ContainerBase.duplicate_array_keychains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.duplicate_array_keychains">[docs]</a>    <span class="k">def</span> <span class="nf">duplicate_array_keychains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">duplciates</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="n">key_chains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_key_chains</span><span class="p">()</span>
+        <span class="n">skips</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)):</span>
+            <span class="n">temp_duplicates</span> <span class="o">=</span> <span class="p">()</span>
+            <span class="k">if</span> <span class="n">key_chains</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">skips</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">key_chains</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">in</span> <span class="n">skips</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">key_chains</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">[</span><span class="n">key_chains</span><span class="p">[</span><span class="n">j</span><span class="p">]]:</span>
+                    <span class="k">if</span> <span class="n">key_chains</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">temp_duplicates</span><span class="p">:</span>
+                        <span class="n">temp_duplicates</span> <span class="o">+=</span> <span class="p">(</span><span class="n">key_chains</span><span class="p">[</span><span class="n">i</span><span class="p">],)</span>
+                    <span class="k">if</span> <span class="n">key_chains</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">temp_duplicates</span><span class="p">:</span>
+                        <span class="n">temp_duplicates</span> <span class="o">+=</span> <span class="p">(</span><span class="n">key_chains</span><span class="p">[</span><span class="n">j</span><span class="p">],)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp_duplicates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">duplciates</span> <span class="o">+=</span> <span class="p">(</span><span class="n">temp_duplicates</span><span class="p">,)</span>
+            <span class="n">skips</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">duplciates</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">duplciates</span></div>
 
 <div class="viewcode-block" id="ContainerBase.update_config"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.update_config">[docs]</a>    <span class="k">def</span> <span class="nf">update_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">):</span>
         <span class="n">new_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>

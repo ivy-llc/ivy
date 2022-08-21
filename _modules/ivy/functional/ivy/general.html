@@ -2086,13 +2086,28 @@
 
 
 <div class="viewcode-block" id="current_backend_str"><a class="viewcode-back" href="../../../../functional/ivy/general/current_backend_str.html#ivy.functional.ivy.general.current_backend_str">[docs]</a><span class="k">def</span> <span class="nf">current_backend_str</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Summary.</span>
+    <span class="sd">&quot;&quot;&quot;Return framework string</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The framework string.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Without setting default backend of NumPy</span>
 
+<span class="sd">    &gt;&gt;&gt; print(ivy.current_backend_str)</span>
+<span class="sd">    &#39;&#39;</span>
+
+<span class="sd">    With setting default backend as &#39;torch&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;torch&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.current_backend_str)</span>
+<span class="sd">    &quot;torch&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fw</span> <span class="o">=</span> <span class="n">current_backend</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">backend_stack</span><span class="p">:</span>
@@ -2227,12 +2242,27 @@
 
 
 <div class="viewcode-block" id="set_min_denominator"><a class="viewcode-back" href="../../../../functional/ivy/general/set_min_denominator.html#ivy.functional.ivy.general.set_min_denominator">[docs]</a><span class="k">def</span> <span class="nf">set_min_denominator</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Set the global minimum denominator used by ivy for numerically stable division.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set the global minimum denominator used by ivy for numerically stable division.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    val</span>
-<span class="sd">        The new value to set the minimum denominator to.</span>
+<span class="sd">        The value to set the global minimum denominator to.</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.get_min_denominator()</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    1e-12</span>
+
+<span class="sd">    To set the minimum denominator to 1e-13</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_min_denominator(1e-13)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.get_min_denominator()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    1e-13</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_DENOMINATOR</span> <span class="o">=</span> <span class="n">val</span></div>
