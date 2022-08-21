@@ -1972,13 +1972,13 @@ def current_backend_str() -> Union[str, None]:
     Without setting default backend of NumPy
 
     >>> print(ivy.current_backend_str)
-    ''
+    <function current_backend_str at 0x7fbc15f65af0>
 
     With setting default backend as 'torch'
 
     >>> ivy.set_backend('torch')
     >>> print(ivy.current_backend_str)
-    "torch"
+    <function current_backend_str at 0x7fbba0a07c10>
     """
     fw = current_backend()
     if not backend_stack:
