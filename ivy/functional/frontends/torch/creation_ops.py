@@ -39,5 +39,4 @@ def ones_like_v_0p4p0_and_above(
 
 
 def ones_like_v_0p3p0_to_0p3p1(input, out=None):
-    ret = ivy.ones_like(input, out=None)
-    return ret
+    return ivy.ones_like(input, out=None)

@@ -5,10 +5,15 @@ from . import torch
 from . import tensorflow
 import importlib
 
-latest_version = {"torch": "1.12", "tensorflow":"2.9.0", "numpy":"1.23.2", "jax":"0.3.16"}
+latest_version = {
+    "torch": "1.12",
+    "tensorflow": "2.9.0",
+    "numpy": "1.23.2",
+    "jax": "0.3.16",
+}
 
 
-def version_extractor(name, version):
+def fn_name_from_version_specific_fn_name(name, version):
     """
 
     Parameters
@@ -54,7 +59,7 @@ def version_extractor(name, version):
             return name[0:i]
 
 
-def version_handler(frontend):
+def set_frontend_to_specific_version(frontend):
     """
 
     Parameters
@@ -77,13 +82,13 @@ def version_handler(frontend):
         f_version = latest_version[f]
 
     for i in list(frontend.__dict__):
-        if '_v_' in i:
-            orig_name = version_extractor(i, f_version)
+        if "_v_" in i:
+            orig_name = fn_name_from_version_specific_fn_name(i, f_version)
             if orig_name:
                 frontend.__dict__[orig_name] = frontend.__dict__[i]
 
 
-version_handler(torch)
-version_handler(tensorflow)
-version_handler(jax)
-version_handler(numpy)
+set_frontend_to_specific_version(torch)
+set_frontend_to_specific_version(tensorflow)
+set_frontend_to_specific_version(jax)
+set_frontend_to_specific_version(numpy)
