@@ -534,6 +534,7 @@ def map(
     -------
     ret
         x following the application of fn to each of its iterated items.
+
     Examples
     --------
     With :code:`int` inputs:
@@ -596,8 +597,8 @@ def map(
         mean = True)
     >>> print(results)
     ivy.array([  0.5,  10. , 100. ])
-    """
 
+    """
     c = ivy.default(constant, {})
     u = ivy.default(unique, {})
     rets = [
