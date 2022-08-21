@@ -1,0 +1,34 @@
+name: test-nn-ivy
+on: [push, pull_request]
+permissions:
+  actions: read
+jobs:
+   run-nightly-tests:
+     strategy:
+       matrix:
+         backends :  [numpy, torch, jax, tensorflow]
+         submodules: [test_activations, test_layers, test_losses, test_norms]
+     continue-on-error: true
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout 🛎️Ivy
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+
+       - name: Cache hypothesis
+         uses: actions/cache@v3
+         with:
+           path: |
+             ivy/.hypothesis
+           key: ${{ runner.os }}-hypothesis
+
+       - name: Run Functional-NN Tests
+         id: tests
+         run: |
+           cd ivy
+           mkdir -p .hypothesis
+           ./test_ivy_nn.sh ${{ matrix.backends }} ${{ matrix.submodules }}
+
