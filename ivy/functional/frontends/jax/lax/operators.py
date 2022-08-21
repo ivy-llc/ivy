@@ -138,3 +138,7 @@ def exp(x):
 
 def convert_element_type(operand, new_dtype):
     return ivy.astype(operand, new_dtype)
+
+
+def round(x):
+    return ivy.round(x)
