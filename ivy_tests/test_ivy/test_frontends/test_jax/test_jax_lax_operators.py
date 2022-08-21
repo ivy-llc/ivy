@@ -1024,6 +1024,9 @@ def test_jax_lax_convert_element_type(
     dtype_x_axis=_dtype_x_bounded_axis(
         available_dtypes=ivy.valid_numeric_dtypes,
         min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.cumprod"
