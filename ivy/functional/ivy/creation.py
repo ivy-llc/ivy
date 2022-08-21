@@ -1108,6 +1108,7 @@ array = asarray
 
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -1145,6 +1146,7 @@ def native_array(
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, int],
     stop: Union[ivy.Array, ivy.NativeArray, int],
+    /,
     num: int,
     *,
     base: float = 10.0,

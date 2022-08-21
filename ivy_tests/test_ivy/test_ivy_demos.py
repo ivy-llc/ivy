@@ -13,9 +13,9 @@ import ivy_tests.test_ivy.helpers as helpers
 # ------#
 
 # training
-def test_training_demo(device, call):
+def test_training_demo(device):
 
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # numpy does not support gradients
         pytest.skip()
 
@@ -44,7 +44,7 @@ def test_training_demo(device, call):
 
 
 # functional api
-def test_array(device, call):
+def test_array(device):
     ivy.unset_backend()
     import jax.numpy as jnp
 
