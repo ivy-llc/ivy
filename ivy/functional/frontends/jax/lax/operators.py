@@ -15,7 +15,7 @@ tan.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def concatenate(operands, dimension):
-    return ivy.concat(operands, dimension)
+    return ivy.concat(operands, axis=dimension)
 
 
 def full(shape, fill_value, dtype=None):
@@ -109,7 +109,10 @@ neg.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 def argmax(operand, axis, index_dtype):
-    return ivy.astype(ivy.argmax(operand, axis=axis), dtype=index_dtype)
+    return ivy.astype(ivy.argmax(operand, axis=axis), index_dtype)
+
+
+argmax.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 def argmin(operand, axis, index_dtype):
